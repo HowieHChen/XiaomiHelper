@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Xiaomi Helper</string>
+    <string name="xposed_desc">Make Xiaomi Great Again</string>
+    <string name="about_module">This module is made by YukiHookAPI. \nLearn more https://github.com/HighCapable/YuKiHookAPI</string>
+</resources>
