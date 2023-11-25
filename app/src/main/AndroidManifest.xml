@@ -2,15 +2,17 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission
+        android:name="android.permission.QUERY_ALL_PACKAGES"
+        tools:ignore="QueryAllPackagesPermission" />
+
     <application
         android:name=".application.DefaultApplication"
-        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppDefault"
-        tools:targetApi="31">
+        android:theme="@style/Theme.AppDefault">
 
         <meta-data
             android:name="xposedscope"
@@ -23,23 +25,24 @@
             android:value="93" />
 
         <activity
-            android:name=".ui.activity.MainActivity"
+            android:name=".activity.MainActivity"
             android:exported="true"
-            android:screenOrientation="behind">
+            android:launchMode="singleTop">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
+                <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="de.robv.android.xposed.category.MODULE_SETTINGS" />
             </intent-filter>
         </activity>
 
         <activity-alias
-            android:name=".Home"
+            android:name=".launcher"
             android:exported="true"
+            android:enabled="true"
             android:label="@string/app_name"
             android:screenOrientation="behind"
-            android:targetActivity=".ui.activity.MainActivity">
+            android:targetActivity=".activity.MainActivity">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

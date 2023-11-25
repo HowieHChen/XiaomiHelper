@@ -43,9 +43,19 @@ android {
     // TODO Please visit https://highcapable.github.io/YukiHookAPI/en/api/special-features/host-inject
     // TODO 请参考 https://highcapable.github.io/YukiHookAPI/zh-cn/api/special-features/host-inject
     // androidResources.additionalParameters += listOf("--allow-reserved-package-id", "--package-id", "0x64")
+    packaging {
+        applicationVariants.all {
+            outputs.all {
+                (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName =
+                    "XiaomiHelper_${versionName}(${versionCode})_${buildType.name}.apk"
+            }
+        }
+    }
 }
 
 dependencies {
+    implementation("org.luckypray:dexkit:2.0.0-rc8")
+    implementation(project(mapOf("path" to ":blockmiui")))
     compileOnly(de.robv.android.xposed.api)
     implementation(com.highcapable.yukihookapi.api)
     ksp(com.highcapable.yukihookapi.ksp.xposed)

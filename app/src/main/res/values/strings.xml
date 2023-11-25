@@ -2,4 +2,61 @@
     <string name="app_name">Xiaomi Helper</string>
     <string name="xposed_desc">Make Xiaomi Great Again</string>
     <string name="about_module">This module is made by YukiHookAPI. \nLearn more https://github.com/HighCapable/YuKiHookAPI</string>
+    <string name="module_inactive_tips">Module is not activated. Please check the LSPosed version and module activation information and try again.</string>
+    
+    <string name="ui_page_main" translatable="false">@string/app_name</string>
+    <string name="ui_page_menu">Menu</string>
+    <string name="ui_page_others">Others</string>
+
+    <string name="ui_title_general">General</string>
+    <string name="ui_title_scope">Scope</string>
+    <string name="ui_title_about">About</string>
+    <string name="ui_title_reboot">Reboot</string>
+    <string name="ui_title_backup">Backup</string>
+    <string name="ui_scope_systemui">System UI</string>
+    <string name="ui_scope_android">Android Framework</string>
+    <string name="ui_scope_miui_home">Launcher</string>
+    <string name="ui_scope_security_center">Security Center</string>
+    <string name="ui_scope_other">Others</string>
+    <string name="ui_scope_browser">Browser</string>
+    <string name="ui_scope_settings">Settings</string>
+    <string name="ui_scope_taplus">Taplus</string>
+    <string name="ui_about_module">About module</string>
+
+    <string name="button_cancel">Cancel</string>
+    <string name="button_ok">OK</string>
+
+    <string name="dialog_warning">Warning</string>
+    <string name="dialog_error">Error</string>
+
+    <string name="switch_main">Enable module</string>
+    <string name="switch_hide_icon">Hide launch icon</string>
+
+    <string name="reboot_system">Reboot system</string>
+    <string name="reboot_system_tips">Are you sure you want to reboot the system?</string>
+    <string name="reboot_scope">Reboot all scopes</string>
+    <string name="reboot_scope_tips">Are you sure you want to reboot all scope apps?</string>
+    <string name="reboot_systemui">Reboot system ui</string>
+    <string name="reboot_systemui_tips">Are you sure you want to reboot the system interface?</string>
+    <string name="reboot_launcher">Reboot launcher</string>
+    <string name="reboot_launcher_tips">Are you sure you want to reboot the launcher?</string>
+    <string name="reboot_error_toast">Reboot failed! Please grant Root permission to this application and try again.</string>
+    <string name="reboot_done_toast">All target applications have been restarted.</string>
+
+    <string name="browser_debug_mode">Enable debug mode</string>
+    <string name="browser_debug_mode_tips">Forces debug mode to be enabled. Only works with older versions of browsers.</string>
+    <string name="browser_disable_update">Disable update check</string>
+    <string name="settings_show_google">Show Google settings</string>
+    <string name="taplus_use_browser">Search using browser</string>
+    <string name="taplus_search_engine">Search Engine</string>
+    <string name="taplus_search_engine_default">Default</string>
+    <string name="taplus_search_engine_baidu">Baidu</string>
+    <string name="taplus_search_engine_sogou">Sogou</string>
+    <string name="taplus_search_engine_bing">Bing</string>
+    <string name="taplus_search_engine_google">Google</string>
+    <string name="taplus_search_engine_custom">Custom</string>
+    <string name="taplus_search_custom">Custom search engine</string>
+    <string name="taplus_landscape">Enable in landscape</string>
+    <string name="taplus_hide_shop">Hide shopping button</string>
+    <string name="taplus_unlock_pad">Force enable on tablet</string>
 </resources>

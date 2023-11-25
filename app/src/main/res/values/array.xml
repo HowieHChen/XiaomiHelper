@@ -2,6 +2,9 @@
 <resources>
     <string-array name="module_scope">
         <item>android</item>
+        <item>com.android.browser</item>
+        <item>com.android.settings</item>
         <item>com.android.systemui</item>
+        <item>com.miui.contentextension</item>
     </string-array>
 </resources>

@@ -1,9 +1,13 @@
-@file:Suppress("unused")
+@file:Suppress("unused", "DEPRECATION")
 
 package dev.lackluster.mihelper.utils.factory
 
+import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
+import android.content.SharedPreferences
 import android.content.res.Configuration
+import dev.lackluster.mihelper.utils.Prefs
 
 /**
  * System dark mode is enabled or not
@@ -38,3 +42,8 @@ fun Number.dp(context: Context) = dpFloat(context).toInt()
  * @return [Float]
  */
 fun Number.dpFloat(context: Context) = toFloat() * context.resources.displayMetrics.density
+
+@SuppressLint("WorldReadableFiles")
+fun getSP(context: Context, prefName: String = Prefs.Name): SharedPreferences {
+    return context.getSharedPreferences(prefName, Activity.MODE_WORLD_READABLE)
+}
