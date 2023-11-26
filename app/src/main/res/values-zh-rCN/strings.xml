@@ -10,7 +10,6 @@
     <string name="switch_hide_icon">隐藏桌面图标</string>
     <string name="ui_title_scope">作用域</string>
     <string name="ui_scope_systemui">系统界面</string>
-    <string name="ui_scope_other">其它</string>
     <string name="ui_scope_android">系统框架</string>
     <string name="ui_scope_miui_home">桌面</string>
     <string name="ui_scope_security_center">手机管家</string>
@@ -52,4 +51,9 @@
     <string name="taplus_unlock_pad">强制在平板上启用</string>
     <string name="ui_scope_settings">设置</string>
     <string name="settings_show_google">显示Google设置</string>
+    <string name="ui_page_mi_connect">互联互通</string>
+    <string name="mishare_no_auto_off">禁止小米互传自动关闭</string>
+    <string name="ui_scope_mishare">小米互传</string>
+    <string name="ui_scope_mi_smart_hub">小米妙享中心</string>
+    <string name="mi_smart_hub_all_app">所有应用都可在其它设备上打开</string>
 </resources>

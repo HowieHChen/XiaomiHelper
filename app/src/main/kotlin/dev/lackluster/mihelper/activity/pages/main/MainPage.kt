@@ -56,6 +56,11 @@ class MainPage : BasePage() {
         )
         TextSummaryWithArrow(
             TextSummaryV(
+                textId = R.string.ui_scope_mi_connect,
+                onClickListener = { showFragment("scope_mi_connect") })
+        )
+        TextSummaryWithArrow(
+            TextSummaryV(
                 textId = R.string.ui_scope_miui_home,
                 onClickListener = { showFragment("scope_miui_home") })
         )

@@ -5,6 +5,8 @@ object PrefKey {
     const val HIDE_ICON = "hide_icon"
     const val BROWSER_DEBUG = "browser_debug_mode"
     const val BROWSER_NO_UPDATE = "browser_no_update"
+    const val MISHARE_NO_AUTO_OFF = "mishare_no_auto_off"
+    const val MISMARTHUB_ALL_APP = "mismarthub_all_app"
     const val TAPLUS_USE_BROWSER = "taplus_use_browser"
     const val TAPLUS_SEARCH_ENGINE = "taplus_search_engine"
     const val TAPLUS_SEARCH_URL = "taplus_search_url"

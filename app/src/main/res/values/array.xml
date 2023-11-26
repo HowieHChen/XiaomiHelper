@@ -5,6 +5,9 @@
         <item>com.android.browser</item>
         <item>com.android.settings</item>
         <item>com.android.systemui</item>
+        <item>com.milink.service</item>
         <item>com.miui.contentextension</item>
+        <item>com.miui.mishare.connectivity</item>
+        <item>com.xiaomi.mirror</item>
     </string-array>
 </resources>
