@@ -128,10 +128,22 @@ class OthersPage : BasePage() {
             TextSummaryV(textId = R.string.taplus_hide_shop),
             SwitchV(PrefKey.TAPLUS_HIDE_SHOP)
         )
+        val isPadBinding = GetDataBinding({
+            try {
+                Class.forName("miui.os.Build").getDeclaredField("IS_TABLET").get(null) as Boolean
+            }
+            catch (e: Exception) {
+                false
+            }
+        }) { view, flags, data ->
+            when (flags) {
+                1 -> view.visibility = if (data as Boolean) View.VISIBLE else View.GONE
+            }
+        }
         TextSummaryWithSwitch(
             TextSummaryV(textId = R.string.taplus_unlock_pad),
-            SwitchV(PrefKey.TAPLUS_UNLOCK_PAD)
+            SwitchV(PrefKey.TAPLUS_UNLOCK_PAD),
+            dataBindingRecv = isPadBinding.binding.getRecv(1)
         )
     }
-
 }

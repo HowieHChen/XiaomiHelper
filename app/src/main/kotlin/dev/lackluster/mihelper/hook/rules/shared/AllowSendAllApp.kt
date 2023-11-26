@@ -25,7 +25,7 @@ object AllowSendAllApp : YukiBaseHooker() {
                 Scope.MI_SMART_HUB -> {
                     "com.xiaomi.mirror.message.RelayAppMessage".toClass()
                         .method {
-                            returnType = this.current().name
+                            returnType = "com.xiaomi.mirror.message.RelayAppMessage"
                         }
                         .hookAll {
                             after {
