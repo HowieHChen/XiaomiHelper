@@ -9,6 +9,7 @@ import cn.fkj233.ui.activity.view.TextSummaryV
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.BuildConfig
 import dev.lackluster.mihelper.data.PrefKey
+import dev.lackluster.mihelper.utils.Device
 
 @BMMainPage()
 class MainPage : BasePage() {
@@ -51,7 +52,7 @@ class MainPage : BasePage() {
         )
         TextSummaryWithArrow(
             TextSummaryV(
-                textId = R.string.ui_scope_security_center,
+                textId = if (Device.isPad) R.string.ui_scope_security_center_pad else R.string.ui_scope_security_center,
                 onClickListener = { showFragment("scope_security_center") })
         )
         TextSummaryWithArrow(

@@ -11,6 +11,7 @@ import cn.fkj233.ui.activity.view.TextV
 import cn.fkj233.ui.dialog.MIUIDialog
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.data.PrefKey
+import dev.lackluster.mihelper.utils.Device
 
 @BMPage("scope_others")
 class OthersPage : BasePage() {
@@ -129,12 +130,7 @@ class OthersPage : BasePage() {
             SwitchV(PrefKey.TAPLUS_HIDE_SHOP)
         )
         val isPadBinding = GetDataBinding({
-            try {
-                Class.forName("miui.os.Build").getDeclaredField("IS_TABLET").get(null) as Boolean
-            }
-            catch (e: Exception) {
-                false
-            }
+            Device.isPad
         }) { view, flags, data ->
             when (flags) {
                 1 -> view.visibility = if (data as Boolean) View.VISIBLE else View.GONE

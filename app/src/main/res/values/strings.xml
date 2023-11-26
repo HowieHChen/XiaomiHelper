@@ -8,19 +8,24 @@
     <string name="ui_page_menu">Menu</string>
     <string name="ui_page_mi_connect">Xiaomi Connect</string>
     <string name="ui_page_others">Others</string>
+    <string name="ui_page_security_center">Security Center</string>
+    <string name="ui_page_security_center_pad">@string/ui_page_security_center</string>
 
     <string name="ui_title_general">General</string>
     <string name="ui_title_scope">Scope</string>
     <string name="ui_title_about">About</string>
     <string name="ui_title_reboot">Reboot</string>
     <string name="ui_title_backup">Backup</string>
+    <string name="ui_title_security_function">Function</string>
+    <string name="ui_title_security_interface">UI</string>
     <string name="ui_scope_systemui">System UI</string>
     <string name="ui_scope_android">Android Framework</string>
     <string name="ui_scope_mi_connect" translatable="false">@string/ui_page_mi_connect</string>
     <string name="ui_scope_mishare">MiShare</string>
     <string name="ui_scope_mi_smart_hub">Mi Smart Hub</string>
     <string name="ui_scope_miui_home">Launcher</string>
-    <string name="ui_scope_security_center">Security Center</string>
+    <string name="ui_scope_security_center" translatable="false">@string/ui_page_security_center</string>
+    <string name="ui_scope_security_center_pad" translatable="false">@string/ui_page_security_center_pad</string>
     <string name="ui_scope_other" translatable="false">@string/ui_page_others</string>
     <string name="ui_scope_browser">Browser</string>
     <string name="ui_scope_settings">Settings</string>
@@ -52,6 +57,12 @@
     <string name="browser_disable_update">Disable update check</string>
     <string name="mishare_no_auto_off">Disable MiShare auto-off</string>
     <string name="mi_smart_hub_all_app">All apps can be opened on another device</string>
+    <string name="security_skip_warning">Skip the wait time on warnings</string>
+    <string name="security_skip_warning_tips">Skip wait times when using USB debugging, unknown sources, and accessibility</string>
+    <string name="security_skip_open_app">Remove popups when opening apps</string>
+    <string name="security_skip_open_app_tips">Remove chained startup warning popups containing \"Allow XXX to open XXX\"</string>
+    <string name="security_lock_score">Locked Security Score</string>
+    <string name="security_lock_score_tips">Lock the security score to 100 and disable the \"Optimize\" button</string>
     <string name="settings_show_google">Show Google settings</string>
     <string name="taplus_use_browser">Search using browser</string>
     <string name="taplus_search_engine">Search Engine</string>

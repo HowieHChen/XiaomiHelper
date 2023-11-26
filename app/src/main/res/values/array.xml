@@ -8,6 +8,7 @@
         <item>com.milink.service</item>
         <item>com.miui.contentextension</item>
         <item>com.miui.mishare.connectivity</item>
+        <item>com.miui.securitycenter</item>
         <item>com.xiaomi.mirror</item>
     </string-array>
 </resources>

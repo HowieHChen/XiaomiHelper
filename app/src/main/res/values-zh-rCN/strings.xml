@@ -12,7 +12,6 @@
     <string name="ui_scope_systemui">系统界面</string>
     <string name="ui_scope_android">系统框架</string>
     <string name="ui_scope_miui_home">桌面</string>
-    <string name="ui_scope_security_center">手机管家</string>
     <string name="ui_title_about">关于</string>
     <string name="ui_scope_taplus">传送门</string>
     <string name="ui_about_module">关于模块</string>
@@ -56,4 +55,14 @@
     <string name="ui_scope_mishare">小米互传</string>
     <string name="ui_scope_mi_smart_hub">小米妙享中心</string>
     <string name="mi_smart_hub_all_app">所有应用都可在其它设备上打开</string>
+    <string name="ui_page_security_center">手机管家</string>
+    <string name="ui_page_security_center_pad">平板管家</string>
+    <string name="security_skip_warning">跳过警告等待时间</string>
+    <string name="security_skip_warning_tips">在使用 USB 调试、未知来源和可访问性时，跳过5秒或10秒的等待时间</string>
+    <string name="ui_title_security_function">功能</string>
+    <string name="ui_title_security_interface">界面</string>
+    <string name="security_skip_open_app">移除链式启动弹窗</string>
+    <string name="security_skip_open_app_tips">删除包含 \"XXX 想要打开 XXX\" 的链式启动警告弹出窗口</string>
+    <string name="security_lock_score">锁定安全得分</string>
+    <string name="security_lock_score_tips">将安全得分锁定为100分，并禁用 \"优化\" 按钮</string>
 </resources>

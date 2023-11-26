@@ -10,6 +10,7 @@ import dev.lackluster.mihelper.activity.pages.main.MainPage
 import dev.lackluster.mihelper.activity.pages.main.MenuPage
 import dev.lackluster.mihelper.activity.pages.scope.MiConnectPage
 import dev.lackluster.mihelper.activity.pages.scope.OthersPage
+import dev.lackluster.mihelper.activity.pages.scope.SecurityCenterPage
 import dev.lackluster.mihelper.utils.factory.getSP
 
 class MainActivity : MIUIActivity() {
@@ -42,6 +43,7 @@ class MainActivity : MIUIActivity() {
         registerPage(MenuPage::class.java)
         registerPage(OthersPage::class.java)
         registerPage(MiConnectPage::class.java)
+        registerPage(SecurityCenterPage::class.java)
 
         when (Build.VERSION.SDK_INT) {
             Build.VERSION_CODES.TIRAMISU -> {
