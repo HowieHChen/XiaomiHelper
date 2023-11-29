@@ -7,8 +7,12 @@
         <item>com.android.systemui</item>
         <item>com.milink.service</item>
         <item>com.miui.contentextension</item>
+        <item>com.miui.home</item>
         <item>com.miui.mishare.connectivity</item>
+        <item>com.miui.personalassistant</item>
+        <item>com.miui.powerkeeper</item>
         <item>com.miui.securitycenter</item>
         <item>com.xiaomi.mirror</item>
+        <item>com.xiaomi.misettings</item>
     </string-array>
 </resources>

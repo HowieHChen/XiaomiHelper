@@ -9,11 +9,6 @@ import dev.lackluster.mihelper.utils.Device
 import dev.lackluster.mihelper.utils.Prefs.hasEnable
 
 object UnlockForPad : YukiBaseHooker() {
-//    private val isPad by lazy {
-//        "miui.os.Build".toClass().field {
-//            name = "IS_TABLET"
-//        }.get().boolean()
-//    }
     override fun onHook() {
         hasEnable(PrefKey.TAPLUS_UNLOCK_PAD, extraCondition = { Device.isPad }) {
             when (packageName) {

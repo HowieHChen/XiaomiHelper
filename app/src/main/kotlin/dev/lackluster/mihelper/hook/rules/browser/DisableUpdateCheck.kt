@@ -1,7 +1,6 @@
 package dev.lackluster.mihelper.hook.rules.browser
 
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.log.YLog
 import dev.lackluster.mihelper.data.PrefKey
 import dev.lackluster.mihelper.utils.DexKit
 import dev.lackluster.mihelper.utils.Prefs.hasEnable
@@ -39,19 +38,9 @@ object DisableUpdateCheck : YukiBaseHooker() {
                 ?.hook {
                     replaceTo(1)
                 }
-                ?.result {
-                    onHookingFailure {
-                        YLog.warn("Failed to hook ${PrefKey.BROWSER_NO_UPDATE}\n${it}")
-                    }
-                }
             miMarketOnPostExecute?.getMethodInstance(appClassLoader?:return@hasEnable)
                 ?.hook {
                     replaceTo(null)
-                }
-                ?.result {
-                    onHookingFailure {
-                        YLog.warn("Failed to hook ${PrefKey.BROWSER_NO_UPDATE}\n${it}")
-                    }
                 }
         }
     }

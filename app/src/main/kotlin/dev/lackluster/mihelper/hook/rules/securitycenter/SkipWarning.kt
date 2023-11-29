@@ -1,16 +1,20 @@
 package dev.lackluster.mihelper.hook.rules.securitycenter
 
+import android.os.Handler
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
+import com.highcapable.yukihookapi.hook.factory.constructor
 import com.highcapable.yukihookapi.hook.factory.method
+import com.highcapable.yukihookapi.hook.log.YLog
 import com.highcapable.yukihookapi.hook.type.java.BooleanType
+import com.highcapable.yukihookapi.hook.type.java.IntType
 import dev.lackluster.mihelper.data.PrefKey
 import dev.lackluster.mihelper.utils.Prefs.hasEnable
 
 object SkipWarning : YukiBaseHooker() {
     override fun onHook() {
         hasEnable(PrefKey.SECURITY_SKIP_WARNING) {
-            "android.widget.TextView".toClass().apply {
-                method {
+            "android.widget.TextView".toClass()
+                .method {
                     name = "setEnabled"
                     param(BooleanType)
                 }.hook {
@@ -18,28 +22,40 @@ object SkipWarning : YukiBaseHooker() {
                         this.args(0).set(true)
                     }
                 }
-                 method {
-                     name = "setText"
-                     paramCount = 4
-                 }.hook {
-                     before {
-                         if (this.args.isNotEmpty()) {
-                             val buttonText = this.args(0).string()
-                             if (buttonText.startsWith("确定（"))
-                                 this.args(0).set("确定")
-                             else if (buttonText.startsWith("允许（"))
-                                 this.args(0).set("允许")
-                             else if (buttonText.startsWith("下一步（"))
-                                 this.args(0).set("下一步")
-                             else if (buttonText.startsWith("OK ("))
-                                 this.args(0).set("OK")
-                             else if (buttonText.startsWith("Accept ("))
-                                 this.args(0).set("Accept")
-                             else if (buttonText.startsWith("Next step ("))
-                                 this.args(0).set("Next step")
-                         }
-                     }
-                 }
+            try {
+                val mInnerClasses = "com.miui.permcenter.privacymanager.InterceptBaseFragment".toClass().declaredClasses
+                var mHandlerClass: Class<*>? = null
+                for (mInnerClass in mInnerClasses) {
+                    if (Handler::class.java.isAssignableFrom(mInnerClass)) {
+                        mHandlerClass = mInnerClass
+                        break
+                    }
+                }
+                if (mHandlerClass != null) {
+                    mHandlerClass
+                        .constructor()
+                        .hookAll {
+                            before {
+                                if (this.args.size == 2) {
+                                    this.args(1).set(0)
+                                }
+                            }
+                        }
+                    mHandlerClass
+                        .method {
+                            returnType = Void.TYPE
+                            param(IntType)
+                        }
+                        .ignored()
+                        .hook {
+                            before {
+                                this.args(0).set(0)
+                            }
+                        }
+                }
+            }
+            catch (_: Throwable) {
+                YLog.info("Failed to find class: com.miui.permcenter.privacymanager.InterceptBaseFragment")
             }
         }
     }

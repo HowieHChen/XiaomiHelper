@@ -7,6 +7,7 @@
     <string name="ui_page_main" translatable="false">@string/app_name</string>
     <string name="ui_page_menu">Menu</string>
     <string name="ui_page_mi_connect">Xiaomi Connect</string>
+    <string name="ui_page_miui_home">Launcher</string>
     <string name="ui_page_others">Others</string>
     <string name="ui_page_security_center">Security Center</string>
     <string name="ui_page_security_center_pad">@string/ui_page_security_center</string>
@@ -16,14 +17,18 @@
     <string name="ui_title_about">About</string>
     <string name="ui_title_reboot">Reboot</string>
     <string name="ui_title_backup">Backup</string>
-    <string name="ui_title_security_function">Function</string>
-    <string name="ui_title_security_interface">UI</string>
+    <string name="ui_title_home_behavior">Behavior</string>
+    <string name="ui_title_home_icon">Icon</string>
+    <string name="ui_title_home_recent">Recent tasks</string>
+    <string name="ui_title_home_widget">Widget</string>
+    <string name="ui_title_home_personal_asist">Personal Assistant</string>
     <string name="ui_scope_systemui">System UI</string>
     <string name="ui_scope_android">Android Framework</string>
     <string name="ui_scope_mi_connect" translatable="false">@string/ui_page_mi_connect</string>
     <string name="ui_scope_mishare">MiShare</string>
     <string name="ui_scope_mi_smart_hub">Mi Smart Hub</string>
-    <string name="ui_scope_miui_home">Launcher</string>
+    <string name="ui_scope_miui_home" translatable="false">@string/ui_page_miui_home</string>
+    <string name="ui_scope_power_keeper">Battery and performance</string>
     <string name="ui_scope_security_center" translatable="false">@string/ui_page_security_center</string>
     <string name="ui_scope_security_center_pad" translatable="false">@string/ui_page_security_center_pad</string>
     <string name="ui_scope_other" translatable="false">@string/ui_page_others</string>
@@ -55,14 +60,42 @@
     <string name="browser_debug_mode">Enable debug mode</string>
     <string name="browser_debug_mode_tips">Forces debug mode to be enabled. Only works with older versions of browsers.</string>
     <string name="browser_disable_update">Disable update check</string>
+    <string name="home_anim_enhance">Enhanced animation</string>
+    <string name="home_anim_enhance_tips">Fix animation break and icon follow animation</string>
+    <string name="home_anim_unlock">Optimize unlocking animation</string>
+    <string name="home_anim_unlock_tips">Optimize the animation of the icon when unlocking</string>
+    <string name="home_behavior_always_show_clock">Always show time in status bar</string>
+    <string name="home_behavior_double_tap">Double-tap the blank space to sleep</string>
+    <string name="home_icon_unblock_google">Unblock Icons for Google Apps</string>
+    <string name="home_icon_corner4large">Uniform corner radius for large icons</string>
+    <string name="home_icon_corner4large_tips">Capsule shape icons will become rounded rectangle icons</string>
+    <string name="home_icon_perfect_icon">Force enable Perfect Icons</string>
+    <string name="home_icon_perfect_icon_tips">Lower the priority Will lower the priority of using the app\'s own iconsof using the app\'s own icons</string>
+    <string name="home_minus_restore_setting">Restore minus screen setting</string>
+    <string name="home_minus_fold_style">Mix Fold style minus screen</string>
+    <string name="home_recent_pad_show_memory">Show memory usage on tablet</string>
+    <string name="home_recent_show_real_memory">Show real memory usage</string>
+    <string name="home_recent_wallpaper_darken">Stop reducing the brightness of wallpaper</string>
+    <string name="home_recent_wallpaper_darken_tips">Stop the automatic reduction of the wallpaper\'s brightness when entering the recent tasks view</string>
+    <string name="home_recent_dismiss_anim">Modify card animation when dismissing recent tasks</string>
+    <string name="home_widget_resizable">Make all Android widgets resizable</string>
+    <string name="home_widget_anim">Add startup animation to all widgets</string>
     <string name="mishare_no_auto_off">Disable MiShare auto-off</string>
     <string name="mi_smart_hub_all_app">All apps can be opened on another device</string>
+    <string name="personal_assist_blur">Enable blur for background</string>
+    <string name="power_custom_refresh">Customize high refresh rate apps</string>
+    <string name="power_donot_kill_app">Prevent killing background apps</string>
+    <string name="power_battery_optimization">Battery optimization</string>
+    <string name="power_battery_optimization_tips">Open the battery optimization page that is hidden by default</string>
+    <string name="power_battery_optimization_failed_toast">Failed to open, probably not supported by the system</string>
     <string name="security_skip_warning">Skip the wait time on warnings</string>
     <string name="security_skip_warning_tips">Skip wait times when using USB debugging, unknown sources, and accessibility</string>
     <string name="security_skip_open_app">Remove popups when opening apps</string>
     <string name="security_skip_open_app_tips">Remove chained startup warning popups containing \"Allow XXX to open XXX\"</string>
     <string name="security_lock_score">Locked Security Score</string>
     <string name="security_lock_score_tips">Lock the security score to 100 and disable the \"Optimize\" button</string>
+    <string name="security_screen_battery">Show screen usage in power consumption ranking</string>
+    <string name="security_screen_battery_tips">Battery usage of apps that are hidden by default will also be shown</string>
     <string name="settings_show_google">Show Google settings</string>
     <string name="taplus_use_browser">Search using browser</string>
     <string name="taplus_search_engine">Search Engine</string>

@@ -2,6 +2,7 @@ package dev.lackluster.mihelper.hook.apps
 
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import dev.lackluster.mihelper.hook.rules.securitycenter.LockScore
+import dev.lackluster.mihelper.hook.rules.securitycenter.ShowScreenBatteryUsage
 import dev.lackluster.mihelper.hook.rules.securitycenter.SkipOpenApp
 import dev.lackluster.mihelper.hook.rules.securitycenter.SkipWarning
 import dev.lackluster.mihelper.utils.DexKit
@@ -12,6 +13,7 @@ object SecurityCenter : YukiBaseHooker() {
         loadHooker(SkipWarning)
         loadHooker(SkipOpenApp)
         loadHooker(LockScore)
+        loadHooker(ShowScreenBatteryUsage)
         DexKit.closeDexKit()
     }
 }
