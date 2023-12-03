@@ -10,7 +10,7 @@ import dev.lackluster.mihelper.utils.Prefs.hasEnable
 
 object AnimEnhance : YukiBaseHooker() {
     private var appToHomeAnim2Bak: Any? = null
-    private var runnable = Runnable { }
+    // private var runnable = Runnable { }
     override fun onHook() {
         hasEnable(PrefKey.HOME_ANIM_ENHANCE) {
             "com.miui.home.recents.NavStubView".toClass()
@@ -53,7 +53,7 @@ object AnimEnhance : YukiBaseHooker() {
                 }
                 .hook {
                     before {
-                        this.result = runnable
+                        this.result = null
                     }
                 }
         }

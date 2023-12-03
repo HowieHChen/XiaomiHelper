@@ -29,6 +29,7 @@ object IconCornerForLarge : YukiBaseHooker() {
                     before {
                         this.result = this.instance.current().field {
                             name = "mEnforcedCornerRadius"
+                            superClass()
                         }.float()
                     }
                 }
@@ -45,6 +46,7 @@ object IconCornerForLarge : YukiBaseHooker() {
                         before {
                             this.result = this.instance.current().field {
                                 name = "mEnforcedCornerRadius"
+                                superClass()
                             }.float()
                         }
                     }

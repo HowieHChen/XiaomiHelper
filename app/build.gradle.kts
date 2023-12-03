@@ -55,6 +55,7 @@ android {
 
 dependencies {
     implementation("org.luckypray:dexkit:2.0.0-rc8")
+    implementation("io.github.biezhi:TinyPinyin:2.0.3.RELEASE")
     implementation(project(mapOf("path" to ":blockmiui")))
     compileOnly(de.robv.android.xposed.api)
     implementation(com.highcapable.yukihookapi.api)

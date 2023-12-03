@@ -29,6 +29,83 @@ class OthersPage : BasePage() {
             SwitchV(PrefKey.BROWSER_NO_UPDATE)
         )
         Line()
+        TitleText(textId = R.string.ui_scope_download)
+        TextSummaryWithSwitch(
+            TextSummaryV(textId = R.string.download_remove_xl),
+            SwitchV(PrefKey.DOWNLOAD_REMOVE_XL)
+        )
+        Line()
+        TitleText(textId = R.string.ui_scope_gallery)
+        TextSummaryWithSwitch(
+            TextSummaryV(textId = R.string.screenshot_unlimited_crop),
+            SwitchV(PrefKey.SCREENSHOT_UNLIMITED_CROP)
+        )
+        TextSummaryWithSwitch(
+            TextSummaryV(
+                textId = R.string.gallery_screen_path_optim,
+                tipsId = R.string.gallery_screen_path_optim_tips
+            ),
+            SwitchV(PrefKey.GALLERY_PATH_OPTIM)
+        )
+        Line()
+        TitleText(textId = R.string.ui_scope_incallui)
+        TextSummaryWithSwitch(
+            TextSummaryV(textId = R.string.incallui_hide_crbt),
+            SwitchV(PrefKey.INCALLUI_HIDE_CRBT)
+        )
+        Line()
+        TitleText(textId = R.string.ui_scope_joyose)
+        TextSummaryWithSwitch(
+            TextSummaryV(textId = R.string.joyose_no_cloud_control),
+            SwitchV(PrefKey.JOYOSE_NO_CLOUD_CONTROL)
+        )
+        Line()
+        TitleText(textId = R.string.ui_scope_market)
+        TextSummaryWithSwitch(
+            TextSummaryV(textId = R.string.market_ad_block),
+            SwitchV(PrefKey.MARKET_AD_BLOCK)
+        )
+        Line()
+        TitleText(textId = R.string.ui_scope_mms)
+        TextSummaryWithSwitch(
+            TextSummaryV(textId = R.string.mms_ad_block),
+            SwitchV(PrefKey.MMS_AD_BLOCK)
+        )
+        Line()
+        TitleText(textId = R.string.ui_scope_music)
+        TextSummaryWithSwitch(
+            TextSummaryV(textId = R.string.music_ad_block),
+            SwitchV(PrefKey.MUSIC_AD_BLOCK)
+        )
+        Line()
+        TitleText(textId = R.string.ui_scope_screen_recorder)
+        TextSummaryWithSwitch(
+            TextSummaryV(
+                textId = R.string.screen_recorder_save_to_movies,
+                tipsId = R.string.screen_recorder_save_to_movies_tips
+            ),
+            SwitchV(PrefKey.SCREEN_RECORDER_SAVE_TO_MOVIES)
+        )
+        Line()
+        TitleText(textId = R.string.ui_scope_screenshot)
+        TextSummaryWithSwitch(
+            TextSummaryV(textId = R.string.screenshot_save_as_png),
+            SwitchV(PrefKey.SCREENSHOT_SAVE_AS_PNG)
+        )
+        TextSummaryWithSwitch(
+            TextSummaryV(
+                textId = R.string.screenshot_save_to_picture,
+                tipsId = R.string.screenshot_save_to_picture_tips
+            ),
+            SwitchV(PrefKey.SCREENSHOT_SAVE_TO_PICTURE)
+        )
+        Line()
+        TitleText(textId = R.string.ui_scope_guard_provider)
+        TextSummaryWithSwitch(
+            TextSummaryV(textId = R.string.guard_forbid_upload_app),
+            SwitchV(PrefKey.GUARD_FORBID_UPLOAD_APP)
+        )
+        Line()
         TitleText(textId = R.string.ui_scope_settings)
         TextSummaryWithSwitch(
             TextSummaryV(textId = R.string.settings_show_google),

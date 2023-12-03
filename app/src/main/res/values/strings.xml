@@ -3,7 +3,8 @@
     <string name="xposed_desc">Make Xiaomi Great Again</string>
     <string name="about_module">This module is made by YukiHookAPI. \nLearn more https://github.com/HighCapable/YuKiHookAPI</string>
     <string name="module_inactive_tips">Module is not activated. Please check the LSPosed version and module activation information and try again.</string>
-    
+
+    <string name="ui_page_android">Android Framework</string>
     <string name="ui_page_main" translatable="false">@string/app_name</string>
     <string name="ui_page_menu">Menu</string>
     <string name="ui_page_mi_connect">Xiaomi Connect</string>
@@ -11,19 +12,31 @@
     <string name="ui_page_others">Others</string>
     <string name="ui_page_security_center">Security Center</string>
     <string name="ui_page_security_center_pad">@string/ui_page_security_center</string>
+    <string name="ui_page_systemui">System UI</string>
+    <string name="ui_page_disable_fixed_orientation" translatable="false">@string/android_disable_fixed_orientation_scope</string>
+    <string name="ui_page_status_bar_hide_icon">Hide icon</string>
+    <string name="ui_page_status_bar_icon_position">Icon position</string>
 
     <string name="ui_title_general">General</string>
     <string name="ui_title_scope">Scope</string>
     <string name="ui_title_about">About</string>
     <string name="ui_title_reboot">Reboot</string>
     <string name="ui_title_backup">Backup</string>
+    <string name="ui_title_android_behavior">Behavior</string>
+    <string name="ui_title_android_ui">Appearance</string>
+    <string name="ui_title_home_anim">Animation</string>
     <string name="ui_title_home_behavior">Behavior</string>
+    <string name="ui_title_home_folder">Folder</string>
     <string name="ui_title_home_icon">Icon</string>
     <string name="ui_title_home_recent">Recent tasks</string>
     <string name="ui_title_home_widget">Widget</string>
     <string name="ui_title_home_personal_asist">Personal Assistant</string>
-    <string name="ui_scope_systemui">System UI</string>
-    <string name="ui_scope_android">Android Framework</string>
+    <string name="ui_title_systemui_lock_screen">Lock screen</string>
+    <string name="ui_title_systemui_notification_center">Notification center</string>
+    <string name="ui_title_systemui_control_center">Control center</string>
+    <string name="ui_title_systemui_status_bar">Status bar</string>
+
+    <string name="ui_scope_android" translatable="false">@string/ui_page_android</string>
     <string name="ui_scope_mi_connect" translatable="false">@string/ui_page_mi_connect</string>
     <string name="ui_scope_mishare">MiShare</string>
     <string name="ui_scope_mi_smart_hub">Mi Smart Hub</string>
@@ -33,15 +46,33 @@
     <string name="ui_scope_security_center_pad" translatable="false">@string/ui_page_security_center_pad</string>
     <string name="ui_scope_other" translatable="false">@string/ui_page_others</string>
     <string name="ui_scope_browser">Browser</string>
+    <string name="ui_scope_download">Download management</string>
+    <string name="ui_scope_gallery">Gallery</string>
+    <string name="ui_scope_guard_provider">Security components</string>
+    <string name="ui_scope_incallui">InCall UI</string>
+    <string name="ui_scope_joyose">Joyose</string>
+    <string name="ui_scope_market">GetApps</string>
+    <string name="ui_scope_mms">Message</string>
+    <string name="ui_scope_music">Music</string>
+    <string name="ui_scope_package_installer">Package Installer</string>
+    <string name="ui_scope_screen_recorder">Screen Recorder</string>
+    <string name="ui_scope_screenshot">Screenshot</string>
     <string name="ui_scope_settings">Settings</string>
+    <string name="ui_scope_systemui" translatable="false">@string/ui_page_systemui</string>
     <string name="ui_scope_taplus">Taplus</string>
     <string name="ui_about_module">About module</string>
 
     <string name="button_cancel">Cancel</string>
     <string name="button_ok">OK</string>
+    <string name="button_clear">Clear</string>
 
     <string name="dialog_warning">Warning</string>
     <string name="dialog_error">Error</string>
+    <string name="dialog_default_value">Default</string>
+    <string name="dialog_current_value">Current</string>
+    <string name="dialog_value_range">Range</string>
+    <string name="dialog_search">Search</string>
+    <string name="invalid_input">Invalid Input</string>
 
     <string name="switch_main">Enable module</string>
     <string name="switch_hide_icon">Hide launch icon</string>
@@ -57,15 +88,44 @@
     <string name="reboot_error_toast">Reboot failed! Please grant Root permission to this application and try again.</string>
     <string name="reboot_done_toast">All target applications have been restarted.</string>
 
+    <string name="ad_block">Remove ads and promotions</string>
+
+    <string name="android_dark_for_all">Disable whitelisting of forced dark</string>
+    <string name="android_dark_for_all_tips">Make it possible to enable the forced dark mode feature for most applications, except for system applications, etc.</string>
+    <string name="android_wallpaper_scale">Wallpaper Scale</string>
+    <string name="android_wallpaper_scale_tips">Affects the wallpaper zoom animation when launching/exiting apps on the desktop</string>
+    <string name="android_freeform_restriction">Allow all apps to be in small window mode</string>
+    <string name="android_freeform_restriction_tips">Ignore system blacklists and software\'s own disabling of small windows</string>
+    <string name="android_disable_fixed_orientation">Disable fixed orientation</string>
+    <string name="android_disable_fixed_orientation_tips">Disable some app\\\'s fixed orientation</string>
+    <string name="android_disable_fixed_orientation_scope">Disable fixed orientation scope</string>
+    <string name="android_disable_fixed_orientation_scope_tips">Take effect after reboot</string>
     <string name="browser_debug_mode">Enable debug mode</string>
     <string name="browser_debug_mode_tips">Forces debug mode to be enabled. Only works with older versions of browsers.</string>
     <string name="browser_disable_update">Disable update check</string>
+    <string name="download_remove_xl">Block the creation of ".xlDownload" folder</string>
+    <string name="gallery_screen_path_optim">Optimize recognition of directories</string>
+    <string name="gallery_screen_path_optim_tips">Recognize images in \"Pictures/Screenshots\" as screenshots and videos in \"Movies/ScreenRecorder\" as screen recordings, and display them in the corresponding albums.</string>
+    <string name="guard_forbid_upload_app">Block uploading of installed apps list</string>
     <string name="home_anim_enhance">Enhanced animation</string>
     <string name="home_anim_enhance_tips">Fix animation break and icon follow animation</string>
     <string name="home_anim_unlock">Optimize unlocking animation</string>
     <string name="home_anim_unlock_tips">Optimize the animation of the icon when unlocking</string>
     <string name="home_behavior_always_show_clock">Always show time in status bar</string>
     <string name="home_behavior_double_tap">Double-tap the blank space to sleep</string>
+    <string name="home_behavior_enable4pad">Restore features hidden by default on tablet</string>
+    <string name="home_behavior_fake_premium">Disguised as a high-end model</string>
+    <string name="home_behavior_fake_premium_tips">Remove model restrictions on some features</string>
+    <string name="home_behavior_all_blur">Enable all blur effects</string>
+    <string name="home_behavior_all_blur_tips">Enable some blurs effects that are hidden by default</string>
+    <string name="home_behavior_all_blur_enhance">Enhance blur effects</string>
+    <string name="home_behavior_all_blur_enhance_tips">Add some extra blurring effects, but may cause frame dropping or flickering</string>
+    <string name="home_folder_adapt_icon_size">Adaptive icon size in large folders</string>
+    <string name="home_folder_adapt_icon_size_tips">When a large folder (3x3 or 2x2) is just filled with icons ( number of 9 or 4), the last icon is also a large icon</string>
+    <string name="home_folder_blur">Background blur effect inside the folder</string>
+    <string name="home_folder_blur_tips">Adding a blur effect to the background after opening a folder</string>
+    <string name="home_folder_layout_fix">Utilizes the entire folder view width</string>
+    <string name="home_folder_layout_size">Number of columns of icons in the folder</string>
     <string name="home_icon_unblock_google">Unblock Icons for Google Apps</string>
     <string name="home_icon_corner4large">Uniform corner radius for large icons</string>
     <string name="home_icon_corner4large_tips">Capsule shape icons will become rounded rectangle icons</string>
@@ -78,16 +138,33 @@
     <string name="home_recent_wallpaper_darken">Stop reducing the brightness of wallpaper</string>
     <string name="home_recent_wallpaper_darken_tips">Stop the automatic reduction of the wallpaper\'s brightness when entering the recent tasks view</string>
     <string name="home_recent_dismiss_anim">Modify card animation when dismissing recent tasks</string>
+    <string name="home_disable_fake_navbar">Disable fake navigation bar handle</string>
+    <string name="home_disable_fake_navbar_tips">Disable the fake navigation bar handles on the horizontal Recent Tasks screen and use the real one</string>
     <string name="home_widget_resizable">Make all Android widgets resizable</string>
     <string name="home_widget_anim">Add startup animation to all widgets</string>
+    <string name="incallui_hide_crbt">Hide CRBT(Coloring Ring Back Tone)</string>
+    <string name="joyose_no_cloud_control">Disable Cloud Control</string>
+    <string name="market_ad_block" translatable="false">@string/ad_block</string>
     <string name="mishare_no_auto_off">Disable MiShare auto-off</string>
     <string name="mi_smart_hub_all_app">All apps can be opened on another device</string>
+    <string name="mms_ad_block" translatable="false">@string/ad_block</string>
+    <string name="music_ad_block" translatable="false">@string/ad_block</string>
+    <string name="package_ad_block" translatable="false">@string/ad_block</string>
+    <string name="package_no_count_check">Disable checking for frequently installed applications</string>
+    <string name="package_safe_mode_tip">Remove Safe Mode tips</string>
+    <string name="package_skip_risk_check">Prohibition of monitoring risks</string>
     <string name="personal_assist_blur">Enable blur for background</string>
     <string name="power_custom_refresh">Customize high refresh rate apps</string>
     <string name="power_donot_kill_app">Prevent killing background apps</string>
     <string name="power_battery_optimization">Battery optimization</string>
     <string name="power_battery_optimization_tips">Open the battery optimization page that is hidden by default</string>
     <string name="power_battery_optimization_failed_toast">Failed to open, probably not supported by the system</string>
+    <string name="screen_recorder_save_to_movies">Save to a standardized directory</string>
+    <string name="screen_recorder_save_to_movies_tips">Save recording to "Movies/ScreenRecorder/" instead of "DCIM/ScreenRecorder/"</string>
+    <string name="screenshot_unlimited_crop">Unlimited image cropping</string>
+    <string name="screenshot_save_as_png">Saving images in PNG</string>
+    <string name="screenshot_save_to_picture">Save to a standardized directory</string>
+    <string name="screenshot_save_to_picture_tips">Save screenshots to "Pictures/Screenshots/" instead of "DCIM/Screenshots/"</string>
     <string name="security_skip_warning">Skip the wait time on warnings</string>
     <string name="security_skip_warning_tips">Skip wait times when using USB debugging, unknown sources, and accessibility</string>
     <string name="security_skip_open_app">Remove popups when opening apps</string>
@@ -97,6 +174,25 @@
     <string name="security_screen_battery">Show screen usage in power consumption ranking</string>
     <string name="security_screen_battery_tips">Battery usage of apps that are hidden by default will also be shown</string>
     <string name="settings_show_google">Show Google settings</string>
+    <string name="systemui_notif_disable_whitelist">Disable notification whitelist</string>
+    <string name="systemui_notif_freeform">Allow most notifications to open in a small window</string>
+    <string name="systemui_notif_freeform_tips">Pull down notifications to open small windows. Some notifications pushed via \"Mi Push\" may not be supported.</string>
+    <string name="systemui_notif_redirect_settings">Redirect notification settings</string>
+    <string name="systemui_notif_redirect_settings_tips">When you open the notification settings it navigates to the corresponding notification channel settings instead of the app notification settings</string>
+    <string name="systemui_botif_media_control_optimize">Optimize media controls</string>
+    <string name="systemui_botif_media_control_optimize_tips">Fix the problem that the content of the media control does not match the actual playback content in some versions</string>
+    <string name="systemui_botif_media_control_monet">Using the Monet Theme Engine in media controls</string>
+    <string name="systemui_botif_media_control_monet_tips">Make the media control use the Monet theme engine to pick up the color of the media cover</string>
+    <string name="systemui_control_bluetooth_restrict">Disable Bluetooth temporary shutdown</string>
+    <string name="systemui_control_bluetooth_restrict_tips">Bluetooth won\'t turn on automatically after being turned off in the Control Center</string>
+    <string name="systemui_tips_default_theme">Only works with the default theme</string>
+    <string name="systemui_lock_screen_double_tap" translatable="false">@string/home_behavior_double_tap</string>
+    <string name="systemui_lock_screen_hide_disturb">Hide Do Not Disturb mode resident notifications</string>
+    <string name="systemui_lock_screen_hide_unlock_tip">Hide the unlock prompt at the bottom of the lock screen interface</string>
+    <string name="systemui_lock_screen_time_font">Display time using system font</string>
+    <string name="systemui_lock_screen_time_font_tips" translatable="false">@string/systemui_tips_default_theme</string>
+    <string name="systemui_lock_screen_date_font">Display date using system font</string>
+    <string name="systemui_lock_screen_date_font_tips" translatable="false">@string/systemui_tips_default_theme</string>
     <string name="taplus_use_browser">Search using browser</string>
     <string name="taplus_search_engine">Search Engine</string>
     <string name="taplus_search_engine_default">Default</string>
