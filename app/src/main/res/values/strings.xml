@@ -183,6 +183,8 @@
     <string name="systemui_botif_media_control_optimize_tips">Fix the problem that the content of the media control does not match the actual playback content in some versions</string>
     <string name="systemui_botif_media_control_monet">Using the Monet Theme Engine in media controls</string>
     <string name="systemui_botif_media_control_monet_tips">Make the media control use the Monet theme engine to pick up the color of the media cover</string>
+    <string name="systemui_botif_media_control_monet_reverse">Automatic control of color reversal</string>
+    <string name="systemui_botif_media_control_monet_reverse_tips">Make the text darker when the album cover is brighter. Please decide whether to turn it on according to the effect.</string>
     <string name="systemui_control_bluetooth_restrict">Disable Bluetooth temporary shutdown</string>
     <string name="systemui_control_bluetooth_restrict_tips">Bluetooth won\'t turn on automatically after being turned off in the Control Center</string>
     <string name="systemui_tips_default_theme">Only works with the default theme</string>

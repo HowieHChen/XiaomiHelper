@@ -82,7 +82,7 @@ object AdBlock : YukiBaseHooker() {
             )) {
                 splashManagerCls?.method {
                     name = method
-                }?.hook {
+                }?.ignored()?.hook {
                     replaceToFalse()
                 }
             }

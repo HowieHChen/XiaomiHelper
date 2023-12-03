@@ -181,4 +181,6 @@
     <string name="systemui_lock_screen_date_font">日期使用系统字体</string>
     <string name="systemui_lock_screen_hide_disturb">隐藏勿扰模式常驻通知</string>
     <string name="systemui_lock_screen_hide_unlock_tip">隐藏锁屏界面底部的解锁提示</string>
+    <string name="systemui_botif_media_control_monet_reverse">自动控制颜色反转</string>
+    <string name="systemui_botif_media_control_monet_reverse_tips">当专辑封面较亮时，让文字变深色。请根据效果决定是否开启</string>
 </resources>

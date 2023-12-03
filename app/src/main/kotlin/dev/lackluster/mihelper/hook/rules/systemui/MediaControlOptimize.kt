@@ -16,6 +16,9 @@ object MediaControlOptimize : YukiBaseHooker() {
                 ?.method {
                     name = "bindArtworkAndColors"
                 }
+                ?.ignored()?.onNoSuchMethod {
+                    return@hasEnable
+                }
                 ?.hook {
                     before {
                         val icon = this.args(0).any()?.current()?.method {
@@ -31,7 +34,7 @@ object MediaControlOptimize : YukiBaseHooker() {
             "com.android.systemui.statusbar.notification.mediacontrol.MiuiMediaControlPanel".toClassOrNull()
                 ?.method {
                     name = "setInfoText"
-                }?.hook {
+                }?.ignored()?.hook {
                     before {
                         val mediaViewHolderAppName = this.args(1).any()?.current()?.method {
                             name = "getAppName"
@@ -41,6 +44,22 @@ object MediaControlOptimize : YukiBaseHooker() {
                         }?.call() as? String
                         mediaViewHolderAppName?.text = mediaDataApp
                         this.result = null
+                    }
+                }
+            "com.android.systemui.statusbar.notification.mediacontrol.MiuiMediaControlPanel".toClassOrNull()
+                ?.method {
+                    name = "setForegroundColors"
+                }?.hook {
+                    before {
+                        val result = this.args(0).any()
+                        val key = result?.current(true)?.field {
+                            name = "key"
+                        }?.any()
+                        if (key != null) {
+                            this.instance.current().field {
+                                name = "mCurrentKey"
+                            }.set(key as String)
+                        }
                     }
                 }
         }

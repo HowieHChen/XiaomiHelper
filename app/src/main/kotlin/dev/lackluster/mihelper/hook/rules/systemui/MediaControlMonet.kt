@@ -1,120 +1,135 @@
 package dev.lackluster.mihelper.hook.rules.systemui
 
 import android.app.WallpaperColors
-import android.content.Context
-import android.content.res.ColorStateList
 import android.graphics.Bitmap
-import android.widget.ImageView
-import android.widget.SeekBar
-import android.widget.TextView
+import android.graphics.Color
+import android.graphics.drawable.Drawable
+import androidx.core.graphics.drawable.toBitmap
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.constructor
 import com.highcapable.yukihookapi.hook.factory.current
 import com.highcapable.yukihookapi.hook.factory.method
-import com.highcapable.yukihookapi.hook.log.YLog
 import com.highcapable.yukihookapi.hook.type.defined.VagueType
 import dev.lackluster.mihelper.data.PrefKey
+import dev.lackluster.mihelper.utils.Prefs
 import dev.lackluster.mihelper.utils.Prefs.hasEnable
+import kotlin.math.min
+import kotlin.math.sqrt
+
 
 object MediaControlMonet : YukiBaseHooker() {
+    private val autoReverseColor by lazy {
+        Prefs.getBoolean(PrefKey.SYSTEMUI_NOTIF_MC_MONET_REVERSE, false)
+    }
+    private fun reverseColor(bitmap: Bitmap): Boolean {
+        val height = bitmap.height
+        val width = bitmap.width
+        var pixelColor: Int
+        var rChannel: Int
+        var gChannel: Int
+        var bChannel: Int
+        var count = 0
+        var bright: Long = 0
+        for (y in 0 until height step 10) {
+            for (x in 0 until width/2 step 5) {
+                count++
+                pixelColor = bitmap.getPixel(x, y)
+                rChannel = Color.red(pixelColor)
+                gChannel = Color.green(pixelColor)
+                bChannel = Color.blue(pixelColor)
+                bright += (rChannel * 0.299 + gChannel * 0.587 + bChannel * 0.114).toInt()
+            }
+        }
+        return bright/count > 192
+    }
     override fun onHook() {
         hasEnable(PrefKey.SYSTEMUI_NOTIF_MC_MONET) {
-            "com.android.systemui.statusbar.notification.mediacontrol.MiuiMediaControlPanel".toClassOrNull()
-                ?.method {
-                    name = "setForegroundColors"
+            "com.android.systemui.statusbar.notification.mediacontrol.ProcessArtworkTask".toClass()
+                .method {
+                    name = "processArtwork"
                 }
-                ?.hook {
+                .hook {
                     before {
-                        val result = this.args(0).any()
-                        val mediaViewHolder = this.instance.current().field {
-                            name = "mMediaViewHolder"
-                            superClass()
-                        }.any()
-                        if (result == null || mediaViewHolder == null) {
-                            this.result = null
+                        val artworkDrawable = this.args(0).any() as Drawable
+                        var intrinsicWidth = artworkDrawable.intrinsicWidth
+                        var intrinsicHeight = artworkDrawable.intrinsicHeight
+                        val i = intrinsicWidth * intrinsicHeight
+                        if (i > 62500) {
+                            val sqrt = sqrt(62500f / i)
+                            intrinsicWidth = (intrinsicWidth * sqrt).toInt()
+                            intrinsicHeight = (intrinsicHeight * sqrt).toInt()
                         }
-                        try {
-                            val context: Context = (this.instance.current().field {
-                                name = "mContext"
-                                superClass()
-                            }.any() ?: return@before) as Context
-                            val isNight = (context.resources.configuration.uiMode and 48) == 32
-                            val bitmap = (result?.current()?.field {
-                                name = "bitmap"
-                            }?.any() ?: return@before) as Bitmap
-                            val key = result.current().field {
-                                name = "key"
-                            }.any()
-                            if (key != null) {
-                                this.instance.current().field {
-                                    name = "mCurrentKey"
-                                }.set(key as String)
+                        val intrinsicMin = min(intrinsicWidth, intrinsicHeight)
+                        val wallpaperColors = WallpaperColors.fromDrawable(artworkDrawable)
+                        val style = "com.android.systemui.monet.Style".toClass().enumConstants[6]
+                        val colorScheme = "com.android.systemui.monet.ColorScheme".toClass().constructor {
+                            paramCount = 3
+                            param(WallpaperColors::class.java, VagueType, VagueType)
+                        }.get().call(wallpaperColors, true, style)
+                        val accent1List = colorScheme?.current()?.method {
+                            name = "getAccent1"
+                        }?.list<Int?>()
+                        val accent2List = colorScheme?.current()?.method {
+                            name = "getAccent2"
+                        }?.list<Int?>()
+//                        val neutral1List = colorScheme?.current()?.method {
+//                            name = "getNeutral1"
+//                        }?.list<Int?>()
+//                        val neutral2List = colorScheme?.current()?.method {
+//                            name = "getNeutral2"
+//                        }?.list<Int?>()
+                        val primaryTextColor: Int?
+                        val secondaryTextColor: Int?
+                        val backgroundColor: Int?
+                        val albumCoverColor: Int?
+                        if (autoReverseColor) {
+                            if (reverseColor(artworkDrawable.toBitmap(intrinsicMin, intrinsicMin))) {
+                                primaryTextColor = accent2List?.get(9)
+                                secondaryTextColor = accent2List?.get(8)
+                                backgroundColor = accent1List?.get(2)
+                                albumCoverColor = accent1List?.get(3)
                             }
-                            val wallpaperColors = WallpaperColors.fromBitmap(bitmap)
-                            val style = "com.android.systemui.monet.Style".toClass().enumConstants[6]
-                            val colorScheme = "com.android.systemui.monet.ColorScheme".toClass().constructor {
-                                paramCount = 3
-                                param(WallpaperColors::class.java, VagueType, VagueType)
-                            }.get().call(wallpaperColors, true, style)
-                            val accentList = colorScheme?.current()?.method {
-                                name = "getAccent1"
-                            }?.call() as? List<Integer>
-                            val primaryColor = accentList?.get(2)?.toInt()
-                            val seamlessColor =
-                                if (isNight) accentList?.get(2)?.toInt()
-                                else accentList?.get(3)?.toInt()
-                            if (primaryColor != null && seamlessColor != null) {
-                                val value: ColorStateList = ColorStateList.valueOf(primaryColor)
-                                val valueAlpha1: ColorStateList = value.withAlpha(192)
-                                val valueAlpha2: ColorStateList = valueAlpha1.withAlpha(128)
-                                (mediaViewHolder?.current()?.method {
-                                    name = "getTitleText"
-                                }?.call() as? TextView)?.setTextColor(primaryColor)
-                                (mediaViewHolder?.current()?.method {
-                                    name = "getAppName"
-                                }?.call() as? TextView)?.setTextColor(primaryColor)
-                                (mediaViewHolder?.current()?.method {
-                                    name = "getArtistText"
-                                }?.call() as? TextView)?.setTextColor(primaryColor)
-                                (mediaViewHolder?.current()?.method {
-                                    name = "getElapsedTimeView"
-                                }?.call() as? TextView)?.setTextColor(primaryColor)
-                                (mediaViewHolder?.current()?.method {
-                                    name = "getTotalTimeView"
-                                }?.call() as? TextView)?.setTextColor(primaryColor)
-                                (mediaViewHolder?.current()?.method {
-                                    name = "getAction0"
-                                }?.call() as? ImageView)?.imageTintList = value
-                                (mediaViewHolder?.current()?.method {
-                                    name = "getAction0"
-                                }?.call() as? ImageView)?.imageTintList = value
-                                (mediaViewHolder?.current()?.method {
-                                    name = "getAction1"
-                                }?.call() as? ImageView)?.imageTintList = value
-                                (mediaViewHolder?.current()?.method {
-                                    name = "getAction2"
-                                }?.call() as? ImageView)?.imageTintList = value
-                                (mediaViewHolder?.current()?.method {
-                                    name = "getAction3"
-                                }?.call() as? ImageView)?.imageTintList = value
-                                (mediaViewHolder?.current()?.method {
-                                    name = "getAction4"
-                                }?.call() as? ImageView)?.imageTintList = value
-                                val seekBar = (mediaViewHolder?.current()?.method {
-                                    name = "getSeekBar"
-                                }?.call() as? SeekBar)
-                                seekBar?.thumbTintList = value
-                                seekBar?.progressTintList = valueAlpha1
-                                seekBar?.progressBackgroundTintList = valueAlpha2
-                                (mediaViewHolder?.current()?.method {
-                                    name = "getSeamlessIcon"
-                                }?.call() as? ImageView)?.imageTintList = ColorStateList.valueOf(seamlessColor)
+                            else {
+                                primaryTextColor = accent1List?.get(2)
+                                secondaryTextColor = accent1List?.get(3)
+                                backgroundColor = accent2List?.get(9)
+                                albumCoverColor = accent2List?.get(8)
                             }
                         }
-                        catch (tout: Throwable) {
-                            YLog.info("Hook setForegroundColors failed!\\n${tout}")
+                        else {
+                            primaryTextColor = accent1List?.get(2)
+                            secondaryTextColor = accent1List?.get(3)
+                            backgroundColor = accent2List?.get(8)
+                            albumCoverColor = accent2List?.get(7)
                         }
-                        this.result = null
+                        val direction = this.instance.current().field {
+                            name = "direction"
+                        }.int()
+                        val colorizeArtwork = this.instance.current().field {
+                            name = "mColorizer"
+                        }.any()?.current()?.method {
+                            name = "colorize"
+                            paramCount = 3
+                        }?.call(artworkDrawable, backgroundColor, direction == 1) as Bitmap
+
+                        val result = "com.android.systemui.statusbar.notification.mediacontrol.ProcessArtworkTask\$Result".toClass()
+                            .constructor().get().call() ?: throw Throwable("Failed to create new instance")
+                        result.current().field {
+                            name = "bitmap"
+                        }.set(colorizeArtwork)
+                        result.current().field {
+                            name = "backgroundColor"
+                        }.set(backgroundColor)
+                        result.current().field {
+                            name = "foregroundColor"
+                        }.set(albumCoverColor)
+                        result.current().field {
+                            name = "primaryTextColor"
+                        }.set(primaryTextColor)
+                        result.current().field {
+                            name = "secondaryTextColor"
+                        }.set(secondaryTextColor)
+                        this.result = result
                     }
                 }
         }

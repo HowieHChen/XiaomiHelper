@@ -49,6 +49,13 @@ class SystemUIPage : BasePage(){
             ),
             SwitchV(PrefKey.SYSTEMUI_NOTIF_MC_MONET)
         )
+        TextSummaryWithSwitch(
+            TextSummaryV(
+                textId = R.string.systemui_botif_media_control_monet_reverse,
+                tipsId = R.string.systemui_botif_media_control_monet_reverse_tips
+            ),
+            SwitchV(PrefKey.SYSTEMUI_NOTIF_MC_MONET_REVERSE)
+        )
         Line()
         TitleText(textId = R.string.ui_title_systemui_control_center)
         TextSummaryWithSwitch(

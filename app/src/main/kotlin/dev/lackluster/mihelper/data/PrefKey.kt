@@ -71,6 +71,7 @@ object PrefKey {
     const val SYSTEMUI_NOTIF_CHANNEL_SETTINGS = "systemui_notif_channel_setting"
     const val SYSTEMUI_NOTIF_MC_OPTIMIZE = "systemui_mediacontrol_optimize"
     const val SYSTEMUI_NOTIF_MC_MONET = "systemui_mediacontrol_monet"
+    const val SYSTEMUI_NOTIF_MC_MONET_REVERSE = "systemui_mediacontrol_monet_reverse"
     const val TAPLUS_USE_BROWSER = "taplus_use_browser"
     const val TAPLUS_SEARCH_ENGINE = "taplus_search_engine"
     const val TAPLUS_SEARCH_URL = "taplus_search_url"
