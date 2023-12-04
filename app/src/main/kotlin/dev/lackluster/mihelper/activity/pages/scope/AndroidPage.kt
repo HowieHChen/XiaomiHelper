@@ -3,7 +3,6 @@ package dev.lackluster.mihelper.activity.pages.scope
 import android.view.View
 import android.widget.Toast.LENGTH_LONG
 import android.widget.Toast.makeText
-import cn.fkj233.ui.activity.MIUIActivity
 import cn.fkj233.ui.activity.MIUIActivity.Companion.safeSP
 import cn.fkj233.ui.activity.annotation.BMPage
 import cn.fkj233.ui.activity.data.BasePage
@@ -13,7 +12,7 @@ import cn.fkj233.ui.dialog.MIUIDialog
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.data.PrefKey
 
-@BMPage("scope_android")
+@BMPage("scope_android", hideMenu = false)
 class AndroidPage :BasePage() {
     override fun getTitle(): String {
         return activity.getString(R.string.ui_page_android)

@@ -12,7 +12,7 @@ import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.data.PrefKey
 import dev.lackluster.mihelper.utils.Device
 
-@BMPage("scope_miui_home")
+@BMPage("scope_miui_home", hideMenu = false)
 class MiuiHomePage : BasePage() {
     override fun getTitle(): String {
         return activity.getString(R.string.ui_page_miui_home)

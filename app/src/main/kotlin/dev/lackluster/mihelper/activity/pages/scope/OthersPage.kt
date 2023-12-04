@@ -13,7 +13,7 @@ import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.data.PrefKey
 import dev.lackluster.mihelper.utils.Device
 
-@BMPage("scope_others")
+@BMPage("scope_others", hideMenu = false)
 class OthersPage : BasePage() {
     override fun getTitle(): String {
         return activity.getString(R.string.ui_page_others)

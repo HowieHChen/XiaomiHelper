@@ -12,7 +12,7 @@ import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.data.PrefKey
 import dev.lackluster.mihelper.utils.Device
 
-@BMPage("scope_security_center")
+@BMPage("scope_security_center", hideMenu = false)
 class SecurityCenterPage : BasePage() {
     override fun getTitle(): String {
         return activity.getString(

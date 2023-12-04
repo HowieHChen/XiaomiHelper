@@ -37,10 +37,10 @@ object MediaControlMonet : YukiBaseHooker() {
                 rChannel = Color.red(pixelColor)
                 gChannel = Color.green(pixelColor)
                 bChannel = Color.blue(pixelColor)
-                bright += (rChannel * 0.299 + gChannel * 0.587 + bChannel * 0.114).toInt()
+                bright += (minOf(rChannel, gChannel, bChannel) + maxOf(rChannel, gChannel, bChannel))/2
             }
         }
-        return bright/count > 192
+        return bright/count > 127
     }
     override fun onHook() {
         hasEnable(PrefKey.SYSTEMUI_NOTIF_MC_MONET) {

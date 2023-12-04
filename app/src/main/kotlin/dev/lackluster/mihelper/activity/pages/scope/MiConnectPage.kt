@@ -7,7 +7,7 @@ import cn.fkj233.ui.activity.view.TextSummaryV
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.data.PrefKey
 
-@BMPage("scope_mi_connect")
+@BMPage("scope_mi_connect", hideMenu = false)
 class MiConnectPage : BasePage() {
     override fun getTitle(): String {
         return activity.getString(R.string.ui_page_mi_connect)

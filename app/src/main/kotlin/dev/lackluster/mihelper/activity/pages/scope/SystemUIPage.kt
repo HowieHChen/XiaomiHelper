@@ -1,5 +1,7 @@
 package dev.lackluster.mihelper.activity.pages.scope
 
+import android.view.View
+import cn.fkj233.ui.activity.MIUIActivity
 import cn.fkj233.ui.activity.annotation.BMPage
 import cn.fkj233.ui.activity.data.BasePage
 import cn.fkj233.ui.activity.view.SwitchV
@@ -7,7 +9,7 @@ import cn.fkj233.ui.activity.view.TextSummaryV
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.data.PrefKey
 
-@BMPage("scope_systemui")
+@BMPage("scope_systemui", hideMenu = false)
 class SystemUIPage : BasePage(){
     override fun getTitle(): String {
         return activity.getString(R.string.ui_page_systemui)
@@ -42,19 +44,29 @@ class SystemUIPage : BasePage(){
             ),
             SwitchV(PrefKey.SYSTEMUI_NOTIF_MC_OPTIMIZE)
         )
+        val monetBinding = GetDataBinding({
+            MIUIActivity.safeSP.getBoolean(
+                PrefKey.SYSTEMUI_NOTIF_MC_MONET, false
+            )
+        }) { view, flags, data ->
+            when (flags) {
+                1 -> view.visibility = if (data as Boolean) View.VISIBLE else View.GONE
+            }
+        }
         TextSummaryWithSwitch(
             TextSummaryV(
                 textId = R.string.systemui_botif_media_control_monet,
                 tipsId = R.string.systemui_botif_media_control_monet_tips
             ),
-            SwitchV(PrefKey.SYSTEMUI_NOTIF_MC_MONET)
+            SwitchV(PrefKey.SYSTEMUI_NOTIF_MC_MONET, dataBindingSend = monetBinding.bindingSend)
         )
         TextSummaryWithSwitch(
             TextSummaryV(
                 textId = R.string.systemui_botif_media_control_monet_reverse,
                 tipsId = R.string.systemui_botif_media_control_monet_reverse_tips
             ),
-            SwitchV(PrefKey.SYSTEMUI_NOTIF_MC_MONET_REVERSE)
+            SwitchV(PrefKey.SYSTEMUI_NOTIF_MC_MONET_REVERSE),
+            dataBindingRecv = monetBinding.binding.getRecv(1)
         )
         Line()
         TitleText(textId = R.string.ui_title_systemui_control_center)
