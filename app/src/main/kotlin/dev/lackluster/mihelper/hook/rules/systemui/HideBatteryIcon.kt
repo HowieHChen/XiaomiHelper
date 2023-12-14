@@ -5,7 +5,6 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.view.marginLeft
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.current
 import com.highcapable.yukihookapi.hook.factory.method
@@ -33,7 +32,7 @@ object HideBatteryIcon : YukiBaseHooker() {
     override fun onHook() {
         "com.android.systemui.statusbar.views.MiuiBatteryMeterView".toClass()
             .method {
-                name = "updateResources"
+                name = "updateAll"
             }
             .hook {
                 after {

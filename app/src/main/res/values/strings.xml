@@ -15,7 +15,6 @@
     <string name="ui_page_systemui">System UI</string>
     <string name="ui_page_disable_fixed_orientation" translatable="false">@string/android_disable_fixed_orientation_scope</string>
     <string name="ui_page_status_bar_hide_icon">Hide icon</string>
-    <string name="ui_page_status_bar_icon_position">Icon position</string>
 
     <string name="ui_title_general">General</string>
     <string name="ui_title_scope">Scope</string>
@@ -40,8 +39,6 @@
     <string name="ui_title_hide_icon_carrier">Carrier label</string>
     <string name="ui_title_hide_icon_wifi">WIFI</string>
     <string name="ui_title_hide_icon_other">Other</string>
-    <string name="ui_title_icon_position_swap">Swap icon position</string>
-    <string name="ui_title_icon_position_right">Move icon right</string>
 
     <string name="ui_scope_android" translatable="false">@string/ui_page_android</string>
     <string name="ui_scope_mi_connect" translatable="false">@string/ui_page_mi_connect</string>
@@ -182,8 +179,6 @@
     <string name="security_screen_battery_tips">Battery usage of apps that are hidden by default will also be shown</string>
     <string name="settings_show_google">Show Google settings</string>
     <string name="systemui_statusbar_hide_icon">Hide status bar icon</string>
-    <string name="systemui_statusbar_icon_position">Modify the status bar icon position</string>
-    <string name="systemui_statusbar_icon_position_tips">Some features may not work on devices with a full status bar layout (e.g. tablet)</string>
     <string name="systemui_notif_disable_whitelist">Disable notification whitelist</string>
     <string name="systemui_notif_freeform">Allow most notifications to open in a small window</string>
     <string name="systemui_notif_freeform_tips">Pull down notifications to open small windows. Some notifications pushed via \"Mi Push\" may not be supported.</string>
@@ -221,32 +216,47 @@
     <string name="status_bar_hide_battery">Hide battery icon</string>
     <string name="status_bar_hide_battery_mark">Hide battery percentage symbol</string>
     <string name="status_bar_hide_charge">Hide charging icon</string>
-    <string name="status_bar_hide_gps">Hide location icon</string>
-    <string name="status_bar_hide_bluetooth">Hide Bluetooth icon</string>
-    <string name="status_bar_hide_bluetooth_battery">Hide Bluetooth device battery capacity</string>
-    <string name="status_bar_hide_nfc">Hide NFC icon</string>
+    <string name="status_bar_hide_gps">Location icon</string>
+    <string name="status_bar_hide_bluetooth">Bluetooth icon</string>
+    <string name="status_bar_hide_bluetooth_battery">Bluetooth device battery capacity</string>
+    <string name="status_bar_hide_nfc">NFC icon</string>
     <string name="status_bar_hide_hd_small">Hide the small HD call icon</string>
     <string name="status_bar_hide_hd_large">Hide the large HD call icon</string>
     <string name="status_bar_hide_hd_new">Hide the new HD call icon</string>
     <string name="status_bar_hide_hd_no_service">Hide HD call no service icon</string>
-    <string name="status_bar_hide_no_sim">Hide no SIM card icon</string>
+    <string name="status_bar_hide_no_sim">No SIM card icon</string>
     <string name="status_bar_hide_sim_one">Hide the mobile network icon for SIM card 1</string>
     <string name="status_bar_hide_sim_two">Hide the mobile network icon for SIM card 2</string>
     <string name="status_bar_hide_mobile_activity">Hide mobile network activity icon</string>
     <string name="status_bar_hide_mobile_type">Hide mobile network type icon</string>
-    <string name="status_bar_hide_wifi">Hide WIFI icon</string>
+    <string name="status_bar_hide_wifi">WIFI icon</string>
     <string name="status_bar_hide_wifi_activity">Hide WIFI activity icon</string>
     <string name="status_bar_hide_wifi_type">Hide WIFI type icon</string>
-    <string name="status_bar_hide_wifi_slave">Hide secondary WIFI icon</string>
-    <string name="status_bar_hide_hotspot">Hide hotspot icon</string>
-    <string name="status_bar_hide_vpn">Hide VPN Icon</string>
-    <string name="status_bar_hide_flight_mode">Hide airplane mode icon</string>
-    <string name="status_bar_hide_alarm">Hide alarm icon</string>
-    <string name="status_bar_hide_headset">Hide headset icon</string>
-    <string name="status_bar_hide_volume">Hide volume icon</string>
-    <string name="status_bar_hide_zen">Hide Do Not Disturb Mode icon</string>
+    <string name="status_bar_hide_hotspot">Hotspot icon</string>
+    <string name="status_bar_hide_vpn">VPN Icon</string>
+    <string name="status_bar_hide_flight_mode">Airplane mode icon</string>
+    <string name="status_bar_hide_alarm">Alarm icon</string>
+    <string name="status_bar_hide_headset">Headset icon</string>
+    <string name="status_bar_hide_volume">Volume icon</string>
+    <string name="status_bar_hide_zen">Do Not Disturb Mode icon</string>
     <string name="status_bar_hide_carrier_one">Hide carrier label for SIM card 1</string>
     <string name="status_bar_hide_carrier_two">Hide carrier label for SIM card 2</string>
+    <string name="status_bar_hide_net_speed">Network Speed</string>
+    <string name="status_bar_hide_selection_default">Default</string>
+    <string name="status_bar_hide_selection_show_all">Visible</string>
+    <string name="status_bar_hide_selection_show_statusbar">Visible in Status Bar</string>
+    <string name="status_bar_hide_selection_show_qs">Visible in Control Center</string>
+    <string name="status_bar_hide_selection_hidden">Invisible</string>
+    <string name="status_bar_hide_car">Car</string>
+    <string name="status_bar_hide_pad">Tablet</string>
+    <string name="status_bar_hide_pc">Personal Computer</string>
+    <string name="status_bar_hide_phone">Phone</string>
+    <string name="status_bar_hide_sound_box">Smart Speaker</string>
+    <string name="status_bar_hide_sound_box_group">Combo Smart Speaker</string>
+    <string name="status_bar_hide_sound_box_screen">Smart Touch Screen Speaker</string>
+    <string name="status_bar_hide_stereo">Smart Speaker Combo Stereo</string>
+    <string name="status_bar_hide_tv">TV</string>
+    <string name="status_bar_hide_wireless_headset">Wireless Headset</string>
     <string name="status_bar_uni_battery_mark">Make the battery percentage symbol the same text size as the number</string>
     <string name="status_bar_change_battery_percent">Customize battery percentage text size</string>
     <string name="status_bar_battery_percent_size">Battery percentage text font size</string>
@@ -257,15 +267,11 @@
     <string name="status_bar_notification_max_lockscreen">Maximum number of lock screen notifications</string>
     <string name="status_bar_swap_battery_percent">Swap the battery icon and battery percentage</string>
     <string name="status_bar_swap_mobile_wifi">Swap mobile network icon and WIFI icon</string>
-    <string name="status_bar_right_alarm">Move alarm clock icon right</string>
-    <string name="status_bar_right_headset">Move headset icon right</string>
-    <string name="status_bar_right_net_speed">Move real-time network speed to the right</string>
-    <string name="status_bar_right_nfc">Move NFC icon right</string>
-    <string name="status_bar_right_volume">Move volume icon right</string>
-    <string name="status_bar_right_zen">Move the Do Not Disturb Mode icon right</string>
     <string name="status_bar_clock_custom">Customized time padding</string>
     <string name="status_bar_clock_padding_left">Left padding</string>
     <string name="status_bar_clock_padding_right">Right padding</string>
+    <string name="status_bar_clock_color_fix">Fix clock color anomaly in animation</string>
+    <string name="status_bar_clock_color_fix_tips">Fix color anomaly in clock dropdown animation when using theme</string>
     <string name="status_bar_battery_custom">Customize the padding of the battery icon</string>
     <string name="status_bar_battery_padding_left">Left padding</string>
     <string name="status_bar_battery_padding_right">Right padding</string>

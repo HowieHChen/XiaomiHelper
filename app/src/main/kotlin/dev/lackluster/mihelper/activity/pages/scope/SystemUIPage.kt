@@ -12,7 +12,6 @@ import cn.fkj233.ui.activity.view.TextV
 import cn.fkj233.ui.dialog.MIUIDialog
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.data.PrefKey
-import dev.lackluster.mihelper.utils.Device
 
 @BMPage("scope_systemui", hideMenu = false)
 class SystemUIPage : BasePage(){
@@ -26,11 +25,34 @@ class SystemUIPage : BasePage(){
                 textId = R.string.systemui_statusbar_hide_icon,
                 onClickListener = { showFragment("hide_icon") })
         )
-        TextSummaryWithArrow(
-            TextSummaryV(
-                textId = R.string.systemui_statusbar_icon_position,
-                tipsId = R.string.systemui_statusbar_icon_position_tips,
-                onClickListener = { showFragment("icon_position") })
+        val swapBatteryBinding = GetDataBinding({
+            !MIUIActivity.safeSP.getBoolean(PrefKey.STATUSBAR_HIDE_BATTERY, false)
+        }) { view, flags, data ->
+            when (flags) {
+                1 -> view.visibility = if (data as Boolean) View.VISIBLE else View.GONE
+            }
+        }
+        TextSummaryWithSwitch(
+            TextSummaryV(textId = R.string.status_bar_swap_battery_percent),
+            SwitchV(PrefKey.STATUSBAR_SWAP_BATTERY_PERCENT),
+            dataBindingRecv = swapBatteryBinding.getRecv(1)
+        )
+        val swapMobileWIFIBinding = GetDataBinding({
+            !(MIUIActivity.safeSP.getBoolean(PrefKey.STATUSBAR_HIDE_SIM_ONE, false)
+                    && MIUIActivity.safeSP.getBoolean(PrefKey.STATUSBAR_HIDE_SIM_TWO, false))
+        }) { view, flags, data ->
+            when (flags) {
+                1 -> view.visibility = if (data as Boolean) View.VISIBLE else View.GONE
+            }
+        }
+        TextSummaryWithSwitch(
+            TextSummaryV(textId = R.string.status_bar_swap_mobile_wifi),
+            SwitchV(PrefKey.STATUSBAR_SWAP_MOBILE_WIFI),
+            dataBindingRecv = swapMobileWIFIBinding.getRecv(1)
+        )
+        TextSummaryWithSwitch(
+            TextSummaryV(textId = R.string.status_bar_clock_color_fix, tipsId = R.string.status_bar_clock_color_fix_tips),
+            SwitchV(PrefKey.STATUSBAR_CLOCK_COLOR_FIX)
         )
         val clockPaddingBinding = GetDataBinding({
             MIUIActivity.safeSP.getBoolean(PrefKey.STATUSBAR_CLOCK_CUSTOM, false)

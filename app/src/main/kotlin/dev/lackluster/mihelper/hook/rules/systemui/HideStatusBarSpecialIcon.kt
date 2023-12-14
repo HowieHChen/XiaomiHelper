@@ -1,5 +1,6 @@
 package dev.lackluster.mihelper.hook.rules.systemui
 
+import android.telephony.SubscriptionManager
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -8,18 +9,44 @@ import com.highcapable.yukihookapi.hook.factory.current
 import com.highcapable.yukihookapi.hook.factory.method
 import com.highcapable.yukihookapi.hook.param.HookParam
 import dev.lackluster.mihelper.data.PrefKey
+import dev.lackluster.mihelper.utils.Prefs
 import dev.lackluster.mihelper.utils.Prefs.hasEnable
 
 object HideStatusBarSpecialIcon : YukiBaseHooker() {
     private val isBigMobileType by lazy {
         false
     }
+    private val hideSimOne by lazy {
+        Prefs.getBoolean(PrefKey.STATUSBAR_HIDE_SIM_ONE, false)
+    }
+    private val hideSimTwo by lazy {
+        Prefs.getBoolean(PrefKey.STATUSBAR_HIDE_SIM_TWO, false)
+    }
     override fun onHook() {
         "com.android.systemui.statusbar.StatusBarMobileView".toClass().apply {
             method {
-                name = "initViewState"
+                name = "applyMobileState"
                 paramCount = 1
             }.hook {
+                before {
+                    val mobileIconState = this.args(0).any() ?: return@before
+                    val subId = mobileIconState.current().field {
+                        name = "subId"
+                    }.int()
+                    val slotId = SubscriptionManager.getSlotIndex(subId)
+                    if (hideSimOne && slotId == 0) {
+                        mobileIconState.current().field {
+                            name = "visible"
+                            superClass()
+                        }.setFalse()
+                    }
+                    if (hideSimTwo && slotId == 1) {
+                        mobileIconState.current().field {
+                            name = "visible"
+                            superClass()
+                        }.setFalse()
+                    }
+                }
                 after {
                     hideHD(this)
                     hasEnable(PrefKey.STATUSBAR_HIDE_MOBILE_ACTIVITY) {
@@ -45,17 +72,17 @@ object HideStatusBarSpecialIcon : YukiBaseHooker() {
                 }
             }
         }
-        hasEnable(PrefKey.STATUSBAR_HIDE_HD_NEW) {
-            "com.android.systemui.statusbar.policy.HDController".toClassOrNull()
-                ?.method {
-                    name = "update"
-                }?.ignored()
-                ?.hook {
-                    before {
-                        this.result = null
-                    }
-                }
-        }
+//        hasEnable(PrefKey.STATUSBAR_HIDE_HD_NEW) {
+//            "com.android.systemui.statusbar.policy.HDController".toClassOrNull()
+//                ?.method {
+//                    name = "update"
+//                }?.ignored()
+//                ?.hook {
+//                    before {
+//                        this.result = null
+//                    }
+//                }
+//        }
     }
 
     private fun hideHD(param: HookParam) {

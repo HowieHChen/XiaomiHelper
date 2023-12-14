@@ -13,15 +13,7 @@ object HideWifiActivityAndType : YukiBaseHooker() {
     override fun onHook() {
         "com.android.systemui.statusbar.StatusBarWifiView".toClass().apply {
             method {
-                name = "initViewState"
-                paramCount = 1
-            }.hook {
-                after {
-                    hideWifi(this)
-                }
-            }
-            method {
-                name = "updateState"
+                name = "applyWifiState"
                 paramCount = 1
             }.hook {
                 after {

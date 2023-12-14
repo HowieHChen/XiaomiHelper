@@ -7,7 +7,6 @@ import dev.lackluster.mihelper.hook.rules.systemui.HideBatteryIcon
 import dev.lackluster.mihelper.hook.rules.systemui.HideCarrierLabel
 import dev.lackluster.mihelper.hook.rules.systemui.HideDisturbNotification
 import dev.lackluster.mihelper.hook.rules.systemui.HideStatusBarSpecialIcon
-import dev.lackluster.mihelper.hook.rules.systemui.HideSimIcon
 import dev.lackluster.mihelper.hook.rules.systemui.HideStatusBarIcon
 import dev.lackluster.mihelper.hook.rules.systemui.HideUnlockTip
 import dev.lackluster.mihelper.hook.rules.systemui.HideWifiActivityAndType
@@ -27,7 +26,6 @@ object SystemUI : YukiBaseHooker() {
         loadHooker(HideBatteryIcon)
         loadHooker(HideCarrierLabel)
         loadHooker(HideStatusBarSpecialIcon)
-        loadHooker(HideSimIcon)
         loadHooker(HideWifiActivityAndType)
         loadHooker(StatusBarClock)
         loadHooker(BluetoothRestrict)

@@ -16,7 +16,7 @@ object HideCarrierLabel : YukiBaseHooker() {
     }
     override fun onHook() {
         if (hideSimOne || hideSimTwo) {
-            "com.android.systemui.statusbar.policy.MiuiCarrierTextController".toClass()
+            "com.android.systemui.statusbar.policy.MiuiCarrierTextControllerImpl".toClass()
                 .method {
                     name = "setSubs"
                     param(ListClass)
