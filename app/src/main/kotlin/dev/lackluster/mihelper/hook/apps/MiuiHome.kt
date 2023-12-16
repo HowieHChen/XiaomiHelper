@@ -9,7 +9,7 @@ import dev.lackluster.mihelper.hook.rules.miuihome.DisableFakeNavBar
 import dev.lackluster.mihelper.hook.rules.miuihome.DoubleTapToSleep
 import dev.lackluster.mihelper.hook.rules.miuihome.FakePremium
 import dev.lackluster.mihelper.hook.rules.miuihome.FolderAdaptIconSize
-import dev.lackluster.mihelper.hook.rules.miuihome.FolderBlur
+import dev.lackluster.mihelper.hook.rules.miuihome.BlurAdvancedEffect
 import dev.lackluster.mihelper.hook.rules.miuihome.FolderColumns
 import dev.lackluster.mihelper.hook.rules.miuihome.IconCornerForLarge
 import dev.lackluster.mihelper.hook.rules.miuihome.PerfectIcon
@@ -36,7 +36,7 @@ object MiuiHome : YukiBaseHooker() {
         loadHooker(DoubleTapToSleep)
         loadHooker(FakePremium)
         loadHooker(FolderAdaptIconSize)
-        loadHooker(FolderBlur)
+        loadHooker(BlurAdvancedEffect)
         loadHooker(FolderColumns)
         loadHooker(IconUnblockGoogle)
         loadHooker(IconCornerForLarge)

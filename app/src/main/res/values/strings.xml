@@ -14,7 +14,7 @@
     <string name="ui_page_security_center_pad">@string/ui_page_security_center</string>
     <string name="ui_page_systemui">System UI</string>
     <string name="ui_page_disable_fixed_orientation" translatable="false">@string/android_disable_fixed_orientation_scope</string>
-    <string name="ui_page_status_bar_hide_icon">Hide icon</string>
+    <string name="ui_page_status_bar_icon_tuner">Icon Tuner</string>
 
     <string name="ui_title_general">General</string>
     <string name="ui_title_scope">Scope</string>
@@ -34,11 +34,13 @@
     <string name="ui_title_systemui_notification_center">Notification center</string>
     <string name="ui_title_systemui_control_center">Control center</string>
     <string name="ui_title_systemui_status_bar">Status bar</string>
-    <string name="ui_title_hide_icon_connectivity">Connectivity</string>
-    <string name="ui_title_hide_icon_mobile">Mobile network</string>
-    <string name="ui_title_hide_icon_carrier">Carrier label</string>
-    <string name="ui_title_hide_icon_wifi">WIFI</string>
-    <string name="ui_title_hide_icon_other">Other</string>
+    <string name="ui_title_icon_tuner_connectivity">Connectivity</string>
+    <string name="ui_title_icon_tuner_mobile">Mobile network</string>
+    <string name="ui_title_icon_tuner_carrier">Carrier label</string>
+    <string name="ui_title_icon_tuner_wifi">WIFI</string>
+    <string name="ui_title_icon_tuner_battery">Battery</string>
+    <string name="ui_title_icon_tuner_device">Device</string>
+    <string name="ui_title_icon_tuner_other">Other</string>
 
     <string name="ui_scope_android" translatable="false">@string/ui_page_android</string>
     <string name="ui_scope_mi_connect" translatable="false">@string/ui_page_mi_connect</string>
@@ -126,8 +128,8 @@
     <string name="home_behavior_all_blur_enhance_tips">Add some extra blurring effects, but may cause frame dropping or flickering</string>
     <string name="home_folder_adapt_icon_size">Adaptive icon size in large folders</string>
     <string name="home_folder_adapt_icon_size_tips">When a large folder (3x3 or 2x2) is just filled with icons ( number of 9 or 4), the last icon is also a large icon</string>
-    <string name="home_folder_blur">Background blur effect inside the folder</string>
-    <string name="home_folder_blur_tips">Adding a blur effect to the background after opening a folder</string>
+    <string name="home_behavior_blur_advance">Force advanced materials to be enabled</string>
+    <string name="home_behavior_blur_advance_tips">Add advanced material blurring effects to folders and shortcut menus</string>
     <string name="home_folder_layout_fix">Utilizes the entire folder view width</string>
     <string name="home_folder_layout_size">Number of columns of icons in the folder</string>
     <string name="home_icon_unblock_google">Unblock Icons for Google Apps</string>
@@ -178,28 +180,18 @@
     <string name="security_screen_battery">Show screen usage in power consumption ranking</string>
     <string name="security_screen_battery_tips">Battery usage of apps that are hidden by default will also be shown</string>
     <string name="settings_show_google">Show Google settings</string>
-    <string name="systemui_statusbar_hide_icon">Hide status bar icon</string>
+    <string name="systemui_statusbar_icon_tuner" translatable="false">@string/ui_page_status_bar_icon_tuner</string>
     <string name="systemui_notif_disable_whitelist">Disable notification whitelist</string>
     <string name="systemui_notif_freeform">Allow most notifications to open in a small window</string>
     <string name="systemui_notif_freeform_tips">Pull down notifications to open small windows. Some notifications pushed via \"Mi Push\" may not be supported.</string>
     <string name="systemui_notif_redirect_settings">Redirect notification settings</string>
     <string name="systemui_notif_redirect_settings_tips">When you open the notification settings it navigates to the corresponding notification channel settings instead of the app notification settings</string>
-    <string name="systemui_botif_media_control_optimize">Optimize media controls</string>
-    <string name="systemui_botif_media_control_optimize_tips">Fix the problem that the content of the media control does not match the actual playback content in some versions</string>
-    <string name="systemui_botif_media_control_monet">Using the Monet Theme Engine in media controls</string>
-    <string name="systemui_botif_media_control_monet_tips">Make the media control use the Monet theme engine to pick up the color of the media cover</string>
-    <string name="systemui_botif_media_control_monet_reverse">Automatic control of color reversal</string>
-    <string name="systemui_botif_media_control_monet_reverse_tips">Make the text darker when the album cover is brighter. Please decide whether to turn it on according to the effect.</string>
     <string name="systemui_control_bluetooth_restrict">Disable Bluetooth temporary shutdown</string>
     <string name="systemui_control_bluetooth_restrict_tips">Bluetooth won\'t turn on automatically after being turned off in the Control Center</string>
     <string name="systemui_tips_default_theme">Only works with the default theme</string>
     <string name="systemui_lock_screen_double_tap" translatable="false">@string/home_behavior_double_tap</string>
     <string name="systemui_lock_screen_hide_disturb">Hide Do Not Disturb mode resident notifications</string>
     <string name="systemui_lock_screen_hide_unlock_tip">Hide the unlock prompt at the bottom of the lock screen interface</string>
-    <string name="systemui_lock_screen_time_font">Display time using system font</string>
-    <string name="systemui_lock_screen_time_font_tips" translatable="false">@string/systemui_tips_default_theme</string>
-    <string name="systemui_lock_screen_date_font">Display date using system font</string>
-    <string name="systemui_lock_screen_date_font_tips" translatable="false">@string/systemui_tips_default_theme</string>
     <string name="taplus_use_browser">Search using browser</string>
     <string name="taplus_search_engine">Search Engine</string>
     <string name="taplus_search_engine_default">Default</string>
@@ -222,7 +214,7 @@
     <string name="status_bar_hide_nfc">NFC icon</string>
     <string name="status_bar_hide_hd_small">Hide the small HD call icon</string>
     <string name="status_bar_hide_hd_large">Hide the large HD call icon</string>
-    <string name="status_bar_hide_hd_new">Hide the new HD call icon</string>
+    <string name="status_bar_hide_hd_new">new HD call icon</string>
     <string name="status_bar_hide_hd_no_service">Hide HD call no service icon</string>
     <string name="status_bar_hide_no_sim">No SIM card icon</string>
     <string name="status_bar_hide_sim_one">Hide the mobile network icon for SIM card 1</string>

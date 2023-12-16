@@ -62,6 +62,13 @@ class MiuiHomePage : BasePage() {
         }
         TextSummaryWithSwitch(
             TextSummaryV(
+                textId = R.string.home_behavior_blur_advance,
+                tipsId = R.string.home_behavior_blur_advance_tips
+            ),
+            SwitchV(PrefKey.HOME_BLUR_ADVANCE)
+        )
+        TextSummaryWithSwitch(
+            TextSummaryV(
                 textId = R.string.home_behavior_all_blur,
                 tipsId = R.string.home_behavior_all_blur_tips
             ),
@@ -192,13 +199,6 @@ class MiuiHomePage : BasePage() {
             ),
             SwitchV(PrefKey.HOME_FOLDER_ADAPT_SIZE),
             dataBindingRecv = isPadBinding.binding.getRecv(1)
-        )
-        TextSummaryWithSwitch(
-            TextSummaryV(
-                textId = R.string.home_folder_blur,
-                tipsId = R.string.home_folder_blur_tips
-            ),
-            SwitchV(PrefKey.HOME_FOLDER_BLUR)
         )
         val folderColumnsDef = if (Device.isPad) 4 else 3
         TextWithSeekBar(

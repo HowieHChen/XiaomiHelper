@@ -51,7 +51,13 @@ object FakePremium :YukiBaseHooker() {
                     replaceTo(2)
                 }
             }
-
+            runCatching {
+                deviceLevelUtilsClass.method {
+                    name = "getDeviceLevelOfCpuAndGpu"
+                }.ignored().hook {
+                    replaceTo(2)
+                }
+            }
             runCatching {
                 deviceConfigClass.method {
                     name = "isSupportCompleteAnimation"

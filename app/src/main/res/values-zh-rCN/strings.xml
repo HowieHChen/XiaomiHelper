@@ -105,8 +105,8 @@
     <string name="home_behavior_all_blur_enhance">增强模糊效果</string>
     <string name="home_behavior_all_blur_enhance_tips">额外添加一些模糊效果，但可能会引起掉帧或闪烁</string>
     <string name="ui_title_home_folder">文件夹</string>
-    <string name="home_folder_blur">文件夹背景模糊效果</string>
-    <string name="home_folder_blur_tips">为打开文件夹后的背景添加模糊效果</string>
+    <string name="home_behavior_blur_advance">强制启用高级材质</string>
+    <string name="home_behavior_blur_advance_tips">为文件夹和快捷方式菜单添加高级材质模糊效果</string>
     <string name="home_folder_layout_fix">利用整个文件夹视图宽度</string>
     <string name="home_folder_layout_size">文件夹内图标列数</string>
     <string name="home_folder_adapt_icon_size">大文件夹内图标大小自适应</string>
@@ -159,7 +159,7 @@
     <string name="package_no_count_check">禁用频繁安装应用检查</string>
     <string name="package_safe_mode_tip">移除安全守护提示</string>
     <string name="package_skip_risk_check">禁用风险监测</string>
-    <string name="ui_page_status_bar_hide_icon">隐藏图标</string>
+    <string name="ui_page_status_bar_icon_tuner">图标调整</string>
     <string name="ui_title_systemui_lock_screen">锁屏</string>
     <string name="ui_title_systemui_notification_center">通知中心</string>
     <string name="ui_title_systemui_control_center">控制中心</string>
@@ -169,20 +169,11 @@
     <string name="systemui_notif_freeform_tips">下拉通知以打开小窗，部分通过“Mi Push”推送的通知可能不受支持</string>
     <string name="systemui_notif_redirect_settings">重定向通知设置</string>
     <string name="systemui_notif_redirect_settings_tips">打开通知设置时会导航至对应的通知频道设置，而不是应用通知设置</string>
-    <string name="systemui_botif_media_control_optimize">优化媒体控件</string>
-    <string name="systemui_botif_media_control_optimize_tips">修复部分版本中，媒体控件内容与实际播放内容不匹配的问题</string>
-    <string name="systemui_botif_media_control_monet">在媒体控件中使用莫奈主题引擎</string>
-    <string name="systemui_botif_media_control_monet_tips">让媒体控件使用莫奈主题引擎对媒体封面进行取色</string>
     <string name="systemui_control_bluetooth_restrict">禁止蓝牙暂时关闭</string>
     <string name="systemui_control_bluetooth_restrict_tips">控制中心关闭蓝牙后不会再自动开启</string>
     <string name="systemui_tips_default_theme">只在默认主题时生效</string>
-    <string name="systemui_lock_screen_time_font">时间使用系统字体</string>
-    <string name="systemui_lock_screen_date_font">日期使用系统字体</string>
     <string name="systemui_lock_screen_hide_disturb">隐藏勿扰模式常驻通知</string>
     <string name="systemui_lock_screen_hide_unlock_tip">隐藏锁屏界面底部的解锁提示</string>
-    <string name="systemui_botif_media_control_monet_reverse">自动控制颜色反转</string>
-    <string name="systemui_botif_media_control_monet_reverse_tips">当专辑封面较亮时，让文字变深色。请根据效果决定是否开启</string>
-    <string name="systemui_statusbar_hide_icon">隐藏图标</string>
     <string name="status_bar_hide_battery">隐藏电池图标</string>
     <string name="status_bar_hide_battery_mark">隐藏电量百分比符号</string>
     <string name="status_bar_hide_charge">隐藏充电图标</string>
@@ -192,7 +183,7 @@
     <string name="status_bar_hide_nfc">NFC 图标</string>
     <string name="status_bar_hide_hd_small">隐藏小高清通话图标</string>
     <string name="status_bar_hide_hd_large">隐藏大高清通话图标</string>
-    <string name="status_bar_hide_hd_new">隐藏新高清通话图标</string>
+    <string name="status_bar_hide_hd_new">新高清通话图标</string>
     <string name="status_bar_hide_hd_no_service">隐藏高清通话无服务图标</string>
     <string name="status_bar_hide_no_sim">无 SIM 卡图标</string>
     <string name="status_bar_hide_sim_one">隐藏 SIM 卡1的移动网络图标</string>
@@ -220,11 +211,11 @@
     <string name="status_bar_uni_battery_mark">电池百分比符号的文字大小与数字相同</string>
     <string name="status_bar_change_battery_percent">自定义电池百分比文字大小</string>
     <string name="status_bar_battery_percent_size">电池百分比文字大小</string>
-    <string name="ui_title_hide_icon_connectivity">连接</string>
-    <string name="ui_title_hide_icon_other">其它</string>
-    <string name="ui_title_hide_icon_carrier">运营商标签</string>
-    <string name="ui_title_hide_icon_mobile">移动网络</string>
-    <string name="ui_title_hide_icon_wifi">WIFI</string>
+    <string name="ui_title_icon_tuner_connectivity">连接</string>
+    <string name="ui_title_icon_tuner_other">其它</string>
+    <string name="ui_title_icon_tuner_carrier">运营商标签</string>
+    <string name="ui_title_icon_tuner_mobile">移动网络</string>
+    <string name="ui_title_icon_tuner_wifi">WIFI</string>
     <string name="status_bar_battery_percent_size_default">（当值为0时将不会更改电池百分比文字大小）</string>
     <string name="status_bar_notification_max">自定义通知的最大显示数量</string>
     <string name="status_bar_notification_max_icon">状态栏通知图标最大数量</string>
@@ -250,4 +241,6 @@
     <string name="status_bar_hide_wireless_headset">无线耳机</string>
     <string name="status_bar_clock_color_fix">修复动画中时钟颜色异常</string>
     <string name="status_bar_clock_color_fix_tips">修复在使用主题时，时钟下拉动画中的颜色异常</string>
+    <string name="ui_title_icon_tuner_battery">电池</string>
+    <string name="ui_title_icon_tuner_device">设备</string>
 </resources>
