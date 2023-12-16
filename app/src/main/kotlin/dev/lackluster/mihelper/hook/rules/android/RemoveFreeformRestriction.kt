@@ -19,7 +19,12 @@ object RemoveFreeformRestriction : YukiBaseHooker() {
             for (methodName in setOf(
                 "getFreeformBlackList",
                 "getFreeformBlackListFromCloud",
-                "getStartFromFreeformBlackListFromCloud"
+                "getAbnormalFreeformBlackList",
+                "getAbnormalFreeformBlackListFromCloud",
+                "getStartFromFreeformBlackList",
+                "getStartFromFreeformBlackListFromCloud",
+                "getForegroundPinAppBlackList",
+                "getForegroundPinAppBlackListFromCloud"
             )) {
                 miuiMultiWindowAdapter.method {
                     name = methodName
@@ -36,6 +41,14 @@ object RemoveFreeformRestriction : YukiBaseHooker() {
                     name = methodName
                 }.hookAll {
                     replaceToTrue()
+                }
+            }
+
+            miuiMultiWindowUtils.method {
+                name = "initFreeFormResolutionArgsOfDevice"
+            }.hookAll {
+                before {
+                    this.args(0).set("zizhan")
                 }
             }
 
@@ -87,6 +100,30 @@ object RemoveFreeformRestriction : YukiBaseHooker() {
                     }.setTrue()
                 }
             }
+
+            "com.android.server.wm.MiuiFreeFormStackDisplayStrategy".toClass()
+                .method {
+                    name = "getMaxMiuiFreeFormStackCount"
+                }
+                .hook {
+                    replaceTo(256)
+                }
+
+            "miui.app.MiuiFreeFormManager".toClass()
+                .method {
+                    name = "getMaxMiuiFreeFormStackCountForFlashBack"
+                }
+                .hook {
+                    replaceTo(256)
+                }
+
+            "com.android.server.wm.MiuiFreeFormGestureController".toClassOrNull()
+                ?.method {
+                    name = "needForegroundPin"
+                }
+                ?.hook {
+                    replaceToTrue()
+                }
         }
     }
 }
