@@ -2,7 +2,6 @@ package dev.lackluster.mihelper.hook.apps
 
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import dev.lackluster.mihelper.hook.rules.miuihome.AlwaysShowTime
-import dev.lackluster.mihelper.hook.rules.miuihome.AnimEnhance
 import dev.lackluster.mihelper.hook.rules.miuihome.AnimUnlock
 import dev.lackluster.mihelper.hook.rules.miuihome.BlurEnableAll
 import dev.lackluster.mihelper.hook.rules.miuihome.DisableFakeNavBar
@@ -29,7 +28,6 @@ object MiuiHome : YukiBaseHooker() {
     override fun onHook() {
         DexKit.initDexKit(this)
         loadHooker(AlwaysShowTime)
-        loadHooker(AnimEnhance)
         loadHooker(AnimUnlock)
         loadHooker(BlurEnableAll)
         loadHooker(DisableFakeNavBar)

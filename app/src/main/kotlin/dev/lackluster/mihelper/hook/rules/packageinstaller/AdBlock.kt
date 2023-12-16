@@ -15,6 +15,14 @@ object AdBlock : YukiBaseHooker() {
             }
         }.firstOrNull()
     }
+    private val adSettings by lazy {
+        DexKit.dexKitBridge.findMethod {
+            matcher {
+                addUsingString("android.provider.MiuiSettings\$Ad", StringMatchType.Equals)
+                returnType = "boolean"
+            }
+        }.firstOrNull()
+    }
     private val recommend by lazy {
         DexKit.dexKitBridge.findMethod {
             matcher {
@@ -34,6 +42,9 @@ object AdBlock : YukiBaseHooker() {
     override fun onHook() {
         hasEnable(PrefKey.PACKAGE_AD_BLOCK) {
             ads?.getMethodInstance(appClassLoader ?: return@hasEnable)?.hook {
+                replaceToFalse()
+            }
+            adSettings?.getMethodInstance(appClassLoader ?: return@hasEnable)?.hook {
                 replaceToFalse()
             }
             recommend?.getMethodInstance(appClassLoader ?: return@hasEnable)?.hook {

@@ -92,8 +92,6 @@
     <string name="personal_assist_blur">启用背景模糊</string>
     <string name="home_minus_fold_style">Fold风格的负一屏</string>
     <string name="home_minus_restore_setting">恢复负一屏设置</string>
-    <string name="home_anim_enhance">动画增强</string>
-    <string name="home_anim_enhance_tips">修复打断动画和图标跟随动画</string>
     <string name="home_anim_unlock">优化解锁动画</string>
     <string name="home_anim_unlock_tips">优化解锁时的图标飞入动画</string>
     <string name="ui_title_home_anim">动画</string>
@@ -243,4 +241,5 @@
     <string name="status_bar_clock_color_fix_tips">修复在使用主题时，时钟下拉动画中的颜色异常</string>
     <string name="ui_title_icon_tuner_battery">电池</string>
     <string name="ui_title_icon_tuner_device">设备</string>
+    <string name="package_remove_report">移除举报按钮</string>
 </resources>

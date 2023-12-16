@@ -113,8 +113,6 @@
     <string name="gallery_screen_path_optim">Optimize recognition of directories</string>
     <string name="gallery_screen_path_optim_tips">Recognize images in \"Pictures/Screenshots\" as screenshots and videos in \"Movies/ScreenRecorder\" as screen recordings, and display them in the corresponding albums.</string>
     <string name="guard_forbid_upload_app">Block uploading of installed apps list</string>
-    <string name="home_anim_enhance">Enhanced animation</string>
-    <string name="home_anim_enhance_tips">Fix animation break and icon follow animation</string>
     <string name="home_anim_unlock">Optimize unlocking animation</string>
     <string name="home_anim_unlock_tips">Optimize the animation of the icon when unlocking</string>
     <string name="home_behavior_always_show_clock">Always show time in status bar</string>
@@ -157,6 +155,7 @@
     <string name="music_ad_block" translatable="false">@string/ad_block</string>
     <string name="package_ad_block" translatable="false">@string/ad_block</string>
     <string name="package_no_count_check">Disable checking for frequently installed applications</string>
+    <string name="package_remove_report">Remove report button</string>
     <string name="package_safe_mode_tip">Remove Safe Mode tips</string>
     <string name="package_skip_risk_check">Prohibition of monitoring risks</string>
     <string name="personal_assist_blur">Enable blur for background</string>

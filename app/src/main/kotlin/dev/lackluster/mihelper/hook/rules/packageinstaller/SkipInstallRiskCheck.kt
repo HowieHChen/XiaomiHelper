@@ -11,6 +11,7 @@ object SkipInstallRiskCheck : YukiBaseHooker() {
         DexKit.dexKitBridge.findMethod {
             matcher {
                 addUsingString("secure_verify_enable", StringMatchType.Equals)
+                returnType = "boolean"
             }
         }.firstOrNull()
     }
@@ -18,13 +19,7 @@ object SkipInstallRiskCheck : YukiBaseHooker() {
         DexKit.dexKitBridge.findMethod {
             matcher {
                 addUsingString("installerOpenSafetyModel", StringMatchType.Equals)
-            }
-        }.firstOrNull()
-    }
-    private val settings by lazy {
-        DexKit.dexKitBridge.findMethod {
-            matcher {
-                addUsingString("android.provider.MiuiSettings\$Ad", StringMatchType.Equals)
+                returnType = "boolean"
             }
         }.firstOrNull()
     }
@@ -34,9 +29,6 @@ object SkipInstallRiskCheck : YukiBaseHooker() {
                 replaceToFalse()
             }
             openSafeMode?.getMethodInstance(appClassLoader ?: return@hasEnable)?.hook {
-                replaceToFalse()
-            }
-            settings?.getMethodInstance(appClassLoader ?: return@hasEnable)?.hook {
                 replaceToFalse()
             }
         }

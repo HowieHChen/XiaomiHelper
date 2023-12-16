@@ -86,13 +86,6 @@ class MiuiHomePage : BasePage() {
         TitleText(textId = R.string.ui_title_home_anim)
         TextSummaryWithSwitch(
             TextSummaryV(
-                textId = R.string.home_anim_enhance,
-                tipsId = R.string.home_anim_enhance_tips
-            ),
-            SwitchV(PrefKey.HOME_ANIM_ENHANCE)
-        )
-        TextSummaryWithSwitch(
-            TextSummaryV(
                 textId = R.string.home_anim_unlock,
                 tipsId = R.string.home_anim_unlock_tips
             ),

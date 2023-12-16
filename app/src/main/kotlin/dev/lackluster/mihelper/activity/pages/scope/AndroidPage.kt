@@ -106,6 +106,10 @@ class AndroidPage :BasePage() {
             SwitchV(PrefKey.PACKAGE_SAFE_MODE_TIP)
         )
         TextSummaryWithSwitch(
+            TextSummaryV(textId = R.string.package_remove_report),
+            SwitchV(PrefKey.PACKAGE_REMOVE_REPORT)
+        )
+        TextSummaryWithSwitch(
             TextSummaryV(textId = R.string.package_skip_risk_check),
             SwitchV(PrefKey.PACKAGE_SKIP_RISK_CHECK)
         )
