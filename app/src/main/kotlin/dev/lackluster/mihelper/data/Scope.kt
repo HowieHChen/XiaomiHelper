@@ -1,7 +1,7 @@
 package dev.lackluster.mihelper.data
 
 object Scope {
-    const val ANDROID = "android"
+    // const val ANDROID = "android"
     const val BROWSER = "com.android.browser"
     const val CASTING = "com.milink.service"
     const val DOWNLOAD = "com.android.providers.downloads"
@@ -19,6 +19,7 @@ object Scope {
     const val MUSIC = "com.miui.player"
     const val PACKAGE_INSTALLER = "com.miui.packageinstaller"
     const val PERSONAL_ASSIST = "com.miui.personalassistant"
+    const val PHONE = "com.android.phone"
     const val POWER_KEEPER = "com.miui.powerkeeper"
     const val SCREEN_RECORDER = "com.miui.screenrecorder"
     const val SCREENSHOT = "com.miui.screenshot"

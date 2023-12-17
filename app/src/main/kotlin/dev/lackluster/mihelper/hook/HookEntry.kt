@@ -1,12 +1,9 @@
 package dev.lackluster.mihelper.hook
 
-import android.content.res.XResources
 import com.highcapable.yukihookapi.annotation.xposed.InjectYukiHookWithXposed
 import com.highcapable.yukihookapi.hook.factory.configs
 import com.highcapable.yukihookapi.hook.factory.encase
 import com.highcapable.yukihookapi.hook.xposed.proxy.IYukiHookXposedInit
-import de.robv.android.xposed.XposedBridge
-import de.robv.android.xposed.XposedHelpers
 import dev.lackluster.mihelper.data.PrefKey
 import dev.lackluster.mihelper.data.Scope
 import dev.lackluster.mihelper.hook.apps.Android
@@ -27,6 +24,7 @@ import dev.lackluster.mihelper.hook.apps.Mms
 import dev.lackluster.mihelper.hook.apps.Music
 import dev.lackluster.mihelper.hook.apps.PackageInstaller
 import dev.lackluster.mihelper.hook.apps.PersonalAssist
+import dev.lackluster.mihelper.hook.apps.Phone
 import dev.lackluster.mihelper.hook.apps.PowerKeeper
 import dev.lackluster.mihelper.hook.apps.ScreenRecorder
 import dev.lackluster.mihelper.hook.apps.Screenshot
@@ -35,7 +33,6 @@ import dev.lackluster.mihelper.hook.apps.Settings
 import dev.lackluster.mihelper.hook.apps.SystemUI
 import dev.lackluster.mihelper.hook.apps.Taplus
 import dev.lackluster.mihelper.utils.Prefs
-import dev.lackluster.mihelper.utils.Prefs.hasEnable
 
 @InjectYukiHookWithXposed
 class HookEntry : IYukiHookXposedInit {
@@ -67,6 +64,7 @@ class HookEntry : IYukiHookXposedInit {
             loadApp(Scope.MUSIC, Music)
             loadApp(Scope.PACKAGE_INSTALLER, PackageInstaller)
             loadApp(Scope.PERSONAL_ASSIST, PersonalAssist)
+            loadApp(Scope.PHONE, Phone)
             loadApp(Scope.POWER_KEEPER, PowerKeeper)
             loadApp(Scope.SCREEN_RECORDER, ScreenRecorder)
             loadApp(Scope.SCREENSHOT, Screenshot)

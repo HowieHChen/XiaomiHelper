@@ -61,6 +61,7 @@
     <string name="ui_scope_mms">Message</string>
     <string name="ui_scope_music">Music</string>
     <string name="ui_scope_package_installer">Package Installer</string>
+    <string name="ui_scope_phone">Phone</string>
     <string name="ui_scope_screen_recorder">Screen Recorder</string>
     <string name="ui_scope_screenshot">Screenshot</string>
     <string name="ui_scope_settings">Settings</string>
@@ -109,6 +110,8 @@
     <string name="browser_debug_mode">Enable debug mode</string>
     <string name="browser_debug_mode_tips">Forces debug mode to be enabled. Only works with older versions of browsers.</string>
     <string name="browser_disable_update">Disable update check</string>
+    <string name="browser_switch_env">Switch internal address</string>
+    <string name="browser_switch_env_tips">Use the pre-release environment. It may be possible to remove some of the ads. It may not be possible to use settings such as customized search engine, so please finish setting before turning it on!</string>
     <string name="download_remove_xl">Block the creation of ".xlDownload" folder</string>
     <string name="gallery_screen_path_optim">Optimize recognition of directories</string>
     <string name="gallery_screen_path_optim_tips">Recognize images in \"Pictures/Screenshots\" as screenshots and videos in \"Movies/ScreenRecorder\" as screen recordings, and display them in the corresponding albums.</string>
@@ -159,6 +162,7 @@
     <string name="package_safe_mode_tip">Remove Safe Mode tips</string>
     <string name="package_skip_risk_check">Prohibition of monitoring risks</string>
     <string name="personal_assist_blur">Enable blur for background</string>
+    <string name="phone_show_net_mode_settings">Show mobile network type settings</string>
     <string name="power_custom_refresh">Customize high refresh rate apps</string>
     <string name="power_donot_kill_app">Prevent killing background apps</string>
     <string name="power_battery_optimization">Battery optimization</string>
@@ -191,6 +195,8 @@
     <string name="systemui_lock_screen_double_tap" translatable="false">@string/home_behavior_double_tap</string>
     <string name="systemui_lock_screen_hide_disturb">Hide Do Not Disturb mode resident notifications</string>
     <string name="systemui_lock_screen_hide_unlock_tip">Hide the unlock prompt at the bottom of the lock screen interface</string>
+    <string name="systemui_lock_screen_block_editor">Disable access to lock screen editor on lock screen</string>
+    <string name="systemui_lock_screen_block_editor_tips">You can edit the lock screen in "Settings - Wallpaper &amp; personalization".</string>
     <string name="taplus_use_browser">Search using browser</string>
     <string name="taplus_search_engine">Search Engine</string>
     <string name="taplus_search_engine_default">Default</string>

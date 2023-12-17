@@ -242,4 +242,10 @@
     <string name="ui_title_icon_tuner_battery">电池</string>
     <string name="ui_title_icon_tuner_device">设备</string>
     <string name="package_remove_report">移除举报按钮</string>
+    <string name="browser_switch_env">切换内部地址</string>
+    <string name="browser_switch_env_tips">使用预发环境。可能可以去除部分广告。可能会导致无法使用自定义搜索引擎等设置，请先设置完再开启！</string>
+    <string name="ui_scope_phone">电话服务</string>
+    <string name="phone_show_net_mode_settings">显示移动网络类型设置</string>
+    <string name="systemui_lock_screen_block_editor">禁止在锁屏跳转锁屏编辑</string>
+    <string name="systemui_lock_screen_block_editor_tips">可以在“设置-壁纸与个性化”中编辑锁屏</string>
 </resources>

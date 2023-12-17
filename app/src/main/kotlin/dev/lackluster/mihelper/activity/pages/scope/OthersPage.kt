@@ -25,6 +25,10 @@ class OthersPage : BasePage() {
             SwitchV(PrefKey.BROWSER_DEBUG)
         )
         TextSummaryWithSwitch(
+            TextSummaryV(textId = R.string.browser_switch_env, tipsId = R.string.browser_switch_env_tips),
+            SwitchV(PrefKey.BROWSER_SWITCH_ENV)
+        )
+        TextSummaryWithSwitch(
             TextSummaryV(textId = R.string.browser_disable_update),
             SwitchV(PrefKey.BROWSER_NO_UPDATE)
         )
@@ -76,6 +80,12 @@ class OthersPage : BasePage() {
         TextSummaryWithSwitch(
             TextSummaryV(textId = R.string.music_ad_block),
             SwitchV(PrefKey.MUSIC_AD_BLOCK)
+        )
+        Line()
+        TitleText(textId = R.string.ui_scope_phone)
+        TextSummaryWithSwitch(
+            TextSummaryV(textId = R.string.phone_show_net_mode_settings),
+            SwitchV(PrefKey.PHONE_NETWORK_MODE_SETTINGS)
         )
         Line()
         TitleText(textId = R.string.ui_scope_screen_recorder)

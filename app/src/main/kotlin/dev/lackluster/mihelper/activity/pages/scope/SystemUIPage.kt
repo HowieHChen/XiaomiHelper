@@ -178,5 +178,9 @@ class SystemUIPage : BasePage(){
             TextSummaryV(textId = R.string.systemui_lock_screen_double_tap),
             SwitchV(PrefKey.SYSTEMUI_DOUBLE_TAP_TO_SLEEP)
         )
+        TextSummaryWithSwitch(
+            TextSummaryV(textId = R.string.systemui_lock_screen_block_editor, tipsId = R.string.systemui_lock_screen_block_editor_tips),
+            SwitchV(PrefKey.SYSTEMUI_LOCKSCREEN_BLOCK_EDITOR)
+        )
     }
 }

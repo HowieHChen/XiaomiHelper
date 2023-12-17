@@ -1,6 +1,7 @@
 package dev.lackluster.mihelper.hook.apps
 
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
+import dev.lackluster.mihelper.hook.rules.systemui.BlockEditor
 import dev.lackluster.mihelper.hook.rules.systemui.BluetoothRestrict
 import dev.lackluster.mihelper.hook.rules.systemui.DoubleTapToSleep
 import dev.lackluster.mihelper.hook.rules.systemui.HideBatteryIcon
@@ -25,6 +26,7 @@ object SystemUI : YukiBaseHooker() {
         loadHooker(HideStatusBarSpecialIcon)
         loadHooker(HideWifiActivityAndType)
         loadHooker(StatusBarClock)
+        loadHooker(BlockEditor)
         loadHooker(BluetoothRestrict)
         loadHooker(DoubleTapToSleep)
         loadHooker(HideDisturbNotification)
