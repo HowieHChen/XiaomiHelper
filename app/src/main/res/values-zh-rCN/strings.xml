@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Xiaomi Helper</string>
-    <string name="xposed_desc">Make Xiaomi Great Again</string>
-    <string name="about_module">此模块使用 YukiHookAPI 构建。\n了解更多 https://github.com/HighCapable/YuKiHookAPI</string>
+    <string name="app_name">Hyper Helper</string>
+    <string name="xposed_desc">我 心 澎 湃 ！！！</string>
+    <string name="about_module">此模块使用 YukiHookAPI 构建。 了解更多 https://github.com/HighCapable/YuKiHookAPI</string>
     <string name="ui_page_menu">菜单</string>
     <string name="ui_page_others">其它</string>
     <string name="ui_page_systemui">系统界面</string>
@@ -13,7 +13,6 @@
     <string name="ui_title_home_personal_asist">智能助理（负一屏）</string>
     <string name="ui_title_about">关于</string>
     <string name="ui_scope_taplus">传送门</string>
-    <string name="ui_about_module">关于模块</string>
     <string name="ui_title_reboot">重启</string>
     <string name="ui_title_backup">备份</string>
     <string name="reboot_system">重启系统</string>
@@ -134,6 +133,7 @@
     <string name="screen_recorder_save_to_movies_tips">将录屏保存至“Pictures/ScreenRecorder/”而不是“DCIM/ScreenRecorder/”</string>
     <string name="ui_scope_incallui">通话界面</string>
     <string name="incallui_hide_crbt">隐藏视频彩铃</string>
+    <string name="ui_page_about">关于模块</string>
     <string name="ui_page_android">系统框架</string>
     <string name="ui_title_android_behavior">行为</string>
     <string name="ui_title_android_ui">界面</string>
@@ -248,4 +248,22 @@
     <string name="phone_show_net_mode_settings">显示移动网络类型设置</string>
     <string name="systemui_lock_screen_block_editor">禁止在锁屏跳转锁屏编辑</string>
     <string name="systemui_lock_screen_block_editor_tips">可以在“设置-壁纸与个性化”中编辑锁屏</string>
+    <string name="security_bubble_restriction">移除气泡通知应用限制</string>
+    <string name="security_disable_risk_app_notification">禁止发送“发现恶意应用”通知</string>
+    <string name="security_remove_report">移除应用信息页的“举报”按钮</string>
+    <string name="security_system_app_wifi">允许管理系统应用的 WIFI 权限</string>
+    <string name="ui_scope_xiaoai">小爱同学</string>
+    <string name="xiaoai_hide_watermark">隐藏内测版本的水印</string>
+    <string name="ui_scope_updater">系统更新</string>
+    <string name="updater_disable_validation">移除 OTA 验证</string>
+    <string name="updater_disable_validation_tips">仅支持 VAB 设备，非 VAB 设备请勿开启！</string>
+    <string name="about_yuki_tips">了解更多 https://github.com/HighCapable/YuKiHookAPI</string>
+    <string name="about_repository">Github 仓库</string>
+    <string name="about_jump_error_toast">发生了一些奇怪的错误</string>
+    <string name="about_easter_egg_toast">你点了一下，然后什么都没有发生</string>
+    <string name="ui_title_about_developer">开发者</string>
+    <string name="ui_title_about_open_source">源代码</string>
+    <string name="ui_title_about_reference">引用</string>
+    <string name="about_author_tips">没有简介或者签名</string>
+    <string name="about_yuki">此模块使用 YukiHookAPI 构建</string>
 </resources>

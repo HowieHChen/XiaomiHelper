@@ -55,7 +55,31 @@ class SecurityCenterPage : BasePage() {
             ),
             SwitchV(PrefKey.SECURITY_SCREEN_BATTERY)
         )
-
+        TextSummaryWithSwitch(
+            TextSummaryV(
+                textId = R.string.security_bubble_restriction,
+            ),
+            SwitchV(PrefKey.SECURITY_BUBBLE_RESTRICTION)
+        )
+        TextSummaryWithSwitch(
+            TextSummaryV(
+                textId = R.string.security_disable_risk_app_notification,
+            ),
+            SwitchV(PrefKey.SECURITY_NO_RISK_APP_NOTIFICATION)
+        )
+        TextSummaryWithSwitch(
+            TextSummaryV(
+                textId = R.string.security_remove_report,
+            ),
+            SwitchV(PrefKey.SECURITY_REMOVE_REPORT)
+        )
+        TextSummaryWithSwitch(
+            TextSummaryV(
+                textId = R.string.security_system_app_wifi,
+            ),
+            SwitchV(PrefKey.SECURITY_SYSTEM_APP_WIFI)
+        )
+        Line()
         TitleText(textId = R.string.ui_scope_power_keeper)
         TextSummaryWithSwitch(
             TextSummaryV(

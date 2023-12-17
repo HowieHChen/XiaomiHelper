@@ -75,7 +75,7 @@ class MainPage : BasePage() {
         TextSummaryWithArrow(
             TextSummaryV(
                 textId = R.string.ui_about_module,
-                onClickListener = { showFragment("scope_about") })
+                onClickListener = { showFragment("about") })
         )
     }
 

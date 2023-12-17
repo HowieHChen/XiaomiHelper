@@ -9,7 +9,11 @@
 [Simplicity-Team/WooBoxForMIUI](https://github.com/Simplicity-Team/WooBoxForMIUI)  
 [HowieHChen/WooBoxForMIUI](https://github.com/HowieHChen/WooBoxForMIUI)  
 [hosizoraru/WooBoxForMIUI](https://github.com/hosizoraru/WooBoxForMIUI)  
+[hosizoraru/StarVoyager](https://github.com/hosizoraru/StarVoyager)  
 
+##### GNU Affero General Public License v3
+
+[ReChronoRain/HyperCeiler](https://github.com/ReChronoRain/HyperCeiler)
 
 ##### GNU Lesser General Public License v2.1
 

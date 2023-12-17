@@ -1,9 +1,10 @@
 <resources>
-    <string name="app_name">Xiaomi Helper</string>
-    <string name="xposed_desc">Make Xiaomi Great Again</string>
-    <string name="about_module">This module is made by YukiHookAPI. \nLearn more https://github.com/HighCapable/YuKiHookAPI</string>
+    <string name="app_name">Hyper Helper</string>
+    <string name="xposed_desc">Make HyperOS Great Again</string>
+    <string name="about_module">This module is made by YukiHookAPI.  Learn more https://github.com/HighCapable/YuKiHookAPI</string>
     <string name="module_inactive_tips">Module is not activated. Please check the LSPosed version and module activation information and try again.</string>
 
+    <string name="ui_page_about">About module</string>
     <string name="ui_page_android">Android Framework</string>
     <string name="ui_page_main" translatable="false">@string/app_name</string>
     <string name="ui_page_menu">Menu</string>
@@ -16,6 +17,9 @@
     <string name="ui_page_disable_fixed_orientation" translatable="false">@string/android_disable_fixed_orientation_scope</string>
     <string name="ui_page_status_bar_icon_tuner">Icon Tuner</string>
 
+    <string name="ui_title_about_developer">Developer</string>
+    <string name="ui_title_about_open_source">Source code</string>
+    <string name="ui_title_about_reference">References</string>
     <string name="ui_title_general">General</string>
     <string name="ui_title_scope">Scope</string>
     <string name="ui_title_about">About</string>
@@ -67,7 +71,9 @@
     <string name="ui_scope_settings">Settings</string>
     <string name="ui_scope_systemui" translatable="false">@string/ui_page_systemui</string>
     <string name="ui_scope_taplus">Taplus</string>
-    <string name="ui_about_module">About module</string>
+    <string name="ui_scope_updater">Updater</string>
+    <string name="ui_scope_xiaoai">Mi AI</string>
+    <string name="ui_about_module" translatable="false">@string/ui_page_about</string>
 
     <string name="button_cancel">Cancel</string>
     <string name="button_ok">OK</string>
@@ -96,6 +102,18 @@
     <string name="reboot_done_toast">All target applications have been restarted.</string>
 
     <string name="ad_block">Remove ads and promotions</string>
+
+    <string name="about_yuki">This module is made by YukiHookAPI</string>
+    <string name="about_yuki_tips">Learn more https://github.com/HighCapable/YuKiHookAPI</string>
+    <string name="about_yuki_url" translatable="false">https://github.com/HighCapable/YuKiHookAPI</string>
+    <string name="about_repository">Github repository</string>
+    <string name="about_repository_url" translatable="false">https://github.com/HowieHChen/XiaomiHelper</string>
+    <string name="about_jump_error_toast">Some strange errors have occurred.</string>
+    <string name="about_easter_egg_toast">You clicked and nothing happened.</string>
+    <string name="about_easter_egg_url" translatable="false">https://www.bilibili.com/video/BV1Xa4y1D7G3</string>
+    <string name="about_author" translatable="false">HowieHChen</string>
+    <string name="about_author_tips">No profile or signature</string>
+    <string name="about_author_url" translatable="false">https://github.com/HowieHChen</string>
 
     <string name="android_dark_for_all">Disable whitelisting of forced dark</string>
     <string name="android_dark_for_all_tips">Make it possible to enable the forced dark mode feature for most applications, except for system applications, etc.</string>
@@ -182,6 +200,10 @@
     <string name="security_lock_score_tips">Lock the security score to 100 and disable the \"Optimize\" button</string>
     <string name="security_screen_battery">Show screen usage in power consumption ranking</string>
     <string name="security_screen_battery_tips">Battery usage of apps that are hidden by default will also be shown</string>
+    <string name="security_bubble_restriction">Remove bubble notification app restrictions</string>
+    <string name="security_disable_risk_app_notification">Disable \"Malicious app found\" notifications</string>
+    <string name="security_remove_report">Remove the \"Report\" button from the app info page</string>
+    <string name="security_system_app_wifi">Allow management WIFI permissions for system applications</string>
     <string name="settings_show_google">Show Google settings</string>
     <string name="systemui_statusbar_icon_tuner" translatable="false">@string/ui_page_status_bar_icon_tuner</string>
     <string name="systemui_notif_disable_whitelist">Disable notification whitelist</string>
@@ -272,4 +294,17 @@
     <string name="status_bar_battery_custom">Customize the padding of the battery icon</string>
     <string name="status_bar_battery_padding_left">Left padding</string>
     <string name="status_bar_battery_padding_right">Right padding</string>
+
+    <string name="updater_disable_validation">Remove OTA validation</string>
+    <string name="updater_disable_validation_tips">Only VAB devices are supported, do not turn it on for non-VAB devices!</string>
+    <string name="xiaoai_use_browser" translatable="false">@string/taplus_use_browser</string>
+    <string name="xiaoai_search_engine" translatable="false">@string/taplus_search_engine</string>
+    <string name="xiaoai_search_engine_default" translatable="false">@string/taplus_search_engine_default</string>
+    <string name="xiaoai_search_engine_baidu" translatable="false">@string/taplus_search_engine_baidu</string>
+    <string name="xiaoai_search_engine_sogou" translatable="false">@string/taplus_search_engine_sogou</string>
+    <string name="xiaoai_search_engine_bing" translatable="false">@string/taplus_search_engine_bing</string>
+    <string name="xiaoai_search_engine_google" translatable="false">@string/taplus_search_engine_google</string>
+    <string name="xiaoai_search_engine_custom" translatable="false">@string/taplus_search_engine_custom</string>
+    <string name="xiaoai_search_custom" translatable="false">@string/taplus_search_custom</string>
+    <string name="xiaoai_hide_watermark">Hide the watermark of the beta version</string>
 </resources>

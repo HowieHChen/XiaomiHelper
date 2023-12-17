@@ -198,7 +198,7 @@ class OthersPage : BasePage() {
                         dismiss()
                     }
                     setRButton(textId = R.string.button_ok) {
-                        if (getEditText() != "") {
+                        if (getEditText() != "" && getEditText().contains("%s")) {
                             MIUIActivity.safeSP.putAny(
                                 PrefKey.TAPLUS_SEARCH_URL, getEditText()
                             )
@@ -227,6 +227,103 @@ class OthersPage : BasePage() {
             TextSummaryV(textId = R.string.taplus_unlock_pad),
             SwitchV(PrefKey.TAPLUS_UNLOCK_PAD),
             dataBindingRecv = isPadBinding.binding.getRecv(1)
+        )
+        Line()
+        TitleText(textId = R.string.ui_scope_updater)
+        TextSummaryWithSwitch(
+            TextSummaryV(textId = R.string.updater_disable_validation, tipsId = R.string.updater_disable_validation_tips),
+            SwitchV(PrefKey.UPDATER_DISABLE_VALIDATION)
+        )
+        Line()
+        TitleText(textId = R.string.ui_scope_xiaoai)
+        val xiaoaiUseBrowserBinding = GetDataBinding({
+            MIUIActivity.safeSP.getBoolean(
+                PrefKey.XIAOAI_USE_BROWSER, false
+            )
+        }) { view, flags, data ->
+            when (flags) {
+                1 -> view.visibility = if (data as Boolean) View.VISIBLE else View.GONE
+            }
+        }
+        val customXiaoaiSearch: HashMap<Int, String> = hashMapOf<Int, String>().also {
+            it[0] = getString(R.string.taplus_search_engine_default)
+            it[1] = getString(R.string.taplus_search_engine_baidu)
+            it[2] = getString(R.string.taplus_search_engine_sogou)
+            it[3] = getString(R.string.taplus_search_engine_bing)
+            it[4] = getString(R.string.taplus_search_engine_google)
+            it[5] = getString(R.string.taplus_search_engine_custom)
+        }
+        val xiaoaiSearchBinding = GetDataBinding({
+            MIUIActivity.safeSP.getBoolean(PrefKey.XIAOAI_USE_BROWSER, false)
+                    && (MIUIActivity.safeSP.getInt(PrefKey.XIAOAI_SEARCH_ENGINE, 0) == 5)
+        }) { view, flags, data ->
+            when (flags) {
+                1 -> view.visibility = if (data as Boolean) View.VISIBLE else View.GONE
+            }
+        }
+        TextSummaryWithSwitch(
+            TextSummaryV(textId = R.string.xiaoai_use_browser),
+            SwitchV(PrefKey.XIAOAI_USE_BROWSER) {
+                xiaoaiUseBrowserBinding.binding.Send().send(it)
+                xiaoaiSearchBinding.binding.Send().send(it
+                        && (MIUIActivity.safeSP.getInt(PrefKey.XIAOAI_SEARCH_ENGINE, 0) == 5))
+            }
+        )
+        TextWithSpinner(
+            TextV(textId = R.string.xiaoai_search_engine), SpinnerV(
+                customXiaoaiSearch[MIUIActivity.safeSP.getInt(
+                    PrefKey.XIAOAI_SEARCH_ENGINE, 0
+                )].toString()
+            ) {
+                add(customXiaoaiSearch[0].toString()) {
+                    MIUIActivity.safeSP.putAny(PrefKey.XIAOAI_SEARCH_ENGINE, 0)
+                    xiaoaiSearchBinding.binding.Send().send(false)
+                }
+                add(customXiaoaiSearch[1].toString()) {
+                    MIUIActivity.safeSP.putAny(PrefKey.XIAOAI_SEARCH_ENGINE, 1)
+                    xiaoaiSearchBinding.binding.Send().send(false)
+                }
+                add(customXiaoaiSearch[2].toString()) {
+                    MIUIActivity.safeSP.putAny(PrefKey.XIAOAI_SEARCH_ENGINE, 2)
+                    xiaoaiSearchBinding.binding.Send().send(false)
+                }
+                add(customXiaoaiSearch[3].toString()) {
+                    MIUIActivity.safeSP.putAny(PrefKey.XIAOAI_SEARCH_ENGINE, 3)
+                    xiaoaiSearchBinding.binding.Send().send(false)
+                }
+                add(customXiaoaiSearch[4].toString()) {
+                    MIUIActivity.safeSP.putAny(PrefKey.XIAOAI_SEARCH_ENGINE, 4)
+                    xiaoaiSearchBinding.binding.Send().send(false)
+                }
+                add(customXiaoaiSearch[5].toString()) {
+                    MIUIActivity.safeSP.putAny(PrefKey.XIAOAI_SEARCH_ENGINE, 5)
+                    xiaoaiSearchBinding.binding.Send().send(true)
+                }
+            }, dataBindingRecv = xiaoaiUseBrowserBinding.binding.getRecv(1))
+        TextSummaryWithArrow(
+            TextSummaryV(textId = R.string.xiaoai_search_custom, onClickListener = {
+                MIUIDialog(activity) {
+                    setTitle(R.string.xiaoai_search_custom)
+                    setEditText(
+                        "", "https://example.com/s?q=%s"
+                    )
+                    setLButton(textId = R.string.button_cancel) {
+                        dismiss()
+                    }
+                    setRButton(textId = R.string.button_ok) {
+                        if (getEditText() != "" && getEditText().contains("%s")) {
+                            MIUIActivity.safeSP.putAny(
+                                PrefKey.XIAOAI_SEARCH_URL, getEditText()
+                            )
+                        }
+                        dismiss()
+                    }
+                }.show()
+            }), dataBindingRecv = xiaoaiSearchBinding.binding.getRecv(1)
+        )
+        TextSummaryWithSwitch(
+            TextSummaryV(textId = R.string.xiaoai_hide_watermark),
+            SwitchV(PrefKey.XIAOAI_HIDE_WATERMARK)
         )
     }
 }

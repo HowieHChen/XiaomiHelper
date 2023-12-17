@@ -61,6 +61,10 @@ object PrefKey {
     const val SECURITY_SKIP_OPEN_APP = "security_skip_open_app"
     const val SECURITY_LOCK_SCORE = "security_lock_score"
     const val SECURITY_SCREEN_BATTERY = "security_screen_battery"
+    const val SECURITY_BUBBLE_RESTRICTION = "security_bubble_restriction"
+    const val SECURITY_NO_RISK_APP_NOTIFICATION = "security_no_risk_notification"
+    const val SECURITY_REMOVE_REPORT = "security_remove_report"
+    const val SECURITY_SYSTEM_APP_WIFI = "security_system_app_wifi"
     const val SETTINGS_SHOW_GOOGLE = "settings_show_google"
     const val SYSTEMUI_CONTROL_BLUETOOTH = "systemui_bluetooth_restrict"
     const val SYSTEMUI_DOUBLE_TAP_TO_SLEEP = "systemui_double_tap_sleep"
@@ -133,4 +137,10 @@ object PrefKey {
     const val STATUSBAR_BATTERY_CUSTOM = "statusbar_battery_custom"
     const val STATUSBAR_BATTERY_PADDING_LEFT = "statusbar_battery_padding_left"
     const val STATUSBAR_BATTERY_PADDING_RIGHT = "statusbar_battery_padding_right"
+
+    const val UPDATER_DISABLE_VALIDATION = "updater_no_validation"
+    const val XIAOAI_USE_BROWSER = "xiaoai_use_browser"
+    const val XIAOAI_SEARCH_ENGINE = "xiaoai_search_engine"
+    const val XIAOAI_SEARCH_URL = "xiaoai_search_url"
+    const val XIAOAI_HIDE_WATERMARK = "xiaoai_hide_watermark"
 }

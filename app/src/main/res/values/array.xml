@@ -9,6 +9,7 @@
         <item>com.android.providers.downloads</item>
         <item>com.android.settings</item>
         <item>com.android.systemui</item>
+        <item>com.android.updater</item>
         <item>com.milink.service</item>
         <item>com.miui.contentextension</item>
         <item>com.miui.gallery</item>
@@ -23,6 +24,7 @@
         <item>com.miui.screenrecorder</item>
         <item>com.miui.screenshot</item>
         <item>com.miui.securitycenter</item>
+        <item>com.miui.voiceassist</item>
         <item>com.xiaomi.joyose</item>
         <item>com.xiaomi.market</item>
         <item>com.xiaomi.mirror</item>

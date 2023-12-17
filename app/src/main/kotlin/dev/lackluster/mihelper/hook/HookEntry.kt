@@ -32,6 +32,8 @@ import dev.lackluster.mihelper.hook.apps.SecurityCenter
 import dev.lackluster.mihelper.hook.apps.Settings
 import dev.lackluster.mihelper.hook.apps.SystemUI
 import dev.lackluster.mihelper.hook.apps.Taplus
+import dev.lackluster.mihelper.hook.apps.Updater
+import dev.lackluster.mihelper.hook.apps.XiaoAi
 import dev.lackluster.mihelper.utils.Prefs
 
 @InjectYukiHookWithXposed
@@ -72,6 +74,8 @@ class HookEntry : IYukiHookXposedInit {
             loadApp(Scope.SETTINGS, Settings)
             loadApp(Scope.SYSTEM_UI, SystemUI)
             loadApp(Scope.TAPLUS, Taplus)
+            loadApp(Scope.UPDATER, Updater)
+            loadApp(Scope.XIAOAI, XiaoAi)
         }
     }
 }

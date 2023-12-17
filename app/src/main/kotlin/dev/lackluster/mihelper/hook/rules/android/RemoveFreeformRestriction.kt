@@ -74,7 +74,7 @@ object RemoveFreeformRestriction : YukiBaseHooker() {
             }.hookAll {
                 after {
                     val this0 = this.instance.current().field {
-                        name = "this\\\$0"
+                        name = "this\$0"
                     }.any() ?: return@after
                     val mAtmService = this0.current().field {
                         name = "mAtmService"
@@ -90,7 +90,7 @@ object RemoveFreeformRestriction : YukiBaseHooker() {
             }.hookAll {
                 after {
                     val this0 = this.instance.current().field {
-                        name = "this\\\$0"
+                        name = "this\$0"
                     }.any() ?: return@after
                     val mAtmService = this0.current().field {
                         name = "mAtmService"

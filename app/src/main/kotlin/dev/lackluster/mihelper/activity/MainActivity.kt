@@ -6,6 +6,7 @@ import android.os.Bundle
 import cn.fkj233.ui.activity.MIUIActivity
 import cn.fkj233.ui.dialog.MIUIDialog
 import dev.lackluster.mihelper.R
+import dev.lackluster.mihelper.activity.pages.main.AboutPage
 import dev.lackluster.mihelper.activity.pages.main.MainPage
 import dev.lackluster.mihelper.activity.pages.main.MenuPage
 import dev.lackluster.mihelper.activity.pages.scope.AndroidPage
@@ -46,6 +47,7 @@ class MainActivity : MIUIActivity() {
     init {
         registerPage(MainPage::class.java)
         registerPage(MenuPage::class.java)
+        registerPage(AboutPage::class.java)
         registerPage(AndroidPage::class.java)
         registerPage(OthersPage::class.java)
         registerPage(MiConnectPage::class.java)

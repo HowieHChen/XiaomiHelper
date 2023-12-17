@@ -27,4 +27,6 @@ object Scope {
     const val SETTINGS = "com.android.settings"
     const val SYSTEM_UI = "com.android.systemui"
     const val TAPLUS = "com.miui.contentextension"
+    const val UPDATER = "com.android.updater"
+    const val XIAOAI = "com.miui.voiceassist"
 }
