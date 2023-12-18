@@ -51,5 +51,5 @@ Most of the functionality is based on other modules, with a small amount of orig
 
 ##### Apache-2.0  
 
-[HighCapable/YukiHookAPI](https://github.com/HighCapable/YukiHookAPI)
+[HighCapable/YukiHookAPI](https://github.com/HighCapable/YukiHookAPI)  
 [hellokaton/TinyPinyin](https://github.com/hellokaton/TinyPinyin)
