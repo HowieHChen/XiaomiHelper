@@ -3,7 +3,6 @@ package dev.lackluster.mihelper.hook.rules.xiaoai
 import android.content.Intent
 import android.net.Uri
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.log.YLog
 import dev.lackluster.mihelper.data.PrefKey
 import dev.lackluster.mihelper.utils.DexKit
 import dev.lackluster.mihelper.utils.Prefs
@@ -41,20 +40,22 @@ object CustomSearch : YukiBaseHooker() {
                         if (queryString.isNullOrBlank()) {
                             return@before
                         }
-                        YLog.info(intent.flags.toString())
-                        val newIntent = Intent()
-                        newIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                        val searchUrl =
+                        var searchUrl =
                             when (searchEngine) {
                                 in 1..4 -> searchUrlValues[searchEngine].replaceFirst("%s",queryString)
                                 5 -> searchEngineUrl?.replaceFirst("%s",queryString)
                                 else -> ""
                             }
+                        val newIntent = Intent()
+                        newIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                         if (searchEngine == 0 || searchUrl.isNullOrBlank()) {
                             newIntent.action = Intent.ACTION_WEB_SEARCH
                             newIntent.putExtra("query", queryString)
                         }
                         else {
+                            if (!searchUrl.startsWith("https://") && !searchUrl.startsWith("http://")) {
+                                searchUrl = "https://$searchUrl"
+                            }
                             newIntent.action = Intent.ACTION_VIEW
                             newIntent.data = Uri.parse(searchUrl)
                         }

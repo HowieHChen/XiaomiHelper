@@ -269,4 +269,5 @@
     <string name="about_yuki">此模块使用 YukiHookAPI 构建</string>
     <string name="package_hide_safe_mode_popup">移除安全守护引导弹窗</string>
     <string name="package_hide_safe_mode_popup_tips">移除反复出现的诱导你开启安全守护的弹窗</string>
+    <string name="taplus_search_custom_toast">URL 必须包含\"%s\"</string>
 </resources>

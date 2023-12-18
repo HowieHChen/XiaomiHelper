@@ -1,6 +1,8 @@
 package dev.lackluster.mihelper.activity.pages.scope
 
 import android.view.View
+import android.widget.Toast.LENGTH_SHORT
+import android.widget.Toast.makeText
 import cn.fkj233.ui.activity.MIUIActivity
 import cn.fkj233.ui.activity.annotation.BMPage
 import cn.fkj233.ui.activity.data.BasePage
@@ -192,18 +194,28 @@ class OthersPage : BasePage() {
                 MIUIDialog(activity) {
                     setTitle(R.string.taplus_search_custom)
                     setEditText(
-                        "", "https://example.com/s?q=%s"
+                        MIUIActivity.safeSP.getString(PrefKey.TAPLUS_SEARCH_URL, ""),
+                        "https://example.com/s?q=%s"
                     )
                     setLButton(textId = R.string.button_cancel) {
                         dismiss()
                     }
                     setRButton(textId = R.string.button_ok) {
-                        if (getEditText() != "" && getEditText().contains("%s")) {
+                        if (getEditText().isBlank()) {
+                            MIUIActivity.safeSP.putAny(
+                                PrefKey.TAPLUS_SEARCH_URL, ""
+                            )
+                            dismiss()
+                        }
+                        else if (getEditText().contains("%s")) {
                             MIUIActivity.safeSP.putAny(
                                 PrefKey.TAPLUS_SEARCH_URL, getEditText()
                             )
+                            dismiss()
                         }
-                        dismiss()
+                        else {
+                            makeText(activity, getString(R.string.taplus_search_custom_toast), LENGTH_SHORT).show()
+                        }
                     }
                 }.show()
             }), dataBindingRecv = taplusSearchBinding.binding.getRecv(1)
@@ -305,18 +317,28 @@ class OthersPage : BasePage() {
                 MIUIDialog(activity) {
                     setTitle(R.string.xiaoai_search_custom)
                     setEditText(
-                        "", "https://example.com/s?q=%s"
+                        MIUIActivity.safeSP.getString(PrefKey.XIAOAI_SEARCH_URL, ""),
+                        "https://example.com/s?q=%s"
                     )
                     setLButton(textId = R.string.button_cancel) {
                         dismiss()
                     }
                     setRButton(textId = R.string.button_ok) {
-                        if (getEditText() != "" && getEditText().contains("%s")) {
+                        if (getEditText().isBlank()) {
+                            MIUIActivity.safeSP.putAny(
+                                PrefKey.XIAOAI_SEARCH_URL, ""
+                            )
+                            dismiss()
+                        }
+                        else if (getEditText().contains("%s")) {
                             MIUIActivity.safeSP.putAny(
                                 PrefKey.XIAOAI_SEARCH_URL, getEditText()
                             )
+                            dismiss()
                         }
-                        dismiss()
+                        else {
+                            makeText(activity, getString(R.string.xiaoai_search_custom_toast), LENGTH_SHORT).show()
+                        }
                     }
                 }.show()
             }), dataBindingRecv = xiaoaiSearchBinding.binding.getRecv(1)

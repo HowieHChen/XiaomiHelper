@@ -29,7 +29,7 @@ object CustomSearch : YukiBaseHooker() {
                     before {
                         val context = this.args[0] as Context
                         val queryString = this.args[1] as String
-                        val searchUrl =
+                        var searchUrl =
                             when (searchEngine) {
                                 in 1..4 -> searchUrlValues[searchEngine].replaceFirst("%s",queryString)
                                 5 -> searchEngineUrl?.replaceFirst("%s",queryString)
@@ -42,6 +42,9 @@ object CustomSearch : YukiBaseHooker() {
                             intent.putExtra("query", queryString)
                         }
                         else {
+                            if (!searchUrl.startsWith("https://") && !searchUrl.startsWith("http://")) {
+                                searchUrl = "https://$searchUrl"
+                            }
                             intent.action = Intent.ACTION_VIEW
                             intent.data = Uri.parse(searchUrl)
                         }

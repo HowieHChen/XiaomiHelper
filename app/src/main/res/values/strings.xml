@@ -231,6 +231,7 @@
     <string name="taplus_search_engine_google">Google</string>
     <string name="taplus_search_engine_custom">Custom</string>
     <string name="taplus_search_custom">Custom search engine</string>
+    <string name="taplus_search_custom_toast">The URL must contain \"%s\"</string>
     <string name="taplus_landscape">Enable in landscape</string>
     <string name="taplus_hide_shop">Hide shopping button</string>
     <string name="taplus_unlock_pad">Force enable on tablet</string>
@@ -309,5 +310,6 @@
     <string name="xiaoai_search_engine_google" translatable="false">@string/taplus_search_engine_google</string>
     <string name="xiaoai_search_engine_custom" translatable="false">@string/taplus_search_engine_custom</string>
     <string name="xiaoai_search_custom" translatable="false">@string/taplus_search_custom</string>
+    <string name="xiaoai_search_custom_toast" translatable="false">@string/taplus_search_custom_toast</string>
     <string name="xiaoai_hide_watermark">Hide the watermark of the beta version</string>
 </resources>
