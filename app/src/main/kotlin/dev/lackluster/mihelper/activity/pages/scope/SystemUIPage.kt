@@ -1,7 +1,6 @@
 package dev.lackluster.mihelper.activity.pages.scope
 
 import android.view.View
-import android.widget.Toast
 import cn.fkj233.ui.activity.MIUIActivity
 import cn.fkj233.ui.activity.annotation.BMPage
 import cn.fkj233.ui.activity.data.BasePage
@@ -9,7 +8,6 @@ import cn.fkj233.ui.activity.view.SeekBarWithTextV
 import cn.fkj233.ui.activity.view.SwitchV
 import cn.fkj233.ui.activity.view.TextSummaryV
 import cn.fkj233.ui.activity.view.TextV
-import cn.fkj233.ui.dialog.MIUIDialog
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.data.PrefKey
 
@@ -29,86 +27,6 @@ class SystemUIPage : BasePage(){
             TextSummaryV(textId = R.string.status_bar_clock_color_fix, tipsId = R.string.status_bar_clock_color_fix_tips),
             SwitchV(PrefKey.STATUSBAR_CLOCK_COLOR_FIX)
         )
-        val clockPaddingBinding = GetDataBinding({
-            MIUIActivity.safeSP.getBoolean(PrefKey.STATUSBAR_CLOCK_CUSTOM, false)
-        }) { view, flags, data ->
-            when (flags) {
-                1 -> view.visibility = if (data as Boolean) View.VISIBLE else View.GONE
-            }
-        }
-        TextSummaryWithSwitch(
-            TextSummaryV(textId = R.string.status_bar_clock_custom),
-            SwitchV(PrefKey.STATUSBAR_CLOCK_CUSTOM, dataBindingSend = clockPaddingBinding.bindingSend)
-        )
-        TextSummaryWithArrow(
-            TextSummaryV(
-                textId = R.string.status_bar_clock_padding_left,
-                onClickListener = {
-                    MIUIDialog(activity) {
-                        setTitle(R.string.status_bar_clock_padding_left)
-                        setMessage(
-                            "${activity.getString(R.string.dialog_default_value)}: 0"
-                        )
-                        setEditText("", "${activity.getString(R.string.dialog_current_value)}: ${
-                            MIUIActivity.safeSP.getInt(PrefKey.STATUSBAR_CLOCK_PADDING_LEFT, 0)
-                        }")
-                        setLButton(textId = R.string.button_cancel) {
-                            dismiss()
-                        }
-                        setRButton(textId = R.string.button_ok) {
-                            if (getEditText().isNotEmpty()) {
-                                runCatching {
-                                    MIUIActivity.safeSP.putAny(
-                                        PrefKey.STATUSBAR_CLOCK_PADDING_LEFT,
-                                        getEditText().toInt()
-                                    )
-                                }.onFailure {
-                                    Toast.makeText(activity, activity.getString(R.string.invalid_input), Toast.LENGTH_LONG)
-                                        .show()
-                                }
-                            }
-                            dismiss()
-                        }
-                    }.show()
-                }
-            ),
-            dataBindingRecv = clockPaddingBinding.binding.getRecv(1)
-        )
-        TextSummaryWithArrow(
-            TextSummaryV(
-                textId = R.string.status_bar_clock_padding_right,
-                onClickListener = {
-                    MIUIDialog(activity) {
-                        setTitle(R.string.status_bar_clock_padding_right)
-                        setMessage(
-                            "${activity.getString(R.string.dialog_default_value)}: 0"
-                        )
-                        setEditText("", "${activity.getString(R.string.dialog_current_value)}: ${
-                            MIUIActivity.safeSP.getInt(PrefKey.STATUSBAR_CLOCK_PADDING_RIGHT, 0)
-                        }")
-                        setLButton(textId = R.string.button_cancel) {
-                            dismiss()
-                        }
-                        setRButton(textId = R.string.button_ok) {
-                            if (getEditText().isNotEmpty()) {
-                                runCatching {
-                                    MIUIActivity.safeSP.putAny(
-                                        PrefKey.STATUSBAR_CLOCK_PADDING_RIGHT,
-                                        getEditText().toInt()
-                                    )
-                                }.onFailure {
-                                    Toast.makeText(activity, activity.getString(R.string.invalid_input), Toast.LENGTH_LONG)
-                                        .show()
-                                }
-                            }
-                            dismiss()
-                        }
-                    }.show()
-                }
-            ),
-            dataBindingRecv = clockPaddingBinding.binding.getRecv(1)
-        )
-
         val notificationMaxBinding = GetDataBinding({
             MIUIActivity.safeSP.getBoolean(PrefKey.STATUSBAR_NOTIF_MAX, false)
         }) { view, flags, data ->

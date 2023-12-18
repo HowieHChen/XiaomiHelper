@@ -38,6 +38,7 @@
     <string name="ui_title_systemui_notification_center">Notification center</string>
     <string name="ui_title_systemui_control_center">Control center</string>
     <string name="ui_title_systemui_status_bar">Status bar</string>
+    <string name="ui_title_icon_tuner_clock">Clock</string>
     <string name="ui_title_icon_tuner_connectivity">Connectivity</string>
     <string name="ui_title_icon_tuner_mobile">Mobile network</string>
     <string name="ui_title_icon_tuner_carrier">Carrier label</string>
@@ -293,6 +294,12 @@
     <string name="status_bar_clock_custom">Customized time padding</string>
     <string name="status_bar_clock_padding_left">Left padding</string>
     <string name="status_bar_clock_padding_right">Right padding</string>
+    <string name="status_bar_clock_show_ampm">Display AM/PM</string>
+    <string name="status_bar_clock_show_ampm_tips">Valid only when using the 12-hour clock format</string>
+    <string name="status_bar_clock_show_leading_zero">Display leading 0</string>
+    <string name="status_bar_clock_show_leading_zero_tips">Recommended to be turned on when using the 24-hour clock format</string>
+    <string name="status_bar_clock_show_seconds">Display seconds</string>
+    <string name="status_bar_clock_show_seconds_tips">It will also enable the status bar to refresh every second</string>
     <string name="status_bar_clock_color_fix">Fix clock color anomaly in animation</string>
     <string name="status_bar_clock_color_fix_tips">Fix color anomaly in clock dropdown animation when using theme</string>
     <string name="status_bar_battery_custom">Customize the padding of the battery icon</string>

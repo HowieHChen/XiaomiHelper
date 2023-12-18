@@ -210,6 +210,7 @@
     <string name="status_bar_uni_battery_mark">电池百分比符号的文字大小与数字相同</string>
     <string name="status_bar_change_battery_percent">自定义电池百分比文字大小</string>
     <string name="status_bar_battery_percent_size">电池百分比文字大小</string>
+    <string name="ui_title_icon_tuner_clock">时间</string>
     <string name="ui_title_icon_tuner_connectivity">连接</string>
     <string name="ui_title_icon_tuner_other">其它</string>
     <string name="ui_title_icon_tuner_carrier">运营商标签</string>
@@ -270,4 +271,10 @@
     <string name="package_hide_safe_mode_popup">移除安全守护引导弹窗</string>
     <string name="package_hide_safe_mode_popup_tips">移除反复出现的诱导你开启安全守护的弹窗</string>
     <string name="taplus_search_custom_toast">URL 必须包含\"%s\"</string>
+    <string name="status_bar_clock_show_ampm">显示上午/下午</string>
+    <string name="status_bar_clock_show_leading_zero">显示前导0</string>
+    <string name="status_bar_clock_show_seconds">显示秒</string>
+    <string name="status_bar_clock_show_leading_zero_tips">建议在24小时制时钟格式时开启</string>
+    <string name="status_bar_clock_show_ampm_tips">仅12小时制时钟格式时有效</string>
+    <string name="status_bar_clock_show_seconds_tips">会同时开启状态栏时间每秒刷新</string>
 </resources>

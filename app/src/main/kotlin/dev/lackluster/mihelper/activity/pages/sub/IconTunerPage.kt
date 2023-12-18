@@ -26,6 +26,99 @@ class IconTunerPage : BasePage() {
             it[3] = getString(R.string.status_bar_hide_selection_show_qs)
             it[4] = getString(R.string.status_bar_hide_selection_hidden)
         }
+        TitleText(textId = R.string.ui_title_icon_tuner_clock)
+        TextSummaryWithSwitch(
+            TextSummaryV(textId = R.string.status_bar_clock_show_ampm, tipsId = R.string.status_bar_clock_show_ampm_tips),
+            SwitchV(PrefKey.STATUSBAR_CLOCK_SHOW_AMPM)
+        )
+        TextSummaryWithSwitch(
+            TextSummaryV(textId = R.string.status_bar_clock_show_leading_zero, tipsId = R.string.status_bar_clock_show_leading_zero_tips),
+            SwitchV(PrefKey.STATUSBAR_CLOCK_SHOW_LEADING_ZERO)
+        )
+        TextSummaryWithSwitch(
+            TextSummaryV(textId = R.string.status_bar_clock_show_seconds, tipsId = R.string.status_bar_clock_show_seconds_tips),
+            SwitchV(PrefKey.STATUSBAR_CLOCK_SHOW_SECONDS)
+        )
+        val clockPaddingBinding = GetDataBinding({
+            MIUIActivity.safeSP.getBoolean(PrefKey.STATUSBAR_CLOCK_CUSTOM, false)
+        }) { view, flags, data ->
+            when (flags) {
+                1 -> view.visibility = if (data as Boolean) View.VISIBLE else View.GONE
+            }
+        }
+        TextSummaryWithSwitch(
+            TextSummaryV(textId = R.string.status_bar_clock_custom),
+            SwitchV(PrefKey.STATUSBAR_CLOCK_CUSTOM, dataBindingSend = clockPaddingBinding.bindingSend)
+        )
+        TextSummaryWithArrow(
+            TextSummaryV(
+                textId = R.string.status_bar_clock_padding_left,
+                onClickListener = {
+                    MIUIDialog(activity) {
+                        setTitle(R.string.status_bar_clock_padding_left)
+                        setMessage(
+                            "${activity.getString(R.string.dialog_default_value)}: 0"
+                        )
+                        setEditText("", "${activity.getString(R.string.dialog_current_value)}: ${
+                            MIUIActivity.safeSP.getInt(PrefKey.STATUSBAR_CLOCK_PADDING_LEFT, 0)
+                        }")
+                        setLButton(textId = R.string.button_cancel) {
+                            dismiss()
+                        }
+                        setRButton(textId = R.string.button_ok) {
+                            if (getEditText().isNotEmpty()) {
+                                runCatching {
+                                    MIUIActivity.safeSP.putAny(
+                                        PrefKey.STATUSBAR_CLOCK_PADDING_LEFT,
+                                        getEditText().toInt()
+                                    )
+                                }.onFailure {
+                                    Toast.makeText(activity, activity.getString(R.string.invalid_input), Toast.LENGTH_LONG)
+                                        .show()
+                                }
+                            }
+                            dismiss()
+                        }
+                    }.show()
+                }
+            ),
+            dataBindingRecv = clockPaddingBinding.binding.getRecv(1)
+        )
+        TextSummaryWithArrow(
+            TextSummaryV(
+                textId = R.string.status_bar_clock_padding_right,
+                onClickListener = {
+                    MIUIDialog(activity) {
+                        setTitle(R.string.status_bar_clock_padding_right)
+                        setMessage(
+                            "${activity.getString(R.string.dialog_default_value)}: 0"
+                        )
+                        setEditText("", "${activity.getString(R.string.dialog_current_value)}: ${
+                            MIUIActivity.safeSP.getInt(PrefKey.STATUSBAR_CLOCK_PADDING_RIGHT, 0)
+                        }")
+                        setLButton(textId = R.string.button_cancel) {
+                            dismiss()
+                        }
+                        setRButton(textId = R.string.button_ok) {
+                            if (getEditText().isNotEmpty()) {
+                                runCatching {
+                                    MIUIActivity.safeSP.putAny(
+                                        PrefKey.STATUSBAR_CLOCK_PADDING_RIGHT,
+                                        getEditText().toInt()
+                                    )
+                                }.onFailure {
+                                    Toast.makeText(activity, activity.getString(R.string.invalid_input), Toast.LENGTH_LONG)
+                                        .show()
+                                }
+                            }
+                            dismiss()
+                        }
+                    }.show()
+                }
+            ),
+            dataBindingRecv = clockPaddingBinding.binding.getRecv(1)
+        )
+        Line()
         TitleText(textId = R.string.ui_title_icon_tuner_carrier)
         TextWithSwitch(
             TextV(textId = R.string.status_bar_hide_carrier_one),

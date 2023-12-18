@@ -1,8 +1,8 @@
 package dev.lackluster.mihelper.hook.rules.miuihome
 
-import android.app.Activity
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.method
+import de.robv.android.xposed.XposedHelpers
 import dev.lackluster.mihelper.data.PrefKey
 import dev.lackluster.mihelper.utils.Device
 import dev.lackluster.mihelper.utils.Prefs.hasEnable
@@ -24,17 +24,20 @@ object BlurEnableAll : YukiBaseHooker() {
                     }
                     .hook {
                         after {
-                            val mLauncher = this.args(0).any() as Activity
-                            blurUtilsClass.method {
-                                name = "fastBlurWhenUseCompleteRecentsBlur"
-                                paramCount = 3
-                                modifiers { isStatic }
-                            }.get().call(mLauncher, 1.0f, false)
-                            blurUtilsClass.method {
-                                name = "fastBlurWhenUseCompleteRecentsBlur"
-                                paramCount = 3
-                                modifiers { isStatic }
-                            }.get().call(mLauncher, 0.0f, true)
+                            val mLauncher = this.args(0).any() ?: return@after
+                            val isFolderShowing = (XposedHelpers.callMethod(mLauncher, "isFolderShowing") as Boolean?) ?: false
+                            if (!isFolderShowing) {
+                                blurUtilsClass.method {
+                                    name = "fastBlurWhenUseCompleteRecentsBlur"
+                                    paramCount = 3
+                                    modifiers { isStatic }
+                                }.get().call(mLauncher, 1.0f, false)
+                                blurUtilsClass.method {
+                                    name = "fastBlurWhenUseCompleteRecentsBlur"
+                                    paramCount = 3
+                                    modifiers { isStatic }
+                                }.get().call(mLauncher, 0.0f, true)
+                            }
                         }
                     }
             }
