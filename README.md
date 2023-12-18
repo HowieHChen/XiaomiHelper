@@ -4,13 +4,16 @@
 
 # Hyper Helper
 
-[![License](https://img.shields.io/github/license/HowieHChen/XiaomiHelper.svg?label=License)](https://github.com/HowieHChen/XiaomiHelper/blob/master/LICENSE)
+[![GitHub License](https://img.shields.io/github/license/HowieHChen/XiaomiHelper)](https://github.com/HowieHChen/XiaomiHelper/blob/master/LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/HowieHChen/XiaomiHelper)](https://github.com/HowieHChen/XiaomiHelper/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/HowieHChen/XiaomiHelper)](https://github.com/HowieHChen/XiaomiHelper/forks)
 
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/Xposed-Modules-Repo/dev.lackluster.mihelper)](https://github.com/Xposed-Modules-Repo/dev.lackluster.mihelper/releases)
-![GitHub Release Date](https://img.shields.io/github/release-date/Xposed-Modules-Repo/dev.lackluster.mihelper)
-![GitHub All Releases](https://img.shields.io/github/downloads/Xposed-Modules-Repo/dev.lackluster.mihelper/total)
-![GitHub stars](https://img.shields.io/github/stars/HowieHChen/XiaomiHelper)
-![GitHub forks](https://img.shields.io/github/forks/HowieHChen/XiaomiHelper)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/Xposed-Modules-Repo/dev.lackluster.mihelper?label=release(Xposed))](https://github.com/Xposed-Modules-Repo/dev.lackluster.mihelper/releases/latest) 
+[![GitHub Release Date](https://img.shields.io/github/release-date/Xposed-Modules-Repo/dev.lackluster.mihelper?label=release%20date(Xposed))](https://github.com/Xposed-Modules-Repo/dev.lackluster.mihelper/releases/latest)
+[![GitHub Release Downloads](https://img.shields.io/github/downloads/Xposed-Modules-Repo/dev.lackluster.mihelper/total?label=downloads(Xposed))](https://github.com/Xposed-Modules-Repo/dev.lackluster.mihelper/releases)  
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/HowieHChen/XiaomiHelper?label=release)](https://github.com/HowieHChen/XiaomiHelper/releases/latest) 
+[![GitHub Release Date](https://img.shields.io/github/release-date/HowieHChen/XiaomiHelper?label=release%20date)](https://github.com/HowieHChen/XiaomiHelper/releases/latest)
+[![GitHub Release Downloads](https://img.shields.io/github/downloads/HowieHChen/XiaomiHelper/total?label=downloads)](https://github.com/HowieHChen/XiaomiHelper/releases)
 
 </div>
 
