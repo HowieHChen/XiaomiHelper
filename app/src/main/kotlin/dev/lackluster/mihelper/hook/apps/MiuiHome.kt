@@ -18,6 +18,7 @@ import dev.lackluster.mihelper.hook.rules.miuihome.MinusSettings
 import dev.lackluster.mihelper.hook.rules.miuihome.PadAllFeature
 import dev.lackluster.mihelper.hook.rules.miuihome.PadShowMemory
 import dev.lackluster.mihelper.hook.rules.miuihome.RecentCardAnim
+import dev.lackluster.mihelper.hook.rules.miuihome.RemoveReport
 import dev.lackluster.mihelper.hook.rules.miuihome.ShowRealMemory
 import dev.lackluster.mihelper.hook.rules.miuihome.StopWallpaperDarken
 import dev.lackluster.mihelper.hook.rules.miuihome.WidgetAnim
@@ -44,6 +45,7 @@ object MiuiHome : YukiBaseHooker() {
         loadHooker(PadShowMemory)
         loadHooker(PerfectIcon)
         loadHooker(RecentCardAnim)
+        loadHooker(RemoveReport)
         loadHooker(ShowRealMemory)
         loadHooker(StopWallpaperDarken)
         loadHooker(WidgetAnim)

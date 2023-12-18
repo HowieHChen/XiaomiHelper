@@ -108,6 +108,7 @@
     <string name="home_folder_layout_size">文件夹内图标列数</string>
     <string name="home_folder_adapt_icon_size">大文件夹内图标大小自适应</string>
     <string name="home_folder_adapt_icon_size_tips">大文件夹（3x3或2x2）内图标刚好填满（数量为9个或4个）时，最后一个图标也为大图标</string>
+    <string name="home_remove_report">移除卸载应用弹窗的“举报”按钮</string>
     <string name="home_disable_fake_navbar">禁用假的导航栏手柄</string>
     <string name="home_disable_fake_navbar_tips">禁用横向“最近任务”屏幕上的假导航栏手柄，使用真正的导航栏手柄</string>
     <string name="ui_scope_guard_provider">安全组件</string>
@@ -266,4 +267,6 @@
     <string name="ui_title_about_reference">引用</string>
     <string name="about_author_tips">没有简介或者签名</string>
     <string name="about_yuki">此模块使用 YukiHookAPI 构建</string>
+    <string name="package_hide_safe_mode_popup">移除安全守护引导弹窗</string>
+    <string name="package_hide_safe_mode_popup_tips">移除反复出现的诱导你开启安全守护的弹窗</string>
 </resources>

@@ -82,6 +82,12 @@ class MiuiHomePage : BasePage() {
             SwitchV(PrefKey.HOME_BLUR_ENHANCE),
             dataBindingRecv = blurBinding.binding.getRecv(1)
         )
+        TextSummaryWithSwitch(
+            TextSummaryV(
+                textId = R.string.home_remove_report,
+            ),
+            SwitchV(PrefKey.HOME_REMOVE_REPORT)
+        )
         Line()
         TitleText(textId = R.string.ui_title_home_anim)
         TextSummaryWithSwitch(

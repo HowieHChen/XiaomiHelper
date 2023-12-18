@@ -18,11 +18,11 @@
 
 HyperOS 的轻量级模块，仅适用于 HyperOS ！     
 自用模块，基于小米 12S Pro开发。     
-主要基于其它模块的功能，少量原创。
+大部分功能基于其它模块，少量原创。
 
 Lightweight modules for HyperOS only!     
 Self-use module, developed based on Xiaomi 12S Pro.      
-Mainly based on the functionality of other modules, a little original.
+Most of the functionality is based on other modules, with a small amount of originality.
 
 ## 源代码 (Source code)
 
@@ -52,3 +52,4 @@ Mainly based on the functionality of other modules, a little original.
 ##### Apache-2.0  
 
 [HighCapable/YukiHookAPI](https://github.com/HighCapable/YukiHookAPI)
+[hellokaton/TinyPinyin](https://github.com/hellokaton/TinyPinyin)

@@ -163,6 +163,7 @@
     <string name="home_recent_wallpaper_darken">Stop reducing the brightness of wallpaper</string>
     <string name="home_recent_wallpaper_darken_tips">Stop the automatic reduction of the wallpaper\'s brightness when entering the recent tasks view</string>
     <string name="home_recent_dismiss_anim">Modify card animation when dismissing recent tasks</string>
+    <string name="home_remove_report">Remove the \"Report\" button from the uninstall app pop-up window</string>
     <string name="home_disable_fake_navbar">Disable fake navigation bar handle</string>
     <string name="home_disable_fake_navbar_tips">Disable the fake navigation bar handles on the horizontal Recent Tasks screen and use the real one</string>
     <string name="home_widget_resizable">Make all Android widgets resizable</string>
@@ -178,6 +179,8 @@
     <string name="package_no_count_check">Disable checking for frequently installed applications</string>
     <string name="package_remove_report">Remove report button</string>
     <string name="package_safe_mode_tip">Remove Safe Mode tips</string>
+    <string name="package_hide_safe_mode_popup">Remove Safe Mode guidance popup</string>
+    <string name="package_hide_safe_mode_popup_tips">Remove recurring pop-ups that trick you into turning on safe mode</string>
     <string name="package_skip_risk_check">Prohibition of monitoring risks</string>
     <string name="personal_assist_blur">Enable blur for background</string>
     <string name="phone_show_net_mode_settings">Show mobile network type settings</string>
