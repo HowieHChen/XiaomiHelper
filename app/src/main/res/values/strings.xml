@@ -215,6 +215,13 @@
     <string name="systemui_notif_freeform_tips">Pull down notifications to open small windows. Some notifications pushed via \"Mi Push\" may not be supported.</string>
     <string name="systemui_notif_redirect_settings">Redirect notification settings</string>
     <string name="systemui_notif_redirect_settings_tips">When you open the notification settings it navigates to the corresponding notification channel settings instead of the app notification settings</string>
+    <string name="systemui_notif_redirect_dialog">Show popup when opening notification settings</string>
+    <string name="systemui_notif_redirect_dialog_tips">Use the pop-up window to choose whether to turn on the app notification settings or the notification channel settings</string>
+    <string name="systemui_notif_redirect_dialog_custom">Customize pop-up button text</string>
+    <string name="systemui_notif_redirect_dialog_custom_tips">If this function is turned off, you will need to turn the switch on and off again to refresh the text after switching the system language!</string>
+    <string name="systemui_notif_redirect_dialog_hint">Leave blank to use the default value</string>
+    <string name="systemui_notif_redirect_dialog_negative_default">Application settings</string>
+    <string name="systemui_notif_redirect_dialog_positive_default">Channel settings</string>
     <string name="systemui_control_bluetooth_restrict">Disable Bluetooth temporary shutdown</string>
     <string name="systemui_control_bluetooth_restrict_tips">Bluetooth won\'t turn on automatically after being turned off in the Control Center</string>
     <string name="systemui_tips_default_theme">Only works with the default theme</string>
@@ -265,6 +272,8 @@
     <string name="status_bar_hide_zen">Do Not Disturb Mode icon</string>
     <string name="status_bar_hide_carrier_one">Hide carrier label for SIM card 1</string>
     <string name="status_bar_hide_carrier_two">Hide carrier label for SIM card 2</string>
+    <string name="status_bar_hide_carrier_auto">Carrier label de-duplication</string>
+    <string name="status_bar_hide_carrier_auto_tps">When multiple SIM cards use the same carrier, only one carrier label is displayed</string>
     <string name="status_bar_hide_net_speed">Network Speed</string>
     <string name="status_bar_hide_selection_default">Default</string>
     <string name="status_bar_hide_selection_show_all">Visible</string>
@@ -319,4 +328,6 @@
     <string name="xiaoai_search_custom" translatable="false">@string/taplus_search_custom</string>
     <string name="xiaoai_search_custom_toast" translatable="false">@string/taplus_search_custom_toast</string>
     <string name="xiaoai_hide_watermark">Hide the watermark of the beta version</string>
+    <string name="systemui_notif_redirect_dialog_positive">Text of the \"Notification channel settings\" button</string>
+    <string name="systemui_notif_redirect_dialog_negative">Text of the \"App notification settings\" button</string>
 </resources>
