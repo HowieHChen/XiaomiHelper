@@ -209,6 +209,7 @@
     <string name="security_remove_report">Remove the \"Report\" button from the app info page</string>
     <string name="security_system_app_wifi">Allow management WIFI permissions for system applications</string>
     <string name="settings_show_google">Show Google settings</string>
+    <string name="settings_unlock_voip_assistant">Unlock VoIP Assistant</string>
     <string name="systemui_statusbar_icon_tuner" translatable="false">@string/ui_page_status_bar_icon_tuner</string>
     <string name="systemui_notif_disable_whitelist">Disable notification whitelist</string>
     <string name="systemui_notif_freeform">Allow most notifications to open in a small window</string>
@@ -272,8 +273,6 @@
     <string name="status_bar_hide_zen">Do Not Disturb Mode icon</string>
     <string name="status_bar_hide_carrier_one">Hide carrier label for SIM card 1</string>
     <string name="status_bar_hide_carrier_two">Hide carrier label for SIM card 2</string>
-    <string name="status_bar_hide_carrier_auto">Carrier label de-duplication</string>
-    <string name="status_bar_hide_carrier_auto_tps">When multiple SIM cards use the same carrier, only one carrier label is displayed</string>
     <string name="status_bar_hide_net_speed">Network Speed</string>
     <string name="status_bar_hide_selection_default">Default</string>
     <string name="status_bar_hide_selection_show_all">Visible</string>

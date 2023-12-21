@@ -286,6 +286,5 @@
     <string name="systemui_notif_redirect_dialog_hint">留空以使用默认值</string>
     <string name="systemui_notif_redirect_dialog_custom">自定义弹窗按钮文本</string>
     <string name="systemui_notif_redirect_dialog_custom_tips">如关闭此功能，则需在切换系统语言后打开再关闭开关以刷新文本！</string>
-    <string name="status_bar_hide_carrier_auto">智能合并运营商标签</string>
-    <string name="status_bar_hide_carrier_auto_tps">当多张 SIM 卡使用同一运营商时，只显示一个运营商标签</string>
+    <string name="settings_unlock_voip_assistant">解锁网络通话助手</string>
 </resources>

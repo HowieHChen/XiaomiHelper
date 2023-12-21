@@ -123,6 +123,10 @@ class OthersPage : BasePage() {
             TextSummaryV(textId = R.string.settings_show_google),
             SwitchV(PrefKey.SETTINGS_SHOW_GOOGLE)
         )
+        TextSummaryWithSwitch(
+            TextSummaryV(textId = R.string.settings_unlock_voip_assistant),
+            SwitchV(PrefKey.SETTINGS_UNLOCK_VOIP_ASSISTANT)
+        )
         Line()
         TitleText(textId = R.string.ui_scope_taplus)
         val taplusUseBrowserBinding = GetDataBinding({
