@@ -287,4 +287,8 @@
     <string name="systemui_notif_redirect_dialog_custom">自定义弹窗按钮文本</string>
     <string name="systemui_notif_redirect_dialog_custom_tips">如关闭此功能，则需在切换系统语言后打开再关闭开关以刷新文本！</string>
     <string name="settings_unlock_voip_assistant">解锁网络通话助手</string>
+    <string name="home_recent_dock_time">呼出 Dock 的长按时间</string>
+    <string name="home_recent_dock_time_tips">不建议设置超过1000毫秒的值</string>
+    <string name="home_recent_docke_safe_height">呼出 Dock 的阈值高度</string>
+    <string name="home_recent_docke_safe_height_tips">只有当滑动的高度小于此阈值时才会呼出 Dock</string>
 </resources>

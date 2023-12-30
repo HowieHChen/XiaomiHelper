@@ -164,6 +164,10 @@
     <string name="home_recent_wallpaper_darken">Stop reducing the brightness of wallpaper</string>
     <string name="home_recent_wallpaper_darken_tips">Stop the automatic reduction of the wallpaper\'s brightness when entering the recent tasks view</string>
     <string name="home_recent_dismiss_anim">Modify card animation when dismissing recent tasks</string>
+    <string name="home_recent_dock_time">Holding time for calling out the Dock</string>
+    <string name="home_recent_dock_time_tips">Values greater than 1000 milliseconds are not recommended</string>
+    <string name="home_recent_docke_safe_height">Height threshold for calling out the Dock</string>
+    <string name="home_recent_docke_safe_height_tips">The Dock will only be called out if the height of the slide is less than this threshold.</string>
     <string name="home_remove_report">Remove the \"Report\" button from the uninstall app pop-up window</string>
     <string name="home_disable_fake_navbar">Disable fake navigation bar handle</string>
     <string name="home_disable_fake_navbar_tips">Disable the fake navigation bar handles on the horizontal Recent Tasks screen and use the real one</string>

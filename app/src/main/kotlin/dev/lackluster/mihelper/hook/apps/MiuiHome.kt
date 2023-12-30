@@ -16,6 +16,7 @@ import dev.lackluster.mihelper.hook.rules.miuihome.IconUnblockGoogle
 import dev.lackluster.mihelper.hook.rules.miuihome.MinusFoldStyle
 import dev.lackluster.mihelper.hook.rules.miuihome.MinusSettings
 import dev.lackluster.mihelper.hook.rules.miuihome.PadAllFeature
+import dev.lackluster.mihelper.hook.rules.miuihome.PadDockCustom
 import dev.lackluster.mihelper.hook.rules.miuihome.PadShowMemory
 import dev.lackluster.mihelper.hook.rules.miuihome.RecentCardAnim
 import dev.lackluster.mihelper.hook.rules.miuihome.RemoveReport
@@ -50,6 +51,7 @@ object MiuiHome : YukiBaseHooker() {
         loadHooker(StopWallpaperDarken)
         loadHooker(WidgetAnim)
         loadHooker(WidgetResizable)
+        loadHooker(PadDockCustom)
         DexKit.closeDexKit()
     }
 }

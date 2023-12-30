@@ -38,6 +38,8 @@ object PrefKey {
     const val HOME_RECENT_ANIM = "home_recent_anim"
     const val HOME_WIDGET_ANIM = "home_widget_launch_anim"
     const val HOME_WIDGET_RESIZABLE = "home_widget_resizable"
+    const val HOME_PAD_DOCK_TIME_DURATION = "home_pad_dock_time_duration"
+    const val HOME_PAD_DOCK_SAFE_AREA_HEIGHT = "home_pad_dock_safe_height"
     const val INCALLUI_HIDE_CRBT = "incallui_hide_crbt"
     const val JOYOSE_NO_CLOUD_CONTROL = "joyose_no_cloud_control"
     const val MARKET_AD_BLOCK = "market_ad_block"

@@ -1,6 +1,7 @@
 package dev.lackluster.mihelper.activity.pages.scope
 
 import android.view.View
+import android.widget.Toast
 import cn.fkj233.ui.activity.MIUIActivity
 import cn.fkj233.ui.activity.annotation.BMPage
 import cn.fkj233.ui.activity.data.BasePage
@@ -8,6 +9,7 @@ import cn.fkj233.ui.activity.view.SeekBarWithTextV
 import cn.fkj233.ui.activity.view.SwitchV
 import cn.fkj233.ui.activity.view.TextSummaryV
 import cn.fkj233.ui.activity.view.TextV
+import cn.fkj233.ui.dialog.MIUIDialog
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.data.PrefKey
 import dev.lackluster.mihelper.utils.Device
@@ -154,6 +156,78 @@ class MiuiHomePage : BasePage() {
                 tipsId = R.string.home_disable_fake_navbar_tips
             ),
             SwitchV(PrefKey.HOME_DISABLE_FAKE_NAVBAR)
+        )
+        TextSummaryWithArrow(
+            TextSummaryV(
+                textId = R.string.home_recent_dock_time,
+                tipsId = R.string.home_recent_dock_time_tips,
+                onClickListener = {
+                    MIUIDialog(activity) {
+                        setTitle(R.string.home_recent_dock_time)
+                        setMessage(
+                            "${activity.getString(R.string.dialog_default_value)}: 180 (ms), ${activity.getString(R.string.dialog_current_value)}: ${
+                                MIUIActivity.safeSP.getInt(PrefKey.HOME_PAD_DOCK_TIME_DURATION, 180)
+                            } (ms)"
+                        )
+                        setEditText("", "${
+                            MIUIActivity.safeSP.getInt(PrefKey.HOME_PAD_DOCK_TIME_DURATION, 180).takeIf { it != 180 } ?: ""
+                        }")
+                        setLButton(textId = R.string.button_cancel) {
+                            dismiss()
+                        }
+                        setRButton(textId = R.string.button_ok) {
+                            if (getEditText().isNotEmpty()) {
+                                runCatching {
+                                    MIUIActivity.safeSP.putAny(
+                                        PrefKey.HOME_PAD_DOCK_TIME_DURATION,
+                                        getEditText().toInt()
+                                    )
+                                }.onFailure {
+                                    Toast.makeText(activity, activity.getString(R.string.invalid_input), Toast.LENGTH_LONG)
+                                        .show()
+                                }
+                            }
+                            dismiss()
+                        }
+                    }.show()
+                }),
+            dataBindingRecv = isPadBinding.binding.getRecv(0)
+        )
+        TextSummaryWithArrow(
+            TextSummaryV(
+                textId = R.string.home_recent_docke_safe_height,
+                tipsId = R.string.home_recent_docke_safe_height_tips,
+                onClickListener = {
+                    MIUIDialog(activity) {
+                        setTitle(R.string.home_recent_docke_safe_height)
+                        setMessage(
+                            "${activity.getString(R.string.dialog_default_value)}: 300, ${activity.getString(R.string.dialog_current_value)}: ${
+                                MIUIActivity.safeSP.getInt(PrefKey.HOME_PAD_DOCK_SAFE_AREA_HEIGHT, 300)
+                            }"
+                        )
+                        setEditText("", "${
+                            MIUIActivity.safeSP.getInt(PrefKey.HOME_PAD_DOCK_SAFE_AREA_HEIGHT, 300).takeIf { it != 180 } ?: ""
+                        }")
+                        setLButton(textId = R.string.button_cancel) {
+                            dismiss()
+                        }
+                        setRButton(textId = R.string.button_ok) {
+                            if (getEditText().isNotEmpty()) {
+                                runCatching {
+                                    MIUIActivity.safeSP.putAny(
+                                        PrefKey.HOME_PAD_DOCK_SAFE_AREA_HEIGHT,
+                                        getEditText().toInt()
+                                    )
+                                }.onFailure {
+                                    Toast.makeText(activity, activity.getString(R.string.invalid_input), Toast.LENGTH_LONG)
+                                        .show()
+                                }
+                            }
+                            dismiss()
+                        }
+                    }.show()
+                }),
+            dataBindingRecv = isPadBinding.binding.getRecv(0)
         )
         Line()
         TitleText(textId = R.string.ui_title_home_widget)

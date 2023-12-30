@@ -1,7 +1,13 @@
 package dev.lackluster.mihelper.hook.rules.miuihome
 
+import android.app.Activity
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
+import com.highcapable.yukihookapi.hook.factory.current
 import com.highcapable.yukihookapi.hook.factory.method
+import com.highcapable.yukihookapi.hook.log.YLog
+import com.highcapable.yukihookapi.hook.type.java.BooleanType
+import de.robv.android.xposed.XC_MethodHook
+import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
 import dev.lackluster.mihelper.data.PrefKey
 import dev.lackluster.mihelper.utils.Device
@@ -18,28 +24,84 @@ object BlurEnableAll : YukiBaseHooker() {
             }
 
             hasEnable(PrefKey.HOME_BLUR_ENHANCE) {
-                "com.miui.home.recents.NavStubView".toClass()
-                    .method {
-                        name = if (Device.isPad) "performAppToHome" else "commonAnimStartAppToHome"
-                    }
-                    .hook {
-                        after {
-                            val mLauncher = this.args(0).any() ?: return@after
-                            val isFolderShowing = (XposedHelpers.callMethod(mLauncher, "isFolderShowing") as Boolean?) ?: false
-                            if (!isFolderShowing) {
+                if (Device.isPad) {
+                    val launcherClz = "com.miui.home.launcher.Launcher".toClass()
+                    val openMethod =
+                        launcherClz.methods.first { it.name == "lambda\$openLauncherFolder\$34\$Launcher" }
+                    val closeMethod =
+                        launcherClz.methods.first { it.name == "closeFolder" && it.parameterCount == 1 && it.parameterTypes[0] == BooleanType }
+                    val method = "com.miui.home.launcher.Launcher".toClass().methods.filter { it.name == "fadeInOrOutScreenContentWhenFolderAnimate" }.map { it.name }
+                    YLog.info(method.joinToString("\n"))
+                    XposedBridge.hookMethod(openMethod, object : XC_MethodHook() {
+                        override fun beforeHookedMethod(param: MethodHookParam?) {
+                            val launcher = param?.thisObject ?: return
+                            val isLaptopMode = XposedHelpers.callMethod(launcher, "isLapTopMode") as Boolean
+                            val isInEditing = XposedHelpers.callMethod(launcher, "isInEditing") as Boolean
+                            if (!isLaptopMode && !isInEditing) {
+                                val window = (launcher as Activity).window
+                                XposedHelpers.callStaticMethod(blurUtilsClass, "fastBlur", 1.0f, window, true)
+                            }
+                        }
+                    })
+                    XposedBridge.hookMethod(closeMethod, object : XC_MethodHook() {
+                        override fun beforeHookedMethod(param: MethodHookParam?) {
+                            val launcher = param?.thisObject ?: return
+                            val isFolderOpen = param.args[0] as Boolean
+                            val isLaptopMode = XposedHelpers.callMethod(launcher, "isLapTopMode") as Boolean
+                            val isInEditing = XposedHelpers.callMethod(launcher, "isInEditing") as Boolean
+                            if (!isLaptopMode && !isInEditing) {
+                                val window = (launcher as Activity).window
+                                XposedHelpers.callStaticMethod(blurUtilsClass, "fastBlur", 0.0f, window, isFolderOpen)
+                            }
+                        }
+                    })
+                    "com.miui.home.recents.GestureModeApp".toClass()
+                        .method {
+                            name = "performAppToHome"
+                        }
+                        .hook {
+                            after {
+                                val mLauncher = this.instance.current().field { name = "mLauncher"; superClass() }.any() ?: return@after
+                                val isFolderShowing = (XposedHelpers.callMethod(mLauncher, "isFolderShowing") as Boolean?) ?: false
                                 blurUtilsClass.method {
                                     name = "fastBlurWhenUseCompleteRecentsBlur"
                                     paramCount = 3
                                     modifiers { isStatic }
                                 }.get().call(mLauncher, 1.0f, false)
-                                blurUtilsClass.method {
-                                    name = "fastBlurWhenUseCompleteRecentsBlur"
-                                    paramCount = 3
-                                    modifiers { isStatic }
-                                }.get().call(mLauncher, 0.0f, true)
+                                if (!isFolderShowing) {
+                                    blurUtilsClass.method {
+                                        name = "fastBlurWhenUseCompleteRecentsBlur"
+                                        paramCount = 3
+                                        modifiers { isStatic }
+                                    }.get().call(mLauncher, 0.0f, true)
+                                }
                             }
                         }
-                    }
+                }
+                else {
+                    "com.miui.home.recents.NavStubView".toClass()
+                        .method {
+                            name = "commonAnimStartAppToHome"
+                        }
+                        .hook {
+                            after {
+                                val mLauncher = this.args(0).any() ?: return@after
+                                val isFolderShowing = (XposedHelpers.callMethod(mLauncher, "isFolderShowing") as Boolean?) ?: false
+                                if (!isFolderShowing) {
+                                    blurUtilsClass.method {
+                                        name = "fastBlurWhenUseCompleteRecentsBlur"
+                                        paramCount = 3
+                                        modifiers { isStatic }
+                                    }.get().call(mLauncher, 1.0f, false)
+                                    blurUtilsClass.method {
+                                        name = "fastBlurWhenUseCompleteRecentsBlur"
+                                        paramCount = 3
+                                        modifiers { isStatic }
+                                    }.get().call(mLauncher, 0.0f, true)
+                                }
+                            }
+                        }
+                }
             }
         }
     }

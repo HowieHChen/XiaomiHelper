@@ -11,13 +11,13 @@ object PadShowMemory : YukiBaseHooker() {
         hasEnable(PrefKey.HOME_PAD_SHOW_MEMORY, extraCondition = { Device.isPad }) {
             "com.miui.home.recents.views.RecentsDecorations".toClass().apply {
                 method {
-                    name = "canTxtMemInfoShow"
-                }.hook {
-                    replaceToTrue()
+                    name = "hideTxtMemoryInfoView"
+                }.ignored().hook {
+                    intercept()
                 }
                 method {
-                    name = "canTxtMemInfoShowIgnoreSmallWindow"
-                }.hook {
+                    name = "isMemInfoShow"
+                }.ignored().hook {
                     replaceToTrue()
                 }
             }

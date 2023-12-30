@@ -42,7 +42,7 @@ object DoubleTapToSleep : YukiBaseHooker() {
                             name = "mCurrentScreenIndex"
                             superClass()
                         }.int()
-                        val cellLayout = this.instance.current().method {
+                        val cellLayout = this.instance.current(true).method {
                             name = "getCellLayout"
                         }.call(mCurrentScreenIndex)
                         if (cellLayout != null)

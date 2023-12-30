@@ -39,7 +39,7 @@ object PadAllFeature :YukiBaseHooker() {
                 }
                 method {
                     name = "isSystemSupportHotSeatsBlur"
-                }.hook {
+                }.ignored().hook {
                     replaceToTrue()
                 }
                 method {
