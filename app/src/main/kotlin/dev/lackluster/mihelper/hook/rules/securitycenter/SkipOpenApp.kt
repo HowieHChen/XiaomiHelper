@@ -1,6 +1,7 @@
 package dev.lackluster.mihelper.hook.rules.securitycenter
 
 import android.annotation.SuppressLint
+import android.text.SpannableString
 import android.widget.TextView
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.method
@@ -20,7 +21,7 @@ object SkipOpenApp : YukiBaseHooker() {
                 .hook {
                     after {
                         val textView = this.instance as TextView
-                        if (this.args.isNotEmpty() && this.args(0).string() == textView.context.resources.getString(
+                        if (this.args.isNotEmpty() && (this.args(0).any() as? SpannableString ?: return@after).toString() == textView.context.resources.getString(
                             textView.context.resources.getIdentifier(
                                 "button_text_accept",
                                 "string",

@@ -12,6 +12,7 @@ object Landscape : YukiBaseHooker() {
                 .method {
                     name = "isScreenPortrait"
                 }
+                .ignored()
                 .hook{
                     replaceToTrue()
                 }

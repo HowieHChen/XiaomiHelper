@@ -77,6 +77,24 @@ object BlurEnableAll : YukiBaseHooker() {
                                 }
                             }
                         }
+                    "com.miui.home.launcher.Workspace".toClass()
+                        .method {
+                            name = "setEditMode"
+                        }
+                        .hook {
+                            after {
+                                val mLauncher = this.instance.current().field { name = "mLauncher"; superClass() }.any() ?: return@after
+                                val isFolderShowing = (XposedHelpers.callMethod(mLauncher, "isFolderShowing") as Boolean?) ?: false
+                                val isInNormalEditing = XposedHelpers.callMethod(this.instance, "isInNormalEditingMode") as Boolean
+                                if (!isInNormalEditing && isFolderShowing) {
+                                    blurUtilsClass.method {
+                                        name = "fastBlurWhenUseCompleteRecentsBlur"
+                                        paramCount = 3
+                                        modifiers { isStatic }
+                                    }.get().call(mLauncher, 1.0f, false)
+                                }
+                            }
+                        }
                 }
                 else {
                     "com.miui.home.recents.NavStubView".toClass()

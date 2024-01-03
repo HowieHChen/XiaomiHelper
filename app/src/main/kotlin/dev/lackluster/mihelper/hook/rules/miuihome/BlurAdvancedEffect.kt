@@ -20,17 +20,18 @@ object BlurAdvancedEffect : YukiBaseHooker() {
                 }.hook {
                     replaceToTrue()
                 }
-                method {
-                    name = "setBackgroundBlurEnabled"
-                    modifiers { isStatic }
-                }.hook {
-                    intercept()
-                }
                 field {
                     name = "IS_BACKGROUND_BLUR_ENABLED"
                     modifiers { isStatic }
                 }.get().setTrue()
             }
+            "com.miui.home.launcher.common.BlurUtilities".toClass()
+                .method {
+                    name = "setBackgroundBlurEnabled"
+                    modifiers { isStatic }
+                }.hook {
+                    intercept()
+                }
         }
     }
 }
