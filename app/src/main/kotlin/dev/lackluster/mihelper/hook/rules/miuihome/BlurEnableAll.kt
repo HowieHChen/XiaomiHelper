@@ -4,7 +4,6 @@ import android.app.Activity
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.current
 import com.highcapable.yukihookapi.hook.factory.method
-import com.highcapable.yukihookapi.hook.log.YLog
 import com.highcapable.yukihookapi.hook.type.java.BooleanType
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
@@ -30,8 +29,6 @@ object BlurEnableAll : YukiBaseHooker() {
                         launcherClz.methods.first { it.name == "lambda\$openLauncherFolder\$34\$Launcher" }
                     val closeMethod =
                         launcherClz.methods.first { it.name == "closeFolder" && it.parameterCount == 1 && it.parameterTypes[0] == BooleanType }
-                    val method = "com.miui.home.launcher.Launcher".toClass().methods.filter { it.name == "fadeInOrOutScreenContentWhenFolderAnimate" }.map { it.name }
-                    YLog.info(method.joinToString("\n"))
                     XposedBridge.hookMethod(openMethod, object : XC_MethodHook() {
                         override fun beforeHookedMethod(param: MethodHookParam?) {
                             val launcher = param?.thisObject ?: return
