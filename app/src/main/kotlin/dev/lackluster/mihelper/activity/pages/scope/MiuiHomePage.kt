@@ -88,7 +88,8 @@ class MiuiHomePage : BasePage() {
             TextSummaryV(
                 textId = R.string.home_remove_report,
             ),
-            SwitchV(PrefKey.HOME_REMOVE_REPORT)
+            SwitchV(PrefKey.HOME_REMOVE_REPORT),
+            dataBindingRecv = isPadBinding.binding.getRecv(1)
         )
         Line()
         TitleText(textId = R.string.ui_title_home_anim)
@@ -270,8 +271,7 @@ class MiuiHomePage : BasePage() {
                 textId = R.string.home_folder_adapt_icon_size,
                 tipsId = R.string.home_folder_adapt_icon_size_tips
             ),
-            SwitchV(PrefKey.HOME_FOLDER_ADAPT_SIZE),
-            dataBindingRecv = isPadBinding.binding.getRecv(1)
+            SwitchV(PrefKey.HOME_FOLDER_ADAPT_SIZE)
         )
         val folderColumnsDef = if (Device.isPad) 4 else 3
         TextWithSeekBar(

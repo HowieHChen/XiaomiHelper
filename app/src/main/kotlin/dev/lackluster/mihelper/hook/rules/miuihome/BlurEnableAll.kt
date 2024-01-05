@@ -16,12 +16,16 @@ object BlurEnableAll : YukiBaseHooker() {
     override fun onHook() {
         hasEnable(PrefKey.HOME_BLUR_ALL) {
             val blurUtilsClass = "com.miui.home.launcher.common.BlurUtils".toClass()
+            val fastBlurMethod = blurUtilsClass.method {
+                name = "fastBlurWhenUseCompleteRecentsBlur"
+                paramCount = 3
+                modifiers { isStatic }
+            }.get()
             blurUtilsClass.method {
                 name = "getBlurType"
             }.hook {
                 replaceTo(2)
             }
-
             hasEnable(PrefKey.HOME_BLUR_ENHANCE) {
                 if (Device.isPad) {
                     val launcherClz = "com.miui.home.launcher.Launcher".toClass()
@@ -60,17 +64,9 @@ object BlurEnableAll : YukiBaseHooker() {
                             after {
                                 val mLauncher = this.instance.current().field { name = "mLauncher"; superClass() }.any() ?: return@after
                                 val isFolderShowing = (XposedHelpers.callMethod(mLauncher, "isFolderShowing") as Boolean?) ?: false
-                                blurUtilsClass.method {
-                                    name = "fastBlurWhenUseCompleteRecentsBlur"
-                                    paramCount = 3
-                                    modifiers { isStatic }
-                                }.get().call(mLauncher, 1.0f, false)
+                                fastBlurMethod.call(mLauncher, 1.0f, false)
                                 if (!isFolderShowing) {
-                                    blurUtilsClass.method {
-                                        name = "fastBlurWhenUseCompleteRecentsBlur"
-                                        paramCount = 3
-                                        modifiers { isStatic }
-                                    }.get().call(mLauncher, 0.0f, true)
+                                    fastBlurMethod.call(mLauncher, 0.0f, true)
                                 }
                             }
                         }
@@ -84,11 +80,7 @@ object BlurEnableAll : YukiBaseHooker() {
                                 val isFolderShowing = (XposedHelpers.callMethod(mLauncher, "isFolderShowing") as Boolean?) ?: false
                                 val isInNormalEditing = XposedHelpers.callMethod(this.instance, "isInNormalEditingMode") as Boolean
                                 if (!isInNormalEditing && isFolderShowing) {
-                                    blurUtilsClass.method {
-                                        name = "fastBlurWhenUseCompleteRecentsBlur"
-                                        paramCount = 3
-                                        modifiers { isStatic }
-                                    }.get().call(mLauncher, 1.0f, false)
+                                    fastBlurMethod.call(mLauncher, 1.0f, false)
                                 }
                             }
                         }
@@ -103,16 +95,8 @@ object BlurEnableAll : YukiBaseHooker() {
                                 val mLauncher = this.args(0).any() ?: return@after
                                 val isFolderShowing = (XposedHelpers.callMethod(mLauncher, "isFolderShowing") as Boolean?) ?: false
                                 if (!isFolderShowing) {
-                                    blurUtilsClass.method {
-                                        name = "fastBlurWhenUseCompleteRecentsBlur"
-                                        paramCount = 3
-                                        modifiers { isStatic }
-                                    }.get().call(mLauncher, 1.0f, false)
-                                    blurUtilsClass.method {
-                                        name = "fastBlurWhenUseCompleteRecentsBlur"
-                                        paramCount = 3
-                                        modifiers { isStatic }
-                                    }.get().call(mLauncher, 0.0f, true)
+                                    fastBlurMethod.call(mLauncher, 1.0f, false)
+                                    fastBlurMethod.call(mLauncher, 0.0f, true)
                                 }
                             }
                         }
