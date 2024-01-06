@@ -122,10 +122,6 @@
     <string name="android_wallpaper_scale_tips">Affects the wallpaper zoom animation when launching/exiting apps on the desktop</string>
     <string name="android_switch_rotation_suggestions">Toggle rotation suggestions status</string>
     <string name="android_switch_rotation_suggestions_tips">Controls whether rotation suggestions are displayed</string>
-    <string name="android_switch_rotation_suggestions_before_true">已开启旋转建议</string>
-    <string name="android_switch_rotation_suggestions_before_false">已关闭旋转建议</string>
-    <string name="android_switch_rotation_suggestions_done_true">当前为禁用。确定要开启它吗？</string>
-    <string name="android_switch_rotation_suggestions_done_false">当前为启用。确定要关闭它吗？</string>
     <string name="android_freeform_restriction">Allow all apps to be in small window mode</string>
     <string name="android_freeform_restriction_tips">Ignore system blacklists and software\'s own disabling of small windows</string>
     <string name="android_disable_fixed_orientation">Disable fixed orientation</string>
@@ -339,4 +335,9 @@
     <string name="xiaoai_hide_watermark">Hide the watermark of the beta version</string>
     <string name="systemui_notif_redirect_dialog_positive">Text of the \"Notification channel settings\" button</string>
     <string name="systemui_notif_redirect_dialog_negative">Text of the \"App notification settings\" button</string>
+    <string name="android_switch_rotation_suggestions_before_true">Currently disabled. Are you sure you want to enable it?</string>
+    <string name="android_switch_rotation_suggestions_done_true">Enabled rotation suggestions</string>
+    <string name="android_switch_rotation_suggestions_before_false">Currently enabled. Are you sure you want to disable it?</string>
+    <string name="android_switch_rotation_suggestions_done_false">Disabled rotation suggestions</string>
+    <string name="android_switch_rotation_suggestions_failed">Failed! Please grant Root permission to this application and try again.</string>
 </resources>

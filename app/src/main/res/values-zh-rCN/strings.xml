@@ -293,8 +293,9 @@
     <string name="home_recent_docke_safe_height_tips">只有当滑动的高度小于此阈值时才会呼出 Dock</string>
     <string name="android_switch_rotation_suggestions">切换旋转建议状态</string>
     <string name="android_switch_rotation_suggestions_tips">控制是否显示旋转建议</string>
-    <string name="android_switch_rotation_suggestions_done_true">It is currently disabled. Are you sure you want to enable it?</string>
-    <string name="android_switch_rotation_suggestions_done_false">Currently enabled. Are you sure you want to disable it?</string>
-    <string name="android_switch_rotation_suggestions_before_true">Enabled rotation suggestions</string>
-    <string name="android_switch_rotation_suggestions_before_false">Disabled rotation suggestions</string>
+    <string name="android_switch_rotation_suggestions_done_true">已开启旋转建议</string>
+    <string name="android_switch_rotation_suggestions_done_false">已关闭旋转建议</string>
+    <string name="android_switch_rotation_suggestions_before_true">当前为禁用。确定要开启它吗？</string>
+    <string name="android_switch_rotation_suggestions_before_false">当前为启用。确定要关闭它吗？</string>
+    <string name="android_switch_rotation_suggestions_failed">失败！请授予本应用 Root 权限后重试</string>
 </resources>

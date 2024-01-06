@@ -61,8 +61,8 @@ class AndroidPage :BasePage() {
                 })
         )
         TextSummaryWithArrow(TextSummaryV(textId = R.string.android_switch_rotation_suggestions, tipsId = R.string.android_switch_rotation_suggestions_tips, onClickListener = {
-            val next = 1 - (Shell.exec("settings get secure num_rotation_suggestions_accepted", true).toIntOrNull() ?: 0)
             MIUIDialog(activity) {
+                val next = 1 - (Shell.exec("settings get secure show_rotation_suggestions", true).trim().toIntOrNull() ?: 0)
                 setTitle(R.string.dialog_warning)
                 setMessage(
                     if (next == 0) { R.string.android_switch_rotation_suggestions_before_false }
@@ -73,7 +73,7 @@ class AndroidPage :BasePage() {
                 }
                 setRButton(R.string.button_ok) {
                     try {
-                        Shell.exec("settings put secure num_rotation_suggestions_accepted $next", true)
+                        Shell.exec("settings put secure show_rotation_suggestions $next", true)
                         makeText(
                             activity,
                             if (next == 0) { getString(R.string.android_switch_rotation_suggestions_done_false) }
@@ -85,7 +85,7 @@ class AndroidPage :BasePage() {
                     catch (_ : Throwable) {
                         makeText(
                             activity,
-                            getString(R.string.reboot_error_toast),
+                            getString(R.string.android_switch_rotation_suggestions_failed),
                             LENGTH_LONG
                         ).show()
                         dismiss()
