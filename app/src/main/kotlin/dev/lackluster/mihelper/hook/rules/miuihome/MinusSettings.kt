@@ -17,6 +17,10 @@ object MinusSettings : YukiBaseHooker() {
             val clazzUtilities = "com.miui.home.launcher.common.Utilities".toClass()
             val clazzLauncher = "com.miui.home.launcher.Launcher".toClass()
             val clazzMiuiHomeSettings = "com.miui.home.settings.MiuiHomeSettings".toClass()
+            val isInternationalBuild = "miui.os.Build".toClass().field {
+                name = "IS_INTERNATIONAL_BUILD"
+                modifiers { isStatic }
+            }.get()
             "com.miui.home.launcher.DeviceConfig".toClass()
                 .method {
                     name = "isUseGoogleMinusScreen"
@@ -39,30 +43,18 @@ object MinusSettings : YukiBaseHooker() {
                         val isPersonalAssistantGoogle = clazzUtilities.method {
                             name = "getCurrentPersonalAssistant"
                         }.get().string() == "personal_assistant_google"
-                        "miui.os.Build".toClass().field {
-                            name = "IS_INTERNATIONAL_BUILD"
-                            modifiers { isStatic }
-                        }.get().set(isPersonalAssistantGoogle)
+                        isInternationalBuild.set(isPersonalAssistantGoogle)
                     }
                     after {
-                        "miui.os.Build".toClass().field {
-                            name = "IS_INTERNATIONAL_BUILD"
-                            modifiers { isStatic }
-                        }.get().setFalse()
+                        isInternationalBuild.setFalse()
                     }
                 }
             clazzLauncher.constructor().hook {
                 before {
-                    "miui.os.Build".toClass().field {
-                        name = "IS_INTERNATIONAL_BUILD"
-                        modifiers { isStatic }
-                    }.get().setTrue()
+                    isInternationalBuild.setTrue()
                 }
                 after {
-                    "miui.os.Build".toClass().field {
-                        name = "IS_INTERNATIONAL_BUILD"
-                        modifiers { isStatic }
-                    }.get().setFalse()
+                    isInternationalBuild.setFalse()
                 }
             }
             clazzMiuiHomeSettings.apply {
