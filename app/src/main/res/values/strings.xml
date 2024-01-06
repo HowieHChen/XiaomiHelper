@@ -229,8 +229,6 @@
     <string name="systemui_notif_redirect_dialog_hint">Leave blank to use the default value</string>
     <string name="systemui_notif_redirect_dialog_negative_default">Application settings</string>
     <string name="systemui_notif_redirect_dialog_positive_default">Channel settings</string>
-    <string name="systemui_control_bluetooth_restrict">Disable Bluetooth temporary shutdown</string>
-    <string name="systemui_control_bluetooth_restrict_tips">Bluetooth won\'t turn on automatically after being turned off in the Control Center</string>
     <string name="systemui_tips_default_theme">Only works with the default theme</string>
     <string name="systemui_lock_screen_double_tap" translatable="false">@string/home_behavior_double_tap</string>
     <string name="systemui_lock_screen_hide_disturb">Hide Do Not Disturb mode resident notifications</string>

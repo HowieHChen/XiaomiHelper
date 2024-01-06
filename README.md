@@ -8,24 +8,22 @@
 [![GitHub stars](https://img.shields.io/github/stars/HowieHChen/XiaomiHelper)](https://github.com/HowieHChen/XiaomiHelper/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/HowieHChen/XiaomiHelper)](https://github.com/HowieHChen/XiaomiHelper/forks)
 
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/Xposed-Modules-Repo/dev.lackluster.mihelper?label=release(Xposed))](https://github.com/Xposed-Modules-Repo/dev.lackluster.mihelper/releases/latest) 
-[![GitHub Release Date](https://img.shields.io/github/release-date/Xposed-Modules-Repo/dev.lackluster.mihelper?label=release%20date(Xposed))](https://github.com/Xposed-Modules-Repo/dev.lackluster.mihelper/releases/latest)
-[![GitHub Release Downloads](https://img.shields.io/github/downloads/Xposed-Modules-Repo/dev.lackluster.mihelper/total?label=downloads(Xposed))](https://github.com/Xposed-Modules-Repo/dev.lackluster.mihelper/releases)  
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/HowieHChen/XiaomiHelper?label=release)](https://github.com/HowieHChen/XiaomiHelper/releases/latest) 
-[![GitHub Release Date](https://img.shields.io/github/release-date/HowieHChen/XiaomiHelper?label=release%20date)](https://github.com/HowieHChen/XiaomiHelper/releases/latest)
-[![GitHub Release Downloads](https://img.shields.io/github/downloads/HowieHChen/XiaomiHelper/total?label=downloads)](https://github.com/HowieHChen/XiaomiHelper/releases)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/Xposed-Modules-Repo/dev.lackluster.mihelper)](https://github.com/Xposed-Modules-Repo/dev.lackluster.mihelper/releases/latest) 
+[![GitHub Release Date](https://img.shields.io/github/release-date/Xposed-Modules-Repo/dev.lackluster.mihelper)](https://github.com/Xposed-Modules-Repo/dev.lackluster.mihelper/releases/latest)  
+[![GitHub Release Downloads](https://img.shields.io/github/downloads/Xposed-Modules-Repo/dev.lackluster.mihelper/total)](https://github.com/Xposed-Modules-Repo/dev.lackluster.mihelper/releases)
+[![GitHub Release Downloads](https://img.shields.io/github/downloads/HowieHChen/XiaomiHelper/total?label=downloads(this))](https://github.com/HowieHChen/XiaomiHelper/releases)
 
 </div>
 
 ## 介绍 (Introduction)
 
 HyperOS 的轻量级模块，仅适用于 HyperOS ！     
-自用模块，基于小米 12S Pro开发。     
+自用模块，基于小米 12S Pro 和小米 Pad 6 Pro 开发。     
 大部分功能基于其它模块，少量原创。
 
 Lightweight modules for HyperOS only!     
-Self-use module, developed based on Xiaomi 12S Pro.      
-Most of the functionality is based on other modules, with a small amount of originality.
+Self-use module, developed based on Xiaomi 12S Pro and Xiaomi Pad 6 Pro.      
+Most functions are based on other modules, with a small amount of original.
 
 ## 源代码 (Source code)
 

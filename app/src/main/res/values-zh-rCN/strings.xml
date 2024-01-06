@@ -168,8 +168,6 @@
     <string name="systemui_notif_freeform_tips">下拉通知以打开小窗，部分通过“Mi Push”推送的通知可能不受支持</string>
     <string name="systemui_notif_redirect_settings">重定向通知设置</string>
     <string name="systemui_notif_redirect_settings_tips">打开通知设置时会导航至对应的通知类别设置，而不是应用通知设置</string>
-    <string name="systemui_control_bluetooth_restrict">禁止蓝牙暂时关闭</string>
-    <string name="systemui_control_bluetooth_restrict_tips">控制中心关闭蓝牙后不会再自动开启</string>
     <string name="systemui_tips_default_theme">只在默认主题时生效</string>
     <string name="systemui_lock_screen_hide_disturb">隐藏勿扰模式常驻通知</string>
     <string name="systemui_lock_screen_hide_unlock_tip">隐藏锁屏界面底部的解锁提示</string>

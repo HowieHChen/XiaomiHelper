@@ -71,7 +71,7 @@ object PrefKey {
     const val SECURITY_SYSTEM_APP_WIFI = "security_system_app_wifi"
     const val SETTINGS_SHOW_GOOGLE = "settings_show_google"
     const val SETTINGS_UNLOCK_VOIP_ASSISTANT = "settings_unlock_voip_assistant"
-    const val SYSTEMUI_CONTROL_BLUETOOTH = "systemui_bluetooth_restrict"
+//    const val SYSTEMUI_CONTROL_BLUETOOTH = "systemui_bluetooth_restrict"
     const val SYSTEMUI_DOUBLE_TAP_TO_SLEEP = "systemui_double_tap_sleep"
     const val SYSTEMUI_LOCKSCREEN_HIDE_UNLOCK_TIP = "systemui_lockscreen_hide_tip"
     const val SYSTEMUI_LOCKSCREEN_HIDE_DISTURB = "systemui_lockscreen_hide_disturb"

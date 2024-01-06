@@ -264,15 +264,6 @@ class SystemUIPage : BasePage(){
             dataBindingRecv = notificationRedirectCustomBinding.binding.getRecv(1)
         )
         Line()
-        TitleText(textId = R.string.ui_title_systemui_control_center)
-        TextSummaryWithSwitch(
-            TextSummaryV(
-                textId = R.string.systemui_control_bluetooth_restrict,
-                tipsId = R.string.systemui_control_bluetooth_restrict_tips
-            ),
-            SwitchV(PrefKey.SYSTEMUI_CONTROL_BLUETOOTH)
-        )
-        Line()
         TitleText(textId = R.string.ui_title_systemui_lock_screen)
         TextSummaryWithSwitch(
             TextSummaryV(textId = R.string.systemui_lock_screen_hide_unlock_tip),
