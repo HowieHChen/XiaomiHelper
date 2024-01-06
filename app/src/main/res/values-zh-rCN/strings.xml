@@ -291,4 +291,10 @@
     <string name="home_recent_dock_time_tips">不建议设置超过1000毫秒的值</string>
     <string name="home_recent_docke_safe_height">呼出 Dock 的阈值高度</string>
     <string name="home_recent_docke_safe_height_tips">只有当滑动的高度小于此阈值时才会呼出 Dock</string>
+    <string name="android_switch_rotation_suggestions">切换旋转建议状态</string>
+    <string name="android_switch_rotation_suggestions_tips">控制是否显示旋转建议</string>
+    <string name="android_switch_rotation_suggestions_done_true">It is currently disabled. Are you sure you want to enable it?</string>
+    <string name="android_switch_rotation_suggestions_done_false">Currently enabled. Are you sure you want to disable it?</string>
+    <string name="android_switch_rotation_suggestions_before_true">Enabled rotation suggestions</string>
+    <string name="android_switch_rotation_suggestions_before_false">Disabled rotation suggestions</string>
 </resources>

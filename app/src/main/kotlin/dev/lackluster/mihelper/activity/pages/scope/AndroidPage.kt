@@ -11,6 +11,7 @@ import cn.fkj233.ui.activity.view.TextSummaryV
 import cn.fkj233.ui.dialog.MIUIDialog
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.data.PrefKey
+import dev.lackluster.mihelper.utils.Shell
 
 @BMPage("scope_android", hideMenu = false)
 class AndroidPage :BasePage() {
@@ -59,6 +60,39 @@ class AndroidPage :BasePage() {
                     }.show()
                 })
         )
+        TextSummaryWithArrow(TextSummaryV(textId = R.string.android_switch_rotation_suggestions, tipsId = R.string.android_switch_rotation_suggestions_tips, onClickListener = {
+            val next = 1 - (Shell.exec("settings get secure num_rotation_suggestions_accepted", true).toIntOrNull() ?: 0)
+            MIUIDialog(activity) {
+                setTitle(R.string.dialog_warning)
+                setMessage(
+                    if (next == 0) { R.string.android_switch_rotation_suggestions_before_false }
+                    else { R.string.android_switch_rotation_suggestions_before_true }
+                )
+                setLButton(R.string.button_cancel) {
+                    dismiss()
+                }
+                setRButton(R.string.button_ok) {
+                    try {
+                        Shell.exec("settings put secure num_rotation_suggestions_accepted $next", true)
+                        makeText(
+                            activity,
+                            if (next == 0) { getString(R.string.android_switch_rotation_suggestions_done_false) }
+                            else { getString(R.string.android_switch_rotation_suggestions_done_true) },
+                            LENGTH_LONG
+                        ).show()
+                        dismiss()
+                    }
+                    catch (_ : Throwable) {
+                        makeText(
+                            activity,
+                            getString(R.string.reboot_error_toast),
+                            LENGTH_LONG
+                        ).show()
+                        dismiss()
+                    }
+                }
+            }.show()
+        }))
         Line()
         TitleText(textId = R.string.ui_title_android_behavior)
         TextSummaryWithSwitch(

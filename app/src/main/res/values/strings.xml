@@ -120,6 +120,12 @@
     <string name="android_dark_for_all_tips">Make it possible to enable the forced dark mode feature for most applications, except for system applications, etc.</string>
     <string name="android_wallpaper_scale">Wallpaper Scale</string>
     <string name="android_wallpaper_scale_tips">Affects the wallpaper zoom animation when launching/exiting apps on the desktop</string>
+    <string name="android_switch_rotation_suggestions">Toggle rotation suggestions status</string>
+    <string name="android_switch_rotation_suggestions_tips">Controls whether rotation suggestions are displayed</string>
+    <string name="android_switch_rotation_suggestions_before_true">已开启旋转建议</string>
+    <string name="android_switch_rotation_suggestions_before_false">已关闭旋转建议</string>
+    <string name="android_switch_rotation_suggestions_done_true">当前为禁用。确定要开启它吗？</string>
+    <string name="android_switch_rotation_suggestions_done_false">当前为启用。确定要关闭它吗？</string>
     <string name="android_freeform_restriction">Allow all apps to be in small window mode</string>
     <string name="android_freeform_restriction_tips">Ignore system blacklists and software\'s own disabling of small windows</string>
     <string name="android_disable_fixed_orientation">Disable fixed orientation</string>
