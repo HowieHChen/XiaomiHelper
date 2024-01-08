@@ -84,6 +84,40 @@ class MiuiHomePage : BasePage() {
             SwitchV(PrefKey.HOME_BLUR_ENHANCE),
             dataBindingRecv = blurBinding.binding.getRecv(1)
         )
+        TextSummaryWithArrow(
+            TextSummaryV(
+                textId = R.string.home_behavior_blur_radius,
+                tipsId = R.string.home_behavior_blur_radius_tips,
+                onClickListener = {
+                    MIUIDialog(activity) {
+                        setTitle(R.string.home_behavior_blur_radius)
+                        setMessage(getString(R.string.home_behavior_blur_radius_msg) + " (${activity.getString(R.string.dialog_default_value)}: 100, ${activity.getString(R.string.dialog_current_value)}: ${
+                            MIUIActivity.safeSP.getInt(PrefKey.HOME_BLUR_RADIUS, 100)
+                        })")
+                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0-150")
+                        setLButton(textId = R.string.button_cancel) {
+                            dismiss()
+                        }
+                        setRButton(textId = R.string.button_ok) {
+                            if (getEditText().isNotEmpty()) {
+                                runCatching {
+                                    MIUIActivity.safeSP.putAny(
+                                        PrefKey.HOME_BLUR_RADIUS,
+                                        getEditText().toInt().coerceIn(0, 150)
+                                    )
+                                }.onFailure {
+                                    Toast.makeText(
+                                        activity,
+                                        activity.getString(R.string.invalid_input),
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+                            }
+                            dismiss()
+                        }
+                    }.show()
+                })
+        )
         TextSummaryWithSwitch(
             TextSummaryV(
                 textId = R.string.home_remove_report,
@@ -99,6 +133,13 @@ class MiuiHomePage : BasePage() {
                 tipsId = R.string.home_anim_unlock_tips
             ),
             SwitchV(PrefKey.HOME_ANIM_UNLOCK)
+        )
+        TextSummaryWithSwitch(
+            TextSummaryV(
+                textId = R.string.home_anim_zoom_sync,
+                tipsId = R.string.home_anim_zoom_sync_tips
+            ),
+            SwitchV(PrefKey.HOME_WALLPAPER_ZOOM_SYNC)
         )
         Line()
         TitleText(textId = R.string.ui_title_home_icon)

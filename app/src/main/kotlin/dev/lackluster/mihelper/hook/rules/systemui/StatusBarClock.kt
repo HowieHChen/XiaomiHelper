@@ -10,6 +10,7 @@ import com.highcapable.yukihookapi.hook.factory.current
 import com.highcapable.yukihookapi.hook.factory.method
 import com.highcapable.yukihookapi.hook.param.HookParam
 import dev.lackluster.mihelper.data.PrefKey
+import dev.lackluster.mihelper.utils.Math
 import dev.lackluster.mihelper.utils.Prefs
 import dev.lackluster.mihelper.utils.Prefs.hasEnable
 import java.util.Timer
@@ -141,22 +142,22 @@ object StatusBarClock : YukiBaseHooker() {
                             name = "mUseTint"
                         }.boolean()
                         val inTintColor = Color.argb(
-                            lerp(tintColor.alpha(), bigTimeColor.alpha(), whiteFraction),
-                            lerp(tintColor.red(), bigTimeColor.red(), whiteFraction),
-                            lerp(tintColor.green(), bigTimeColor.green(), whiteFraction),
-                            lerp(tintColor.blue(), bigTimeColor.blue(), whiteFraction)
+                            Math.linearInterpolate(tintColor.alpha(), bigTimeColor.alpha(), whiteFraction),
+                            Math.linearInterpolate(tintColor.red(), bigTimeColor.red(), whiteFraction),
+                            Math.linearInterpolate(tintColor.green(), bigTimeColor.green(), whiteFraction),
+                            Math.linearInterpolate(tintColor.blue(), bigTimeColor.blue(), whiteFraction)
                         )
                         val inLightColor = Color.argb(
-                            lerp(lightColor.alpha(), bigTimeColor.alpha(), whiteFraction),
-                            lerp(lightColor.red(), bigTimeColor.red(), whiteFraction),
-                            lerp(lightColor.green(), bigTimeColor.green(), whiteFraction),
-                            lerp(lightColor.blue(), bigTimeColor.blue(), whiteFraction)
+                            Math.linearInterpolate(lightColor.alpha(), bigTimeColor.alpha(), whiteFraction),
+                            Math.linearInterpolate(lightColor.red(), bigTimeColor.red(), whiteFraction),
+                            Math.linearInterpolate(lightColor.green(), bigTimeColor.green(), whiteFraction),
+                            Math.linearInterpolate(lightColor.blue(), bigTimeColor.blue(), whiteFraction)
                         )
                         val inDarkColor = Color.argb(
-                            lerp(darkColor.alpha(), bigTimeColor.alpha(), whiteFraction),
-                            lerp(darkColor.red(), bigTimeColor.red(), whiteFraction),
-                            lerp(darkColor.green(), bigTimeColor.green(), whiteFraction),
-                            lerp(darkColor.blue(), bigTimeColor.blue(), whiteFraction)
+                            Math.linearInterpolate(darkColor.alpha(), bigTimeColor.alpha(), whiteFraction),
+                            Math.linearInterpolate(darkColor.red(), bigTimeColor.red(), whiteFraction),
+                            Math.linearInterpolate(darkColor.green(), bigTimeColor.green(), whiteFraction),
+                            Math.linearInterpolate(darkColor.blue(), bigTimeColor.blue(), whiteFraction)
                         )
                         this.instance.current().method {
                             name = "getBigTime"
@@ -166,10 +167,6 @@ object StatusBarClock : YukiBaseHooker() {
                     }
                 }
         }
-    }
-
-    private fun lerp(start: Float, stop: Float, amount: Float): Float {
-        return start + (stop - start) * amount
     }
 
     @SuppressLint("DiscouragedApi")

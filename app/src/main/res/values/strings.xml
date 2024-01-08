@@ -139,6 +139,8 @@
     <string name="guard_forbid_upload_app">Block uploading of installed apps list</string>
     <string name="home_anim_unlock">Optimize unlocking animation</string>
     <string name="home_anim_unlock_tips">Optimize the animation of the icon when unlocking</string>
+    <string name="home_anim_zoom_sync">Synchronize wallpaper zoom with app launch</string>
+    <string name="home_anim_zoom_sync_tips">Prevents a situation where the app is not launched but the wallpaper is zoomed. Will make the app launch look slower and is not recommended to be enabled.</string>
     <string name="home_behavior_always_show_clock">Always show time in status bar</string>
     <string name="home_behavior_double_tap">Double-tap the blank space to sleep</string>
     <string name="home_behavior_enable4pad">Restore features hidden by default on tablet</string>
@@ -148,9 +150,12 @@
     <string name="home_behavior_all_blur_tips">Enable some blurs effects that are hidden by default</string>
     <string name="home_behavior_all_blur_enhance">Enhance blur effects</string>
     <string name="home_behavior_all_blur_enhance_tips">Add some extra blurring effects, but may cause frame dropping or flickering</string>
+    <string name="home_behavior_blur_radius">Blur radius</string>
+    <string name="home_behavior_blur_radius_tips">Affects the blur radius of all blurs that are not High-quality materials blurs.</string>
+    <string name="home_behavior_blur_radius_msg">Avoid blur radius higher than 150, as this will significantly impact performance.</string>
     <string name="home_folder_adapt_icon_size">Adaptive icon size in large folders</string>
     <string name="home_folder_adapt_icon_size_tips">When a large folder (3x3 or 2x2) is just filled with icons ( number of 9 or 4), the last icon is also a large icon</string>
-    <string name="home_behavior_blur_advance">Force advanced materials to be enabled</string>
+    <string name="home_behavior_blur_advance">Force High-quality materials to be enabled</string>
     <string name="home_behavior_blur_advance_tips">Add advanced material blurring effects to folders and shortcut menus</string>
     <string name="home_folder_layout_fix">Utilizes the entire folder view width</string>
     <string name="home_folder_layout_size">Number of columns of icons in the folder</string>

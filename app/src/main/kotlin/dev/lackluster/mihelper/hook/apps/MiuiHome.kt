@@ -9,6 +9,7 @@ import dev.lackluster.mihelper.hook.rules.miuihome.DoubleTapToSleep
 import dev.lackluster.mihelper.hook.rules.miuihome.FakePremium
 import dev.lackluster.mihelper.hook.rules.miuihome.FolderAdaptIconSize
 import dev.lackluster.mihelper.hook.rules.miuihome.BlurAdvancedEffect
+import dev.lackluster.mihelper.hook.rules.miuihome.BlurRadius
 import dev.lackluster.mihelper.hook.rules.miuihome.FolderColumns
 import dev.lackluster.mihelper.hook.rules.miuihome.IconCornerForLarge
 import dev.lackluster.mihelper.hook.rules.miuihome.PerfectIcon
@@ -22,6 +23,7 @@ import dev.lackluster.mihelper.hook.rules.miuihome.RecentCardAnim
 import dev.lackluster.mihelper.hook.rules.miuihome.RemoveReport
 import dev.lackluster.mihelper.hook.rules.miuihome.ShowRealMemory
 import dev.lackluster.mihelper.hook.rules.miuihome.StopWallpaperDarken
+import dev.lackluster.mihelper.hook.rules.miuihome.WallpaperZoomSync
 import dev.lackluster.mihelper.hook.rules.miuihome.WidgetAnim
 import dev.lackluster.mihelper.hook.rules.miuihome.WidgetResizable
 import dev.lackluster.mihelper.utils.DexKit
@@ -52,6 +54,8 @@ object MiuiHome : YukiBaseHooker() {
         loadHooker(WidgetAnim)
         loadHooker(WidgetResizable)
         loadHooker(PadDockCustom)
+        loadHooker(WallpaperZoomSync)
+        loadHooker(BlurRadius)
         DexKit.closeDexKit()
     }
 }
