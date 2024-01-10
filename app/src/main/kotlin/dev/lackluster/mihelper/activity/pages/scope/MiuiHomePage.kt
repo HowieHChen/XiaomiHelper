@@ -79,12 +79,12 @@ class MiuiHomePage : BasePage() {
                         MIUIDialog(activity) {
                             setTitle(R.string.home_behavior_refactor_dialog_title)
                             setMessage(R.string.home_behavior_refactor_dialog_msg)
-                            setLButton(textId = R.string.button_cancel) {
+                            setLButton(textId = R.string.button_disable) {
                                 MIUIActivity.safeSP.putAny(PrefKey.HOME_BLUR_REFACTOR, false)
                                 refactorBinding.binding.Send().send(false)
                                 dismiss()
                             }
-                            setRButton(textId = R.string.button_ok) {
+                            setRButton(textId = R.string.button_enable) {
                                 MIUIActivity.safeSP.putAny(PrefKey.HOME_BLUR_REFACTOR, true)
                                 refactorBinding.binding.Send().send(true)
                                 dismiss()

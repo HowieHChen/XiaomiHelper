@@ -106,7 +106,7 @@
     <string name="home_behavior_blur_advance_tips">为文件夹和快捷方式菜单添加高级材质模糊效果</string>
     <string name="home_behavior_refactor">高级模糊效果</string>
     <string name="home_behavior_refactor_tips">牺牲性能和功耗换取全新交互体验</string>
-    <string name="home_behavior_refactor_dialog_msg">实验功能！\n\n本功能基于“高级材质”重构桌面，请确保您的设备支持“高级材质”。\n\n开启后，您将面临包括但不限于以下风险：耗电、掉帧、卡顿甚至崩溃。\n\n请确保您未使用修改版桌面并且已禁用任何与桌面模糊、动画相关的模块\n\n您确定要开启本功能吗？</string>
+    <string name="home_behavior_refactor_dialog_msg">实验功能！\n\n本功能基于“高级材质”重构桌面，请确保您的设备支持“高级材质”\n\n开启后，您将面临包括但不限于以下风险：耗电、掉帧、卡顿甚至崩溃\n\n请确保您未使用修改版桌面并且已禁用任何与桌面模糊、动画相关的模块\n\n您确定要开启本功能吗？</string>
     <string name="home_behavior_refactor_details">高级模糊效果自定义</string>
     <string name="home_folder_layout_fix">利用整个文件夹视图宽度</string>
     <string name="home_folder_layout_size">文件夹内图标列数</string>
