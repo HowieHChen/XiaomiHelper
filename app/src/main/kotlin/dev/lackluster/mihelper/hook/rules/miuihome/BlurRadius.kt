@@ -8,7 +8,10 @@ import dev.lackluster.mihelper.utils.Prefs
 
 object BlurRadius : YukiBaseHooker() {
     private const val blurDefValue = 100
-    private val blurRadius = Prefs.getInt(PrefKey.HOME_BLUR_RADIUS, blurDefValue)
+    private val blurRadius =
+        if (Prefs.getBoolean(PrefKey.HOME_BLUR_REFACTOR, false)) { 0 }
+        else { Prefs.getInt(PrefKey.HOME_BLUR_RADIUS, blurDefValue) }
+
     override fun onHook() {
         if (blurRadius != blurDefValue) {
             "com.miui.launcher.utils.BlurUtils".toClass()

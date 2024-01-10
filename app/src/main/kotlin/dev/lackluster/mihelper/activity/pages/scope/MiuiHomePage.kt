@@ -55,13 +55,6 @@ class MiuiHomePage : BasePage() {
             ),
             SwitchV(PrefKey.HOME_FAKE_PREMIUM)
         )
-        val blurBinding = GetDataBinding({
-            MIUIActivity.safeSP.getBoolean(PrefKey.HOME_BLUR_ALL, false)
-        }) { view, flags, data ->
-            when (flags) {
-                1 -> view.visibility = if (data as Boolean) View.VISIBLE else View.GONE
-            }
-        }
         TextSummaryWithSwitch(
             TextSummaryV(
                 textId = R.string.home_behavior_blur_advance,
@@ -69,21 +62,69 @@ class MiuiHomePage : BasePage() {
             ),
             SwitchV(PrefKey.HOME_BLUR_ADVANCE)
         )
+        val refactorBinding = GetDataBinding({
+            MIUIActivity.safeSP.getBoolean(PrefKey.HOME_BLUR_REFACTOR, false)
+        }) { view, flags, data ->
+            when (flags) {
+                0 -> view.visibility = if (data as Boolean) View.VISIBLE else View.GONE
+                1 -> view.visibility = if (data as Boolean) View.GONE else View.VISIBLE
+            }
+        }
+        if (!Device.isPad) {
+            TextSummaryWithArrow(
+                TextSummaryV(
+                    textId = R.string.home_behavior_refactor,
+                    tipsId = R.string.home_behavior_refactor_tips,
+                    onClickListener = {
+                        MIUIDialog(activity) {
+                            setTitle(R.string.home_behavior_refactor_dialog_title)
+                            setMessage(R.string.home_behavior_refactor_dialog_msg)
+                            setLButton(textId = R.string.button_cancel) {
+                                MIUIActivity.safeSP.putAny(PrefKey.HOME_BLUR_REFACTOR, false)
+                                refactorBinding.binding.Send().send(false)
+                                dismiss()
+                            }
+                            setRButton(textId = R.string.button_ok) {
+                                MIUIActivity.safeSP.putAny(PrefKey.HOME_BLUR_REFACTOR, true)
+                                refactorBinding.binding.Send().send(true)
+                                dismiss()
+                            }
+                        }.show()
+                    })
+            )
+            TextSummaryWithArrow(
+                TextSummaryV(
+                    textId = R.string.home_behavior_refactor_details,
+                    onClickListener = { showFragment("home_refactor") }),
+                dataBindingRecv = refactorBinding.binding.getRecv(0)
+            )
+        }
+        val blurBinding = GetDataBinding({
+            MIUIActivity.safeSP.getBoolean(PrefKey.HOME_BLUR_ALL, false) &&
+                    !MIUIActivity.safeSP.getBoolean(PrefKey.HOME_BLUR_REFACTOR, false)
+        }) { view, flags, data ->
+            when (flags) {
+                1 -> view.visibility = if (data as Boolean) View.VISIBLE else View.GONE
+            }
+        }
         TextSummaryWithSwitch(
             TextSummaryV(
                 textId = R.string.home_behavior_all_blur,
                 tipsId = R.string.home_behavior_all_blur_tips
             ),
-            SwitchV(PrefKey.HOME_BLUR_ALL, dataBindingSend = blurBinding.bindingSend)
+            SwitchV(PrefKey.HOME_BLUR_ALL, dataBindingSend = blurBinding.bindingSend),
+            dataBindingRecv = refactorBinding.binding.getRecv(1)
         )
-        TextSummaryWithSwitch(
-            TextSummaryV(
-                textId = R.string.home_behavior_all_blur_enhance,
-                tipsId = R.string.home_behavior_all_blur_enhance_tips
-            ),
-            SwitchV(PrefKey.HOME_BLUR_ENHANCE),
-            dataBindingRecv = blurBinding.binding.getRecv(1)
-        )
+        if (Device.isPad) {
+            TextSummaryWithSwitch(
+                TextSummaryV(
+                    textId = R.string.home_behavior_all_blur_enhance,
+                    tipsId = R.string.home_behavior_all_blur_enhance_tips
+                ),
+                SwitchV(PrefKey.HOME_BLUR_ENHANCE),
+                dataBindingRecv = blurBinding.binding.getRecv(1)
+            )
+        }
         TextSummaryWithArrow(
             TextSummaryV(
                 textId = R.string.home_behavior_blur_radius,
@@ -184,7 +225,8 @@ class MiuiHomePage : BasePage() {
                 textId = R.string.home_recent_wallpaper_darken,
                 tipsId = R.string.home_recent_wallpaper_darken_tips
             ),
-            SwitchV(PrefKey.HOME_WALLPAPER_DARKEN)
+            SwitchV(PrefKey.HOME_WALLPAPER_DARKEN),
+            dataBindingRecv = refactorBinding.binding.getRecv(1)
         )
         TextSummaryWithSwitch(
             TextSummaryV(

@@ -9,6 +9,7 @@ import dev.lackluster.mihelper.hook.rules.miuihome.DoubleTapToSleep
 import dev.lackluster.mihelper.hook.rules.miuihome.FakePremium
 import dev.lackluster.mihelper.hook.rules.miuihome.FolderAdaptIconSize
 import dev.lackluster.mihelper.hook.rules.miuihome.BlurAdvancedEffect
+import dev.lackluster.mihelper.hook.rules.miuihome.BlurEnhance
 import dev.lackluster.mihelper.hook.rules.miuihome.BlurRadius
 import dev.lackluster.mihelper.hook.rules.miuihome.FolderColumns
 import dev.lackluster.mihelper.hook.rules.miuihome.IconCornerForLarge
@@ -56,6 +57,7 @@ object MiuiHome : YukiBaseHooker() {
         loadHooker(PadDockCustom)
         loadHooker(WallpaperZoomSync)
         loadHooker(BlurRadius)
+        loadHooker(BlurEnhance)
         DexKit.closeDexKit()
     }
 }

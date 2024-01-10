@@ -16,6 +16,7 @@ import dev.lackluster.mihelper.activity.pages.scope.OthersPage
 import dev.lackluster.mihelper.activity.pages.scope.SecurityCenterPage
 import dev.lackluster.mihelper.activity.pages.scope.SystemUIPage
 import dev.lackluster.mihelper.activity.pages.sub.DisableFixedOrientationPage
+import dev.lackluster.mihelper.activity.pages.sub.HomeRefactorPage
 import dev.lackluster.mihelper.activity.pages.sub.IconTunerPage
 import dev.lackluster.mihelper.utils.factory.getSP
 
@@ -56,6 +57,7 @@ class MainActivity : MIUIActivity() {
         registerPage(MiuiHomePage::class.java)
         registerPage(DisableFixedOrientationPage::class.java)
         registerPage(IconTunerPage::class.java)
+        registerPage(HomeRefactorPage::class.java)
         when (Build.VERSION.SDK_INT) {
             Build.VERSION_CODES.TIRAMISU -> {
 

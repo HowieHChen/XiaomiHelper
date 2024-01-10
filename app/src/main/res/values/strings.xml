@@ -16,6 +16,7 @@
     <string name="ui_page_systemui">System UI</string>
     <string name="ui_page_disable_fixed_orientation" translatable="false">@string/android_disable_fixed_orientation_scope</string>
     <string name="ui_page_status_bar_icon_tuner">Icon Tuner</string>
+    <string name="ui_page_home_refactor">Customizing the blur effect</string>
 
     <string name="ui_title_about_developer">Developer</string>
     <string name="ui_title_about_open_source">Source code</string>
@@ -79,6 +80,8 @@
     <string name="button_cancel">Cancel</string>
     <string name="button_ok">OK</string>
     <string name="button_clear">Clear</string>
+    <string name="button_enable">Enable</string>
+    <string name="button_disable">Disable</string>
 
     <string name="dialog_warning">Warning</string>
     <string name="dialog_error">Error</string>
@@ -157,6 +160,11 @@
     <string name="home_folder_adapt_icon_size_tips">When a large folder (3x3 or 2x2) is just filled with icons ( number of 9 or 4), the last icon is also a large icon</string>
     <string name="home_behavior_blur_advance">Force High-quality materials to be enabled</string>
     <string name="home_behavior_blur_advance_tips">Add advanced material blurring effects to folders and shortcut menus</string>
+    <string name="home_behavior_refactor">Advanced blur effects</string>
+    <string name="home_behavior_refactor_tips">New interactive experiences at the cost of performance and power consumption</string>
+    <string name="home_behavior_refactor_dialog_title" translatable="false">@string/dialog_warning</string>
+    <string name="home_behavior_refactor_dialog_msg">EXPERIMENTAL FEATURES!\n\nThis feature refactors the launcher based on High-quality materials, please make sure your device supports High-quality materials.\n\nIf you turn it on, you will be exposed to risks including, but not limited to, power consumption, frame drops, jank, and even crashes.\n\nAre you sure you want to enable this feature?</string>
+    <string name="home_behavior_refactor_details">Advanced blur effect customization options</string>
     <string name="home_folder_layout_fix">Utilizes the entire folder view width</string>
     <string name="home_folder_layout_size">Number of columns of icons in the folder</string>
     <string name="home_icon_unblock_google">Unblock Icons for Google Apps</string>
@@ -180,6 +188,18 @@
     <string name="home_disable_fake_navbar_tips">Disable the fake navigation bar handles on the horizontal Recent Tasks screen and use the real one</string>
     <string name="home_widget_resizable">Make all Android widgets resizable</string>
     <string name="home_widget_anim">Add startup animation to all widgets</string>
+    <string name="home_refactor_dim">Dim the background</string>
+    <string name="home_refactor_dim_tips">Dim the background when opening apps, closing apps, and on the recent tasks page</string>
+    <string name="home_refactor_dim_alpha">Opacity of the mask used for dimming</string>
+    <string name="home_refactor_dim_alpha_tips">Set 0 for transparent, set 1 for black.</string>
+    <string name="home_refactor_nonlinear">Non-linear animation</string>
+    <string name="home_refactor_nonlinear_tips">Only affects the rate of change of the blur animation</string>
+    <string name="home_refactor_nonlinear_factor">Non-linear animation factor</string>
+    <string name="home_refactor_nonlinear_factor_tips">The larger the value the greater the initial rate of change of the animation</string>
+    <string name="home_refactor_recent_show">Show launcher view</string>
+    <string name="home_refactor_recent_show_tips">Do not hide the launcher view when in the recent tasks view</string>
+    <string name="home_refactor_recent_scale">Launcher view zoom ratio</string>
+    <string name="home_refactor_recent_scale_tips">Affects launcher view scaling in recent tasks view</string>
     <string name="incallui_hide_crbt">Hide CRBT(Coloring Ring Back Tone)</string>
     <string name="joyose_no_cloud_control">Disable Cloud Control</string>
     <string name="market_ad_block" translatable="false">@string/ad_block</string>
