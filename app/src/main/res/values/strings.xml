@@ -163,7 +163,7 @@
     <string name="home_behavior_refactor">Advanced blur effects</string>
     <string name="home_behavior_refactor_tips">New interactive experiences at the cost of performance and power consumption</string>
     <string name="home_behavior_refactor_dialog_title" translatable="false">@string/dialog_warning</string>
-    <string name="home_behavior_refactor_dialog_msg">EXPERIMENTAL FEATURES!\n\nThis feature refactors the launcher based on High-quality materials, please make sure your device supports High-quality materials.\n\nIf you turn it on, you will be exposed to risks including, but not limited to, power consumption, frame drops, jank, and even crashes.\n\nAre you sure you want to enable this feature?</string>
+    <string name="home_behavior_refactor_dialog_msg">EXPERIMENTAL FEATURES!\n\nThis feature refactors the launcher based on High-quality materials, please make sure your device supports High-quality materials.\n\nIf you turn it on, you will be exposed to risks including, but not limited to, power consumption, frame drops, jank, and even crashes.\n\nMake sure you are not using a modified launcher and have disabled any modules related to launcher blurring and animation.\n\nAre you sure you want to enable this feature?</string>
     <string name="home_behavior_refactor_details">Advanced blur effect customization options</string>
     <string name="home_folder_layout_fix">Utilizes the entire folder view width</string>
     <string name="home_folder_layout_size">Number of columns of icons in the folder</string>
