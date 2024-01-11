@@ -283,41 +283,41 @@ class HomeRefactorPage : BasePage() {
                     }.show()
                 })
         )
-        TextSummaryWithSwitch(
-            TextSummaryV(
-                textId = R.string.home_refactor_launch_scale_nonlinear
-            ),
-            SwitchV(PrefKey.HOME_REFACTOR_LAUNCH_NONLINEAR)
-        )
-        TextSummaryWithArrow(
-            TextSummaryV(
-                textId = R.string.home_refactor_launch_scale_nonlinear_factor,
-                tipsId = R.string.home_refactor_launch_scale_nonlinear_factor_tips,
-                onClickListener = {
-                    MIUIDialog(activity) {
-                        setTitle(R.string.home_refactor_launch_scale_nonlinear_factor)
-                        setMessage("${activity.getString(R.string.dialog_default_value)}: 1.0, ${activity.getString(R.string.dialog_current_value)}: ${
-                            MIUIActivity.safeSP.getFloat(PrefKey.HOME_REFACTOR_LAUNCH_NONLINEAR_FACTOR, 1.0f)
-                        }")
-                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0.1-10.0")
-                        setLButton(textId = R.string.button_cancel) {
-                            dismiss()
-                        }
-                        setRButton(textId = R.string.button_ok) {
-                            if (getEditText().isNotEmpty()) {
-                                runCatching {
-                                    MIUIActivity.safeSP.putAny(
-                                        PrefKey.HOME_REFACTOR_LAUNCH_NONLINEAR_FACTOR,
-                                        getEditText().toFloat().coerceIn(0.1f, 10.0f)
-                                    )
-                                }.onFailure {
-                                    Toast.makeText(activity, activity.getString(R.string.invalid_input), Toast.LENGTH_LONG).show()
-                                }
-                            }
-                            dismiss()
-                        }
-                    }.show()
-                })
-        )
+//        TextSummaryWithSwitch(
+//            TextSummaryV(
+//                textId = R.string.home_refactor_launch_scale_nonlinear
+//            ),
+//            SwitchV(PrefKey.HOME_REFACTOR_LAUNCH_NONLINEAR)
+//        )
+//        TextSummaryWithArrow(
+//            TextSummaryV(
+//                textId = R.string.home_refactor_launch_scale_nonlinear_factor,
+//                tipsId = R.string.home_refactor_launch_scale_nonlinear_factor_tips,
+//                onClickListener = {
+//                    MIUIDialog(activity) {
+//                        setTitle(R.string.home_refactor_launch_scale_nonlinear_factor)
+//                        setMessage("${activity.getString(R.string.dialog_default_value)}: 1.0, ${activity.getString(R.string.dialog_current_value)}: ${
+//                            MIUIActivity.safeSP.getFloat(PrefKey.HOME_REFACTOR_LAUNCH_NONLINEAR_FACTOR, 1.0f)
+//                        }")
+//                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0.1-10.0")
+//                        setLButton(textId = R.string.button_cancel) {
+//                            dismiss()
+//                        }
+//                        setRButton(textId = R.string.button_ok) {
+//                            if (getEditText().isNotEmpty()) {
+//                                runCatching {
+//                                    MIUIActivity.safeSP.putAny(
+//                                        PrefKey.HOME_REFACTOR_LAUNCH_NONLINEAR_FACTOR,
+//                                        getEditText().toFloat().coerceIn(0.1f, 10.0f)
+//                                    )
+//                                }.onFailure {
+//                                    Toast.makeText(activity, activity.getString(R.string.invalid_input), Toast.LENGTH_LONG).show()
+//                                }
+//                            }
+//                            dismiss()
+//                        }
+//                    }.show()
+//                })
+//        )
     }
 }
