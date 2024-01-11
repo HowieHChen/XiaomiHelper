@@ -24,9 +24,16 @@ class HomeRefactorPage : BasePage() {
             ),
             SwitchV(PrefKey.HOME_BLUR_REFACTOR)
         )
+        TextSummaryWithSwitch(
+            TextSummaryV(
+                textId = R.string.home_refactor_extra_fix,
+                tipsId = R.string.home_refactor_extra_fix_tips
+            ),
+            SwitchV(PrefKey.HOME_REFACTOR_EXTRA_FIX)
+        )
         Line()
         TitleText(textId = R.string.ui_title_home_refactor_apps)
-        Text(textId = R.string.home_refactor_apps_tips)
+        TitleText(textId = R.string.home_refactor_apps_tips)
         TextSummaryWithArrow(
             TextSummaryV(
                 textId = R.string.home_refactor_blur_radius,
@@ -132,7 +139,7 @@ class HomeRefactorPage : BasePage() {
         )
         Line()
         TitleText(textId = R.string.ui_title_home_refactor_wallpaper)
-        Text(textId = R.string.home_refactor_wallpaper_tips)
+        TitleText(textId = R.string.home_refactor_wallpaper_tips)
         TextSummaryWithArrow(
             TextSummaryV(
                 textId = R.string.home_refactor_blur_radius,
@@ -238,7 +245,7 @@ class HomeRefactorPage : BasePage() {
         )
         Line()
         TitleText(textId = R.string.ui_title_home_refactor_launch)
-        Text(textId = R.string.home_refactor_launch_tips)
+        TitleText(textId = R.string.home_refactor_launch_tips)
         TextSummaryWithSwitch(
             TextSummaryV(
                 textId = R.string.home_refactor_launch_show,
@@ -285,6 +292,7 @@ class HomeRefactorPage : BasePage() {
         TextSummaryWithArrow(
             TextSummaryV(
                 textId = R.string.home_refactor_launch_scale_nonlinear_factor,
+                tipsId = R.string.home_refactor_launch_scale_nonlinear_factor_tips,
                 onClickListener = {
                     MIUIDialog(activity) {
                         setTitle(R.string.home_refactor_launch_scale_nonlinear_factor)

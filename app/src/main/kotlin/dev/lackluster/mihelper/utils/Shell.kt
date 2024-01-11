@@ -12,7 +12,7 @@ object Shell {
         var inputStream: InputStreamReader? = null
         var outputStream: DataOutputStream? = null
         return try {
-            if (useRoot && Runtime.getRuntime().exec("su").exitValue() != 0) {
+            if (useRoot && Runtime.getRuntime().exec("su").waitFor() != 0) {
                 throw Exception()
             }
             process = Runtime.getRuntime().exec(if (useRoot) "su" else "sh")

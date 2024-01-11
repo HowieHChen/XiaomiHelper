@@ -327,4 +327,6 @@
     <string name="home_refactor_wallpaper_tips">用于模糊壁纸，模糊会出现在编辑模式和处于文件夹视图时</string>
     <string name="home_refactor_blur_radius">模糊半径</string>
     <string name="home_refactor_blur_radius_tips">值越大，模糊效果越明显，但也会消耗更多性能</string>
+    <string name="home_refactor_extra_fix">额外修复模糊缺失</string>
+    <string name="home_refactor_extra_fix_tips">只有当你发现有问题时才启用</string>
 </resources>

@@ -86,6 +86,7 @@ object BlurEnhance : YukiBaseHooker() {
     private val launchUseNonlinear = Prefs.getBoolean(PrefKey.HOME_REFACTOR_LAUNCH_NONLINEAR, false)
     private val launchNonlinearFactor = Prefs.getFloat(PrefKey.HOME_REFACTOR_LAUNCH_NONLINEAR_FACTOR, 1.0f)
 
+    private val extraFix = Prefs.getBoolean(PrefKey.HOME_REFACTOR_EXTRA_FIX, false)
     private var isStartingApp = false
 
     override fun onHook() {
@@ -456,6 +457,17 @@ object BlurEnhance : YukiBaseHooker() {
                             }
                             mHomeFadeOutAnim.get(this.instance).set(fadeOutAnim)
                         }
+                    }
+                }
+            }
+            if (extraFix) {
+                navStubView.method {
+                    name = "commonAppTouchFromMove"
+                }.hook {
+                    after {
+                        blurUtils.method {
+                            name = "fastBlurWhenUseCompleteRecentsBlur"
+                        }.get().call(null, 1.0f, false)
                     }
                 }
             }

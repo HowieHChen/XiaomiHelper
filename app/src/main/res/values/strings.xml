@@ -192,6 +192,8 @@
     <string name="home_widget_resizable">Make all Android widgets resizable</string>
     <string name="home_widget_anim">Add startup animation to all widgets</string>
 
+    <string name="home_refactor_extra_fix">Additional fixes for missing blur</string>
+    <string name="home_refactor_extra_fix_tips">Only enable it if you notice a problem</string>
     <string name="home_refactor_apps_tips">Used to blur the application. Blurring occurs when launching an app, closing an app, and when in the Recent Tasks view.</string>
     <string name="home_refactor_wallpaper_tips">Used to blur the wallpaper. Blurring occurs while in edit mode and in folder view.</string>
     <string name="home_refactor_launch_tips">Controls the launcher view behind the recent tasks view.</string>

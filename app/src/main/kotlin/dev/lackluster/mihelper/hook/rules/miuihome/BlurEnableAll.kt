@@ -9,12 +9,15 @@ import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
 import dev.lackluster.mihelper.data.PrefKey
 import dev.lackluster.mihelper.utils.Device
+import dev.lackluster.mihelper.utils.Prefs
 import dev.lackluster.mihelper.utils.Prefs.hasEnable
 
 
 object BlurEnableAll : YukiBaseHooker() {
     override fun onHook() {
-        hasEnable(PrefKey.HOME_BLUR_ALL) {
+        hasEnable(PrefKey.HOME_BLUR_ALL, extraCondition = {
+            !Prefs.getBoolean(PrefKey.HOME_BLUR_REFACTOR, false)
+        }) {
             val launcherClz = "com.miui.home.launcher.Launcher".toClass()
             val blurUtilsClass = "com.miui.home.launcher.common.BlurUtils".toClass()
             val fastBlurWhenUseCompleteRecentsBlur = blurUtilsClass.method {
