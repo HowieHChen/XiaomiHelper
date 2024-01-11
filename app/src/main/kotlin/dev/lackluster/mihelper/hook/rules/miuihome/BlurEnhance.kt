@@ -1,8 +1,13 @@
 package dev.lackluster.mihelper.hook.rules.miuihome
 
+import android.animation.ValueAnimator
 import android.app.Activity
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.DecelerateInterpolator
+import androidx.core.animation.addListener
+import androidx.core.animation.doOnEnd
+import androidx.core.animation.doOnStart
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.constructor
 import com.highcapable.yukihookapi.hook.factory.current
@@ -53,16 +58,16 @@ object BlurEnhance : YukiBaseHooker() {
     private val navStubView by lazy {
         "com.miui.home.recents.NavStubView".toClass()
     }
-//    private val mHomeFadeOutAnim by lazy {
-//        navStubView.field {
-//            name = "mHomeFadeOutAnim"
-//        }
-//    }
-//    private val checkUpdateShortcutMenuLayerType by lazy {
-//        navStubView.method {
-//            name = "checkUpdateShortcutMenuLayerType"
-//        }
-//    }
+    private val mHomeFadeOutAnim by lazy {
+        navStubView.field {
+            name = "mHomeFadeOutAnim"
+        }
+    }
+    private val checkUpdateShortcutMenuLayerType by lazy {
+        navStubView.method {
+            name = "checkUpdateShortcutMenuLayerType"
+        }
+    }
 
     private val appsBlurRadius = Prefs.getInt(PrefKey.HOME_REFACTOR_APPS_RADIUS, 100)
     private val appsUseDim = Prefs.getBoolean(PrefKey.HOME_REFACTOR_APPS_DIM, false)
@@ -78,8 +83,8 @@ object BlurEnhance : YukiBaseHooker() {
 
     private val launchShow = Prefs.getBoolean(PrefKey.HOME_REFACTOR_LAUNCH_SHOW, false)
     private val launchScale = Prefs.getFloat(PrefKey.HOME_REFACTOR_LAUNCH_SCALE, 0.95f)
-//    private val launchUseNonlinear = Prefs.getBoolean(PrefKey.HOME_REFACTOR_LAUNCH_NONLINEAR, false)
-//    private val launchNonlinearFactor = Prefs.getFloat(PrefKey.HOME_REFACTOR_LAUNCH_NONLINEAR_FACTOR, 1.0f)
+    private val launchUseNonlinear = Prefs.getBoolean(PrefKey.HOME_REFACTOR_LAUNCH_NONLINEAR, false)
+    private val launchNonlinearFactor = Prefs.getFloat(PrefKey.HOME_REFACTOR_LAUNCH_NONLINEAR_FACTOR, 1.0f)
 
     private val extraFix = Prefs.getBoolean(PrefKey.HOME_REFACTOR_EXTRA_FIX, false)
     private var isStartingApp = false
@@ -433,28 +438,28 @@ object BlurEnhance : YukiBaseHooker() {
                     }
                 }
             }
-//            if (launchUseNonlinear) {
-//                navStubView.method {
-//                    name = "startHomeFadeOutAnim"
-//                }.hook {
-//                    before {
-//                        (mHomeFadeOutAnim.get(this.instance).any() as? ValueAnimator?) ?: let {
-//                            val fadeOutAnim = ValueAnimator()
-//                            fadeOutAnim.interpolator = DecelerateInterpolator(launchNonlinearFactor)
-//                            fadeOutAnim.duration = 250
-//                            fadeOutAnim.addListener {
-//                                it.doOnStart {
-//                                    checkUpdateShortcutMenuLayerType.get(this.instance).call(2)
-//                                }
-//                                it.doOnEnd {
-//                                    checkUpdateShortcutMenuLayerType.get(this.instance).call(0)
-//                                }
-//                            }
-//                            mHomeFadeOutAnim.get(this.instance).set(fadeOutAnim)
-//                        }
-//                    }
-//                }
-//            }
+            if (launchUseNonlinear) {
+                navStubView.method {
+                    name = "startHomeFadeOutAnim"
+                }.hook {
+                    before {
+                        (mHomeFadeOutAnim.get(this.instance).any() as? ValueAnimator?) ?: let {
+                            val fadeOutAnim = ValueAnimator()
+                            fadeOutAnim.interpolator = DecelerateInterpolator(launchNonlinearFactor)
+                            fadeOutAnim.duration = 500
+                            fadeOutAnim.addListener {
+                                it.doOnStart {
+                                    checkUpdateShortcutMenuLayerType.get(this.instance).call(2)
+                                }
+                                it.doOnEnd {
+                                    checkUpdateShortcutMenuLayerType.get(this.instance).call(0)
+                                }
+                            }
+                            mHomeFadeOutAnim.get(this.instance).set(fadeOutAnim)
+                        }
+                    }
+                }
+            }
             if (extraFix) {
                 navStubView.method {
                     name = "commonAppTouchFromMove"
