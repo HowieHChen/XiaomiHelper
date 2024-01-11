@@ -1,4 +1,4 @@
-package dev.lackluster.mihelper.hook.rules.miuihome
+package dev.lackluster.mihelper.hook.view
 
 import android.animation.ValueAnimator
 import android.content.Context
@@ -107,27 +107,31 @@ class MiBlurView(context: Context) : FrameLayout(context) {
         }
         else {
             val currentRatio = blurCurrentRatio
-            if (blurAnimator == null) blurAnimator = ValueAnimator()
-            blurAnimator?.setFloatValues(currentRatio, targetRatio)
-            blurAnimator?.duration = (abs(currentRatio - targetRatio) * duration).toLong()
-            blurAnimator?.interpolator = LinearInterpolator()
-            blurAnimator?.removeAllUpdateListeners()
-            blurAnimator?.addUpdateListener {
-                blurCount++
-                val animaValue = it.animatedValue as Float
-                if ((blurCount % 2 != 1 || animaValue == currentRatio) && animaValue != targetRatio) {
-                    return@addUpdateListener
+            if (blurAnimator == null) {
+                blurAnimator = ValueAnimator()
+            }
+            blurAnimator?.let {
+                it.setFloatValues(currentRatio, targetRatio)
+                it.duration = (abs(currentRatio - targetRatio) * duration).toLong()
+                it.interpolator = LinearInterpolator()
+                it.removeAllUpdateListeners()
+                it.addUpdateListener { animator ->
+                    blurCount++
+                    val animaValue = animator.animatedValue as Float
+                    if ((blurCount % 2 != 1 || animaValue == currentRatio) && animaValue != targetRatio) {
+                        return@addUpdateListener
+                    }
+                    blurWithMiBlurDirectly(
+                        if (useNonlinear) { fakeInterpolator(animaValue) }
+                        else { animaValue }
+                    )
                 }
-                blurWithMiBlurDirectly(
-                    if (useNonlinear) { fakeInterpolator(animaValue) }
-                    else { animaValue }
-                )
+                it.addListener {
+                    blurAnimator = null
+                }
+                blurCount = 0
+                it.start()
             }
-            blurAnimator?.addListener {
-                blurAnimator = null
-            }
-            blurCount = 0
-            blurAnimator?.start()
         }
     }
 

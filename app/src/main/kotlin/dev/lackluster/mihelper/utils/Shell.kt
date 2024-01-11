@@ -12,6 +12,9 @@ object Shell {
         var inputStream: InputStreamReader? = null
         var outputStream: DataOutputStream? = null
         return try {
+            if (useRoot && Runtime.getRuntime().exec("su").exitValue() != 0) {
+                throw Exception()
+            }
             process = Runtime.getRuntime().exec(if (useRoot) "su" else "sh")
             inputStream = InputStreamReader(process.inputStream)
             reader = BufferedReader(inputStream)
@@ -33,6 +36,8 @@ object Shell {
             throw RuntimeException(e)
         } catch (e: InterruptedException) {
             throw RuntimeException(e)
+        } catch (e: Exception) {
+            throw e
         } finally {
             try {
                 outputStream?.close()

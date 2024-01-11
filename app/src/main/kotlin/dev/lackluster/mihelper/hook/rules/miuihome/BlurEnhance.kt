@@ -1,8 +1,13 @@
 package dev.lackluster.mihelper.hook.rules.miuihome
 
+import android.animation.ValueAnimator
 import android.app.Activity
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.DecelerateInterpolator
+import androidx.core.animation.addListener
+import androidx.core.animation.doOnEnd
+import androidx.core.animation.doOnStart
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.constructor
 import com.highcapable.yukihookapi.hook.factory.current
@@ -12,12 +17,15 @@ import com.highcapable.yukihookapi.hook.log.YLog
 import de.robv.android.xposed.XposedHelpers
 import dev.lackluster.mihelper.BuildConfig
 import dev.lackluster.mihelper.data.PrefKey
+import dev.lackluster.mihelper.hook.view.MiBlurView
 import dev.lackluster.mihelper.utils.MiBlurUtils
 import dev.lackluster.mihelper.utils.Prefs
 import dev.lackluster.mihelper.utils.Prefs.hasEnable
 import java.util.concurrent.Executor
 
 object BlurEnhance : YukiBaseHooker() {
+    private val printDebugInfo = BuildConfig.DEBUG
+
     private val blurUtils by lazy {
         "com.miui.home.launcher.common.BlurUtils".toClass()
     }
@@ -36,6 +44,11 @@ object BlurEnhance : YukiBaseHooker() {
             modifiers { isStatic }
         }.get().any()
     }
+//    private val overviewStateFromFsGesture by lazy {
+//        "com.miui.home.launcher.LauncherState".toClass().field {
+//            name = "mIsFromFsGesture"
+//        }.get(overviewState)
+//    }
 //    private val isInMultiWindowMode by lazy {
 //        "com.miui.home.launcher.DeviceConfig".toClass().method {
 //            name = "isInMultiWindowModeCompatAndroidT"
@@ -45,13 +58,34 @@ object BlurEnhance : YukiBaseHooker() {
     private val navStubView by lazy {
         "com.miui.home.recents.NavStubView".toClass()
     }
-    private val printDebugInfo = BuildConfig.DEBUG
-    private val blurRadius = Prefs.getInt(PrefKey.HOME_BLUR_RADIUS, 100)
-    private val useDim = Prefs.getBoolean(PrefKey.HOME_BLUR_REFACTOR_DIM, false)
-    private val dimAlpha = Prefs.getFloat(PrefKey.HOME_BLUR_REFACTOR_DIM_ALPHA, 0.2f)
-    private val useNonlinear = Prefs.getBoolean(PrefKey.HOME_BLUR_REFACTOR_NONLINEAR, false)
-    private val nonlinearFactor = Prefs.getFloat(PrefKey.HOME_BLUR_REFACTOR_NONLINEAR_FACTOR, 1.0f)
-    private val recentScale = Prefs.getFloat(PrefKey.HOME_BLUR_REFACTOR_RECENT_SCALE, 0.95f)
+    private val mHomeFadeOutAnim by lazy {
+        navStubView.field {
+            name = "mHomeFadeOutAnim"
+        }
+    }
+    private val checkUpdateShortcutMenuLayerType by lazy {
+        navStubView.method {
+            name = "checkUpdateShortcutMenuLayerType"
+        }
+    }
+
+    private val appsBlurRadius = Prefs.getInt(PrefKey.HOME_REFACTOR_APPS_RADIUS, 100)
+    private val appsUseDim = Prefs.getBoolean(PrefKey.HOME_REFACTOR_APPS_DIM, false)
+    private val appsDimAlpha = Prefs.getFloat(PrefKey.HOME_REFACTOR_APPS_DIM_ALPHA, 0.2f)
+    private val appsUseNonlinear = Prefs.getBoolean(PrefKey.HOME_REFACTOR_APPS_NONLINEAR, false)
+    private val appsNonlinearFactor = Prefs.getFloat(PrefKey.HOME_REFACTOR_APPS_NONLINEAR_FACTOR, 1.0f)
+
+    private val wallBlurRadius = Prefs.getInt(PrefKey.HOME_REFACTOR_WALL_RADIUS, 100)
+    private val wallUseDim = Prefs.getBoolean(PrefKey.HOME_REFACTOR_WALL_DIM, false)
+    private val wallDimAlpha = Prefs.getFloat(PrefKey.HOME_REFACTOR_WALL_DIM_ALPHA, 0.2f)
+    private val wallUseNonlinear = Prefs.getBoolean(PrefKey.HOME_REFACTOR_WALL_NONLINEAR, false)
+    private val wallNonlinearFactor = Prefs.getFloat(PrefKey.HOME_REFACTOR_WALL_NONLINEAR_FACTOR, 1.0f)
+
+    private val launchShow = Prefs.getBoolean(PrefKey.HOME_REFACTOR_LAUNCH_SHOW, false)
+    private val launchScale = Prefs.getFloat(PrefKey.HOME_REFACTOR_LAUNCH_SCALE, 0.95f)
+    private val launchUseNonlinear = Prefs.getBoolean(PrefKey.HOME_REFACTOR_LAUNCH_NONLINEAR, false)
+    private val launchNonlinearFactor = Prefs.getFloat(PrefKey.HOME_REFACTOR_LAUNCH_NONLINEAR_FACTOR, 1.0f)
+
     private var isStartingApp = false
 
     override fun onHook() {
@@ -76,14 +110,15 @@ object BlurEnhance : YukiBaseHooker() {
                     val launcher = this.args(0).any()
                     transitionBlurView = MiBlurView(launcher as Activity)
                     transitionBlurView?.let {
-                        it.setBlurLayer(blurRadius)
-                        it.setDimLayer(useDim, dimAlpha)
-                        it.setNonlinear(useNonlinear, nonlinearFactor)
+                        it.setBlurLayer(appsBlurRadius)
+                        it.setDimLayer(appsUseDim, appsDimAlpha)
+                        it.setNonlinear(appsUseNonlinear, appsNonlinearFactor)
                     }
                     wallpaperBlurView = MiBlurView(launcher)
                     wallpaperBlurView?.let {
-                        it.setBlurLayer(blurRadius)
-                        it.setNonlinear(useNonlinear, nonlinearFactor)
+                        it.setBlurLayer(wallBlurRadius)
+                        it.setDimLayer(wallUseDim, wallDimAlpha)
+                        it.setNonlinear(wallUseNonlinear, wallNonlinearFactor)
                     }
                     val viewGroup = XposedHelpers.getObjectField(launcher, "mLauncherView") as ViewGroup
                     viewGroup.addView(transitionBlurView, viewGroup.indexOfChild(
@@ -220,9 +255,9 @@ object BlurEnhance : YukiBaseHooker() {
             }.hook {
                 replaceUnit {
                     if (printDebugInfo)
-                        YLog.info("fastBlurWhenEnterRecents")
+                        YLog.info("fastBlurWhenEnterRecents useAnim: ${this.args(2).boolean()}")
                     if (XposedHelpers.getBooleanField(this.args(1).any(), "mIsFromFsGesture")) {
-                        this.result = null
+                        return@replaceUnit
                     }
                     transitionBlurView?.show(this.args(2).boolean())
                 }
@@ -234,9 +269,9 @@ object BlurEnhance : YukiBaseHooker() {
             }.hook {
                 replaceUnit {
                     if (printDebugInfo)
-                        YLog.info("fastBlurWhenExitRecents")
+                        YLog.info("fastBlurWhenExitRecents useAnim: ${this.args(2).boolean()}")
                     if (XposedHelpers.getBooleanField(this.args(1).any(), "mIsFromFsGesture")) {
-                        this.result = null
+                        return@replaceUnit
                     }
                     val usrAnim = this.args(2).boolean()
                     if (shouldBlurWallpaper(this.args(0).any() ?: return@replaceUnit)) {
@@ -314,7 +349,7 @@ object BlurEnhance : YukiBaseHooker() {
                         YLog.info("fastBlurWhenExitFolderPicker")
                     val usrAnim = this.args(2).boolean()
                     if (shouldBlurWallpaper(this.args(0).any() ?: return@replaceUnit)) {
-                        this.result = null
+                        return@replaceUnit
                     }
                     if (
                         XposedHelpers.getObjectField(
@@ -324,7 +359,7 @@ object BlurEnhance : YukiBaseHooker() {
                             "mState"
                         ) == overviewState
                     ) {
-                        this.result = null
+                        return@replaceUnit
                     }
                     wallpaperBlurView?.showWithDuration(
                         usrAnim, this.args(1).float(), this.args(3).int()
@@ -355,7 +390,7 @@ object BlurEnhance : YukiBaseHooker() {
             }.hook {
                 replaceUnit {
                     if (printDebugInfo)
-                        YLog.info("fastBlurWhenGestureResetTaskView")
+                        YLog.info("fastBlurWhenGestureResetTaskView  useAnim: ${this.args(1).boolean()}")
                     if (
                         XposedHelpers.getObjectField(
                             XposedHelpers.getObjectField(
@@ -389,16 +424,38 @@ object BlurEnhance : YukiBaseHooker() {
                 after {
                     this.instance.current().field {
                         name = "mLauncherScaleInRecents"
-                    }.set(recentScale)
+                    }.set(launchScale)
                 }
             }
-            hasEnable(PrefKey.HOME_BLUR_REFACTOR_RECENT_SHOW) {
+            if (launchShow) {
                 navStubView.method {
                     name = "changeAlphaScaleForFsGesture"
                     paramCount = 2
                 }.hook {
                     before {
                         this.args(0).set(1.0f)
+                    }
+                }
+            }
+            if (launchUseNonlinear) {
+                navStubView.method {
+                    name = "startHomeFadeOutAnim"
+                }.hook {
+                    before {
+                        (mHomeFadeOutAnim.get(this.instance).any() as? ValueAnimator?) ?: let {
+                            val fadeOutAnim = ValueAnimator()
+                            fadeOutAnim.interpolator = DecelerateInterpolator(launchNonlinearFactor)
+                            fadeOutAnim.duration = 500
+                            fadeOutAnim.addListener {
+                                it.doOnStart {
+                                    checkUpdateShortcutMenuLayerType.get(this.instance).call(2)
+                                }
+                                it.doOnEnd {
+                                    checkUpdateShortcutMenuLayerType.get(this.instance).call(0)
+                                }
+                            }
+                            mHomeFadeOutAnim.get(this.instance).set(fadeOutAnim)
+                        }
                     }
                 }
             }

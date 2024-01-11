@@ -76,27 +76,23 @@ class MiuiHomePage : BasePage() {
                     textId = R.string.home_behavior_refactor,
                     tipsId = R.string.home_behavior_refactor_tips,
                     onClickListener = {
-                        MIUIDialog(activity) {
-                            setTitle(R.string.home_behavior_refactor_dialog_title)
-                            setMessage(R.string.home_behavior_refactor_dialog_msg)
-                            setLButton(textId = R.string.button_disable) {
-                                MIUIActivity.safeSP.putAny(PrefKey.HOME_BLUR_REFACTOR, false)
-                                refactorBinding.binding.Send().send(false)
-                                dismiss()
-                            }
-                            setRButton(textId = R.string.button_enable) {
-                                MIUIActivity.safeSP.putAny(PrefKey.HOME_BLUR_REFACTOR, true)
-                                refactorBinding.binding.Send().send(true)
-                                dismiss()
-                            }
-                        }.show()
+                        if (MIUIActivity.safeSP.getBoolean(PrefKey.HOME_BLUR_REFACTOR, false)) {
+                            showFragment("home_refactor")
+                        }
+                        else {
+                            MIUIDialog(activity) {
+                                setTitle(R.string.home_behavior_refactor_dialog_title)
+                                setMessage(R.string.home_behavior_refactor_dialog_msg)
+                                setLButton(textId = R.string.button_cancel) {
+                                    dismiss()
+                                }
+                                setRButton(textId = R.string.button_ok) {
+                                    showFragment("home_refactor")
+                                    dismiss()
+                                }
+                            }.show()
+                        }
                     })
-            )
-            TextSummaryWithArrow(
-                TextSummaryV(
-                    textId = R.string.home_behavior_refactor_details,
-                    onClickListener = { showFragment("home_refactor") }),
-                dataBindingRecv = refactorBinding.binding.getRecv(0)
             )
         }
         val blurBinding = GetDataBinding({
