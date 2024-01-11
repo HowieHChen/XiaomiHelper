@@ -25,13 +25,13 @@ class MenuPage : BasePage() {
                 }
                 setRButton(R.string.button_ok) {
                     try {
-                        Shell.exec("/system/bin/sync;/system/bin/svc power reboot || reboot", true)
+                        Shell.tryExec("/system/bin/sync;/system/bin/svc power reboot || reboot", useRoot = true, checkSuccess = true)
                         dismiss()
                     }
-                    catch (_ : Throwable) {
+                    catch (tout : Throwable) {
                         makeText(
                             activity,
-                            getString(R.string.reboot_error_toast),
+                            getString(R.string.reboot_error_toast) + "(${tout.message})",
                             LENGTH_LONG
                         ).show()
                         dismiss()
@@ -49,7 +49,7 @@ class MenuPage : BasePage() {
                 setRButton(R.string.button_ok) {
                     try {
                         activity.resources.getStringArray(R.array.module_scope).forEach {
-                            if (it != "android") Shell.exec("killall $it", true)
+                            if (it != "android") Shell.tryExec("killall $it", useRoot = true, checkSuccess = true)
                         }
                         makeText(
                             activity,
@@ -58,10 +58,10 @@ class MenuPage : BasePage() {
                         ).show()
                         dismiss()
                     }
-                    catch (_ : Throwable) {
+                    catch (tout : Throwable) {
                         makeText(
                             activity,
-                            getString(R.string.reboot_error_toast),
+                            getString(R.string.reboot_error_toast) + "(${tout.message})",
                             LENGTH_LONG
                         ).show()
                         dismiss()
@@ -78,7 +78,7 @@ class MenuPage : BasePage() {
                 }
                 setRButton(R.string.button_ok) {
                     try {
-                        Shell.exec("killall com.android.systemui", true)
+                        Shell.tryExec("killall com.android.systemui", useRoot = true, checkSuccess = true)
                         makeText(
                             activity,
                             getString(R.string.reboot_done_toast),
@@ -86,10 +86,10 @@ class MenuPage : BasePage() {
                         ).show()
                         dismiss()
                     }
-                    catch (_ : Throwable) {
+                    catch (tout : Throwable) {
                         makeText(
                             activity,
-                            getString(R.string.reboot_error_toast),
+                            getString(R.string.reboot_error_toast) + "(${tout.message})",
                             LENGTH_LONG
                         ).show()
                         dismiss()
@@ -106,7 +106,7 @@ class MenuPage : BasePage() {
                 }
                 setRButton(R.string.button_ok) {
                     try {
-                        Shell.exec("killall com.miui.home", true)
+                        Shell.tryExec("killall com.miui.home", useRoot = true, checkSuccess = true)
                         makeText(
                             activity,
                             getString(R.string.reboot_done_toast),
@@ -114,10 +114,10 @@ class MenuPage : BasePage() {
                         ).show()
                         dismiss()
                     }
-                    catch (_ : Throwable) {
+                    catch (tout : Throwable) {
                         makeText(
                             activity,
-                            getString(R.string.reboot_error_toast),
+                            getString(R.string.reboot_error_toast) + "(${tout.message})",
                             LENGTH_LONG
                         ).show()
                         dismiss()

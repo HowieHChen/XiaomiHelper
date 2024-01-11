@@ -6,32 +6,56 @@ import java.io.IOException
 import java.io.InputStreamReader
 
 object Shell {
-    fun exec(command: String, useRoot: Boolean = false): String {
-        var process: Process? = null
-        var reader: BufferedReader? = null
-        var inputStream: InputStreamReader? = null
-        var outputStream: DataOutputStream? = null
-        return try {
-            if (useRoot && Runtime.getRuntime().exec("su").waitFor() != 0) {
-                throw Exception()
+    data class ShellResult(
+        val exitCode: Int,
+        val successMsg: String,
+        val errorMsg: String
+    )
+    fun tryExec(command: String, useRoot: Boolean = false, checkSuccess: Boolean = true): ShellResult {
+        return execInternal(command, useRoot).also {
+            if (checkSuccess && it.exitCode != 0) {
+                throw Exception(it.errorMsg)
             }
+        }
+    }
+    fun exec(command: String, useRoot: Boolean = false): ShellResult {
+        return execInternal(command, useRoot)
+    }
+    private fun execInternal(command: String, useRoot: Boolean = false): ShellResult {
+        val exitCode: Int
+        val successMsg: String
+        val errorMsg: String
+        var process: Process? = null
+        var readerOut: BufferedReader? = null
+        var readerErr: BufferedReader? = null
+        var stdoutStream: InputStreamReader? = null
+        var stderrStream: InputStreamReader? = null
+        var outputStream: DataOutputStream? = null
+        try {
             process = Runtime.getRuntime().exec(if (useRoot) "su" else "sh")
-            inputStream = InputStreamReader(process.inputStream)
-            reader = BufferedReader(inputStream)
+            stdoutStream = InputStreamReader(process.inputStream)
+            stderrStream = InputStreamReader(process.errorStream)
+            readerOut = BufferedReader(stdoutStream)
+            readerErr = BufferedReader(stderrStream)
             outputStream = DataOutputStream(process.outputStream)
             outputStream.write(
                 command.trimIndent().toByteArray()
             )
             outputStream.writeBytes("\nexit\n")
             outputStream.flush()
-            var read: Int
-            val buffer = CharArray(4096)
-            val output = StringBuilder()
-            while (reader.read(buffer).also { read = it } > 0) {
-                output.appendRange(buffer, 0, read)
+            exitCode = process.waitFor()
+            val stdout = StringBuilder()
+            val stderr = StringBuilder()
+            var tempLine: String? = ""
+            while (readerOut.readLine()?.also { tempLine = it } != null) {
+                stdout.append(tempLine)
             }
-            process.waitFor()
-            output.toString()
+            while (readerErr.readLine()?.also { tempLine = it } != null) {
+                stderr.append(tempLine)
+            }
+            successMsg = stdout.toString()
+            errorMsg = stderr.toString()
+            return ShellResult(exitCode, successMsg, errorMsg)
         } catch (e: IOException) {
             throw RuntimeException(e)
         } catch (e: InterruptedException) {
@@ -41,8 +65,10 @@ object Shell {
         } finally {
             try {
                 outputStream?.close()
-                inputStream?.close()
-                reader?.close()
+                stdoutStream?.close()
+                stderrStream?.close()
+                readerOut?.close()
+                readerErr?.close()
                 process?.destroy()
             } catch (e: IOException) {
                 e.printStackTrace()

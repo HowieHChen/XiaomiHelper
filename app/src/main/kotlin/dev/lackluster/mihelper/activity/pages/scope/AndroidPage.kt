@@ -63,10 +63,13 @@ class AndroidPage :BasePage() {
         TextSummaryWithArrow(TextSummaryV(textId = R.string.android_switch_rotation_suggestions, tipsId = R.string.android_switch_rotation_suggestions_tips, onClickListener = {
             val next =
             try {
-                1 - (Shell.exec("settings get secure show_rotation_suggestions", true).trim().toIntOrNull() ?: 0)
+                1 - (Shell.tryExec("settings get secure show_rotation_suggestions", useRoot = true, checkSuccess = true).successMsg.toIntOrNull() ?: 0)
             }
-            catch (_ : Throwable) {
-                makeText(activity, getString(R.string.android_switch_rotation_suggestions_failed), LENGTH_LONG).show()
+            catch (tout : Throwable) {
+                makeText(
+                    activity,
+                    getString(R.string.android_switch_rotation_suggestions_failed) + "(${tout.message})",
+                    LENGTH_LONG).show()
                 return@TextSummaryV
             }
             MIUIDialog(activity) {
@@ -80,7 +83,7 @@ class AndroidPage :BasePage() {
                 }
                 setRButton(R.string.button_ok) {
                     try {
-                        Shell.exec("settings put secure show_rotation_suggestions $next", true)
+                        Shell.tryExec("settings put secure show_rotation_suggestions $next", useRoot = true, checkSuccess = true)
                         makeText(
                             activity,
                             if (next == 0) { getString(R.string.android_switch_rotation_suggestions_done_false) }
@@ -89,10 +92,10 @@ class AndroidPage :BasePage() {
                         ).show()
                         dismiss()
                     }
-                    catch (_ : Throwable) {
+                    catch (tout : Throwable) {
                         makeText(
                             activity,
-                            getString(R.string.android_switch_rotation_suggestions_failed),
+                            getString(R.string.android_switch_rotation_suggestions_failed) + "(${tout.message})",
                             LENGTH_LONG
                         ).show()
                         dismiss()
