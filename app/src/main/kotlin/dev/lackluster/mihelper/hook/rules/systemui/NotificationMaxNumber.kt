@@ -12,6 +12,7 @@ import com.highcapable.yukihookapi.hook.type.java.StringClass
 import dev.lackluster.mihelper.data.PrefKey
 import dev.lackluster.mihelper.utils.Prefs
 import dev.lackluster.mihelper.utils.Prefs.hasEnable
+import java.lang.ClassCastException
 import java.lang.ref.WeakReference
 
 
@@ -25,14 +26,15 @@ object NotificationMaxNumber : YukiBaseHooker() {
     private val maxLockscreen by lazy {
         Prefs.getInt(PrefKey.STATUSBAR_NOTIF_LOCKSCREEN_MAX, 3)
     }
-    private var showNotificationIcons = true
+    private var showNotificationIcons = -1
+    private var newVersion = true
     override fun onHook() {
         hasEnable(PrefKey.STATUSBAR_NOTIF_MAX) {
             "com.android.systemui.statusbar.phone.NotificationIconContainer".toClass()
                 .constructor()
                 .hook {
                     after {
-                        this.instance.current().field {
+                        this.instance.current(true).field {
                             name = "mMaxDots"
                         }.set(maxDot)
                         this.instance.current().field {
@@ -55,16 +57,24 @@ object NotificationMaxNumber : YukiBaseHooker() {
                             param(JavaClass)
                             modifiers { isStatic }
                         }.get().call("com.android.systemui.statusbar.policy.NotificationIconObserver".toClass()) ?: return@after
-                        showNotificationIcons = notificationIconObserver.current().field {
-                            name = "mShowNotificationIcons"
-                        }.boolean()
+                        val mShowNotificationIcons = notificationIconObserver.current().field { name = "mShowNotificationIcons" }
+                        showNotificationIcons =
+                            try {
+                                mShowNotificationIcons.int()
+                            }
+                            catch (t: ClassCastException) {
+                                newVersion = false
+                                if (mShowNotificationIcons.boolean()) { 1 } else { 0 }
+                            }
                         val notificationIconContainer = this.instance.current().field {
                             name = "mNotificationIcons"
                         }.any() ?: return@after
-                        if (showNotificationIcons) {
-                            notificationIconContainer.current().field {
-                                name = "mMaxDots"
-                            }.set(maxDot)
+                        if (showNotificationIcons > 0) {
+                            if (!newVersion) {
+                                notificationIconContainer.current(true).field {
+                                    name = "mMaxDots"
+                                }.set(maxDot)
+                            }
                             notificationIconContainer.current().field {
                                 name = "mMaxStaticIcons"
                             }.set(maxIcon)
@@ -73,9 +83,11 @@ object NotificationMaxNumber : YukiBaseHooker() {
                             }.set(maxLockscreen)
                         }
                         else {
-                            notificationIconContainer.current().field {
-                                name = "mMaxDots"
-                            }.set(0)
+                            if (!newVersion) {
+                                notificationIconContainer.current(true).field {
+                                    name = "mMaxDots"
+                                }.set(0)
+                            }
                             notificationIconContainer.current().field {
                                 name = "mMaxStaticIcons"
                             }.set(0)
@@ -117,15 +129,23 @@ object NotificationMaxNumber : YukiBaseHooker() {
                                 modifiers { isStatic }
                             }
                             ?.get()
-                            ?.int(context.contentResolver, "status_bar_show_notification_icon", 1, currentUserId)) ?: -1) == 1
-                        if (
+                            ?.int(context.contentResolver, "status_bar_show_notification_icon", 1, currentUserId)) ?: -1)
+                        val mShowNotificationIcons = notificationIconObserver.current().field { name = "mShowNotificationIcons" }
+                        val mShowNotificationIconsNum =
+                            try {
+                                mShowNotificationIcons.int()
+                            }
+                            catch (t: ClassCastException) {
+                                newVersion = false
+                                if (mShowNotificationIcons.boolean()) { 1 } else { 0 }
+                            }
+                        if (mShowNotificationIconsNum != showNotificationIcons) {
                             notificationIconObserver.current().field {
                                 name = "mShowNotificationIcons"
-                            }.boolean() != showNotificationIcons
-                        ) {
-                            notificationIconObserver.current().field {
-                                name = "mShowNotificationIcons"
-                            }.set(showNotificationIcons)
+                            }.set(
+                                if (newVersion) { showNotificationIcons }
+                                else { showNotificationIcons > 0 }
+                            )
                             val callBacks = notificationIconObserver.current().field {
                                 name = "mCallbacks"
                             }.any() as ArrayList<*>
@@ -137,10 +157,12 @@ object NotificationMaxNumber : YukiBaseHooker() {
                                     val notificationIconContainer = notificationIconAreaController.current().field {
                                         name = "mNotificationIcons"
                                     }.any() ?: continue
-                                    if (showNotificationIcons) {
-                                        notificationIconContainer.current().field {
-                                            name = "mMaxDots"
-                                        }.set(maxDot)
+                                    if (showNotificationIcons > 0) {
+                                        if (!newVersion) {
+                                            notificationIconContainer.current(true).field {
+                                                name = "mMaxDots"
+                                            }.set(maxDot)
+                                        }
                                         notificationIconContainer.current().field {
                                             name = "mMaxStaticIcons"
                                         }.set(maxIcon)
@@ -149,9 +171,11 @@ object NotificationMaxNumber : YukiBaseHooker() {
                                         }.set(maxLockscreen)
                                     }
                                     else {
-                                        notificationIconContainer.current().field {
-                                            name = "mMaxDots"
-                                        }.set(0)
+                                        if (!newVersion) {
+                                            notificationIconContainer.current(true).field {
+                                                name = "mMaxDots"
+                                            }.set(0)
+                                        }
                                         notificationIconContainer.current().field {
                                             name = "mMaxStaticIcons"
                                         }.set(0)

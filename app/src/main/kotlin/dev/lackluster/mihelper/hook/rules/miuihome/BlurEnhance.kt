@@ -294,6 +294,8 @@ object BlurEnhance : YukiBaseHooker() {
                     if (printDebugInfo)
                         YLog.info("fastBlurWhenEnterRecents useAnim: ${this.args(2).boolean()}")
                     if (XposedHelpers.getBooleanField(this.args(1).any(), "mIsFromFsGesture")) {
+                        if (printDebugInfo)
+                            YLog.info("fastBlurWhenEnterRecents skip (IsFromFsGesture)")
                         return@replaceUnit
                     }
                     transitionBlurView?.show(this.args(2).boolean())
@@ -308,6 +310,8 @@ object BlurEnhance : YukiBaseHooker() {
                     if (printDebugInfo)
                         YLog.info("fastBlurWhenExitRecents useAnim: ${this.args(2).boolean()}")
                     if (XposedHelpers.getBooleanField(this.args(1).any(), "mIsFromFsGesture")) {
+                        if (printDebugInfo)
+                            YLog.info("fastBlurWhenExitRecents skip (IsFromFsGesture)")
                         return@replaceUnit
                     }
                     val usrAnim = this.args(2).boolean()
