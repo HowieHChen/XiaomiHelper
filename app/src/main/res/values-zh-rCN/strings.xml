@@ -308,7 +308,7 @@
     <string name="home_refactor_dim">压暗背景</string>
     <string name="home_refactor_dim_tips">在模糊层之上额外叠加一层黑色遮罩</string>
     <string name="home_refactor_dim_alpha">用于压暗的遮罩的不透明度</string>
-    <string name="home_refactor_dim_alpha_tips">设置 0 为透明，设置 1 为全黑</string>
+    <string name="home_refactor_dim_alpha_tips">设置 0 为透明，设置 255 为全黑</string>
     <string name="home_refactor_nonlinear">非线性动画</string>
     <string name="home_refactor_nonlinear_factor">非线性动画因子</string>
     <string name="home_refactor_nonlinear_factor_tips">值越大动画的初始速度越大</string>
@@ -329,4 +329,5 @@
     <string name="home_refactor_blur_radius_tips">值越大，模糊效果越明显，但也会消耗更多性能</string>
     <string name="home_refactor_extra_fix">额外修复模糊缺失</string>
     <string name="home_refactor_extra_fix_tips">只有当你发现有问题时才启用</string>
+    <string name="home_refactor_blur">模糊效果</string>
 </resources>

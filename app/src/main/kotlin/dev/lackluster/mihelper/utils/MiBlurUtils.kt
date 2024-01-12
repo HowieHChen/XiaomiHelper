@@ -6,6 +6,19 @@ import android.view.View
 
 @SuppressLint("PrivateApi")
 object MiBlurUtils {
+    const val USAGE_UNKNOWN = 0
+    const val USAGE_BACKGROUND = 1
+    const val USAGE_FOREGROUND = 2
+
+    const val USAGE_BIG_VIEW = 100
+    const val USAGE_BUTTON = 101
+    const val USAGE_DARK_EXCLUDE_TEXT = 104
+    const val USAGE_DARK_FILTER = 102
+    const val USAGE_FORCE_INVERT = 103
+    const val USAGE_FORCE_TRANSPARENT = 105
+    const val USAGE_INVERT_EXCLUDE_BITMAP = 106
+    const val USAGE_PLACEHOLDER_FOR_IMAGEVIEW = 107
+
     private val setMiViewBlurMode by lazy {
         View::class.java.getDeclaredMethod("setMiViewBlurMode", Integer.TYPE)
     }
@@ -20,6 +33,9 @@ object MiBlurUtils {
     }
     private val addMiBackgroundBlendColor by lazy {
         View::class.java.getDeclaredMethod("addMiBackgroundBlendColor", Integer.TYPE, Integer.TYPE)
+    }
+    private val setMiBackgroundBlurScaleRatio by lazy {
+        View::class.java.getDeclaredMethod("setMiBackgroundBlurScaleRatio", java.lang.Float.TYPE)
     }
     private val clearMiBackgroundBlendColor by lazy {
         View::class.java.getDeclaredMethod("clearMiBackgroundBlendColor")
@@ -41,12 +57,12 @@ object MiBlurUtils {
         setPassWindowBlurEnable(view, false)
     }
 
-    fun setViewBlur(view: View, radius: Int) {
-        setMiViewBlurMode.invoke(view, radius)
+    fun setViewBlur(view: View, mode: Int) {
+        setMiViewBlurMode.invoke(view, mode)
     }
 
-    fun setViewBackgroundBlur(view: View, radius: Int) {
-        setMiBackgroundBlurMode.invoke(view, radius)
+    fun setViewBackgroundBlur(view: View, mode: Int) {
+        setMiBackgroundBlurMode.invoke(view, mode)
     }
 
     fun setBlurRadius(view: View, radius: Int) {
@@ -67,6 +83,10 @@ object MiBlurUtils {
 
     fun resetBlurColor(view: View) {
         clearMiBackgroundBlendColor.invoke(view)
+    }
+
+    fun setBackgroundBlurScaleRatio(view: View, ratio: Float) {
+        setMiBackgroundBlurScaleRatio.invoke(view, ratio)
     }
 
     fun supportBackgroundBlur() : Boolean {

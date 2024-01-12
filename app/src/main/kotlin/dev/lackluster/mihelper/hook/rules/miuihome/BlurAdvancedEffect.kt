@@ -4,6 +4,7 @@ import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.field
 import com.highcapable.yukihookapi.hook.factory.method
 import dev.lackluster.mihelper.data.PrefKey
+import dev.lackluster.mihelper.utils.Prefs
 import dev.lackluster.mihelper.utils.Prefs.hasEnable
 
 object BlurAdvancedEffect : YukiBaseHooker() {
@@ -25,13 +26,15 @@ object BlurAdvancedEffect : YukiBaseHooker() {
                     modifiers { isStatic }
                 }.get().setTrue()
             }
-            "com.miui.home.launcher.common.BlurUtilities".toClass()
-                .method {
-                    name = "setBackgroundBlurEnabled"
-                    modifiers { isStatic }
-                }.hook {
-                    intercept()
-                }
+            if (!Prefs.getBoolean(PrefKey.HOME_BLUR_REFACTOR, false)) {
+                "com.miui.home.launcher.common.BlurUtilities".toClass()
+                    .method {
+                        name = "setBackgroundBlurEnabled"
+                        modifiers { isStatic }
+                    }.hook {
+                        intercept()
+                    }
+            }
         }
     }
 }

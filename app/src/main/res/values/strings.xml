@@ -197,12 +197,13 @@
     <string name="home_refactor_apps_tips">Used to blur the application. Blurring occurs when launching an app, closing an app, and when in the Recent Tasks view.</string>
     <string name="home_refactor_wallpaper_tips">Used to blur the wallpaper. Blurring occurs while in edit mode and in folder view.</string>
     <string name="home_refactor_launch_tips">Controls the launcher view behind the recent tasks view.</string>
+    <string name="home_refactor_blur">Blur effect</string>
     <string name="home_refactor_blur_radius">Blur radius</string>
     <string name="home_refactor_blur_radius_tips">The larger the value, the better the blurring effect, but it also consumes more performance.</string>
     <string name="home_refactor_dim">Dim the background</string>
     <string name="home_refactor_dim_tips">Layer an additional black mask on top of the blur layer</string>
     <string name="home_refactor_dim_alpha">Opacity of the mask used for dimming</string>
-    <string name="home_refactor_dim_alpha_tips">Set 0 for transparent, set 1 for black.</string>
+    <string name="home_refactor_dim_alpha_tips">Set 0 for transparent, set 255 for black.</string>
     <string name="home_refactor_nonlinear">Non-linear animation</string>
     <string name="home_refactor_nonlinear_factor">Non-linear animation factor</string>
     <string name="home_refactor_nonlinear_factor_tips">The larger the value the greater the initial rate of change of the animation</string>

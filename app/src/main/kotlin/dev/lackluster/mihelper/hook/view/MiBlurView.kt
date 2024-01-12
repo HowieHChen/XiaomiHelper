@@ -3,151 +3,173 @@ package dev.lackluster.mihelper.hook.view
 import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
 import androidx.core.animation.addListener
+import androidx.core.animation.doOnEnd
 import dev.lackluster.mihelper.utils.Math
 import dev.lackluster.mihelper.utils.MiBlurUtils
 import kotlin.math.abs
 import kotlin.math.pow
 
-class MiBlurView(context: Context) : FrameLayout(context) {
+class MiBlurView(context: Context): View(context) {
     companion object {
-        const val DEFAULT_BLUR_ANIM_DURATION = 250
-        const val DEFAULT_BLUR_MAX_RADIUS = 100
+        const val DEFAULT_ANIM_DURATION = 250
         const val DEFAULT_BLUR_THRESHOLD = 10
-        const val DEFAULT_DIM_ALPHA = 0.2f
+        const val DEFAULT_BLUR_ENABLED = true
+        const val DEFAULT_BLUR_MAX_RADIUS = 100
+        const val DEFAULT_DIM_ENABLED = false
+        const val DEFAULT_DIM_MAX_ALPHA = 64
+        const val DEFAULT_NONLINEAR_ENABLED = false
         const val DEFAULT_NONLINEAR_FACTOR = 1.0f
     }
-    private var blurAnimator: ValueAnimator? = null
-    private var blurCurrentRatio = 0.0f
-    private var blurCount = 0
+
+    private var mainAnimator: ValueAnimator? = null
+    private var animCurrentRatio = 0.0f
+    private var animCount = 0
     private var allowRestoreDirectly = false
     private var isBlurInitialized = false
-    // Two layer
-    private var blurLayer : FrameLayout
-    private var maskLayer : FrameLayout? = null
+    private var dimThresholdAlpha = (DEFAULT_DIM_MAX_ALPHA * DEFAULT_BLUR_THRESHOLD.toFloat() / DEFAULT_BLUR_MAX_RADIUS).toInt()
     // Personalized Configurations
-    private var maxBlurRadius = DEFAULT_BLUR_MAX_RADIUS
-    private var useDimLayer = false
-    private var dimAlpha = DEFAULT_DIM_ALPHA
-    private var useNonlinear = false
+    private var blurEnabled = DEFAULT_BLUR_ENABLED
+    private var blurMaxRadius = DEFAULT_BLUR_MAX_RADIUS
+    private var dimEnabled = DEFAULT_DIM_ENABLED
+    private var dimMaxAlpha = DEFAULT_DIM_MAX_ALPHA
+    private var nonlinearEnabled = DEFAULT_NONLINEAR_ENABLED
     private var nonlinearFactor = DEFAULT_NONLINEAR_FACTOR
 
     init {
-        this.layoutParams = LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        blurLayer = FrameLayout(context)
-        blurLayer.layoutParams = LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        blurLayer.background = ColorDrawable(Color.BLACK)
-        this.addView(blurLayer)
-        this.visibility = View.GONE
+        this.layoutParams = FrameLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
+        )
+        this.setBackgroundColor(Color.TRANSPARENT)
+        this.visibility = GONE
     }
 
-    fun setBlurLayer(maxBlurRadius: Int) {
-        this.maxBlurRadius = maxBlurRadius
-    }
-
-    fun setDimLayer(useDimLayer: Boolean, dimAlpha: Float) {
-        this.useDimLayer = useDimLayer
-        this.dimAlpha = dimAlpha
-        if (useDimLayer && maskLayer == null) {
-            maskLayer = FrameLayout(context)
-            maskLayer?.let {
-                it.layoutParams = LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-                it.background = ColorDrawable(Color.BLACK)
-                this.addView(it)
-            }
+    fun setBlur(useBlur: Boolean, maxRadius: Int) {
+        blurEnabled = useBlur
+        blurMaxRadius = maxRadius
+        if (blurMaxRadius <= 0) {
+            blurEnabled = false
+        }
+        if (blurEnabled && dimEnabled) {
+            dimThresholdAlpha = (dimMaxAlpha * DEFAULT_BLUR_THRESHOLD.toFloat() / blurMaxRadius).toInt()
         }
     }
 
-    fun setNonlinear(useNonlinear: Boolean, nonlinearFactor: Float) {
-        this.useNonlinear = useNonlinear
-        this.nonlinearFactor = nonlinearFactor
+    fun setDim(useDim: Boolean, maxAlpha: Int) {
+        dimEnabled = useDim
+        dimMaxAlpha = maxAlpha
+        if (maxAlpha <= 0) {
+            dimEnabled = false
+        }
+        if (blurEnabled && dimEnabled) {
+            dimThresholdAlpha = (dimMaxAlpha * DEFAULT_BLUR_THRESHOLD.toFloat() / blurMaxRadius).toInt()
+        }
+    }
+
+    fun setNonlinear(useNonlinear: Boolean, factor: Float) {
+        nonlinearEnabled = useNonlinear
+        nonlinearFactor = factor
     }
 
     fun show(useAnim: Boolean, targetRatio: Float = 1.0f) {
-        this.visibility = View.VISIBLE
-        blurWithMiBlur(targetRatio, useAnim)
+        this.visibility = VISIBLE
+        applyBlur(targetRatio, useAnim)
     }
 
     fun hide(useAnim: Boolean, targetRatio: Float = 0.0f) {
-        this.visibility = View.VISIBLE
-        blurWithMiBlur(targetRatio, useAnim)
+        this.visibility = VISIBLE
+        applyBlur(targetRatio, useAnim)
     }
 
     fun restore(directly: Boolean = false) {
-        this.visibility = View.VISIBLE
+        this.visibility = VISIBLE
         if (!directly) {
-            blurWithMiBlur(blurCurrentRatio, false)
+            applyBlur(animCurrentRatio, false)
         }
         else if (allowRestoreDirectly) {
             allowRestoreDirectly = false
-            blurWithMiBlurDirectly(blurCurrentRatio)
+            applyBlurDirectly(animCurrentRatio)
         }
     }
 
     fun showWithDuration(useAnim: Boolean, targetRatio: Float, duration: Int) {
-        this.visibility = View.VISIBLE
-        blurWithMiBlur(targetRatio, useAnim, duration)
+        this.visibility = VISIBLE
+        applyBlur(targetRatio, useAnim, duration)
     }
 
-    private fun blurWithMiBlur(ratio: Float, useAnim: Boolean, duration: Int = DEFAULT_BLUR_ANIM_DURATION) {
+    private fun applyBlur(ratio: Float, useAnim: Boolean, duration: Int = DEFAULT_ANIM_DURATION) {
         val targetRatio = ratio.coerceIn(0.0f, 1.0f)
-        if (blurAnimator?.isRunning == true) {
-            blurAnimator?.cancel()
+        if (mainAnimator?.isRunning == true) {
+            mainAnimator?.cancel()
         }
-        if (!isBlurInitialized) {
+        if (blurEnabled && !isBlurInitialized) {
             initBlur()
         }
-        if (!useAnim || blurCurrentRatio == targetRatio) {
-            blurWithMiBlurDirectly(targetRatio)
+        if (!useAnim || animCurrentRatio == targetRatio) {
+            applyBlurDirectly(targetRatio)
         }
         else {
-            val currentRatio = blurCurrentRatio
-            if (blurAnimator == null) {
-                blurAnimator = ValueAnimator()
+            val currentRatio = animCurrentRatio
+            if (mainAnimator == null) {
+                mainAnimator = ValueAnimator()
             }
-            blurAnimator?.let {
+            mainAnimator?.let {
                 it.setFloatValues(currentRatio, targetRatio)
                 it.duration = (abs(currentRatio - targetRatio) * duration).toLong()
                 it.interpolator = LinearInterpolator()
                 it.removeAllUpdateListeners()
                 it.addUpdateListener { animator ->
-                    blurCount++
+                    animCount++
                     val animaValue = animator.animatedValue as Float
-                    if ((blurCount % 2 != 1 || animaValue == currentRatio) && animaValue != targetRatio) {
+                    if ((animCount % 2 != 1 || animaValue == currentRatio) && animaValue != targetRatio) {
                         return@addUpdateListener
                     }
-                    blurWithMiBlurDirectly(
-                        if (useNonlinear) { fakeInterpolator(animaValue) }
+                    applyBlurDirectly(
+                        if (nonlinearEnabled) { fakeInterpolator(animaValue) }
                         else { animaValue }
                     )
                 }
-                it.addListener {
-                    blurAnimator = null
+                it.addListener { animator ->
+                    animator.doOnEnd {
+                        mainAnimator = null
+                    }
                 }
-                blurCount = 0
+                animCount = 0
                 it.start()
             }
         }
     }
 
-    private fun blurWithMiBlurDirectly(ratio: Float) {
-        val blurRadius = Math.linearInterpolate(0, maxBlurRadius, ratio)
-        if (blurRadius < DEFAULT_BLUR_THRESHOLD) {
-            MiBlurUtils.setBlurRadius(blurLayer, DEFAULT_BLUR_THRESHOLD)
-            maskLayer?.alpha = dimAlpha * DEFAULT_BLUR_THRESHOLD / maxBlurRadius
-            this.alpha = Math.linearInterpolate(0.0f, 1.0f, blurRadius.toFloat() / DEFAULT_BLUR_THRESHOLD)
+    private fun applyBlurDirectly(ratio: Float) {
+        if (blurEnabled) {
+            val blurRadius = Math.linearInterpolate(0, blurMaxRadius, ratio)
+            if (blurRadius < DEFAULT_BLUR_THRESHOLD) {
+                this.setBackgroundColor(
+                    0x00000000 or dimThresholdAlpha
+                )
+                MiBlurUtils.setBlurRadius(this, DEFAULT_BLUR_THRESHOLD)
+                this.alpha = Math.linearInterpolate(0.0f, 1.0f, blurRadius.toFloat() / DEFAULT_BLUR_THRESHOLD)
+            }
+            else {
+                this.setBackgroundColor(
+                    0x00000000 or Math.linearInterpolate(0, dimMaxAlpha, ratio).shl(24)
+                )
+                MiBlurUtils.setBlurRadius(this, blurRadius)
+                this.alpha = 1.0f
+            }
         }
         else {
-            MiBlurUtils.setBlurRadius(blurLayer, blurRadius)
-            maskLayer?.alpha = Math.linearInterpolate(0.0f, dimAlpha, ratio)
-            this.alpha = 1.0f
+            Color.BLACK
+            this.setBackgroundColor(
+                0x00000000 or (Math.linearInterpolate(0, dimMaxAlpha, ratio).shl(24))
+            )
         }
-        blurCurrentRatio = ratio
+        animCurrentRatio = ratio
         allowRestoreDirectly = true
         if (ratio == 0.0f) {
             releaseBlur()
@@ -165,17 +187,17 @@ class MiBlurView(context: Context) : FrameLayout(context) {
 
     private fun initBlur() {
         if (isBlurInitialized) return
-        MiBlurUtils.clearAllBlur(blurLayer)
-        MiBlurUtils.setPassWindowBlurEnable(blurLayer, true)
-        MiBlurUtils.setViewBackgroundBlur(blurLayer, 1)
-        MiBlurUtils.setViewBlur(blurLayer, 3)
+        MiBlurUtils.clearAllBlur(this)
+        MiBlurUtils.setPassWindowBlurEnable(this, true)
+        MiBlurUtils.setViewBackgroundBlur(this, MiBlurUtils.USAGE_BACKGROUND)
+        MiBlurUtils.setViewBlur(this, 1)
         isBlurInitialized = true
     }
 
     private fun releaseBlur() {
         if (!isBlurInitialized) return
-        this.visibility = View.GONE
-        MiBlurUtils.clearAllBlur(blurLayer)
         isBlurInitialized = false
+        this.visibility = GONE
+        MiBlurUtils.clearAllBlur(this)
     }
 }

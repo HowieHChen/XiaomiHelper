@@ -8,6 +8,7 @@ import cn.fkj233.ui.activity.view.SwitchV
 import cn.fkj233.ui.activity.view.TextSummaryV
 import cn.fkj233.ui.dialog.MIUIDialog
 import dev.lackluster.mihelper.R
+import dev.lackluster.mihelper.data.PrefDefValue
 import dev.lackluster.mihelper.data.PrefKey
 
 @BMPage("home_refactor")
@@ -33,7 +34,13 @@ class HomeRefactorPage : BasePage() {
         )
         Line()
         TitleText(textId = R.string.ui_title_home_refactor_apps)
-        TitleText(textId = R.string.home_refactor_apps_tips)
+        TextSummaryWithSwitch(
+            TextSummaryV(
+                textId = R.string.home_refactor_blur,
+                tipsId = R.string.home_refactor_apps_tips
+            ),
+            SwitchV(PrefKey.HOME_REFACTOR_APPS_BLUR)
+        )
         TextSummaryWithArrow(
             TextSummaryV(
                 textId = R.string.home_refactor_blur_radius,
@@ -41,8 +48,8 @@ class HomeRefactorPage : BasePage() {
                 onClickListener = {
                     MIUIDialog(activity) {
                         setTitle(R.string.home_refactor_blur_radius)
-                        setMessage("${activity.getString(R.string.dialog_default_value)}: 100, ${activity.getString(R.string.dialog_current_value)}: ${
-                            MIUIActivity.safeSP.getInt(PrefKey.HOME_REFACTOR_APPS_RADIUS, 100)
+                        setMessage("${activity.getString(R.string.dialog_default_value)}: ${PrefDefValue.HOME_REFACTOR_APPS_BLUR_RADIUS}, ${activity.getString(R.string.dialog_current_value)}: ${
+                            MIUIActivity.safeSP.getInt(PrefKey.HOME_REFACTOR_APPS_BLUR_RADIUS, PrefDefValue.HOME_REFACTOR_APPS_BLUR_RADIUS)
                         }")
                         setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0-150")
                         setLButton(textId = R.string.button_cancel) {
@@ -52,7 +59,7 @@ class HomeRefactorPage : BasePage() {
                             if (getEditText().isNotEmpty()) {
                                 runCatching {
                                     MIUIActivity.safeSP.putAny(
-                                        PrefKey.HOME_REFACTOR_APPS_RADIUS,
+                                        PrefKey.HOME_REFACTOR_APPS_BLUR_RADIUS,
                                         getEditText().toInt().coerceIn(0, 150)
                                     )
                                 }.onFailure {
@@ -78,10 +85,10 @@ class HomeRefactorPage : BasePage() {
                 onClickListener = {
                     MIUIDialog(activity) {
                         setTitle(R.string.home_refactor_dim_alpha)
-                        setMessage("${activity.getString(R.string.dialog_default_value)}: 0.2, ${activity.getString(R.string.dialog_current_value)}: ${
-                            MIUIActivity.safeSP.getFloat(PrefKey.HOME_REFACTOR_APPS_DIM_ALPHA, 0.2f)
+                        setMessage("${activity.getString(R.string.dialog_default_value)}: ${PrefDefValue.HOME_REFACTOR_APPS_DIM_MAX}, ${activity.getString(R.string.dialog_current_value)}: ${
+                            MIUIActivity.safeSP.getInt(PrefKey.HOME_REFACTOR_APPS_DIM_MAX, PrefDefValue.HOME_REFACTOR_APPS_DIM_MAX)
                         }")
-                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0-1.0")
+                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0-255")
                         setLButton(textId = R.string.button_cancel) {
                             dismiss()
                         }
@@ -89,8 +96,8 @@ class HomeRefactorPage : BasePage() {
                             if (getEditText().isNotEmpty()) {
                                 runCatching {
                                     MIUIActivity.safeSP.putAny(
-                                        PrefKey.HOME_REFACTOR_APPS_DIM_ALPHA,
-                                        getEditText().toFloat().coerceIn(0.0f, 1.0f)
+                                        PrefKey.HOME_REFACTOR_APPS_DIM_MAX,
+                                        getEditText().toInt().coerceIn(0, 255)
                                     )
                                 }.onFailure {
                                     Toast.makeText(activity, activity.getString(R.string.invalid_input), Toast.LENGTH_LONG).show()
@@ -139,7 +146,13 @@ class HomeRefactorPage : BasePage() {
         )
         Line()
         TitleText(textId = R.string.ui_title_home_refactor_wallpaper)
-        TitleText(textId = R.string.home_refactor_wallpaper_tips)
+        TextSummaryWithSwitch(
+            TextSummaryV(
+                textId = R.string.home_refactor_blur,
+                tipsId = R.string.home_refactor_wallpaper_tips
+            ),
+            SwitchV(PrefKey.HOME_REFACTOR_WALL_BLUR)
+        )
         TextSummaryWithArrow(
             TextSummaryV(
                 textId = R.string.home_refactor_blur_radius,
@@ -147,8 +160,8 @@ class HomeRefactorPage : BasePage() {
                 onClickListener = {
                     MIUIDialog(activity) {
                         setTitle(R.string.home_refactor_blur_radius)
-                        setMessage("${activity.getString(R.string.dialog_default_value)}: 100, ${activity.getString(R.string.dialog_current_value)}: ${
-                            MIUIActivity.safeSP.getInt(PrefKey.HOME_REFACTOR_WALL_RADIUS, 100)
+                        setMessage("${activity.getString(R.string.dialog_default_value)}: ${PrefDefValue.HOME_REFACTOR_WALL_BLUR_RADIUS}, ${activity.getString(R.string.dialog_current_value)}: ${
+                            MIUIActivity.safeSP.getInt(PrefKey.HOME_REFACTOR_WALL_BLUR_RADIUS, PrefDefValue.HOME_REFACTOR_WALL_BLUR_RADIUS)
                         }")
                         setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0-150")
                         setLButton(textId = R.string.button_cancel) {
@@ -158,7 +171,7 @@ class HomeRefactorPage : BasePage() {
                             if (getEditText().isNotEmpty()) {
                                 runCatching {
                                     MIUIActivity.safeSP.putAny(
-                                        PrefKey.HOME_REFACTOR_WALL_RADIUS,
+                                        PrefKey.HOME_REFACTOR_WALL_BLUR_RADIUS,
                                         getEditText().toInt().coerceIn(0, 150)
                                     )
                                 }.onFailure {
@@ -184,10 +197,10 @@ class HomeRefactorPage : BasePage() {
                 onClickListener = {
                     MIUIDialog(activity) {
                         setTitle(R.string.home_refactor_dim_alpha)
-                        setMessage("${activity.getString(R.string.dialog_default_value)}: 0.2, ${activity.getString(R.string.dialog_current_value)}: ${
-                            MIUIActivity.safeSP.getFloat(PrefKey.HOME_REFACTOR_WALL_DIM_ALPHA, 0.2f)
+                        setMessage("${activity.getString(R.string.dialog_default_value)}: ${PrefDefValue.HOME_REFACTOR_WALL_DIM_MAX}, ${activity.getString(R.string.dialog_current_value)}: ${
+                            MIUIActivity.safeSP.getInt(PrefKey.HOME_REFACTOR_WALL_DIM_MAX, PrefDefValue.HOME_REFACTOR_WALL_DIM_MAX)
                         }")
-                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0-1.0")
+                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0-255")
                         setLButton(textId = R.string.button_cancel) {
                             dismiss()
                         }
@@ -195,8 +208,8 @@ class HomeRefactorPage : BasePage() {
                             if (getEditText().isNotEmpty()) {
                                 runCatching {
                                     MIUIActivity.safeSP.putAny(
-                                        PrefKey.HOME_REFACTOR_WALL_DIM_ALPHA,
-                                        getEditText().toFloat().coerceIn(0.0f, 1.0f)
+                                        PrefKey.HOME_REFACTOR_WALL_DIM_MAX,
+                                        getEditText().toInt().coerceIn(0, 255)
                                     )
                                 }.onFailure {
                                     Toast.makeText(activity, activity.getString(R.string.invalid_input), Toast.LENGTH_LONG).show()
@@ -263,7 +276,7 @@ class HomeRefactorPage : BasePage() {
                         setMessage("${activity.getString(R.string.dialog_default_value)}: 0.95, ${activity.getString(R.string.dialog_current_value)}: ${
                             MIUIActivity.safeSP.getFloat(PrefKey.HOME_REFACTOR_LAUNCH_SCALE, 0.95f)
                         }")
-                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0.01-1.0")
+                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0.6-1.2")
                         setLButton(textId = R.string.button_cancel) {
                             dismiss()
                         }
@@ -272,7 +285,7 @@ class HomeRefactorPage : BasePage() {
                                 runCatching {
                                     MIUIActivity.safeSP.putAny(
                                         PrefKey.HOME_REFACTOR_LAUNCH_SCALE,
-                                        getEditText().toFloat().coerceIn(0.01f, 1.0f)
+                                        getEditText().toFloat().coerceIn(0.6f, 1.2f)
                                     )
                                 }.onFailure {
                                     Toast.makeText(activity, activity.getString(R.string.invalid_input), Toast.LENGTH_LONG).show()

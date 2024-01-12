@@ -4,13 +4,12 @@ import android.app.Activity
 import android.view.View
 import android.view.ViewGroup
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.constructor
-import com.highcapable.yukihookapi.hook.factory.current
 import com.highcapable.yukihookapi.hook.factory.field
 import com.highcapable.yukihookapi.hook.factory.method
 import com.highcapable.yukihookapi.hook.log.YLog
 import de.robv.android.xposed.XposedHelpers
 import dev.lackluster.mihelper.BuildConfig
+import dev.lackluster.mihelper.data.PrefDefValue
 import dev.lackluster.mihelper.data.PrefKey
 import dev.lackluster.mihelper.hook.view.MiBlurView
 import dev.lackluster.mihelper.utils.MiBlurUtils
@@ -39,6 +38,22 @@ object BlurEnhance : YukiBaseHooker() {
             modifiers { isStatic }
         }.get().any()
     }
+    private val overviewStateAlpha by lazy {
+        "com.miui.home.recents.OverviewState".toClass().method {
+            name = "getShortcutMenuLayerAlpha"
+        }
+    }
+    private val overviewStateScale by lazy {
+        "com.miui.home.recents.OverviewState".toClass().method {
+            name = "getShortcutMenuLayerScale"
+        }
+    }
+    private val isBackgroundBlurEnabled by lazy {
+        "com.miui.home.launcher.common.BlurUtilities".toClass(). field {
+            name = "IS_BACKGROUND_BLUR_ENABLED"
+            modifiers { isStatic }
+        }.get()
+    }
 //    private val overviewStateFromFsGesture by lazy {
 //        "com.miui.home.launcher.LauncherState".toClass().field {
 //            name = "mIsFromFsGesture"
@@ -64,24 +79,42 @@ object BlurEnhance : YukiBaseHooker() {
 //        }
 //    }
 
-    private val appsBlurRadius = Prefs.getInt(PrefKey.HOME_REFACTOR_APPS_RADIUS, 100)
-    private val appsUseDim = Prefs.getBoolean(PrefKey.HOME_REFACTOR_APPS_DIM, false)
-    private val appsDimAlpha = Prefs.getFloat(PrefKey.HOME_REFACTOR_APPS_DIM_ALPHA, 0.2f)
-    private val appsUseNonlinear = Prefs.getBoolean(PrefKey.HOME_REFACTOR_APPS_NONLINEAR, false)
-    private val appsNonlinearFactor = Prefs.getFloat(PrefKey.HOME_REFACTOR_APPS_NONLINEAR_FACTOR, 1.0f)
+    private val appsUseBlur =
+        Prefs.getBoolean(PrefKey.HOME_REFACTOR_APPS_BLUR, PrefDefValue.HOME_REFACTOR_APPS_BLUR)
+    private val appsBlurRadius =
+        Prefs.getInt(PrefKey.HOME_REFACTOR_APPS_BLUR_RADIUS, PrefDefValue.HOME_REFACTOR_APPS_BLUR_RADIUS)
+    private val appsUseDim =
+        Prefs.getBoolean(PrefKey.HOME_REFACTOR_APPS_DIM, PrefDefValue.HOME_REFACTOR_APPS_DIM)
+    private val appsDimAlpha =
+        Prefs.getInt(PrefKey.HOME_REFACTOR_APPS_DIM_MAX, PrefDefValue.HOME_REFACTOR_APPS_DIM_MAX)
+    private val appsUseNonlinear =
+        Prefs.getBoolean(PrefKey.HOME_REFACTOR_APPS_NONLINEAR, PrefDefValue.HOME_REFACTOR_APPS_NONLINEAR)
+    private val appsNonlinearFactor =
+        Prefs.getFloat(PrefKey.HOME_REFACTOR_APPS_NONLINEAR_FACTOR, PrefDefValue.HOME_REFACTOR_APPS_NONLINEAR_FACTOR)
 
-    private val wallBlurRadius = Prefs.getInt(PrefKey.HOME_REFACTOR_WALL_RADIUS, 100)
-    private val wallUseDim = Prefs.getBoolean(PrefKey.HOME_REFACTOR_WALL_DIM, false)
-    private val wallDimAlpha = Prefs.getFloat(PrefKey.HOME_REFACTOR_WALL_DIM_ALPHA, 0.2f)
-    private val wallUseNonlinear = Prefs.getBoolean(PrefKey.HOME_REFACTOR_WALL_NONLINEAR, false)
-    private val wallNonlinearFactor = Prefs.getFloat(PrefKey.HOME_REFACTOR_WALL_NONLINEAR_FACTOR, 1.0f)
+    private val wallUseBlur =
+        Prefs.getBoolean(PrefKey.HOME_REFACTOR_WALL_BLUR, PrefDefValue.HOME_REFACTOR_WALL_BLUR)
+    private val wallBlurRadius =
+        Prefs.getInt(PrefKey.HOME_REFACTOR_WALL_BLUR_RADIUS, PrefDefValue.HOME_REFACTOR_WALL_BLUR_RADIUS)
+    private val wallUseDim =
+        Prefs.getBoolean(PrefKey.HOME_REFACTOR_WALL_DIM, PrefDefValue.HOME_REFACTOR_WALL_DIM)
+    private val wallDimAlpha =
+        Prefs.getInt(PrefKey.HOME_REFACTOR_WALL_DIM_MAX, PrefDefValue.HOME_REFACTOR_WALL_DIM_MAX)
+    private val wallUseNonlinear =
+        Prefs.getBoolean(PrefKey.HOME_REFACTOR_WALL_NONLINEAR, PrefDefValue.HOME_REFACTOR_WALL_NONLINEAR)
+    private val wallNonlinearFactor =
+        Prefs.getFloat(PrefKey.HOME_REFACTOR_WALL_NONLINEAR_FACTOR, PrefDefValue.HOME_REFACTOR_WALL_NONLINEAR_FACTOR)
 
-    private val launchShow = Prefs.getBoolean(PrefKey.HOME_REFACTOR_LAUNCH_SHOW, false)
-    private val launchScale = Prefs.getFloat(PrefKey.HOME_REFACTOR_LAUNCH_SCALE, 0.95f)
-//    private val launchUseNonlinear = Prefs.getBoolean(PrefKey.HOME_REFACTOR_LAUNCH_NONLINEAR, false)
-//    private val launchNonlinearFactor = Prefs.getFloat(PrefKey.HOME_REFACTOR_LAUNCH_NONLINEAR_FACTOR, 1.0f)
+    private val launchShow =
+        Prefs.getBoolean(PrefKey.HOME_REFACTOR_LAUNCH_SHOW, PrefDefValue.HOME_REFACTOR_LAUNCH_SHOW)
+    private val launchScale =
+        Prefs.getFloat(PrefKey.HOME_REFACTOR_LAUNCH_SCALE, PrefDefValue.HOME_REFACTOR_LAUNCH_SCALE)
+//    private val launchUseNonlinear =
+//        Prefs.getBoolean(PrefKey.HOME_REFACTOR_LAUNCH_NONLINEAR, PrefDefValue.HOME_REFACTOR_LAUNCH_NONLINEAR)
+//    private val launchNonlinearFactor =
+//        Prefs.getFloat(PrefKey.HOME_REFACTOR_LAUNCH_NONLINEAR_FACTOR, PrefDefValue.HOME_REFACTOR_LAUNCH_NONLINEAR_FACTOR)
 
-    private val extraFix = Prefs.getBoolean(PrefKey.HOME_REFACTOR_EXTRA_FIX, false)
+    private val extraFix = Prefs.getBoolean(PrefKey.HOME_REFACTOR_EXTRA_FIX, PrefDefValue.HOME_REFACTOR_EXTRA_FIX)
     private var isStartingApp = false
 
     override fun onHook() {
@@ -102,18 +135,26 @@ object BlurEnhance : YukiBaseHooker() {
                 name = "setBackgroundBlurEnabled"
                 modifiers { isStatic }
             }.hook {
-                before {
+                after {
+                    if (!isBackgroundBlurEnabled.boolean()) {
+                        if (Prefs.getBoolean(PrefKey.HOME_BLUR_ENHANCE, false)) {
+                            isBackgroundBlurEnabled.setTrue()
+                        }
+                        else {
+                            YLog.warn("The High-quality materials function is disabled.")
+                        }
+                    }
                     val launcher = this.args(0).any()
                     transitionBlurView = MiBlurView(launcher as Activity)
                     transitionBlurView?.let {
-                        it.setBlurLayer(appsBlurRadius)
-                        it.setDimLayer(appsUseDim, appsDimAlpha)
+                        it.setBlur(appsUseBlur, appsBlurRadius)
+                        it.setDim(appsUseDim, appsDimAlpha)
                         it.setNonlinear(appsUseNonlinear, appsNonlinearFactor)
                     }
                     wallpaperBlurView = MiBlurView(launcher)
                     wallpaperBlurView?.let {
-                        it.setBlurLayer(wallBlurRadius)
-                        it.setDimLayer(wallUseDim, wallDimAlpha)
+                        it.setBlur(wallUseBlur, wallBlurRadius)
+                        it.setDim(wallUseDim, wallDimAlpha)
                         it.setNonlinear(wallUseNonlinear, wallNonlinearFactor)
                     }
                     val viewGroup = XposedHelpers.getObjectField(launcher, "mLauncherView") as ViewGroup
@@ -414,14 +455,8 @@ object BlurEnhance : YukiBaseHooker() {
                 }
             }
             // End of uncertainty section
-            navStubView.constructor {
-                paramCount = 1
-            }.hook {
-                after {
-                    this.instance.current().field {
-                        name = "mLauncherScaleInRecents"
-                    }.set(launchScale)
-                }
+            overviewStateScale.hook {
+                replaceTo(launchScale)
             }
             if (launchShow) {
                 navStubView.method {
@@ -431,6 +466,9 @@ object BlurEnhance : YukiBaseHooker() {
                     before {
                         this.args(0).set(1.0f)
                     }
+                }
+                overviewStateAlpha.hook {
+                    replaceTo(1.0f)
                 }
             }
 //            if (launchUseNonlinear) {
