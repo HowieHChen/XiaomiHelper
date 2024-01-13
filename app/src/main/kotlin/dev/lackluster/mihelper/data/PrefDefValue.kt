@@ -21,4 +21,5 @@ object PrefDefValue {
 //    const val HOME_REFACTOR_LAUNCH_NONLINEAR_FACTOR = 1.0f
 
     const val HOME_REFACTOR_EXTRA_FIX = false
+    const val HOME_REFACTOR_FIX_SMALL_WINDOW = false
 }

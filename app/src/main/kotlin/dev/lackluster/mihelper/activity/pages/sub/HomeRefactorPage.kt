@@ -32,6 +32,13 @@ class HomeRefactorPage : BasePage() {
             ),
             SwitchV(PrefKey.HOME_REFACTOR_EXTRA_FIX)
         )
+        TextSummaryWithSwitch(
+            TextSummaryV(
+                textId = R.string.home_refactor_fix_small_window,
+                tipsId = R.string.home_refactor_fix_small_window_tips
+            ),
+            SwitchV(PrefKey.HOME_REFACTOR_FIX_SMALL_WINDOW)
+        )
         Line()
         TitleText(textId = R.string.ui_title_home_refactor_apps)
         TextSummaryWithSwitch(
@@ -51,7 +58,7 @@ class HomeRefactorPage : BasePage() {
                         setMessage("${activity.getString(R.string.dialog_default_value)}: ${PrefDefValue.HOME_REFACTOR_APPS_BLUR_RADIUS}, ${activity.getString(R.string.dialog_current_value)}: ${
                             MIUIActivity.safeSP.getInt(PrefKey.HOME_REFACTOR_APPS_BLUR_RADIUS, PrefDefValue.HOME_REFACTOR_APPS_BLUR_RADIUS)
                         }")
-                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0-150")
+                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0-200")
                         setLButton(textId = R.string.button_cancel) {
                             dismiss()
                         }
@@ -60,7 +67,7 @@ class HomeRefactorPage : BasePage() {
                                 runCatching {
                                     MIUIActivity.safeSP.putAny(
                                         PrefKey.HOME_REFACTOR_APPS_BLUR_RADIUS,
-                                        getEditText().toInt().coerceIn(0, 150)
+                                        getEditText().toInt().coerceIn(0, 200)
                                     )
                                 }.onFailure {
                                     Toast.makeText(activity, activity.getString(R.string.invalid_input), Toast.LENGTH_LONG).show()
@@ -163,7 +170,7 @@ class HomeRefactorPage : BasePage() {
                         setMessage("${activity.getString(R.string.dialog_default_value)}: ${PrefDefValue.HOME_REFACTOR_WALL_BLUR_RADIUS}, ${activity.getString(R.string.dialog_current_value)}: ${
                             MIUIActivity.safeSP.getInt(PrefKey.HOME_REFACTOR_WALL_BLUR_RADIUS, PrefDefValue.HOME_REFACTOR_WALL_BLUR_RADIUS)
                         }")
-                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0-150")
+                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0-200")
                         setLButton(textId = R.string.button_cancel) {
                             dismiss()
                         }
@@ -172,7 +179,7 @@ class HomeRefactorPage : BasePage() {
                                 runCatching {
                                     MIUIActivity.safeSP.putAny(
                                         PrefKey.HOME_REFACTOR_WALL_BLUR_RADIUS,
-                                        getEditText().toInt().coerceIn(0, 150)
+                                        getEditText().toInt().coerceIn(0, 200)
                                     )
                                 }.onFailure {
                                     Toast.makeText(activity, activity.getString(R.string.invalid_input), Toast.LENGTH_LONG).show()

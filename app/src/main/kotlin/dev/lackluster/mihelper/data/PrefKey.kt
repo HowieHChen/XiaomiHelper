@@ -38,6 +38,7 @@ object PrefKey {
 //    const val HOME_REFACTOR_LAUNCH_NONLINEAR = "home_refactor_launch_nonlinear"
 //    const val HOME_REFACTOR_LAUNCH_NONLINEAR_FACTOR = "home_refactor_launch_nonlinear_factor"
     const val HOME_REFACTOR_EXTRA_FIX = "home_refactor_extra_fix"
+    const val HOME_REFACTOR_FIX_SMALL_WINDOW = "home_refactor_small_window"
     const val HOME_DISABLE_FAKE_NAVBAR = "home_disable_fake_navbar"
     const val HOME_DOUBLE_TAP_TO_SLEEP = "home_double_tap_sleep"
     const val HOME_FAKE_PREMIUM = "home_fake_premium"

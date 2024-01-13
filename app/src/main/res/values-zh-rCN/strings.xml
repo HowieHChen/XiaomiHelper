@@ -328,6 +328,8 @@
     <string name="home_refactor_blur_radius">模糊半径</string>
     <string name="home_refactor_blur_radius_tips">值越大，模糊效果越明显，但也会消耗更多性能</string>
     <string name="home_refactor_extra_fix">额外修复模糊缺失</string>
-    <string name="home_refactor_extra_fix_tips">只有当你发现有问题时才启用</string>
+    <string name="home_refactor_extra_fix_tips">强制使用动画以避免快速滑动时模糊未及时出现。只有当你发现存在此问题时才启用</string>
     <string name="home_refactor_blur">模糊效果</string>
+    <string name="home_refactor_fix_small_window">额外修复小窗动画</string>
+    <string name="home_refactor_fix_small_window_tips">强制使用动画以避免拖动应用进入小窗时闪烁，暂时不确定是否有负面影响。只有当你非常介意这个时才启用</string>
 </resources>

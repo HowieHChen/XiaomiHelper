@@ -114,7 +114,10 @@ object BlurEnhance : YukiBaseHooker() {
 //    private val launchNonlinearFactor =
 //        Prefs.getFloat(PrefKey.HOME_REFACTOR_LAUNCH_NONLINEAR_FACTOR, PrefDefValue.HOME_REFACTOR_LAUNCH_NONLINEAR_FACTOR)
 
-    private val extraFix = Prefs.getBoolean(PrefKey.HOME_REFACTOR_EXTRA_FIX, PrefDefValue.HOME_REFACTOR_EXTRA_FIX)
+    private val extraFix =
+        Prefs.getBoolean(PrefKey.HOME_REFACTOR_EXTRA_FIX, PrefDefValue.HOME_REFACTOR_EXTRA_FIX)
+    private val fixSmallWindowAnim =
+        Prefs.getBoolean(PrefKey.HOME_REFACTOR_FIX_SMALL_WINDOW, PrefDefValue.HOME_REFACTOR_FIX_SMALL_WINDOW)
     private var isStartingApp = false
 
     override fun onHook() {
@@ -186,6 +189,8 @@ object BlurEnhance : YukiBaseHooker() {
                 paramCount = 3
             }.hook {
                 before {
+                    if (printDebugInfo)
+                        YLog.info("fastBlur target: ${this.args(1).float()} useAnim: ${this.args(2).float()}")
                     wallpaperBlurView?.show(this.args(2).boolean(), this.args(0).float())
                     this.result = null
                 }
@@ -196,6 +201,8 @@ object BlurEnhance : YukiBaseHooker() {
                 paramCount = 4
             }.hook {
                 before {
+                    if (printDebugInfo)
+                        YLog.info("fastBlur target: ${this.args(1).float()} useAnim: ${this.args(2).float()}")
                     wallpaperBlurView?.showWithDuration(this.args(2).boolean(), this.args(0).float(), 350)
                     this.result = null
                 }
@@ -247,9 +254,9 @@ object BlurEnhance : YukiBaseHooker() {
                 replaceUnit {
                     if (printDebugInfo)
                         YLog.info("fastBlurWhenUseCompleteRecentsBlur useAnim: ${this.args(2).boolean()} target: ${this.args(1).float()}]")
-                    val usrAnim = this.args(2).boolean()
+                    val useAnim = this.args(2).boolean()
                     mainThreadExecutor.execute {
-                        if (usrAnim) {
+                        if (useAnim) {
                             transitionBlurView?.show(
                                 true, this.args(1).float()
                             )
@@ -274,14 +281,14 @@ object BlurEnhance : YukiBaseHooker() {
                     if (printDebugInfo)
                         YLog.info("resetBlurWhenUseCompleteRecentsBlur")
                     mainThreadExecutor.execute {
-                        val usrAnim = this.args(1).boolean()
+                        val useAnim = this.args(1).boolean()
                         if (shouldBlurWallpaper(this.args(0).any() ?: return@execute)) {
                             wallpaperBlurView?.show(false)
                         }
 //                        if (usrAnim) {
 //                            transitionBlurView.show(false)
 //                        }
-                        transitionBlurView?.hide(usrAnim)
+                        transitionBlurView?.hide(useAnim)
                     }
                 }
             }
@@ -314,14 +321,16 @@ object BlurEnhance : YukiBaseHooker() {
                             YLog.info("fastBlurWhenExitRecents skip (IsFromFsGesture)")
                         return@replaceUnit
                     }
-                    val usrAnim = this.args(2).boolean()
+                    val useAnim = this.args(2).boolean()
                     if (shouldBlurWallpaper(this.args(0).any() ?: return@replaceUnit)) {
                         wallpaperBlurView?.show(false)
                     }
 //                    if (usrAnim) {
 //                        transitionBlurView.show(false)
 //                    }
-                    transitionBlurView?.hide(usrAnim)
+                    // Forced animation to avoid flickering when opening a small window
+                    // not sure if it has a negative effect for now
+                    transitionBlurView?.hide(useAnim || fixSmallWindowAnim)
                 }
             }
             // Reset blur, widely used
@@ -332,18 +341,18 @@ object BlurEnhance : YukiBaseHooker() {
                     if (printDebugInfo)
                         YLog.info("resetBlur useAnim:${this.args(1).boolean()}")
                     mainThreadExecutor.execute {
-                        val usrAnim = this.args(1).boolean()
+                        val useAnim = this.args(1).boolean()
                         if (shouldBlurWallpaper(this.args(0).any() ?: return@execute)) {
                             wallpaperBlurView?.show(false)
                         }
 //                        if (usrAnim) {
 //                            transitionBlurView.show(false)
 //                        }
-                        if (isStartingApp && !usrAnim) {
+                        if (isStartingApp && !useAnim) {
                             transitionBlurView?.hide(true)
                         }
                         else {
-                            transitionBlurView?.hide(usrAnim)
+                            transitionBlurView?.hide(useAnim)
                         }
                         isStartingApp = false
                     }
@@ -358,12 +367,12 @@ object BlurEnhance : YukiBaseHooker() {
                 replaceUnit {
                     if (printDebugInfo)
                         YLog.info("fastBlurWhenOpenOrCloseFolder")
-                    val usrAnim = this.args(1).boolean()
+                    val useAnim = this.args(1).boolean()
                     if (shouldBlurWallpaper(this.args(0).any() ?: return@replaceUnit)) {
-                        wallpaperBlurView?.show(usrAnim)
+                        wallpaperBlurView?.show(useAnim)
                     }
                     else {
-                        wallpaperBlurView?.hide(usrAnim)
+                        wallpaperBlurView?.hide(useAnim)
                     }
                 }
             }
@@ -388,7 +397,7 @@ object BlurEnhance : YukiBaseHooker() {
                 replaceUnit {
                     if (printDebugInfo)
                         YLog.info("fastBlurWhenExitFolderPicker")
-                    val usrAnim = this.args(2).boolean()
+                    val useAnim = this.args(2).boolean()
                     if (shouldBlurWallpaper(this.args(0).any() ?: return@replaceUnit)) {
                         return@replaceUnit
                     }
@@ -403,7 +412,7 @@ object BlurEnhance : YukiBaseHooker() {
                         return@replaceUnit
                     }
                     wallpaperBlurView?.showWithDuration(
-                        usrAnim, this.args(1).float(), this.args(3).int()
+                        useAnim, this.args(1).float(), this.args(3).int()
                     )
                 }
             }
