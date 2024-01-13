@@ -118,6 +118,8 @@ object BlurEnhance : YukiBaseHooker() {
         Prefs.getBoolean(PrefKey.HOME_REFACTOR_EXTRA_FIX, PrefDefValue.HOME_REFACTOR_EXTRA_FIX)
     private val fixSmallWindowAnim =
         Prefs.getBoolean(PrefKey.HOME_REFACTOR_FIX_SMALL_WINDOW, PrefDefValue.HOME_REFACTOR_FIX_SMALL_WINDOW)
+    private val extraCompatibility =
+        Prefs.getBoolean(PrefKey.HOME_REFACTOR_EXTRA_COMPATIBILITY, PrefDefValue.HOME_REFACTOR_EXTRA_COMPATIBILITY)
     private var isStartingApp = false
 
     override fun onHook() {
@@ -128,10 +130,21 @@ object BlurEnhance : YukiBaseHooker() {
         var wallpaperBlurView : MiBlurView? = null
         hasEnable(PrefKey.HOME_BLUR_REFACTOR) {
             // Block original blurring
-            blurUtils.method {
-                name = "fastBlurDirectly"
-            }.hook {
-                intercept()
+            if (extraCompatibility) {
+                blurUtils.method {
+                    name = "fastBlurDirectly"
+                }.hook {
+                    replaceUnit {
+                        wallpaperBlurView?.show(false, this.args(0).float())
+                    }
+                }
+            }
+            else {
+                blurUtils.method {
+                    name = "fastBlurDirectly"
+                }.hook {
+                    intercept()
+                }
             }
             // Add blur view to Launcher
             blurUtilities.method {

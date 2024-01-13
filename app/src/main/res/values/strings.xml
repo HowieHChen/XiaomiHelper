@@ -192,6 +192,8 @@
     <string name="home_widget_resizable">Make all Android widgets resizable</string>
     <string name="home_widget_anim">Add startup animation to all widgets</string>
 
+    <string name="home_refactor_extra_compatibility">Compatibility mode</string>
+    <string name="home_refactor_extra_compatibility_tips">Try to be compatible with other modules, but compatibility cannot be ensured. Not recommended to be enabled.</string>
     <string name="home_refactor_extra_fix">Additional fixes for missing blur</string>
     <string name="home_refactor_extra_fix_tips">Forces an animation to be added to avoid blurring not appearing in time on fast swipes. Enable this only if you notice this problem.</string>
     <string name="home_refactor_fix_small_window">Additional fixes for small window animations</string>

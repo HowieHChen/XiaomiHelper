@@ -332,4 +332,6 @@
     <string name="home_refactor_blur">模糊效果</string>
     <string name="home_refactor_fix_small_window">额外修复小窗动画</string>
     <string name="home_refactor_fix_small_window_tips">强制使用动画以避免拖动应用进入小窗时闪烁，暂时不确定是否有负面影响。只有当你非常介意这个时才启用</string>
+    <string name="home_refactor_extra_compatibility">兼容性模式</string>
+    <string name="home_refactor_extra_compatibility_tips">尝试与其它模块兼容，但无法确保兼容性。不推荐开启</string>
 </resources>

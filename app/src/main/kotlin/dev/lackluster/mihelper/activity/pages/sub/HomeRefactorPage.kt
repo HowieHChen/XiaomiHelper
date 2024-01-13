@@ -27,6 +27,13 @@ class HomeRefactorPage : BasePage() {
         )
         TextSummaryWithSwitch(
             TextSummaryV(
+                textId = R.string.home_refactor_extra_compatibility,
+                tipsId = R.string.home_refactor_extra_compatibility_tips
+            ),
+            SwitchV(PrefKey.HOME_REFACTOR_EXTRA_COMPATIBILITY)
+        )
+        TextSummaryWithSwitch(
+            TextSummaryV(
                 textId = R.string.home_refactor_extra_fix,
                 tipsId = R.string.home_refactor_extra_fix_tips
             ),
