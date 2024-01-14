@@ -1,0 +1,235 @@
+package dev.lackluster.mihelper.hook.rules.systemui
+
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
+import android.graphics.HardwareRenderer
+import android.graphics.Matrix
+import android.graphics.Paint
+import android.graphics.PixelFormat
+import android.graphics.RenderEffect
+import android.graphics.RenderNode
+import android.graphics.Shader
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.Icon
+import android.graphics.drawable.LayerDrawable
+import android.hardware.HardwareBuffer
+import android.media.ImageReader
+import android.widget.ImageView
+import androidx.core.graphics.drawable.toBitmap
+import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
+import com.highcapable.yukihookapi.hook.factory.current
+import com.highcapable.yukihookapi.hook.factory.method
+import dev.lackluster.mihelper.data.PrefKey
+import dev.lackluster.mihelper.utils.Prefs
+
+object CustomMusicControl : YukiBaseHooker() {
+    private val style = Prefs.getInt(PrefKey.SYSTEMUI_MEDIA_CONTROL_STYLE, 0)
+    private var mediaArtwork: Icon? = null
+    private val meshFloats = arrayOf(
+        floatArrayOf(0.0f, 0.0f, 0.2f, 0.0f, 0.4f, 0.0f, 0.6f, 0.0f, 0.8f, 0.0f, 1.0f, 0.0f, 0.0f, 0.2f, -0.0933f, 0.4f, 0.4f, 0.2f, 0.6f, 0.2f, 0.3653f, 0.1335f, 1.0f, 0.2f, 0.0f, 0.4f, 0.4232f, 0.359f, 0.3429f, 0.5349f, 0.6f, 0.4f, 0.832f, 0.4148f, 1.0f, 0.4f, 0.0f, 0.6f, 0.2f, 0.6f, 0.2293f, 0.7775f, 0.7829f, 0.5595f, 0.6514f, 0.7302f, 1.0f, 0.6f, 0.0f, 0.8f, 0.2f, 0.8f, 0.28f, 0.9195f, 0.4773f, 0.8f, 0.8f, 0.8f, 1.0f, 0.8f, 0.0f, 1.0f, 0.6514f, 1.1073f, 0.4f, 1.0f, 1.0f, 1.0317f, 1.0f, 1.1302f, 1.0f, 1.0f),
+        floatArrayOf(0.0f, 0.0f, 0.2f, 0.0f, 0.4f, 0.0f, 0.6f, 0.0f, 0.8f, 0.0f, 1.0f, 0.0f, 0.0f, 0.2f, 0.3265f, 0.3839f, 0.4f, 0.2f, 0.462f, 0.3424f, 0.683f, 0.2797f, 1.0f, 0.2f, 0.0f, 0.4f, 0.2f, 0.4f, 0.4f, 0.4f, 0.6f, 0.4903f, 0.6574f, 0.4903f, 1.1357f, 0.4f, -0.1173f, 0.4597f, 0.3771f, 0.4384f, 0.6415f, 0.5947f, 0.8254f, 0.6935f, 0.9334f, 0.5862f, 1.0f, 0.6f, -0.0437f, 0.6533f, 0.2f, 0.6618f, 0.683f, 0.7362f, 0.8139f, 0.833f, 0.9104f, 0.8085f, 1.0f, 0.8f, 0.0f, 1.0f, 0.2f, 1.0f, 0.4f, 1.0f, 0.6f, 1.0f, 0.8f, 1.0f, 1.0f, 1.0f),
+        floatArrayOf(0.0f, 0.0f, 0.2f, 0.0f, 0.4f, 0.0f, 0.7465f, -0.0935f, 0.9702f, -0.0872f, 1.5935f, -0.0308f, -0.1675f, 0.2878f, 0.7185f, 0.3087f, 0.5952f, 0.0728f, 0.7823f, 0.0815f, 0.9318f, 0.301f, 1.1369f, 0.3756f, 0.0f, 0.4f, 0.3295f, 0.4607f, 0.7823f, 0.3087f, 0.7465f, 0.365f, 0.9514f, 0.4305f, 1.1514f, 0.4424f, 0.0f, 0.6f, 0.2f, 0.6f, 0.3295f, 0.4424f, 0.5703f, 0.5f, 0.7887f, 0.4847f, 1.0f, 0.6f, 0.0f, 0.8f, 0.2414f, 0.7926f, 0.0418f, 0.7303f, 0.5952f, 0.4688f, 0.9433f, 0.6929f, 1.0f, 0.8f, 0.0f, 1.0f, 0.2f, 1.0f, 0.4f, 1.0f, 0.6f, 1.0f, 0.8f, 1.0f, 1.0f, 1.0f),
+        floatArrayOf(-0.1739f, -0.0461f, 0.0712f, -0.0699f, 0.4773f, -0.0551f, 0.5871f, -0.0342f, 0.8f, 0.0f, 1.0f, 0.0f, -0.1192f, 0.0943f, 0.1034f, 0.0661f, 0.3712f, 0.1801f, 0.6161f, 0.2997f, 0.8f, 0.2f, 1.0f, 0.2f, -0.2158f, 0.2997f, 0.1034f, 0.1515f, 0.3712f, 0.2244f, 0.6676f, 0.3435f, 0.8f, 0.3911f, 1.2928f, 0.4824f, 0.0f, 0.6f, 0.4225f, 0.5539f, 0.8283f, 0.5345f, 0.6676f, 0.4601f, 0.9739f, 0.4542f, 1.4767f, 0.5345f, 0.0f, 0.8f, 0.2f, 0.8f, 0.6512f, 0.8179f, 0.6f, 0.8f, 1.2928f, 0.7271f, 1.6892f, 0.9235f, 0.0f, 1.0f, 0.2f, 1.0f, 0.4f, 1.0f, 0.6f, 1.0f, 0.8f, 1.0f, 1.0f, 1.0f),
+        floatArrayOf(-0.2351f, -0.0967f, 0.2135f, -0.1414f, 0.9221f, -0.0908f, 0.9221f, -0.0685f, 1.3027f, 0.0253f, 1.2351f, 0.1786f, -0.3768f, 0.1851f, 0.2f, 0.2f, 0.6615f, 0.3146f, 0.9543f, 0.0f, 0.6969f, 0.1911f, 1.0f, 0.2f, 0.0f, 0.4f, 0.2f, 0.4f, 0.0776f, 0.2318f, 0.6f, 0.4f, 0.6615f, 0.3851f, 1.0f, 0.4f, 0.0f, 0.6f, 0.1291f, 0.6f, 0.4f, 0.6f, 0.4f, 0.4304f, 0.4264f, 0.5792f, 1.2029f, 0.8188f, -0.1192f, 1.0f, 0.6f, 0.8f, 0.4264f, 0.8104f, 0.6f, 0.8f, 0.8f, 0.8f, 1.0f, 0.8f, 0.0f, 1.0f, 0.0776f, 1.0283f, 0.4f, 1.0f, 0.6f, 1.0f, 0.8f, 1.0f, 1.1868f, 1.0283f)
+    )
+    override fun onHook() {
+        if (style != 0) {
+            "com.android.systemui.statusbar.notification.mediacontrol.MiuiMediaControlPanel".toClass()
+                .method {
+                    name = "bindPlayer"
+                }
+                .hook {
+                    before {
+                        mediaArtwork = (this.args(0).any() ?:return@before).current().field { name = "artwork" }.any() as Icon
+                    }
+                }
+            "com.android.systemui.statusbar.notification.mediacontrol.PlayerTwoCircleView".toClass().apply {
+                method {
+                    name = "setBackground"
+                }.hook {
+                    before {
+                        if (mediaArtwork == null) {
+                            return@before
+                        }
+                        val backgroundColors = this.args(0).any() as IntArray
+                        val imageView = this.instance as ImageView
+                        val artworkLayer = mediaArtwork?.loadDrawable(imageView.context) ?: return@before
+                        when (style) {
+                            1 -> {
+                                val artworkBitmap = artworkLayer.toBitmap(artworkLayer.intrinsicWidth, artworkLayer.intrinsicHeight)
+                                val tmpBitmap =
+                                    artworkBitmap.zoom(50f, (50f * artworkBitmap.height / artworkBitmap.width))
+                                        .mesh(meshFloats[meshFloats.indices.random()])
+                                        .zoom(500f, 500f * imageView.height / imageView.width)
+                                        .mesh(meshFloats[meshFloats.indices.random()])
+                                        .blur( 75f, 2f)
+                                        .handleImageEffect(1.8f)
+                                        .drawColor(0x40000000)
+                                val brightness = tmpBitmap.brightness()
+                                imageView.setImageDrawable(BitmapDrawable(
+                                    imageView.resources,
+                                    when {
+                                        brightness > 0.6f -> {
+                                            tmpBitmap.drawColor(backgroundColors[1] and 0x00ffffff or 0x40000000)
+                                        }
+                                        brightness < 0.15f -> {
+                                            tmpBitmap.drawColor(backgroundColors[0] and 0x00ffffff or 0x7F000000)
+                                        }
+                                        else -> tmpBitmap
+                                    }
+                                ))
+                            }
+                            2 -> {
+                                val maskLayer = GradientDrawable()
+                                maskLayer.setSize(500, 500)
+                                maskLayer.shape = GradientDrawable.RECTANGLE
+                                maskLayer.gradientType = GradientDrawable.RADIAL_GRADIENT
+                                maskLayer.gradientRadius = 250f
+                                maskLayer.colors = intArrayOf(
+                                    backgroundColors[0] and 0x00ffffff or 0x40000000,
+                                    backgroundColors[1] // and 0x00ffffff or 0x7F000000
+                                )
+                                imageView.setImageDrawable(LayerDrawable(arrayOf(
+                                    artworkLayer,
+                                    maskLayer
+                                )))
+                            }
+                        }
+                        this.result = null
+                    }
+                }
+                method {
+                    name = "setPaintColor"
+                }.hook {
+                    before {
+                        if (mediaArtwork == null) {
+                            return@before
+                        }
+                        mediaArtwork = null
+                        this.result = null
+                    }
+                }
+            }
+        }
+    }
+
+    private fun Bitmap.zoom(newWidth: Float, newHeight: Float): Bitmap {
+        val matrix = Matrix()
+        val scaleWidth = newWidth / width
+        val scaleHeight = newHeight / height
+        matrix.postScale(scaleWidth, scaleHeight)
+        return Bitmap.createBitmap(
+            this, 0, 0, width,
+            height, matrix, true
+        )
+    }
+
+    private fun Bitmap.blur(radius: Float, ty: Float): Bitmap {
+        val scaledBitmap = Bitmap.createScaledBitmap(
+            this,
+            (width / ty).toInt(), (height / ty).toInt(), false
+        ) //先缩放图片，增加模糊速度
+
+        val imageReader = ImageReader.newInstance(
+            scaledBitmap.width, scaledBitmap.height,
+            PixelFormat.RGBA_8888, 1,
+            HardwareBuffer.USAGE_GPU_SAMPLED_IMAGE or HardwareBuffer.USAGE_GPU_COLOR_OUTPUT
+        )
+        val renderNode = RenderNode("BlurEffect")
+        val hardwareRenderer = HardwareRenderer()
+
+        hardwareRenderer.setSurface(imageReader.surface)
+        hardwareRenderer.setContentRoot(renderNode)
+        renderNode.setPosition(0, 0, imageReader.width, imageReader.height)
+        val blurRenderEffect = RenderEffect.createBlurEffect(
+            radius, radius,
+            Shader.TileMode.MIRROR
+        )
+        renderNode.setRenderEffect(blurRenderEffect)
+
+        val renderCanvas = renderNode.beginRecording()
+        renderCanvas.drawBitmap(scaledBitmap, 0f, 0f, null)
+        renderNode.endRecording()
+        hardwareRenderer.createRenderRequest()
+            .setWaitForPresent(true)
+            .syncAndDraw()
+
+        val image = imageReader.acquireNextImage() ?: throw RuntimeException("No Image")
+        val hardwareBuffer = image.hardwareBuffer ?: throw RuntimeException("No HardwareBuffer")
+        val bitmap = Bitmap.wrapHardwareBuffer(hardwareBuffer, null)
+            ?: throw RuntimeException("Create Bitmap Failed")
+
+        hardwareBuffer.close()
+        image.close()
+        imageReader.close()
+        renderNode.discardDisplayList()
+        hardwareRenderer.destroy()
+        return bitmap.copy(Bitmap.Config.ARGB_8888, false)
+    }
+
+    private fun Bitmap.brightness(): Float {
+        val height = this.height
+        val width = this.width
+        var pixelColor: Int
+        var rChannel: Int
+        var gChannel: Int
+        var bChannel: Int
+        var count = 0
+        var bright: Long = 0
+        for (y in 0 until height step 10) {
+            for (x in 0 until width/2 step 5) {
+                count++
+                pixelColor = this.getPixel(x, y)
+                rChannel = Color.red(pixelColor)
+                gChannel = Color.green(pixelColor)
+                bChannel = Color.blue(pixelColor)
+                bright += (minOf(rChannel, gChannel, bChannel) + maxOf(rChannel, gChannel, bChannel))/2
+            }
+        }
+        return bright.toFloat()/count
+    }
+
+    private fun Bitmap.drawColor(color: Int): Bitmap {
+        val newBit = this.copy(Bitmap.Config.ARGB_8888, true)
+        val canvas = Canvas(newBit)
+        canvas.drawColor(color)
+        return newBit
+    }
+    private fun Bitmap.handleImageEffect(saturation: Float): Bitmap {
+        val saturationMatrix = ColorMatrix()
+        saturationMatrix.setSaturation(saturation)
+        val imageMatrix = ColorMatrix()
+        imageMatrix.postConcat(saturationMatrix)
+        val paint = Paint()
+        paint.colorFilter = ColorMatrixColorFilter(imageMatrix)
+        val bitmap = Bitmap.createBitmap(width,height, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        canvas.drawBitmap(this, 0F, 0F, paint)
+        return bitmap
+    }
+    private fun Bitmap.mesh(floats: FloatArray): Bitmap {
+        val fArr2 = FloatArray(72)
+        var i = 0
+        while (i <= 5) {
+            var i2 = 0
+            var i3 = 5
+            while (i2 <= i3) {
+                val i4 = i * 12 + i2 * 2
+                val i5 = i4 + 1
+                fArr2[i4] = floats[i4] * width.toFloat()
+                fArr2[i5] = floats[i5] * height.toFloat()
+                i2++
+                i3 = 5
+            }
+            i++
+        }
+        val newBit = Bitmap.createBitmap(this)
+        val canvas = Canvas(newBit)
+        canvas.drawBitmapMesh(newBit, 5, 5, fArr2, 0, null, 0, null)
+        return newBit
+    }
+}

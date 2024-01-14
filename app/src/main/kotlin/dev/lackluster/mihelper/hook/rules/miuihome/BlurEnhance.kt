@@ -18,7 +18,7 @@ import dev.lackluster.mihelper.utils.Prefs.hasEnable
 import java.util.concurrent.Executor
 
 object BlurEnhance : YukiBaseHooker() {
-    private val printDebugInfo = BuildConfig.DEBUG
+    private val printDebugInfo = BuildConfig.DEBUG && false
 
     private val blurUtils by lazy {
         "com.miui.home.launcher.common.BlurUtils".toClass()

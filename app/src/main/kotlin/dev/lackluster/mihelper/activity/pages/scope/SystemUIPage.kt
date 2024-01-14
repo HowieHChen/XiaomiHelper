@@ -6,6 +6,7 @@ import cn.fkj233.ui.activity.MIUIActivity
 import cn.fkj233.ui.activity.annotation.BMPage
 import cn.fkj233.ui.activity.data.BasePage
 import cn.fkj233.ui.activity.view.SeekBarWithTextV
+import cn.fkj233.ui.activity.view.SpinnerV
 import cn.fkj233.ui.activity.view.SwitchV
 import cn.fkj233.ui.activity.view.TextSummaryV
 import cn.fkj233.ui.activity.view.TextV
@@ -262,6 +263,30 @@ class SystemUIPage : BasePage(){
                     }.show()
                 }),
             dataBindingRecv = notificationRedirectCustomBinding.binding.getRecv(1)
+        )
+        val mediaControlStyle: HashMap<Int, String> = hashMapOf<Int, String>().also {
+            it[0] = getString(R.string.systemui_media_control_style_default)
+            it[1] = getString(R.string.systemui_media_control_style_enhance)
+            it[2] = getString(R.string.systemui_media_control_style_android)
+        }
+        TextWithSpinner(
+            TextV(textId = R.string.systemui_media_control_style),
+            SpinnerV(
+                mediaControlStyle[MIUIActivity.safeSP.getInt(
+                    PrefKey.SYSTEMUI_MEDIA_CONTROL_STYLE,
+                    0
+                )].toString()
+            ) {
+                add(mediaControlStyle[0].toString()) {
+                    MIUIActivity.safeSP.putAny(PrefKey.SYSTEMUI_MEDIA_CONTROL_STYLE, 0)
+                }
+                add(mediaControlStyle[1].toString()) {
+                    MIUIActivity.safeSP.putAny(PrefKey.SYSTEMUI_MEDIA_CONTROL_STYLE, 1)
+                }
+                add(mediaControlStyle[2].toString()) {
+                    MIUIActivity.safeSP.putAny(PrefKey.SYSTEMUI_MEDIA_CONTROL_STYLE, 2)
+                }
+            }
         )
         Line()
         TitleText(textId = R.string.ui_title_systemui_lock_screen)

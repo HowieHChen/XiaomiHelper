@@ -2,6 +2,7 @@ package dev.lackluster.mihelper.hook.apps
 
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import dev.lackluster.mihelper.hook.rules.systemui.BlockEditor
+import dev.lackluster.mihelper.hook.rules.systemui.CustomMusicControl
 import dev.lackluster.mihelper.hook.rules.systemui.DoubleTapToSleep
 import dev.lackluster.mihelper.hook.rules.systemui.HideBatteryIcon
 import dev.lackluster.mihelper.hook.rules.systemui.HideCarrierLabel
@@ -34,5 +35,6 @@ object SystemUI : YukiBaseHooker() {
         loadHooker(NotifFreeform)
         loadHooker(NotifSettingsRedirect)
         loadHooker(NotifWhitelist)
+        loadHooker(CustomMusicControl)
     }
 }

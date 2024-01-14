@@ -334,4 +334,8 @@
     <string name="home_refactor_fix_small_window_tips">强制使用动画以避免拖动应用进入小窗时闪烁，暂时不确定是否有负面影响。只有当你非常介意这个时才启用</string>
     <string name="home_refactor_extra_compatibility">兼容性模式</string>
     <string name="home_refactor_extra_compatibility_tips">尝试与其它模块兼容，但无法确保兼容性。不推荐开启</string>
+    <string name="systemui_media_control_style">自定义媒体控件样式</string>
+    <string name="systemui_media_control_style_android">原生</string>
+    <string name="systemui_media_control_style_enhance">HyperOS（增强）</string>
+    <string name="systemui_media_control_style_default">HyperOS（默认）</string>
 </resources>

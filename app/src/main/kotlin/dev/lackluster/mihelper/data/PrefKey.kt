@@ -105,6 +105,7 @@ object PrefKey {
     const val SYSTEMUI_NOTIF_CHANNEL_DIALOG_CUSTOM = "systemui_notif_channel_dialog_custom"
     const val SYSTEMUI_NOTIF_CHANNEL_DIALOG_NEGATIVE = "systemui_notif_channel_dialog_negative"
     const val SYSTEMUI_NOTIF_CHANNEL_DIALOG_POSITIVE = "systemui_notif_channel_dialog_positive"
+    const val SYSTEMUI_MEDIA_CONTROL_STYLE = "systemui_media_control_style"
     const val TAPLUS_USE_BROWSER = "taplus_use_browser"
     const val TAPLUS_SEARCH_ENGINE = "taplus_search_engine"
     const val TAPLUS_SEARCH_URL = "taplus_search_url"
