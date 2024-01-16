@@ -268,6 +268,7 @@ class SystemUIPage : BasePage(){
             it[0] = getString(R.string.systemui_media_control_style_default)
             it[1] = getString(R.string.systemui_media_control_style_enhance)
             it[2] = getString(R.string.systemui_media_control_style_android)
+            it[3] = getString(R.string.systemui_media_control_style_android_blur)
         }
         TextWithSpinner(
             TextV(textId = R.string.systemui_media_control_style),
@@ -285,6 +286,9 @@ class SystemUIPage : BasePage(){
                 }
                 add(mediaControlStyle[2].toString()) {
                     MIUIActivity.safeSP.putAny(PrefKey.SYSTEMUI_MEDIA_CONTROL_STYLE, 2)
+                }
+                add(mediaControlStyle[3].toString()) {
+                    MIUIActivity.safeSP.putAny(PrefKey.SYSTEMUI_MEDIA_CONTROL_STYLE, 3)
                 }
             }
         )

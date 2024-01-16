@@ -59,31 +59,42 @@ object CustomMusicControl : YukiBaseHooker() {
                         }
                         val backgroundColors = this.args(0).any() as IntArray
                         val imageView = this.instance as ImageView
-                        val artworkLayer = mediaArtwork?.loadDrawable(imageView.context) ?: return@before
-                        when (style) {
-                            1 -> {
-                                val artworkBitmap = artworkLayer.toBitmap(artworkLayer.intrinsicWidth, artworkLayer.intrinsicHeight)
-                                val scaledBitmap = Bitmap.createScaledBitmap(artworkBitmap, 30, 30, true)
-                                val tmpBitmap = processArtwork(scaledBitmap, imageView.width, imageView.height)
-                                imageView.setImageDrawable(BitmapDrawable(imageView.resources, tmpBitmap))
-                            }
-                            2 -> {
-                                val maskLayer = GradientDrawable()
-                                maskLayer.setSize(500, 500)
-                                maskLayer.shape = GradientDrawable.RECTANGLE
-                                maskLayer.gradientType = GradientDrawable.RADIAL_GRADIENT
-                                maskLayer.gradientRadius = 250f
-                                maskLayer.colors = intArrayOf(
-                                    backgroundColors[0] and 0x00ffffff or 0x40000000,
-                                    backgroundColors[1] // and 0x00ffffff or 0x7F000000
-                                )
-                                imageView.setImageDrawable(LayerDrawable(arrayOf(
-                                    artworkLayer,
-                                    maskLayer
-                                )))
-                            }
-                        }
+                        var artworkLayer = mediaArtwork?.loadDrawable(imageView.context) ?: return@before
                         this.result = null
+                        if (style == 1) {
+                            val artworkBitmap = artworkLayer.toBitmap()
+                            val scaledBitmap = Bitmap.createScaledBitmap(artworkBitmap, 30, 30, true)
+                            val tmpBitmap = processArtwork(scaledBitmap, imageView.width, imageView.height)
+                            imageView.setImageDrawable(BitmapDrawable(imageView.resources, tmpBitmap))
+                            return@before
+                        }
+
+                        val maskLayer = GradientDrawable()
+                        maskLayer.setSize(300, 300)
+                        maskLayer.shape = GradientDrawable.RECTANGLE
+                        maskLayer.gradientType = GradientDrawable.RADIAL_GRADIENT
+                        maskLayer.gradientRadius = 150f
+                        if (style == 2) {
+                            maskLayer.colors = intArrayOf(
+                                backgroundColors[0] and 0x00ffffff or 0x40000000,
+                                backgroundColors[1] // and 0x00ffffff or 0x7F000000
+                            )
+                        }
+                        else if (style == 3){
+                            val artworkBitmap = artworkLayer.toBitmap()
+                            val tmpBitmap = Bitmap.createScaledBitmap(artworkBitmap, 300, 300, true)
+                            val canvas = Canvas(tmpBitmap.copy(Bitmap.Config.ARGB_8888, true))
+                            canvas.drawColor(0x7F000000)
+                            artworkLayer = BitmapDrawable(imageView.resources, tmpBitmap.blur(15f, 2f))
+                            maskLayer.colors = intArrayOf(
+                                backgroundColors[0] and 0x00ffffff or 0x20000000,
+                                backgroundColors[1] and 0x00ffffff or 0x7F000000
+                            )
+                        }
+                        imageView.setImageDrawable(LayerDrawable(arrayOf(
+                            artworkLayer,
+                            maskLayer
+                        )))
                     }
                 }
                 method {

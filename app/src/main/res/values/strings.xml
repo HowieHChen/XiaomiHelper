@@ -280,9 +280,10 @@
     <string name="systemui_lock_screen_block_editor">Disable access to lock screen editor on lock screen</string>
     <string name="systemui_lock_screen_block_editor_tips">You can edit the lock screen in "Settings - Wallpaper &amp; personalization".</string>
     <string name="systemui_media_control_style">Customize the style of the media control</string>
-    <string name="systemui_media_control_style_default">Android</string>
-    <string name="systemui_media_control_style_android">Android</string>
+    <string name="systemui_media_control_style_default">HyperOS (Default)</string>
     <string name="systemui_media_control_style_enhance">HyperOS (Enhanced)</string>
+    <string name="systemui_media_control_style_android">Android</string>
+    <string name="systemui_media_control_style_android_blur">Android (Blur)</string>
     <string name="taplus_use_browser">Search using browser</string>
     <string name="taplus_search_engine">Search Engine</string>
     <string name="taplus_search_engine_default">Default</string>

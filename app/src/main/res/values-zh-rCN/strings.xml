@@ -338,4 +338,5 @@
     <string name="systemui_media_control_style_android">原生</string>
     <string name="systemui_media_control_style_enhance">HyperOS（增强）</string>
     <string name="systemui_media_control_style_default">HyperOS（默认）</string>
+    <string name="systemui_media_control_style_android_blur">原生（模糊）</string>
 </resources>

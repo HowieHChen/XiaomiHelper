@@ -6,7 +6,6 @@
   <string name="module_inactive_tips">モジュールが有効化されていません。LSPosedのバージョンとモジュールが有効化されているかの情報を確認して、再度お試しください。</string>
   <string name="ui_page_about">モジュールについて</string>
   <string name="ui_page_android">Android フレームワーク</string>
-  <string name="ui_page_main" translatable="false">@string/app_name</string>
   <string name="ui_page_menu">メニュー</string>
   <string name="ui_page_mi_connect">Xiaomi Connect</string>
   <string name="ui_page_miui_home">ランチャー</string>
@@ -14,7 +13,6 @@
   <string name="ui_page_security_center">セキュリティセンター</string>
   <string name="ui_page_security_center_pad">@string/ui_page_security_center</string>
   <string name="ui_page_systemui">システム UI</string>
-  <string name="ui_page_disable_fixed_orientation" translatable="false">@string/android_disable_fixed_orientation_scope</string>
   <string name="ui_page_status_bar_icon_tuner">アイコンチューナー</string>
   <string name="ui_page_home_refactor">ぼかし効果のカスタマイズ</string>
   <string name="ui_title_about_developer">開発者</string>
@@ -50,15 +48,9 @@
   <string name="ui_title_home_refactor_apps">アプリのぼかし</string>
   <string name="ui_title_home_refactor_wallpaper">壁紙のぼかし</string>
   <string name="ui_title_home_refactor_launch">ランチャーの表示</string>
-  <string name="ui_scope_android" translatable="false">@string/ui_page_android</string>
-  <string name="ui_scope_mi_connect" translatable="false">@string/ui_page_mi_connect</string>
   <string name="ui_scope_mishare">Mi シェア</string>
   <string name="ui_scope_mi_smart_hub">Mi Smart Hub</string>
-  <string name="ui_scope_miui_home" translatable="false">@string/ui_page_miui_home</string>
   <string name="ui_scope_power_keeper">バッテリーとパフォーマンス</string>
-  <string name="ui_scope_security_center" translatable="false">@string/ui_page_security_center</string>
-  <string name="ui_scope_security_center_pad" translatable="false">@string/ui_page_security_center_pad</string>
-  <string name="ui_scope_other" translatable="false">@string/ui_page_others</string>
   <string name="ui_scope_browser">ブラウザー</string>
   <string name="ui_scope_download">ダウンロードマネージャー</string>
   <string name="ui_scope_gallery">ギャラリー</string>
@@ -73,11 +65,9 @@
   <string name="ui_scope_screen_recorder">スクリーンレコーダー</string>
   <string name="ui_scope_screenshot">スクリーンショット</string>
   <string name="ui_scope_settings">設定</string>
-  <string name="ui_scope_systemui" translatable="false">@string/ui_page_systemui</string>
   <string name="ui_scope_taplus">Taplus</string>
   <string name="ui_scope_updater">アップデーター</string>
   <string name="ui_scope_xiaoai">Mi AI</string>
-  <string name="ui_about_module" translatable="false">@string/ui_page_about</string>
   <string name="button_cancel">キャンセル</string>
   <string name="button_ok">OK</string>
   <string name="button_clear">クリア</string>
@@ -105,15 +95,10 @@
   <string name="ad_block">広告とプロモーションを削除する</string>
   <string name="about_yuki">このモジュールはYukiHookAPIによって作られました</string>
   <string name="about_yuki_tips">詳細はこちら https://github.com/HighCapable/YuKiHookAPI</string>
-  <string name="about_yuki_url" translatable="false">https://github.com/HighCapable/YuKiHookAPI</string>
   <string name="about_repository">GitHubリポジトリ</string>
-  <string name="about_repository_url" translatable="false">https://github.com/HowieHChen/XiaomiHelper</string>
   <string name="about_jump_error_toast">いくつかの奇妙なエラーが発生しました。</string>
   <string name="about_easter_egg_toast">タップをしても何も起こらないよ。</string>
-  <string name="about_easter_egg_url" translatable="false">https://www.bilibili.com/video/BV1Xa4y1D7G3</string>
-  <string name="about_author" translatable="false">HowieHChen</string>
   <string name="about_author_tips">プロフィールまたは署名はありません</string>
-  <string name="about_author_url" translatable="false">https://github.com/HowieHChen</string>
   <string name="android_dark_for_all">強制ダークモードのホワイトリストを無効化する</string>
   <string name="android_dark_for_all_tips">システムアプリなどを除く、ほとんどのアプリで強制的にダークモードを有効化できるようにします</string>
   <string name="android_wallpaper_scale">壁紙のスケール</string>
@@ -157,7 +142,6 @@
   <string name="home_behavior_blur_advance_tips">フォルダとショートカットメニューに高度なマテリアルのぼかし効果を追加します</string>
   <string name="home_behavior_refactor">高度なぼかし効果</string>
   <string name="home_behavior_refactor_tips">パフォーマンスと消費電力を犠牲にする代わりに新しいインタラクティブな体験ができます</string>
-  <string name="home_behavior_refactor_dialog_title" translatable="false">@string/dialog_warning</string>
   <string name="home_behavior_refactor_dialog_msg">!!これは試験的な機能です!!\n\nこの機能は高品質なマテリアルに基づきランチャーをリファクタリングします。\n\nこの機能をオンにする事で消費電力の増加、フレーム落ち、ジャンク化、クラッシュなどのリスクが発生します。\n\n改造されたランチャーを使用していない事とランチャーのぼかし効果やアニメーションに関する他のモジュールが無効化されている事を確認してください。</string>
   <string name="home_folder_layout_fix">フォルダの表示で幅全体を使用する</string>
   <string name="home_folder_layout_size">フォルダ内アイコンの列数</string>
@@ -205,17 +189,10 @@
   <string name="home_refactor_launch_show_tips">最近のタスクの表示でランチャーの表示を非表示にしないようにします</string>
   <string name="home_refactor_launch_scale">ランチャーの表示のズーム比</string>
   <string name="home_refactor_launch_scale_tips">最近のタスク表示内のランチャーの表示のスケーリングに影響します</string>
-  <string name="home_refactor_launch_scale_nonlinear" translatable="false">@string/home_refactor_nonlinear</string>
-  <string name="home_refactor_launch_scale_nonlinear_factor" translatable="false">@string/home_refactor_nonlinear_factor</string>
-  <string name="home_refactor_launch_scale_nonlinear_factor_tips" translatable="false">@string/home_refactor_nonlinear_factor_tips</string>
   <string name="incallui_hide_crbt">CRBTを非表示にする (カラーリングバックトーン)</string>
   <string name="joyose_no_cloud_control">クラウドコントロールを無効化する</string>
-  <string name="market_ad_block" translatable="false">@string/ad_block</string>
   <string name="mishare_no_auto_off">Mi シェアの自動オフを無効化する</string>
   <string name="mi_smart_hub_all_app">すべてのアプリを別のデバイスで開く事を可能にする</string>
-  <string name="mms_ad_block" translatable="false">@string/ad_block</string>
-  <string name="music_ad_block" translatable="false">@string/ad_block</string>
-  <string name="package_ad_block" translatable="false">@string/ad_block</string>
   <string name="package_no_count_check">頻繁にインストールされるアプリのチェックを無効化する</string>
   <string name="package_remove_report">報告ボタンを削除する</string>
   <string name="package_safe_mode_tip">セーフモードのヒントを削除する</string>
@@ -249,7 +226,6 @@
   <string name="security_system_app_wifi">システムアプリのWi-Fi管理権限を許可する</string>
   <string name="settings_show_google">Googleの設定を表示する</string>
   <string name="settings_unlock_voip_assistant">VoIPアシスタントをアンロック</string>
-  <string name="systemui_statusbar_icon_tuner" translatable="false">@string/ui_page_status_bar_icon_tuner</string>
   <string name="systemui_notif_disable_whitelist">通知のホワイトリストを無効化する</string>
   <string name="systemui_notif_freeform">ほとんどの通知をスモールウィンドウモードで開けるようにする</string>
   <string name="systemui_notif_freeform_tips">通知をプルダウンするとスモールウィンドウが開きます。「Mi Push」経由のプッシュ通知には対応していない物があります</string>
@@ -263,13 +239,12 @@
   <string name="systemui_notif_redirect_dialog_negative_default">アプリの設定</string>
   <string name="systemui_notif_redirect_dialog_positive_default">通知チャネルの設定</string>
   <string name="systemui_tips_default_theme">デフォルトテーマでのみ動作します</string>
-  <string name="systemui_lock_screen_double_tap" translatable="false">@string/home_behavior_double_tap</string>
   <string name="systemui_lock_screen_hide_disturb">Do Not Disturbモードの常駐通知を非表示にする</string>
   <string name="systemui_lock_screen_hide_unlock_tip">ロック画面のインターフェース下部にあるロック画面のプロンプトを非表示にする</string>
   <string name="systemui_lock_screen_block_editor">ロック画面でロック画面の編集へのアクセスを無効化する</string>
   <string name="systemui_lock_screen_block_editor_tips">設定内の「壁紙と個人設定」でロック画面を編集できます</string>
   <string name="systemui_media_control_style">メディアコントロールのスタイルをカスタマイズ</string>
-  <string name="systemui_media_control_style_default">Android</string>
+  <string name="systemui_media_control_style_default">HyperOS (デフォルト)</string>
   <string name="systemui_media_control_style_android">Android</string>
   <string name="systemui_media_control_style_enhance">HyperOS (強化)</string>
   <string name="taplus_use_browser">ブラウザーを使用した検索</string>
@@ -355,16 +330,6 @@
   <string name="status_bar_battery_padding_right">右のパディング</string>
   <string name="updater_disable_validation">OTAの検証を無効化する</string>
   <string name="updater_disable_validation_tips">VABデバイスのみ対応になります。VAB以外のデバイスではオンにしないでください！</string>
-  <string name="xiaoai_use_browser" translatable="false">@string/taplus_use_browser</string>
-  <string name="xiaoai_search_engine" translatable="false">@string/taplus_search_engine</string>
-  <string name="xiaoai_search_engine_default" translatable="false">@string/taplus_search_engine_default</string>
-  <string name="xiaoai_search_engine_baidu" translatable="false">@string/taplus_search_engine_baidu</string>
-  <string name="xiaoai_search_engine_sogou" translatable="false">@string/taplus_search_engine_sogou</string>
-  <string name="xiaoai_search_engine_bing" translatable="false">@string/taplus_search_engine_bing</string>
-  <string name="xiaoai_search_engine_google" translatable="false">@string/taplus_search_engine_google</string>
-  <string name="xiaoai_search_engine_custom" translatable="false">@string/taplus_search_engine_custom</string>
-  <string name="xiaoai_search_custom" translatable="false">@string/taplus_search_custom</string>
-  <string name="xiaoai_search_custom_toast" translatable="false">@string/taplus_search_custom_toast</string>
   <string name="xiaoai_hide_watermark">Betaの透かしを非表示にする</string>
   <string name="systemui_notif_redirect_dialog_positive">「通知チャネル設定」ボタンのテキスト</string>
   <string name="systemui_notif_redirect_dialog_negative">「アプリ通知設定」ボタンのテキスト</string>
@@ -373,4 +338,5 @@
   <string name="android_switch_rotation_suggestions_before_false">現在、有効化されています。無効化しますか？</string>
   <string name="android_switch_rotation_suggestions_done_false">回転の提案は無効化されました</string>
   <string name="android_switch_rotation_suggestions_failed">失敗しました！このアプリにroot権限を付与してから、再度お試しください。</string>
+  <string name="systemui_media_control_style_android_blur">Android (ぼかし)</string>
 </resources>
