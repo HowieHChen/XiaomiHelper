@@ -96,22 +96,6 @@ object BlurEnableAll : YukiBaseHooker() {
                             }
                         }
                 }
-//                else {
-//                    "com.miui.home.recents.NavStubView".toClass()
-//                        .method {
-//                            name = "commonAnimStartAppToHome"
-//                        }
-//                        .hook {
-//                            after {
-//                                val mLauncher = this.args(0).any() ?: return@after
-//                                val isFolderShowing = (XposedHelpers.callMethod(mLauncher, "isFolderShowing") as Boolean?) ?: false
-//                                if (!isFolderShowing) {
-//                                    fastBlurWhenUseCompleteRecentsBlur.call(mLauncher, 1.0f, false)
-//                                    fastBlurWhenUseCompleteRecentsBlur.call(mLauncher, 0.0f, true)
-//                                }
-//                            }
-//                        }
-//                }
             }
         }
     }

@@ -55,13 +55,6 @@ class MiuiHomePage : BasePage() {
             ),
             SwitchV(PrefKey.HOME_FAKE_PREMIUM)
         )
-        TextSummaryWithSwitch(
-            TextSummaryV(
-                textId = R.string.home_behavior_blur_advance,
-                tipsId = R.string.home_behavior_blur_advance_tips
-            ),
-            SwitchV(PrefKey.HOME_BLUR_ADVANCE)
-        )
         val refactorBinding = GetDataBinding({
             MIUIActivity.safeSP.getBoolean(PrefKey.HOME_BLUR_REFACTOR, false)
         }) { view, flags, data ->
@@ -80,6 +73,14 @@ class MiuiHomePage : BasePage() {
         }
         TextSummaryWithSwitch(
             TextSummaryV(
+                textId = R.string.home_behavior_blur_advance,
+                tipsId = R.string.home_behavior_blur_advance_tips
+            ),
+            SwitchV(PrefKey.HOME_BLUR_ADVANCE),
+            dataBindingRecv = refactorBinding.binding.getRecv(1)
+        )
+        TextSummaryWithSwitch(
+            TextSummaryV(
                 textId = R.string.home_behavior_all_blur,
                 tipsId = R.string.home_behavior_all_blur_tips
             ),
@@ -96,7 +97,7 @@ class MiuiHomePage : BasePage() {
                 dataBindingRecv = blurBinding.binding.getRecv(1)
             )
         }
-        else {
+//        else {
             TextSummaryWithArrow(
                 TextSummaryV(
                     textId = R.string.home_behavior_refactor,
@@ -120,7 +121,7 @@ class MiuiHomePage : BasePage() {
                         }
                     })
             )
-        }
+//        }
         TextSummaryWithArrow(
             TextSummaryV(
                 textId = R.string.home_behavior_blur_radius,

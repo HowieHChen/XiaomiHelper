@@ -1,24 +1,49 @@
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
+ * This file is part of XiaomiHelper project
+ * Copyright (C) 2023 HowieHChen, howie.dev@outlook.com
+
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package dev.lackluster.mihelper.hook.rules.miuihome
 
 import android.app.Activity
 import android.view.View
 import android.view.ViewGroup
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
+import com.highcapable.yukihookapi.hook.factory.current
 import com.highcapable.yukihookapi.hook.factory.field
 import com.highcapable.yukihookapi.hook.factory.method
 import com.highcapable.yukihookapi.hook.log.YLog
+import com.highcapable.yukihookapi.hook.type.java.BooleanType
+import de.robv.android.xposed.XC_MethodHook
+import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
 import dev.lackluster.mihelper.BuildConfig
 import dev.lackluster.mihelper.data.PrefDefValue
 import dev.lackluster.mihelper.data.PrefKey
 import dev.lackluster.mihelper.hook.view.MiBlurView
+import dev.lackluster.mihelper.utils.Device
 import dev.lackluster.mihelper.utils.MiBlurUtils
 import dev.lackluster.mihelper.utils.Prefs
 import dev.lackluster.mihelper.utils.Prefs.hasEnable
 import java.util.concurrent.Executor
 
 object BlurEnhance : YukiBaseHooker() {
-    private val printDebugInfo = BuildConfig.DEBUG && false
+    private val printDebugInfo = BuildConfig.DEBUG // && false
 
     private val blurUtils by lazy {
         "com.miui.home.launcher.common.BlurUtils".toClass()
@@ -129,7 +154,7 @@ object BlurEnhance : YukiBaseHooker() {
         var transitionBlurView : MiBlurView? = null
         var wallpaperBlurView : MiBlurView? = null
         hasEnable(PrefKey.HOME_BLUR_REFACTOR) {
-            // Block original blurring
+            // Block original blur
             if (extraCompatibility) {
                 blurUtils.method {
                     name = "fastBlurDirectly"
@@ -153,12 +178,10 @@ object BlurEnhance : YukiBaseHooker() {
             }.hook {
                 after {
                     if (!isBackgroundBlurEnabled.boolean()) {
-                        if (Prefs.getBoolean(PrefKey.HOME_BLUR_ENHANCE, false)) {
-                            isBackgroundBlurEnabled.setTrue()
-                        }
-                        else {
+                        if (!Prefs.getBoolean(PrefKey.HOME_BLUR_ENHANCE, false)) {
                             YLog.warn("The High-quality materials function is disabled.")
                         }
+                        isBackgroundBlurEnabled.setTrue()
                     }
                     val launcher = this.args(0).any()
                     transitionBlurView = MiBlurView(launcher as Activity)
@@ -371,24 +394,6 @@ object BlurEnhance : YukiBaseHooker() {
                     }
                 }
             }
-            // Blur wallpaper when opening a folder
-            // Reset blurring when closing folder
-            // Only affects wallpaper blur
-            blurUtils.method {
-                name = "fastBlurWhenOpenOrCloseFolder"
-            }.ignored().hook {
-                replaceUnit {
-                    if (printDebugInfo)
-                        YLog.info("fastBlurWhenOpenOrCloseFolder")
-                    val useAnim = this.args(1).boolean()
-                    if (shouldBlurWallpaper(this.args(0).any() ?: return@replaceUnit)) {
-                        wallpaperBlurView?.show(useAnim)
-                    }
-                    else {
-                        wallpaperBlurView?.hide(useAnim)
-                    }
-                }
-            }
             // Blur when entering the folder edit page
             // Only affects wallpaper blur
             blurUtils.method {
@@ -481,10 +486,89 @@ object BlurEnhance : YukiBaseHooker() {
                 }
             }
             // End of uncertainty section
+            if (Device.isPad) {
+                // Tablet needs its own implementation
+                val launcherClz = "com.miui.home.launcher.Launcher".toClass()
+                val isShouldBlurMethod =
+                    launcherClz.methods.first { it.name == "isShouldBlur" }
+                val openMethod =
+                    launcherClz.methods.first { it.name == "openFolder" }
+                val closeMethod =
+                    launcherClz.methods.first { it.name == "closeFolder" && it.parameterCount == 1 && it.parameterTypes[0] == BooleanType }
+                // Folder blur
+                XposedBridge.hookMethod(isShouldBlurMethod, object : XC_MethodHook() {
+                    override fun beforeHookedMethod(param: MethodHookParam?) {
+                        val launcher = param?.thisObject ?: return
+                        val isLaptopMode = XposedHelpers.callMethod(launcher, "isLapTopMode") as Boolean
+                        val isInNormalEditing = XposedHelpers.callMethod(launcher, "isInNormalEditing") as Boolean
+                        val isFolderShowing = (XposedHelpers.callMethod(launcher, "isFolderShowing") as Boolean?) ?: false
+                        param.result = !isLaptopMode && (isInNormalEditing || isFolderShowing)
+                    }
+                })
+                // Blur wallpaper when opening a folder (for tablet)
+                XposedBridge.hookMethod(openMethod, object : XC_MethodHook() {
+                    override fun beforeHookedMethod(param: MethodHookParam?) {
+                        val launcher = param?.thisObject ?: return
+                        val isLaptopMode = XposedHelpers.callMethod(launcher, "isLapTopMode") as Boolean
+                        val isInEditing = XposedHelpers.callMethod(launcher, "isInEditing") as Boolean
+                        if (!isLaptopMode && !isInEditing) {
+                            wallpaperBlurView?.show(true)
+                        }
+                    }
+                })
+                // Reset blurring when closing folder (for tablet)
+                XposedBridge.hookMethod(closeMethod, object : XC_MethodHook() {
+                    override fun beforeHookedMethod(param: MethodHookParam?) {
+                        val launcher = param?.thisObject ?: return
+                        val isFolderOpenAnim = param.args[0] as Boolean
+                        val isLaptopMode = XposedHelpers.callMethod(launcher, "isLapTopMode") as Boolean
+                        val isInEditing = XposedHelpers.callMethod(launcher, "isInEditing") as Boolean
+                        if (!isLaptopMode && !isInEditing) {
+                            wallpaperBlurView?.hide(isFolderOpenAnim)
+                        }
+                    }
+                })
+                // Blur wallpaper directly when in a folder or in editing mode (for tablet)
+                "com.miui.home.launcher.Workspace".toClass()
+                    .method {
+                        name = "setEditMode"
+                    }
+                    .hook {
+                        after {
+                            val mLauncher = this.instance.current().field { name = "mLauncher"; superClass() }.any() ?: return@after
+                            val isLaptopMode = XposedHelpers.callMethod(mLauncher, "isLapTopMode") as Boolean
+                            val isFolderShowing = (XposedHelpers.callMethod(mLauncher, "isFolderShowing") as Boolean?) ?: false
+                            val isInNormalEditing = XposedHelpers.callMethod(this.instance, "isInNormalEditingMode") as Boolean
+                            if (!isLaptopMode && (isInNormalEditing || isFolderShowing)) {
+                                wallpaperBlurView?.show(false)
+                            }
+                        }
+                    }
+            }
+            else {
+                // Blur wallpaper when opening a folder
+                // Reset blurring when closing folder
+                // Only affects wallpaper blur
+                blurUtils.method {
+                    name = "fastBlurWhenOpenOrCloseFolder"
+                }.ignored().hook {
+                    replaceUnit {
+                        if (printDebugInfo)
+                            YLog.info("fastBlurWhenOpenOrCloseFolder")
+                        val useAnim = this.args(1).boolean()
+                        if (shouldBlurWallpaper(this.args(0).any() ?: return@replaceUnit)) {
+                            wallpaperBlurView?.show(useAnim)
+                        }
+                        else {
+                            wallpaperBlurView?.hide(useAnim)
+                        }
+                    }
+                }
+            }
             overviewStateScale.hook {
                 replaceTo(launchScale)
             }
-            if (launchShow) {
+            if (launchShow && !Device.isPad) {
                 navStubView.method {
                     name = "changeAlphaScaleForFsGesture"
                     paramCount = 2
@@ -520,13 +604,31 @@ object BlurEnhance : YukiBaseHooker() {
 //                }
 //            }
             if (extraFix) {
-                navStubView.method {
-                    name = "commonAppTouchFromMove"
-                }.hook {
-                    after {
-                        blurUtils.method {
-                            name = "fastBlurWhenUseCompleteRecentsBlur"
-                        }.get().call(null, 1.0f, false)
+                if (Device.isPad) {
+                    "com.miui.home.recents.GestureModeApp".toClass()
+                        .method {
+                            name = "performAppToHome"
+                        }
+                        .hook {
+                            before {
+                                val mLauncher = this.instance.current().field { name = "mLauncher"; superClass() }.any() ?: return@before
+                                val isFolderShowing = (XposedHelpers.callMethod(mLauncher, "isFolderShowing") as Boolean?) ?: false
+                                transitionBlurView?.show(false)
+                                if (!isFolderShowing) {
+                                    transitionBlurView?.hide(true)
+                                }
+                            }
+                        }
+                }
+                else {
+                    navStubView.method {
+                        name = "commonAppTouchFromMove"
+                    }.hook {
+                        after {
+                            blurUtils.method {
+                                name = "fastBlurWhenUseCompleteRecentsBlur"
+                            }.get().call(null, 1.0f, false)
+                        }
                     }
                 }
             }

@@ -10,6 +10,7 @@ import cn.fkj233.ui.dialog.MIUIDialog
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.data.PrefDefValue
 import dev.lackluster.mihelper.data.PrefKey
+import dev.lackluster.mihelper.utils.Device
 
 @BMPage("home_refactor")
 class HomeRefactorPage : BasePage() {
@@ -273,13 +274,15 @@ class HomeRefactorPage : BasePage() {
         Line()
         TitleText(textId = R.string.ui_title_home_refactor_launch)
         TitleText(textId = R.string.home_refactor_launch_tips)
-        TextSummaryWithSwitch(
-            TextSummaryV(
-                textId = R.string.home_refactor_launch_show,
-                tipsId = R.string.home_refactor_launch_show_tips
-            ),
-            SwitchV(PrefKey.HOME_REFACTOR_LAUNCH_SHOW)
-        )
+        if (!Device.isPad) {
+            TextSummaryWithSwitch(
+                TextSummaryV(
+                    textId = R.string.home_refactor_launch_show,
+                    tipsId = R.string.home_refactor_launch_show_tips
+                ),
+                SwitchV(PrefKey.HOME_REFACTOR_LAUNCH_SHOW)
+            )
+        }
         TextSummaryWithArrow(
             TextSummaryV(
                 textId = R.string.home_refactor_launch_scale,

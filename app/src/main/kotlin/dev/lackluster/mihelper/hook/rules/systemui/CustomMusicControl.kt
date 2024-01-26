@@ -1,3 +1,23 @@
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
+ * This file is part of XiaomiHelper project
+ * Copyright (C) 2023 HowieHChen, howie.dev@outlook.com
+
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package dev.lackluster.mihelper.hook.rules.systemui
 
 import android.graphics.Bitmap
@@ -51,22 +71,30 @@ object CustomMusicControl : YukiBaseHooker() {
                 }
             "com.android.systemui.statusbar.notification.mediacontrol.PlayerTwoCircleView".toClass().apply {
                 method {
-                    name = "setBackground"
+                    name = "onDraw"
                 }.hook {
                     before {
+                        (this.instance.current().field { name = "mPaint1" }.any() as Paint).alpha = 0
+                        (this.instance.current().field { name = "mPaint2" }.any() as Paint).alpha = 0
+                        this.instance.current().field { name = "mRadius" }.set(0.0f)
+                    }
+                }
+                method {
+                    name = "setBackground"
+                }.hook {
+                    replaceUnit {
                         if (mediaArtwork == null) {
-                            return@before
+                            return@replaceUnit
                         }
                         val backgroundColors = this.args(0).any() as IntArray
                         val imageView = this.instance as ImageView
-                        var artworkLayer = mediaArtwork?.loadDrawable(imageView.context) ?: return@before
-                        this.result = null
+                        var artworkLayer = mediaArtwork?.loadDrawable(imageView.context) ?: return@replaceUnit
                         if (style == 1) {
                             val artworkBitmap = artworkLayer.toBitmap()
                             val scaledBitmap = Bitmap.createScaledBitmap(artworkBitmap, 30, 30, true)
                             val tmpBitmap = processArtwork(scaledBitmap, imageView.width, imageView.height)
                             imageView.setImageDrawable(BitmapDrawable(imageView.resources, tmpBitmap))
-                            return@before
+                            return@replaceUnit
                         }
 
                         val maskLayer = GradientDrawable()
@@ -100,12 +128,11 @@ object CustomMusicControl : YukiBaseHooker() {
                 method {
                     name = "setPaintColor"
                 }.hook {
-                    before {
+                    replaceUnit {
                         if (mediaArtwork == null) {
-                            return@before
+                            return@replaceUnit
                         }
                         mediaArtwork = null
-                        this.result = null
                     }
                 }
             }
