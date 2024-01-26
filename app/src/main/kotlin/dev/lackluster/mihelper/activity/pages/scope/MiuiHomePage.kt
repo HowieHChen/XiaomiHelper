@@ -97,31 +97,29 @@ class MiuiHomePage : BasePage() {
                 dataBindingRecv = blurBinding.binding.getRecv(1)
             )
         }
-//        else {
-            TextSummaryWithArrow(
-                TextSummaryV(
-                    textId = R.string.home_behavior_refactor,
-                    tipsId = R.string.home_behavior_refactor_tips,
-                    onClickListener = {
-                        if (MIUIActivity.safeSP.getBoolean(PrefKey.HOME_BLUR_REFACTOR, false)) {
-                            showFragment("home_refactor")
-                        }
-                        else {
-                            MIUIDialog(activity) {
-                                setTitle(R.string.home_behavior_refactor_dialog_title)
-                                setMessage(R.string.home_behavior_refactor_dialog_msg)
-                                setLButton(textId = R.string.button_cancel) {
-                                    dismiss()
-                                }
-                                setRButton(textId = R.string.button_ok) {
-                                    showFragment("home_refactor")
-                                    dismiss()
-                                }
-                            }.show()
-                        }
-                    })
-            )
-//        }
+        TextSummaryWithArrow(
+            TextSummaryV(
+                textId = R.string.home_behavior_refactor,
+                tipsId = R.string.home_behavior_refactor_tips,
+                onClickListener = {
+                    if (MIUIActivity.safeSP.getBoolean(PrefKey.HOME_BLUR_REFACTOR, false)) {
+                        showFragment("home_refactor")
+                    }
+                    else {
+                        MIUIDialog(activity) {
+                            setTitle(R.string.home_behavior_refactor_dialog_title)
+                            setMessage(R.string.home_behavior_refactor_dialog_msg)
+                            setLButton(textId = R.string.button_cancel) {
+                                dismiss()
+                            }
+                            setRButton(textId = R.string.button_ok) {
+                                showFragment("home_refactor")
+                                dismiss()
+                            }
+                        }.show()
+                    }
+                })
+        )
         TextSummaryWithArrow(
             TextSummaryV(
                 textId = R.string.home_behavior_blur_radius,
@@ -337,13 +335,15 @@ class MiuiHomePage : BasePage() {
             TextSummaryV(
                 textId = R.string.home_minus_fold_style,
             ),
-            SwitchV(PrefKey.HOME_MINUS_FOLD_STYLE)
+            SwitchV(PrefKey.HOME_MINUS_FOLD_STYLE),
+            dataBindingRecv = refactorBinding.binding.getRecv(1)
         )
         TextSummaryWithSwitch(
             TextSummaryV(
                 textId = R.string.personal_assist_blur,
             ),
-            SwitchV(PrefKey.PERSON_ASSIST_BLUR)
+            SwitchV(PrefKey.PERSON_ASSIST_BLUR),
+            dataBindingRecv = refactorBinding.binding.getRecv(1)
         )
         Line()
         TitleText(textId = R.string.ui_title_home_folder)

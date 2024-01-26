@@ -20,6 +20,13 @@ object PrefDefValue {
 //    const val HOME_REFACTOR_LAUNCH_NONLINEAR = false
 //    const val HOME_REFACTOR_LAUNCH_NONLINEAR_FACTOR = 1.0f
 
+    const val HOME_REFACTOR_MINUS_BLUR = false
+    const val HOME_REFACTOR_MINUS_BLUR_RADIUS = 100
+    const val HOME_REFACTOR_MINUS_DIM = false
+    const val HOME_REFACTOR_MINUS_DIM_MAX = 38
+    const val HOME_REFACTOR_MINUS_OVERLAP = false
+    const val HOME_REFACTOR_MINUS_LAUNCH = false
+
     const val HOME_REFACTOR_EXTRA_FIX = false
     const val HOME_REFACTOR_FIX_SMALL_WINDOW = false
     const val HOME_REFACTOR_EXTRA_COMPATIBILITY = false

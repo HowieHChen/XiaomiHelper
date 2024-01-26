@@ -139,6 +139,19 @@ object BlurEnhance : YukiBaseHooker() {
 //    private val launchNonlinearFactor =
 //        Prefs.getFloat(PrefKey.HOME_REFACTOR_LAUNCH_NONLINEAR_FACTOR, PrefDefValue.HOME_REFACTOR_LAUNCH_NONLINEAR_FACTOR)
 
+    private val minusUseBlur =
+        Prefs.getBoolean(PrefKey.HOME_REFACTOR_MINUS_BLUR, PrefDefValue.HOME_REFACTOR_MINUS_BLUR)
+    private val minusBlurRadius =
+        Prefs.getInt(PrefKey.HOME_REFACTOR_MINUS_BLUR_RADIUS, PrefDefValue.HOME_REFACTOR_MINUS_BLUR_RADIUS)
+    private val minusUseDim =
+        Prefs.getBoolean(PrefKey.HOME_REFACTOR_MINUS_DIM, PrefDefValue.HOME_REFACTOR_MINUS_DIM)
+    private val minusDimAlpha =
+        Prefs.getInt(PrefKey.HOME_REFACTOR_MINUS_DIM_MAX, PrefDefValue.HOME_REFACTOR_MINUS_DIM_MAX)
+    private val minusOverlapMode =
+        Prefs.getBoolean(PrefKey.HOME_REFACTOR_MINUS_OVERLAP, PrefDefValue.HOME_REFACTOR_MINUS_OVERLAP)
+    private val minusShowLaunch =
+        Prefs.getBoolean(PrefKey.HOME_REFACTOR_MINUS_LAUNCH, PrefDefValue.HOME_REFACTOR_MINUS_LAUNCH)
+
     private val extraFix =
         Prefs.getBoolean(PrefKey.HOME_REFACTOR_EXTRA_FIX, PrefDefValue.HOME_REFACTOR_EXTRA_FIX)
     private val fixSmallWindowAnim =
@@ -153,6 +166,7 @@ object BlurEnhance : YukiBaseHooker() {
         }
         var transitionBlurView : MiBlurView? = null
         var wallpaperBlurView : MiBlurView? = null
+        var minusBlurView : MiBlurView? = null
         hasEnable(PrefKey.HOME_BLUR_REFACTOR) {
             // Block original blur
             if (extraCompatibility) {
@@ -196,11 +210,23 @@ object BlurEnhance : YukiBaseHooker() {
                         it.setDim(wallUseDim, wallDimAlpha)
                         it.setNonlinear(wallUseNonlinear, wallNonlinearFactor)
                     }
+                    minusBlurView = MiBlurView(launcher)
+                    minusBlurView?.let {
+                        it.setBlur(minusUseBlur, minusBlurRadius)
+                        it.setDim(minusUseDim, minusDimAlpha)
+                        it.setNonlinear(false, 1.0f)
+                    }
                     val viewGroup = XposedHelpers.getObjectField(launcher, "mLauncherView") as ViewGroup
                     viewGroup.addView(transitionBlurView, viewGroup.indexOfChild(
                         XposedHelpers.getObjectField(launcher, "mOverviewPanel") as View
                     ).coerceAtLeast(0))
                     viewGroup.addView(wallpaperBlurView, 0)
+                    if (minusOverlapMode) {
+                        viewGroup.addView(minusBlurView)
+                    }
+                    else {
+                        viewGroup.addView(minusBlurView, 0)
+                    }
                 }
             }
             // Remove blur view from Launcher
@@ -215,8 +241,12 @@ object BlurEnhance : YukiBaseHooker() {
                     if (wallpaperBlurView?.isAttachedToWindow == true) {
                         viewGroup.removeView(wallpaperBlurView)
                     }
+                    if (minusBlurView?.isAttachedToWindow == true) {
+                        viewGroup.removeView(minusBlurView)
+                    }
                     transitionBlurView = null
                     wallpaperBlurView = null
+                    minusBlurView = null
                 }
             }
             // Seems to be used only for blurring wallpaper
@@ -632,6 +662,71 @@ object BlurEnhance : YukiBaseHooker() {
                     }
                 }
             }
+            // MinusScreen
+            if (minusOverlapMode) {
+                "com.miui.home.launcher.overlay.assistant.AssistantDeviceAdapter".toClass()
+                    .method {
+                        name = "inOverlapMode"
+                    }
+                    .hook {
+                        replaceToTrue()
+                    }
+            }
+            else {
+                "com.miui.home.launcher.overlay.OverlayTransitionController".toClass()
+                    .method {
+                        name = "onScrollChanged"
+                    }
+                    .hook {
+                        replaceUnit {
+                            val mCurrentAnimation = this.instance.current().field { name = "mCurrentAnimation"; superClass() }.any() ?: return@replaceUnit
+                            mCurrentAnimation.current().method {
+                                name = "setPlayFraction"
+                            }.call(
+                                if (this.instance.current().field { name = "isTargetOpenOverlay"; superClass() }.boolean()) {
+                                    this.args(0).float()
+                                } else {
+                                    1.0f - this.args(0).float()
+                                }
+                            )
+                        }
+                    }
+            }
+            if (!minusOverlapMode && minusShowLaunch) {
+                val superGetSearchBarProperty = "com.miui.home.launcher.LauncherState".toClass().method {
+                    name = "getSearchBarProperty"
+                }.give() ?: return@hasEnable
+                superGetSearchBarProperty.hook {
+                    before {
+                        // Make the original method accessible to avoid infinite loops
+                    }
+                }
+                "com.miui.home.launcher.overlay.assistant.AssistantOverlayState".toClass().apply {
+                    method {
+                        name = "getVisibleElements"
+                    }.hook {
+                        replaceTo(1)
+                    }
+                    method {
+                        name = "getSearchBarProperty"
+                    }.hook {
+                        before {
+                            val superResult = XposedBridge.invokeOriginalMethod(superGetSearchBarProperty, this.instance, this.args) as FloatArray
+                            superResult[4] = this.instance.current().method { name = "getWorkspaceTranslationX" }.float(this.args[0])
+                            this.result = superResult
+                        }
+                    }
+                }
+            }
+            "com.miui.home.launcher.overlay.assistant.AssistantOverlayTransitionController".toClass()
+                .method {
+                    name = "onScrollChanged"
+                }
+                .hook {
+                    before {
+                        minusBlurView?.show(false, this.args(0).float())
+                    }
+                }
         }
     }
     private fun shouldBlurWallpaper(launcher: Any): Boolean {

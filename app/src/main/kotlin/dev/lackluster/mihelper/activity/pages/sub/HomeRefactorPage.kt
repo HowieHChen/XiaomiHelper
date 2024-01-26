@@ -1,5 +1,6 @@
 package dev.lackluster.mihelper.activity.pages.sub
 
+import android.view.View
 import android.widget.Toast
 import cn.fkj233.ui.activity.MIUIActivity
 import cn.fkj233.ui.activity.annotation.BMPage
@@ -349,5 +350,103 @@ class HomeRefactorPage : BasePage() {
 //                    }.show()
 //                })
 //        )
+        Line()
+        TitleText(textId = R.string.ui_title_home_refactor_minus)
+        TextSummaryWithSwitch(
+            TextSummaryV(
+                textId = R.string.home_refactor_blur,
+                tipsId = R.string.home_refactor_minus_tips
+            ),
+            SwitchV(PrefKey.HOME_REFACTOR_MINUS_BLUR)
+        )
+        TextSummaryWithArrow(
+            TextSummaryV(
+                textId = R.string.home_refactor_blur_radius,
+                tipsId = R.string.home_refactor_blur_radius_tips,
+                onClickListener = {
+                    MIUIDialog(activity) {
+                        setTitle(R.string.home_refactor_blur_radius)
+                        setMessage("${activity.getString(R.string.dialog_default_value)}: ${PrefDefValue.HOME_REFACTOR_MINUS_BLUR_RADIUS}, ${activity.getString(R.string.dialog_current_value)}: ${
+                            MIUIActivity.safeSP.getInt(PrefKey.HOME_REFACTOR_MINUS_BLUR_RADIUS, PrefDefValue.HOME_REFACTOR_MINUS_BLUR_RADIUS)
+                        }")
+                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0-200")
+                        setLButton(textId = R.string.button_cancel) {
+                            dismiss()
+                        }
+                        setRButton(textId = R.string.button_ok) {
+                            if (getEditText().isNotEmpty()) {
+                                runCatching {
+                                    MIUIActivity.safeSP.putAny(
+                                        PrefKey.HOME_REFACTOR_MINUS_BLUR_RADIUS,
+                                        getEditText().toInt().coerceIn(0, 200)
+                                    )
+                                }.onFailure {
+                                    Toast.makeText(activity, activity.getString(R.string.invalid_input), Toast.LENGTH_LONG).show()
+                                }
+                            }
+                            dismiss()
+                        }
+                    }.show()
+                })
+        )
+        TextSummaryWithSwitch(
+            TextSummaryV(
+                textId = R.string.home_refactor_dim,
+                tipsId = R.string.home_refactor_dim_tips
+            ),
+            SwitchV(PrefKey.HOME_REFACTOR_MINUS_DIM)
+        )
+        TextSummaryWithArrow(
+            TextSummaryV(
+                textId = R.string.home_refactor_dim_alpha,
+                tipsId = R.string.home_refactor_dim_alpha_tips,
+                onClickListener = {
+                    MIUIDialog(activity) {
+                        setTitle(R.string.home_refactor_dim_alpha)
+                        setMessage("${activity.getString(R.string.dialog_default_value)}: ${PrefDefValue.HOME_REFACTOR_MINUS_DIM_MAX}, ${activity.getString(R.string.dialog_current_value)}: ${
+                            MIUIActivity.safeSP.getInt(PrefKey.HOME_REFACTOR_MINUS_DIM_MAX, PrefDefValue.HOME_REFACTOR_MINUS_DIM_MAX)
+                        }")
+                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0-255")
+                        setLButton(textId = R.string.button_cancel) {
+                            dismiss()
+                        }
+                        setRButton(textId = R.string.button_ok) {
+                            if (getEditText().isNotEmpty()) {
+                                runCatching {
+                                    MIUIActivity.safeSP.putAny(
+                                        PrefKey.HOME_REFACTOR_MINUS_DIM_MAX,
+                                        getEditText().toInt().coerceIn(0, 255)
+                                    )
+                                }.onFailure {
+                                    Toast.makeText(activity, activity.getString(R.string.invalid_input), Toast.LENGTH_LONG).show()
+                                }
+                            }
+                            dismiss()
+                        }
+                    }.show()
+                })
+        )
+        val overlapBinding = GetDataBinding({
+            MIUIActivity.safeSP.getBoolean(PrefKey.HOME_REFACTOR_MINUS_OVERLAP, false)
+        }) { view, reverse, data ->
+            when (reverse) {
+                1 -> view.visibility = if (data as Boolean) View.GONE else View.VISIBLE
+            }
+        }
+        TextSummaryWithSwitch(
+            TextSummaryV(
+                textId = R.string.home_refactor_minus_overlap_mode,
+                tipsId = R.string.home_refactor_minus_overlap_mode_tips
+            ),
+            SwitchV(PrefKey.HOME_REFACTOR_MINUS_OVERLAP, dataBindingSend = overlapBinding.bindingSend)
+        )
+        TextSummaryWithSwitch(
+            TextSummaryV(
+                textId = R.string.home_refactor_launch_show,
+                tipsId = R.string.home_refactor_launch_show_minus_tips
+            ),
+            SwitchV(PrefKey.HOME_REFACTOR_MINUS_LAUNCH),
+            dataBindingRecv = overlapBinding.binding.getRecv(1)
+        )
     }
 }

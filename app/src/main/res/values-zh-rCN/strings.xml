@@ -339,4 +339,9 @@
     <string name="systemui_media_control_style_enhance">HyperOS（增强）</string>
     <string name="systemui_media_control_style_default">HyperOS（默认）</string>
     <string name="systemui_media_control_style_android_blur">原生（模糊）</string>
+    <string name="home_refactor_minus_tips">用于模糊整个桌面视图，模糊会出现在处于负一屏时</string>
+    <string name="home_refactor_minus_overlap_mode">重叠模式</string>
+    <string name="ui_title_home_refactor_minus">负一屏模糊</string>
+    <string name="home_refactor_launch_show_minus_tips">在进入负一屏时不隐藏桌面视图</string>
+    <string name="home_refactor_minus_overlap_mode_tips">让负一屏悬浮在桌面之上</string>
 </resources>

@@ -8,11 +8,14 @@ import com.highcapable.yukihookapi.hook.factory.method
 import com.highcapable.yukihookapi.hook.type.java.BooleanType
 import com.highcapable.yukihookapi.hook.type.java.FloatType
 import dev.lackluster.mihelper.data.PrefKey
+import dev.lackluster.mihelper.utils.Prefs
 import dev.lackluster.mihelper.utils.Prefs.hasEnable
 
 object BackgroundBlur : YukiBaseHooker() {
     override fun onHook() {
-        hasEnable(PrefKey.PERSON_ASSIST_BLUR) {
+        hasEnable(PrefKey.PERSON_ASSIST_BLUR, extraCondition = {
+            !Prefs.getBoolean(PrefKey.HOME_BLUR_REFACTOR, false)
+        }) {
             "com.miui.personalassistant.device.DeviceAdapter".toClass()
                 .method {
                     name = "create"

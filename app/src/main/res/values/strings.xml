@@ -51,6 +51,7 @@
     <string name="ui_title_home_refactor_apps">Application blur</string>
     <string name="ui_title_home_refactor_wallpaper">Wallpaper blur</string>
     <string name="ui_title_home_refactor_launch">Launcher view</string>
+    <string name="ui_title_home_refactor_minus">Minus screen blur</string>
 
     <string name="ui_scope_android" translatable="false">@string/ui_page_android</string>
     <string name="ui_scope_mi_connect" translatable="false">@string/ui_page_mi_connect</string>
@@ -201,6 +202,7 @@
     <string name="home_refactor_apps_tips">Used to blur the application. Blurring occurs when launching an app, closing an app, and when in the Recent Tasks view.</string>
     <string name="home_refactor_wallpaper_tips">Used to blur the wallpaper. Blurring occurs while in edit mode and in folder view.</string>
     <string name="home_refactor_launch_tips">Controls the launcher view behind the recent tasks view.</string>
+    <string name="home_refactor_minus_tips">Used to blur the entire launcher view. Blurring occurs when in the minus screen.</string>
     <string name="home_refactor_blur">Blur effect</string>
     <string name="home_refactor_blur_radius">Blur radius</string>
     <string name="home_refactor_blur_radius_tips">The larger the value, the better the blurring effect, but it also consumes more performance.</string>
@@ -218,6 +220,10 @@
     <string name="home_refactor_launch_scale_nonlinear" translatable="false">@string/home_refactor_nonlinear</string>
     <string name="home_refactor_launch_scale_nonlinear_factor" translatable="false">@string/home_refactor_nonlinear_factor</string>
     <string name="home_refactor_launch_scale_nonlinear_factor_tips" translatable="false">@string/home_refactor_nonlinear_factor_tips</string>
+    <string name="home_refactor_minus_overlap_mode">Overlap mode</string>
+    <string name="home_refactor_minus_overlap_mode_tips">Make the minus screen hover above the launcher</string>
+    <string name="home_refactor_launch_show_minus_tips">Do not hide the launcher view when going to the minus screen.</string>
+
 
     <string name="incallui_hide_crbt">Hide CRBT(Coloring Ring Back Tone)</string>
     <string name="joyose_no_cloud_control">Disable Cloud Control</string>
