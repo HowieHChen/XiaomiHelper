@@ -4,12 +4,15 @@ import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.method
 import dev.lackluster.mihelper.data.PrefKey
 import dev.lackluster.mihelper.utils.Device
+import dev.lackluster.mihelper.utils.Prefs
 import dev.lackluster.mihelper.utils.Prefs.hasEnable
 
 object WallpaperZoomSync : YukiBaseHooker() {
     private var allowZoom = false
     override fun onHook() {
-        hasEnable(PrefKey.HOME_WALLPAPER_ZOOM_SYNC) {
+        hasEnable(PrefKey.HOME_WALLPAPER_ZOOM_SYNC, extraCondition = {
+            !Prefs.getBoolean(PrefKey.HOME_BLUR_REFACTOR, false)
+        }) {
             val launcherClz = "com.miui.home.launcher.Launcher".toClass()
             val animateWallpaperZoomMethod =
                 launcherClz.methods.first { it.name == "animateWallpaperZoom" }

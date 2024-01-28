@@ -33,6 +33,10 @@ Xiaomi 12S ProとXiaomi Pad 6 Proに基づいて開発された自己使用な�
 
 [HowieHChen/XiaomiHelper](https://github.com/HowieHChen/XiaomiHelper)
 
+## 捐赠 (Donate)
+
+[请我喝杯咖啡 (Buy me a coffee)](https://github.com/HowieHChen/XiaomiHelper/blob/master/DONATE.md)
+
 ## 引用 (References/リファレンス)
 
 ##### GNU General Public License v3.0

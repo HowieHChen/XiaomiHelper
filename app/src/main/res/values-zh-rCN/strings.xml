@@ -344,4 +344,18 @@
     <string name="ui_title_home_refactor_minus">负一屏模糊</string>
     <string name="home_refactor_launch_show_minus_tips">在进入负一屏时不隐藏桌面视图</string>
     <string name="home_refactor_minus_overlap_mode_tips">让负一屏悬浮在桌面之上</string>
+    <string name="about_donate">捐赠</string>
+    <string name="about_donate_tips">请我喝杯咖啡</string>
+    <string name="home_refactor_nonlinear_type_non">线性动画</string>
+    <string name="home_refactor_nonlinear_type_dece">减速</string>
+    <string name="home_refactor_nonlinear_type_path">二次贝塞尔曲线</string>
+    <string name="home_refactor_nonlinear_path_x1">控制点1的 X 坐标</string>
+    <string name="home_refactor_nonlinear_path_y1">控制点1的 Y 坐标</string>
+    <string name="home_refactor_nonlinear_path_x2">控制点2的 X 坐标</string>
+    <string name="home_refactor_nonlinear_path_y2">控制点2的 Y 坐标</string>
+    <string name="home_refactor_nonlinear_path_x1_tips">控制点 (0,0)（如果不知道这是什么，就不要修改）</string>
+    <string name="home_refactor_nonlinear_path_y1_tips">控制点 (0,0)（如果不知道这是什么，就不要修改）</string>
+    <string name="home_refactor_nonlinear_path_x2_tips">控制点 (1,1)（如果不知道这是什么，就不要修改）</string>
+    <string name="home_refactor_nonlinear_path_y2_tips">控制点 (1,1)（如果不知道这是什么，就不要修改）</string>
+    <string name="home_refactor_walppaper_scale_sync_tips">只有当壁纸缩放出现异常时才启用</string>
 </resources>

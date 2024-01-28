@@ -176,7 +176,8 @@ class MiuiHomePage : BasePage() {
                 textId = R.string.home_anim_zoom_sync,
                 tipsId = R.string.home_anim_zoom_sync_tips
             ),
-            SwitchV(PrefKey.HOME_WALLPAPER_ZOOM_SYNC)
+            SwitchV(PrefKey.HOME_WALLPAPER_ZOOM_SYNC),
+            dataBindingRecv = refactorBinding.binding.getRecv(1)
         )
         Line()
         TitleText(textId = R.string.ui_title_home_icon)

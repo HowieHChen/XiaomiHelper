@@ -25,12 +25,12 @@ import android.content.Context
 import android.graphics.Color
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Interpolator
 import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
 import dev.lackluster.mihelper.utils.Math
 import dev.lackluster.mihelper.utils.MiBlurUtils
 import kotlin.math.abs
-import kotlin.math.pow
 
 class MiBlurView(context: Context): View(context) {
     companion object {
@@ -41,7 +41,6 @@ class MiBlurView(context: Context): View(context) {
         const val DEFAULT_DIM_ENABLED = false
         const val DEFAULT_DIM_MAX_ALPHA = 64
         const val DEFAULT_NONLINEAR_ENABLED = false
-        const val DEFAULT_NONLINEAR_FACTOR = 1.0f
     }
 
     private var mainAnimator: ValueAnimator? = null
@@ -56,7 +55,7 @@ class MiBlurView(context: Context): View(context) {
     private var dimEnabled = DEFAULT_DIM_ENABLED
     private var dimMaxAlpha = DEFAULT_DIM_MAX_ALPHA
     private var nonlinearEnabled = DEFAULT_NONLINEAR_ENABLED
-    private var nonlinearFactor = DEFAULT_NONLINEAR_FACTOR
+    private var nonlinearInterpolator: Interpolator = LinearInterpolator()
 
     init {
         this.layoutParams = FrameLayout.LayoutParams(
@@ -89,9 +88,9 @@ class MiBlurView(context: Context): View(context) {
 //        }
     }
 
-    fun setNonlinear(useNonlinear: Boolean, factor: Float) {
+    fun setNonlinear(useNonlinear: Boolean, interpolator: Interpolator) {
         nonlinearEnabled = useNonlinear
-        nonlinearFactor = factor
+        nonlinearInterpolator = interpolator
     }
 
     fun show(useAnim: Boolean, targetRatio: Float = 1.0f) {
@@ -151,7 +150,7 @@ class MiBlurView(context: Context): View(context) {
                         return@addUpdateListener
                     }
                     applyBlurDirectly(
-                        if (nonlinearEnabled) { fakeInterpolator(animaValue) }
+                        if (nonlinearEnabled) { nonlinearInterpolator.getInterpolation(animaValue) }
                         else { animaValue }
                     )
                 }
@@ -180,15 +179,6 @@ class MiBlurView(context: Context): View(context) {
         allowRestoreDirectly = true
         if (ratio == 0.0f || blurRadius == 0) {
             releaseBlur()
-        }
-    }
-
-    // Use a fake interpolator to make the animation consistent when reversed
-    private fun fakeInterpolator(input: Float): Float {
-        return if (nonlinearFactor == 1.0f) {
-            1.0f - (1.0f - input) * (1.0f - input)
-        } else {
-            1.0f - (1.0f - input).pow(2 * nonlinearFactor)
         }
     }
 

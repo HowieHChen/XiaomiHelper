@@ -21,9 +21,15 @@
 package dev.lackluster.mihelper.hook.rules.miuihome
 
 import android.app.Activity
+import android.content.Context
+import android.os.IBinder
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.DecelerateInterpolator
+import android.view.animation.LinearInterpolator
+import android.view.animation.PathInterpolator
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
+import com.highcapable.yukihookapi.hook.factory.constructor
 import com.highcapable.yukihookapi.hook.factory.current
 import com.highcapable.yukihookapi.hook.factory.field
 import com.highcapable.yukihookapi.hook.factory.method
@@ -40,6 +46,7 @@ import dev.lackluster.mihelper.utils.Device
 import dev.lackluster.mihelper.utils.MiBlurUtils
 import dev.lackluster.mihelper.utils.Prefs
 import dev.lackluster.mihelper.utils.Prefs.hasEnable
+import java.lang.reflect.Method
 import java.util.concurrent.Executor
 
 object BlurEnhance : YukiBaseHooker() {
@@ -112,10 +119,18 @@ object BlurEnhance : YukiBaseHooker() {
         Prefs.getBoolean(PrefKey.HOME_REFACTOR_APPS_DIM, PrefDefValue.HOME_REFACTOR_APPS_DIM)
     private val appsDimAlpha =
         Prefs.getInt(PrefKey.HOME_REFACTOR_APPS_DIM_MAX, PrefDefValue.HOME_REFACTOR_APPS_DIM_MAX)
-    private val appsUseNonlinear =
-        Prefs.getBoolean(PrefKey.HOME_REFACTOR_APPS_NONLINEAR, PrefDefValue.HOME_REFACTOR_APPS_NONLINEAR)
-    private val appsNonlinearFactor =
-        Prefs.getFloat(PrefKey.HOME_REFACTOR_APPS_NONLINEAR_FACTOR, PrefDefValue.HOME_REFACTOR_APPS_NONLINEAR_FACTOR)
+    private val appsUseNonlinearType =
+        Prefs.getInt(PrefKey.HOME_REFACTOR_APPS_NONLINEAR_TYPE, PrefDefValue.HOME_REFACTOR_APPS_NONLINEAR_TYPE)
+    private val appsNonlinearDeceFactor =
+        Prefs.getFloat(PrefKey.HOME_REFACTOR_APPS_NONLINEAR_DECE_FACTOR, PrefDefValue.HOME_REFACTOR_APPS_NONLINEAR_DECE_FACTOR)
+    private val appsNonlinearPathX1 =
+        Prefs.getFloat(PrefKey.HOME_REFACTOR_APPS_NONLINEAR_PATH_X1, PrefDefValue.HOME_REFACTOR_APPS_NONLINEAR_PATH_X1)
+    private val appsNonlinearPathY1 =
+        Prefs.getFloat(PrefKey.HOME_REFACTOR_APPS_NONLINEAR_PATH_Y1, PrefDefValue.HOME_REFACTOR_APPS_NONLINEAR_PATH_Y1)
+    private val appsNonlinearPathX2 =
+        Prefs.getFloat(PrefKey.HOME_REFACTOR_APPS_NONLINEAR_PATH_X2, PrefDefValue.HOME_REFACTOR_APPS_NONLINEAR_PATH_X2)
+    private val appsNonlinearPathY2 =
+        Prefs.getFloat(PrefKey.HOME_REFACTOR_APPS_NONLINEAR_PATH_Y2, PrefDefValue.HOME_REFACTOR_APPS_NONLINEAR_PATH_Y2)
 
     private val wallUseBlur =
         Prefs.getBoolean(PrefKey.HOME_REFACTOR_WALL_BLUR, PrefDefValue.HOME_REFACTOR_WALL_BLUR)
@@ -125,10 +140,18 @@ object BlurEnhance : YukiBaseHooker() {
         Prefs.getBoolean(PrefKey.HOME_REFACTOR_WALL_DIM, PrefDefValue.HOME_REFACTOR_WALL_DIM)
     private val wallDimAlpha =
         Prefs.getInt(PrefKey.HOME_REFACTOR_WALL_DIM_MAX, PrefDefValue.HOME_REFACTOR_WALL_DIM_MAX)
-    private val wallUseNonlinear =
-        Prefs.getBoolean(PrefKey.HOME_REFACTOR_WALL_NONLINEAR, PrefDefValue.HOME_REFACTOR_WALL_NONLINEAR)
-    private val wallNonlinearFactor =
-        Prefs.getFloat(PrefKey.HOME_REFACTOR_WALL_NONLINEAR_FACTOR, PrefDefValue.HOME_REFACTOR_WALL_NONLINEAR_FACTOR)
+    private val wallUseNonlinearType =
+        Prefs.getInt(PrefKey.HOME_REFACTOR_WALL_NONLINEAR_TYPE, PrefDefValue.HOME_REFACTOR_WALL_NONLINEAR_TYPE)
+    private val wallNonlinearDeceFactor =
+        Prefs.getFloat(PrefKey.HOME_REFACTOR_WALL_NONLINEAR_DECE_FACTOR, PrefDefValue.HOME_REFACTOR_WALL_NONLINEAR_DECE_FACTOR)
+    private val wallNonlinearPathX1 =
+        Prefs.getFloat(PrefKey.HOME_REFACTOR_WALL_NONLINEAR_PATH_X1, PrefDefValue.HOME_REFACTOR_WALL_NONLINEAR_PATH_X1)
+    private val wallNonlinearPathY1 =
+        Prefs.getFloat(PrefKey.HOME_REFACTOR_WALL_NONLINEAR_PATH_Y1, PrefDefValue.HOME_REFACTOR_WALL_NONLINEAR_PATH_Y1)
+    private val wallNonlinearPathX2 =
+        Prefs.getFloat(PrefKey.HOME_REFACTOR_WALL_NONLINEAR_PATH_X2, PrefDefValue.HOME_REFACTOR_WALL_NONLINEAR_PATH_X2)
+    private val wallNonlinearPathY2 =
+        Prefs.getFloat(PrefKey.HOME_REFACTOR_WALL_NONLINEAR_PATH_Y2, PrefDefValue.HOME_REFACTOR_WALL_NONLINEAR_PATH_Y2)
 
     private val launchShow =
         Prefs.getBoolean(PrefKey.HOME_REFACTOR_LAUNCH_SHOW, PrefDefValue.HOME_REFACTOR_LAUNCH_SHOW)
@@ -152,6 +175,8 @@ object BlurEnhance : YukiBaseHooker() {
     private val minusShowLaunch =
         Prefs.getBoolean(PrefKey.HOME_REFACTOR_MINUS_LAUNCH, PrefDefValue.HOME_REFACTOR_MINUS_LAUNCH)
 
+    private val wallpaperScaleSync =
+        Prefs.getBoolean(PrefKey.HOME_REFACTOR_WALLPAPER_SCALE_SYNC, PrefDefValue.HOME_REFACTOR_WALLPAPER_SCALE_SYNC)
     private val extraFix =
         Prefs.getBoolean(PrefKey.HOME_REFACTOR_EXTRA_FIX, PrefDefValue.HOME_REFACTOR_EXTRA_FIX)
     private val fixSmallWindowAnim =
@@ -160,8 +185,18 @@ object BlurEnhance : YukiBaseHooker() {
         Prefs.getBoolean(PrefKey.HOME_REFACTOR_EXTRA_COMPATIBILITY, PrefDefValue.HOME_REFACTOR_EXTRA_COMPATIBILITY)
     private var isStartingApp = false
 
+    private val setWallpaperZoomOut by lazy {
+        "com.miui.home.launcher.wallpaper.WallpaperZoomManagerKt".toClass().method{
+            name = "findUpdateZoomMethod"
+            modifiers { isStatic }
+        }.get().call() as Method
+    }
+    private var wallpaperZoomManager : WallpaperZoomManager? = null
+    private var wallPaperExecutor : Executor? = null
+
     override fun onHook() {
         if (!MiBlurUtils.supportBackgroundBlur()) {
+            YLog.warn("The High-quality materials function is unsupported.")
             return
         }
         var transitionBlurView : MiBlurView? = null
@@ -202,19 +237,27 @@ object BlurEnhance : YukiBaseHooker() {
                     transitionBlurView?.let {
                         it.setBlur(appsUseBlur, appsBlurRadius)
                         it.setDim(appsUseDim, appsDimAlpha)
-                        it.setNonlinear(appsUseNonlinear, appsNonlinearFactor)
+                        when (appsUseNonlinearType) {
+                            1 -> it.setNonlinear(true, DecelerateInterpolator(appsNonlinearDeceFactor))
+                            2 -> it.setNonlinear(true, PathInterpolator(appsNonlinearPathX1, appsNonlinearPathY1, appsNonlinearPathX2, appsNonlinearPathY2))
+                            else -> it.setNonlinear(false, LinearInterpolator())
+                        }
                     }
                     wallpaperBlurView = MiBlurView(launcher)
                     wallpaperBlurView?.let {
                         it.setBlur(wallUseBlur, wallBlurRadius)
                         it.setDim(wallUseDim, wallDimAlpha)
-                        it.setNonlinear(wallUseNonlinear, wallNonlinearFactor)
+                        when (wallUseNonlinearType) {
+                            1 -> it.setNonlinear(true, DecelerateInterpolator(wallNonlinearDeceFactor))
+                            2 -> it.setNonlinear(true, PathInterpolator(wallNonlinearPathX1, wallNonlinearPathY1, wallNonlinearPathX2, wallNonlinearPathY2))
+                            else -> it.setNonlinear(false, LinearInterpolator())
+                        }
                     }
                     minusBlurView = MiBlurView(launcher)
                     minusBlurView?.let {
                         it.setBlur(minusUseBlur, minusBlurRadius)
                         it.setDim(minusUseDim, minusDimAlpha)
-                        it.setNonlinear(false, 1.0f)
+                        it.setNonlinear(false, LinearInterpolator())
                     }
                     val viewGroup = XposedHelpers.getObjectField(launcher, "mLauncherView") as ViewGroup
                     viewGroup.addView(transitionBlurView, viewGroup.indexOfChild(
@@ -282,7 +325,8 @@ object BlurEnhance : YukiBaseHooker() {
                         YLog.info("fastBlurWhenStartOpenOrCloseApp isOpen: ${this.args(0).boolean()}")
                     val isOpen = this.args(0).boolean()
                     if (isOpen) {
-                        transitionBlurView?.show(true, 1.0f)
+                        wallpaperZoomManager?.zoomOut(true)
+                        transitionBlurView?.show(true)
                         isStartingApp = true
                     }
                     else {
@@ -290,7 +334,9 @@ object BlurEnhance : YukiBaseHooker() {
                         if (shouldBlurWallpaper(this.args(1).any() ?: return@before)) {
                             wallpaperBlurView?.show(false)
                         }
+                        wallpaperZoomManager?.zoomOut(false)
                         transitionBlurView?.show(false)
+                        wallpaperZoomManager?.zoomIn(true)
                         transitionBlurView?.hide(true)
                     }
                     this.result = null
@@ -303,6 +349,7 @@ object BlurEnhance : YukiBaseHooker() {
                 replaceUnit {
                     if (printDebugInfo)
                         YLog.info("fastBlurWhenFinishOpenOrCloseApp")
+                    wallpaperZoomManager?.zoomIn(false)
                     transitionBlurView?.hide(false)
                     if (shouldBlurWallpaper(this.args(0).any() ?: return@replaceUnit)) {
                         wallpaperBlurView?.show(false)
@@ -326,13 +373,22 @@ object BlurEnhance : YukiBaseHooker() {
                             transitionBlurView?.show(
                                 true, this.args(1).float()
                             )
+                            wallpaperZoomManager?.zoomOut(
+                                true, this.args(1).float()
+                            )
                             isStartingApp = false
                         }
                         else if (isStartingApp) {
                             transitionBlurView?.restore()
+                            wallPaperExecutor?.execute {
+                                wallpaperZoomManager?.restore()
+                            }
                         }
                         else {
                             transitionBlurView?.show(
+                                false, this.args(1).float()
+                            )
+                            wallpaperZoomManager?.zoomOut(
                                 false, this.args(1).float()
                             )
                         }
@@ -354,6 +410,7 @@ object BlurEnhance : YukiBaseHooker() {
 //                        if (usrAnim) {
 //                            transitionBlurView.show(false)
 //                        }
+                        wallpaperZoomManager?.zoomIn(useAnim)
                         transitionBlurView?.hide(useAnim)
                     }
                 }
@@ -371,6 +428,7 @@ object BlurEnhance : YukiBaseHooker() {
                             YLog.info("fastBlurWhenEnterRecents skip (IsFromFsGesture)")
                         return@replaceUnit
                     }
+                    wallpaperZoomManager?.zoomOut(this.args(2).boolean())
                     transitionBlurView?.show(this.args(2).boolean())
                 }
             }
@@ -396,6 +454,7 @@ object BlurEnhance : YukiBaseHooker() {
 //                    }
                     // Forced animation to avoid flickering when opening a small window
                     // not sure if it has a negative effect for now
+                    wallpaperZoomManager?.zoomIn(useAnim || fixSmallWindowAnim)
                     transitionBlurView?.hide(useAnim || fixSmallWindowAnim)
                 }
             }
@@ -415,9 +474,11 @@ object BlurEnhance : YukiBaseHooker() {
 //                            transitionBlurView.show(false)
 //                        }
                         if (isStartingApp && !useAnim) {
+                            wallpaperZoomManager?.zoomIn(true)
                             transitionBlurView?.hide(true)
                         }
                         else {
+                            wallpaperZoomManager?.zoomIn(useAnim)
                             transitionBlurView?.hide(useAnim)
                         }
                         isStartingApp = false
@@ -479,6 +540,7 @@ object BlurEnhance : YukiBaseHooker() {
                             "mState"
                         ) == overviewState
                     ) {
+                        wallpaperZoomManager?.zoomOut(this.args(1).boolean())
                         transitionBlurView?.show(this.args(1).boolean())
                     }
                 }
@@ -497,6 +559,7 @@ object BlurEnhance : YukiBaseHooker() {
                             "mState"
                         ) == overviewState
                     ) {
+                        wallpaperZoomManager?.zoomOut(this.args(1).boolean())
                         transitionBlurView?.show(this.args(1).boolean())
                     }
                 }
@@ -512,6 +575,9 @@ object BlurEnhance : YukiBaseHooker() {
                 replaceUnit {
                     if (printDebugInfo)
                         YLog.info("restoreBlurRatioAfterAndroidS")
+//                    wallPaperExecutor?.execute {
+//                        wallpaperZoomManager?.restore(true)
+//                    }
                     transitionBlurView?.restore(true)
                 }
             }
@@ -644,8 +710,10 @@ object BlurEnhance : YukiBaseHooker() {
                                 val mLauncher = this.instance.current().field { name = "mLauncher"; superClass() }.any() ?: return@before
                                 val isFolderShowing = (XposedHelpers.callMethod(mLauncher, "isFolderShowing") as Boolean?) ?: false
                                 transitionBlurView?.show(false)
+//                                wallpaperZoomManager?.zoomOut(false)
                                 if (!isFolderShowing) {
                                     transitionBlurView?.hide(true)
+//                                    wallpaperZoomManager?.zoomIn(true)
                                 }
                             }
                         }
@@ -655,6 +723,7 @@ object BlurEnhance : YukiBaseHooker() {
                         name = "commonAppTouchFromMove"
                     }.hook {
                         after {
+//                            wallpaperZoomManager?.zoomIn(false)
                             blurUtils.method {
                                 name = "fastBlurWhenUseCompleteRecentsBlur"
                             }.get().call(null, 1.0f, false)
@@ -727,11 +796,40 @@ object BlurEnhance : YukiBaseHooker() {
                         minusBlurView?.show(false, this.args(0).float())
                     }
                 }
+            // Wallpaper scale
+            if (wallpaperScaleSync) {
+                "com.miui.home.launcher.Launcher".toClass().methods.first { it.name == "animateWallpaperZoom" }.hook {
+                    intercept()
+                }
+                "com.miui.home.launcher.wallpaper.WallpaperZoomManager".toClass().apply {
+                    constructor().hook {
+                        after {
+                            val context = (this.instance.current().field { name = "context" }.any() ?: return@after) as Context
+                            val windowToken = (this.instance.current().field { name = "mWindowToken" }.any() ?: return@after) as IBinder
+                            wallPaperExecutor =  mainThreadExecutor //
+                            // (this.instance.current().field { name = "mWallPaperExecutor" }.any() ?: return@after) as Executor
+                            wallpaperZoomManager = WallpaperZoomManager(context, windowToken, setWallpaperZoomOut)
+                        }
+                    }
+                }
+            }
         }
     }
     private fun shouldBlurWallpaper(launcher: Any): Boolean {
 //        val isInNormalEditing = XposedHelpers.callMethod(launcher, "isInNormalEditing") as Boolean
 //        val isFoldShowing = XposedHelpers.callMethod(launcher, "isFolderShowing") as Boolean
         return (XposedHelpers.callMethod(launcher, "isShouldBlur") as Boolean)
+    }
+
+    private fun WallpaperZoomManager.zoomOut(useAnim: Boolean, targetRatio: Float = 1.0f) {
+        wallPaperExecutor?.execute {
+            zoom(useAnim, targetRatio)
+        }
+    }
+
+    private fun WallpaperZoomManager.zoomIn(useAnim: Boolean, targetRatio: Float = 0.0f) {
+        wallPaperExecutor?.execute {
+            zoom(useAnim, targetRatio)
+        }
     }
 }

@@ -73,6 +73,20 @@ class AboutPage : BasePage() {
                     }
                 })
         )
+        TextSummaryWithArrow(
+            TextSummaryV(
+                textId = R.string.about_donate,
+                tipsId = R.string.about_donate_tips,
+                onClickListener = {
+                    try {
+                        val uri = Uri.parse(getString(R.string.about_donate_url))
+                        val intent = Intent(Intent.ACTION_VIEW, uri)
+                        activity.startActivity(intent)
+                    } catch (e: Exception) {
+                        makeText(activity, R.string.about_jump_error_toast, LENGTH_SHORT).show()
+                    }
+                })
+        )
         Line()
         TitleText(textId = R.string.ui_title_about_open_source)
         TextSummaryWithArrow(

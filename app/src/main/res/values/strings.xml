@@ -123,6 +123,9 @@
     <string name="about_author" translatable="false">HowieHChen</string>
     <string name="about_author_tips">No profile or signature</string>
     <string name="about_author_url" translatable="false">https://github.com/HowieHChen</string>
+    <string name="about_donate">Donate</string>
+    <string name="about_donate_tips">Buy me a coffee</string>
+    <string name="about_donate_url" translatable="false">https://github.com/HowieHChen/XiaomiHelper/blob/master/DONATE.md</string>
 
     <string name="android_dark_for_all">Disable whitelisting of forced dark</string>
     <string name="android_dark_for_all_tips">Make it possible to enable the forced dark mode feature for most applications, except for system applications, etc.</string>
@@ -211,8 +214,19 @@
     <string name="home_refactor_dim_alpha">Opacity of the mask used for dimming</string>
     <string name="home_refactor_dim_alpha_tips">Set 0 for transparent, set 255 for black.</string>
     <string name="home_refactor_nonlinear">Non-linear animation</string>
+    <string name="home_refactor_nonlinear_type_non">Linear</string>
+    <string name="home_refactor_nonlinear_type_dece">Ease out</string>
+    <string name="home_refactor_nonlinear_type_path">Quadratic Bézier curves</string>
     <string name="home_refactor_nonlinear_factor">Non-linear animation factor</string>
     <string name="home_refactor_nonlinear_factor_tips">The larger the value the greater the initial rate of change of the animation</string>
+    <string name="home_refactor_nonlinear_path_x1">X-coordinate of control point 1</string>
+    <string name="home_refactor_nonlinear_path_x1_tips">Control point (0,0) (Don\'t modify it if you don\'t know what it is)</string>
+    <string name="home_refactor_nonlinear_path_y1">Y-coordinate of control point 1</string>
+    <string name="home_refactor_nonlinear_path_y1_tips">Control point (0,0) (Don\'t modify it if you don\'t know what it is)</string>
+    <string name="home_refactor_nonlinear_path_x2">X-coordinate of control point 2</string>
+    <string name="home_refactor_nonlinear_path_x2_tips">Control point (1,1) (Don\'t modify it if you don\'t know what it is)</string>
+    <string name="home_refactor_nonlinear_path_y2">Y-coordinate of control point 2</string>
+    <string name="home_refactor_nonlinear_path_y2_tips">Control point (1,1) (Don\'t modify it if you don\'t know what it is)</string>
     <string name="home_refactor_launch_show">Show launcher view</string>
     <string name="home_refactor_launch_show_tips">Do not hide the launcher view when in the recent tasks view</string>
     <string name="home_refactor_launch_scale">Launcher view zoom ratio</string>
@@ -223,7 +237,8 @@
     <string name="home_refactor_minus_overlap_mode">Overlap mode</string>
     <string name="home_refactor_minus_overlap_mode_tips">Make the minus screen hover above the launcher</string>
     <string name="home_refactor_launch_show_minus_tips">Do not hide the launcher view when going to the minus screen.</string>
-
+    <string name="home_refactor_walppaper_scale_sync" translatable="false">@string/home_anim_zoom_sync</string>
+    <string name="home_refactor_walppaper_scale_sync_tips">Enable only when wallpaper scaling appears abnormal.</string>
 
     <string name="incallui_hide_crbt">Hide CRBT(Coloring Ring Back Tone)</string>
     <string name="joyose_no_cloud_control">Disable Cloud Control</string>

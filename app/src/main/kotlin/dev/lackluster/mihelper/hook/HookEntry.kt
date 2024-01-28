@@ -43,6 +43,7 @@ class HookEntry : IYukiHookXposedInit {
         debugLog {
             tag = "MiHelper"
         }
+        isDebug = false
         isEnableHookSharedPreferences = true
     }
 
