@@ -192,7 +192,6 @@ object BlurEnhance : YukiBaseHooker() {
         }.get().call() as Method
     }
     private var wallpaperZoomManager : WallpaperZoomManager? = null
-    private var wallPaperExecutor : Executor? = null
 
     override fun onHook() {
         if (!MiBlurUtils.supportBackgroundBlur()) {
@@ -242,6 +241,9 @@ object BlurEnhance : YukiBaseHooker() {
                             2 -> it.setNonlinear(true, PathInterpolator(appsNonlinearPathX1, appsNonlinearPathY1, appsNonlinearPathX2, appsNonlinearPathY2))
                             else -> it.setNonlinear(false, LinearInterpolator())
                         }
+                        if (extraCompatibility) {
+                            it.setPassWindowBlur(true)
+                        }
                     }
                     wallpaperBlurView = MiBlurView(launcher)
                     wallpaperBlurView?.let {
@@ -252,12 +254,18 @@ object BlurEnhance : YukiBaseHooker() {
                             2 -> it.setNonlinear(true, PathInterpolator(wallNonlinearPathX1, wallNonlinearPathY1, wallNonlinearPathX2, wallNonlinearPathY2))
                             else -> it.setNonlinear(false, LinearInterpolator())
                         }
+                        if (extraCompatibility) {
+                            it.setPassWindowBlur(true)
+                        }
                     }
                     minusBlurView = MiBlurView(launcher)
                     minusBlurView?.let {
                         it.setBlur(minusUseBlur, minusBlurRadius)
                         it.setDim(minusUseDim, minusDimAlpha)
                         it.setNonlinear(false, LinearInterpolator())
+                        if (extraCompatibility) {
+                            it.setPassWindowBlur(true)
+                        }
                     }
                     val viewGroup = XposedHelpers.getObjectField(launcher, "mLauncherView") as ViewGroup
                     viewGroup.addView(transitionBlurView, viewGroup.indexOfChild(
@@ -290,6 +298,7 @@ object BlurEnhance : YukiBaseHooker() {
                     transitionBlurView = null
                     wallpaperBlurView = null
                     minusBlurView = null
+                    wallpaperZoomManager = null
                 }
             }
             // Seems to be used only for blurring wallpaper
@@ -380,9 +389,7 @@ object BlurEnhance : YukiBaseHooker() {
                         }
                         else if (isStartingApp) {
                             transitionBlurView?.restore()
-                            wallPaperExecutor?.execute {
-                                wallpaperZoomManager?.restore()
-                            }
+                            wallpaperZoomManager?.restore()
                         }
                         else {
                             transitionBlurView?.show(
@@ -575,7 +582,7 @@ object BlurEnhance : YukiBaseHooker() {
                 replaceUnit {
                     if (printDebugInfo)
                         YLog.info("restoreBlurRatioAfterAndroidS")
-//                    wallPaperExecutor?.execute {
+//                    mainThreadExecutor?.execute {
 //                        wallpaperZoomManager?.restore(true)
 //                    }
                     transitionBlurView?.restore(true)
@@ -723,7 +730,6 @@ object BlurEnhance : YukiBaseHooker() {
                         name = "commonAppTouchFromMove"
                     }.hook {
                         after {
-//                            wallpaperZoomManager?.zoomIn(false)
                             blurUtils.method {
                                 name = "fastBlurWhenUseCompleteRecentsBlur"
                             }.get().call(null, 1.0f, false)
@@ -806,7 +812,6 @@ object BlurEnhance : YukiBaseHooker() {
                         after {
                             val context = (this.instance.current().field { name = "context" }.any() ?: return@after) as Context
                             val windowToken = (this.instance.current().field { name = "mWindowToken" }.any() ?: return@after) as IBinder
-                            wallPaperExecutor =  mainThreadExecutor //
                             // (this.instance.current().field { name = "mWallPaperExecutor" }.any() ?: return@after) as Executor
                             wallpaperZoomManager = WallpaperZoomManager(context, windowToken, setWallpaperZoomOut)
                         }
@@ -822,13 +827,13 @@ object BlurEnhance : YukiBaseHooker() {
     }
 
     private fun WallpaperZoomManager.zoomOut(useAnim: Boolean, targetRatio: Float = 1.0f) {
-        wallPaperExecutor?.execute {
+        mainThreadExecutor.execute {
             zoom(useAnim, targetRatio)
         }
     }
 
     private fun WallpaperZoomManager.zoomIn(useAnim: Boolean, targetRatio: Float = 0.0f) {
-        wallPaperExecutor?.execute {
+        mainThreadExecutor.execute {
             zoom(useAnim, targetRatio)
         }
     }

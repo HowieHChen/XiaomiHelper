@@ -35,7 +35,6 @@ import kotlin.math.abs
 class MiBlurView(context: Context): View(context) {
     companion object {
         const val DEFAULT_ANIM_DURATION = 250
-//        const val DEFAULT_BLUR_THRESHOLD = 10
         const val DEFAULT_BLUR_ENABLED = true
         const val DEFAULT_BLUR_MAX_RADIUS = 100
         const val DEFAULT_DIM_ENABLED = false
@@ -48,7 +47,6 @@ class MiBlurView(context: Context): View(context) {
     private var animCount = 0
     private var allowRestoreDirectly = false
     private var isBlurInitialized = false
-//    private var dimThresholdAlpha = (DEFAULT_DIM_MAX_ALPHA * DEFAULT_BLUR_THRESHOLD.toFloat() / DEFAULT_BLUR_MAX_RADIUS).toInt()
     // Personalized Configurations
     private var blurEnabled = DEFAULT_BLUR_ENABLED
     private var blurMaxRadius = DEFAULT_BLUR_MAX_RADIUS
@@ -56,6 +54,7 @@ class MiBlurView(context: Context): View(context) {
     private var dimMaxAlpha = DEFAULT_DIM_MAX_ALPHA
     private var nonlinearEnabled = DEFAULT_NONLINEAR_ENABLED
     private var nonlinearInterpolator: Interpolator = LinearInterpolator()
+    private var passWindowBlurEnabled = false
 
     init {
         this.layoutParams = FrameLayout.LayoutParams(
@@ -66,15 +65,16 @@ class MiBlurView(context: Context): View(context) {
         this.visibility = GONE
     }
 
+    fun setPassWindowBlur(enabled: Boolean) {
+        passWindowBlurEnabled = enabled
+    }
+
     fun setBlur(useBlur: Boolean, maxRadius: Int) {
         blurEnabled = useBlur
         blurMaxRadius = maxRadius
         if (blurMaxRadius <= 0) {
             blurEnabled = false
         }
-//        if (blurEnabled && dimEnabled) {
-//            dimThresholdAlpha = (dimMaxAlpha * DEFAULT_BLUR_THRESHOLD.toFloat() / blurMaxRadius).toInt()
-//        }
     }
 
     fun setDim(useDim: Boolean, maxAlpha: Int) {
@@ -83,9 +83,6 @@ class MiBlurView(context: Context): View(context) {
         if (maxAlpha <= 0) {
             dimEnabled = false
         }
-//        if (blurEnabled && dimEnabled) {
-//            dimThresholdAlpha = (dimMaxAlpha * DEFAULT_BLUR_THRESHOLD.toFloat() / blurMaxRadius).toInt()
-//        }
     }
 
     fun setNonlinear(useNonlinear: Boolean, interpolator: Interpolator) {
@@ -154,11 +151,6 @@ class MiBlurView(context: Context): View(context) {
                         else { animaValue }
                     )
                 }
-//                it.addListener { animator ->
-//                    animator.doOnEnd {
-//                        mainAnimator = null
-//                    }
-//                }
                 animCount = 0
                 it.start()
             }
@@ -185,7 +177,7 @@ class MiBlurView(context: Context): View(context) {
     private fun initBlur() {
         if (isBlurInitialized) return
         MiBlurUtils.clearAllBlur(this)
-        MiBlurUtils.setPassWindowBlurEnable(this, false)
+        MiBlurUtils.setPassWindowBlurEnable(this, passWindowBlurEnabled)
         MiBlurUtils.setViewBackgroundBlur(this, MiBlurUtils.USAGE_BACKGROUND)
         MiBlurUtils.setViewBlur(this, 1)
         isBlurInitialized = true

@@ -238,7 +238,7 @@
     <string name="home_refactor_minus_overlap_mode_tips">Make the minus screen hover above the launcher</string>
     <string name="home_refactor_launch_show_minus_tips">Do not hide the launcher view when going to the minus screen.</string>
     <string name="home_refactor_walppaper_scale_sync" translatable="false">@string/home_anim_zoom_sync</string>
-    <string name="home_refactor_walppaper_scale_sync_tips">Enable only when wallpaper scaling appears abnormal.</string>
+    <string name="home_refactor_walppaper_scale_sync_tips">Try enabling wallpaper scaling when it appears abnormal.</string>
 
     <string name="incallui_hide_crbt">Hide CRBT(Coloring Ring Back Tone)</string>
     <string name="joyose_no_cloud_control">Disable Cloud Control</string>
