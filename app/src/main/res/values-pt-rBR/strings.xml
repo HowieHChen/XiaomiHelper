@@ -60,7 +60,7 @@
     <string name="ui_scope_joyose">Joyose</string>
     <string name="ui_scope_market">GetApps</string>
     <string name="ui_scope_mms">Mensagens</string>
-    <string name="ui_scope_music">Músicas</string>
+    <string name="ui_scope_music">Música</string>
     <string name="ui_scope_package_installer">Instalador de Pacotes</string>
     <string name="ui_scope_phone">Serviços do smartphone</string>
     <string name="ui_scope_screen_recorder">Gravador de Tela</string>
