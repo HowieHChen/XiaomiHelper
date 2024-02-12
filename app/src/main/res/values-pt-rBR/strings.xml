@@ -48,7 +48,7 @@
     <string name="ui_title_home_refactor_apps">Blur do app</string>
     <string name="ui_title_home_refactor_wallpaper">Blur do plano de fundo</string>
     <string name="ui_title_home_refactor_launch">Visualização da launcher</string>
-    <string name="ui_title_home_refactor_minus">Menos blur de tela</string>
+    <string name="ui_title_home_refactor_minus">Menos blur na tela</string>
     <string name="ui_scope_mishare">Compartilhamento Mi</string>
     <string name="ui_scope_mi_smart_hub">Mi Smart Hub</string>
     <string name="ui_scope_power_keeper">Bateria e desempenho</string>
@@ -105,7 +105,7 @@
     <string name="android_dark_for_all">Desativar lista branca do modo escuro forçado</string>
     <string name="android_dark_for_all_tips">Torne possível ativar o recurso modo escuro forçado para a maioria dos apps, exceto apps do sistema, etc.</string>
     <string name="android_wallpaper_scale">Escala do plano de fundo</string>
-    <string name="android_wallpaper_scale_tips">Afeta a animação de zoom do plano de fundo ao entrar/sair de apps na tela inicial</string>
+    <string name="android_wallpaper_scale_tips">Isso afeta a animação de zoom do plano de fundo ao entrar/sair de apps na tela inicial</string>
     <string name="android_switch_rotation_suggestions">Alternar status das sugestões de rotação</string>
     <string name="android_switch_rotation_suggestions_tips">Controla se as sugestões de rotação são exibidas</string>
     <string name="android_freeform_restriction">Permitir todos os apps no modo de Janela flutuante pequena</string>
@@ -115,7 +115,7 @@
     <string name="android_disable_fixed_orientation_scope">Desativar escopo de orientação fixa</string>
     <string name="android_disable_fixed_orientation_scope_tips">Entra em vigor após a reinicialização</string>
     <string name="browser_debug_mode">Ativar ambiente de depuração</string>
-    <string name="browser_debug_mode_tips">Força a ativação do ambiente de depuração. Funciona apenas com versões mais antigas de navegadores.</string>
+    <string name="browser_debug_mode_tips">Força a ativação do ambiente de depuração. Funciona apenas com versões mais antigas do navegador.</string>
     <string name="browser_disable_update">Desativar verificação de atualização</string>
     <string name="browser_switch_env">Mudar endereço interno</string>
     <string name="browser_switch_env_tips">Use o ambiente de pré-lançamento. Pode ser possível remover alguns dos anúncios. Pode não ser possível usar as configurações como mecanismo de pesquisa personalizado, portanto, conclua a configuração antes de ativá-lo!</string>
@@ -342,7 +342,7 @@
     <string name="status_bar_clock_show_leading_zero">Mostrar 0 à esquerda</string>
     <string name="status_bar_clock_show_leading_zero_tips">Recomendado para ser ativado ao usar o formato de 24 horas</string>
     <string name="status_bar_clock_show_seconds">Mostrar segundos</string>
-    <string name="status_bar_clock_show_seconds_tips">Também permitirá que a barra de status seja atualizada a cada segundo</string>
+    <string name="status_bar_clock_show_seconds_tips">Isso permitirá que a barra de status seja atualizada a cada segundo</string>
     <string name="status_bar_clock_color_fix">Corrigir anomalia da cor do relógio na animação</string>
     <string name="status_bar_clock_color_fix_tips">Corrija uma anomalia da cor na animação suspensa do relógio ao usar um tema</string>
     <string name="status_bar_battery_custom">Personalizar preenchimento do ícone da bateria</string>
