@@ -128,7 +128,7 @@
     <string name="home_anim_zoom_sync">Sincronizar zoom do plano de fundo ao abrir o app</string>
     <string name="home_anim_zoom_sync_tips">Evita uma situação em que o app não seja iniciado, mas o plano de fundo seja ampliado. Isso fará com que a abertura do app pareça mais lenta. Não é recomendado ativá-lo.</string>
     <string name="home_behavior_always_show_clock">Não ocultar a hora na barra de status</string>
-    <string name="home_behavior_double_tap">Toque duas vezes em um local vazio para bloquear a tela</string>
+    <string name="home_behavior_double_tap">Toque duas vezes em um local vazio para desligar a tela</string>
     <string name="home_behavior_enable4pad">Restaurar recursos ocultos por padrão em tablet</string>
     <string name="home_behavior_fake_premium">Disfarçar modelo como high-end</string>
     <string name="home_behavior_fake_premium_tips">Remova as restrições do modelo em alguns recursos</string>
