@@ -174,7 +174,7 @@
     <string name="home_behavior_refactor_dialog_msg">!!EXPERIMENTAL FEATURES!!\n\nThis feature refactors the launcher based on High-quality materials, please make sure your device supports High-quality materials.\n\nIf you turn it on, you will be exposed to risks including, but not limited to, power consumption, frame drops, jank, and even crashes.\n\nMake sure you are not using a modified launcher and have disabled any other modules related to launcher blurring and animation.</string>
     <string name="home_folder_layout_fix">Utilizes the entire folder view width</string>
     <string name="home_folder_layout_size">Number of columns of icons in the folder</string>
-    <string name="home_icon_unblock_google">Unlock icons for Google apps</string>
+    <string name="home_icon_unblock_google">Unblock icons for Google apps</string>
     <string name="home_icon_corner4large">Uniform corner radius for large icons</string>
     <string name="home_icon_corner4large_tips">Capsule shape icons will become rounded rectangle icons</string>
     <string name="home_icon_perfect_icon">Force enable Perfect icons</string>
