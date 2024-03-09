@@ -13,7 +13,7 @@ object AdBlock : YukiBaseHooker() {
                 addUsingString("ads_enable", StringMatchType.Equals)
                 returnType = "boolean"
             }
-        }.firstOrNull()
+        }.singleOrNull()
     }
     private val adSettings by lazy {
         DexKit.dexKitBridge.findMethod {
@@ -21,7 +21,7 @@ object AdBlock : YukiBaseHooker() {
                 addUsingString("android.provider.MiuiSettings\$Ad", StringMatchType.Equals)
                 returnType = "boolean"
             }
-        }.firstOrNull()
+        }.singleOrNull()
     }
     private val recommend by lazy {
         DexKit.dexKitBridge.findMethod {
@@ -29,7 +29,7 @@ object AdBlock : YukiBaseHooker() {
                 addUsingString("app_store_recommend", StringMatchType.Equals)
                 returnType = "boolean"
             }
-        }.firstOrNull()
+        }.singleOrNull()
     }
     private val scan by lazy {
         DexKit.dexKitBridge.findMethod {
@@ -37,7 +37,7 @@ object AdBlock : YukiBaseHooker() {
                 addUsingString("virus_scan_install", StringMatchType.Equals)
                 returnType = "boolean"
             }
-        }.firstOrNull()
+        }.singleOrNull()
     }
     override fun onHook() {
         hasEnable(PrefKey.PACKAGE_AD_BLOCK) {

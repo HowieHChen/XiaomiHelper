@@ -21,7 +21,7 @@ object NoAutoOff : YukiBaseHooker() {
                 paramCount = 0
                 modifiers = Modifier.PUBLIC
             }
-        }.firstOrNull()
+        }.singleOrNull()
     }
     private val autoTurnNull2 by lazy {
         dexKitBridge.findMethod {
@@ -30,7 +30,7 @@ object NoAutoOff : YukiBaseHooker() {
                 paramCount = 0
                 modifiers = Modifier.PRIVATE
             }
-        }.firstOrNull()
+        }.singleOrNull()
     }
     private val shareSa by lazy {
         dexKitBridge.findMethod {
@@ -41,14 +41,14 @@ object NoAutoOff : YukiBaseHooker() {
                     paramCount = 2
                 }
             }
-        }.firstOrNull()
+        }.singleOrNull()
     }
     private val checkRunJobsClazz by lazy {
         dexKitBridge.findClass {
             matcher {
                 addUsingString("no more running jobs, will release after", StringMatchType.Equals)
             }
-        }.firstOrNull()
+        }.singleOrNull()
     }
     private val shareToast by lazy {
         dexKitBridge.findMethod {
@@ -61,7 +61,7 @@ object NoAutoOff : YukiBaseHooker() {
                 paramTypes = listOf("android.content.Context", "java.lang.String")
                 paramCount = 2
             }
-        }.firstOrNull()
+        }.singleOrNull()
     }
     private val shareToast2 by lazy {
         dexKitBridge.findMethod {
@@ -71,7 +71,7 @@ object NoAutoOff : YukiBaseHooker() {
                 paramCount = 3
                 modifiers = Modifier.STATIC
             }
-        }.firstOrNull()
+        }.singleOrNull()
     }
     @SuppressLint("DiscouragedApi")
     override fun onHook() {

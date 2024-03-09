@@ -14,7 +14,7 @@ object SystemAppWifiSettings : YukiBaseHooker() {
                 returnType = "boolean"
                 paramCount = 0
             }
-        }.firstOrNull()
+        }.singleOrNull()
     }
     override fun onHook() {
         hasEnable(PrefKey.SECURITY_SYSTEM_APP_WIFI) {

@@ -18,7 +18,7 @@ object AllowSendAllApp : YukiBaseHooker() {
                 addUsingString("support_all_app_sub_screen", StringMatchType.Equals)
                 returnType = "boolean"
             }
-        }.firstOrNull()
+        }.singleOrNull()
     }
 
     private val relayAppMessageClazz by lazy {
@@ -26,7 +26,7 @@ object AllowSendAllApp : YukiBaseHooker() {
             matcher {
                 addUsingString("RelayAppMessage{type=", StringMatchType.Equals)
             }
-        }.firstOrNull()
+        }.singleOrNull()
     }
 
     override fun onHook() {

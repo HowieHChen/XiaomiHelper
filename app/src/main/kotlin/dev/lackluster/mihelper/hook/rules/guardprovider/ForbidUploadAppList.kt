@@ -12,7 +12,7 @@ object ForbidUploadAppList : YukiBaseHooker() {
             matcher {
                 addUsingString("ro.miui.customized.region", StringMatchType.Equals)
             }
-        }.firstOrNull()
+        }.singleOrNull()
     }
 
     private val detect by lazy {
@@ -20,7 +20,7 @@ object ForbidUploadAppList : YukiBaseHooker() {
             matcher {
                 addUsingString("https://flash.sec.miui.com/detect/app", StringMatchType.Equals)
             }
-        }.firstOrNull()
+        }.singleOrNull()
     }
     override fun onHook() {
         hasEnable(PrefKey.GUARD_FORBID_UPLOAD_APP) {

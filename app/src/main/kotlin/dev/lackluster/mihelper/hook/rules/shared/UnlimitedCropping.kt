@@ -1,8 +1,6 @@
 package dev.lackluster.mihelper.hook.rules.shared
 
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.method
-import com.highcapable.yukihookapi.hook.type.java.IntType
 import dev.lackluster.mihelper.data.PrefKey
 import dev.lackluster.mihelper.utils.DexKit
 import dev.lackluster.mihelper.utils.Prefs.hasEnable
@@ -42,7 +40,7 @@ object UnlimitedCropping : YukiBaseHooker() {
                     replaceTo(0)
                 }
             }
-            val oldMethod = mScreenCropViewMethodToOld.firstOrNull()?.getMethodInstance(appClassLoader ?: return@hasEnable)
+            val oldMethod = mScreenCropViewMethodToOld.singleOrNull()?.getMethodInstance(appClassLoader ?: return@hasEnable)
             oldMethod?.hook {
                 replaceTo(0)
             }

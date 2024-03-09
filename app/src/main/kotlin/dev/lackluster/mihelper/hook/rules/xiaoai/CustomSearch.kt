@@ -16,7 +16,7 @@ object CustomSearch : YukiBaseHooker() {
                 addUsingString("sendIntentInner fail because empty type", StringMatchType.Equals)
                 returnType = "int"
             }
-        }.firstOrNull()
+        }.singleOrNull()
     }
     private val searchEngine = Prefs.getInt(PrefKey.XIAOAI_SEARCH_ENGINE, 0)
     private val searchEngineUrl = Prefs.getString(PrefKey.XIAOAI_SEARCH_URL, "")

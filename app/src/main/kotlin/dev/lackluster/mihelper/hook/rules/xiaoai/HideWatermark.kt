@@ -12,7 +12,7 @@ object HideWatermark : YukiBaseHooker(){
             matcher {
                 addUsingString("add watermark", StringMatchType.Equals)
             }
-        }.firstOrNull()
+        }.singleOrNull()
     }
     override fun onHook() {
         hasEnable(PrefKey.XIAOAI_HIDE_WATERMARK) {

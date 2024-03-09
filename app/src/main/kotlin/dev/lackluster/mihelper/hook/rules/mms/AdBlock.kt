@@ -13,7 +13,7 @@ object AdBlock : YukiBaseHooker() {
             matcher {
                 addUsingString("Unknown type of the message: ", StringMatchType.Equals)
             }
-        }.firstOrNull()
+        }.singleOrNull()
     }
     override fun onHook() {
         hasEnable(PrefKey.MMS_AD_BLOCK) {

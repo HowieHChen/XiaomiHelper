@@ -35,7 +35,7 @@ object DevMode : YukiBaseHooker() {
                 returnType = "boolean"
                 addUsingString("pref_key_debug_mode", StringMatchType.StartsWith)
             }
-        }.firstOrNull()
+        }.singleOrNull()
     }
     override fun onHook() {
         hasEnable(PrefKey.BROWSER_DEBUG) {

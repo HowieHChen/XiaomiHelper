@@ -16,7 +16,7 @@ object RemoveReport : YukiBaseHooker() {
             matcher {
                 addUsingString("findViewById(R.id.loading_icon_container)", StringMatchType.Equals)
             }
-        }.firstOrNull()
+        }.singleOrNull()
     }
     @SuppressLint("DiscouragedApi")
     override fun onHook() {

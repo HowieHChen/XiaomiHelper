@@ -35,7 +35,7 @@ object SwitchEnv : YukiBaseHooker() {
                 addUsingString("environment_flag", StringMatchType.Equals)
                 addUsingString("0", StringMatchType.Equals)
             }
-        }.firstOrNull()
+        }.singleOrNull()
     }
     private val envSetMethod by lazy {
         DexKit.dexKitBridge.findMethod {
@@ -45,7 +45,7 @@ object SwitchEnv : YukiBaseHooker() {
                 addUsingString("environment_flag", StringMatchType.Equals)
                 addUsingString("3", StringMatchType.Equals)
             }
-        }.firstOrNull()
+        }.singleOrNull()
     }
     override fun onHook() {
         hasEnable(PrefKey.BROWSER_SWITCH_ENV) {

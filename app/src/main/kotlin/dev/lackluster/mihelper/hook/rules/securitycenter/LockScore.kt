@@ -14,7 +14,7 @@ object LockScore : YukiBaseHooker() {
             matcher {
                 addUsingString("getMinusPredictScore", StringMatchType.Contains)
             }
-        }.firstOrNull()
+        }.singleOrNull()
     }
     override fun onHook() {
         hasEnable(PrefKey.SECURITY_LOCK_SCORE) {

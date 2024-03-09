@@ -45,7 +45,7 @@ object HideSafeModePopup : YukiBaseHooker() {
                 addUsingString("safe_mode_guidance_popup_open_btn" ,StringMatchType.Equals)
                 addUsingString("safe_mode_guidance_popup_cancel_btn" ,StringMatchType.Equals)
             }
-        }.firstOrNull()
+        }.singleOrNull()
     }
 //    private val okClick by lazy {
 //        DexKit.dexKitBridge.findMethod {
@@ -65,7 +65,7 @@ object HideSafeModePopup : YukiBaseHooker() {
                 addUsingString("safe_mode_guidance_popup_cancel_btn", StringMatchType.Equals)
                 modifiers = Modifier.STATIC
             }
-        }.firstOrNull()
+        }.singleOrNull()
     }
     @SuppressLint("DiscouragedApi")
     override fun onHook() {

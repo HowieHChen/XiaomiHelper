@@ -27,11 +27,10 @@ import dev.lackluster.mihelper.hook.rules.miuihome.StopWallpaperDarken
 import dev.lackluster.mihelper.hook.rules.miuihome.WallpaperZoomSync
 import dev.lackluster.mihelper.hook.rules.miuihome.WidgetAnim
 import dev.lackluster.mihelper.hook.rules.miuihome.WidgetResizable
-import dev.lackluster.mihelper.utils.DexKit
 
 object MiuiHome : YukiBaseHooker() {
     override fun onHook() {
-        DexKit.initDexKit(this)
+//        DexKit.initDexKit(this)
         loadHooker(AlwaysShowTime)
         loadHooker(AnimUnlock)
         loadHooker(BlurEnableAll)
@@ -58,6 +57,6 @@ object MiuiHome : YukiBaseHooker() {
         loadHooker(WallpaperZoomSync)
         loadHooker(BlurRadius)
         loadHooker(BlurEnhance)
-        DexKit.closeDexKit()
+//        DexKit.closeDexKit()
     }
 }

@@ -13,7 +13,7 @@ object SkipInstallRiskCheck : YukiBaseHooker() {
                 addUsingString("secure_verify_enable", StringMatchType.Equals)
                 returnType = "boolean"
             }
-        }.firstOrNull()
+        }.singleOrNull()
     }
     private val openSafeMode by lazy {
         DexKit.dexKitBridge.findMethod {
@@ -21,7 +21,7 @@ object SkipInstallRiskCheck : YukiBaseHooker() {
                 addUsingString("installerOpenSafetyModel", StringMatchType.Equals)
                 returnType = "boolean"
             }
-        }.firstOrNull()
+        }.singleOrNull()
     }
     override fun onHook() {
         hasEnable(PrefKey.PACKAGE_SKIP_RISK_CHECK) {

@@ -32,7 +32,7 @@ object CustomRefreshRate : YukiBaseHooker() {
                         matcher {
                             addUsingString("btn_preferce_category", StringMatchType.Equals)
                         }
-                    }.firstOrNull()?.getMethodInstance(appClassLoader ?: return@hasEnable)?.hook {
+                    }.singleOrNull()?.getMethodInstance(appClassLoader ?: return@hasEnable)?.hook {
                         before {
                             this.args(0).setTrue()
                         }

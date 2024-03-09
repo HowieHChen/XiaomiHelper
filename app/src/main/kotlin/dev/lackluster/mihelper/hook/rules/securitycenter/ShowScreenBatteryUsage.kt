@@ -13,7 +13,7 @@ object ShowScreenBatteryUsage : YukiBaseHooker() {
                 addUsingString("not support screenPowerSplit", StringMatchType.Equals)
                 addUsingString("PowerRankHelperHolder", StringMatchType.Equals)
             }
-        }.first()
+        }.single()
     }
     private val powerRankMethod1 by lazy {
         DexKit.dexKitBridge.findMethod {
@@ -22,7 +22,7 @@ object ShowScreenBatteryUsage : YukiBaseHooker() {
                 addUsingString("nuwa", StringMatchType.Equals)
                 addUsingString("fuxi", StringMatchType.Equals)
             }
-        }.firstOrNull()
+        }.singleOrNull()
     }
     private val powerRankMethod2 by lazy {
         DexKit.dexKitBridge.findMethod {

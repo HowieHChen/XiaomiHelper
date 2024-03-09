@@ -42,7 +42,7 @@ object DisableUpdateCheck : YukiBaseHooker() {
                 returnType = "java.lang.Integer"
             }
             searchClasses = miMarketUpdateClass
-        }.firstOrNull()
+        }.singleOrNull()
     }
     private val miMarketOnPostExecute by lazy {
         DexKit.dexKitBridge.findMethod {
@@ -50,7 +50,7 @@ object DisableUpdateCheck : YukiBaseHooker() {
                 name = "onPostExecute"
             }
             searchClasses = miMarketUpdateClass
-        }.firstOrNull()
+        }.singleOrNull()
     }
     override fun onHook() {
         hasEnable(PrefKey.BROWSER_NO_UPDATE) {

@@ -14,7 +14,7 @@ object RemoveReport : YukiBaseHooker() {
                 addUsingString("com.xiaomi.market", StringMatchType.Equals)
                 returnType = "boolean"
             }
-        }.firstOrNull()
+        }.singleOrNull()
     }
     override fun onHook() {
         hasEnable(PrefKey.SECURITY_REMOVE_REPORT) {
