@@ -350,7 +350,7 @@
     <string name="status_bar_battery_padding_right">Preenchimento direito</string>
     <string name="updater_disable_validation">Remover verificação OTA</string>
     <string name="updater_disable_validation_tips">Apenas dispositivos VAB são suportados. Por favor, não habilite outros dispositivos não-VAB!</string>
-    <string name="xiaoai_hide_watermark">Ocultar marca d'água da versão beta</string>
+    <string name="xiaoai_hide_watermark">Ocultar marca d\'água da versão beta</string>
     <string name="systemui_notif_redirect_dialog_positive">Texto do botão \"Configurações do canal de notificação\"</string>
     <string name="systemui_notif_redirect_dialog_negative">Texto do botão \"Configurações de notificação de apps\"</string>
     <string name="android_switch_rotation_suggestions_before_true">Atualmente desativado. Tem certeza que deseja ativá-lo?</string>
