@@ -15,21 +15,21 @@
 
 </div>
 
-**简体中文** | [日本語](README_JP.md) | [English](README_EN-US.md) | [Português (Brasil)](README_PT-BR.md)
+[简体中文](README.md) | [日本語](README_JP.md) | **English** | [Português (Brasil)](README_PT-BR.md)
 
-## 介绍
+## Introduction
 
-HyperOS 的轻量级模块，仅适用于 HyperOS！自用模块，基于小米 12S Pro 和小米 Pad 6 Pro 开发。大部分功能基于其它模块，少量原创。
+Lightweight modules for HyperOS only! Self-use module, developed based on Xiaomi 12S Pro and Xiaomi Pad 6 Pro. Most functions are based on other modules, with a small amount of original.
 
-## 源代码
+## Source code
 
 - [「XiaomiHelper」by HowieHChen](https://github.com/HowieHChen/XiaomiHelper)
 
-## 捐赠
+## Donate
 
-[请我喝杯咖啡](https://github.com/HowieHChen/XiaomiHelper/blob/master/DONATE.md)
+[Buy me a coffee](https://github.com/HowieHChen/XiaomiHelper/blob/master/DONATE.md)
 
-## 引用
+## References
 
 ##### GNU General Public License v3.0
 
