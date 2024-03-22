@@ -18,67 +18,67 @@ import dev.lackluster.mihelper.utils.Device
 @BMPage("scope_others", hideMenu = false)
 class OthersPage : BasePage() {
     override fun getTitle(): String {
-        return activity.getString(R.string.ui_page_others)
+        return activity.getString(R.string.page_others)
     }
     override fun onCreate() {
-        TitleText(textId = R.string.ui_scope_browser)
+        TitleText(textId = R.string.scope_browser)
         TextSummaryWithSwitch(
-            TextSummaryV(textId = R.string.browser_debug_mode, tipsId = R.string.browser_debug_mode_tips),
+            TextSummaryV(textId = R.string.others_browser_debug_mode, tipsId = R.string.others_browser_debug_mode_tips),
             SwitchV(PrefKey.BROWSER_DEBUG)
         )
         TextSummaryWithSwitch(
-            TextSummaryV(textId = R.string.browser_switch_env, tipsId = R.string.browser_switch_env_tips),
+            TextSummaryV(textId = R.string.others_browser_switch_env, tipsId = R.string.others_browser_switch_env_tips),
             SwitchV(PrefKey.BROWSER_SWITCH_ENV)
         )
         TextSummaryWithSwitch(
-            TextSummaryV(textId = R.string.browser_disable_update),
+            TextSummaryV(textId = R.string.others_browser_disable_update),
             SwitchV(PrefKey.BROWSER_NO_UPDATE)
         )
         Line()
-        TitleText(textId = R.string.ui_scope_download)
+        TitleText(textId = R.string.scope_download)
         TextSummaryWithSwitch(
-            TextSummaryV(textId = R.string.download_remove_xl),
+            TextSummaryV(textId = R.string.others_download_fuck_xl),
             SwitchV(PrefKey.DOWNLOAD_REMOVE_XL)
         )
         Line()
-        TitleText(textId = R.string.ui_scope_gallery)
+        TitleText(textId = R.string.scope_gallery)
         TextSummaryWithSwitch(
-            TextSummaryV(textId = R.string.screenshot_unlimited_crop),
+            TextSummaryV(textId = R.string.others_gallery_unlimited_crop),
             SwitchV(PrefKey.SCREENSHOT_UNLIMITED_CROP)
         )
         TextSummaryWithSwitch(
             TextSummaryV(
-                textId = R.string.gallery_screen_path_optim,
-                tipsId = R.string.gallery_screen_path_optim_tips
+                textId = R.string.others_gallery_path_optim,
+                tipsId = R.string.others_gallery_path_optim_tips
             ),
             SwitchV(PrefKey.GALLERY_PATH_OPTIM)
         )
         Line()
-        TitleText(textId = R.string.ui_scope_incallui)
+        TitleText(textId = R.string.scope_in_call_ui)
         TextSummaryWithSwitch(
-            TextSummaryV(textId = R.string.incallui_hide_crbt),
+            TextSummaryV(textId = R.string.cleaner_incallui_hide_crbt),
             SwitchV(PrefKey.INCALLUI_HIDE_CRBT)
         )
         Line()
-        TitleText(textId = R.string.ui_scope_joyose)
+        TitleText(textId = R.string.scope_joyose)
         TextSummaryWithSwitch(
-            TextSummaryV(textId = R.string.joyose_no_cloud_control),
+            TextSummaryV(textId = R.string.others_joyose_no_cloud_control),
             SwitchV(PrefKey.JOYOSE_NO_CLOUD_CONTROL)
         )
         Line()
-        TitleText(textId = R.string.ui_scope_market)
+        TitleText(textId = R.string.scope_market)
         TextSummaryWithSwitch(
             TextSummaryV(textId = R.string.market_ad_block),
             SwitchV(PrefKey.MARKET_AD_BLOCK)
         )
         Line()
-        TitleText(textId = R.string.ui_scope_mms)
+        TitleText(textId = R.string.scope_mms)
         TextSummaryWithSwitch(
             TextSummaryV(textId = R.string.mms_ad_block),
             SwitchV(PrefKey.MMS_AD_BLOCK)
         )
         Line()
-        TitleText(textId = R.string.ui_scope_music)
+        TitleText(textId = R.string.scope_music)
         TextSummaryWithSwitch(
             TextSummaryV(textId = R.string.music_ad_block),
             SwitchV(PrefKey.MUSIC_AD_BLOCK)
@@ -86,49 +86,49 @@ class OthersPage : BasePage() {
         Line()
         TitleText(textId = R.string.ui_scope_phone)
         TextSummaryWithSwitch(
-            TextSummaryV(textId = R.string.phone_show_net_mode_settings),
+            TextSummaryV(textId = R.string.others_settings_unlock_net_mode),
             SwitchV(PrefKey.PHONE_NETWORK_MODE_SETTINGS)
         )
         Line()
-        TitleText(textId = R.string.ui_scope_screen_recorder)
+        TitleText(textId = R.string.scope_screen_recorder)
         TextSummaryWithSwitch(
             TextSummaryV(
-                textId = R.string.screen_recorder_save_to_movies,
-                tipsId = R.string.screen_recorder_save_to_movies_tips
+                textId = R.string.others_screen_recorder_save_to_movies,
+                tipsId = R.string.others_screen_recorder_save_to_movies_tips
             ),
             SwitchV(PrefKey.SCREEN_RECORDER_SAVE_TO_MOVIES)
         )
         Line()
-        TitleText(textId = R.string.ui_scope_screenshot)
+        TitleText(textId = R.string.scope_screenshot)
         TextSummaryWithSwitch(
-            TextSummaryV(textId = R.string.screenshot_save_as_png),
+            TextSummaryV(textId = R.string.others_screenshot_save_as_png),
             SwitchV(PrefKey.SCREENSHOT_SAVE_AS_PNG)
         )
         TextSummaryWithSwitch(
             TextSummaryV(
-                textId = R.string.screenshot_save_to_picture,
-                tipsId = R.string.screenshot_save_to_picture_tips
+                textId = R.string.others_screenshot_save_to_picture,
+                tipsId = R.string.others_screenshot_save_to_picture_tips
             ),
             SwitchV(PrefKey.SCREENSHOT_SAVE_TO_PICTURE)
         )
         Line()
-        TitleText(textId = R.string.ui_scope_guard_provider)
+        TitleText(textId = R.string.scope_guard_provider)
         TextSummaryWithSwitch(
-            TextSummaryV(textId = R.string.guard_forbid_upload_app),
+            TextSummaryV(textId = R.string.cleaner_privacy_block_upload_app),
             SwitchV(PrefKey.GUARD_FORBID_UPLOAD_APP)
         )
         Line()
-        TitleText(textId = R.string.ui_scope_settings)
+        TitleText(textId = R.string.scope_settings)
         TextSummaryWithSwitch(
-            TextSummaryV(textId = R.string.settings_show_google),
+            TextSummaryV(textId = R.string.others_settings_show_google),
             SwitchV(PrefKey.SETTINGS_SHOW_GOOGLE)
         )
         TextSummaryWithSwitch(
-            TextSummaryV(textId = R.string.settings_unlock_voip_assistant),
+            TextSummaryV(textId = R.string.others_settings_unlock_voip_assistant),
             SwitchV(PrefKey.SETTINGS_UNLOCK_VOIP_ASSISTANT)
         )
         Line()
-        TitleText(textId = R.string.ui_scope_taplus)
+        TitleText(textId = R.string.scope_taplus)
         val taplusUseBrowserBinding = GetDataBinding({
             MIUIActivity.safeSP.getBoolean(
                 PrefKey.TAPLUS_USE_BROWSER, false
@@ -139,12 +139,12 @@ class OthersPage : BasePage() {
             }
         }
         val customTaplusSearch: HashMap<Int, String> = hashMapOf<Int, String>().also {
-            it[0] = getString(R.string.taplus_search_engine_default)
-            it[1] = getString(R.string.taplus_search_engine_baidu)
-            it[2] = getString(R.string.taplus_search_engine_sogou)
-            it[3] = getString(R.string.taplus_search_engine_bing)
-            it[4] = getString(R.string.taplus_search_engine_google)
-            it[5] = getString(R.string.taplus_search_engine_custom)
+            it[0] = getString(R.string.search_engine_default)
+            it[1] = getString(R.string.search_engine_baidu)
+            it[2] = getString(R.string.search_engine_sogou)
+            it[3] = getString(R.string.search_engine_bing)
+            it[4] = getString(R.string.search_engine_google)
+            it[5] = getString(R.string.search_engine_custom)
         }
         val taplusSearchBinding = GetDataBinding({
             MIUIActivity.safeSP.getBoolean(PrefKey.TAPLUS_USE_BROWSER, false)
@@ -155,7 +155,7 @@ class OthersPage : BasePage() {
             }
         }
         TextSummaryWithSwitch(
-            TextSummaryV(textId = R.string.taplus_use_browser),
+            TextSummaryV(textId = R.string.search_use_browser),
             SwitchV(PrefKey.TAPLUS_USE_BROWSER) {
                 taplusUseBrowserBinding.binding.Send().send(it)
                 taplusSearchBinding.binding.Send().send(it
@@ -163,7 +163,7 @@ class OthersPage : BasePage() {
             }
         )
         TextWithSpinner(
-            TextV(textId = R.string.taplus_search_engine), SpinnerV(
+            TextV(textId = R.string.search_engine), SpinnerV(
             customTaplusSearch[MIUIActivity.safeSP.getInt(
                 PrefKey.TAPLUS_SEARCH_ENGINE, 0
             )].toString()
@@ -194,9 +194,9 @@ class OthersPage : BasePage() {
             }
         }, dataBindingRecv = taplusUseBrowserBinding.binding.getRecv(1))
         TextSummaryWithArrow(
-            TextSummaryV(textId = R.string.taplus_search_custom, onClickListener = {
+            TextSummaryV(textId = R.string.search_engine_custom_url, onClickListener = {
                 MIUIDialog(activity) {
-                    setTitle(R.string.taplus_search_custom)
+                    setTitle(R.string.search_engine_custom_url)
                     setEditText(
                         MIUIActivity.safeSP.getString(PrefKey.TAPLUS_SEARCH_URL, ""),
                         "https://example.com/s?q=%s"
@@ -218,7 +218,7 @@ class OthersPage : BasePage() {
                             dismiss()
                         }
                         else {
-                            makeText(activity, getString(R.string.taplus_search_custom_toast), LENGTH_SHORT).show()
+                            makeText(activity, getString(R.string.search_engine_custom_url_toast), LENGTH_SHORT).show()
                         }
                     }
                 }.show()
@@ -229,7 +229,7 @@ class OthersPage : BasePage() {
             SwitchV(PrefKey.TAPLUS_LANDSCAPE)
         )
         TextSummaryWithSwitch(
-            TextSummaryV(textId = R.string.taplus_hide_shop),
+            TextSummaryV(textId = R.string.cleaner_taplus_hide_shop),
             SwitchV(PrefKey.TAPLUS_HIDE_SHOP)
         )
         val isPadBinding = GetDataBinding({
@@ -240,18 +240,18 @@ class OthersPage : BasePage() {
             }
         }
         TextSummaryWithSwitch(
-            TextSummaryV(textId = R.string.taplus_unlock_pad),
+            TextSummaryV(textId = R.string.others_settings_unlock_taplus_for_pad),
             SwitchV(PrefKey.TAPLUS_UNLOCK_PAD),
             dataBindingRecv = isPadBinding.binding.getRecv(1)
         )
         Line()
-        TitleText(textId = R.string.ui_scope_updater)
+        TitleText(textId = R.string.scope_updater)
         TextSummaryWithSwitch(
-            TextSummaryV(textId = R.string.updater_disable_validation, tipsId = R.string.updater_disable_validation_tips),
+            TextSummaryV(textId = R.string.others_updater_disable_validation, tipsId = R.string.others_updater_disable_validation_tips),
             SwitchV(PrefKey.UPDATER_DISABLE_VALIDATION)
         )
         Line()
-        TitleText(textId = R.string.ui_scope_xiaoai)
+        TitleText(textId = R.string.scope_mi_ai)
         val xiaoaiUseBrowserBinding = GetDataBinding({
             MIUIActivity.safeSP.getBoolean(
                 PrefKey.XIAOAI_USE_BROWSER, false
@@ -262,12 +262,12 @@ class OthersPage : BasePage() {
             }
         }
         val customXiaoaiSearch: HashMap<Int, String> = hashMapOf<Int, String>().also {
-            it[0] = getString(R.string.taplus_search_engine_default)
-            it[1] = getString(R.string.taplus_search_engine_baidu)
-            it[2] = getString(R.string.taplus_search_engine_sogou)
-            it[3] = getString(R.string.taplus_search_engine_bing)
-            it[4] = getString(R.string.taplus_search_engine_google)
-            it[5] = getString(R.string.taplus_search_engine_custom)
+            it[0] = getString(R.string.search_engine_default)
+            it[1] = getString(R.string.search_engine_baidu)
+            it[2] = getString(R.string.search_engine_sogou)
+            it[3] = getString(R.string.search_engine_bing)
+            it[4] = getString(R.string.search_engine_google)
+            it[5] = getString(R.string.search_engine_custom)
         }
         val xiaoaiSearchBinding = GetDataBinding({
             MIUIActivity.safeSP.getBoolean(PrefKey.XIAOAI_USE_BROWSER, false)
@@ -348,7 +348,7 @@ class OthersPage : BasePage() {
             }), dataBindingRecv = xiaoaiSearchBinding.binding.getRecv(1)
         )
         TextSummaryWithSwitch(
-            TextSummaryV(textId = R.string.xiaoai_hide_watermark),
+            TextSummaryV(textId = R.string.others_miai_hide_watermark),
             SwitchV(PrefKey.XIAOAI_HIDE_WATERMARK)
         )
     }

@@ -35,10 +35,12 @@ android {
             "-Xno-receiver-assertions"
         )
     }
-    buildFeatures {
-        buildConfig = true
-        viewBinding = true
-    }
+    androidResources.additionalParameters += listOf("--allow-reserved-package-id", "--package-id", "0x60")
+    androidResources
+        buildFeatures {
+            buildConfig = true
+            viewBinding = true
+        }
     lint { checkReleaseBuilds = false }
     // TODO Please visit https://highcapable.github.io/YukiHookAPI/en/api/special-features/host-inject
     // TODO 请参考 https://highcapable.github.io/YukiHookAPI/zh-cn/api/special-features/host-inject

@@ -4,25 +4,258 @@
     <string name="about_module">This module is made by YukiHookAPI. Learn more https://github.com/HighCapable/YuKiHookAPI</string>
     <string name="module_inactive_tips">Module is not activated. Please check the LSPosed version and module activation information and try again.</string>
 
-    <string name="ui_page_about">About module</string>
+    <string name="common_default">Default</string>
+    <string name="common_current">Current</string>
+    <string name="common_range">Range</string>
+    <string name="common_invalid_input">Invalid Input</string>
+
+    <string name="button_cancel">Cancel</string>
+    <string name="button_ok">OK</string>
+    <string name="button_clear">Clear</string>
+    <string name="button_enable">Enable</string>
+    <string name="button_disable">Disable</string>
+
+    <string name="dialog_done">Done</string>
+    <string name="dialog_warning">Warning</string>
+    <string name="dialog_error">Error</string>
+
+    <string name="ui_title_scope">Scope</string>
+
+    <string name="page_module" translatable="false">Module settings</string>
+    <string name="page_systemui" translatable="false">@string/ui_page_systemui</string>
+    <string name="page_android" translatable="false">@string/ui_page_android</string>
+    <string name="page_miui_home" translatable="false">@string/scope_miui_home</string>
+    <string name="page_cleaner">Clean master</string>
+    <string name="page_security_center" translatable="false">@string/scope_security_center</string>
+    <string name="page_security_center_pad" translatable="false">@string/scope_security_center_pad</string>
+    <string name="page_interconnection">Interconnectivity</string>
+    <string name="page_others">Others</string>
+    <string name="page_about">About module</string>
+
+    <string name="scope_browser">Browser</string>
+    <string name="scope_download">Download</string>
+    <string name="scope_gallery">Gallery</string>
+    <string name="scope_guard_provider">System security components</string>
+    <string name="scope_in_call_ui">InCall UI</string>
+    <string name="scope_joyose">Joyose</string>
+    <string name="scope_market">GetApps</string>
+    <string name="scope_mi_ai">Mi AI</string>
+    <string name="scope_mi_link">Interconnectivity services</string>
+    <string name="scope_mi_mirror">Device interconnectivity services</string>
+    <string name="scope_mi_share">Mi Share</string>
+    <string name="scope_mi_trust">MiTrustService</string>
+    <string name="scope_miui_home">System launcher</string>
+    <string name="scope_mms">Messaging</string>
+    <string name="scope_music">Music</string>
+    <string name="scope_package_installer">Package installer</string>
+    <string name="scope_power_keeper">Battery and performance</string>
+    <string name="scope_screen_recorder">Screen Recorder</string>
+    <string name="scope_screenshot">Screenshot</string>
+    <string name="scope_security_center">Security</string>
+    <string name="scope_security_center_pad">@string/scope_security_center</string>
+    <string name="scope_settings">Settings</string>
+    <string name="scope_taplus">Taplus</string>
+    <string name="scope_themes">Themes</string>
+    <string name="scope_updater">Updater</string>
+
+
+    <string name="search_use_browser">Search using browser</string>
+    <string name="search_engine">Search Engine</string>
+    <string name="search_engine_default">Default</string>
+    <string name="search_engine_baidu">Baidu</string>
+    <string name="search_engine_sogou">Sogou</string>
+    <string name="search_engine_bing">Bing</string>
+    <string name="search_engine_google">Google</string>
+    <string name="search_engine_custom">Custom</string>
+    <string name="search_engine_custom_url">Custom search engine</string>
+    <string name="search_engine_custom_url_toast">The URL must contain \"%s\"</string>
+
+
+    <!-- ModuleSettingsPage -->
+    <string name="ui_title_module_general">General</string>
+    <string name="module_main_switch">Enable module</string>
+    <string name="module_hide_icon">Hide icon in launcher</string>
+    <string name="module_show_in_settings">Module entry in system settings</string>
+    <string name="module_settings_icon_style">Entry icon style</string>
+    <string name="module_settings_icon_style_default" translatable="false">@string/common_default</string>
+    <string name="module_settings_icon_style_android">Android</string>
+    <string name="module_settings_icon_color">Entry icon color</string>
+    <string name="module_settings_icon_color_grey">Grey</string>
+    <string name="module_settings_icon_color_red">Red</string>
+    <string name="module_settings_icon_color_green">Green</string>
+    <string name="module_settings_icon_color_blue">Blue</string>
+    <string name="module_settings_icon_color_purple">Purple</string>
+    <string name="module_settings_icon_color_yellow">Yellow</string>
+    <string name="module_settings_name">Entry title</string>
+    <string name="module_settings_name_helper">Hyper Helper</string>
+    <string name="module_settings_name_advanced">Advanced Settings</string>
+    <string name="ui_title_module_backup">Backup &amp; restore</string>
+    <string name="module_backup">Backup module preferences</string>
+    <string name="module_restore">Restore module preferences</string>
+    <string name="module_backup_success">All preferences have been exported to the specified file.</string>
+    <string name="module_backup_failure">Backup failed.</string>
+    <string name="module_restore_success">Preferences have been restored from the file.</string>
+    <string name="module_restore_failure">Restore failed. Please check the backup file.</string>
+    <string name="module_unknown_failure">Unknown error</string>
+
+    <!-- CleanMasterPage -->
+    <string name="ui_title_cleaner_ad_blocker">Ad blocker</string>
+    <string name="cleaner_ad_blocker_market" translatable="false">@string/scope_market</string>
+    <string name="cleaner_ad_blocker_mms" translatable="false">@string/scope_mms</string>
+    <string name="cleaner_ad_blocker_music" translatable="false">@string/scope_music</string>
+    <string name="cleaner_ad_blocker_theme" translatable="false">@string/scope_themes</string>
+    <string name="ui_title_cleaner_privacy">Privacy</string>
+    <string name="cleaner_privacy_block_upload_app">Block uploading of installed apps list</string>
+    <string name="cleaner_privacy_block_upload_app_tips" translatable="false">@string/scope_guard_provider</string>
+    <string name="cleaner_privacy_block_ul_app_info">Block uploading of information about the app when it is installed</string>
+    <string name="cleaner_privacy_block_ul_app_info_tips" translatable="false">@string/scope_package_installer</string>
+    <string name="ui_title_cleaner_mi_trust_service" translatable="false">@string/scope_mi_trust</string>
+    <string name="mi_trust_disable_risk_check" translatable="false">@string/cleaner_package_skip_risk_check</string>
+    <string name="ui_title_cleaner_package" translatable="false">@string/scope_package_installer</string>
+    <string name="cleaner_package_remove_element">Disable redundant features and remove related elements</string>
+    <string name="cleaner_package_skip_risk_check">Disable the monitoring of risks</string>
+    <string name="cleaner_package_no_count_check">Disable frequently installed app check</string>
+    <string name="ui_title_cleaner_security" translatable="false">@string/scope_security_center</string>
+    <string name="ui_title_cleaner_security_pad" translatable="false">@string/scope_security_center_pad</string>
+    <string name="cleaner_security_lock_score">Locked Security Score</string>
+    <string name="cleaner_security_lock_score_tips">Lock the security score to 100 and disable the \"Optimize\" button</string>
+    <string name="cleaner_security_disable_risk_app_notif">Disable \"Malicious app found\" notifications</string>
+    <string name="cleaner_security_remove_report">Remove the \"Report\" button from the app info page</string>
+    <string name="ui_title_in_call_ui" translatable="false">@string/scope_in_call_ui</string>
+    <string name="cleaner_incallui_hide_crbt">Hide CRBT (Coloring Ring Back Tone)</string>
+    <string name="ui_title_home" translatable="false">@string/scope_miui_home</string>
+    <string name="cleaner_home_remove_report">Remove the \"Report\" button from the uninstall app pop-up window</string>
+    <string name="ui_title_taplus" translatable="false">@string/scope_taplus</string>
+    <string name="cleaner_taplus_hide_shop">Hide shopping button</string>
+    <!-- SystemFrameworkPage -->
+    <string name="ui_title_android_freeform">Floating windows</string>
+    <string name="android_freeform_restriction">Allow all apps to be in small window mode</string>
+    <string name="android_freeform_restriction_tips">Ignore system blacklists and software\'s own disabling of small windows</string>
+    <string name="android_freeform_allow_more">Allow more floating windows</string>
+    <string name="android_freeform_multi_task">Allow multiple instances of the same app</string>
+    <string name="android_freeform_hide_topbar">Hide top window control bar</string>
+    <string name="ui_title_android_screen_rotation">Screen rotation</string>
+    <string name="android_rotation_switch_suggestions">Toggle rotation suggestions status</string>
+    <string name="android_rotation_switch_suggestions_tips">Controls whether rotation suggestions are displayed</string>
+    <string name="android_rotation_switch_suggestions_before_true">Currently disabled. Are you sure you want to enable it?</string>
+    <string name="android_rotation_switch_suggestions_done_true">Enabled rotation suggestions</string>
+    <string name="android_rotation_switch_suggestions_before_false">Currently enabled. Are you sure you want to disable it?</string>
+    <string name="android_rotation_switch_suggestions_done_false">Disabled rotation suggestions</string>
+    <string name="android_rotation_switch_suggestions_failed">Failed! Please grant root permission to this app and try again.</string>
+    <string name="android_rotation_disable_fixed_orientation">Disable fixed orientation</string>
+    <string name="android_rotation_disable_fixed_orientation_tips">Disable some apps fixed orientation</string>
+    <string name="android_rotation_disable_fixed_orientation_scope">Disable fixed orientation scope</string>
+    <string name="android_rotation_disable_fixed_orientation_scope_tips">Take effect after reboot</string>
+    <string name="ui_title_android_others" translatable="false">@string/page_others</string>
+    <string name="android_others_wallpaper_scale">Wallpaper scale</string>
+    <string name="android_others_wallpaper_scale_tips">Affects the wallpaper zoom animation when launching/exiting apps on the desktop</string>
+    <string name="android_others_force_dark">Disable whitelisting of forced dark</string>
+    <string name="android_others_force_dark_tips">Make it possible to enable the forced dark mode feature for most apps, except for system apps, etc.</string>
+    <!-- SecurityCenterPage -->
+    <string name="ui_title_security_security" translatable="false">@string/scope_security_center</string>
+    <string name="ui_title_security_security_pad" translatable="false">@string/scope_security_center_pad</string>
+    <string name="security_security_skip_warning">Skip the wait time on warnings</string>
+    <string name="security_security_skip_warning_tips">Skip wait times when using USB debugging, unknown sources, and accessibility</string>
+    <string name="security_security_skip_open_app">Remove pop-ups when opening apps</string>
+    <string name="security_security_skip_open_app_tips">Remove chained startup warning pop-ups containing \"Allow XXX to open XXX\"</string>
+    <string name="security_security_screen_battery">Show screen usage in power consumption ranking</string>
+    <string name="security_security_screen_battery_tips">Battery usage of apps that are hidden by default will also be shown</string>
+    <string name="security_security_bubble_restriction">Remove bubble notification app restrictions</string>
+    <string name="security_security_system_app_wifi">Allow management Wi-Fi permissions for system apps</string>
+    <string name="security_security_icon_open">Tap the icon in the app info to launch the app</string>
+    <string name="ui_title_security_power" translatable="false">@string/scope_power_keeper</string>
+    <string name="security_power_do_not_kill_app">Prevent killing background apps</string>
+    <string name="security_power_block_battery_whitelist">Prevent recovery of battery optimization whitelist</string>
+    <string name="security_power_battery_optimization">Battery optimization</string>
+    <string name="security_power_battery_optimization_tips">Open the battery optimization page that is hidden by default</string>
+    <string name="security_power_battery_optimization_failed_toast">Failed to open, probably not supported by the system.</string>
+    <!-- InterconnectionPage -->
+    <string name="ui_title_interconnection_milink" translatable="false">@string/scope_mi_link</string>
+    <string name="interconnection_milink_fuck_hpplay">Block the creation of hpplay folder</string>
+    <string name="ui_title_interconnection_mishare" translatable="false">@string/scope_mi_share</string>
+    <string name="interconnection_mishare_no_auto_off">Disable MiShare auto-off</string>
+    <string name="ui_title_interconnection_mimirror" translatable="false">@string/scope_mi_mirror</string>
+    <string name="interconnection_mimirror_all_app">All apps can be opened on another device</string>
+    <!-- OthersPage -->
+    <string name="ui_title_others_browser" translatable="false">@string/scope_browser</string>
+    <string name="others_browser_debug_mode">Enable debug mode</string>
+    <string name="others_browser_debug_mode_tips">Forces debug mode to be enabled. Only works with older versions of browsers.</string>
+    <string name="others_browser_switch_env">Switch internal address</string>
+    <string name="others_browser_switch_env_tips">Use the pre-release environment. It may be possible to remove some of the ads. It may not be possible to use settings such as customized search engine, so please finish setting before turning it on!</string>
+    <string name="others_browser_disable_update">Disable update check</string>
+    <string name="ui_title_others_download" translatable="false">@string/scope_download</string>
+    <string name="others_download_fuck_xl">Block the creation of .xlDownload folder</string>
+    <string name="ui_title_others_gallery" translatable="false">@string/scope_gallery</string>
+    <string name="others_gallery_unlimited_crop">Unlimited image cropping</string>
+    <string name="others_gallery_path_optim">Optimize recognition of directories</string>
+    <string name="others_gallery_path_optim_tips">Recognize images in \"Pictures/Screenshots\" as screenshots and videos in \"Movies/ScreenRecorder\" as screen recordings, and display them in the corresponding albums.</string>
+    <string name="ui_title_others_joyose" translatable="false">@string/scope_joyose</string>
+    <string name="others_joyose_no_cloud_control">Disable Cloud control</string>
+    <string name="ui_title_others_miai" translatable="false">@string/scope_mi_ai</string>
+    <string name="others_miai_hide_watermark">Hide the watermark of the beta version</string>
+    <string name="ui_title_others_package" translatable="false">@string/scope_package_installer</string>
+    <string name="others_package_update_system_app">Remove system app installation restrictions</string>
+    <string name="others_package_update_system_app_tips">Allow any non-system channel to install system apps</string>
+    <string name="others_package_more_info">Show more package information</string>
+    <string name="ui_title_others_screen_recorder" translatable="false">@string/scope_screen_recorder</string>
+    <string name="others_screen_recorder_save_to_movies">Save to a standardized directory</string>
+    <string name="others_screen_recorder_save_to_movies_tips">Save recording to \"Movies/ScreenRecorder\" instead of \"DCIM/ScreenRecorder\"</string>
+    <string name="ui_title_others_screenshot" translatable="false">@string/scope_screenshot</string>
+    <string name="others_screenshot_save_as_png">Saving images in PNG</string>
+    <string name="others_screenshot_save_to_picture">Save to a standardized directory</string>
+    <string name="others_screenshot_save_to_picture_tips">Save screenshots to \"Pictures/Screenshots\" instead of \"DCIM/Screenshots\"</string>
+    <string name="ui_title_others_settings" translatable="false">@string/scope_settings</string>
+    <string name="others_settings_show_google">Show Google settings</string>
+    <string name="others_settings_unlock_voip_assistant">Unlock VoIP Assistant</string>
+    <string name="others_settings_unlock_custom_refresh">Unlock Customize high refresh rate</string>
+    <string name="others_settings_unlock_net_mode">Unlock mobile network type settings</string>
+    <string name="others_settings_unlock_taplus_for_pad">Unlock Taplus for tablet</string>
+    <string name="ui_title_others_taplus" translatable="false">@string/scope_taplus</string>
+    <string name="ui_title_others_updater" translatable="false">@string/scope_updater</string>
+    <string name="others_updater_disable_validation">Remove OTA validation</string>
+    <string name="others_updater_disable_validation_tips">Only VAB devices are supported, don\'t turn it on for non-VAB devices!</string>
+
+
+
+
+    
+    <string name="package_ad_block" translatable="false">@string/ad_block</string>
+    <string name="package_remove_report">Remove report button</string>
+    <string name="package_safe_mode_tip">Remove Safe Mode tips</string>
+    <string name="package_hide_safe_mode_popup">Remove Safe Mode guidance pop-up</string>
+    <string name="package_hide_safe_mode_popup_tips">Remove recurring pop-ups that trick you into turning on Safe Mode</string>
+
+
+
+    <string name="taplus_landscape">Enable in landscape</string>
+    <string name="xiaoai_use_browser" translatable="false">@string/search_use_browser</string>
+    <string name="xiaoai_search_engine" translatable="false">@string/search_engine</string>
+    <string name="xiaoai_search_engine_default" translatable="false">@string/search_engine_default</string>
+    <string name="xiaoai_search_engine_baidu" translatable="false">@string/search_engine_baidu</string>
+    <string name="xiaoai_search_engine_sogou" translatable="false">@string/search_engine_sogou</string>
+    <string name="xiaoai_search_engine_bing" translatable="false">@string/search_engine_bing</string>
+    <string name="xiaoai_search_engine_google" translatable="false">@string/search_engine_google</string>
+    <string name="xiaoai_search_engine_custom" translatable="false">@string/search_engine_custom</string>
+    <string name="xiaoai_search_custom" translatable="false">@string/search_engine_custom_url</string>
+    <string name="xiaoai_search_custom_toast" translatable="false">@string/search_engine_custom_url_toast</string>
+
+
+
     <string name="ui_page_android">Android Framework</string>
     <string name="ui_page_main" translatable="false">@string/app_name</string>
     <string name="ui_page_menu">Menu</string>
-    <string name="ui_page_mi_connect">Mi Connect</string>
-    <string name="ui_page_miui_home">System launcher</string>
-    <string name="ui_page_others">Others</string>
-    <string name="ui_page_security_center">Security</string>
-    <string name="ui_page_security_center_pad">@string/ui_page_security_center</string>
+
+
     <string name="ui_page_systemui">System UI</string>
-    <string name="ui_page_disable_fixed_orientation" translatable="false">@string/android_disable_fixed_orientation_scope</string>
+    <string name="ui_page_disable_fixed_orientation" translatable="false">@string/android_rotation_disable_fixed_orientation_scope</string>
     <string name="ui_page_status_bar_icon_tuner">Icon tuner</string>
     <string name="ui_page_home_refactor">Customizing the blur effect</string>
 
     <string name="ui_title_about_developer">Developer</string>
     <string name="ui_title_about_open_source">Source code</string>
     <string name="ui_title_about_reference">References</string>
-    <string name="ui_title_general">General</string>
-    <string name="ui_title_scope">Scope</string>
+
+
     <string name="ui_title_about">About</string>
     <string name="ui_title_reboot">Reboot</string>
     <string name="ui_title_backup">Backup</string>
@@ -53,51 +286,44 @@
     <string name="ui_title_home_refactor_launch">Launcher view</string>
     <string name="ui_title_home_refactor_minus">Minus screen blur</string>
 
-    <string name="ui_scope_android" translatable="false">@string/ui_page_android</string>
-    <string name="ui_scope_mi_connect" translatable="false">@string/ui_page_mi_connect</string>
-    <string name="ui_scope_mishare">MiShare</string>
+
+
+
     <string name="ui_scope_mi_smart_hub">Mi Smart Hub</string>
-    <string name="ui_scope_miui_home" translatable="false">@string/ui_page_miui_home</string>
-    <string name="ui_scope_power_keeper">Battery and performance</string>
-    <string name="ui_scope_security_center" translatable="false">@string/ui_page_security_center</string>
-    <string name="ui_scope_security_center_pad" translatable="false">@string/ui_page_security_center_pad</string>
-    <string name="ui_scope_other" translatable="false">@string/ui_page_others</string>
-    <string name="ui_scope_browser">Browser</string>
-    <string name="ui_scope_download">Download</string>
-    <string name="ui_scope_gallery">Gallery</string>
-    <string name="ui_scope_guard_provider">HyperOS security components</string>
-    <string name="ui_scope_incallui">InCall UI</string>
-    <string name="ui_scope_joyose">Joyose</string>
-    <string name="ui_scope_market">GetApps</string>
-    <string name="ui_scope_mms">Messaging</string>
-    <string name="ui_scope_music">Music</string>
-    <string name="ui_scope_package_installer">Package installer</string>
+
+
+
+
+
+
+    
+    
+    
+    
+
+
     <string name="ui_scope_phone">Phone</string>
-    <string name="ui_scope_screen_recorder">Screen Recorder</string>
-    <string name="ui_scope_screenshot">Screenshot</string>
-    <string name="ui_scope_settings">Settings</string>
-    <string name="ui_scope_systemui" translatable="false">@string/ui_page_systemui</string>
-    <string name="ui_scope_taplus">Taplus</string>
-    <string name="ui_scope_updater">Updater</string>
-    <string name="ui_scope_xiaoai">Mi AI</string>
-    <string name="ui_about_module" translatable="false">@string/ui_page_about</string>
 
-    <string name="button_cancel">Cancel</string>
-    <string name="button_ok">OK</string>
-    <string name="button_clear">Clear</string>
-    <string name="button_enable">Enable</string>
-    <string name="button_disable">Disable</string>
 
-    <string name="dialog_warning">Warning</string>
-    <string name="dialog_error">Error</string>
-    <string name="dialog_default_value">Default</string>
+
+
+
+
+
+
+
+
+
+
+
+
+    <string name="dialog_default_value" translatable="false">@string/common_default</string>
     <string name="dialog_current_value">Current</string>
     <string name="dialog_value_range">Range</string>
     <string name="dialog_search">Search</string>
-    <string name="invalid_input">Invalid Input</string>
 
-    <string name="switch_main">Enable module</string>
-    <string name="switch_hide_icon">Hide icon in launcher</string>
+
+
 
     <string name="reboot_system">Reboot system</string>
     <string name="reboot_system_tips">Are you sure you want to reboot the system?</string>
@@ -127,27 +353,12 @@
     <string name="about_donate_tips">Buy me a coffee</string>
     <string name="about_donate_url" translatable="false">https://github.com/HowieHChen/XiaomiHelper/blob/master/DONATE.md</string>
 
-    <string name="android_dark_for_all">Disable whitelisting of forced dark</string>
-    <string name="android_dark_for_all_tips">Make it possible to enable the forced dark mode feature for most apps, except for system apps, etc.</string>
-    <string name="android_wallpaper_scale">Wallpaper scale</string>
-    <string name="android_wallpaper_scale_tips">Affects the wallpaper zoom animation when launching/exiting apps on the desktop</string>
-    <string name="android_switch_rotation_suggestions">Toggle rotation suggestions status</string>
-    <string name="android_switch_rotation_suggestions_tips">Controls whether rotation suggestions are displayed</string>
-    <string name="android_freeform_restriction">Allow all apps to be in small window mode</string>
-    <string name="android_freeform_restriction_tips">Ignore system blacklists and software\'s own disabling of small windows</string>
-    <string name="android_disable_fixed_orientation">Disable fixed orientation</string>
-    <string name="android_disable_fixed_orientation_tips">Disable some apps fixed orientation</string>
-    <string name="android_disable_fixed_orientation_scope">Disable fixed orientation scope</string>
-    <string name="android_disable_fixed_orientation_scope_tips">Take effect after reboot</string>
-    <string name="browser_debug_mode">Enable debug mode</string>
-    <string name="browser_debug_mode_tips">Forces debug mode to be enabled. Only works with older versions of browsers.</string>
-    <string name="browser_disable_update">Disable update check</string>
-    <string name="browser_switch_env">Switch internal address</string>
-    <string name="browser_switch_env_tips">Use the pre-release environment. It may be possible to remove some of the ads. It may not be possible to use settings such as customized search engine, so please finish setting before turning it on!</string>
-    <string name="download_remove_xl">Block the creation of .xlDownload folder</string>
-    <string name="gallery_screen_path_optim">Optimize recognition of directories</string>
-    <string name="gallery_screen_path_optim_tips">Recognize images in \"Pictures/Screenshots\" as screenshots and videos in \"Movies/ScreenRecorder\" as screen recordings, and display them in the corresponding albums.</string>
-    <string name="guard_forbid_upload_app">Block uploading of installed apps list</string>
+
+
+
+
+    
+    
     <string name="home_anim_unlock">Optimize unlocking animation</string>
     <string name="home_anim_unlock_tips">Optimize the animation of the icon when unlocking</string>
     <string name="home_anim_zoom_sync">Synchronize wallpaper zoom with app launch</string>
@@ -190,7 +401,7 @@
     <string name="home_recent_dock_time_tips">Values greater than 1000 milliseconds are not recommended</string>
     <string name="home_recent_docke_safe_height">Height threshold for calling out the dock</string>
     <string name="home_recent_docke_safe_height_tips">The dock will only be called out if the height of the slide is less than this threshold</string>
-    <string name="home_remove_report">Remove the \"Report\" button from the uninstall app pop-up window</string>
+
     <string name="home_disable_fake_navbar">Disable fake navigation bar handle</string>
     <string name="home_disable_fake_navbar_tips">Disable the fake navigation bar handles on the horizontal recent tasks screen and use the real one</string>
     <string name="home_widget_resizable">Make all Android widgets resizable</string>
@@ -240,47 +451,22 @@
     <string name="home_refactor_walppaper_scale_sync" translatable="false">@string/home_anim_zoom_sync</string>
     <string name="home_refactor_walppaper_scale_sync_tips">Try enabling wallpaper scaling when it appears abnormal</string>
 
-    <string name="incallui_hide_crbt">Hide CRBT (Coloring Ring Back Tone)</string>
-    <string name="joyose_no_cloud_control">Disable Cloud control</string>
+    
+    
     <string name="market_ad_block" translatable="false">@string/ad_block</string>
-    <string name="mishare_no_auto_off">Disable MiShare auto-off</string>
-    <string name="mi_smart_hub_all_app">All apps can be opened on another device</string>
+
     <string name="mms_ad_block" translatable="false">@string/ad_block</string>
     <string name="music_ad_block" translatable="false">@string/ad_block</string>
-    <string name="package_ad_block" translatable="false">@string/ad_block</string>
-    <string name="package_no_count_check">Disable frequently installed app check</string>
-    <string name="package_remove_report">Remove report button</string>
-    <string name="package_safe_mode_tip">Remove Safe Mode tips</string>
-    <string name="package_hide_safe_mode_popup">Remove Safe Mode guidance pop-up</string>
-    <string name="package_hide_safe_mode_popup_tips">Remove recurring pop-ups that trick you into turning on Safe Mode</string>
-    <string name="package_skip_risk_check">Prohibition of monitoring risks</string>
+
     <string name="personal_assist_blur">Enable blur for background</string>
-    <string name="phone_show_net_mode_settings">Show mobile network type settings</string>
-    <string name="power_custom_refresh">Customize high refresh rate apps</string>
-    <string name="power_donot_kill_app">Prevent killing background apps</string>
-    <string name="power_battery_optimization">Battery optimization</string>
-    <string name="power_battery_optimization_tips">Open the battery optimization page that is hidden by default</string>
-    <string name="power_battery_optimization_failed_toast">Failed to open, probably not supported by the system.</string>
-    <string name="screen_recorder_save_to_movies">Save to a standardized directory</string>
-    <string name="screen_recorder_save_to_movies_tips">Save recording to \"Movies/ScreenRecorder\" instead of \"DCIM/ScreenRecorder\"</string>
-    <string name="screenshot_unlimited_crop">Unlimited image cropping</string>
-    <string name="screenshot_save_as_png">Saving images in PNG</string>
-    <string name="screenshot_save_to_picture">Save to a standardized directory</string>
-    <string name="screenshot_save_to_picture_tips">Save screenshots to \"Pictures/Screenshots\" instead of \"DCIM/Screenshots\"</string>
-    <string name="security_skip_warning">Skip the wait time on warnings</string>
-    <string name="security_skip_warning_tips">Skip wait times when using USB debugging, unknown sources, and accessibility</string>
-    <string name="security_skip_open_app">Remove pop-ups when opening apps</string>
-    <string name="security_skip_open_app_tips">Remove chained startup warning pop-ups containing \"Allow XXX to open XXX\"</string>
-    <string name="security_lock_score">Locked Security Score</string>
-    <string name="security_lock_score_tips">Lock the security score to 100 and disable the \"Optimize\" button</string>
-    <string name="security_screen_battery">Show screen usage in power consumption ranking</string>
-    <string name="security_screen_battery_tips">Battery usage of apps that are hidden by default will also be shown</string>
-    <string name="security_bubble_restriction">Remove bubble notification app restrictions</string>
-    <string name="security_disable_risk_app_notification">Disable \"Malicious app found\" notifications</string>
-    <string name="security_remove_report">Remove the \"Report\" button from the app info page</string>
-    <string name="security_system_app_wifi">Allow management Wi-Fi permissions for system apps</string>
-    <string name="settings_show_google">Show Google settings</string>
-    <string name="settings_unlock_voip_assistant">Unlock VoIP Assistant</string>
+
+
+
+
+    
+
+
+
     <string name="systemui_statusbar_icon_tuner" translatable="false">@string/ui_page_status_bar_icon_tuner</string>
     <string name="systemui_notif_disable_whitelist">Disable notification whitelist</string>
     <string name="systemui_notif_freeform">Allow most notifications to open in a small window</string>
@@ -305,19 +491,7 @@
     <string name="systemui_media_control_style_enhance">HyperOS (Enhanced)</string>
     <string name="systemui_media_control_style_android">Android</string>
     <string name="systemui_media_control_style_android_blur">Android (Blur)</string>
-    <string name="taplus_use_browser">Search using browser</string>
-    <string name="taplus_search_engine">Search Engine</string>
-    <string name="taplus_search_engine_default">Default</string>
-    <string name="taplus_search_engine_baidu">Baidu</string>
-    <string name="taplus_search_engine_sogou">Sogou</string>
-    <string name="taplus_search_engine_bing">Bing</string>
-    <string name="taplus_search_engine_google">Google</string>
-    <string name="taplus_search_engine_custom">Custom</string>
-    <string name="taplus_search_custom">Custom search engine</string>
-    <string name="taplus_search_custom_toast">The URL must contain \"%s\"</string>
-    <string name="taplus_landscape">Enable in landscape</string>
-    <string name="taplus_hide_shop">Hide shopping button</string>
-    <string name="taplus_unlock_pad">Force enable on tablet</string>
+
 
     <string name="status_bar_hide_battery">Hide battery icon</string>
     <string name="status_bar_hide_battery_mark">Hide battery percentage symbol</string>
@@ -388,24 +562,9 @@
     <string name="status_bar_battery_padding_left">Left padding</string>
     <string name="status_bar_battery_padding_right">Right padding</string>
 
-    <string name="updater_disable_validation">Remove OTA validation</string>
-    <string name="updater_disable_validation_tips">Only VAB devices are supported, don\'t turn it on for non-VAB devices!</string>
-    <string name="xiaoai_use_browser" translatable="false">@string/taplus_use_browser</string>
-    <string name="xiaoai_search_engine" translatable="false">@string/taplus_search_engine</string>
-    <string name="xiaoai_search_engine_default" translatable="false">@string/taplus_search_engine_default</string>
-    <string name="xiaoai_search_engine_baidu" translatable="false">@string/taplus_search_engine_baidu</string>
-    <string name="xiaoai_search_engine_sogou" translatable="false">@string/taplus_search_engine_sogou</string>
-    <string name="xiaoai_search_engine_bing" translatable="false">@string/taplus_search_engine_bing</string>
-    <string name="xiaoai_search_engine_google" translatable="false">@string/taplus_search_engine_google</string>
-    <string name="xiaoai_search_engine_custom" translatable="false">@string/taplus_search_engine_custom</string>
-    <string name="xiaoai_search_custom" translatable="false">@string/taplus_search_custom</string>
-    <string name="xiaoai_search_custom_toast" translatable="false">@string/taplus_search_custom_toast</string>
-    <string name="xiaoai_hide_watermark">Hide the watermark of the beta version</string>
+
+
     <string name="systemui_notif_redirect_dialog_positive">Text of the \"Notification channel settings\" button</string>
     <string name="systemui_notif_redirect_dialog_negative">Text of the \"App notification settings\" button</string>
-    <string name="android_switch_rotation_suggestions_before_true">Currently disabled. Are you sure you want to enable it?</string>
-    <string name="android_switch_rotation_suggestions_done_true">Enabled rotation suggestions</string>
-    <string name="android_switch_rotation_suggestions_before_false">Currently enabled. Are you sure you want to disable it?</string>
-    <string name="android_switch_rotation_suggestions_done_false">Disabled rotation suggestions</string>
-    <string name="android_switch_rotation_suggestions_failed">Failed! Please grant root permission to this app and try again.</string>
+
 </resources>

@@ -1,14 +1,30 @@
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
+ * This file is part of XiaomiHelper project
+ * Copyright (C) 2023 HowieHChen, howie.dev@outlook.com
+
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package dev.lackluster.mihelper.activity.pages.main
 
-import android.content.ComponentName
-import android.content.pm.PackageManager
+import androidx.appcompat.content.res.AppCompatResources
 import cn.fkj233.ui.activity.annotation.BMMainPage
 import cn.fkj233.ui.activity.data.BasePage
-import cn.fkj233.ui.activity.view.SwitchV
 import cn.fkj233.ui.activity.view.TextSummaryV
 import dev.lackluster.mihelper.R
-import dev.lackluster.mihelper.BuildConfig
-import dev.lackluster.mihelper.data.PrefKey
 import dev.lackluster.mihelper.utils.Device
 
 @BMMainPage()
@@ -17,66 +33,70 @@ class MainPage : BasePage() {
         return activity.getString(R.string.ui_page_main)
     }
     override fun onCreate() {
-        activity.title
-        TitleText(textId = R.string.ui_title_general)
-        TextSummaryWithSwitch(
-            TextSummaryV(
-                textId = R.string.switch_main
-            ), SwitchV(PrefKey.ENABLE_MODULE, true)
-        )
-        TextSummaryWithSwitch(
-            TextSummaryV(textId = R.string.switch_hide_icon),
-            SwitchV(PrefKey.HIDE_ICON, onClickListener = {
-                activity.packageManager.setComponentEnabledSetting(
-                    ComponentName(activity, "${BuildConfig.APPLICATION_ID}.launcher"),
-                    if (it) {
-                        PackageManager.COMPONENT_ENABLED_STATE_DISABLED
-                    } else {
-                        PackageManager.COMPONENT_ENABLED_STATE_ENABLED
-                    },
-                    PackageManager.DONT_KILL_APP
-                )
-            })
+        Page(
+            pageHead = AppCompatResources.getDrawable(activity, R.drawable.ic_header_hyper_helper_gray)!!,
+            textSummaryV = TextSummaryV(textId = R.string.page_module),
+            onClickListener = {
+                showFragment("page_module")
+            }
         )
         Line()
-        TitleText(textId = R.string.ui_title_scope)
-        TextSummaryWithArrow(
-            TextSummaryV(
-                textId = R.string.ui_scope_systemui,
-                onClickListener = { showFragment("scope_systemui") })
+        Page(
+            pageHead = AppCompatResources.getDrawable(activity, R.drawable.ic_header_systemui)!!,
+            textSummaryV = TextSummaryV(textId = R.string.page_systemui),
+            onClickListener = {
+                showFragment("page_systemui")
+            }
         )
-        TextSummaryWithArrow(
-            TextSummaryV(
-                textId = R.string.ui_scope_android,
-                onClickListener = { showFragment("scope_android") })
+        Page(
+            pageHead = AppCompatResources.getDrawable(activity, R.drawable.ic_header_android_green)!!,
+            textSummaryV = TextSummaryV(textId = R.string.page_android),
+            onClickListener = {
+                showFragment("page_android")
+            }
         )
-        TextSummaryWithArrow(
-            TextSummaryV(
-                textId = if (Device.isPad) R.string.ui_scope_security_center_pad else R.string.ui_scope_security_center,
-                onClickListener = { showFragment("scope_security_center") })
+        Page(
+            pageHead = AppCompatResources.getDrawable(activity, R.drawable.ic_header_home)!!,
+            textSummaryV = TextSummaryV(textId = R.string.page_miui_home),
+            onClickListener = {
+                showFragment("page_miui_home")
+            }
         )
-        TextSummaryWithArrow(
-            TextSummaryV(
-                textId = R.string.ui_scope_mi_connect,
-                onClickListener = { showFragment("scope_mi_connect") })
+        Page(
+            pageHead = AppCompatResources.getDrawable(activity, R.drawable.ic_header_cleaner)!!,
+            textSummaryV = TextSummaryV(textId = R.string.page_cleaner),
+            onClickListener = {
+                showFragment("page_cleaner")
+            }
         )
-        TextSummaryWithArrow(
-            TextSummaryV(
-                textId = R.string.ui_scope_miui_home,
-                onClickListener = { showFragment("scope_miui_home") })
+        Page(
+            pageHead = AppCompatResources.getDrawable(activity, R.drawable.ic_header_security_center)!!,
+            textSummaryV = TextSummaryV(textId = if (Device.isPad) R.string.page_security_center_pad else R.string.page_security_center),
+            onClickListener = {
+                showFragment("page_security_center")
+            }
         )
-        TextSummaryWithArrow(
-            TextSummaryV(
-                textId = R.string.ui_scope_other,
-                onClickListener = { showFragment("scope_others") })
+        Page(
+            pageHead = AppCompatResources.getDrawable(activity, R.drawable.ic_header_interconnection)!!,
+            textSummaryV = TextSummaryV(textId = R.string.page_interconnection),
+            onClickListener = {
+                showFragment("page_interconnection")
+            }
+        )
+        Page(
+            pageHead = AppCompatResources.getDrawable(activity, R.drawable.ic_header_others)!!,
+            textSummaryV = TextSummaryV(textId = R.string.page_others),
+            onClickListener = {
+                showFragment("page_others")
+            }
         )
         Line()
-        TitleText(textId = R.string.ui_title_about)
-        TextSummaryWithArrow(
-            TextSummaryV(
-                textId = R.string.ui_about_module,
-                onClickListener = { showFragment("about") })
+        Page(
+            pageHead = AppCompatResources.getDrawable(activity, R.drawable.ic_header_about)!!,
+            textSummaryV = TextSummaryV(textId = R.string.page_about),
+            onClickListener = {
+                showFragment("page_about")
+            }
         )
     }
-
 }

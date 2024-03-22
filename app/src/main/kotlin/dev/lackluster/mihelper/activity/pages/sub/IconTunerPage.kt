@@ -57,7 +57,7 @@ class IconTunerPage : BasePage() {
                     MIUIDialog(activity) {
                         setTitle(R.string.status_bar_clock_padding_left)
                         setMessage(
-                            "${activity.getString(R.string.dialog_default_value)}: 0"
+                            "${activity.getString(R.string.common_default)}: 0"
                         )
                         setEditText("", "${activity.getString(R.string.dialog_current_value)}: ${
                             MIUIActivity.safeSP.getInt(PrefKey.STATUSBAR_CLOCK_PADDING_LEFT, 0)
@@ -73,7 +73,7 @@ class IconTunerPage : BasePage() {
                                         getEditText().toInt()
                                     )
                                 }.onFailure {
-                                    Toast.makeText(activity, activity.getString(R.string.invalid_input), Toast.LENGTH_LONG)
+                                    Toast.makeText(activity, activity.getString(R.string.common_invalid_input), Toast.LENGTH_LONG)
                                         .show()
                                 }
                             }
@@ -91,7 +91,7 @@ class IconTunerPage : BasePage() {
                     MIUIDialog(activity) {
                         setTitle(R.string.status_bar_clock_padding_right)
                         setMessage(
-                            "${activity.getString(R.string.dialog_default_value)}: 0"
+                            "${activity.getString(R.string.common_default)}: 0"
                         )
                         setEditText("", "${activity.getString(R.string.dialog_current_value)}: ${
                             MIUIActivity.safeSP.getInt(PrefKey.STATUSBAR_CLOCK_PADDING_RIGHT, 0)
@@ -107,7 +107,7 @@ class IconTunerPage : BasePage() {
                                         getEditText().toInt()
                                     )
                                 }.onFailure {
-                                    Toast.makeText(activity, activity.getString(R.string.invalid_input), Toast.LENGTH_LONG)
+                                    Toast.makeText(activity, activity.getString(R.string.common_invalid_input), Toast.LENGTH_LONG)
                                         .show()
                                 }
                             }
@@ -315,7 +315,7 @@ class IconTunerPage : BasePage() {
                     MIUIDialog(activity) {
                         setTitle(R.string.status_bar_battery_padding_left)
                         setMessage(
-                            "${activity.getString(R.string.dialog_default_value)}: 0"
+                            "${activity.getString(R.string.common_default)}: 0"
                         )
                         setEditText("", "${activity.getString(R.string.dialog_current_value)}: ${
                             MIUIActivity.safeSP.getInt(PrefKey.STATUSBAR_BATTERY_PADDING_LEFT, 0)
@@ -331,7 +331,7 @@ class IconTunerPage : BasePage() {
                                         getEditText().toInt()
                                     )
                                 }.onFailure {
-                                    Toast.makeText(activity, activity.getString(R.string.invalid_input), Toast.LENGTH_LONG)
+                                    Toast.makeText(activity, activity.getString(R.string.common_invalid_input), Toast.LENGTH_LONG)
                                         .show()
                                 }
                             }
@@ -349,7 +349,7 @@ class IconTunerPage : BasePage() {
                     MIUIDialog(activity) {
                         setTitle(R.string.status_bar_battery_padding_right)
                         setMessage(
-                            "${activity.getString(R.string.dialog_default_value)}: 0"
+                            "${activity.getString(R.string.common_default)}: 0"
                         )
                         setEditText("", "${activity.getString(R.string.dialog_current_value)}: ${
                             MIUIActivity.safeSP.getInt(PrefKey.STATUSBAR_BATTERY_PADDING_RIGHT, 0)
@@ -365,7 +365,7 @@ class IconTunerPage : BasePage() {
                                         getEditText().toInt()
                                     )
                                 }.onFailure {
-                                    Toast.makeText(activity, activity.getString(R.string.invalid_input), Toast.LENGTH_LONG)
+                                    Toast.makeText(activity, activity.getString(R.string.common_invalid_input), Toast.LENGTH_LONG)
                                         .show()
                                 }
                             }
@@ -399,7 +399,7 @@ class IconTunerPage : BasePage() {
                     MIUIDialog(activity) {
                         setTitle(R.string.status_bar_battery_percent_size)
                         setMessage(
-                            "${activity.getString(R.string.dialog_default_value)}: 0\n${activity.getString(R.string.status_bar_battery_percent_size_default)}"
+                            "${activity.getString(R.string.common_default)}: 0\n${activity.getString(R.string.status_bar_battery_percent_size_default)}"
                         )
                         setEditText("", "${activity.getString(R.string.dialog_current_value)}: ${
                             MIUIActivity.safeSP.getFloat(PrefKey.STATUSBAR_BATTERY_PERCENT_SIZE, 0f)
@@ -415,7 +415,7 @@ class IconTunerPage : BasePage() {
                                         getEditText().toFloat()
                                     )
                                 }.onFailure {
-                                    Toast.makeText(activity, activity.getString(R.string.invalid_input), Toast.LENGTH_LONG)
+                                    Toast.makeText(activity, activity.getString(R.string.common_invalid_input), Toast.LENGTH_LONG)
                                         .show()
                                 }
                             }

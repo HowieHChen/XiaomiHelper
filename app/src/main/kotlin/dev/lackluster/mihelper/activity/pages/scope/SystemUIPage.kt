@@ -189,7 +189,7 @@ class SystemUIPage : BasePage(){
                     MIUIDialog(activity) {
                         setTitle(R.string.systemui_notif_redirect_dialog_negative)
                         setMessage(
-                            "${activity.getString(R.string.dialog_default_value)}: ${getString(R.string.systemui_notif_redirect_dialog_negative_default)}, ${getString(R.string.systemui_notif_redirect_dialog_hint)}"
+                            "${activity.getString(R.string.common_default)}: ${getString(R.string.systemui_notif_redirect_dialog_negative_default)}, ${getString(R.string.systemui_notif_redirect_dialog_hint)}"
                         )
                         setEditText("",
                             "${activity.getString(R.string.dialog_current_value)}: ${
@@ -207,7 +207,7 @@ class SystemUIPage : BasePage(){
                                         getEditText()
                                     )
                                 }.onFailure {
-                                    Toast.makeText(activity, activity.getString(R.string.invalid_input), Toast.LENGTH_LONG)
+                                    Toast.makeText(activity, activity.getString(R.string.common_invalid_input), Toast.LENGTH_LONG)
                                         .show()
                                 }
                             }
@@ -230,7 +230,7 @@ class SystemUIPage : BasePage(){
                     MIUIDialog(activity) {
                         setTitle(R.string.systemui_notif_redirect_dialog_positive)
                         setMessage(
-                            "${activity.getString(R.string.dialog_default_value)}: ${getString(R.string.systemui_notif_redirect_dialog_positive_default)}, ${getString(R.string.systemui_notif_redirect_dialog_hint)}"
+                            "${activity.getString(R.string.common_default)}: ${getString(R.string.systemui_notif_redirect_dialog_positive_default)}, ${getString(R.string.systemui_notif_redirect_dialog_hint)}"
                         )
                         setEditText("",
                             "${activity.getString(R.string.dialog_current_value)}: ${
@@ -248,7 +248,7 @@ class SystemUIPage : BasePage(){
                                         getEditText()
                                     )
                                 }.onFailure {
-                                    Toast.makeText(activity, activity.getString(R.string.invalid_input), Toast.LENGTH_LONG)
+                                    Toast.makeText(activity, activity.getString(R.string.common_invalid_input), Toast.LENGTH_LONG)
                                         .show()
                                 }
                             }

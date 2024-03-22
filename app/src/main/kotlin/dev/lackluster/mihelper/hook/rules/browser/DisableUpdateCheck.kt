@@ -21,9 +21,9 @@
 package dev.lackluster.mihelper.hook.rules.browser
 
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.PrefKey
+import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.DexKit
-import dev.lackluster.mihelper.utils.Prefs.hasEnable
+import dev.lackluster.mihelper.utils.factory.hasEnable
 import org.luckypray.dexkit.query.enums.StringMatchType
 
 object DisableUpdateCheck : YukiBaseHooker() {
@@ -52,16 +52,16 @@ object DisableUpdateCheck : YukiBaseHooker() {
             searchClasses = miMarketUpdateClass
         }.singleOrNull()
     }
+
     override fun onHook() {
-        hasEnable(PrefKey.BROWSER_NO_UPDATE) {
-            miMarketDoInBackground?.getMethodInstance(appClassLoader?:return@hasEnable)
-                ?.hook {
-                    replaceTo(1)
-                }
-            miMarketOnPostExecute?.getMethodInstance(appClassLoader?:return@hasEnable)
-                ?.hook {
-                    replaceTo(null)
-                }
+        hasEnable(Pref.Key.Browser.BLOCK_UPDATE) {
+            if (appClassLoader == null) return@hasEnable
+            miMarketDoInBackground?.getMethodInstance(appClassLoader!!)?.hook {
+                replaceTo(1)
+            }
+            miMarketOnPostExecute?.getMethodInstance(appClassLoader!!)?.hook {
+                replaceTo(null)
+            }
         }
     }
 }

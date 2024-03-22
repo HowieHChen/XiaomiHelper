@@ -1,3 +1,23 @@
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
+ * This file is part of XiaomiHelper project
+ * Copyright (C) 2023 HowieHChen, howie.dev@outlook.com
+
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package dev.lackluster.mihelper.activity.pages.scope
 
 import android.view.View
@@ -17,7 +37,7 @@ import dev.lackluster.mihelper.utils.Device
 @BMPage("scope_miui_home", hideMenu = false)
 class MiuiHomePage : BasePage() {
     override fun getTitle(): String {
-        return activity.getString(R.string.ui_page_miui_home)
+        return activity.getString(R.string.scope_miui_home)
     }
     override fun onCreate() {
         val isPadBinding = GetDataBinding({
@@ -127,7 +147,7 @@ class MiuiHomePage : BasePage() {
                 onClickListener = {
                     MIUIDialog(activity) {
                         setTitle(R.string.home_behavior_blur_radius)
-                        setMessage(getString(R.string.home_behavior_blur_radius_msg) + " (${activity.getString(R.string.dialog_default_value)}: 100, ${activity.getString(R.string.dialog_current_value)}: ${
+                        setMessage(getString(R.string.home_behavior_blur_radius_msg) + " (${activity.getString(R.string.common_default)}: 100, ${activity.getString(R.string.dialog_current_value)}: ${
                             MIUIActivity.safeSP.getInt(PrefKey.HOME_BLUR_RADIUS, 100)
                         })")
                         setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0-150")
@@ -144,7 +164,7 @@ class MiuiHomePage : BasePage() {
                                 }.onFailure {
                                     Toast.makeText(
                                         activity,
-                                        activity.getString(R.string.invalid_input),
+                                        activity.getString(R.string.common_invalid_input),
                                         Toast.LENGTH_LONG
                                     ).show()
                                 }
@@ -157,7 +177,7 @@ class MiuiHomePage : BasePage() {
         )
         TextSummaryWithSwitch(
             TextSummaryV(
-                textId = R.string.home_remove_report,
+                textId = R.string.cleaner_home_remove_report,
             ),
             SwitchV(PrefKey.HOME_REMOVE_REPORT),
             dataBindingRecv = isPadBinding.binding.getRecv(1)
@@ -246,7 +266,7 @@ class MiuiHomePage : BasePage() {
                     MIUIDialog(activity) {
                         setTitle(R.string.home_recent_dock_time)
                         setMessage(
-                            "${activity.getString(R.string.dialog_default_value)}: 180 (ms), ${activity.getString(R.string.dialog_current_value)}: ${
+                            "${activity.getString(R.string.common_default)}: 180 (ms), ${activity.getString(R.string.dialog_current_value)}: ${
                                 MIUIActivity.safeSP.getInt(PrefKey.HOME_PAD_DOCK_TIME_DURATION, 180)
                             } (ms)"
                         )
@@ -264,7 +284,7 @@ class MiuiHomePage : BasePage() {
                                         getEditText().toInt()
                                     )
                                 }.onFailure {
-                                    Toast.makeText(activity, activity.getString(R.string.invalid_input), Toast.LENGTH_LONG)
+                                    Toast.makeText(activity, activity.getString(R.string.common_invalid_input), Toast.LENGTH_LONG)
                                         .show()
                                 }
                             }
@@ -282,7 +302,7 @@ class MiuiHomePage : BasePage() {
                     MIUIDialog(activity) {
                         setTitle(R.string.home_recent_docke_safe_height)
                         setMessage(
-                            "${activity.getString(R.string.dialog_default_value)}: 300, ${activity.getString(R.string.dialog_current_value)}: ${
+                            "${activity.getString(R.string.common_default)}: 300, ${activity.getString(R.string.dialog_current_value)}: ${
                                 MIUIActivity.safeSP.getInt(PrefKey.HOME_PAD_DOCK_SAFE_AREA_HEIGHT, 300)
                             }"
                         )
@@ -300,7 +320,7 @@ class MiuiHomePage : BasePage() {
                                         getEditText().toInt()
                                     )
                                 }.onFailure {
-                                    Toast.makeText(activity, activity.getString(R.string.invalid_input), Toast.LENGTH_LONG)
+                                    Toast.makeText(activity, activity.getString(R.string.common_invalid_input), Toast.LENGTH_LONG)
                                         .show()
                                 }
                             }

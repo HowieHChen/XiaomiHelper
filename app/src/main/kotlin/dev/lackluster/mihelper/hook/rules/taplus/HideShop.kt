@@ -1,3 +1,23 @@
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
+ * This file is part of XiaomiHelper project
+ * Copyright (C) 2023 HowieHChen, howie.dev@outlook.com
+
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package dev.lackluster.mihelper.hook.rules.taplus
 
 import android.view.View
@@ -6,31 +26,29 @@ import android.widget.TextView
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.current
 import com.highcapable.yukihookapi.hook.factory.method
-import dev.lackluster.mihelper.data.PrefKey
-import dev.lackluster.mihelper.utils.Prefs.hasEnable
+import dev.lackluster.mihelper.data.Pref
+import dev.lackluster.mihelper.utils.factory.hasEnable
 
 object HideShop : YukiBaseHooker() {
     override fun onHook() {
-        hasEnable(PrefKey.TAPLUS_HIDE_SHOP) {
-            "com.miui.contentextension.text.cardview.TaplusRecognitionExpandedImageCard".toClass()
-                .method {
-                    name = "updateLayout"
+        hasEnable(Pref.Key.Taplus.HIDE_SHOP) {
+            "com.miui.contentextension.text.cardview.TaplusRecognitionExpandedImageCard".toClass().method {
+                name = "updateLayout"
+            }.hook {
+                after {
+                    val shopping = this.instance.current().field {
+                        name = "mShopping"
+                        type = TextView::class.java
+                    }.any() as TextView
+                    val scanQR = this.instance.current().field {
+                        name = "mScanQR"
+                    }.any() as TextView
+                    shopping.visibility = View.GONE
+                    val layoutParams = scanQR.layoutParams as LinearLayout.LayoutParams
+                    layoutParams.marginEnd *= 2
+                    scanQR.layoutParams = layoutParams
                 }
-                .hook {
-                    after {
-                        val shopping = this.instance.current().field {
-                            name = "mShopping"
-                            type = TextView::class.java
-                        }.any() as TextView
-                        val scanQR = this.instance.current().field {
-                            name = "mScanQR"
-                        }.any() as TextView
-                        shopping.visibility = View.GONE
-                        val layoutParams = scanQR.layoutParams as LinearLayout.LayoutParams
-                        layoutParams.marginEnd = layoutParams.marginEnd * 2
-                        scanQR.layoutParams = layoutParams
-                    }
-                }
+            }
         }
     }
 }

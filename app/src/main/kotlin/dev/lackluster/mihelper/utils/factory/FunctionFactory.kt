@@ -44,6 +44,18 @@ fun Number.dp(context: Context) = dpFloat(context).toInt()
 fun Number.dpFloat(context: Context) = toFloat() * context.resources.displayMetrics.density
 
 @SuppressLint("WorldReadableFiles")
-fun getSP(context: Context, prefName: String = Prefs.Name): SharedPreferences {
+fun getSP(context: Context, prefName: String = Prefs.NAME): SharedPreferences {
     return context.getSharedPreferences(prefName, Activity.MODE_WORLD_READABLE)
+}
+
+inline fun hasEnable(
+    key: String,
+    default: Boolean = false,
+    noinline extraCondition: (() -> Boolean)? = null,
+    crossinline block: () -> Unit
+) {
+    val conditionResult = if (extraCondition != null) extraCondition() else true
+    if (Prefs.getBoolean(key, default) && conditionResult) {
+        block()
+    }
 }

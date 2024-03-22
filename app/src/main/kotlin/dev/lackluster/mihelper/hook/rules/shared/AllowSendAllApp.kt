@@ -1,3 +1,23 @@
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
+ * This file is part of XiaomiHelper project
+ * Copyright (C) 2023 HowieHChen, howie.dev@outlook.com
+
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package dev.lackluster.mihelper.hook.rules.shared
 
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
@@ -5,10 +25,10 @@ import com.highcapable.yukihookapi.hook.factory.current
 import com.highcapable.yukihookapi.hook.factory.field
 import com.highcapable.yukihookapi.hook.factory.method
 import com.highcapable.yukihookapi.hook.type.java.BooleanType
-import dev.lackluster.mihelper.data.PrefKey
+import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.data.Scope
 import dev.lackluster.mihelper.utils.DexKit
-import dev.lackluster.mihelper.utils.Prefs.hasEnable
+import dev.lackluster.mihelper.utils.factory.hasEnable
 import org.luckypray.dexkit.query.enums.StringMatchType
 
 object AllowSendAllApp : YukiBaseHooker() {
@@ -20,7 +40,6 @@ object AllowSendAllApp : YukiBaseHooker() {
             }
         }.singleOrNull()
     }
-
     private val relayAppMessageClazz by lazy {
         DexKit.dexKitBridge.findClass {
             matcher {
@@ -30,20 +49,18 @@ object AllowSendAllApp : YukiBaseHooker() {
     }
 
     override fun onHook() {
-        hasEnable(PrefKey.MISMARTHUB_ALL_APP) {
+        hasEnable(Pref.Key.MiMirror.CONTINUE_ALL_TASKS) {
             when (packageName) {
-                Scope.CASTING -> {
-                    "com.xiaomi.mirror.synergy.MiuiSynergySdk".toClass()
-                        .method {
-                            name = "isSupportSendApp"
+                Scope.MI_LINK -> {
+                    "com.xiaomi.mirror.synergy.MiuiSynergySdk".toClass().method {
+                        name = "isSupportSendApp"
+                    }.hook {
+                        after {
+                            this.result = true
                         }
-                        .hook {
-                            after {
-                                this.result = true
-                            }
-                        }
+                    }
                 }
-                Scope.MI_SMART_HUB -> {
+                Scope.MI_MIRROR -> {
                     "com.xiaomi.mirror.message.proto.RelayApp\$RelayApplication".toClass().apply {
                         method {
                             name = "getIsHideIcon"

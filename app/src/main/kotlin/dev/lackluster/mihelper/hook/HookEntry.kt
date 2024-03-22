@@ -4,11 +4,10 @@ import com.highcapable.yukihookapi.annotation.xposed.InjectYukiHookWithXposed
 import com.highcapable.yukihookapi.hook.factory.configs
 import com.highcapable.yukihookapi.hook.factory.encase
 import com.highcapable.yukihookapi.hook.xposed.proxy.IYukiHookXposedInit
-import dev.lackluster.mihelper.data.PrefKey
+import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.data.Scope
 import dev.lackluster.mihelper.hook.apps.Android
 import dev.lackluster.mihelper.hook.apps.Browser
-import dev.lackluster.mihelper.hook.apps.Casting
 import dev.lackluster.mihelper.hook.apps.Download
 import dev.lackluster.mihelper.hook.apps.Gallery
 import dev.lackluster.mihelper.hook.apps.GuardProvider
@@ -16,9 +15,10 @@ import dev.lackluster.mihelper.hook.apps.InCallUI
 import dev.lackluster.mihelper.hook.apps.Joyose
 import dev.lackluster.mihelper.hook.apps.Market
 import dev.lackluster.mihelper.hook.apps.MediaEditor
+import dev.lackluster.mihelper.hook.apps.MiLink
 import dev.lackluster.mihelper.hook.apps.MiSettings
 import dev.lackluster.mihelper.hook.apps.MiShare
-import dev.lackluster.mihelper.hook.apps.MiSmartHub
+import dev.lackluster.mihelper.hook.apps.MiMirror
 import dev.lackluster.mihelper.hook.apps.MiuiHome
 import dev.lackluster.mihelper.hook.apps.Mms
 import dev.lackluster.mihelper.hook.apps.Music
@@ -32,9 +32,11 @@ import dev.lackluster.mihelper.hook.apps.SecurityCenter
 import dev.lackluster.mihelper.hook.apps.Settings
 import dev.lackluster.mihelper.hook.apps.SystemUI
 import dev.lackluster.mihelper.hook.apps.Taplus
+import dev.lackluster.mihelper.hook.apps.Themes
 import dev.lackluster.mihelper.hook.apps.Updater
-import dev.lackluster.mihelper.hook.apps.XiaoAi
-import dev.lackluster.mihelper.utils.Prefs
+import dev.lackluster.mihelper.hook.apps.MiAi
+import dev.lackluster.mihelper.hook.apps.MiTrust
+import dev.lackluster.mihelper.utils.factory.hasEnable
 
 @InjectYukiHookWithXposed
 class HookEntry : IYukiHookXposedInit {
@@ -48,10 +50,9 @@ class HookEntry : IYukiHookXposedInit {
     }
 
     override fun onHook() = encase {
-        if (Prefs.getBoolean(PrefKey.ENABLE_MODULE, true)) {
+        hasEnable(Pref.Key.Module.ENABLED) {
             loadSystem(Android)
             loadApp(Scope.BROWSER, Browser)
-            loadApp(Scope.CASTING, Casting)
             loadApp(Scope.DOWNLOAD, Download)
             loadApp(Scope.GALLERY, Gallery)
             loadApp(Scope.GUARD_PROVIDER, GuardProvider)
@@ -59,9 +60,12 @@ class HookEntry : IYukiHookXposedInit {
             loadApp(Scope.JOYOSE, Joyose)
             loadApp(Scope.MARKET, Market)
             loadApp(Scope.MEDIA_EDITOR , MediaEditor)
+            loadApp(Scope.MI_AI, MiAi)
+            loadApp(Scope.MI_LINK, MiLink)
             loadApp(Scope.MI_SETTINGS, MiSettings)
-            loadApp(Scope.MI_SMART_HUB, MiSmartHub)
-            loadApp(Scope.MISHARE, MiShare)
+            loadApp(Scope.MI_SHARE, MiShare)
+            loadApp(Scope.MI_MIRROR, MiMirror)
+            loadApp(Scope.MI_TRUST, MiTrust)
             loadApp(Scope.MIUI_HOME, MiuiHome)
             loadApp(Scope.MMS, Mms)
             loadApp(Scope.MUSIC, Music)
@@ -75,8 +79,8 @@ class HookEntry : IYukiHookXposedInit {
             loadApp(Scope.SETTINGS, Settings)
             loadApp(Scope.SYSTEM_UI, SystemUI)
             loadApp(Scope.TAPLUS, Taplus)
+            loadApp(Scope.THEMES, Themes)
             loadApp(Scope.UPDATER, Updater)
-            loadApp(Scope.XIAOAI, XiaoAi)
         }
     }
 }

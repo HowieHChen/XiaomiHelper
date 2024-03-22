@@ -1,3 +1,23 @@
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
+ * This file is part of XiaomiHelper project
+ * Copyright (C) 2023 HowieHChen, howie.dev@outlook.com
+
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package dev.lackluster.mihelper.activity.pages.main
 
 import android.content.Intent
@@ -13,10 +33,10 @@ import dev.lackluster.mihelper.BuildConfig.VERSION_CODE
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.data.References
 
-@BMPage("about")
+@BMPage("page_about")
 class AboutPage : BasePage() {
     override fun getTitle(): String {
-        return activity.getString(R.string.ui_page_about)
+        return activity.getString(R.string.page_about)
     }
     override fun onCreate() {
         ImageWithText(
@@ -36,7 +56,7 @@ class AboutPage : BasePage() {
                             val uri = Uri.parse(getString(R.string.about_easter_egg_url))
                             val intent = Intent(Intent.ACTION_VIEW, uri)
                             activity.startActivity(intent)
-                        } catch (e: Exception) {
+                        } catch (t: Throwable) {
                             makeText(activity, R.string.about_jump_error_toast, LENGTH_SHORT).show()
                         }
                     }
@@ -100,7 +120,8 @@ class AboutPage : BasePage() {
                     } catch (e: Exception) {
                         makeText(activity, R.string.about_jump_error_toast, LENGTH_SHORT).show()
                     }
-                })
+                }
+            )
         )
         Line()
         TitleText(textId = R.string.ui_title_about_reference)
@@ -117,7 +138,8 @@ class AboutPage : BasePage() {
                         } catch (e: Exception) {
                             makeText(activity, R.string.about_jump_error_toast, LENGTH_SHORT).show()
                         }
-                    })
+                    }
+                )
             )
         }
 

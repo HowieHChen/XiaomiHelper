@@ -7,7 +7,7 @@ import cn.fkj233.ui.activity.data.BasePage
 import cn.fkj233.ui.activity.view.TextSummaryV
 import cn.fkj233.ui.dialog.MIUIDialog
 import dev.lackluster.mihelper.R
-import dev.lackluster.mihelper.utils.Shell
+import dev.lackluster.mihelper.utils.ShellUtils
 
 @BMMenuPage()
 class MenuPage : BasePage() {
@@ -25,7 +25,7 @@ class MenuPage : BasePage() {
                 }
                 setRButton(R.string.button_ok) {
                     try {
-                        Shell.tryExec("/system/bin/sync;/system/bin/svc power reboot || reboot", useRoot = true, checkSuccess = true)
+                        ShellUtils.tryExec("/system/bin/sync;/system/bin/svc power reboot || reboot", useRoot = true, checkSuccess = true)
                         dismiss()
                     }
                     catch (tout : Throwable) {
@@ -49,7 +49,7 @@ class MenuPage : BasePage() {
                 setRButton(R.string.button_ok) {
                     try {
                         activity.resources.getStringArray(R.array.module_scope).forEach {
-                            if (it != "android") Shell.tryExec("killall $it", useRoot = true, checkSuccess = true)
+                            if (it != "android") ShellUtils.tryExec("killall $it", useRoot = true, checkSuccess = true)
                         }
                         makeText(
                             activity,
@@ -78,7 +78,7 @@ class MenuPage : BasePage() {
                 }
                 setRButton(R.string.button_ok) {
                     try {
-                        Shell.tryExec("killall com.android.systemui", useRoot = true, checkSuccess = true)
+                        ShellUtils.tryExec("killall com.android.systemui", useRoot = true, checkSuccess = true)
                         makeText(
                             activity,
                             getString(R.string.reboot_done_toast),
@@ -106,7 +106,7 @@ class MenuPage : BasePage() {
                 }
                 setRButton(R.string.button_ok) {
                     try {
-                        Shell.tryExec("killall com.miui.home", useRoot = true, checkSuccess = true)
+                        ShellUtils.tryExec("killall com.miui.home", useRoot = true, checkSuccess = true)
                         makeText(
                             activity,
                             getString(R.string.reboot_done_toast),

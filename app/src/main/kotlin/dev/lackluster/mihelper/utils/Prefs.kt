@@ -4,10 +4,12 @@ import de.robv.android.xposed.XSharedPreferences
 import dev.lackluster.mihelper.BuildConfig
 
 object Prefs {
-    const val Name = "config"
-    private var xPrefs = XSharedPreferences(BuildConfig.APPLICATION_ID, Name)
+    const val NAME = "config"
+    private val xPrefs by lazy {
+        XSharedPreferences(BuildConfig.APPLICATION_ID, NAME)
+    }
 
-    fun getXSP(prefName: String = Name): XSharedPreferences {
+    fun getXSP(prefName: String = NAME): XSharedPreferences {
         return xPrefs;
     }
 

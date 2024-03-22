@@ -11,7 +11,7 @@ import cn.fkj233.ui.activity.view.TextSummaryV
 import cn.fkj233.ui.dialog.MIUIDialog
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.data.PrefKey
-import dev.lackluster.mihelper.utils.Shell
+import dev.lackluster.mihelper.utils.ShellUtils
 
 @BMPage("scope_android", hideMenu = false)
 class AndroidPage :BasePage() {
@@ -22,20 +22,20 @@ class AndroidPage :BasePage() {
         TitleText(textId = R.string.ui_title_android_ui)
         TextSummaryWithSwitch(
             TextSummaryV(
-                textId = R.string.android_dark_for_all,
-                tipsId = R.string.android_dark_for_all_tips
+                textId = R.string.android_others_force_dark,
+                tipsId = R.string.android_others_force_dark_tips
             ),
             SwitchV(PrefKey.ANDROID_DARK_MODE_FOR_ALL)
         )
         TextSummaryWithArrow(
             TextSummaryV(
-                textId = R.string.android_wallpaper_scale,
-                tipsId = R.string.android_wallpaper_scale_tips,
+                textId = R.string.android_others_wallpaper_scale,
+                tipsId = R.string.android_others_wallpaper_scale_tips,
                 onClickListener = {
                     MIUIDialog(activity) {
-                        setTitle(R.string.android_wallpaper_scale)
+                        setTitle(R.string.android_others_wallpaper_scale)
                         setMessage(
-                            "${activity.getString(R.string.dialog_default_value)}: 1.2, ${activity.getString(R.string.dialog_current_value)}: ${
+                            "${activity.getString(R.string.common_default)}: 1.2, ${activity.getString(R.string.dialog_current_value)}: ${
                                 safeSP.getFloat(PrefKey.ANDROID_WALLPAPER_SCALE_RATIO, 1.2f)
                             }"
                         )
@@ -51,7 +51,7 @@ class AndroidPage :BasePage() {
                                         getEditText().toFloat()
                                     )
                                 }.onFailure {
-                                    makeText(activity, activity.getString(R.string.invalid_input), LENGTH_LONG)
+                                    makeText(activity, activity.getString(R.string.common_invalid_input), LENGTH_LONG)
                                         .show()
                                 }
                             }
@@ -60,34 +60,34 @@ class AndroidPage :BasePage() {
                     }.show()
                 })
         )
-        TextSummaryWithArrow(TextSummaryV(textId = R.string.android_switch_rotation_suggestions, tipsId = R.string.android_switch_rotation_suggestions_tips, onClickListener = {
+        TextSummaryWithArrow(TextSummaryV(textId = R.string.android_rotation_switch_suggestions, tipsId = R.string.android_rotation_switch_suggestions_tips, onClickListener = {
             val next =
             try {
-                1 - (Shell.tryExec("settings get secure show_rotation_suggestions", useRoot = true, checkSuccess = true).successMsg.toIntOrNull() ?: 0)
+                1 - (ShellUtils.tryExec("settings get secure show_rotation_suggestions", useRoot = true, checkSuccess = true).successMsg.toIntOrNull() ?: 0)
             }
             catch (tout : Throwable) {
                 makeText(
                     activity,
-                    getString(R.string.android_switch_rotation_suggestions_failed) + "(${tout.message})",
+                    getString(R.string.android_rotation_switch_suggestions_failed) + "(${tout.message})",
                     LENGTH_LONG).show()
                 return@TextSummaryV
             }
             MIUIDialog(activity) {
                 setTitle(R.string.dialog_warning)
                 setMessage(
-                    if (next == 0) { R.string.android_switch_rotation_suggestions_before_false }
-                    else { R.string.android_switch_rotation_suggestions_before_true }
+                    if (next == 0) { R.string.android_rotation_switch_suggestions_before_false }
+                    else { R.string.android_rotation_switch_suggestions_before_true }
                 )
                 setLButton(R.string.button_cancel) {
                     dismiss()
                 }
                 setRButton(R.string.button_ok) {
                     try {
-                        Shell.tryExec("settings put secure show_rotation_suggestions $next", useRoot = true, checkSuccess = true)
+                        ShellUtils.tryExec("settings put secure show_rotation_suggestions $next", useRoot = true, checkSuccess = true)
                         makeText(
                             activity,
-                            if (next == 0) { getString(R.string.android_switch_rotation_suggestions_done_false) }
-                            else { getString(R.string.android_switch_rotation_suggestions_done_true) },
+                            if (next == 0) { getString(R.string.android_rotation_switch_suggestions_done_false) }
+                            else { getString(R.string.android_rotation_switch_suggestions_done_true) },
                             LENGTH_LONG
                         ).show()
                         dismiss()
@@ -95,7 +95,7 @@ class AndroidPage :BasePage() {
                     catch (tout : Throwable) {
                         makeText(
                             activity,
-                            getString(R.string.android_switch_rotation_suggestions_failed) + "(${tout.message})",
+                            getString(R.string.android_rotation_switch_suggestions_failed) + "(${tout.message})",
                             LENGTH_LONG
                         ).show()
                         dismiss()
@@ -122,8 +122,8 @@ class AndroidPage :BasePage() {
             }
         TextSummaryWithSwitch(
             TextSummaryV(
-                textId = R.string.android_disable_fixed_orientation,
-                tipsId = R.string.android_disable_fixed_orientation_tips
+                textId = R.string.android_rotation_disable_fixed_orientation,
+                tipsId = R.string.android_rotation_disable_fixed_orientation_tips
             ),
             SwitchV(
                 key = PrefKey.ANDROID_NO_FIXED_ORIENTATION,
@@ -132,15 +132,15 @@ class AndroidPage :BasePage() {
         )
         TextSummaryWithArrow(
             TextSummaryV(
-                textId = R.string.android_disable_fixed_orientation_scope,
-                tipsId = R.string.android_disable_fixed_orientation_scope_tips
+                textId = R.string.android_rotation_disable_fixed_orientation_scope,
+                tipsId = R.string.android_rotation_disable_fixed_orientation_scope_tips
             ) {
                 showFragment("disable_fixed_orientation")
             },
             dataBindingRecv = bindingDisableFixedOrientation.getRecv(1)
         )
         Line()
-        TitleText(textId = R.string.ui_scope_package_installer)
+        TitleText(textId = R.string.scope_package_installer)
         TextSummaryWithSwitch(
             TextSummaryV(textId = R.string.package_ad_block),
             SwitchV(PrefKey.PACKAGE_AD_BLOCK)
@@ -158,11 +158,11 @@ class AndroidPage :BasePage() {
             SwitchV(PrefKey.PACKAGE_REMOVE_REPORT)
         )
         TextSummaryWithSwitch(
-            TextSummaryV(textId = R.string.package_skip_risk_check),
+            TextSummaryV(textId = R.string.cleaner_package_skip_risk_check),
             SwitchV(PrefKey.PACKAGE_SKIP_RISK_CHECK)
         )
         TextSummaryWithSwitch(
-            TextSummaryV(textId = R.string.package_no_count_check),
+            TextSummaryV(textId = R.string.cleaner_package_no_count_check),
             SwitchV(PrefKey.PACKAGE_NO_COUNT_CHECK)
         )
     }

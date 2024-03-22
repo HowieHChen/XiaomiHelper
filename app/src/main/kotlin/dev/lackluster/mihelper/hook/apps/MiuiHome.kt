@@ -1,6 +1,7 @@
 package dev.lackluster.mihelper.hook.apps
 
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
+import dev.lackluster.mihelper.hook.rules.miuihome.AllowMoreFreeformForHome
 import dev.lackluster.mihelper.hook.rules.miuihome.AlwaysShowTime
 import dev.lackluster.mihelper.hook.rules.miuihome.AnimUnlock
 import dev.lackluster.mihelper.hook.rules.miuihome.BlurEnableAll
@@ -57,6 +58,7 @@ object MiuiHome : YukiBaseHooker() {
         loadHooker(WallpaperZoomSync)
         loadHooker(BlurRadius)
         loadHooker(BlurEnhance)
+        loadHooker(AllowMoreFreeformForHome)
 //        DexKit.closeDexKit()
     }
 }
