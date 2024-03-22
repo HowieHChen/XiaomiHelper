@@ -34,11 +34,11 @@ class SystemUIPage : BasePage(){
             }
         }
         TextSummaryWithSwitch(
-            TextSummaryV(textId = R.string.status_bar_notification_max),
+            TextSummaryV(textId = R.string.systemui_statusbar_notif_count),
             SwitchV(PrefKey.STATUSBAR_NOTIF_MAX, dataBindingSend = notificationMaxBinding.bindingSend)
         )
         TextWithSeekBar(
-            TextV(textId = R.string.status_bar_notification_max_icon),
+            TextV(textId = R.string.systemui_statusbar_notif_count_icon),
             SeekBarWithTextV(PrefKey.STATUSBAR_NOTIF_ICON_MAX, 0, 15, 3),
             dataBindingRecv = notificationMaxBinding.binding.getRecv(1)
         )
@@ -271,7 +271,7 @@ class SystemUIPage : BasePage(){
             it[3] = getString(R.string.systemui_media_control_style_android_blur)
         }
         TextWithSpinner(
-            TextV(textId = R.string.systemui_media_control_style),
+            TextV(textId = R.string.systemui_notif_media_control_style),
             SpinnerV(
                 mediaControlStyle[MIUIActivity.safeSP.getInt(
                     PrefKey.SYSTEMUI_MEDIA_CONTROL_STYLE,
@@ -295,19 +295,19 @@ class SystemUIPage : BasePage(){
         Line()
         TitleText(textId = R.string.ui_title_systemui_lock_screen)
         TextSummaryWithSwitch(
-            TextSummaryV(textId = R.string.systemui_lock_screen_hide_unlock_tip),
+            TextSummaryV(textId = R.string.systemui_lock_hide_unlock_tip),
             SwitchV(PrefKey.SYSTEMUI_LOCKSCREEN_HIDE_UNLOCK_TIP)
         )
         TextSummaryWithSwitch(
-            TextSummaryV(textId = R.string.systemui_lock_screen_hide_disturb),
+            TextSummaryV(textId = R.string.systemui_lock_hide_disturb),
             SwitchV(PrefKey.SYSTEMUI_LOCKSCREEN_HIDE_DISTURB)
         )
         TextSummaryWithSwitch(
-            TextSummaryV(textId = R.string.systemui_lock_screen_double_tap),
+            TextSummaryV(textId = R.string.systemui_lock_double_tap),
             SwitchV(PrefKey.SYSTEMUI_DOUBLE_TAP_TO_SLEEP)
         )
         TextSummaryWithSwitch(
-            TextSummaryV(textId = R.string.systemui_lock_screen_block_editor, tipsId = R.string.systemui_lock_screen_block_editor_tips),
+            TextSummaryV(textId = R.string.systemui_lock_block_editor, tipsId = R.string.systemui_lock_block_editor_tips),
             SwitchV(PrefKey.SYSTEMUI_LOCKSCREEN_BLOCK_EDITOR)
         )
     }

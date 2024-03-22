@@ -18,7 +18,7 @@ import dev.lackluster.mihelper.utils.Device
 @BMPage("scope_others", hideMenu = false)
 class OthersPage : BasePage() {
     override fun getTitle(): String {
-        return activity.getString(R.string.page_others)
+        return activity.getString(R.string.common_others)
     }
     override fun onCreate() {
         TitleText(textId = R.string.scope_browser)

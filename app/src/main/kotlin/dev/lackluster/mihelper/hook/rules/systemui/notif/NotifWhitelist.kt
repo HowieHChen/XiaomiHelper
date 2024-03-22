@@ -18,35 +18,21 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.lackluster.mihelper.hook.rules.miuihome
+package dev.lackluster.mihelper.hook.rules.systemui.notif
 
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.method
+import com.highcapable.yukihookapi.hook.factory.field
 import dev.lackluster.mihelper.data.Pref
+import dev.lackluster.mihelper.utils.Device
 import dev.lackluster.mihelper.utils.factory.hasEnable
 
-object AlwaysShowTime : YukiBaseHooker() {
+object NotifWhitelist : YukiBaseHooker() {
     override fun onHook() {
-        hasEnable(Pref.Key.MiuiHome.ALWAYS_SHOW_TIME) {
-            try {
-                "com.miui.home.launcher.Workspace".toClass().method {
-                    name = "isScreenHasClockGadget"
-                }.ignored().onNoSuchMethod {
-                    throw it
-                }
-            } catch (_: Throwable) {
-                "com.miui.home.launcher.Workspace".toClass().method {
-                    name = "isScreenHasClockWidget"
-                }.ignored().onNoSuchMethod {
-                    throw it
-                }
-            } catch (_: Throwable) {
-                "com.miui.home.launcher.Workspace".toClass().method {
-                    name = "isClockWidget"
-                }
-            }.hook {
-                replaceToFalse()
-            }
+        hasEnable(Pref.Key.SystemUI.NotifCenter.NOTIF_NO_WHITELIST, extraCondition = { !Device.isInternationalBuild }) {
+            "com.android.systemui.statusbar.notification.NotificationSettingsManager".toClassOrNull()?.field {
+                name = "USE_WHITE_LISTS"
+                modifiers { isStatic }
+            }?.get()?.setFalse()
         }
     }
 }

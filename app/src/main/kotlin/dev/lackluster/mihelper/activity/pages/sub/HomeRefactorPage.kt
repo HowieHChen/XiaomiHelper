@@ -24,8 +24,8 @@ class HomeRefactorPage : BasePage() {
         TitleText(textId = R.string.ui_title_home_refactor_main)
         TextSummaryWithSwitch(
             TextSummaryV(
-                textId = R.string.home_behavior_refactor,
-                tipsId = R.string.home_behavior_refactor_tips
+                textId = R.string.home_exclusive_refactor,
+                tipsId = R.string.home_exclusive_refactor_tips
             ),
             SwitchV(PrefKey.HOME_BLUR_REFACTOR)
         )

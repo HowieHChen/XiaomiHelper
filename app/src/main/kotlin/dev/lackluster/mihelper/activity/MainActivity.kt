@@ -19,10 +19,12 @@ import dev.lackluster.mihelper.activity.pages.prefs.ModuleSettingsPage
 import dev.lackluster.mihelper.activity.pages.prefs.OthersPage
 import dev.lackluster.mihelper.activity.pages.prefs.SecurityCenterPage
 import dev.lackluster.mihelper.activity.pages.prefs.SystemFrameworkPage
-import dev.lackluster.mihelper.activity.pages.scope.SystemUIPage
+import dev.lackluster.mihelper.activity.pages.prefs.SystemUIPage
 import dev.lackluster.mihelper.activity.pages.sub.DisableFixedOrientationPage
 import dev.lackluster.mihelper.activity.pages.sub.HomeRefactorPage
 import dev.lackluster.mihelper.activity.pages.sub.IconTunerPage
+import dev.lackluster.mihelper.activity.pages.sub.MediaControlStylePage
+import dev.lackluster.mihelper.activity.pages.sub.StatusBarClockPage
 import dev.lackluster.mihelper.utils.BackupUtils
 import dev.lackluster.mihelper.utils.factory.getSP
 
@@ -57,22 +59,21 @@ class MainActivity : MIUIActivity() {
         registerPage(MenuPage::class.java)
         registerPage(AboutPage::class.java)
         registerPage(ModuleSettingsPage::class.java)
+        registerPage(SystemUIPage::class.java)
 
         registerPage(CleanMasterPage::class.java)
         registerPage(SystemFrameworkPage::class.java)
         registerPage(SecurityCenterPage::class.java)
         registerPage(InterconnectionPage::class.java)
         registerPage(OthersPage::class.java)
+        registerPage(StatusBarClockPage::class.java)
+        registerPage(IconTunerPage::class.java)
+        registerPage(MediaControlStylePage::class.java)
 
 
-        registerPage(AndroidPage::class.java)
-        registerPage(dev.lackluster.mihelper.activity.pages.scope.OthersPage::class.java)
-        registerPage(MiConnectPage::class.java)
-        registerPage(dev.lackluster.mihelper.activity.pages.scope.SecurityCenterPage::class.java)
-        registerPage(SystemUIPage::class.java)
         registerPage(MiuiHomePage::class.java)
         registerPage(DisableFixedOrientationPage::class.java)
-        registerPage(IconTunerPage::class.java)
+
         registerPage(HomeRefactorPage::class.java)
         when (Build.VERSION.SDK_INT) {
             Build.VERSION_CODES.TIRAMISU -> {

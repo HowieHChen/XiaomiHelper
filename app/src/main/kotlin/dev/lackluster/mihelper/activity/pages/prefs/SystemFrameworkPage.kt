@@ -34,7 +34,7 @@ import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.data.PrefKey
 import dev.lackluster.mihelper.utils.ShellUtils
 
-@BMPage("page_android")
+@BMPage("page_android", hideMenu = false)
 class SystemFrameworkPage : BasePage(){
     override fun getTitle(): String {
         return activity.getString(R.string.page_android)

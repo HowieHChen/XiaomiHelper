@@ -1,3 +1,23 @@
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
+ * This file is part of XiaomiHelper project
+ * Copyright (C) 2023 HowieHChen, howie.dev@outlook.com
+
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package dev.lackluster.mihelper.activity.pages.sub
 
 import android.view.View
@@ -11,314 +31,213 @@ import cn.fkj233.ui.activity.view.TextSummaryV
 import cn.fkj233.ui.activity.view.TextV
 import cn.fkj233.ui.dialog.MIUIDialog
 import dev.lackluster.mihelper.R
-import dev.lackluster.mihelper.data.PrefKey
+import dev.lackluster.mihelper.data.Pref.Key.SystemUI.IconTurner
 
-@BMPage("icon_tuner")
+@BMPage("page_systemui_icon_tuner")
 class IconTunerPage : BasePage() {
     override fun getTitle(): String {
-        return activity.getString(R.string.ui_page_status_bar_icon_tuner)
+        return activity.getString(R.string.page_status_bar_icon_tuner)
     }
     override fun onCreate() {
         val hideIconMode: HashMap<Int, String> = hashMapOf<Int, String>().also {
-            it[0] = getString(R.string.status_bar_hide_selection_default)
-            it[1] = getString(R.string.status_bar_hide_selection_show_all)
-            it[2] = getString(R.string.status_bar_hide_selection_show_statusbar)
-            it[3] = getString(R.string.status_bar_hide_selection_show_qs)
-            it[4] = getString(R.string.status_bar_hide_selection_hidden)
+            it[0] = getString(R.string.icon_tuner_hide_selection_default)
+            it[1] = getString(R.string.icon_tuner_hide_selection_show_all)
+            it[2] = getString(R.string.icon_tuner_hide_selection_show_statusbar)
+            it[3] = getString(R.string.icon_tuner_hide_selection_show_qs)
+            it[4] = getString(R.string.icon_tuner_hide_selection_hidden)
         }
-        TitleText(textId = R.string.ui_title_icon_tuner_clock)
-        TextSummaryWithSwitch(
-            TextSummaryV(textId = R.string.status_bar_clock_show_ampm, tipsId = R.string.status_bar_clock_show_ampm_tips),
-            SwitchV(PrefKey.STATUSBAR_CLOCK_SHOW_AMPM)
-        )
-        TextSummaryWithSwitch(
-            TextSummaryV(textId = R.string.status_bar_clock_show_leading_zero, tipsId = R.string.status_bar_clock_show_leading_zero_tips),
-            SwitchV(PrefKey.STATUSBAR_CLOCK_SHOW_LEADING_ZERO)
-        )
-        TextSummaryWithSwitch(
-            TextSummaryV(textId = R.string.status_bar_clock_show_seconds, tipsId = R.string.status_bar_clock_show_seconds_tips),
-            SwitchV(PrefKey.STATUSBAR_CLOCK_SHOW_SECONDS)
-        )
-        val clockPaddingBinding = GetDataBinding({
-            MIUIActivity.safeSP.getBoolean(PrefKey.STATUSBAR_CLOCK_CUSTOM, false)
-        }) { view, flags, data ->
-            when (flags) {
-                1 -> view.visibility = if (data as Boolean) View.VISIBLE else View.GONE
-            }
-        }
-        TextSummaryWithSwitch(
-            TextSummaryV(textId = R.string.status_bar_clock_custom),
-            SwitchV(PrefKey.STATUSBAR_CLOCK_CUSTOM, dataBindingSend = clockPaddingBinding.bindingSend)
-        )
-        TextSummaryWithArrow(
-            TextSummaryV(
-                textId = R.string.status_bar_clock_padding_left,
-                onClickListener = {
-                    MIUIDialog(activity) {
-                        setTitle(R.string.status_bar_clock_padding_left)
-                        setMessage(
-                            "${activity.getString(R.string.common_default)}: 0"
-                        )
-                        setEditText("", "${activity.getString(R.string.dialog_current_value)}: ${
-                            MIUIActivity.safeSP.getInt(PrefKey.STATUSBAR_CLOCK_PADDING_LEFT, 0)
-                        }")
-                        setLButton(textId = R.string.button_cancel) {
-                            dismiss()
-                        }
-                        setRButton(textId = R.string.button_ok) {
-                            if (getEditText().isNotEmpty()) {
-                                runCatching {
-                                    MIUIActivity.safeSP.putAny(
-                                        PrefKey.STATUSBAR_CLOCK_PADDING_LEFT,
-                                        getEditText().toInt()
-                                    )
-                                }.onFailure {
-                                    Toast.makeText(activity, activity.getString(R.string.common_invalid_input), Toast.LENGTH_LONG)
-                                        .show()
-                                }
-                            }
-                            dismiss()
-                        }
-                    }.show()
-                }
-            ),
-            dataBindingRecv = clockPaddingBinding.binding.getRecv(1)
-        )
-        TextSummaryWithArrow(
-            TextSummaryV(
-                textId = R.string.status_bar_clock_padding_right,
-                onClickListener = {
-                    MIUIDialog(activity) {
-                        setTitle(R.string.status_bar_clock_padding_right)
-                        setMessage(
-                            "${activity.getString(R.string.common_default)}: 0"
-                        )
-                        setEditText("", "${activity.getString(R.string.dialog_current_value)}: ${
-                            MIUIActivity.safeSP.getInt(PrefKey.STATUSBAR_CLOCK_PADDING_RIGHT, 0)
-                        }")
-                        setLButton(textId = R.string.button_cancel) {
-                            dismiss()
-                        }
-                        setRButton(textId = R.string.button_ok) {
-                            if (getEditText().isNotEmpty()) {
-                                runCatching {
-                                    MIUIActivity.safeSP.putAny(
-                                        PrefKey.STATUSBAR_CLOCK_PADDING_RIGHT,
-                                        getEditText().toInt()
-                                    )
-                                }.onFailure {
-                                    Toast.makeText(activity, activity.getString(R.string.common_invalid_input), Toast.LENGTH_LONG)
-                                        .show()
-                                }
-                            }
-                            dismiss()
-                        }
-                    }.show()
-                }
-            ),
-            dataBindingRecv = clockPaddingBinding.binding.getRecv(1)
-        )
-        Line()
-        TitleText(textId = R.string.ui_title_icon_tuner_carrier)
-        TextWithSwitch(
-            TextV(textId = R.string.status_bar_hide_carrier_one),
-            SwitchV(PrefKey.STATUSBAR_HIDE_CARRIER_ONE)
-        )
-        TextWithSwitch(
-            TextV(textId = R.string.status_bar_hide_carrier_two),
-            SwitchV(PrefKey.STATUSBAR_HIDE_CARRIER_TWO)
-        )
-        Line()
         TitleText(textId = R.string.ui_title_icon_tuner_mobile)
         TextWithSwitch(
-            TextV(textId = R.string.status_bar_hide_sim_one),
-            SwitchV(PrefKey.STATUSBAR_HIDE_SIM_ONE)
+            TextV(textId = R.string.icon_tuner_mobile_hide_sim_one),
+            SwitchV(IconTurner.HIDE_SIM_ONE)
         )
         TextWithSwitch(
-            TextV(textId = R.string.status_bar_hide_sim_two),
-            SwitchV(PrefKey.STATUSBAR_HIDE_SIM_TWO)
+            TextV(textId = R.string.icon_tuner_mobile_hide_sim_two),
+            SwitchV(IconTurner.HIDE_SIM_TWO)
         )
         TextWithSpinner(
-            TextV(textId = R.string.status_bar_hide_no_sim),
+            TextV(textId = R.string.icon_tuner_mobile_no_sim),
             SpinnerV(
                 hideIconMode[MIUIActivity.safeSP.getInt(
-                    PrefKey.STATUSBAR_HIDE_NO_SIM,
+                    IconTurner.NO_SIM,
                     0
                 )].toString()
             ) {
                 add(hideIconMode[0].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_NO_SIM, 0)
+                    MIUIActivity.safeSP.putAny(IconTurner.NO_SIM, 0)
                 }
                 add(hideIconMode[1].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_NO_SIM, 1)
+                    MIUIActivity.safeSP.putAny(IconTurner.NO_SIM, 1)
                 }
                 add(hideIconMode[2].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_NO_SIM, 2)
+                    MIUIActivity.safeSP.putAny(IconTurner.NO_SIM, 2)
                 }
                 add(hideIconMode[3].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_NO_SIM, 3)
+                    MIUIActivity.safeSP.putAny(IconTurner.NO_SIM, 3)
                 }
                 add(hideIconMode[4].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_NO_SIM, 4)
+                    MIUIActivity.safeSP.putAny(IconTurner.NO_SIM, 4)
                 }
-            })
-        TextWithSwitch(
-            TextV(textId = R.string.status_bar_hide_mobile_activity),
-            SwitchV(PrefKey.STATUSBAR_HIDE_MOBILE_ACTIVITY)
+            }
         )
         TextWithSwitch(
-            TextV(textId = R.string.status_bar_hide_mobile_type),
-            SwitchV(PrefKey.STATUSBAR_HIDE_MOBILE_TYPE)
+            TextV(textId = R.string.icon_tuner_mobile_hide_mobile_activity),
+            SwitchV(IconTurner.HIDE_MOBILE_ACTIVITY)
         )
         TextWithSwitch(
-            TextV(textId = R.string.status_bar_hide_hd_small),
-            SwitchV(PrefKey.STATUSBAR_HIDE_HD_SMALL)
+            TextV(textId = R.string.icon_tuner_mobile_hide_mobile_type),
+            SwitchV(IconTurner.HIDE_MOBILE_TYPE)
         )
         TextWithSwitch(
-            TextV(textId = R.string.status_bar_hide_hd_large),
-            SwitchV(PrefKey.STATUSBAR_HIDE_HD_LARGE)
+            TextV(textId = R.string.icon_tuner_mobile_hide_hd_small),
+            SwitchV(IconTurner.HIDE_HD_SMALL)
+        )
+        TextWithSwitch(
+            TextV(textId = R.string.icon_tuner_mobile_hide_hd_large),
+            SwitchV(IconTurner.HIDE_HD_LARGE)
         )
         TextWithSpinner(
-            TextV(textId = R.string.status_bar_hide_hd_new),
+            TextV(textId = R.string.icon_tuner_mobile_hd_new),
             SpinnerV(
                 hideIconMode[MIUIActivity.safeSP.getInt(
-                    PrefKey.STATUSBAR_HIDE_HD_NEW,
+                    IconTurner.HD_NEW,
                     0
                 )].toString()
             ) {
                 add(hideIconMode[0].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_HD_NEW, 0)
+                    MIUIActivity.safeSP.putAny(IconTurner.HD_NEW, 0)
                 }
                 add(hideIconMode[1].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_HD_NEW, 1)
+                    MIUIActivity.safeSP.putAny(IconTurner.HD_NEW, 1)
                 }
                 add(hideIconMode[2].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_HD_NEW, 2)
+                    MIUIActivity.safeSP.putAny(IconTurner.HD_NEW, 2)
                 }
                 add(hideIconMode[3].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_HD_NEW, 3)
+                    MIUIActivity.safeSP.putAny(IconTurner.HD_NEW, 3)
                 }
                 add(hideIconMode[4].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_HD_NEW, 4)
+                    MIUIActivity.safeSP.putAny(IconTurner.HD_NEW, 4)
                 }
-            })
+            }
+        )
         TextWithSwitch(
-            TextV(textId = R.string.status_bar_hide_hd_no_service),
-            SwitchV(PrefKey.STATUSBAR_HIDE_HD_NO_SERVICE)
+            TextV(textId = R.string.icon_tuner_mobile_hide_hd_no_service),
+            SwitchV(IconTurner.HIDE_HD_NO_SERVICE)
         )
         Line()
         TitleText(textId = R.string.ui_title_icon_tuner_wifi)
         TextWithSpinner(
-            TextV(textId = R.string.status_bar_hide_wifi),
+            TextV(textId = R.string.icon_tuner_wifi_wifi),
             SpinnerV(
                 hideIconMode[MIUIActivity.safeSP.getInt(
-                    PrefKey.STATUSBAR_HIDE_WIFI,
+                    IconTurner.WIFI,
                     0
                 )].toString()
             ) {
                 add(hideIconMode[0].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_WIFI, 0)
+                    MIUIActivity.safeSP.putAny(IconTurner.WIFI, 0)
                 }
                 add(hideIconMode[1].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_WIFI, 1)
+                    MIUIActivity.safeSP.putAny(IconTurner.WIFI, 1)
                 }
                 add(hideIconMode[2].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_WIFI, 2)
+                    MIUIActivity.safeSP.putAny(IconTurner.WIFI, 2)
                 }
                 add(hideIconMode[3].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_WIFI, 3)
+                    MIUIActivity.safeSP.putAny(IconTurner.WIFI, 3)
                 }
                 add(hideIconMode[4].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_WIFI, 4)
+                    MIUIActivity.safeSP.putAny(IconTurner.WIFI, 4)
                 }
-            })
-        TextWithSwitch(
-            TextV(textId = R.string.status_bar_hide_wifi_activity),
-            SwitchV(PrefKey.STATUSBAR_HIDE_WIFI_ACTIVITY)
+            }
         )
         TextWithSwitch(
-            TextV(textId = R.string.status_bar_hide_wifi_type),
-            SwitchV(PrefKey.STATUSBAR_HIDE_WIFI_TYPE)
+            TextV(textId = R.string.icon_tuner_wifi_hide_wifi_activity),
+            SwitchV(IconTurner.HIDE_WIFI_ACTIVITY)
+        )
+        TextWithSwitch(
+            TextV(textId = R.string.icon_tuner_wifi_hide_wifi_type),
+            SwitchV(IconTurner.HIDE_WIFI_TYPE)
         )
         TextWithSpinner(
-            TextV(textId = R.string.status_bar_hide_hotspot),
+            TextV(textId = R.string.icon_tuner_wifi_hotspot),
             SpinnerV(
                 hideIconMode[MIUIActivity.safeSP.getInt(
-                    PrefKey.STATUSBAR_HIDE_HOTSPOT,
+                    IconTurner.HOTSPOT,
                     0
                 )].toString()
             ) {
                 add(hideIconMode[0].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_HOTSPOT, 0)
+                    MIUIActivity.safeSP.putAny(IconTurner.HOTSPOT, 0)
                 }
                 add(hideIconMode[1].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_HOTSPOT, 1)
+                    MIUIActivity.safeSP.putAny(IconTurner.HOTSPOT, 1)
                 }
                 add(hideIconMode[2].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_HOTSPOT, 2)
+                    MIUIActivity.safeSP.putAny(IconTurner.HOTSPOT, 2)
                 }
                 add(hideIconMode[3].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_HOTSPOT, 3)
+                    MIUIActivity.safeSP.putAny(IconTurner.HOTSPOT, 3)
                 }
                 add(hideIconMode[4].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_HOTSPOT, 4)
+                    MIUIActivity.safeSP.putAny(IconTurner.HOTSPOT, 4)
                 }
-            })
+            }
+        )
         Line()
         TitleText(textId = R.string.ui_title_icon_tuner_battery)
         val swapBatteryBinding = GetDataBinding({
-            MIUIActivity.safeSP.getBoolean(PrefKey.STATUSBAR_HIDE_BATTERY, false)
-        }) { view, flags, data ->
-            when (flags) {
-                1 -> view.visibility = if (data as Boolean) View.GONE else View.VISIBLE
-            }
+            MIUIActivity.safeSP.getBoolean(IconTurner.HIDE_BATTERY, false)
+        }) { view, _, data ->
+            view.visibility = if (data as Boolean) View.GONE else View.VISIBLE
         }
         val batteryPercentMarkBinding = GetDataBinding({
-            MIUIActivity.safeSP.getBoolean(PrefKey.STATUSBAR_HIDE_BATTERY_PERCENT, false)
-        }) { view, flags, data ->
-            when (flags) {
-                0 -> view.visibility = if (data as Boolean) View.GONE else View.VISIBLE
-            }
+            MIUIActivity.safeSP.getBoolean(IconTurner.HIDE_BATTERY_PERCENT, false)
+        }) { view, _, data ->
+            view.visibility = if (data as Boolean) View.GONE else View.VISIBLE
         }
         TextWithSwitch(
-            TextV(textId = R.string.status_bar_hide_battery),
-            SwitchV(PrefKey.STATUSBAR_HIDE_BATTERY, dataBindingSend = swapBatteryBinding.bindingSend)
+            TextV(textId = R.string.icon_tuner_battery_hide_battery),
+            SwitchV(
+                key = IconTurner.HIDE_BATTERY, 
+                dataBindingSend = swapBatteryBinding.bindingSend)
         )
         TextWithSwitch(
-            TextV(textId = R.string.status_bar_hide_battery_mark),
-            SwitchV(PrefKey.STATUSBAR_HIDE_BATTERY_PERCENT, dataBindingSend = batteryPercentMarkBinding.bindingSend)
+            TextV(textId = R.string.icon_tuner_battery_hide_battery_mark),
+            SwitchV(
+                key = IconTurner.HIDE_BATTERY_PERCENT, 
+                dataBindingSend = batteryPercentMarkBinding.bindingSend)
         )
         TextWithSwitch(
-            TextV(textId = R.string.status_bar_hide_charge),
-            SwitchV(PrefKey.STATUSBAR_HIDE_CHARGE)
+            TextV(textId = R.string.icon_tuner_battery_hide_charge),
+            SwitchV(IconTurner.HIDE_CHARGE)
         )
         TextSummaryWithSwitch(
-            TextSummaryV(textId = R.string.status_bar_swap_battery_percent),
-            SwitchV(PrefKey.STATUSBAR_SWAP_BATTERY_PERCENT),
+            TextSummaryV(textId = R.string.icon_tuner_battery_swap_battery_percent),
+            SwitchV(IconTurner.SWAP_BATTERY_PERCENT),
             dataBindingRecv = swapBatteryBinding.getRecv(1)
         )
         val batteryPaddingBinding = GetDataBinding({
-            MIUIActivity.safeSP.getBoolean(PrefKey.STATUSBAR_BATTERY_CUSTOM, false)
-        }) { view, flags, data ->
-            when (flags) {
-                1 -> view.visibility = if (data as Boolean) View.VISIBLE else View.GONE
-            }
+            MIUIActivity.safeSP.getBoolean(IconTurner.BATTERY_CUSTOM_LAYOUT, false)
+        }) { view, _, data ->
+            view.visibility = if (data as Boolean) View.VISIBLE else View.GONE
         }
         TextSummaryWithSwitch(
-            TextSummaryV(textId = R.string.status_bar_battery_custom),
-            SwitchV(PrefKey.STATUSBAR_BATTERY_CUSTOM, dataBindingSend = batteryPaddingBinding.bindingSend)
+            TextSummaryV(textId = R.string.icon_tuner_battery_layout_custom),
+            SwitchV(
+                key = IconTurner.BATTERY_CUSTOM_LAYOUT, 
+                dataBindingSend = batteryPaddingBinding.bindingSend)
         )
         TextSummaryWithArrow(
             TextSummaryV(
-                textId = R.string.status_bar_battery_padding_left,
+                textId = R.string.icon_tuner_battery_padding_left,
                 onClickListener = {
                     MIUIDialog(activity) {
-                        setTitle(R.string.status_bar_battery_padding_left)
-                        setMessage(
-                            "${activity.getString(R.string.common_default)}: 0"
-                        )
-                        setEditText("", "${activity.getString(R.string.dialog_current_value)}: ${
-                            MIUIActivity.safeSP.getInt(PrefKey.STATUSBAR_BATTERY_PADDING_LEFT, 0)
+                        setTitle(R.string.icon_tuner_battery_padding_left)
+                        setMessage("${activity.getString(R.string.common_default)}: 0")
+                        setEditText("", "${activity.getString(R.string.common_current)}: ${
+                            MIUIActivity.safeSP.getInt(IconTurner.BATTERY_PADDING_LEFT, 0)
                         }")
                         setLButton(textId = R.string.button_cancel) {
                             dismiss()
@@ -327,12 +246,11 @@ class IconTunerPage : BasePage() {
                             if (getEditText().isNotEmpty()) {
                                 runCatching {
                                     MIUIActivity.safeSP.putAny(
-                                        PrefKey.STATUSBAR_BATTERY_PADDING_LEFT,
+                                        IconTurner.BATTERY_PADDING_LEFT,
                                         getEditText().toInt()
                                     )
                                 }.onFailure {
-                                    Toast.makeText(activity, activity.getString(R.string.common_invalid_input), Toast.LENGTH_LONG)
-                                        .show()
+                                    Toast.makeText(activity, activity.getString(R.string.common_invalid_input), Toast.LENGTH_LONG).show()
                                 }
                             }
                             dismiss()
@@ -344,15 +262,13 @@ class IconTunerPage : BasePage() {
         )
         TextSummaryWithArrow(
             TextSummaryV(
-                textId = R.string.status_bar_battery_padding_right,
+                textId = R.string.icon_tuner_battery_padding_right,
                 onClickListener = {
                     MIUIDialog(activity) {
-                        setTitle(R.string.status_bar_battery_padding_right)
-                        setMessage(
-                            "${activity.getString(R.string.common_default)}: 0"
-                        )
-                        setEditText("", "${activity.getString(R.string.dialog_current_value)}: ${
-                            MIUIActivity.safeSP.getInt(PrefKey.STATUSBAR_BATTERY_PADDING_RIGHT, 0)
+                        setTitle(R.string.icon_tuner_battery_padding_right)
+                        setMessage("${activity.getString(R.string.common_default)}: 0")
+                        setEditText("", "${activity.getString(R.string.common_current)}: ${
+                            MIUIActivity.safeSP.getInt(IconTurner.BATTERY_PADDING_RIGHT, 0)
                         }")
                         setLButton(textId = R.string.button_cancel) {
                             dismiss()
@@ -361,12 +277,11 @@ class IconTunerPage : BasePage() {
                             if (getEditText().isNotEmpty()) {
                                 runCatching {
                                     MIUIActivity.safeSP.putAny(
-                                        PrefKey.STATUSBAR_BATTERY_PADDING_RIGHT,
+                                        IconTurner.BATTERY_PADDING_RIGHT,
                                         getEditText().toInt()
                                     )
                                 }.onFailure {
-                                    Toast.makeText(activity, activity.getString(R.string.common_invalid_input), Toast.LENGTH_LONG)
-                                        .show()
+                                    Toast.makeText(activity, activity.getString(R.string.common_invalid_input), Toast.LENGTH_LONG).show()
                                 }
                             }
                             dismiss()
@@ -377,32 +292,32 @@ class IconTunerPage : BasePage() {
             dataBindingRecv = batteryPaddingBinding.binding.getRecv(1)
         )
         TextSummaryWithSwitch(
-            TextSummaryV(textId = R.string.status_bar_uni_battery_mark),
-            SwitchV(PrefKey.STATUSBAR_CHANGE_BATTERY_PERCENT_MARK),
+            TextSummaryV(textId = R.string.icon_tuner_battery_uni_battery_mark),
+            SwitchV(IconTurner.CHANGE_BATTERY_PERCENT_MARK),
             dataBindingRecv = batteryPercentMarkBinding.binding.getRecv(0)
         )
         val batteryPercentSizeBinding = GetDataBinding({
-            MIUIActivity.safeSP.getBoolean(PrefKey.STATUSBAR_CHANGE_BATTERY_PERCENT_SIZE, false)
-        }) { view, flags, data ->
-            when (flags) {
-                1 -> view.visibility = if (data as Boolean) View.VISIBLE else View.GONE
-            }
+            MIUIActivity.safeSP.getBoolean(IconTurner.CHANGE_BATTERY_PERCENT_SIZE, false)
+        }) { view, _, data ->
+            view.visibility = if (data as Boolean) View.VISIBLE else View.GONE
         }
         TextSummaryWithSwitch(
-            TextSummaryV(textId = R.string.status_bar_change_battery_percent),
-            SwitchV(PrefKey.STATUSBAR_CHANGE_BATTERY_PERCENT_SIZE, dataBindingSend = batteryPercentSizeBinding.bindingSend)
+            TextSummaryV(textId = R.string.icon_tuner_battery_battery_percent_size),
+            SwitchV(
+                key = IconTurner.CHANGE_BATTERY_PERCENT_SIZE, 
+                dataBindingSend = batteryPercentSizeBinding.bindingSend)
         )
         TextSummaryWithArrow(
             TextSummaryV(
-                textId = R.string.status_bar_battery_percent_size,
+                textId = R.string.icon_tuner_battery_percent_size,
                 onClickListener = {
                     MIUIDialog(activity) {
-                        setTitle(R.string.status_bar_battery_percent_size)
+                        setTitle(R.string.icon_tuner_battery_percent_size)
                         setMessage(
-                            "${activity.getString(R.string.common_default)}: 0\n${activity.getString(R.string.status_bar_battery_percent_size_default)}"
+                            "${activity.getString(R.string.common_default)}: 0\n${activity.getString(R.string.icon_tuner_battery_percent_size_default)}"
                         )
-                        setEditText("", "${activity.getString(R.string.dialog_current_value)}: ${
-                            MIUIActivity.safeSP.getFloat(PrefKey.STATUSBAR_BATTERY_PERCENT_SIZE, 0f)
+                        setEditText("", "${activity.getString(R.string.common_current)}: ${
+                            MIUIActivity.safeSP.getFloat(IconTurner.BATTERY_PERCENT_SIZE, 0f)
                         }")
                         setLButton(textId = R.string.button_cancel) {
                             dismiss()
@@ -411,12 +326,11 @@ class IconTunerPage : BasePage() {
                             if (getEditText().isNotEmpty()) {
                                 runCatching {
                                     MIUIActivity.safeSP.putAny(
-                                        PrefKey.STATUSBAR_BATTERY_PERCENT_SIZE,
+                                        IconTurner.BATTERY_PERCENT_SIZE,
                                         getEditText().toFloat()
                                     )
                                 }.onFailure {
-                                    Toast.makeText(activity, activity.getString(R.string.common_invalid_input), Toast.LENGTH_LONG)
-                                        .show()
+                                    Toast.makeText(activity, activity.getString(R.string.common_invalid_input), Toast.LENGTH_LONG).show()
                                 }
                             }
                             dismiss()
@@ -429,516 +343,537 @@ class IconTunerPage : BasePage() {
         Line()
         TitleText(textId = R.string.ui_title_icon_tuner_connectivity)
         TextWithSpinner(
-            TextV(textId = R.string.status_bar_hide_flight_mode),
+            TextV(textId = R.string.icon_tuner_connect_flight_mode),
             SpinnerV(
                 hideIconMode[MIUIActivity.safeSP.getInt(
-                    PrefKey.STATUSBAR_HIDE_FLIGHT_MODE,
+                    IconTurner.FLIGHT_MODE,
                     0
                 )].toString()
             ) {
                 add(hideIconMode[0].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_FLIGHT_MODE, 0)
+                    MIUIActivity.safeSP.putAny(IconTurner.FLIGHT_MODE, 0)
                 }
                 add(hideIconMode[1].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_FLIGHT_MODE, 1)
+                    MIUIActivity.safeSP.putAny(IconTurner.FLIGHT_MODE, 1)
                 }
                 add(hideIconMode[2].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_FLIGHT_MODE, 2)
+                    MIUIActivity.safeSP.putAny(IconTurner.FLIGHT_MODE, 2)
                 }
                 add(hideIconMode[3].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_FLIGHT_MODE, 3)
+                    MIUIActivity.safeSP.putAny(IconTurner.FLIGHT_MODE, 3)
                 }
                 add(hideIconMode[4].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_FLIGHT_MODE, 4)
+                    MIUIActivity.safeSP.putAny(IconTurner.FLIGHT_MODE, 4)
                 }
-            })
+            }
+        )
         TextWithSpinner(
-            TextV(textId = R.string.status_bar_hide_gps),
+            TextV(textId = R.string.icon_tuner_connect_gps),
             SpinnerV(
                 hideIconMode[MIUIActivity.safeSP.getInt(
-                    PrefKey.STATUSBAR_HIDE_GPS,
+                    IconTurner.GPS,
                     0
                 )].toString()
             ) {
                 add(hideIconMode[0].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_GPS, 0)
+                    MIUIActivity.safeSP.putAny(IconTurner.GPS, 0)
                 }
                 add(hideIconMode[1].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_GPS, 1)
+                    MIUIActivity.safeSP.putAny(IconTurner.GPS, 1)
                 }
                 add(hideIconMode[2].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_GPS, 2)
+                    MIUIActivity.safeSP.putAny(IconTurner.GPS, 2)
                 }
                 add(hideIconMode[3].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_GPS, 3)
+                    MIUIActivity.safeSP.putAny(IconTurner.GPS, 3)
                 }
                 add(hideIconMode[4].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_GPS, 4)
+                    MIUIActivity.safeSP.putAny(IconTurner.GPS, 4)
                 }
-            })
+            }
+        )
         TextWithSpinner(
-            TextV(textId = R.string.status_bar_hide_bluetooth),
+            TextV(textId = R.string.icon_tuner_connect_bluetooth),
             SpinnerV(
                 hideIconMode[MIUIActivity.safeSP.getInt(
-                    PrefKey.STATUSBAR_HIDE_BLUETOOTH,
+                    IconTurner.BLUETOOTH,
                     0
                 )].toString()
             ) {
                 add(hideIconMode[0].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_BLUETOOTH, 0)
+                    MIUIActivity.safeSP.putAny(IconTurner.BLUETOOTH, 0)
                 }
                 add(hideIconMode[1].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_BLUETOOTH, 1)
+                    MIUIActivity.safeSP.putAny(IconTurner.BLUETOOTH, 1)
                 }
                 add(hideIconMode[2].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_BLUETOOTH, 2)
+                    MIUIActivity.safeSP.putAny(IconTurner.BLUETOOTH, 2)
                 }
                 add(hideIconMode[3].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_BLUETOOTH, 3)
+                    MIUIActivity.safeSP.putAny(IconTurner.BLUETOOTH, 3)
                 }
                 add(hideIconMode[4].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_BLUETOOTH, 4)
+                    MIUIActivity.safeSP.putAny(IconTurner.BLUETOOTH, 4)
                 }
-            })
+            }
+        )
         TextWithSpinner(
-            TextV(textId = R.string.status_bar_hide_bluetooth_battery),
+            TextV(textId = R.string.icon_tuner_connect_bluetooth_battery),
             SpinnerV(
                 hideIconMode[MIUIActivity.safeSP.getInt(
-                    PrefKey.STATUSBAR_HIDE_BLUETOOTH_BATTERY,
+                    IconTurner.BLUETOOTH_BATTERY,
                     0
                 )].toString()
             ) {
                 add(hideIconMode[0].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_BLUETOOTH_BATTERY, 0)
+                    MIUIActivity.safeSP.putAny(IconTurner.BLUETOOTH_BATTERY, 0)
                 }
                 add(hideIconMode[1].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_BLUETOOTH_BATTERY, 1)
+                    MIUIActivity.safeSP.putAny(IconTurner.BLUETOOTH_BATTERY, 1)
                 }
                 add(hideIconMode[2].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_BLUETOOTH_BATTERY, 2)
+                    MIUIActivity.safeSP.putAny(IconTurner.BLUETOOTH_BATTERY, 2)
                 }
                 add(hideIconMode[3].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_BLUETOOTH_BATTERY, 3)
+                    MIUIActivity.safeSP.putAny(IconTurner.BLUETOOTH_BATTERY, 3)
                 }
                 add(hideIconMode[4].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_BLUETOOTH_BATTERY, 4)
+                    MIUIActivity.safeSP.putAny(IconTurner.BLUETOOTH_BATTERY, 4)
                 }
-            })
+            }
+        )
         TextWithSpinner(
-            TextV(textId = R.string.status_bar_hide_nfc),
+            TextV(textId = R.string.icon_tuner_connect_nfc),
             SpinnerV(
                 hideIconMode[MIUIActivity.safeSP.getInt(
-                    PrefKey.STATUSBAR_HIDE_NFC,
+                    IconTurner.NFC,
                     0
                 )].toString()
             ) {
                 add(hideIconMode[0].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_NFC, 0)
+                    MIUIActivity.safeSP.putAny(IconTurner.NFC, 0)
                 }
                 add(hideIconMode[1].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_NFC, 1)
+                    MIUIActivity.safeSP.putAny(IconTurner.NFC, 1)
                 }
                 add(hideIconMode[2].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_NFC, 2)
+                    MIUIActivity.safeSP.putAny(IconTurner.NFC, 2)
                 }
                 add(hideIconMode[3].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_NFC, 3)
+                    MIUIActivity.safeSP.putAny(IconTurner.NFC, 3)
                 }
                 add(hideIconMode[4].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_NFC, 4)
+                    MIUIActivity.safeSP.putAny(IconTurner.NFC, 4)
                 }
-            })
+            }
+        )
         TextWithSpinner(
-            TextV(textId = R.string.status_bar_hide_vpn),
+            TextV(textId = R.string.icon_tuner_connect_vpn),
             SpinnerV(
                 hideIconMode[MIUIActivity.safeSP.getInt(
-                    PrefKey.STATUSBAR_HIDE_VPN,
+                    IconTurner.VPN,
                     0
                 )].toString()
             ) {
                 add(hideIconMode[0].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_VPN, 0)
+                    MIUIActivity.safeSP.putAny(IconTurner.VPN, 0)
                 }
                 add(hideIconMode[1].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_VPN, 1)
+                    MIUIActivity.safeSP.putAny(IconTurner.VPN, 1)
                 }
                 add(hideIconMode[2].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_VPN, 2)
+                    MIUIActivity.safeSP.putAny(IconTurner.VPN, 2)
                 }
                 add(hideIconMode[3].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_VPN, 3)
+                    MIUIActivity.safeSP.putAny(IconTurner.VPN, 3)
                 }
                 add(hideIconMode[4].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_VPN, 4)
+                    MIUIActivity.safeSP.putAny(IconTurner.VPN, 4)
                 }
-            })
+            }
+        )
         TextWithSpinner(
-            TextV(textId = R.string.status_bar_hide_net_speed),
+            TextV(textId = R.string.icon_tuner_connect_net_speed),
             SpinnerV(
                 hideIconMode[MIUIActivity.safeSP.getInt(
-                    PrefKey.STATUSBAR_HIDE_NET_SPEED,
+                    IconTurner.NET_SPEED,
                     0
                 )].toString()
             ) {
                 add(hideIconMode[0].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_NET_SPEED, 0)
+                    MIUIActivity.safeSP.putAny(IconTurner.NET_SPEED, 0)
                 }
                 add(hideIconMode[1].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_NET_SPEED, 1)
+                    MIUIActivity.safeSP.putAny(IconTurner.NET_SPEED, 1)
                 }
                 add(hideIconMode[2].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_NET_SPEED, 2)
+                    MIUIActivity.safeSP.putAny(IconTurner.NET_SPEED, 2)
                 }
                 add(hideIconMode[3].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_NET_SPEED, 3)
+                    MIUIActivity.safeSP.putAny(IconTurner.NET_SPEED, 3)
                 }
                 add(hideIconMode[4].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_NET_SPEED, 4)
+                    MIUIActivity.safeSP.putAny(IconTurner.NET_SPEED, 4)
                 }
-            })
+            }
+        )
         Line()
         TitleText(textId = R.string.ui_title_icon_tuner_device)
         TextWithSpinner(
-            TextV(textId = R.string.status_bar_hide_car),
+            TextV(textId = R.string.icon_tuner_device_car),
             SpinnerV(
                 hideIconMode[MIUIActivity.safeSP.getInt(
-                    PrefKey.STATUSBAR_HIDE_CAR,
+                    IconTurner.CAR,
                     0
                 )].toString()
             ) {
                 add(hideIconMode[0].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_CAR, 0)
+                    MIUIActivity.safeSP.putAny(IconTurner.CAR, 0)
                 }
                 add(hideIconMode[1].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_CAR, 1)
+                    MIUIActivity.safeSP.putAny(IconTurner.CAR, 1)
                 }
                 add(hideIconMode[2].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_CAR, 2)
+                    MIUIActivity.safeSP.putAny(IconTurner.CAR, 2)
                 }
                 add(hideIconMode[3].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_CAR, 3)
+                    MIUIActivity.safeSP.putAny(IconTurner.CAR, 3)
                 }
                 add(hideIconMode[4].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_CAR, 4)
+                    MIUIActivity.safeSP.putAny(IconTurner.CAR, 4)
                 }
-            })
+            }
+        )
         TextWithSpinner(
-            TextV(textId = R.string.status_bar_hide_pad),
+            TextV(textId = R.string.icon_tuner_device_pad),
             SpinnerV(
                 hideIconMode[MIUIActivity.safeSP.getInt(
-                    PrefKey.STATUSBAR_HIDE_PAD,
+                    IconTurner.PAD,
                     0
                 )].toString()
             ) {
                 add(hideIconMode[0].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_PAD, 0)
+                    MIUIActivity.safeSP.putAny(IconTurner.PAD, 0)
                 }
                 add(hideIconMode[1].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_PAD, 1)
+                    MIUIActivity.safeSP.putAny(IconTurner.PAD, 1)
                 }
                 add(hideIconMode[2].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_PAD, 2)
+                    MIUIActivity.safeSP.putAny(IconTurner.PAD, 2)
                 }
                 add(hideIconMode[3].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_PAD, 3)
+                    MIUIActivity.safeSP.putAny(IconTurner.PAD, 3)
                 }
                 add(hideIconMode[4].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_PAD, 4)
+                    MIUIActivity.safeSP.putAny(IconTurner.PAD, 4)
                 }
-            })
+            }
+        )
         TextWithSpinner(
-            TextV(textId = R.string.status_bar_hide_pc),
+            TextV(textId = R.string.icon_tuner_device_pc),
             SpinnerV(
                 hideIconMode[MIUIActivity.safeSP.getInt(
-                    PrefKey.STATUSBAR_HIDE_PC,
+                    IconTurner.PC,
                     0
                 )].toString()
             ) {
                 add(hideIconMode[0].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_PC, 0)
+                    MIUIActivity.safeSP.putAny(IconTurner.PC, 0)
                 }
                 add(hideIconMode[1].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_PC, 1)
+                    MIUIActivity.safeSP.putAny(IconTurner.PC, 1)
                 }
                 add(hideIconMode[2].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_PC, 2)
+                    MIUIActivity.safeSP.putAny(IconTurner.PC, 2)
                 }
                 add(hideIconMode[3].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_PC, 3)
+                    MIUIActivity.safeSP.putAny(IconTurner.PC, 3)
                 }
                 add(hideIconMode[4].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_PC, 4)
+                    MIUIActivity.safeSP.putAny(IconTurner.PC, 4)
                 }
-            })
+            }
+        )
         TextWithSpinner(
-            TextV(textId = R.string.status_bar_hide_phone),
+            TextV(textId = R.string.icon_tuner_device_phone),
             SpinnerV(
                 hideIconMode[MIUIActivity.safeSP.getInt(
-                    PrefKey.STATUSBAR_HIDE_PHONE,
+                    IconTurner.PHONE,
                     0
                 )].toString()
             ) {
                 add(hideIconMode[0].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_PHONE, 0)
+                    MIUIActivity.safeSP.putAny(IconTurner.PHONE, 0)
                 }
                 add(hideIconMode[1].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_PHONE, 1)
+                    MIUIActivity.safeSP.putAny(IconTurner.PHONE, 1)
                 }
                 add(hideIconMode[2].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_PHONE, 2)
+                    MIUIActivity.safeSP.putAny(IconTurner.PHONE, 2)
                 }
                 add(hideIconMode[3].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_PHONE, 3)
+                    MIUIActivity.safeSP.putAny(IconTurner.PHONE, 3)
                 }
                 add(hideIconMode[4].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_PHONE, 4)
+                    MIUIActivity.safeSP.putAny(IconTurner.PHONE, 4)
                 }
-            })
+            }
+        )
         TextWithSpinner(
-            TextV(textId = R.string.status_bar_hide_sound_box),
+            TextV(textId = R.string.icon_tuner_device_sound_box),
             SpinnerV(
                 hideIconMode[MIUIActivity.safeSP.getInt(
-                    PrefKey.STATUSBAR_HIDE_SOUND_BOX,
+                    IconTurner.SOUND_BOX,
                     0
                 )].toString()
             ) {
                 add(hideIconMode[0].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_SOUND_BOX, 0)
+                    MIUIActivity.safeSP.putAny(IconTurner.SOUND_BOX, 0)
                 }
                 add(hideIconMode[1].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_SOUND_BOX, 1)
+                    MIUIActivity.safeSP.putAny(IconTurner.SOUND_BOX, 1)
                 }
                 add(hideIconMode[2].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_SOUND_BOX, 2)
+                    MIUIActivity.safeSP.putAny(IconTurner.SOUND_BOX, 2)
                 }
                 add(hideIconMode[3].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_SOUND_BOX, 3)
+                    MIUIActivity.safeSP.putAny(IconTurner.SOUND_BOX, 3)
                 }
                 add(hideIconMode[4].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_SOUND_BOX, 4)
+                    MIUIActivity.safeSP.putAny(IconTurner.SOUND_BOX, 4)
                 }
-            })
+            }
+        )
         TextWithSpinner(
-            TextV(textId = R.string.status_bar_hide_sound_box_group),
+            TextV(textId = R.string.icon_tuner_device_sound_box_group),
             SpinnerV(
                 hideIconMode[MIUIActivity.safeSP.getInt(
-                    PrefKey.STATUSBAR_HIDE_SOUND_BOX_GROUP,
+                    IconTurner.SOUND_BOX_GROUP,
                     0
                 )].toString()
             ) {
                 add(hideIconMode[0].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_SOUND_BOX_GROUP, 0)
+                    MIUIActivity.safeSP.putAny(IconTurner.SOUND_BOX_GROUP, 0)
                 }
                 add(hideIconMode[1].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_SOUND_BOX_GROUP, 1)
+                    MIUIActivity.safeSP.putAny(IconTurner.SOUND_BOX_GROUP, 1)
                 }
                 add(hideIconMode[2].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_SOUND_BOX_GROUP, 2)
+                    MIUIActivity.safeSP.putAny(IconTurner.SOUND_BOX_GROUP, 2)
                 }
                 add(hideIconMode[3].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_SOUND_BOX_GROUP, 3)
+                    MIUIActivity.safeSP.putAny(IconTurner.SOUND_BOX_GROUP, 3)
                 }
                 add(hideIconMode[4].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_SOUND_BOX_GROUP, 4)
+                    MIUIActivity.safeSP.putAny(IconTurner.SOUND_BOX_GROUP, 4)
                 }
-            })
+            }
+        )
         TextWithSpinner(
-            TextV(textId = R.string.status_bar_hide_sound_box_screen),
+            TextV(textId = R.string.icon_tuner_device_sound_box_screen),
             SpinnerV(
                 hideIconMode[MIUIActivity.safeSP.getInt(
-                    PrefKey.STATUSBAR_HIDE_SOUND_BOX_SCREEN,
+                    IconTurner.SOUND_BOX_SCREEN,
                     0
                 )].toString()
             ) {
                 add(hideIconMode[0].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_SOUND_BOX_SCREEN, 0)
+                    MIUIActivity.safeSP.putAny(IconTurner.SOUND_BOX_SCREEN, 0)
                 }
                 add(hideIconMode[1].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_SOUND_BOX_SCREEN, 1)
+                    MIUIActivity.safeSP.putAny(IconTurner.SOUND_BOX_SCREEN, 1)
                 }
                 add(hideIconMode[2].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_SOUND_BOX_SCREEN, 2)
+                    MIUIActivity.safeSP.putAny(IconTurner.SOUND_BOX_SCREEN, 2)
                 }
                 add(hideIconMode[3].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_SOUND_BOX_SCREEN, 3)
+                    MIUIActivity.safeSP.putAny(IconTurner.SOUND_BOX_SCREEN, 3)
                 }
                 add(hideIconMode[4].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_SOUND_BOX_SCREEN, 4)
+                    MIUIActivity.safeSP.putAny(IconTurner.SOUND_BOX_SCREEN, 4)
                 }
-            })
+            }
+        )
         TextWithSpinner(
-            TextV(textId = R.string.status_bar_hide_stereo),
+            TextV(textId = R.string.icon_tuner_device_stereo),
             SpinnerV(
                 hideIconMode[MIUIActivity.safeSP.getInt(
-                    PrefKey.STATUSBAR_HIDE_STEREO,
+                    IconTurner.STEREO,
                     0
                 )].toString()
             ) {
                 add(hideIconMode[0].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_STEREO, 0)
+                    MIUIActivity.safeSP.putAny(IconTurner.STEREO, 0)
                 }
                 add(hideIconMode[1].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_STEREO, 1)
+                    MIUIActivity.safeSP.putAny(IconTurner.STEREO, 1)
                 }
                 add(hideIconMode[2].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_STEREO, 2)
+                    MIUIActivity.safeSP.putAny(IconTurner.STEREO, 2)
                 }
                 add(hideIconMode[3].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_STEREO, 3)
+                    MIUIActivity.safeSP.putAny(IconTurner.STEREO, 3)
                 }
                 add(hideIconMode[4].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_STEREO, 4)
+                    MIUIActivity.safeSP.putAny(IconTurner.STEREO, 4)
                 }
-            })
+            }
+        )
         TextWithSpinner(
-            TextV(textId = R.string.status_bar_hide_tv),
+            TextV(textId = R.string.icon_tuner_device_tv),
             SpinnerV(
                 hideIconMode[MIUIActivity.safeSP.getInt(
-                    PrefKey.STATUSBAR_HIDE_TV,
+                    IconTurner.TV,
                     0
                 )].toString()
             ) {
                 add(hideIconMode[0].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_TV, 0)
+                    MIUIActivity.safeSP.putAny(IconTurner.TV, 0)
                 }
                 add(hideIconMode[1].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_TV, 1)
+                    MIUIActivity.safeSP.putAny(IconTurner.TV, 1)
                 }
                 add(hideIconMode[2].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_TV, 2)
+                    MIUIActivity.safeSP.putAny(IconTurner.TV, 2)
                 }
                 add(hideIconMode[3].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_TV, 3)
+                    MIUIActivity.safeSP.putAny(IconTurner.TV, 3)
                 }
                 add(hideIconMode[4].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_TV, 4)
+                    MIUIActivity.safeSP.putAny(IconTurner.TV, 4)
                 }
-            })
+            }
+        )
         TextWithSpinner(
-            TextV(textId = R.string.status_bar_hide_wireless_headset),
+            TextV(textId = R.string.icon_tuner_device_wireless_headset),
             SpinnerV(
                 hideIconMode[MIUIActivity.safeSP.getInt(
-                    PrefKey.STATUSBAR_HIDE_WIRELESS_HEADSET,
+                    IconTurner.WIRELESS_HEADSET,
                     0
                 )].toString()
             ) {
                 add(hideIconMode[0].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_WIRELESS_HEADSET, 0)
+                    MIUIActivity.safeSP.putAny(IconTurner.WIRELESS_HEADSET, 0)
                 }
                 add(hideIconMode[1].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_WIRELESS_HEADSET, 1)
+                    MIUIActivity.safeSP.putAny(IconTurner.WIRELESS_HEADSET, 1)
                 }
                 add(hideIconMode[2].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_WIRELESS_HEADSET, 2)
+                    MIUIActivity.safeSP.putAny(IconTurner.WIRELESS_HEADSET, 2)
                 }
                 add(hideIconMode[3].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_WIRELESS_HEADSET, 3)
+                    MIUIActivity.safeSP.putAny(IconTurner.WIRELESS_HEADSET, 3)
                 }
                 add(hideIconMode[4].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_WIRELESS_HEADSET, 4)
+                    MIUIActivity.safeSP.putAny(IconTurner.WIRELESS_HEADSET, 4)
                 }
-            })
+            }
+        )
         Line()
         TitleText(textId = R.string.ui_title_icon_tuner_other)
         TextSummaryWithSwitch(
-            TextSummaryV(textId = R.string.status_bar_swap_mobile_wifi),
-            SwitchV(PrefKey.STATUSBAR_SWAP_MOBILE_WIFI)
+            TextSummaryV(textId = R.string.icon_tuner_other_swap_mobile_wifi),
+            SwitchV(IconTurner.SWAP_MOBILE_WIFI)
         )
         TextWithSpinner(
-            TextV(textId = R.string.status_bar_hide_alarm),
+            TextV(textId = R.string.icon_tuner_other_alarm),
             SpinnerV(
                 hideIconMode[MIUIActivity.safeSP.getInt(
-                    PrefKey.STATUSBAR_HIDE_ALARM,
+                    IconTurner.ALARM,
                     0
                 )].toString()
             ) {
                 add(hideIconMode[0].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_ALARM, 0)
+                    MIUIActivity.safeSP.putAny(IconTurner.ALARM, 0)
                 }
                 add(hideIconMode[1].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_ALARM, 1)
+                    MIUIActivity.safeSP.putAny(IconTurner.ALARM, 1)
                 }
                 add(hideIconMode[2].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_ALARM, 2)
+                    MIUIActivity.safeSP.putAny(IconTurner.ALARM, 2)
                 }
                 add(hideIconMode[3].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_ALARM, 3)
+                    MIUIActivity.safeSP.putAny(IconTurner.ALARM, 3)
                 }
                 add(hideIconMode[4].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_ALARM, 4)
+                    MIUIActivity.safeSP.putAny(IconTurner.ALARM, 4)
                 }
-            })
+            }
+        )
         TextWithSpinner(
-            TextV(textId = R.string.status_bar_hide_headset),
+            TextV(textId = R.string.icon_tuner_other_headset),
             SpinnerV(
                 hideIconMode[MIUIActivity.safeSP.getInt(
-                    PrefKey.STATUSBAR_HIDE_HEADSET,
+                    IconTurner.HEADSET,
                     0
                 )].toString()
             ) {
                 add(hideIconMode[0].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_HEADSET, 0)
+                    MIUIActivity.safeSP.putAny(IconTurner.HEADSET, 0)
                 }
                 add(hideIconMode[1].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_HEADSET, 1)
+                    MIUIActivity.safeSP.putAny(IconTurner.HEADSET, 1)
                 }
                 add(hideIconMode[2].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_HEADSET, 2)
+                    MIUIActivity.safeSP.putAny(IconTurner.HEADSET, 2)
                 }
                 add(hideIconMode[3].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_HEADSET, 3)
+                    MIUIActivity.safeSP.putAny(IconTurner.HEADSET, 3)
                 }
                 add(hideIconMode[4].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_HEADSET, 4)
+                    MIUIActivity.safeSP.putAny(IconTurner.HEADSET, 4)
                 }
-            })
+            }
+        )
         TextWithSpinner(
-            TextV(textId = R.string.status_bar_hide_volume),
+            TextV(textId = R.string.icon_tuner_other_volume),
             SpinnerV(
                 hideIconMode[MIUIActivity.safeSP.getInt(
-                    PrefKey.STATUSBAR_HIDE_VOLUME,
+                    IconTurner.VOLUME,
                     0
                 )].toString()
             ) {
                 add(hideIconMode[0].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_VOLUME, 0)
+                    MIUIActivity.safeSP.putAny(IconTurner.VOLUME, 0)
                 }
                 add(hideIconMode[1].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_VOLUME, 1)
+                    MIUIActivity.safeSP.putAny(IconTurner.VOLUME, 1)
                 }
                 add(hideIconMode[2].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_VOLUME, 2)
+                    MIUIActivity.safeSP.putAny(IconTurner.VOLUME, 2)
                 }
                 add(hideIconMode[3].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_VOLUME, 3)
+                    MIUIActivity.safeSP.putAny(IconTurner.VOLUME, 3)
                 }
                 add(hideIconMode[4].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_VOLUME, 4)
+                    MIUIActivity.safeSP.putAny(IconTurner.VOLUME, 4)
                 }
-            })
+            }
+        )
         TextWithSpinner(
-            TextV(textId = R.string.status_bar_hide_zen),
+            TextV(textId = R.string.icon_tuner_other_zen),
             SpinnerV(
                 hideIconMode[MIUIActivity.safeSP.getInt(
-                    PrefKey.STATUSBAR_HIDE_ZEN,
+                    IconTurner.ZEN,
                     0
                 )].toString()
             ) {
                 add(hideIconMode[0].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_ZEN, 0)
+                    MIUIActivity.safeSP.putAny(IconTurner.ZEN, 0)
                 }
                 add(hideIconMode[1].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_ZEN, 1)
+                    MIUIActivity.safeSP.putAny(IconTurner.ZEN, 1)
                 }
                 add(hideIconMode[2].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_ZEN, 2)
+                    MIUIActivity.safeSP.putAny(IconTurner.ZEN, 2)
                 }
                 add(hideIconMode[3].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_ZEN, 3)
+                    MIUIActivity.safeSP.putAny(IconTurner.ZEN, 3)
                 }
                 add(hideIconMode[4].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.STATUSBAR_HIDE_ZEN, 4)
+                    MIUIActivity.safeSP.putAny(IconTurner.ZEN, 4)
                 }
-            })
+            }
+        )
     }
 }

@@ -34,7 +34,7 @@ import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.data.PrefKey
 import dev.lackluster.mihelper.utils.Device
 
-@BMPage("scope_miui_home", hideMenu = false)
+@BMPage("page_miui_home", hideMenu = false)
 class MiuiHomePage : BasePage() {
     override fun getTitle(): String {
         return activity.getString(R.string.scope_miui_home)
@@ -51,13 +51,13 @@ class MiuiHomePage : BasePage() {
         TitleText(textId = R.string.ui_title_home_behavior)
         TextSummaryWithSwitch(
             TextSummaryV(
-                textId = R.string.home_behavior_always_show_clock,
+                textId = R.string.home_others_always_show_clock,
             ),
             SwitchV(PrefKey.HOME_ALWAYS_SHOW_TIME)
         )
         TextSummaryWithSwitch(
             TextSummaryV(
-                textId = R.string.home_behavior_double_tap,
+                textId = R.string.common_tap_sleep,
             ),
             SwitchV(PrefKey.HOME_DOUBLE_TAP_TO_SLEEP)
         )
@@ -119,16 +119,16 @@ class MiuiHomePage : BasePage() {
         }
         TextSummaryWithArrow(
             TextSummaryV(
-                textId = R.string.home_behavior_refactor,
-                tipsId = R.string.home_behavior_refactor_tips,
+                textId = R.string.home_exclusive_refactor,
+                tipsId = R.string.home_exclusive_refactor_tips,
                 onClickListener = {
                     if (MIUIActivity.safeSP.getBoolean(PrefKey.HOME_BLUR_REFACTOR, false)) {
                         showFragment("home_refactor")
                     }
                     else {
                         MIUIDialog(activity) {
-                            setTitle(R.string.home_behavior_refactor_dialog_title)
-                            setMessage(R.string.home_behavior_refactor_dialog_msg)
+                            setTitle(R.string.home_exclusive_refactor_dialog_title)
+                            setMessage(R.string.home_exclusive_refactor_dialog_msg)
                             setLButton(textId = R.string.button_cancel) {
                                 dismiss()
                             }
@@ -253,8 +253,8 @@ class MiuiHomePage : BasePage() {
         )
         TextSummaryWithSwitch(
             TextSummaryV(
-                textId = R.string.home_disable_fake_navbar,
-                tipsId = R.string.home_disable_fake_navbar_tips
+                textId = R.string.home_recent_disable_fake_navbar,
+                tipsId = R.string.home_recent_disable_fake_navbar_tips
             ),
             SwitchV(PrefKey.HOME_DISABLE_FAKE_NAVBAR)
         )

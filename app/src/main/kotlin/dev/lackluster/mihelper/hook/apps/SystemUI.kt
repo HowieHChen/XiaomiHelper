@@ -2,27 +2,30 @@ package dev.lackluster.mihelper.hook.apps
 
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import dev.lackluster.mihelper.hook.rules.shared.RemoveFreeformRestriction
-import dev.lackluster.mihelper.hook.rules.systemui.BlockEditor
-import dev.lackluster.mihelper.hook.rules.systemui.CustomMusicControl
-import dev.lackluster.mihelper.hook.rules.systemui.DoubleTapToSleep
-import dev.lackluster.mihelper.hook.rules.systemui.HideBatteryIcon
-import dev.lackluster.mihelper.hook.rules.systemui.HideCarrierLabel
-import dev.lackluster.mihelper.hook.rules.systemui.HideDisturbNotification
-import dev.lackluster.mihelper.hook.rules.systemui.HideStatusBarSpecialIcon
-import dev.lackluster.mihelper.hook.rules.systemui.HideStatusBarIcon
-import dev.lackluster.mihelper.hook.rules.systemui.HideUnlockTip
-import dev.lackluster.mihelper.hook.rules.systemui.HideWifiActivityAndType
-import dev.lackluster.mihelper.hook.rules.systemui.IconPosition
-import dev.lackluster.mihelper.hook.rules.systemui.NotifFreeform
-import dev.lackluster.mihelper.hook.rules.systemui.NotifSettingsRedirect
-import dev.lackluster.mihelper.hook.rules.systemui.NotifWhitelist
-import dev.lackluster.mihelper.hook.rules.systemui.NotificationMaxNumber
-import dev.lackluster.mihelper.hook.rules.systemui.StatusBarClock
+import dev.lackluster.mihelper.hook.rules.systemui.ResourcesIdentifier
+import dev.lackluster.mihelper.hook.rules.systemui.lockscreen.BlockEditor
+import dev.lackluster.mihelper.hook.rules.systemui.notif.CustomMusicControl
+import dev.lackluster.mihelper.hook.rules.systemui.statusbar.HideBatteryIcon
+import dev.lackluster.mihelper.hook.rules.systemui.statusbar.HideCarrierLabel
+import dev.lackluster.mihelper.hook.rules.systemui.lockscreen.HideDisturbNotification
+import dev.lackluster.mihelper.hook.rules.systemui.statusbar.HideStatusBarSpecialIcon
+import dev.lackluster.mihelper.hook.rules.systemui.statusbar.HideStatusBarIcon
+import dev.lackluster.mihelper.hook.rules.systemui.lockscreen.HideUnlockTip
+import dev.lackluster.mihelper.hook.rules.systemui.statusbar.HideWifiActivityAndType
+import dev.lackluster.mihelper.hook.rules.systemui.statusbar.IconPosition
+import dev.lackluster.mihelper.hook.rules.systemui.notif.NotifFreeform
+import dev.lackluster.mihelper.hook.rules.systemui.notif.NotifSettingsRedirect
+import dev.lackluster.mihelper.hook.rules.systemui.notif.NotifWhitelist
+import dev.lackluster.mihelper.hook.rules.systemui.statusbar.NotificationMaxNumber
+import dev.lackluster.mihelper.hook.rules.systemui.statusbar.StatusBarClock
 import dev.lackluster.mihelper.hook.rules.systemui.freeform.HideTopBar
 import dev.lackluster.mihelper.hook.rules.systemui.freeform.UnlockMultipleTask
+import dev.lackluster.mihelper.hook.rules.systemui.lockscreen.DoubleTapToSleep
+import dev.lackluster.mihelper.hook.rules.systemui.notif.AdvancedTextures
 
 object SystemUI : YukiBaseHooker() {
     override fun onHook() {
+        loadHooker(ResourcesIdentifier)
         loadHooker(RemoveFreeformRestriction)
         loadHooker(UnlockMultipleTask)
         loadHooker(HideTopBar)
@@ -33,6 +36,7 @@ object SystemUI : YukiBaseHooker() {
         loadHooker(HideWifiActivityAndType)
         loadHooker(StatusBarClock)
         loadHooker(BlockEditor)
+        loadHooker(dev.lackluster.mihelper.hook.rules.systemui.statusbar.DoubleTapToSleep)
         loadHooker(DoubleTapToSleep)
         loadHooker(HideDisturbNotification)
         loadHooker(HideUnlockTip)
@@ -42,5 +46,6 @@ object SystemUI : YukiBaseHooker() {
         loadHooker(NotifSettingsRedirect)
         loadHooker(NotifWhitelist)
         loadHooker(CustomMusicControl)
+        loadHooker(AdvancedTextures)
     }
 }

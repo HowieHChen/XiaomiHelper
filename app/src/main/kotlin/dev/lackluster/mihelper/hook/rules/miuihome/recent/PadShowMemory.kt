@@ -18,34 +18,28 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.lackluster.mihelper.hook.rules.miuihome
+package dev.lackluster.mihelper.hook.rules.miuihome.recent
 
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.method
 import dev.lackluster.mihelper.data.Pref
+import dev.lackluster.mihelper.utils.Device
 import dev.lackluster.mihelper.utils.factory.hasEnable
 
-object AlwaysShowTime : YukiBaseHooker() {
+object PadShowMemory : YukiBaseHooker() {
     override fun onHook() {
-        hasEnable(Pref.Key.MiuiHome.ALWAYS_SHOW_TIME) {
-            try {
-                "com.miui.home.launcher.Workspace".toClass().method {
-                    name = "isScreenHasClockGadget"
-                }.ignored().onNoSuchMethod {
-                    throw it
+        hasEnable(Pref.Key.MiuiHome.PAD_RECENT_SHOW_MEMORY, extraCondition = { Device.isPad }) {
+            "com.miui.home.recents.views.RecentsDecorations".toClass().apply {
+                method {
+                    name = "hideTxtMemoryInfoView"
+                }.ignored().hook {
+                    intercept()
                 }
-            } catch (_: Throwable) {
-                "com.miui.home.launcher.Workspace".toClass().method {
-                    name = "isScreenHasClockWidget"
-                }.ignored().onNoSuchMethod {
-                    throw it
+                method {
+                    name = "isMemInfoShow"
+                }.ignored().hook {
+                    replaceToTrue()
                 }
-            } catch (_: Throwable) {
-                "com.miui.home.launcher.Workspace".toClass().method {
-                    name = "isClockWidget"
-                }
-            }.hook {
-                replaceToFalse()
             }
         }
     }

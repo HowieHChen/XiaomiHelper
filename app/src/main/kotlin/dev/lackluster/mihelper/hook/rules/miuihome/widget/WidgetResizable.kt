@@ -18,34 +18,30 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.lackluster.mihelper.hook.rules.miuihome
+package dev.lackluster.mihelper.hook.rules.miuihome.widget
 
+import android.appwidget.AppWidgetProviderInfo
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.method
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.factory.hasEnable
 
-object AlwaysShowTime : YukiBaseHooker() {
+object WidgetResizable : YukiBaseHooker() {
     override fun onHook() {
-        hasEnable(Pref.Key.MiuiHome.ALWAYS_SHOW_TIME) {
-            try {
-                "com.miui.home.launcher.Workspace".toClass().method {
-                    name = "isScreenHasClockGadget"
-                }.ignored().onNoSuchMethod {
-                    throw it
+        hasEnable(Pref.Key.MiuiHome.WIDGET_RESIZABLE) {
+            "android.appwidget.AppWidgetHostView".toClass(null).method {
+                name = "getAppWidgetInfo"
+                returnType = "android.appwidget.AppWidgetProviderInfo"
+            }.giveAll().hookAll {
+                after {
+                    val widgetInfo = (this.result ?:return@after) as AppWidgetProviderInfo
+                    widgetInfo.resizeMode = AppWidgetProviderInfo.RESIZE_VERTICAL or AppWidgetProviderInfo.RESIZE_HORIZONTAL
+                    widgetInfo.minHeight = 0
+                    widgetInfo.minWidth = 0
+                    widgetInfo.minResizeHeight = 0
+                    widgetInfo.minResizeWidth = 0
+                    this.result = widgetInfo
                 }
-            } catch (_: Throwable) {
-                "com.miui.home.launcher.Workspace".toClass().method {
-                    name = "isScreenHasClockWidget"
-                }.ignored().onNoSuchMethod {
-                    throw it
-                }
-            } catch (_: Throwable) {
-                "com.miui.home.launcher.Workspace".toClass().method {
-                    name = "isClockWidget"
-                }
-            }.hook {
-                replaceToFalse()
             }
         }
     }

@@ -18,34 +18,22 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.lackluster.mihelper.hook.rules.miuihome
+package dev.lackluster.mihelper.hook.rules.miuihome.recent
 
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.method
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.factory.hasEnable
 
-object AlwaysShowTime : YukiBaseHooker() {
+object DisableFakeNavBar : YukiBaseHooker() {
     override fun onHook() {
-        hasEnable(Pref.Key.MiuiHome.ALWAYS_SHOW_TIME) {
-            try {
-                "com.miui.home.launcher.Workspace".toClass().method {
-                    name = "isScreenHasClockGadget"
-                }.ignored().onNoSuchMethod {
-                    throw it
-                }
-            } catch (_: Throwable) {
-                "com.miui.home.launcher.Workspace".toClass().method {
-                    name = "isScreenHasClockWidget"
-                }.ignored().onNoSuchMethod {
-                    throw it
-                }
-            } catch (_: Throwable) {
-                "com.miui.home.launcher.Workspace".toClass().method {
-                    name = "isClockWidget"
-                }
+        hasEnable(Pref.Key.MiuiHome.RECENT_DISABLE_FAKE_NAVBAR) {
+            "com.miui.home.recents.views.RecentsContainer".toClass().method {
+                name = "hideFakeNavBarForHidingGestureLine"
             }.hook {
-                replaceToFalse()
+                before {
+                    this.args(0).setTrue()
+                }
             }
         }
     }

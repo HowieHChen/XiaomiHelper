@@ -18,32 +18,21 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.lackluster.mihelper.hook.rules.miuihome
+package dev.lackluster.mihelper.hook.rules.miuihome.recent
 
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.method
 import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.utils.Prefs
 
-object AlwaysShowTime : YukiBaseHooker() {
+object StopWallpaperDarken : YukiBaseHooker() {
+    private val stopDarken =
+        Prefs.getBoolean(Pref.Key.MiuiHome.RECENT_WALLPAPER_DARKEN, false) ||
+                Prefs.getBoolean(Pref.Key.MiuiHome.REFACTOR, false)
     override fun onHook() {
-        hasEnable(Pref.Key.MiuiHome.ALWAYS_SHOW_TIME) {
-            try {
-                "com.miui.home.launcher.Workspace".toClass().method {
-                    name = "isScreenHasClockGadget"
-                }.ignored().onNoSuchMethod {
-                    throw it
-                }
-            } catch (_: Throwable) {
-                "com.miui.home.launcher.Workspace".toClass().method {
-                    name = "isScreenHasClockWidget"
-                }.ignored().onNoSuchMethod {
-                    throw it
-                }
-            } catch (_: Throwable) {
-                "com.miui.home.launcher.Workspace".toClass().method {
-                    name = "isClockWidget"
-                }
+        if (stopDarken) {
+            "com.miui.home.recents.DimLayer".toClass().method {
+                name = "isSupportDim"
             }.hook {
                 replaceToFalse()
             }
