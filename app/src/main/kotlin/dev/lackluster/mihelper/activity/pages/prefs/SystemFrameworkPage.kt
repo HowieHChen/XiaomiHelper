@@ -31,7 +31,6 @@ import cn.fkj233.ui.activity.view.TextV
 import cn.fkj233.ui.dialog.MIUIDialog
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.data.PrefKey
 import dev.lackluster.mihelper.utils.ShellUtils
 
 @BMPage("page_android", hideMenu = false)
@@ -118,7 +117,7 @@ class SystemFrameworkPage : BasePage(){
         )
         val disableFixedOrientationBinding =
             GetDataBinding({
-                MIUIActivity.safeSP.getBoolean(PrefKey.ANDROID_NO_FIXED_ORIENTATION, false)
+                MIUIActivity.safeSP.getBoolean(Pref.Key.Android.BLOCK_FIXED_ORIENTATION, false)
             }) { view, _, data ->
                 view.visibility = if (data as Boolean) View.VISIBLE else View.GONE
             }

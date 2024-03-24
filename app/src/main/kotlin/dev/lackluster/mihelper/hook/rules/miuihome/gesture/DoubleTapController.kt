@@ -1,4 +1,25 @@
-package dev.lackluster.mihelper.hook.rules.miuihome
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
+ * This file is part of XiaomiHelper project
+ * Copyright (C) 2023 HowieHChen, howie.dev@outlook.com
+
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+
+package dev.lackluster.mihelper.hook.rules.miuihome.gesture
 
 import android.content.Context
 import android.os.SystemClock
@@ -29,15 +50,17 @@ class DoubleTapController internal constructor(mContext: Context)  {
                 val rawX = motionEvent.rawX
                 val rawY = motionEvent.rawY
                 if (abs(rawX - mActionDownRawX) <= mTouchSlop.toFloat() && abs(rawY - mActionDownRawY) <= mTouchSlop.toFloat()) {
-                    if (SystemClock.elapsedRealtime() - mLastClickTime > maxDuration || rawY - mFirstClickRawY > mTouchSlop.toFloat() || rawX - mFirstClickRawX > mTouchSlop.toFloat()) mClickCount =
-                        0
+                    if (
+                        SystemClock.elapsedRealtime() - mLastClickTime > maxDuration || rawY - mFirstClickRawY > mTouchSlop.toFloat() || rawX - mFirstClickRawX > mTouchSlop.toFloat()
+                    ) mClickCount = 0
                     mClickCount++
                     if (mClickCount == 1) {
                         mFirstClickRawX = rawX
                         mFirstClickRawY = rawY
                         mLastClickTime = SystemClock.elapsedRealtime()
                         return false
-                    } else if (abs(rawY - mFirstClickRawY) <= mTouchSlop.toFloat() && abs(rawX - mFirstClickRawX) <= mTouchSlop.toFloat() && SystemClock.elapsedRealtime() - mLastClickTime <= maxDuration
+                    } else if (
+                        abs(rawY - mFirstClickRawY) <= mTouchSlop.toFloat() && abs(rawX - mFirstClickRawX) <= mTouchSlop.toFloat() && SystemClock.elapsedRealtime() - mLastClickTime <= maxDuration
                     ) {
                         mClickCount = 0
                         return true

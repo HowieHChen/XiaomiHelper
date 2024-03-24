@@ -44,7 +44,7 @@ import com.highcapable.yukihookapi.hook.type.java.IntType
 import com.highcapable.yukihookapi.hook.type.java.JavaClass
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.hook.rules.systemui.ResourcesIdentifier
+import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.miui_notification_menu_more_setting
 import dev.lackluster.mihelper.utils.Prefs
 import dev.lackluster.mihelper.utils.factory.hasEnable
 
@@ -62,9 +62,6 @@ object NotifSettingsRedirect : YukiBaseHooker() {
                         val miuiNotificationMenuRow3 = this.instance.current().field {
                             name = "f\$0"
                         }.any() ?: return@before
-                        val context = miuiNotificationMenuRow3.current().field {
-                            name = "mContext"
-                        }.any() as? Context ?: return@before
                         if (Prefs.getBoolean(Pref.Key.SystemUI.NotifCenter.NOTIF_CHANNEL_DIALOG, false)) {
                             val thisContext = this.instance.current().field {
                                 type = ContextClass
@@ -84,8 +81,8 @@ object NotifSettingsRedirect : YukiBaseHooker() {
                             val titleTv = modalDialog.current().field {
                                 name = "mTitleTv"
                             }.any() as TextView
-                            titleTv.text = context.getString(
-                                ResourcesIdentifier.miui_notification_menu_more_setting
+                            titleTv.text = thisContext.getString(
+                                miui_notification_menu_more_setting
                             )
                             titleTv.visibility = View.VISIBLE
                             thisContext.injectModuleAppResources()
@@ -107,10 +104,10 @@ object NotifSettingsRedirect : YukiBaseHooker() {
                             })
                             (modalDialog.current().field {
                                 name = "mNegativeButton"
-                            }.any() as TextView).text = context.getText(R.string.systemui_notif_redirect_dialog_negative_default)
+                            }.any() as TextView).text = thisContext.getText(R.string.systemui_notif_redirect_dialog_negative_default)
                             (modalDialog.current().field {
                                 name = "mPositiveButton"
-                            }.any() as TextView).text = context.getText(R.string.systemui_notif_redirect_dialog_positive_default)
+                            }.any() as TextView).text = thisContext.getText(R.string.systemui_notif_redirect_dialog_positive_default)
                             modalDialog.current().method {
                                 name = "show"
                             }.call()

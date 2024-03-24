@@ -10,7 +10,7 @@ object Prefs {
     }
 
     fun getXSP(prefName: String = NAME): XSharedPreferences {
-        return xPrefs;
+        return xPrefs
     }
 
     fun getBoolean(key: String, defValue: Boolean): Boolean {
@@ -46,18 +46,6 @@ object Prefs {
             xPrefs.reload()
         }
         return xPrefs.getStringSet(key, defValue) ?: defValue
-    }
-
-    inline fun hasEnable(
-        key: String,
-        default: Boolean = false,
-        noinline extraCondition: (() -> Boolean)? = null,
-        crossinline block: () -> Unit
-    ) {
-        val conditionResult = if (extraCondition != null) extraCondition() else true
-        if (getBoolean(key, default) && conditionResult) {
-            block()
-        }
     }
 }
 

@@ -89,13 +89,6 @@ object RemoveFreeformRestriction : YukiBaseHooker() {
                 }
             }
             runCatching {
-                miuiMultiWindowUtils?.method {
-                    name = "isForceResizeable"
-                }?.giveAll()?.hookAll {
-                    replaceToTrue()
-                }
-            }
-            runCatching {
                 for (methodName in setOf(
                     "getFreeformBlackList",
                     "getFreeformBlackListFromCloud",

@@ -65,7 +65,16 @@ object Pref {
         object MiuiHome {
             const val REMOVE_REPORT = "home_remove_report"
             const val REFACTOR = "home_refactor"
-
+            const val DOUBLE_TAP_TO_SLEEP = "home_double_tap_sleep"
+            const val QUICK_BACK = "home_quick_back"
+            const val ANIM_UNLOCK = "home_anim_unlock"
+            const val ANIM_WALLPAPER_ZOOM_SYNC = "home_wallpaper_sync"
+            const val ANIM_ICON_ZOOM = "home_anim_icon_zoom"
+            const val ANIM_ICON_DARKEN = " home_anim_icon_darken"
+            const val FOLDER_ADAPT_SIZE ="home_folder_aapt_size"
+            const val FOLDER_NO_PADDING = "home_folder_no_padding"
+            const val FOLDER_COLUMNS = "home_folder_columns"
+            const val FOLDER_BLUR = "home_blur_enhance"
             const val ICON_UNBLOCK_GOOGLE = "home_icon_unblock_google"
             const val ICON_CORNER4LARGE = "home_icon_corner4large"
             const val ICON_PERFECT = "home_icon_perfect_icon"
@@ -78,8 +87,13 @@ object Pref {
             const val PAD_DOCK_SAFE_AREA_HEIGHT = "home_pad_dock_safe_height"
             const val WIDGET_ANIM = "home_widget_launch_anim"
             const val WIDGET_RESIZABLE = "home_widget_resizable"
-
+            const val SHORTCUT_FREEFORM = "home_shortcut_freeform"
+            const val SHORTCUT_INSTANCE = "home_shortcut_instance"
+            const val MINUS_RESTORE_SETTING = "home_minus_restore"
+            const val MINUS_FOLD_STYLE = "home_minus_fold"
+            const val MINUS_BLUR = "person_assist_blur"
             const val ALWAYS_SHOW_TIME = "home_always_show_time"
+            const val FAKE_PREMIUM = "home_fake_premium"
         }
         object MMS {
             const val AD_BLOCKER = "mms_ad_block"
@@ -200,6 +214,15 @@ object Pref {
                 const val NOTIF_NO_WHITELIST = "systemui_notif_no_whitelist"
                 const val NOTIF_FREEFORM = "systemui_notif_freeform"
                 const val ADVANCED_TEXTURE = "systemui_notif_adv_texture"
+            }
+            object MediaControl {
+                const val UNLOCK_ACTION = "media_unlock_action"
+                const val SQUIGGLY_PROGRESS = "media_ctrl_squiggly_progress"
+                const val HIDE_APP_ICON = "media_ctrl_hide_app"
+                const val BACKGROUND_STYLE = "media_ctrl_background"
+                const val USE_ANIM = "media_ctrl_anim"
+                const val BLUR_RADIUS = "media_ctrl_radius"
+                const val ALLOW_REVERSE = "media_allow_reverse"
             }
             object ControlCenter {
                 const val HIDE_CARRIER_ONE = "statusbar_hide_carrier_one"

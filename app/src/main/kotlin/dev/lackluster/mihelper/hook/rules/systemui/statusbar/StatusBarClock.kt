@@ -30,12 +30,12 @@ import com.highcapable.yukihookapi.hook.factory.current
 import com.highcapable.yukihookapi.hook.factory.method
 import com.highcapable.yukihookapi.hook.param.HookParam
 import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.hook.rules.systemui.ResourcesIdentifier
-import dev.lackluster.mihelper.hook.rules.systemui.ResourcesIdentifier.clock
-import dev.lackluster.mihelper.hook.rules.systemui.ResourcesIdentifier.pad_clock
-import dev.lackluster.mihelper.hook.rules.systemui.ResourcesIdentifier.big_time
-import dev.lackluster.mihelper.hook.rules.systemui.ResourcesIdentifier.horizontal_time
-import dev.lackluster.mihelper.hook.rules.systemui.ResourcesIdentifier.date_time
+import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils
+import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.clock
+import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.pad_clock
+import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.big_time
+import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.horizontal_time
+import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.date_time
 import dev.lackluster.mihelper.utils.Math
 import dev.lackluster.mihelper.utils.Prefs
 import dev.lackluster.mihelper.utils.factory.hasEnable
@@ -78,12 +78,12 @@ object StatusBarClock : YukiBaseHooker() {
     }
     private val clockFormatName12Id by lazy {
         if (clockShowSecond) {
-            if (clockShowAMPM) { ResourcesIdentifier.fmt_time_12hour_minute_second_pm }
-            else { ResourcesIdentifier.fmt_time_12hour_minute_second }
+            if (clockShowAMPM) { ResourcesUtils.fmt_time_12hour_minute_second_pm }
+            else { ResourcesUtils.fmt_time_12hour_minute_second }
         }
         else {
-            if (clockShowAMPM) { ResourcesIdentifier.fmt_time_12hour_minute_pm }
-            else { ResourcesIdentifier.fmt_time_12hour_minute }
+            if (clockShowAMPM) { ResourcesUtils.fmt_time_12hour_minute_pm }
+            else { ResourcesUtils.fmt_time_12hour_minute }
         }
     }
     private val clockFormatName24 by lazy {
@@ -91,8 +91,8 @@ object StatusBarClock : YukiBaseHooker() {
         else { "fmt_time_24hour_minute" }
     }
     private val clockFormatName24Id by lazy {
-        if (clockShowSecond) { ResourcesIdentifier.fmt_time_24hour_minute_second }
-        else { ResourcesIdentifier.fmt_time_24hour_minute }
+        if (clockShowSecond) { ResourcesUtils.fmt_time_24hour_minute_second }
+        else { ResourcesUtils.fmt_time_24hour_minute }
     }
     private val clockPaddingCustom by lazy {
         Prefs.getBoolean(Pref.Key.SystemUI.StatusBar.CLOCK_LAYOUT_CUSTOM, false)
@@ -267,7 +267,7 @@ object StatusBarClock : YukiBaseHooker() {
                 if (is24) { clockFormatName24Id } else { clockFormatName12Id }
             }
             else {
-                if (is24) { ResourcesIdentifier.status_bar_clock_date_time_format } else { ResourcesIdentifier.status_bar_clock_date_time_format_12 }
+                if (is24) { ResourcesUtils.status_bar_clock_date_time_format } else { ResourcesUtils.status_bar_clock_date_time_format_12 }
             }
             if (fmtId == 0) {
                 val fmtName = if (miuiClock.id in setOf(clock, big_time)) {

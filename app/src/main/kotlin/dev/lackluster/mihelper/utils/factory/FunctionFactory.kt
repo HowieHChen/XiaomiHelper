@@ -4,6 +4,7 @@ package dev.lackluster.mihelper.utils.factory
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.res.Configuration
@@ -46,6 +47,15 @@ fun Number.dpFloat(context: Context) = toFloat() * context.resources.displayMetr
 @SuppressLint("WorldReadableFiles")
 fun getSP(context: Context, prefName: String = Prefs.NAME): SharedPreferences {
     return context.getSharedPreferences(prefName, Activity.MODE_WORLD_READABLE)
+}
+
+@SuppressLint("DiscouragedApi")
+fun Application.getResID(name: String, defType: String, pkg: String): Int {
+    return try {
+        this.resources.getIdentifier(name, defType, pkg)
+    } catch (t: Throwable) {
+        0
+    }
 }
 
 inline fun hasEnable(

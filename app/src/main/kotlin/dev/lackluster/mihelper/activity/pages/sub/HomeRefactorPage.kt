@@ -18,7 +18,7 @@ import dev.lackluster.mihelper.utils.Device
 @BMPage("home_refactor")
 class HomeRefactorPage : BasePage() {
     override fun getTitle(): String {
-        return activity.getString(R.string.ui_page_home_refactor)
+        return activity.getString(R.string.page_home_refactor)
     }
     override fun onCreate() {
         TitleText(textId = R.string.ui_title_home_refactor_main)
@@ -73,10 +73,10 @@ class HomeRefactorPage : BasePage() {
                 onClickListener = {
                     MIUIDialog(activity) {
                         setTitle(R.string.home_refactor_blur_radius)
-                        setMessage("${activity.getString(R.string.common_default)}: ${PrefDefValue.HOME_REFACTOR_APPS_BLUR_RADIUS}, ${activity.getString(R.string.dialog_current_value)}: ${
+                        setMessage("${activity.getString(R.string.common_default)}: ${PrefDefValue.HOME_REFACTOR_APPS_BLUR_RADIUS}, ${activity.getString(R.string.common_current)}: ${
                             MIUIActivity.safeSP.getInt(PrefKey.HOME_REFACTOR_APPS_BLUR_RADIUS, PrefDefValue.HOME_REFACTOR_APPS_BLUR_RADIUS)
                         }")
-                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0-200")
+                        setEditText("", "${activity.getString(R.string.common_range)}: 0-200")
                         setLButton(textId = R.string.button_cancel) {
                             dismiss()
                         }
@@ -110,10 +110,10 @@ class HomeRefactorPage : BasePage() {
                 onClickListener = {
                     MIUIDialog(activity) {
                         setTitle(R.string.home_refactor_dim_alpha)
-                        setMessage("${activity.getString(R.string.common_default)}: ${PrefDefValue.HOME_REFACTOR_APPS_DIM_MAX}, ${activity.getString(R.string.dialog_current_value)}: ${
+                        setMessage("${activity.getString(R.string.common_default)}: ${PrefDefValue.HOME_REFACTOR_APPS_DIM_MAX}, ${activity.getString(R.string.common_current)}: ${
                             MIUIActivity.safeSP.getInt(PrefKey.HOME_REFACTOR_APPS_DIM_MAX, PrefDefValue.HOME_REFACTOR_APPS_DIM_MAX)
                         }")
-                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0-255")
+                        setEditText("", "${activity.getString(R.string.common_range)}: 0-255")
                         setLButton(textId = R.string.button_cancel) {
                             dismiss()
                         }
@@ -176,10 +176,10 @@ class HomeRefactorPage : BasePage() {
                 onClickListener = {
                     MIUIDialog(activity) {
                         setTitle(R.string.home_refactor_nonlinear_factor)
-                        setMessage("${activity.getString(R.string.common_default)}: ${PrefDefValue.HOME_REFACTOR_APPS_NONLINEAR_DECE_FACTOR}, ${activity.getString(R.string.dialog_current_value)}: ${
+                        setMessage("${activity.getString(R.string.common_default)}: ${PrefDefValue.HOME_REFACTOR_APPS_NONLINEAR_DECE_FACTOR}, ${activity.getString(R.string.common_current)}: ${
                             MIUIActivity.safeSP.getFloat(PrefKey.HOME_REFACTOR_APPS_NONLINEAR_DECE_FACTOR, PrefDefValue.HOME_REFACTOR_APPS_NONLINEAR_DECE_FACTOR)
                         }")
-                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0.1-10.0")
+                        setEditText("", "${activity.getString(R.string.common_range)}: 0.1-10.0")
                         setLButton(textId = R.string.button_cancel) {
                             dismiss()
                         }
@@ -207,10 +207,10 @@ class HomeRefactorPage : BasePage() {
                 onClickListener = {
                     MIUIDialog(activity) {
                         setTitle(R.string.home_refactor_nonlinear_path_x1)
-                        setMessage("${activity.getString(R.string.common_default)}: ${PrefDefValue.HOME_REFACTOR_APPS_NONLINEAR_PATH_X1}, ${activity.getString(R.string.dialog_current_value)}: ${
+                        setMessage("${activity.getString(R.string.common_default)}: ${PrefDefValue.HOME_REFACTOR_APPS_NONLINEAR_PATH_X1}, ${activity.getString(R.string.common_current)}: ${
                             MIUIActivity.safeSP.getFloat(PrefKey.HOME_REFACTOR_APPS_NONLINEAR_PATH_X1, PrefDefValue.HOME_REFACTOR_APPS_NONLINEAR_PATH_X1)
                         }")
-                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0.0-1.0")
+                        setEditText("", "${activity.getString(R.string.common_range)}: 0.0-1.0")
                         setLButton(textId = R.string.button_cancel) {
                             dismiss()
                         }
@@ -238,10 +238,10 @@ class HomeRefactorPage : BasePage() {
                 onClickListener = {
                     MIUIDialog(activity) {
                         setTitle(R.string.home_refactor_nonlinear_path_y1)
-                        setMessage("${activity.getString(R.string.common_default)}: ${PrefDefValue.HOME_REFACTOR_APPS_NONLINEAR_PATH_Y1}, ${activity.getString(R.string.dialog_current_value)}: ${
+                        setMessage("${activity.getString(R.string.common_default)}: ${PrefDefValue.HOME_REFACTOR_APPS_NONLINEAR_PATH_Y1}, ${activity.getString(R.string.common_current)}: ${
                             MIUIActivity.safeSP.getFloat(PrefKey.HOME_REFACTOR_APPS_NONLINEAR_PATH_Y1, PrefDefValue.HOME_REFACTOR_APPS_NONLINEAR_PATH_Y1)
                         }")
-                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0.0-1.0")
+                        setEditText("", "${activity.getString(R.string.common_range)}: 0.0-1.0")
                         setLButton(textId = R.string.button_cancel) {
                             dismiss()
                         }
@@ -269,10 +269,10 @@ class HomeRefactorPage : BasePage() {
                 onClickListener = {
                     MIUIDialog(activity) {
                         setTitle(R.string.home_refactor_nonlinear_path_x2)
-                        setMessage("${activity.getString(R.string.common_default)}: ${PrefDefValue.HOME_REFACTOR_APPS_NONLINEAR_PATH_X2}, ${activity.getString(R.string.dialog_current_value)}: ${
+                        setMessage("${activity.getString(R.string.common_default)}: ${PrefDefValue.HOME_REFACTOR_APPS_NONLINEAR_PATH_X2}, ${activity.getString(R.string.common_current)}: ${
                             MIUIActivity.safeSP.getFloat(PrefKey.HOME_REFACTOR_APPS_NONLINEAR_PATH_X2, PrefDefValue.HOME_REFACTOR_APPS_NONLINEAR_PATH_X2)
                         }")
-                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0.0-1.0")
+                        setEditText("", "${activity.getString(R.string.common_range)}: 0.0-1.0")
                         setLButton(textId = R.string.button_cancel) {
                             dismiss()
                         }
@@ -300,10 +300,10 @@ class HomeRefactorPage : BasePage() {
                 onClickListener = {
                     MIUIDialog(activity) {
                         setTitle(R.string.home_refactor_nonlinear_path_y2)
-                        setMessage("${activity.getString(R.string.common_default)}: ${PrefDefValue.HOME_REFACTOR_APPS_NONLINEAR_PATH_Y2}, ${activity.getString(R.string.dialog_current_value)}: ${
+                        setMessage("${activity.getString(R.string.common_default)}: ${PrefDefValue.HOME_REFACTOR_APPS_NONLINEAR_PATH_Y2}, ${activity.getString(R.string.common_current)}: ${
                             MIUIActivity.safeSP.getFloat(PrefKey.HOME_REFACTOR_APPS_NONLINEAR_PATH_Y2, PrefDefValue.HOME_REFACTOR_APPS_NONLINEAR_PATH_Y2)
                         }")
-                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0.0-1.0")
+                        setEditText("", "${activity.getString(R.string.common_range)}: 0.0-1.0")
                         setLButton(textId = R.string.button_cancel) {
                             dismiss()
                         }
@@ -340,10 +340,10 @@ class HomeRefactorPage : BasePage() {
                 onClickListener = {
                     MIUIDialog(activity) {
                         setTitle(R.string.home_refactor_blur_radius)
-                        setMessage("${activity.getString(R.string.common_default)}: ${PrefDefValue.HOME_REFACTOR_WALL_BLUR_RADIUS}, ${activity.getString(R.string.dialog_current_value)}: ${
+                        setMessage("${activity.getString(R.string.common_default)}: ${PrefDefValue.HOME_REFACTOR_WALL_BLUR_RADIUS}, ${activity.getString(R.string.common_current)}: ${
                             MIUIActivity.safeSP.getInt(PrefKey.HOME_REFACTOR_WALL_BLUR_RADIUS, PrefDefValue.HOME_REFACTOR_WALL_BLUR_RADIUS)
                         }")
-                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0-200")
+                        setEditText("", "${activity.getString(R.string.common_range)}: 0-200")
                         setLButton(textId = R.string.button_cancel) {
                             dismiss()
                         }
@@ -377,10 +377,10 @@ class HomeRefactorPage : BasePage() {
                 onClickListener = {
                     MIUIDialog(activity) {
                         setTitle(R.string.home_refactor_dim_alpha)
-                        setMessage("${activity.getString(R.string.common_default)}: ${PrefDefValue.HOME_REFACTOR_WALL_DIM_MAX}, ${activity.getString(R.string.dialog_current_value)}: ${
+                        setMessage("${activity.getString(R.string.common_default)}: ${PrefDefValue.HOME_REFACTOR_WALL_DIM_MAX}, ${activity.getString(R.string.common_current)}: ${
                             MIUIActivity.safeSP.getInt(PrefKey.HOME_REFACTOR_WALL_DIM_MAX, PrefDefValue.HOME_REFACTOR_WALL_DIM_MAX)
                         }")
-                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0-255")
+                        setEditText("", "${activity.getString(R.string.common_range)}: 0-255")
                         setLButton(textId = R.string.button_cancel) {
                             dismiss()
                         }
@@ -438,10 +438,10 @@ class HomeRefactorPage : BasePage() {
                 onClickListener = {
                     MIUIDialog(activity) {
                         setTitle(R.string.home_refactor_nonlinear_factor)
-                        setMessage("${activity.getString(R.string.common_default)}: ${PrefDefValue.HOME_REFACTOR_WALL_NONLINEAR_DECE_FACTOR}, ${activity.getString(R.string.dialog_current_value)}: ${
+                        setMessage("${activity.getString(R.string.common_default)}: ${PrefDefValue.HOME_REFACTOR_WALL_NONLINEAR_DECE_FACTOR}, ${activity.getString(R.string.common_current)}: ${
                             MIUIActivity.safeSP.getFloat(PrefKey.HOME_REFACTOR_WALL_NONLINEAR_DECE_FACTOR, PrefDefValue.HOME_REFACTOR_WALL_NONLINEAR_DECE_FACTOR)
                         }")
-                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0.1-10.0")
+                        setEditText("", "${activity.getString(R.string.common_range)}: 0.1-10.0")
                         setLButton(textId = R.string.button_cancel) {
                             dismiss()
                         }
@@ -469,10 +469,10 @@ class HomeRefactorPage : BasePage() {
                 onClickListener = {
                     MIUIDialog(activity) {
                         setTitle(R.string.home_refactor_nonlinear_path_x1)
-                        setMessage("${activity.getString(R.string.common_default)}: ${PrefDefValue.HOME_REFACTOR_WALL_NONLINEAR_PATH_X1}, ${activity.getString(R.string.dialog_current_value)}: ${
+                        setMessage("${activity.getString(R.string.common_default)}: ${PrefDefValue.HOME_REFACTOR_WALL_NONLINEAR_PATH_X1}, ${activity.getString(R.string.common_current)}: ${
                             MIUIActivity.safeSP.getFloat(PrefKey.HOME_REFACTOR_WALL_NONLINEAR_PATH_X1, PrefDefValue.HOME_REFACTOR_WALL_NONLINEAR_PATH_X1)
                         }")
-                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0.0-1.0")
+                        setEditText("", "${activity.getString(R.string.common_range)}: 0.0-1.0")
                         setLButton(textId = R.string.button_cancel) {
                             dismiss()
                         }
@@ -500,10 +500,10 @@ class HomeRefactorPage : BasePage() {
                 onClickListener = {
                     MIUIDialog(activity) {
                         setTitle(R.string.home_refactor_nonlinear_path_y1)
-                        setMessage("${activity.getString(R.string.common_default)}: ${PrefDefValue.HOME_REFACTOR_WALL_NONLINEAR_PATH_Y1}, ${activity.getString(R.string.dialog_current_value)}: ${
+                        setMessage("${activity.getString(R.string.common_default)}: ${PrefDefValue.HOME_REFACTOR_WALL_NONLINEAR_PATH_Y1}, ${activity.getString(R.string.common_current)}: ${
                             MIUIActivity.safeSP.getFloat(PrefKey.HOME_REFACTOR_WALL_NONLINEAR_PATH_Y1, PrefDefValue.HOME_REFACTOR_WALL_NONLINEAR_PATH_Y1)
                         }")
-                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0.0-1.0")
+                        setEditText("", "${activity.getString(R.string.common_range)}: 0.0-1.0")
                         setLButton(textId = R.string.button_cancel) {
                             dismiss()
                         }
@@ -531,10 +531,10 @@ class HomeRefactorPage : BasePage() {
                 onClickListener = {
                     MIUIDialog(activity) {
                         setTitle(R.string.home_refactor_nonlinear_path_x2)
-                        setMessage("${activity.getString(R.string.common_default)}: ${PrefDefValue.HOME_REFACTOR_WALL_NONLINEAR_PATH_X2}, ${activity.getString(R.string.dialog_current_value)}: ${
+                        setMessage("${activity.getString(R.string.common_default)}: ${PrefDefValue.HOME_REFACTOR_WALL_NONLINEAR_PATH_X2}, ${activity.getString(R.string.common_current)}: ${
                             MIUIActivity.safeSP.getFloat(PrefKey.HOME_REFACTOR_WALL_NONLINEAR_PATH_X2, PrefDefValue.HOME_REFACTOR_WALL_NONLINEAR_PATH_X2)
                         }")
-                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0.0-1.0")
+                        setEditText("", "${activity.getString(R.string.common_range)}: 0.0-1.0")
                         setLButton(textId = R.string.button_cancel) {
                             dismiss()
                         }
@@ -562,10 +562,10 @@ class HomeRefactorPage : BasePage() {
                 onClickListener = {
                     MIUIDialog(activity) {
                         setTitle(R.string.home_refactor_nonlinear_path_y2)
-                        setMessage("${activity.getString(R.string.common_default)}: ${PrefDefValue.HOME_REFACTOR_WALL_NONLINEAR_PATH_Y2}, ${activity.getString(R.string.dialog_current_value)}: ${
+                        setMessage("${activity.getString(R.string.common_default)}: ${PrefDefValue.HOME_REFACTOR_WALL_NONLINEAR_PATH_Y2}, ${activity.getString(R.string.common_current)}: ${
                             MIUIActivity.safeSP.getFloat(PrefKey.HOME_REFACTOR_WALL_NONLINEAR_PATH_Y2, PrefDefValue.HOME_REFACTOR_WALL_NONLINEAR_PATH_Y2)
                         }")
-                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0.0-1.0")
+                        setEditText("", "${activity.getString(R.string.common_range)}: 0.0-1.0")
                         setLButton(textId = R.string.button_cancel) {
                             dismiss()
                         }
@@ -605,10 +605,10 @@ class HomeRefactorPage : BasePage() {
                 onClickListener = {
                     MIUIDialog(activity) {
                         setTitle(R.string.home_refactor_launch_scale)
-                        setMessage("${activity.getString(R.string.common_default)}: 0.95, ${activity.getString(R.string.dialog_current_value)}: ${
+                        setMessage("${activity.getString(R.string.common_default)}: 0.95, ${activity.getString(R.string.common_current)}: ${
                             MIUIActivity.safeSP.getFloat(PrefKey.HOME_REFACTOR_LAUNCH_SCALE, 0.95f)
                         }")
-                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0.6-1.2")
+                        setEditText("", "${activity.getString(R.string.common_range)}: 0.6-1.2")
                         setLButton(textId = R.string.button_cancel) {
                             dismiss()
                         }
@@ -680,10 +680,10 @@ class HomeRefactorPage : BasePage() {
                 onClickListener = {
                     MIUIDialog(activity) {
                         setTitle(R.string.home_refactor_blur_radius)
-                        setMessage("${activity.getString(R.string.common_default)}: ${PrefDefValue.HOME_REFACTOR_MINUS_BLUR_RADIUS}, ${activity.getString(R.string.dialog_current_value)}: ${
+                        setMessage("${activity.getString(R.string.common_default)}: ${PrefDefValue.HOME_REFACTOR_MINUS_BLUR_RADIUS}, ${activity.getString(R.string.common_current)}: ${
                             MIUIActivity.safeSP.getInt(PrefKey.HOME_REFACTOR_MINUS_BLUR_RADIUS, PrefDefValue.HOME_REFACTOR_MINUS_BLUR_RADIUS)
                         }")
-                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0-200")
+                        setEditText("", "${activity.getString(R.string.common_range)}: 0-200")
                         setLButton(textId = R.string.button_cancel) {
                             dismiss()
                         }
@@ -717,10 +717,10 @@ class HomeRefactorPage : BasePage() {
                 onClickListener = {
                     MIUIDialog(activity) {
                         setTitle(R.string.home_refactor_dim_alpha)
-                        setMessage("${activity.getString(R.string.common_default)}: ${PrefDefValue.HOME_REFACTOR_MINUS_DIM_MAX}, ${activity.getString(R.string.dialog_current_value)}: ${
+                        setMessage("${activity.getString(R.string.common_default)}: ${PrefDefValue.HOME_REFACTOR_MINUS_DIM_MAX}, ${activity.getString(R.string.common_current)}: ${
                             MIUIActivity.safeSP.getInt(PrefKey.HOME_REFACTOR_MINUS_DIM_MAX, PrefDefValue.HOME_REFACTOR_MINUS_DIM_MAX)
                         }")
-                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0-255")
+                        setEditText("", "${activity.getString(R.string.common_range)}: 0-255")
                         setLButton(textId = R.string.button_cancel) {
                             dismiss()
                         }

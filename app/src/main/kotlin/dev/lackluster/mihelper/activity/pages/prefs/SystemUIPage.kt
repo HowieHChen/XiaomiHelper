@@ -131,20 +131,20 @@ class SystemUIPage : BasePage() {
         )
         TextSummaryWithSwitch(
             TextSummaryV(
-                textId = R.string.status_bar_clock_color_fix,
-                tipsId = R.string.status_bar_clock_color_fix_tips
+                textId = R.string.systemui_notif_clock_color_fix,
+                tipsId = R.string.systemui_notif_clock_color_fix_tips
             ),
             SwitchV(Pref.Key.SystemUI.NotifCenter.CLOCK_COLOR_FIX)
+        )
+        TextWithSwitch(
+            TextV(textId = R.string.systemui_notif_theme_blur),
+            SwitchV(Pref.Key.SystemUI.NotifCenter.ADVANCED_TEXTURE)
         )
         TextWithArrow(
             TextV(
                 textId = R.string.systemui_notif_media_control_style,
                 onClickListener = { showFragment("page_media_control") }
             )
-        )
-        TextWithSwitch(
-            TextV(textId = R.string.systemui_notif_theme_blur),
-            SwitchV(Pref.Key.SystemUI.NotifCenter.ADVANCED_TEXTURE)
         )
         Line()
         TitleText(textId = R.string.ui_title_systemui_control_center)

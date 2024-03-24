@@ -12,7 +12,7 @@ import cn.fkj233.ui.activity.view.TextSummaryWithSwitchV
 import cn.fkj233.ui.dialog.MIUIDialog
 import com.github.promeg.pinyinhelper.Pinyin
 import dev.lackluster.mihelper.R
-import dev.lackluster.mihelper.data.PrefKey
+import dev.lackluster.mihelper.data.Pref
 
 @BMPage("disable_fixed_orientation")
 class DisableFixedOrientationPage : BasePage() {
@@ -20,7 +20,7 @@ class DisableFixedOrientationPage : BasePage() {
         skipLoadItem = true
     }
     override fun getTitle(): String {
-        return activity.getString(R.string.ui_page_disable_fixed_orientation)
+        return activity.getString(R.string.page_disable_fixed_orientation)
     }
     override fun onCreate() {
     }
@@ -34,10 +34,10 @@ class DisableFixedOrientationPage : BasePage() {
         fragment.clearAll()
         fragment.addItem(
             TextSummaryWithArrowV(TextSummaryV(
-                textId = R.string.dialog_search
+                textId = R.string.common_search
             ) {
                 MIUIDialog(activity) {
-                    setTitle(R.string.dialog_search)
+                    setTitle(R.string.common_search)
                     setEditText("", keyword)
                     setLButton(R.string.button_clear) {
                         initApplicationList(fragment, "")
@@ -51,7 +51,6 @@ class DisableFixedOrientationPage : BasePage() {
             })
         )
         runCatching {
-            @Suppress("DEPRECATION")
             val applicationsInfo =
                 activity.packageManager.getInstalledApplications(0)
                     .filter {
@@ -74,8 +73,7 @@ class DisableFixedOrientationPage : BasePage() {
                         TextSummaryV(
                             text = i.loadLabel(activity.packageManager).toString(), tips = i.packageName
                         ),
-                        SwitchV(PrefKey.ANDROID_NO_FIXED_ORIENTATION + "_" + i.packageName) { switchValue ->
-                            @Suppress("DEPRECATION")
+                        SwitchV(Pref.Key.Android.BLOCK_FIXED_ORIENTATION + "_" + i.packageName) { switchValue ->
                             val packagesInfo1 = MIUIActivity.activity.packageManager.getInstalledApplications(0)
                             val shouldDisableFixedOrientationList = mutableListOf<String>()
                             for (j in packagesInfo1) {
@@ -95,9 +93,10 @@ class DisableFixedOrientationPage : BasePage() {
                                 shouldDisableFixedOrientationList.remove(i.packageName)
                             }
                             MIUIActivity.safeSP.mSP?.edit()?.putStringSet(
-                                PrefKey.ANDROID_NO_FIXED_ORIENTATION_LIST, shouldDisableFixedOrientationList.toSet()
+                                Pref.Key.Android.BLOCK_FIXED_ORIENTATION_LIST, shouldDisableFixedOrientationList.toSet()
                             )?.apply()
-                        })
+                        }
+                    )
                 )
             }
         }

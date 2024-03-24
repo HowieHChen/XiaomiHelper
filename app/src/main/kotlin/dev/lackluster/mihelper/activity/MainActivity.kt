@@ -2,7 +2,6 @@ package dev.lackluster.mihelper.activity
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import cn.fkj233.ui.activity.MIUIActivity
 import cn.fkj233.ui.dialog.MIUIDialog
@@ -12,9 +11,7 @@ import dev.lackluster.mihelper.activity.pages.main.MainPage
 import dev.lackluster.mihelper.activity.pages.main.MenuPage
 import dev.lackluster.mihelper.activity.pages.prefs.CleanMasterPage
 import dev.lackluster.mihelper.activity.pages.prefs.InterconnectionPage
-import dev.lackluster.mihelper.activity.pages.scope.AndroidPage
-import dev.lackluster.mihelper.activity.pages.scope.MiConnectPage
-import dev.lackluster.mihelper.activity.pages.scope.MiuiHomePage
+import dev.lackluster.mihelper.activity.pages.prefs.MiuiHomePage
 import dev.lackluster.mihelper.activity.pages.prefs.ModuleSettingsPage
 import dev.lackluster.mihelper.activity.pages.prefs.OthersPage
 import dev.lackluster.mihelper.activity.pages.prefs.SecurityCenterPage
@@ -60,7 +57,7 @@ class MainActivity : MIUIActivity() {
         registerPage(AboutPage::class.java)
         registerPage(ModuleSettingsPage::class.java)
         registerPage(SystemUIPage::class.java)
-
+        registerPage(MiuiHomePage::class.java)
         registerPage(CleanMasterPage::class.java)
         registerPage(SystemFrameworkPage::class.java)
         registerPage(SecurityCenterPage::class.java)
@@ -69,20 +66,8 @@ class MainActivity : MIUIActivity() {
         registerPage(StatusBarClockPage::class.java)
         registerPage(IconTunerPage::class.java)
         registerPage(MediaControlStylePage::class.java)
-
-
-        registerPage(MiuiHomePage::class.java)
         registerPage(DisableFixedOrientationPage::class.java)
-
         registerPage(HomeRefactorPage::class.java)
-        when (Build.VERSION.SDK_INT) {
-            Build.VERSION_CODES.TIRAMISU -> {
-
-            }
-            Build.VERSION_CODES.UPSIDE_DOWN_CAKE -> {
-
-            }
-        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

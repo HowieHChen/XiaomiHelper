@@ -25,13 +25,13 @@ import android.widget.Toast
 import cn.fkj233.ui.activity.MIUIActivity
 import cn.fkj233.ui.activity.annotation.BMPage
 import cn.fkj233.ui.activity.data.BasePage
+import cn.fkj233.ui.activity.view.SeekBarWithTextV
 import cn.fkj233.ui.activity.view.SwitchV
 import cn.fkj233.ui.activity.view.TextSummaryV
 import cn.fkj233.ui.activity.view.TextV
 import cn.fkj233.ui.dialog.MIUIDialog
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.data.PrefKey
 import dev.lackluster.mihelper.utils.Device
 
 @BMPage("page_miui_home", hideMenu = false)
@@ -76,13 +76,66 @@ class MiuiHomePage : BasePage() {
         )
         Line()
         TitleText(textId = R.string.ui_title_home_gesture)
-
+        TextWithSwitch(
+            TextV(textId = R.string.home_gesture_double_tap),
+            SwitchV(Pref.Key.MiuiHome.DOUBLE_TAP_TO_SLEEP)
+        )
+        TextSummaryWithSwitch(
+            TextSummaryV(
+                textId = R.string.home_gesture_quick_back,
+                tipsId = R.string.home_gesture_quick_back_tips
+            ),
+            SwitchV(Pref.Key.MiuiHome.QUICK_BACK)
+        )
         Line()
         TitleText(textId = R.string.ui_title_home_anim)
-
+        TextSummaryWithSwitch(
+            TextSummaryV(
+                textId = R.string.home_anim_unlock,
+                tipsId = R.string.home_anim_unlock_tips
+            ),
+            SwitchV(Pref.Key.MiuiHome.ANIM_UNLOCK)
+        )
+        TextSummaryWithSwitch(
+            TextSummaryV(
+                textId = R.string.home_anim_zoom_sync,
+                tipsId = R.string.home_anim_zoom_sync_tips
+            ),
+            SwitchV(Pref.Key.MiuiHome.ANIM_WALLPAPER_ZOOM_SYNC),
+            dataBindingRecv = refactorBinding.binding.getRecv(1)
+        )
+        TextWithSwitch(
+            TextV(textId = R.string.home_anim_icon_zoom),
+            SwitchV(Pref.Key.MiuiHome.ANIM_ICON_ZOOM)
+        )
+        TextWithSwitch(
+            TextV(textId = R.string.home_anim_icon_darken),
+            SwitchV(Pref.Key.MiuiHome.ANIM_ICON_DARKEN)
+        )
         Line()
         TitleText(textId = R.string.ui_title_home_folder)
-
+        if (!Device.isPad) {
+            TextSummaryWithSwitch(
+                TextSummaryV(
+                    textId = R.string.home_folder_adapt_icon_size,
+                    tipsId = R.string.home_folder_adapt_icon_size_tips
+                ),
+                SwitchV(Pref.Key.MiuiHome.FOLDER_ADAPT_SIZE)
+            )
+        }
+        val folderColumnsDef = if (Device.isPad) 4 else 3
+        TextWithSeekBar(
+            TextV(textId = R.string.home_folder_layout_size),
+            SeekBarWithTextV(Pref.Key.MiuiHome.FOLDER_COLUMNS, 2, 7, folderColumnsDef)
+        )
+        TextWithSwitch(
+            TextV(textId = R.string.home_folder_layout_fix),
+            SwitchV(Pref.Key.MiuiHome.FOLDER_NO_PADDING)
+        )
+        TextWithSwitch(
+            TextV(textId = R.string.home_folder_advanced_textures),
+            SwitchV(Pref.Key.MiuiHome.FOLDER_BLUR)
+        )
         Line()
         TitleText(textId = R.string.ui_title_home_icon)
         TextWithSwitch(
@@ -145,7 +198,7 @@ class MiuiHomePage : BasePage() {
                         MIUIDialog(activity) {
                             setTitle(R.string.home_recent_dock_time)
                             setMessage(
-                                "${activity.getString(R.string.common_default)}: 180 (ms), ${activity.getString(R.string.dialog_current_value)}: ${
+                                "${activity.getString(R.string.common_default)}: 180 (ms), ${activity.getString(R.string.common_current)}: ${
                                     MIUIActivity.safeSP.getInt(Pref.Key.MiuiHome.PAD_DOCK_TIME_DURATION, 180)
                                 } (ms)"
                             )
@@ -180,7 +233,7 @@ class MiuiHomePage : BasePage() {
                         MIUIDialog(activity) {
                             setTitle(R.string.home_recent_docke_safe_height)
                             setMessage(
-                                "${activity.getString(R.string.common_default)}: 300, ${activity.getString(R.string.dialog_current_value)}: ${
+                                "${activity.getString(R.string.common_default)}: 300, ${activity.getString(R.string.common_current)}: ${
                                     MIUIActivity.safeSP.getInt(Pref.Key.MiuiHome.PAD_DOCK_SAFE_AREA_HEIGHT, 300)
                                 }"
                             )
@@ -219,11 +272,31 @@ class MiuiHomePage : BasePage() {
             SwitchV(Pref.Key.MiuiHome.WIDGET_RESIZABLE)
         )
         Line()
-        TitleText(textId = R.string.ui_title_home_personal_asist)
-
-        Line()
         TitleText(textId = R.string.ui_title_home_shortcut)
-
+        TextWithSwitch(
+            TextV(textId = R.string.home_shortcut_freeform),
+            SwitchV(Pref.Key.MiuiHome.SHORTCUT_FREEFORM)
+        )
+        TextWithSwitch(
+            TextV(textId = R.string.home_shortcut_instance),
+            SwitchV(Pref.Key.MiuiHome.SHORTCUT_INSTANCE)
+        )
+        Line()
+        TitleText(textId = R.string.ui_title_home_personal_asist)
+        TextWithSwitch(
+            TextV(textId = R.string.home_minus_restore_setting),
+            SwitchV(Pref.Key.MiuiHome.MINUS_RESTORE_SETTING)
+        )
+        TextWithSwitch(
+            TextV(textId = R.string.home_minus_fold_style),
+            SwitchV(Pref.Key.MiuiHome.MINUS_FOLD_STYLE),
+            dataBindingRecv = refactorBinding.binding.getRecv(1)
+        )
+        TextWithSwitch(
+            TextV(textId = R.string.home_minus_blur),
+            SwitchV(Pref.Key.MiuiHome.MINUS_BLUR),
+            dataBindingRecv = refactorBinding.binding.getRecv(1)
+        )
         Line()
         TitleText(textId = R.string.ui_title_home_others)
         TextWithSwitch(
@@ -231,6 +304,13 @@ class MiuiHomePage : BasePage() {
                 textId = R.string.home_others_always_show_clock,
             ),
             SwitchV(Pref.Key.MiuiHome.ALWAYS_SHOW_TIME)
+        )
+        TextSummaryWithSwitch(
+            TextSummaryV(
+                textId = R.string.home_others_fake_premium,
+                tipsId = R.string.home_others_fake_premium_tips
+            ),
+            SwitchV(Pref.Key.MiuiHome.FAKE_PREMIUM)
         )
     }
 }

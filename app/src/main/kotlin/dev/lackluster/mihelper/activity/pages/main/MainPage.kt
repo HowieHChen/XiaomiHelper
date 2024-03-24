@@ -30,7 +30,7 @@ import dev.lackluster.mihelper.utils.Device
 @BMMainPage()
 class MainPage : BasePage() {
     override fun getTitle(): String {
-        return activity.getString(R.string.ui_page_main)
+        return activity.getString(R.string.page_main)
     }
     override fun onCreate() {
         Page(

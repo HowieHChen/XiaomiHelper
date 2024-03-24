@@ -1,3 +1,23 @@
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
+ * This file is part of XiaomiHelper project
+ * Copyright (C) 2023 HowieHChen, howie.dev@outlook.com
+
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package dev.lackluster.mihelper.activity.pages.main
 
 import android.widget.Toast.LENGTH_LONG
@@ -12,14 +32,14 @@ import dev.lackluster.mihelper.utils.ShellUtils
 @BMMenuPage()
 class MenuPage : BasePage() {
     override fun getTitle(): String {
-        return activity.getString(R.string.ui_page_menu)
+        return activity.getString(R.string.page_menu)
     }
     override fun onCreate() {
-        TitleText(textId = R.string.ui_title_reboot)
-        TextSummaryWithArrow(TextSummaryV(textId = R.string.reboot_system, onClickListener = {
+        TitleText(textId = R.string.ui_title_menu_reboot)
+        TextSummaryWithArrow(TextSummaryV(textId = R.string.menu_reboot_system, onClickListener = {
             MIUIDialog(activity) {
                 setTitle(R.string.dialog_warning)
-                setMessage(R.string.reboot_system_tips)
+                setMessage(R.string.menu_reboot_system_tips)
                 setLButton(R.string.button_cancel) {
                     dismiss()
                 }
@@ -31,7 +51,7 @@ class MenuPage : BasePage() {
                     catch (tout : Throwable) {
                         makeText(
                             activity,
-                            getString(R.string.reboot_error_toast) + "(${tout.message})",
+                            getString(R.string.menu_reboot_error_toast) + "(${tout.message})",
                             LENGTH_LONG
                         ).show()
                         dismiss()
@@ -39,10 +59,10 @@ class MenuPage : BasePage() {
                 }
             }.show()
         }))
-        TextSummaryWithArrow(TextSummaryV(textId = R.string.reboot_scope, onClickListener = {
+        TextSummaryWithArrow(TextSummaryV(textId = R.string.menu_reboot_scope, onClickListener = {
             MIUIDialog(activity) {
                 setTitle(R.string.dialog_warning)
-                setMessage(R.string.reboot_scope_tips)
+                setMessage(R.string.menu_reboot_scope_tips)
                 setLButton(R.string.button_cancel) {
                     dismiss()
                 }
@@ -53,7 +73,7 @@ class MenuPage : BasePage() {
                         }
                         makeText(
                             activity,
-                            getString(R.string.reboot_done_toast),
+                            getString(R.string.menu_reboot_done_toast),
                             LENGTH_LONG
                         ).show()
                         dismiss()
@@ -61,7 +81,7 @@ class MenuPage : BasePage() {
                     catch (tout : Throwable) {
                         makeText(
                             activity,
-                            getString(R.string.reboot_error_toast) + "(${tout.message})",
+                            getString(R.string.menu_reboot_error_toast) + "(${tout.message})",
                             LENGTH_LONG
                         ).show()
                         dismiss()
@@ -69,10 +89,10 @@ class MenuPage : BasePage() {
                 }
             }.show()
         }))
-        TextSummaryWithArrow(TextSummaryV(textId = R.string.reboot_systemui, onClickListener = {
+        TextSummaryWithArrow(TextSummaryV(textId = R.string.menu_reboot_systemui, onClickListener = {
             MIUIDialog(activity) {
                 setTitle(R.string.dialog_warning)
-                setMessage(R.string.reboot_systemui_tips)
+                setMessage(R.string.menu_reboot_systemui_tips)
                 setLButton(R.string.button_cancel) {
                     dismiss()
                 }
@@ -81,7 +101,7 @@ class MenuPage : BasePage() {
                         ShellUtils.tryExec("killall com.android.systemui", useRoot = true, checkSuccess = true)
                         makeText(
                             activity,
-                            getString(R.string.reboot_done_toast),
+                            getString(R.string.menu_reboot_done_toast),
                             LENGTH_LONG
                         ).show()
                         dismiss()
@@ -89,7 +109,7 @@ class MenuPage : BasePage() {
                     catch (tout : Throwable) {
                         makeText(
                             activity,
-                            getString(R.string.reboot_error_toast) + "(${tout.message})",
+                            getString(R.string.menu_reboot_error_toast) + "(${tout.message})",
                             LENGTH_LONG
                         ).show()
                         dismiss()
@@ -97,10 +117,10 @@ class MenuPage : BasePage() {
                 }
             }.show()
         }))
-        TextSummaryWithArrow(TextSummaryV(textId = R.string.reboot_launcher, onClickListener = {
+        TextSummaryWithArrow(TextSummaryV(textId = R.string.menu_reboot_launcher, onClickListener = {
             MIUIDialog(activity) {
                 setTitle(R.string.dialog_warning)
-                setMessage(R.string.reboot_launcher_tips)
+                setMessage(R.string.menu_reboot_launcher_tips)
                 setLButton(R.string.button_cancel) {
                     dismiss()
                 }
@@ -109,7 +129,7 @@ class MenuPage : BasePage() {
                         ShellUtils.tryExec("killall com.miui.home", useRoot = true, checkSuccess = true)
                         makeText(
                             activity,
-                            getString(R.string.reboot_done_toast),
+                            getString(R.string.menu_reboot_done_toast),
                             LENGTH_LONG
                         ).show()
                         dismiss()
@@ -117,7 +137,7 @@ class MenuPage : BasePage() {
                     catch (tout : Throwable) {
                         makeText(
                             activity,
-                            getString(R.string.reboot_error_toast) + "(${tout.message})",
+                            getString(R.string.menu_reboot_error_toast) + "(${tout.message})",
                             LENGTH_LONG
                         ).show()
                         dismiss()

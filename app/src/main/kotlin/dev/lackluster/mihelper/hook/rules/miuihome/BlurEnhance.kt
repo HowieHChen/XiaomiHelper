@@ -39,13 +39,14 @@ import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
 import dev.lackluster.mihelper.BuildConfig
+import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.data.PrefDefValue
 import dev.lackluster.mihelper.data.PrefKey
 import dev.lackluster.mihelper.hook.view.MiBlurView
 import dev.lackluster.mihelper.utils.Device
 import dev.lackluster.mihelper.utils.MiBlurUtils
 import dev.lackluster.mihelper.utils.Prefs
-import dev.lackluster.mihelper.utils.Prefs.hasEnable
+import dev.lackluster.mihelper.utils.factory.hasEnable
 import java.lang.reflect.Method
 import java.util.concurrent.Executor
 
@@ -226,7 +227,7 @@ object BlurEnhance : YukiBaseHooker() {
             }.hook {
                 after {
                     if (!isBackgroundBlurEnabled.boolean()) {
-                        if (!Prefs.getBoolean(PrefKey.HOME_BLUR_ENHANCE, false)) {
+                        if (!Prefs.getBoolean(Pref.Key.MiuiHome.FAKE_PREMIUM, false)) {
                             YLog.warn("The High-quality materials function is disabled.")
                         }
                         isBackgroundBlurEnabled.setTrue()
@@ -320,7 +321,7 @@ object BlurEnhance : YukiBaseHooker() {
             }.hook {
                 before {
                     if (printDebugInfo)
-                        YLog.info("fastBlur target: ${this.args(1).float()} useAnim: ${this.args(2).float()}")
+                        YLog.info("fastBlur target: ${this.args(0).float()} useAnim: ${this.args(2).boolean()}")
                     wallpaperBlurView?.showWithDuration(this.args(2).boolean(), this.args(0).float(), 350)
                     this.result = null
                 }

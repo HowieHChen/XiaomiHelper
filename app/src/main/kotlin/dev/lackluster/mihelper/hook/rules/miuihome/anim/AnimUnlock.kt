@@ -18,32 +18,27 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.lackluster.mihelper.hook.rules.miuihome
+package dev.lackluster.mihelper.hook.rules.miuihome.anim
 
-import android.view.View
-import android.widget.TextView
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.current
 import com.highcapable.yukihookapi.hook.factory.method
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.Device
 import dev.lackluster.mihelper.utils.factory.hasEnable
 
-object RemoveReport : YukiBaseHooker(){
+object AnimUnlock : YukiBaseHooker(){
     override fun onHook() {
-        hasEnable(Pref.Key.MiuiHome.REMOVE_REPORT, extraCondition = { !Device.isPad }) {
-            "com.miui.home.launcher.uninstall.BaseUninstallDialog".toClass().method {
-                name = "init"
-                paramCount = 2
+        hasEnable(Pref.Key.MiuiHome.ANIM_UNLOCK) {
+            val animClz =
+                if (Device.isPad) "com.miui.home.launcher.compat.UserPresentAnimationCompatV12Spring".toClass()
+                else "com.miui.home.launcher.compat.UserPresentAnimationCompatV12Phone".toClass()
+            animClz.method {
+                name = "getSpringAnimator"
+                paramCount = 6
             }.hook {
-                after {
-                    val report = (this.instance.current().field {
-                        name = "mDialogView"
-                        superClass()
-                    }.any())?.current(true)?.field {
-                        name = "mReport"
-                    }?.any() as? TextView?
-                    report?.visibility = View.GONE
+                before {
+                    this.args(4).set(0.5f)
+                    this.args(5).set(0.5f)
                 }
             }
         }

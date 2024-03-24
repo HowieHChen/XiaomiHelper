@@ -1,17 +1,37 @@
-package dev.lackluster.mihelper.hook.rules.miuihome
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
+ * This file is part of XiaomiHelper project
+ * Copyright (C) 2023 HowieHChen, howie.dev@outlook.com
+
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package dev.lackluster.mihelper.hook.rules.miuihome.folder
 
 import android.view.View
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.constructor
 import com.highcapable.yukihookapi.hook.factory.current
 import com.highcapable.yukihookapi.hook.factory.method
-import dev.lackluster.mihelper.data.PrefKey
+import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.Device
-import dev.lackluster.mihelper.utils.Prefs.hasEnable
+import dev.lackluster.mihelper.utils.factory.hasEnable
 
 object FolderAdaptIconSize : YukiBaseHooker() {
     override fun onHook() {
-        hasEnable(PrefKey.HOME_FOLDER_ADAPT_SIZE) {
+        hasEnable(Pref.Key.MiuiHome.FOLDER_ADAPT_SIZE, extraCondition = { !Device.isPad }) {
             if (Device.isPad) {
                 val folderIcon2x2t4 = "com.miui.home.launcher.folder.FolderIcon2x2_4".toClassOrNull()
                 val folderIcon2x2tp4 = "com.miui.home.launcher.folder.FolderIconPreviewContainer2X2".toClassOrNull()
@@ -114,8 +134,7 @@ object FolderAdaptIconSize : YukiBaseHooker() {
                                 i2 = instanceView.paddingEnd + mLarge2x2ItemMergeEdgeHor + mLargeItemWith +
                                         this.instance.current().field { name = "mLarge2x2ItemMergeInnerHor" }.int()
                                 mSmall2x2ItemMergeInner = this.instance.current().field { name = "mSmall2x2ItemMergeInner" }.int()
-                            }
-                            else {
+                            } else {
                                 i2 = instanceView.paddingStart + mLarge2x2ItemMergeEdgeHor
                                 mSmall2x2ItemMergeInner = 0
                             }
@@ -134,8 +153,7 @@ object FolderAdaptIconSize : YukiBaseHooker() {
                                         i5 += (mSmallItemWith + mSmall2x2ItemMergeInner)
                                     }
                                     i4 = i5
-                                }
-                                else {
+                                } else {
                                     val smallViewPreSetup2x2 =
                                         this.instance.current().method { name = "smallViewPreSetup2x2" }.call(
                                             i4, paddingTop, i5, mSmallItemWith, mSmallItemHeight, i
@@ -189,8 +207,7 @@ object FolderAdaptIconSize : YukiBaseHooker() {
                         }
                     }
                 }
-            }
-            else {
+            } else {
                 val folderIcon2x2 = "com.miui.home.launcher.folder.FolderIcon2x2".toClassOrNull()
                 val folderIcon2x2p9 = "com.miui.home.launcher.folder.FolderIconPreviewContainer2X2_9".toClassOrNull()
                 val folderIcon2x2p4 = "com.miui.home.launcher.folder.FolderIconPreviewContainer2X2_4".toClassOrNull()
@@ -219,8 +236,7 @@ object FolderAdaptIconSize : YukiBaseHooker() {
                                     name = "setMLargeIconNum"
                                     superClass()
                                 }.call(4)
-                            }
-                            else {
+                            } else {
                                 this.instance.current().method {
                                     name = "setMItemsMaxCount"
                                     superClass()
@@ -230,8 +246,7 @@ object FolderAdaptIconSize : YukiBaseHooker() {
                                     superClass()
                                 }.call(3)
                             }
-                        }
-                        else if (largeIconNum == 8 || largeIconNum == 9) {
+                        } else if (largeIconNum == 8 || largeIconNum == 9) {
                             if (realPvChildCount < 10) {
                                 this.instance.current().method {
                                     name = "setMItemsMaxCount"
@@ -241,8 +256,7 @@ object FolderAdaptIconSize : YukiBaseHooker() {
                                     name = "setMLargeIconNum"
                                     superClass()
                                 }.call(9)
-                            }
-                            else {
+                            } else {
                                 this.instance.current().method {
                                     name = "setMItemsMaxCount"
                                     superClass()
@@ -272,8 +286,7 @@ object FolderAdaptIconSize : YukiBaseHooker() {
                                 name = "setMLargeIconNum"
                                 superClass()
                             }.call(9)
-                        }
-                        else {
+                        } else {
                             this.instance.current().method {
                                 name = "setMItemsMaxCount"
                                 superClass()
@@ -302,8 +315,7 @@ object FolderAdaptIconSize : YukiBaseHooker() {
                                 name = "setMLargeIconNum"
                                 superClass()
                             }.call(4)
-                        }
-                        else {
+                        } else {
                             this.instance.current().method {
                                 name = "setMItemsMaxCount"
                                 superClass()
