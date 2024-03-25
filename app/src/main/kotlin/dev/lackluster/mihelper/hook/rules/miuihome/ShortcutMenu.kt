@@ -81,15 +81,15 @@ object ShortcutMenu : YukiBaseHooker() {
         if (!addFreeform && !addInstance) return
         var mContext: Context? = null
         if (Device.isPad) {
-            "com.miui.home.launcher.shortcuts.SystemShortcutMenuItem\$MultipleSmallWindowShortcutMenuItem".toClass().method {
+            "com.miui.home.launcher.shortcuts.SystemShortcutMenuItem\$MultipleSmallWindowShortcutMenuItem".toClassOrNull()?.method {
                 name = "isValid"
-            }.giveAll().hookAll {
+            }?.giveAll()?.hookAll {
                 replaceToTrue()
             }
         } else {
-            "com.miui.home.launcher.shortcuts.SystemShortcutMenuItem\$SmallWindowShortcutMenuItem".toClass().method {
+            "com.miui.home.launcher.shortcuts.SystemShortcutMenuItem\$SmallWindowShortcutMenuItem".toClassOrNull()?.method {
                 name = "isValid"
-            }.giveAll().hookAll {
+            }?.giveAll()?.hookAll {
                 replaceToTrue()
             }
         }

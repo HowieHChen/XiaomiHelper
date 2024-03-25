@@ -20,7 +20,6 @@
 
 package dev.lackluster.mihelper.hook.rules.systemui.media
 
-import android.annotation.SuppressLint
 import android.app.WallpaperColors
 import android.content.Context
 import android.content.res.ColorStateList
@@ -35,17 +34,12 @@ import android.graphics.RectF
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.Icon
-import android.graphics.drawable.LayerDrawable
-import android.graphics.drawable.TransitionDrawable
 import android.os.Trace
-import android.view.Gravity
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.TextView
-import androidx.core.graphics.drawable.toBitmap
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.constructor
 import com.highcapable.yukihookapi.hook.factory.current
@@ -53,7 +47,6 @@ import com.highcapable.yukihookapi.hook.factory.method
 import com.highcapable.yukihookapi.hook.log.YLog
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.hook.rules.systemui.media.StyleCustomHookEntry.brightness
-import dev.lackluster.mihelper.hook.rules.systemui.media.StyleCustomHookEntry.scaleTransitionDrawableLayer
 import dev.lackluster.mihelper.utils.Prefs
 import java.util.concurrent.Executor
 
@@ -72,9 +65,10 @@ object AndroidOldStyle : YukiBaseHooker() {
     }
     private var mArtworkBoundId = 0
     private var mArtworkNextBindRequestId = 0
-    private var mPrevArtwork: Drawable? = null
+    private var mArtworkDrawable: CustomDrawable? = null
     private var mIsArtworkBound = false
     private var mPrevTextPrimaryColor = Color.WHITE
+    private var mCurrentTextPrimaryColor = Color.WHITE
     private var animatingColorTransition: AnimatingColorTransition? = null
 
 
@@ -97,10 +91,10 @@ object AndroidOldStyle : YukiBaseHooker() {
                     name = "mBackgroundExecutor"
                     superClass()
                 }.any() as? Executor ?: return@after
-                val mMainExecutor = this.instance.current().field {
-                    name = "mMainExecutor"
-                    superClass()
-                }.any() as? Executor ?: return@after
+//                val mMainExecutor = this.instance.current().field {
+//                    name = "mMainExecutor"
+//                    superClass()
+//                }.any() as? Executor ?: return@after
                 val mContext = this.instance.current().field {
                     name = "mContext"
                     superClass()
@@ -154,25 +148,23 @@ object AndroidOldStyle : YukiBaseHooker() {
                 paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
                 canvas1.drawBitmap(resizedBitmap, rect, rect, paint)
                 albumView.setImageDrawable(BitmapDrawable(mContext.resources, newBitmap))
-                val isLightColor = newBitmap.brightness() >= 192
 
                 // Capture width & height from views in foreground for artwork scaling in background
-                val width = mediaBg.measuredWidth
-                val height = mediaBg.measuredHeight
-                if (width == 0 || height == 0) {
-                    Trace.endAsyncSection(traceName, traceCookie)
-                    return@after
-                }
+                val width = mediaBg.measuredWidth.takeIf { it != 0 } ?: artworkLayer.intrinsicWidth
+                val height = mediaBg.measuredHeight.takeIf { it != 0 } ?: artworkLayer.intrinsicHeight
+//                if (width == 0 || height == 0) {
+//                    Trace.endAsyncSection(traceName, traceCookie)
+//                    return@after
+//                }
 
                 val packageName = data.current().field {
                     name = "packageName"
                 }.string()
-                val mPrevTextPrimaryColorStateList = ColorStateList.valueOf(mPrevTextPrimaryColor)
-                titleText.setTextColor(mPrevTextPrimaryColor)
-                artistText.setTextColor(mPrevTextPrimaryColor)
+                val mPrevTextPrimaryColorStateList = ColorStateList.valueOf(mCurrentTextPrimaryColor)
+                titleText.setTextColor(mCurrentTextPrimaryColor)
+                artistText.setTextColor(mCurrentTextPrimaryColor)
                 seamlessIcon.imageTintList = mPrevTextPrimaryColorStateList
                 action0.imageTintList = mPrevTextPrimaryColorStateList
-                action1.imageTintList = mPrevTextPrimaryColorStateList
                 action1.imageTintList = mPrevTextPrimaryColorStateList
                 action2.imageTintList = mPrevTextPrimaryColorStateList
                 action3.imageTintList = mPrevTextPrimaryColorStateList
@@ -182,10 +174,10 @@ object AndroidOldStyle : YukiBaseHooker() {
                 actionPrev.imageTintList = mPrevTextPrimaryColorStateList
                 seekBar.thumb.setTintList(mPrevTextPrimaryColorStateList)
                 seekBar.progressTintList = mPrevTextPrimaryColorStateList
-                scrubbingElapsedTimeView.setTextColor(mPrevTextPrimaryColor)
-                scrubbingTotalTimeView.setTextColor(mPrevTextPrimaryColor)
-                elapsedTimeView.setTextColor(mPrevTextPrimaryColor)
-                totalTimeView.setTextColor(mPrevTextPrimaryColor)
+                scrubbingElapsedTimeView.setTextColor(mCurrentTextPrimaryColor)
+                scrubbingTotalTimeView.setTextColor(mCurrentTextPrimaryColor)
+                elapsedTimeView.setTextColor(mCurrentTextPrimaryColor)
+                totalTimeView.setTextColor(mCurrentTextPrimaryColor)
 
                 mBackgroundExecutor.execute {
                     // Album art
@@ -229,7 +221,7 @@ object AndroidOldStyle : YukiBaseHooker() {
                                     name = "allShades"
                                 }.list<Int?>()
                         val textPrimary: Int?
-                        if (allowReverse && isLightColor) {
+                        if (allowReverse && newBitmap.brightness() >= 192) {
                             textPrimary = accent1[8]!!
                             backgroundPrimary = accent1[3]!!
                         } else {
@@ -241,12 +233,12 @@ object AndroidOldStyle : YukiBaseHooker() {
                             if(useAnim) {
                                 if (animatingColorTransition == null) {
                                     animatingColorTransition = AnimatingColorTransition(applyColor = {
+                                        mCurrentTextPrimaryColor = it
                                         val currentColorStateList = ColorStateList.valueOf(it)
                                         titleText.setTextColor(it)
                                         artistText.setTextColor(it)
                                         seamlessIcon.imageTintList = currentColorStateList
                                         action0.imageTintList = currentColorStateList
-                                        action1.imageTintList = currentColorStateList
                                         action1.imageTintList = currentColorStateList
                                         action2.imageTintList = currentColorStateList
                                         action3.imageTintList = currentColorStateList
@@ -264,12 +256,12 @@ object AndroidOldStyle : YukiBaseHooker() {
                                 }
                                 animatingColorTransition!!.animateToNewColor(textPrimary)
                             } else {
+                                mCurrentTextPrimaryColor = textPrimary
                                 val currentColorStateList = ColorStateList.valueOf(textPrimary)
                                 titleText.setTextColor(textPrimary)
                                 artistText.setTextColor(textPrimary)
                                 seamlessIcon.imageTintList = currentColorStateList
                                 action0.imageTintList = currentColorStateList
-                                action1.imageTintList = currentColorStateList
                                 action1.imageTintList = currentColorStateList
                                 action2.imageTintList = currentColorStateList
                                 action3.imageTintList = currentColorStateList
@@ -287,70 +279,27 @@ object AndroidOldStyle : YukiBaseHooker() {
                         }
                         mPrevTextPrimaryColor = textPrimary
                     }
-
-                    mMainExecutor.execute(Runnable {
-                        if (reqId < mArtworkBoundId) {
-                            Trace.endAsyncSection(traceName, traceCookie)
-                            return@Runnable
-                        }
-
-                        mArtworkBoundId = reqId
-                        val finalBackground = BitmapDrawable(mContext.resources, generateBackground(artwork, backgroundPrimary, width, height).toBitmap())
-                        // Bind the album view to the artwork or a transition drawable
-                        mediaBg.setPadding(0, 0, 0, 0)
-                        if (updateBackground || colorSchemeChanged || (!mIsArtworkBound && isArtworkBound)) {
-                            if (mPrevArtwork == null) {
-                                mediaBg.setImageDrawable(finalBackground)
-                            } else {
-                                // Since we throw away the last transition, this'll pop if you backgrounds
-                                // are cycled too fast (or the correct background arrives very soon after
-                                // the metadata changes).
-                                val transitionDrawable = TransitionDrawable(
-                                    arrayOf(mPrevArtwork!!, finalBackground)
-                                )
-                                scaleTransitionDrawableLayer(transitionDrawable, 0, height, height)
-                                scaleTransitionDrawableLayer(transitionDrawable, 1, height, height)
-                                transitionDrawable.setLayerGravity(0, Gravity.CENTER)
-                                transitionDrawable.setLayerGravity(1, Gravity.CENTER)
-                                transitionDrawable.isCrossFadeEnabled = !isArtworkBound
-
-                                mediaBg.setImageDrawable(transitionDrawable)
-                                transitionDrawable.startTransition(if (isArtworkBound) 333 else 80)
-                            }
-                            mPrevArtwork = finalBackground
-                            mIsArtworkBound = isArtworkBound
-                        }
+                    if (mArtworkDrawable == null) {
+                        mArtworkDrawable = CustomDrawable(artwork, backgroundPrimary)
+                    }
+                    mArtworkDrawable?.setBounds(0, 0, width, height)
+                    if (reqId < mArtworkBoundId) {
                         Trace.endAsyncSection(traceName, traceCookie)
-                    })
+                        return@execute
+                    }
+
+                    mArtworkBoundId = reqId
+
+                    // Bind the album view to the artwork or a transition drawable
+                    mediaBg.setPadding(0, 0, 0, 0)
+                    if (updateBackground || colorSchemeChanged || (!mIsArtworkBound && isArtworkBound)) {
+                        mediaBg.setImageDrawable(mArtworkDrawable)
+                        mArtworkDrawable?.setNewAlbum(artwork, backgroundPrimary)
+                        mIsArtworkBound = isArtworkBound
+                    }
+                    Trace.endAsyncSection(traceName, traceCookie)
                 }
             }
         }
-    }
-
-    @SuppressLint("RtlHardcoded")
-    private fun generateBackground(artwork: Drawable, color: Int, targetWidth: Int, targetHeight: Int): LayerDrawable {
-        val maskLayer = GradientDrawable()
-        maskLayer.setSize(targetHeight, targetHeight)
-        maskLayer.shape = GradientDrawable.RECTANGLE
-        maskLayer.gradientType = GradientDrawable.LINEAR_GRADIENT
-        maskLayer.orientation = GradientDrawable.Orientation.LEFT_RIGHT
-        maskLayer.gradientRadius = targetHeight.toFloat() / 2
-        maskLayer.colors = intArrayOf(
-            color,
-            color and 0x00ffffff or (51 shl 24)
-        )
-        val finalBackground = LayerDrawable(
-            arrayOf(
-                ColorDrawable(color),
-                artwork,
-                maskLayer
-            )
-        )
-        finalBackground.setLayerSize(0, targetWidth, targetHeight)
-        finalBackground.setLayerSize(1, targetHeight, targetHeight)
-        finalBackground.setLayerSize(2, targetHeight, targetHeight)
-        finalBackground.setLayerGravity(1, Gravity.RIGHT)
-        finalBackground.setLayerGravity(2, Gravity.RIGHT)
-        return finalBackground
     }
 }

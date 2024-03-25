@@ -69,7 +69,13 @@ class MenuPage : BasePage() {
                 setRButton(R.string.button_ok) {
                     try {
                         activity.resources.getStringArray(R.array.module_scope).forEach {
-                            if (it != "android") ShellUtils.tryExec("killall $it", useRoot = true, checkSuccess = true)
+                            try {
+                                if (it != "android") ShellUtils.tryExec("killall -q $it", useRoot = true, checkSuccess = true)
+                            } catch (t: Throwable) {
+                                if (t.message?.contains("No such process") == false) {
+                                    throw t
+                                }
+                            }
                         }
                         makeText(
                             activity,

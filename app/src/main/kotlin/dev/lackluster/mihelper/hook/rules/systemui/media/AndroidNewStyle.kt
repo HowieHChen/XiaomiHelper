@@ -70,6 +70,7 @@ object AndroidNewStyle : YukiBaseHooker() {
     private var mPrevArtwork: Drawable? = null
     private var mIsArtworkBound = false
     private var mPrevTextPrimaryColor = Color.WHITE
+    private var mCurrentTextPrimaryColor = Color.WHITE
     private var animatingColorTransition: AnimatingColorTransition? = null
 
     override fun onHook() {
@@ -160,12 +161,11 @@ object AndroidNewStyle : YukiBaseHooker() {
                 val packageName = data.current().field {
                     name = "packageName"
                 }.string()
-                val mPrevTextPrimaryColorStateList = ColorStateList.valueOf(mPrevTextPrimaryColor)
-                titleText.setTextColor(mPrevTextPrimaryColor)
-                artistText.setTextColor(mPrevTextPrimaryColor)
+                val mPrevTextPrimaryColorStateList = ColorStateList.valueOf(mCurrentTextPrimaryColor)
+                titleText.setTextColor(mCurrentTextPrimaryColor)
+                artistText.setTextColor(mCurrentTextPrimaryColor)
                 seamlessIcon.imageTintList = mPrevTextPrimaryColorStateList
                 action0.imageTintList = mPrevTextPrimaryColorStateList
-                action1.imageTintList = mPrevTextPrimaryColorStateList
                 action1.imageTintList = mPrevTextPrimaryColorStateList
                 action2.imageTintList = mPrevTextPrimaryColorStateList
                 action3.imageTintList = mPrevTextPrimaryColorStateList
@@ -175,10 +175,10 @@ object AndroidNewStyle : YukiBaseHooker() {
                 actionPrev.imageTintList = mPrevTextPrimaryColorStateList
                 seekBar.thumb.setTintList(mPrevTextPrimaryColorStateList)
                 seekBar.progressTintList = mPrevTextPrimaryColorStateList
-                scrubbingElapsedTimeView.setTextColor(mPrevTextPrimaryColor)
-                scrubbingTotalTimeView.setTextColor(mPrevTextPrimaryColor)
-                elapsedTimeView.setTextColor(mPrevTextPrimaryColor)
-                totalTimeView.setTextColor(mPrevTextPrimaryColor)
+                scrubbingElapsedTimeView.setTextColor(mCurrentTextPrimaryColor)
+                scrubbingTotalTimeView.setTextColor(mCurrentTextPrimaryColor)
+                elapsedTimeView.setTextColor(mCurrentTextPrimaryColor)
+                totalTimeView.setTextColor(mCurrentTextPrimaryColor)
 
                 mBackgroundExecutor.execute {
                     // Album art
@@ -228,12 +228,12 @@ object AndroidNewStyle : YukiBaseHooker() {
                             if (useAnim) {
                                 if (animatingColorTransition == null) {
                                     animatingColorTransition = AnimatingColorTransition(applyColor = {
+                                        mCurrentTextPrimaryColor = it
                                         val currentColorStateList = ColorStateList.valueOf(it)
                                         titleText.setTextColor(it)
                                         artistText.setTextColor(it)
                                         seamlessIcon.imageTintList = currentColorStateList
                                         action0.imageTintList = currentColorStateList
-                                        action1.imageTintList = currentColorStateList
                                         action1.imageTintList = currentColorStateList
                                         action2.imageTintList = currentColorStateList
                                         action3.imageTintList = currentColorStateList
@@ -251,12 +251,12 @@ object AndroidNewStyle : YukiBaseHooker() {
                                 }
                                 animatingColorTransition!!.animateToNewColor(textPrimary)
                             } else {
+                                mCurrentTextPrimaryColor = textPrimary
                                 val textPrimaryColorStateList = ColorStateList.valueOf(textPrimary)
                                 titleText.setTextColor(textPrimary)
                                 artistText.setTextColor(textSecondary)
                                 seamlessIcon.imageTintList = textPrimaryColorStateList
                                 action0.imageTintList = textPrimaryColorStateList
-                                action1.imageTintList = textPrimaryColorStateList
                                 action1.imageTintList = textPrimaryColorStateList
                                 action2.imageTintList = textPrimaryColorStateList
                                 action3.imageTintList = textPrimaryColorStateList

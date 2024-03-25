@@ -36,7 +36,6 @@ import com.highcapable.yukihookapi.hook.factory.current
 import com.highcapable.yukihookapi.hook.factory.method
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.Prefs
-import kotlin.math.sqrt
 
 object StyleCustomHookEntry : YukiBaseHooker() {
     // background: 0 -> Default; 1 -> Enhanced; 2 -> Advanced textures; 3 -> Blurred cover; 4 -> AndroidNewStyle; 5 -> AndroidOldStyle
@@ -104,16 +103,16 @@ object StyleCustomHookEntry : YukiBaseHooker() {
 
     fun Bitmap.brightness(): Float {
         var totalBrightness = 0f
-        val totalPixels = this.width * this.height
+        val totalPixels = this.width * this.height / 25
 
-        for (x in 0 until this.width) {
-            for (y in 0 until this.height) {
+        for (x in 0 until this.width / 5) {
+            for (y in 0 until this.height step 5) {
                 val pixel = this.getPixel(x, y)
                 val red = Color.red(pixel)
                 val green = Color.green(pixel)
                 val blue = Color.blue(pixel)
                 val brightness =
-                    sqrt(0.299f * red * red + 0.587f * green * green + 0.114f * blue * blue)
+                    0.299f * red + 0.587f * green + 0.114f * blue
                 totalBrightness += brightness
             }
         }

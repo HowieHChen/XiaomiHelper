@@ -136,12 +136,12 @@ object EnhancedStyle : YukiBaseHooker() {
                 albumView.setImageDrawable(BitmapDrawable(mContext.resources, newBitmap))
 
                 // Capture width & height from views in foreground for artwork scaling in background
-                val width = mediaBg.measuredWidth
-                val height = mediaBg.measuredHeight
-                if (width == 0 || height == 0) {
-                    Trace.endAsyncSection(traceName, traceCookie)
-                    return@after
-                }
+                val width = mediaBg.measuredWidth.takeIf { it != 0 } ?: artworkLayer.intrinsicWidth
+                val height = mediaBg.measuredHeight.takeIf { it != 0 } ?: artworkLayer.intrinsicHeight
+//                if (width == 0 || height == 0) {
+//                    Trace.endAsyncSection(traceName, traceCookie)
+//                    return@after
+//                }
 
                 val packageName = data.current().field {
                     name = "packageName"

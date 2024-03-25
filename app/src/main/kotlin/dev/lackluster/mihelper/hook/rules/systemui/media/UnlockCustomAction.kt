@@ -21,11 +21,16 @@
 package dev.lackluster.mihelper.hook.rules.systemui.media
 
 import android.content.Context
+import android.content.res.Resources
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.Icon
+import android.graphics.drawable.ScaleDrawable
 import android.media.session.PlaybackState.CustomAction
+import android.view.Gravity
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.current
 import com.highcapable.yukihookapi.hook.factory.method
+import com.highcapable.yukihookapi.hook.log.YLog
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.factory.hasEnable
 
@@ -48,9 +53,14 @@ object UnlockCustomAction : YukiBaseHooker() {
 //            "com.spotify.music",
 //        )
 //    }
-    private val allowScalePkgList by lazy {
+    private val skipPkgList by lazy {
         listOf(
-            "com.miui.player"
+            "com.miui.player",
+        )
+    }
+    private val forceScalePkgList by lazy {
+        listOf(
+            "com.apple.android.music",
         )
     }
 
@@ -70,15 +80,23 @@ object UnlockCustomAction : YukiBaseHooker() {
 //                            Icon.createWithResource(pkgName, customAction.icon).loadDrawable(context)
 //                        )
 //                    }
-                    if (pkgName in allowScalePkgList) {
+                    if (pkgName in skipPkgList) {
                         return@after
                     }
                     val customAction = this.args(0).any() as? CustomAction? ?: return@after
                     val mediaDataManager = this.instance.current().field { name = "this\$0" }.any() ?: return@after
                     val context = mediaDataManager.current().field { name = "context" }.any() as Context
-                    mediaAction.current().field { name = "icon" }.set(
-                        Icon.createWithResource(pkgName, customAction.icon).loadDrawable(context)
-                    )
+                    val drawable = Icon.createWithResource(pkgName, customAction.icon).loadDrawable(context) as Drawable
+                    val maxSize = maxOf(drawable.intrinsicHeight, drawable.intrinsicWidth) / Resources.getSystem().displayMetrics.density
+                    if (pkgName in forceScalePkgList || maxSize > 45) {
+                        val scale = 1 - (24 / maxSize) * 44 / 40
+                        YLog.info(scale.toString())
+                        mediaAction.current().field { name = "icon" }.set(
+                            ScaleDrawable(drawable, Gravity.CENTER, scale, scale).apply { level = 1 }
+                        )
+                    } else {
+                        mediaAction.current().field { name = "icon" }.set(drawable)
+                    }
                 }
             }
         }

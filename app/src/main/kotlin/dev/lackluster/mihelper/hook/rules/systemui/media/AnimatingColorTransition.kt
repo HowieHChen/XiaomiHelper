@@ -10,9 +10,9 @@ class AnimatingColorTransition(
 ) : ValueAnimator.AnimatorUpdateListener {
     private val argbEvaluator = ArgbEvaluator()
     private val valueAnimator = buildAnimator()
-    var sourceColor: Int = defaultColor
-    var currentColor: Int = defaultColor
-    var targetColor: Int = defaultColor
+    private var sourceColor: Int = defaultColor
+    private var currentColor: Int = defaultColor
+    private var targetColor: Int = defaultColor
 
     override fun onAnimationUpdate(animation: ValueAnimator) {
         currentColor = argbEvaluator.evaluate(animation.animatedFraction, sourceColor, targetColor) as Int
@@ -34,7 +34,7 @@ class AnimatingColorTransition(
         applyColor(defaultColor)
     }
 
-    fun buildAnimator(): ValueAnimator {
+    private fun buildAnimator(): ValueAnimator {
         val animator = ValueAnimator.ofFloat(0f, 1f)
         animator.duration = 333
         animator.addUpdateListener(this)
