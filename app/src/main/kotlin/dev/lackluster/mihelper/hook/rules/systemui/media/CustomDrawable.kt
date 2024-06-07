@@ -31,7 +31,7 @@ class CustomDrawable(
         gradient.shape = GradientDrawable.RECTANGLE
         background.color = currentColor
         gradient.colors = intArrayOf(
-            currentColor,
+            currentColor and 0x00ffffff or (51 shl 24),
             currentColor and 0x00ffffff or (51 shl 24)
         )
         backgroundAnimation =
@@ -70,7 +70,7 @@ class CustomDrawable(
         background.draw(p0)
         gradient.colors = intArrayOf(
             currentColor,
-            currentColor and 0x00ffffff or (51 shl 24)
+            currentColor and 0x00ffffff or (51 shl 24),
         )
         gradient.setBounds(bounds.width() - bounds.height(), 0, bounds.width(), bounds.height())
         gradient.draw(p0)

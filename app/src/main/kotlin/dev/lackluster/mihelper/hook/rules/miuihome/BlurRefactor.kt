@@ -17,6 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
+/*
 
 package dev.lackluster.mihelper.hook.rules.miuihome
 
@@ -28,6 +29,7 @@ import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.LinearInterpolator
 import android.view.animation.PathInterpolator
+import android.widget.FrameLayout
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.constructor
 import com.highcapable.yukihookapi.hook.factory.current
@@ -42,6 +44,7 @@ import dev.lackluster.mihelper.BuildConfig
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.data.PrefDefValue
 import dev.lackluster.mihelper.data.PrefKey
+import dev.lackluster.mihelper.hook.rules.miuihome.refactor.WallpaperZoomManager
 import dev.lackluster.mihelper.hook.view.MiBlurView
 import dev.lackluster.mihelper.utils.Device
 import dev.lackluster.mihelper.utils.MiBlurUtils
@@ -50,8 +53,8 @@ import dev.lackluster.mihelper.utils.factory.hasEnable
 import java.lang.reflect.Method
 import java.util.concurrent.Executor
 
-object BlurEnhance : YukiBaseHooker() {
-    private val printDebugInfo = BuildConfig.DEBUG // && false
+object BlurRefactor : YukiBaseHooker() {
+    private val PRINT_DEBUG_INFO = BuildConfig.DEBUG // && false
 
     private val blurUtils by lazy {
         "com.miui.home.launcher.common.BlurUtils".toClass()
@@ -71,47 +74,17 @@ object BlurEnhance : YukiBaseHooker() {
             modifiers { isStatic }
         }.get().any()
     }
-    private val overviewStateAlpha by lazy {
-        "com.miui.home.recents.OverviewState".toClass().method {
-            name = "getShortcutMenuLayerAlpha"
-        }
-    }
-    private val overviewStateScale by lazy {
-        "com.miui.home.recents.OverviewState".toClass().method {
-            name = "getShortcutMenuLayerScale"
-        }
-    }
     private val isBackgroundBlurEnabled by lazy {
         "com.miui.home.launcher.common.BlurUtilities".toClass(). field {
             name = "IS_BACKGROUND_BLUR_ENABLED"
             modifiers { isStatic }
         }.get()
     }
-//    private val overviewStateFromFsGesture by lazy {
-//        "com.miui.home.launcher.LauncherState".toClass().field {
-//            name = "mIsFromFsGesture"
-//        }.get(overviewState)
-//    }
-//    private val isInMultiWindowMode by lazy {
-//        "com.miui.home.launcher.DeviceConfig".toClass().method {
-//            name = "isInMultiWindowModeCompatAndroidT"
-//            modifiers { isStatic }
-//        }.get().boolean()
-//    }
     private val navStubView by lazy {
         "com.miui.home.recents.NavStubView".toClass()
     }
-//    private val mHomeFadeOutAnim by lazy {
-//        navStubView.field {
-//            name = "mHomeFadeOutAnim"
-//        }
-//    }
-//    private val checkUpdateShortcutMenuLayerType by lazy {
-//        navStubView.method {
-//            name = "checkUpdateShortcutMenuLayerType"
-//        }
-//    }
 
+    // Configuration
     private val appsUseBlur =
         Prefs.getBoolean(PrefKey.HOME_REFACTOR_APPS_BLUR, PrefDefValue.HOME_REFACTOR_APPS_BLUR)
     private val appsBlurRadius =
@@ -154,10 +127,6 @@ object BlurEnhance : YukiBaseHooker() {
     private val wallNonlinearPathY2 =
         Prefs.getFloat(PrefKey.HOME_REFACTOR_WALL_NONLINEAR_PATH_Y2, PrefDefValue.HOME_REFACTOR_WALL_NONLINEAR_PATH_Y2)
 
-    private val launchShow =
-        Prefs.getBoolean(PrefKey.HOME_REFACTOR_LAUNCH_SHOW, PrefDefValue.HOME_REFACTOR_LAUNCH_SHOW)
-    private val launchScale =
-        Prefs.getFloat(PrefKey.HOME_REFACTOR_LAUNCH_SCALE, PrefDefValue.HOME_REFACTOR_LAUNCH_SCALE)
 //    private val launchUseNonlinear =
 //        Prefs.getBoolean(PrefKey.HOME_REFACTOR_LAUNCH_NONLINEAR, PrefDefValue.HOME_REFACTOR_LAUNCH_NONLINEAR)
 //    private val launchNonlinearFactor =
@@ -199,9 +168,10 @@ object BlurEnhance : YukiBaseHooker() {
             YLog.warn("The High-quality materials function is unsupported.")
             return
         }
-        var transitionBlurView : MiBlurView? = null
-        var wallpaperBlurView : MiBlurView? = null
-        var minusBlurView : MiBlurView? = null
+        var transitionBlurView: MiBlurView? = null
+        var folderBlurView: MiBlurView? = null
+        var wallpaperBlurView: MiBlurView? = null
+        var minusBlurView: MiBlurView? = null
         hasEnable(PrefKey.HOME_BLUR_REFACTOR) {
             // Block original blur
             if (extraCompatibility) {
@@ -233,6 +203,8 @@ object BlurEnhance : YukiBaseHooker() {
                         isBackgroundBlurEnabled.setTrue()
                     }
                     val launcher = this.args(0).any()
+                    val viewGroup = XposedHelpers.getObjectField(launcher, "mLauncherView") as ViewGroup
+                    // Transition
                     transitionBlurView = MiBlurView(launcher as Activity)
                     transitionBlurView?.let {
                         it.setBlur(appsUseBlur, appsBlurRadius)
@@ -246,6 +218,33 @@ object BlurEnhance : YukiBaseHooker() {
                             it.setPassWindowBlur(true)
                         }
                     }
+                    viewGroup.addView(transitionBlurView, viewGroup.indexOfChild(
+                        XposedHelpers.getObjectField(launcher, "mOverviewPanel") as View
+                    ).coerceAtLeast(0))
+                    // Folder
+                    folderBlurView = MiBlurView(launcher)
+                    folderBlurView?.let {
+                        it.setBlur(wallUseBlur, wallBlurRadius)
+                        it.setDim(wallUseDim, wallDimAlpha)
+                        when (wallUseNonlinearType) {
+                            1 -> it.setNonlinear(true, DecelerateInterpolator(wallNonlinearDeceFactor))
+                            2 -> it.setNonlinear(true, PathInterpolator(wallNonlinearPathX1, wallNonlinearPathY1, wallNonlinearPathX2, wallNonlinearPathY2))
+                            else -> it.setNonlinear(false, LinearInterpolator())
+                        }
+                        if (extraCompatibility) {
+                            it.setPassWindowBlur(true)
+                        }
+                    }
+                    val mSearchEdgeLayout = XposedHelpers.getObjectField(launcher, "mSearchEdgeLayout") as FrameLayout
+                    val mFolderCling = XposedHelpers.getObjectField(launcher, "mFolderCling") as FrameLayout
+                    mSearchEdgeLayout.addView(folderBlurView, mSearchEdgeLayout.indexOfChild(mFolderCling).coerceAtLeast(0))
+                    val mDragLayer = XposedHelpers.getObjectField(launcher, "mDragLayer") as FrameLayout
+                    mDragLayer.clipChildren = false
+                    val mShortcutMenuLayer = XposedHelpers.getObjectField(launcher, "mShortcutMenuLayer") as FrameLayout
+                    // val mMinusOneScreenView = XposedHelpers.getObjectField(launcher, "mMinusOneScreenView") as FrameLayout
+                    mShortcutMenuLayer.clipChildren = false
+                    // mMinusOneScreenView.clipChildren = false
+                    // Wallpaper
                     wallpaperBlurView = MiBlurView(launcher)
                     wallpaperBlurView?.let {
                         it.setBlur(wallUseBlur, wallBlurRadius)
@@ -259,6 +258,8 @@ object BlurEnhance : YukiBaseHooker() {
                             it.setPassWindowBlur(true)
                         }
                     }
+                    viewGroup.addView(wallpaperBlurView, 0)
+                    // Minus
                     minusBlurView = MiBlurView(launcher)
                     minusBlurView?.let {
                         it.setBlur(minusUseBlur, minusBlurRadius)
@@ -268,17 +269,13 @@ object BlurEnhance : YukiBaseHooker() {
                             it.setPassWindowBlur(true)
                         }
                     }
-                    val viewGroup = XposedHelpers.getObjectField(launcher, "mLauncherView") as ViewGroup
-                    viewGroup.addView(transitionBlurView, viewGroup.indexOfChild(
-                        XposedHelpers.getObjectField(launcher, "mOverviewPanel") as View
-                    ).coerceAtLeast(0))
-                    viewGroup.addView(wallpaperBlurView, 0)
                     if (minusOverlapMode) {
                         viewGroup.addView(minusBlurView)
                     }
                     else {
                         viewGroup.addView(minusBlurView, 0)
                     }
+
                 }
             }
             // Remove blur view from Launcher
@@ -296,7 +293,12 @@ object BlurEnhance : YukiBaseHooker() {
                     if (minusBlurView?.isAttachedToWindow == true) {
                         viewGroup.removeView(minusBlurView)
                     }
+                    val mSearchEdgeLayout = XposedHelpers.getObjectField(this.args(0).any(), "mSearchEdgeLayout") as FrameLayout
+                    if (folderBlurView?.isAttachedToWindow == true) {
+                        mSearchEdgeLayout.removeView(folderBlurView)
+                    }
                     transitionBlurView = null
+                    folderBlurView = null
                     wallpaperBlurView = null
                     minusBlurView = null
                     wallpaperZoomManager = null
@@ -308,8 +310,8 @@ object BlurEnhance : YukiBaseHooker() {
                 paramCount = 3
             }.hook {
                 before {
-                    if (printDebugInfo)
-                        YLog.info("fastBlur target: ${this.args(1).float()} useAnim: ${this.args(2).float()}")
+                    if (PRINT_DEBUG_INFO)
+                        YLog.info("fastBlur target: ${this.args(0).float()} useAnim: ${this.args(2).float()}")
                     wallpaperBlurView?.show(this.args(2).boolean(), this.args(0).float())
                     this.result = null
                 }
@@ -320,7 +322,7 @@ object BlurEnhance : YukiBaseHooker() {
                 paramCount = 4
             }.hook {
                 before {
-                    if (printDebugInfo)
+                    if (PRINT_DEBUG_INFO)
                         YLog.info("fastBlur target: ${this.args(0).float()} useAnim: ${this.args(2).boolean()}")
                     wallpaperBlurView?.showWithDuration(this.args(2).boolean(), this.args(0).float(), 350)
                     this.result = null
@@ -331,19 +333,24 @@ object BlurEnhance : YukiBaseHooker() {
                 name = "fastBlurWhenStartOpenOrCloseApp"
             }.hook {
                 before {
-                    if (printDebugInfo)
+                    if (PRINT_DEBUG_INFO)
                         YLog.info("fastBlurWhenStartOpenOrCloseApp isOpen: ${this.args(0).boolean()}")
                     val isOpen = this.args(0).boolean()
+                    val launcher = this.args(1).any() ?: return@before
                     if (isOpen) {
                         wallpaperZoomManager?.zoomOut(true)
                         transitionBlurView?.show(true)
                         isStartingApp = true
-                    }
-                    else {
+                    } else {
                         // "isOpen" seems to always be true
-                        if (shouldBlurWallpaper(this.args(1).any() ?: return@before)) {
-                            wallpaperBlurView?.show(false)
-                        }
+//                        if (isInNormalEditing(launcher)) {
+//                            wallpaperBlurView?.show(false)
+//                        }
+//                        if (isFolderShowing(launcher)) {
+//                            folderBlurView?.show(false)
+//                        }
+                        wallpaperBlurView?.setStatus(isInNormalEditing(launcher))
+                        folderBlurView?.setStatus(isFolderShowing(launcher))
                         wallpaperZoomManager?.zoomOut(false)
                         transitionBlurView?.show(false)
                         wallpaperZoomManager?.zoomIn(true)
@@ -357,16 +364,23 @@ object BlurEnhance : YukiBaseHooker() {
                 name = "fastBlurWhenFinishOpenOrCloseApp"
             }.hook {
                 replaceUnit {
-                    if (printDebugInfo)
+                    if (PRINT_DEBUG_INFO)
                         YLog.info("fastBlurWhenFinishOpenOrCloseApp")
                     wallpaperZoomManager?.zoomIn(false)
                     transitionBlurView?.hide(false)
-                    if (shouldBlurWallpaper(this.args(0).any() ?: return@replaceUnit)) {
-                        wallpaperBlurView?.show(false)
-                    }
-                    else {
-                        wallpaperBlurView?.hide(false)
-                    }
+                    val launcher = this.args(0).any() ?: return@replaceUnit
+//                    if (isInNormalEditing(launcher)) {
+//                        wallpaperBlurView?.show(false)
+//                    } else {
+//                        wallpaperBlurView?.hide(false)
+//                    }
+//                    if (isFolderShowing(launcher)) {
+//                        folderBlurView?.show(false)
+//                    } else {
+//                        folderBlurView?.hide(false)
+//                    }
+                    wallpaperBlurView?.setStatus(isInNormalEditing(launcher))
+                    folderBlurView?.setStatus(isFolderShowing(launcher))
                     isStartingApp = false
                 }
             }
@@ -375,7 +389,7 @@ object BlurEnhance : YukiBaseHooker() {
                 name = "fastBlurWhenUseCompleteRecentsBlur"
             }.hook {
                 replaceUnit {
-                    if (printDebugInfo)
+                    if (PRINT_DEBUG_INFO)
                         YLog.info("fastBlurWhenUseCompleteRecentsBlur useAnim: ${this.args(2).boolean()} target: ${this.args(1).float()}]")
                     val useAnim = this.args(2).boolean()
                     mainThreadExecutor.execute {
@@ -408,13 +422,19 @@ object BlurEnhance : YukiBaseHooker() {
                 name = "resetBlurWhenUseCompleteRecentsBlur"
             }.hook {
                 replaceUnit {
-                    if (printDebugInfo)
+                    if (PRINT_DEBUG_INFO)
                         YLog.info("resetBlurWhenUseCompleteRecentsBlur")
                     mainThreadExecutor.execute {
                         val useAnim = this.args(1).boolean()
-                        if (shouldBlurWallpaper(this.args(0).any() ?: return@execute)) {
-                            wallpaperBlurView?.show(false)
-                        }
+                        val launcher = this.args(0).any() ?: return@execute
+                        wallpaperBlurView?.setStatus(isInNormalEditing(launcher))
+                        folderBlurView?.setStatus(isFolderShowing(launcher))
+//                        if (isInNormalEditing(launcher)) {
+//                            wallpaperBlurView?.show(false)
+//                        }
+//                        if (isFolderShowing(launcher)) {
+//                            folderBlurView?.show(false)
+//                        }
 //                        if (usrAnim) {
 //                            transitionBlurView.show(false)
 //                        }
@@ -429,10 +449,10 @@ object BlurEnhance : YukiBaseHooker() {
                 name = "fastBlurWhenEnterRecents"
             }.hook {
                 replaceUnit {
-                    if (printDebugInfo)
+                    if (PRINT_DEBUG_INFO)
                         YLog.info("fastBlurWhenEnterRecents useAnim: ${this.args(2).boolean()}")
                     if (XposedHelpers.getBooleanField(this.args(1).any(), "mIsFromFsGesture")) {
-                        if (printDebugInfo)
+                        if (PRINT_DEBUG_INFO)
                             YLog.info("fastBlurWhenEnterRecents skip (IsFromFsGesture)")
                         return@replaceUnit
                     }
@@ -446,17 +466,23 @@ object BlurEnhance : YukiBaseHooker() {
                 name = "fastBlurWhenExitRecents"
             }.hook {
                 replaceUnit {
-                    if (printDebugInfo)
+                    if (PRINT_DEBUG_INFO)
                         YLog.info("fastBlurWhenExitRecents useAnim: ${this.args(2).boolean()}")
                     if (XposedHelpers.getBooleanField(this.args(1).any(), "mIsFromFsGesture")) {
-                        if (printDebugInfo)
+                        if (PRINT_DEBUG_INFO)
                             YLog.info("fastBlurWhenExitRecents skip (IsFromFsGesture)")
                         return@replaceUnit
                     }
                     val useAnim = this.args(2).boolean()
-                    if (shouldBlurWallpaper(this.args(0).any() ?: return@replaceUnit)) {
-                        wallpaperBlurView?.show(false)
-                    }
+                    val launcher = this.args(0).any() ?: return@replaceUnit
+                    wallpaperBlurView?.setStatus(isInNormalEditing(launcher))
+                    folderBlurView?.setStatus(isFolderShowing(launcher))
+//                    if (isInNormalEditing(launcher)) {
+//                        wallpaperBlurView?.show(false)
+//                    }
+//                    if (isFolderShowing(launcher)) {
+//                        folderBlurView?.show(false)
+//                    }
 //                    if (usrAnim) {
 //                        transitionBlurView.show(false)
 //                    }
@@ -471,13 +497,19 @@ object BlurEnhance : YukiBaseHooker() {
                 name = "resetBlur"
             }.hook {
                 replaceUnit {
-                    if (printDebugInfo)
+                    if (PRINT_DEBUG_INFO)
                         YLog.info("resetBlur useAnim:${this.args(1).boolean()}")
                     mainThreadExecutor.execute {
                         val useAnim = this.args(1).boolean()
-                        if (shouldBlurWallpaper(this.args(0).any() ?: return@execute)) {
-                            wallpaperBlurView?.show(false)
-                        }
+                        val launcher = this.args(0).any() ?: return@execute
+                        wallpaperBlurView?.setStatus(isInNormalEditing(launcher))
+                        folderBlurView?.setStatus(isFolderShowing(launcher))
+//                        if (isInNormalEditing(launcher)) {
+//                            wallpaperBlurView?.show(false)
+//                        }
+//                        if (isFolderShowing(launcher)) {
+//                            folderBlurView?.show(false)
+//                        }
 //                        if (usrAnim) {
 //                            transitionBlurView.show(false)
 //                        }
@@ -499,7 +531,7 @@ object BlurEnhance : YukiBaseHooker() {
                 name = "fastBlurWhenEnterFolderPicker"
             }.hook {
                 replaceUnit {
-                    if (printDebugInfo)
+                    if (PRINT_DEBUG_INFO)
                         YLog.info("fastBlurWhenEnterFolderPicker")
                     wallpaperBlurView?.showWithDuration(
                         this.args(2).boolean(), this.args(1).float(), this.args(3).int()
@@ -512,10 +544,10 @@ object BlurEnhance : YukiBaseHooker() {
                 name = "fastBlurWhenExitFolderPicker"
             }.hook {
                 replaceUnit {
-                    if (printDebugInfo)
+                    if (PRINT_DEBUG_INFO)
                         YLog.info("fastBlurWhenExitFolderPicker")
                     val useAnim = this.args(2).boolean()
-                    if (shouldBlurWallpaper(this.args(0).any() ?: return@replaceUnit)) {
+                    if (isInNormalEditing(this.args(0).any() ?: return@replaceUnit)) {
                         return@replaceUnit
                     }
                     if (
@@ -538,7 +570,7 @@ object BlurEnhance : YukiBaseHooker() {
                 name = "fastBlurWhenEnterMultiWindowMode"
             }.hook {
                 replaceUnit {
-                    if (printDebugInfo)
+                    if (PRINT_DEBUG_INFO)
                         YLog.info("fastBlurWhenEnterMultiWindowMode")
                     if (
                         XposedHelpers.getObjectField(
@@ -557,7 +589,7 @@ object BlurEnhance : YukiBaseHooker() {
                 name = "fastBlurWhenGestureResetTaskView"
             }.hook {
                 replaceUnit {
-                    if (printDebugInfo)
+                    if (PRINT_DEBUG_INFO)
                         YLog.info("fastBlurWhenGestureResetTaskView  useAnim: ${this.args(1).boolean()}")
                     if (
                         XposedHelpers.getObjectField(
@@ -581,7 +613,7 @@ object BlurEnhance : YukiBaseHooker() {
                 name = "restoreBlurRatioAfterAndroidS"
             }.hook {
                 replaceUnit {
-                    if (printDebugInfo)
+                    if (PRINT_DEBUG_INFO)
                         YLog.info("restoreBlurRatioAfterAndroidS")
 //                    mainThreadExecutor?.execute {
 //                        wallpaperZoomManager?.restore(true)
@@ -656,35 +688,47 @@ object BlurEnhance : YukiBaseHooker() {
                 blurUtils.method {
                     name = "fastBlurWhenOpenOrCloseFolder"
                 }.ignored().hook {
-                    replaceUnit {
-                        if (printDebugInfo)
-                            YLog.info("fastBlurWhenOpenOrCloseFolder")
-                        val useAnim = this.args(1).boolean()
-                        if (shouldBlurWallpaper(this.args(0).any() ?: return@replaceUnit)) {
-                            wallpaperBlurView?.show(useAnim)
-                        }
-                        else {
-                            wallpaperBlurView?.hide(useAnim)
-                        }
+                    intercept()
+//                    replaceUnit {
+//                        if (PRINT_DEBUG_INFO)
+//                            YLog.info("fastBlurWhenOpenOrCloseFolder")
+//                        val useAnim = this.args(1).boolean()
+//                        val launcher = this.args(0).any() ?: return@replaceUnit
+//                        if (isInNormalEditing(launcher)) {
+//                            wallpaperBlurView?.show(useAnim)
+//                        } else {
+//                            wallpaperBlurView?.hide(useAnim)
+//                        }
+//                        if (isFolderShowing(launcher)) {
+//                            folderBlurView?.show(useAnim)
+//                        } else {
+//                            folderBlurView?.hide(useAnim)
+//                        }
+//                        wallpaperBlurView?.setStatus(isInNormalEditing(launcher), useAnim)
+//                        folderBlurView?.setStatus(isFolderShowing(launcher), useAnim)
+//                        if (shouldBlurWallpaper(this.args(0).any() ?: return@replaceUnit)) {
+//                            wallpaperBlurView?.show(useAnim)
+//                            folderBlurView?.show(useAnim)
+//                        }
+//                        else {
+//                            wallpaperBlurView?.hide(useAnim)
+//                            folderBlurView?.hide(useAnim)
+//                        }
+//                    }
+                }
+            }
+            // Folder blur
+            XposedHelpers.findAndHookMethod(
+                "com.miui.home.launcher.Launcher", this.appClassLoader,
+                "fadeInOrOutScreenContentWhenFolderAnimate", BooleanType,
+                object : XC_MethodHook() {
+                    override fun afterHookedMethod(param: MethodHookParam?) {
+                        val isOpen = param?.args?.get(0) as Boolean? ?: return
+                        folderBlurView?.setStatus(isOpen, true)
                     }
                 }
-            }
-            overviewStateScale.hook {
-                replaceTo(launchScale)
-            }
-            if (launchShow && !Device.isPad) {
-                navStubView.method {
-                    name = "changeAlphaScaleForFsGesture"
-                    paramCount = 2
-                }.hook {
-                    before {
-                        this.args(0).set(1.0f)
-                    }
-                }
-                overviewStateAlpha.hook {
-                    replaceTo(1.0f)
-                }
-            }
+            )
+
 //            if (launchUseNonlinear) {
 //                navStubView.method {
 //                    name = "startHomeFadeOutAnim"
@@ -819,12 +863,16 @@ object BlurEnhance : YukiBaseHooker() {
                     }
                 }
             }
+
         }
     }
-    private fun shouldBlurWallpaper(launcher: Any): Boolean {
-//        val isInNormalEditing = XposedHelpers.callMethod(launcher, "isInNormalEditing") as Boolean
-//        val isFoldShowing = XposedHelpers.callMethod(launcher, "isFolderShowing") as Boolean
-        return (XposedHelpers.callMethod(launcher, "isShouldBlur") as Boolean)
+
+    fun isFolderShowing(launcher: Any): Boolean {
+        return (XposedHelpers.callMethod(launcher, "isFolderShowing") as Boolean)
+    }
+
+    fun isInNormalEditing(launcher: Any): Boolean {
+        return (XposedHelpers.callMethod(launcher, "isInNormalEditing") as Boolean)
     }
 
     private fun WallpaperZoomManager.zoomOut(useAnim: Boolean, targetRatio: Float = 1.0f) {
@@ -839,3 +887,5 @@ object BlurEnhance : YukiBaseHooker() {
         }
     }
 }
+
+*/

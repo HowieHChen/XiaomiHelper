@@ -286,11 +286,11 @@
     <string name="button_disable">禁用</string>
     <string name="page_home_refactor">自定义模糊效果</string>
     <string name="ui_title_home_refactor_main">总开关</string>
-    <string name="ui_title_home_refactor_apps">应用模糊</string>
-    <string name="ui_title_home_refactor_wallpaper">壁纸模糊</string>
+    <string name="ui_title_home_refactor_apps">应用图标的模糊效果</string>
+    <string name="ui_title_home_refactor_wallpaper">壁纸的模糊效果</string>
     <string name="ui_title_home_refactor_launch">桌面视图</string>
     <string name="home_refactor_apps_tips">用于模糊应用程序，模糊会出现在启动应用、关闭应用和处于最近任务视图时</string>
-    <string name="home_refactor_wallpaper_tips">用于模糊壁纸，模糊会出现在编辑模式和处于文件夹视图时</string>
+    <string name="home_refactor_wallpaper_tips">用于模糊壁纸，模糊会出现在处于编辑模式时</string>
     <string name="home_refactor_blur_radius">模糊半径</string>
     <string name="home_refactor_blur_radius_tips">值越大，模糊效果越明显，但也会消耗更多性能</string>
     <string name="home_refactor_extra_fix">额外修复模糊缺失</string>
@@ -307,7 +307,7 @@
     <string name="media_style_custom_blur">模糊封面</string>
     <string name="home_refactor_minus_tips">用于模糊整个桌面视图，模糊会出现在处于负一屏时</string>
     <string name="home_refactor_minus_overlap_mode">重叠模式</string>
-    <string name="ui_title_home_refactor_minus">负一屏模糊</string>
+    <string name="ui_title_home_refactor_minus">负一屏背景的模糊</string>
     <string name="home_refactor_launch_show_minus_tips">在进入负一屏时不隐藏桌面视图</string>
     <string name="home_refactor_minus_overlap_mode_tips">让负一屏悬浮在桌面之上</string>
     <string name="about_donate">捐赠</string>
@@ -396,4 +396,12 @@
     <string name="media_style_blur_radius">模糊半径</string>
     <string name="page_module">模块设置</string>
     <string name="media_style_android_reverse">自动反色</string>
+    <string name="ui_title_home_refactor_folder">文件夹背景的模糊效果</string>
+    <string name="home_refactor_folder_tips">用于模糊打开文件夹时的背景</string>
+    <string name="home_refactor_all_apps_bg">应用抽屉背景使用模糊效果</string>
+    <string name="home_refactor_all_apps_bg_tips">在打开应用抽屉时模糊壁纸</string>
+    <string name="home_refactor_launch_recents_tips">在最近任务视图中显示桌面视图</string>
+    <string name="home_refactor_launch_folder_tips">打开文件夹时显示桌面上的图标</string>
+    <string name="home_refactor_launch_minus_tips">在进入负一屏时不隐藏桌面视图</string>
+    <string name="module_disabled_tips">模块未启用。请在模块设置页中启用模块。</string>
 </resources>

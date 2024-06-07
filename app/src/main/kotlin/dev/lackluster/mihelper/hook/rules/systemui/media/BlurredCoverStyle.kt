@@ -18,6 +18,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+@file:Suppress("DEPRECATION")
 
 package dev.lackluster.mihelper.hook.rules.systemui.media
 
@@ -37,6 +38,7 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.Icon
 import android.graphics.drawable.TransitionDrawable
+import android.os.AsyncTask
 import android.os.Trace
 import android.view.Gravity
 import android.widget.ImageButton
@@ -53,7 +55,6 @@ import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.hook.rules.systemui.media.StyleCustomHookEntry.hardwareBlur
 import dev.lackluster.mihelper.hook.rules.systemui.media.StyleCustomHookEntry.scaleTransitionDrawableLayer
 import dev.lackluster.mihelper.utils.Prefs
-import java.util.concurrent.Executor
 
 
 object BlurredCoverStyle : YukiBaseHooker() {
@@ -75,6 +76,8 @@ object BlurredCoverStyle : YukiBaseHooker() {
     private var mPrevTextPrimaryColor = Color.WHITE
     private var mCurrentTextPrimaryColor = Color.WHITE
     private var animatingColorTransition: AnimatingColorTransition? = null
+    private var lastWidth = 0
+    private var lastHeight = 0
 
     override fun onHook() {
         miuiMediaControlPanelClass.method {
@@ -91,14 +94,6 @@ object BlurredCoverStyle : YukiBaseHooker() {
                     name = "mMediaViewHolder"
                     superClass()
                 }.any() ?: return@after
-                val mBackgroundExecutor = this.instance.current().field {
-                    name = "mBackgroundExecutor"
-                    superClass()
-                }.any() as? Executor ?: return@after
-                val mMainExecutor = this.instance.current().field {
-                    name = "mMainExecutor"
-                    superClass()
-                }.any() as? Executor ?: return@after
                 val mContext = this.instance.current().field {
                     name = "mContext"
                     superClass()
@@ -154,8 +149,22 @@ object BlurredCoverStyle : YukiBaseHooker() {
                 albumView.setImageDrawable(BitmapDrawable(mContext.resources, newBitmap))
 
                 // Capture width & height from views in foreground for artwork scaling in background
-                val width = mediaBg.measuredWidth.takeIf { it != 0 } ?: artworkLayer.intrinsicWidth
-                val height = mediaBg.measuredHeight.takeIf { it != 0 } ?: artworkLayer.intrinsicHeight
+                val width: Int
+                val height: Int
+                if (mediaBg.measuredWidth == 0 || mediaBg.measuredHeight == 0) {
+                    if (lastWidth == 0 || lastHeight == 0) {
+                        width = artworkLayer.intrinsicWidth
+                        height = artworkLayer.intrinsicHeight
+                    } else {
+                        width = lastWidth
+                        height = lastHeight
+                    }
+                } else {
+                    width = mediaBg.measuredWidth
+                    height = mediaBg.measuredHeight
+                    lastWidth = width
+                    lastHeight = height
+                }
 //                if (width == 0 || height == 0) {
 //                    Trace.endAsyncSection(traceName, traceCookie)
 //                    return@after
@@ -183,7 +192,7 @@ object BlurredCoverStyle : YukiBaseHooker() {
                 elapsedTimeView.setTextColor(mCurrentTextPrimaryColor)
                 totalTimeView.setTextColor(mCurrentTextPrimaryColor)
 
-                mBackgroundExecutor.execute {
+                AsyncTask.THREAD_POOL_EXECUTOR.execute {
                     // Album art
                     val mutableColorScheme: Any?
                     val artwork: Drawable?
@@ -216,7 +225,9 @@ object BlurredCoverStyle : YukiBaseHooker() {
                             return@execute
                         }
                     }
-                    val colorSchemeChanged: Boolean
+                    var textPrimary = Color.WHITE
+                    var textSecondary = Color.BLACK
+                    var colorSchemeChanged = false
                     if (mutableColorScheme != null) {
                         val neutral1 = mutableColorScheme.current().field { name = "neutral1" }.any()!!.current().field {
                             name = "allShades"
@@ -224,9 +235,20 @@ object BlurredCoverStyle : YukiBaseHooker() {
                         val neutral2 = mutableColorScheme.current().field { name = "neutral2" }.any()!!.current().field {
                             name = "allShades"
                         }.list<Int?>()
-                        val textPrimary = neutral1[1]!!
-                        val textSecondary = neutral2[3]!!
+                        textPrimary = neutral1[1]!!
+                        textSecondary = neutral2[3]!!
                         colorSchemeChanged = textPrimary != mPrevTextPrimaryColor
+                        mPrevTextPrimaryColor = textPrimary
+                    }
+                    val blurredBitmap = artwork!!.toBitmap().hardwareBlur(height.toFloat() / 100 * blurRadius)
+
+                    mediaBg.post(Runnable {
+                        if (reqId < mArtworkBoundId) {
+                            Trace.endAsyncSection(traceName, traceCookie)
+                            return@Runnable
+                        }
+                        mArtworkBoundId = reqId
+
                         if (colorSchemeChanged) {
                             if (useAnim) {
                                 if (animatingColorTransition == null) {
@@ -275,16 +297,6 @@ object BlurredCoverStyle : YukiBaseHooker() {
                                 totalTimeView.setTextColor(textPrimary)
                             }
                         }
-                        mPrevTextPrimaryColor = textPrimary
-                    }
-                    val blurredBitmap = artwork!!.toBitmap().hardwareBlur(height.toFloat() / 100 * blurRadius)
-
-                    mMainExecutor.execute(Runnable {
-                        if (reqId < mArtworkBoundId) {
-                            Trace.endAsyncSection(traceName, traceCookie)
-                            return@Runnable
-                        }
-                        mArtworkBoundId = reqId
 
                         val finalBackground = BitmapDrawable(mContext.resources, blurredBitmap)
                         // Bind the album view to the artwork or a transition drawable

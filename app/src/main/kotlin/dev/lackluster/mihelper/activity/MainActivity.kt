@@ -22,6 +22,7 @@ import dev.lackluster.mihelper.activity.pages.sub.HomeRefactorPage
 import dev.lackluster.mihelper.activity.pages.sub.IconTunerPage
 import dev.lackluster.mihelper.activity.pages.sub.MediaControlStylePage
 import dev.lackluster.mihelper.activity.pages.sub.StatusBarClockPage
+import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.BackupUtils
 import dev.lackluster.mihelper.utils.factory.getSP
 
@@ -30,6 +31,7 @@ class MainActivity : MIUIActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initAndCheck()
+        versionCompatible()
         super.onCreate(savedInstanceState)
     }
 
@@ -37,7 +39,17 @@ class MainActivity : MIUIActivity() {
     private fun initAndCheck(): Boolean {
         try {
             setSP(getSP(this))
-            return true
+            if (!safeSP.getBoolean(Pref.Key.Module.ENABLED, false)) {
+                MIUIDialog(this) {
+                    setTitle(R.string.dialog_warning)
+                    setMessage(R.string.module_disabled_tips)
+                    setCancelable(false)
+                    setRButton(R.string.button_ok) {
+                        showFragment("page_module")
+                        dismiss()
+                    }
+                }.show()
+            }
         } catch (exception: SecurityException) {
             MIUIDialog(this) {
                 setTitle(R.string.dialog_error)
@@ -47,8 +59,9 @@ class MainActivity : MIUIActivity() {
                     dismiss()
                 }
             }.show()
+            return false
         }
-        return false
+        return true
     }
 
     init {
@@ -111,5 +124,30 @@ class MainActivity : MIUIActivity() {
                 }
             }.show()
         }
+    }
+
+    private fun versionCompatible() {
+        val spVersion = safeSP.getInt(Pref.Key.Module.SP_VERSION, 0)
+        if (spVersion < 1) {
+            if (safeSP.getString(Pref.Key.MiuiHome.Refactor.APPS_BLUR_RADIUS_STR, "") == "") {
+                val oldValue = safeSP.getInt(Pref.Key.MiuiHome.Refactor.APPS_BLUR_RADIUS, -1)
+                if (oldValue != -1) {
+                    safeSP.putAny(Pref.Key.MiuiHome.Refactor.APPS_BLUR_RADIUS_STR, "${oldValue}px")
+                }
+            }
+            if (safeSP.getString(Pref.Key.MiuiHome.Refactor.WALLPAPER_BLUR_RADIUS_STR, "") == "") {
+                val oldValue = safeSP.getInt(Pref.Key.MiuiHome.Refactor.WALLPAPER_BLUR_RADIUS, -1)
+                if (oldValue != -1) {
+                    safeSP.putAny(Pref.Key.MiuiHome.Refactor.WALLPAPER_BLUR_RADIUS_STR, "${oldValue}px")
+                }
+            }
+            if (safeSP.getString(Pref.Key.MiuiHome.Refactor.MINUS_BLUR_RADIUS_STR, "") == "") {
+                val oldValue = safeSP.getInt(Pref.Key.MiuiHome.Refactor.MINUS_BLUR_RADIUS, -1)
+                if (oldValue != -1) {
+                    safeSP.putAny(Pref.Key.MiuiHome.Refactor.MINUS_BLUR_RADIUS_STR, "${oldValue}px")
+                }
+            }
+        }
+        safeSP.putAny(Pref.Key.Module.SP_VERSION, Pref.VERSION)
     }
 }

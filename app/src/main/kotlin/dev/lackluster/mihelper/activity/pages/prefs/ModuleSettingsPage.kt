@@ -28,6 +28,7 @@ import cn.fkj233.ui.activity.annotation.BMPage
 import cn.fkj233.ui.activity.data.BasePage
 import cn.fkj233.ui.activity.view.SpinnerV
 import cn.fkj233.ui.activity.view.SwitchV
+import cn.fkj233.ui.activity.view.TextSummaryV
 import cn.fkj233.ui.activity.view.TextV
 import dev.lackluster.mihelper.BuildConfig
 import dev.lackluster.mihelper.R
@@ -45,6 +46,13 @@ class ModuleSettingsPage : BasePage() {
         TextWithSwitch(
             TextV(textId = R.string.module_main_switch),
             SwitchV(Pref.Key.Module.ENABLED)
+        )
+        TextSummaryWithSwitch(
+            TextSummaryV(
+                textId = R.string.module_lite_mode,
+                tipsId = R.string.module_lite_mode_tips
+            ),
+            SwitchV(key = Pref.Key.Module.LITE_MODE)
         )
         TextWithSwitch(
             TextV(textId = R.string.module_hide_icon),

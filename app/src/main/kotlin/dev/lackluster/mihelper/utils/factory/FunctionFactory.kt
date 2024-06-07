@@ -44,6 +44,15 @@ fun Number.dp(context: Context) = dpFloat(context).toInt()
  */
 fun Number.dpFloat(context: Context) = toFloat() * context.resources.displayMetrics.density
 
+/**
+ * pxInt to dp
+ *
+ * pxInt 转换为 dp
+ * @param context using instance / 使用的实例
+ * @return [Int]
+ */
+fun Number.px(context: Context) = (toFloat() / context.resources.displayMetrics.density).toInt()
+
 @SuppressLint("WorldReadableFiles")
 fun getSP(context: Context, prefName: String = Prefs.NAME): SharedPreferences {
     return context.getSharedPreferences(prefName, Activity.MODE_WORLD_READABLE)

@@ -18,6 +18,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+@file:Suppress("DEPRECATION")
+
 package dev.lackluster.mihelper.hook.rules.systemui.media
 
 import android.app.WallpaperColors
@@ -35,6 +37,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.Icon
+import android.os.AsyncTask
 import android.os.Trace
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -48,7 +51,6 @@ import com.highcapable.yukihookapi.hook.log.YLog
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.hook.rules.systemui.media.StyleCustomHookEntry.brightness
 import dev.lackluster.mihelper.utils.Prefs
-import java.util.concurrent.Executor
 
 
 object AndroidOldStyle : YukiBaseHooker() {
@@ -70,7 +72,8 @@ object AndroidOldStyle : YukiBaseHooker() {
     private var mPrevTextPrimaryColor = Color.WHITE
     private var mCurrentTextPrimaryColor = Color.WHITE
     private var animatingColorTransition: AnimatingColorTransition? = null
-
+    private var lastWidth = 0
+    private var lastHeight = 0
 
     override fun onHook() {
         miuiMediaControlPanelClass.method {
@@ -87,14 +90,6 @@ object AndroidOldStyle : YukiBaseHooker() {
                     name = "mMediaViewHolder"
                     superClass()
                 }.any() ?: return@after
-                val mBackgroundExecutor = this.instance.current().field {
-                    name = "mBackgroundExecutor"
-                    superClass()
-                }.any() as? Executor ?: return@after
-//                val mMainExecutor = this.instance.current().field {
-//                    name = "mMainExecutor"
-//                    superClass()
-//                }.any() as? Executor ?: return@after
                 val mContext = this.instance.current().field {
                     name = "mContext"
                     superClass()
@@ -150,8 +145,22 @@ object AndroidOldStyle : YukiBaseHooker() {
                 albumView.setImageDrawable(BitmapDrawable(mContext.resources, newBitmap))
 
                 // Capture width & height from views in foreground for artwork scaling in background
-                val width = mediaBg.measuredWidth.takeIf { it != 0 } ?: artworkLayer.intrinsicWidth
-                val height = mediaBg.measuredHeight.takeIf { it != 0 } ?: artworkLayer.intrinsicHeight
+                val width: Int
+                val height: Int
+                if (mediaBg.measuredWidth == 0 || mediaBg.measuredHeight == 0) {
+                    if (lastWidth == 0 || lastHeight == 0) {
+                        width = artworkLayer.intrinsicWidth
+                        height = artworkLayer.intrinsicHeight
+                    } else {
+                        width = lastWidth
+                        height = lastHeight
+                    }
+                } else {
+                    width = mediaBg.measuredWidth
+                    height = mediaBg.measuredHeight
+                    lastWidth = width
+                    lastHeight = height
+                }
 //                if (width == 0 || height == 0) {
 //                    Trace.endAsyncSection(traceName, traceCookie)
 //                    return@after
@@ -179,7 +188,7 @@ object AndroidOldStyle : YukiBaseHooker() {
                 elapsedTimeView.setTextColor(mCurrentTextPrimaryColor)
                 totalTimeView.setTextColor(mCurrentTextPrimaryColor)
 
-                mBackgroundExecutor.execute {
+                AsyncTask.THREAD_POOL_EXECUTOR.execute {
                     // Album art
                     val mutableColorScheme: Any?
                     val artwork: Drawable?
@@ -212,6 +221,7 @@ object AndroidOldStyle : YukiBaseHooker() {
                             return@execute
                         }
                     }
+                    var textPrimary = Color.WHITE
                     var backgroundPrimary = Color.BLACK
                     var colorSchemeChanged = false
                     if (mutableColorScheme != null) {
@@ -220,7 +230,6 @@ object AndroidOldStyle : YukiBaseHooker() {
                                 .current().field {
                                     name = "allShades"
                                 }.list<Int?>()
-                        val textPrimary: Int?
                         if (allowReverse && newBitmap.brightness() >= 192) {
                             textPrimary = accent1[8]!!
                             backgroundPrimary = accent1[3]!!
@@ -229,6 +238,22 @@ object AndroidOldStyle : YukiBaseHooker() {
                             backgroundPrimary = accent1[8]!!
                         }
                         colorSchemeChanged = textPrimary != mPrevTextPrimaryColor
+                        mPrevTextPrimaryColor = textPrimary
+                    }
+
+                    if (mArtworkDrawable == null) {
+                        mArtworkDrawable = CustomDrawable(artwork, backgroundPrimary)
+                    }
+                    mArtworkDrawable?.setBounds(0, 0, width, height)
+
+                    mediaBg.post(Runnable {
+                        if (reqId < mArtworkBoundId) {
+                            Trace.endAsyncSection(traceName, traceCookie)
+                            return@Runnable
+                        }
+
+                        mArtworkBoundId = reqId
+
                         if (colorSchemeChanged) {
                             if(useAnim) {
                                 if (animatingColorTransition == null) {
@@ -277,27 +302,16 @@ object AndroidOldStyle : YukiBaseHooker() {
                                 totalTimeView.setTextColor(textPrimary)
                             }
                         }
-                        mPrevTextPrimaryColor = textPrimary
-                    }
-                    if (mArtworkDrawable == null) {
-                        mArtworkDrawable = CustomDrawable(artwork, backgroundPrimary)
-                    }
-                    mArtworkDrawable?.setBounds(0, 0, width, height)
-                    if (reqId < mArtworkBoundId) {
+
+                        // Bind the album view to the artwork or a transition drawable
+                        mediaBg.setPadding(0, 0, 0, 0)
+                        if (updateBackground || colorSchemeChanged || (!mIsArtworkBound && isArtworkBound)) {
+                            mediaBg.setImageDrawable(mArtworkDrawable)
+                            mArtworkDrawable?.setNewAlbum(artwork, backgroundPrimary)
+                            mIsArtworkBound = isArtworkBound
+                        }
                         Trace.endAsyncSection(traceName, traceCookie)
-                        return@execute
-                    }
-
-                    mArtworkBoundId = reqId
-
-                    // Bind the album view to the artwork or a transition drawable
-                    mediaBg.setPadding(0, 0, 0, 0)
-                    if (updateBackground || colorSchemeChanged || (!mIsArtworkBound && isArtworkBound)) {
-                        mediaBg.setImageDrawable(mArtworkDrawable)
-                        mArtworkDrawable?.setNewAlbum(artwork, backgroundPrimary)
-                        mIsArtworkBound = isArtworkBound
-                    }
-                    Trace.endAsyncSection(traceName, traceCookie)
+                    })
                 }
             }
         }

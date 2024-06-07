@@ -20,6 +20,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+@file:Suppress("DEPRECATION")
 
 package dev.lackluster.mihelper.hook.rules.systemui.media
 
@@ -42,6 +43,7 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.Icon
 import android.graphics.drawable.TransitionDrawable
+import android.os.AsyncTask
 import android.os.Trace
 import android.view.Gravity
 import android.widget.ImageView
@@ -54,7 +56,6 @@ import dev.lackluster.mihelper.hook.rules.systemui.media.StyleCustomHookEntry.br
 import dev.lackluster.mihelper.hook.rules.systemui.media.StyleCustomHookEntry.hardwareBlur
 import dev.lackluster.mihelper.hook.rules.systemui.media.StyleCustomHookEntry.scaleTransitionDrawableLayer
 import dev.lackluster.mihelper.utils.factory.isSystemInDarkMode
-import java.util.concurrent.Executor
 import kotlin.random.Random
 
 
@@ -73,6 +74,8 @@ object EnhancedStyle : YukiBaseHooker() {
     private var mPrevArtwork: Drawable? = null
     private var mIsArtworkBound = false
     private var mPrevTextPrimaryColor = Color.WHITE
+    private var lastWidth = 0
+    private var lastHeight = 0
 
     override fun onHook() {
         miuiMediaControlPanelClass.method {
@@ -89,14 +92,6 @@ object EnhancedStyle : YukiBaseHooker() {
                     name = "mMediaViewHolder"
                     superClass()
                 }.any() ?: return@after
-                val mBackgroundExecutor = this.instance.current().field {
-                    name = "mBackgroundExecutor"
-                    superClass()
-                }.any() as? Executor ?: return@after
-                val mMainExecutor = this.instance.current().field {
-                    name = "mMainExecutor"
-                    superClass()
-                }.any() as? Executor ?: return@after
                 val mContext = this.instance.current().field {
                     name = "mContext"
                     superClass()
@@ -136,8 +131,22 @@ object EnhancedStyle : YukiBaseHooker() {
                 albumView.setImageDrawable(BitmapDrawable(mContext.resources, newBitmap))
 
                 // Capture width & height from views in foreground for artwork scaling in background
-                val width = mediaBg.measuredWidth.takeIf { it != 0 } ?: artworkLayer.intrinsicWidth
-                val height = mediaBg.measuredHeight.takeIf { it != 0 } ?: artworkLayer.intrinsicHeight
+                val width: Int
+                val height: Int
+                if (mediaBg.measuredWidth == 0 || mediaBg.measuredHeight == 0) {
+                    if (lastWidth == 0 || lastHeight == 0) {
+                        width = artworkLayer.intrinsicWidth
+                        height = artworkLayer.intrinsicHeight
+                    } else {
+                        width = lastWidth
+                        height = lastHeight
+                    }
+                } else {
+                    width = mediaBg.measuredWidth
+                    height = mediaBg.measuredHeight
+                    lastWidth = width
+                    lastHeight = height
+                }
 //                if (width == 0 || height == 0) {
 //                    Trace.endAsyncSection(traceName, traceCookie)
 //                    return@after
@@ -146,8 +155,8 @@ object EnhancedStyle : YukiBaseHooker() {
                 val packageName = data.current().field {
                     name = "packageName"
                 }.string()
-
-                mBackgroundExecutor.execute {
+                AsyncTask.THREAD_POOL_EXECUTOR.execute {
+                // mBackgroundExecutor.execute {
                     // Album art
                     val mutableColorScheme: Any?
                     val artwork: Drawable?
@@ -311,7 +320,8 @@ object EnhancedStyle : YukiBaseHooker() {
 
                     val finalBackground = BitmapDrawable(mContext.resources, bigBitmap.hardwareBlur(40.0f))
 
-                    mMainExecutor.execute(Runnable {
+                    mediaBg.postDelayed(Runnable {
+                    // mMainExecutor.execute(Runnable {
                         if (reqId < mArtworkBoundId) {
                             Trace.endAsyncSection(traceName, traceCookie)
                             return@Runnable
@@ -343,7 +353,7 @@ object EnhancedStyle : YukiBaseHooker() {
                             mIsArtworkBound = isArtworkBound
                         }
                         Trace.endAsyncSection(traceName, traceCookie)
-                    })
+                    }, 300L)
                 }
             }
         }

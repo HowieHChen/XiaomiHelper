@@ -1,14 +1,17 @@
 package dev.lackluster.mihelper.data
 
 object Pref {
+    const val VERSION = 1
     object Key {
         object Module {
             const val ENABLED = "enable_module"
+            const val LITE_MODE = "lite_mode"
             const val HIDE_ICON = "hide_icon"
             const val SHOW_IN_SETTINGS = "entry_in_settings"
             const val SETTINGS_ICON_STYLE = "entry_icon_style"
             const val SETTINGS_ICON_COLOR = "entry_icon_color"
             const val SETTINGS_NAME = "entry_name"
+            const val SP_VERSION = "sp_version"
         }
         object Android {
             const val DISABLE_FREEFORM_RESTRICT = "android_freeform_restriction"
@@ -63,6 +66,63 @@ object Pref {
             const val DISABLE_RISK_CHECK = "mitrust_skip_risk_check"
         }
         object MiuiHome {
+            object Refactor {
+                const val EXTRA_COMPATIBILITY = "home_refactor_extra_compatibility"
+                const val SYNC_WALLPAPER_SCALE = "home_refactor_wallpaper_scale_sync"
+                const val EXTRA_FIX = "home_refactor_extra_fix"
+                const val FIX_SMALL_WINDOW_ANIM = "home_refactor_small_window"
+                const val ALL_APPS_BLUR_BG = "home_refactor_allapps_blur_bg"
+                const val MINUS_OVERLAP = "home_refactor_minus_overlap"
+
+                const val SHOW_LAUNCH_IN_RECENTS = "home_refactor_launch_show"
+                const val SHOW_LAUNCH_IN_RECENTS_SCALE = "home_refactor_launch_scale"
+                const val SHOW_LAUNCH_IN_FOLDER = "home_refactor_launch_folder"
+                const val SHOW_LAUNCH_IN_FOLDER_SCALE = "home_refactor_launch_folder_scale"
+                const val SHOW_LAUNCH_IN_MINUS = "home_refactor_minus_launch"
+                const val SHOW_LAUNCH_IN_MINUS_SCALE = "home_refactor_minus_launch_scale"
+
+                const val APPS_BLUR = "home_refactor_apps_blur"
+                const val APPS_BLUR_RADIUS = "home_refactor_apps_blur_radius"
+                const val APPS_BLUR_RADIUS_STR = "home_refactor_apps_radius_str"
+                const val APPS_DIM = "home_refactor_apps_dim"
+                const val APPS_DIM_MAX = "home_refactor_apps_dim_max"
+                const val APPS_NONLINEAR_TYPE = "home_refactor_apps_nonlinear_type"
+                const val APPS_NONLINEAR_DECE_FACTOR = "home_refactor_apps_nonlinear_dece_factor"
+                const val APPS_NONLINEAR_PATH_X1 = "home_refactor_apps_nonlinear_path_x1"
+                const val APPS_NONLINEAR_PATH_Y1 = "home_refactor_apps_nonlinear_path_y1"
+                const val APPS_NONLINEAR_PATH_X2 = "home_refactor_apps_nonlinear_path_x2"
+                const val APPS_NONLINEAR_PATH_Y2 = "home_refactor_apps_nonlinear_path_y2"
+
+                const val FOLDER_BLUR = "home_refactor_folder_blur"
+//                const val FOLDER_BLUR_RADIUS = "home_refactor_folder_blur_radius"
+                const val FOLDER_BLUR_RADIUS_STR = "home_refactor_folder_radius_str"
+                const val FOLDER_DIM = "home_refactor_folder_dim"
+                const val FOLDER_DIM_MAX = "home_refactor_folder_dim_max"
+                const val FOLDER_NONLINEAR_TYPE = "home_refactor_folder_nonlinear_type"
+                const val FOLDER_NONLINEAR_DECE_FACTOR = "home_refactor_folder_nonlinear_dece_factor"
+                const val FOLDER_NONLINEAR_PATH_X1 = "home_refactor_folder_nonlinear_path_x1"
+                const val FOLDER_NONLINEAR_PATH_Y1 = "home_refactor_folder_nonlinear_path_y1"
+                const val FOLDER_NONLINEAR_PATH_X2 = "home_refactor_folder_nonlinear_path_x2"
+                const val FOLDER_NONLINEAR_PATH_Y2 = "home_refactor_folder_nonlinear_path_y2"
+
+                const val WALLPAPER_BLUR = "home_refactor_wall_blur"
+                const val WALLPAPER_BLUR_RADIUS = "home_refactor_wall_radius"
+                const val WALLPAPER_BLUR_RADIUS_STR = "home_refactor_wall_radius_dp"
+                const val WALLPAPER_DIM = "home_refactor_wall_dim"
+                const val WALLPAPER_DIM_MAX = "home_refactor_wall_dim_max"
+                const val WALLPAPER_NONLINEAR_TYPE = "home_refactor_wall_nonlinear_type"
+                const val WALLPAPER_NONLINEAR_DECE_FACTOR = "home_refactor_wall_nonlinear_dece_factor"
+                const val WALLPAPER_NONLINEAR_PATH_X1 = "home_refactor_wall_nonlinear_path_x1"
+                const val WALLPAPER_NONLINEAR_PATH_Y1 = "home_refactor_wall_nonlinear_path_y1"
+                const val WALLPAPER_NONLINEAR_PATH_X2 = "home_refactor_wall_nonlinear_path_x2"
+                const val WALLPAPER_NONLINEAR_PATH_Y2 = "home_refactor_wall_nonlinear_path_y2"
+
+                const val MINUS_BLUR = "home_refactor_minus_blur"
+                const val MINUS_BLUR_RADIUS = "home_refactor_minus_radius"
+                const val MINUS_BLUR_RADIUS_STR = "home_refactor_minus_radius_str"
+                const val MINUS_DIM = "home_refactor_minus_dim"
+                const val MINUS_DIM_MAX = "home_refactor_minus_dim_max"
+            }
             const val REMOVE_REPORT = "home_remove_report"
             const val REFACTOR = "home_refactor"
             const val DOUBLE_TAP_TO_SLEEP = "home_double_tap_sleep"
@@ -250,6 +310,59 @@ object Pref {
             const val CLOCK_GEEK_FORMAT = "HH:mm"
             const val CLOCK_GEEK_FORMAT_HORIZON = "M d E"
             const val CLOCK_GEEK_FORMAT_PAD = "M d E"
+        }
+        object HomeRefactor {
+            const val EXTRA_COMPATIBILITY = false
+            const val SYNC_WALLPAPER_SCALE = false
+            const val EXTRA_FIX = false
+            const val FIX_SMALL_WINDOW_ANIM = false
+            const val ALL_APPS_BLUR_BG = false
+            const val MINUS_OVERLAP = false
+
+            const val SHOW_LAUNCH_IN_RECENTS = false
+            const val SHOW_LAUNCH_IN_RECENTS_SCALE = 0.88f
+            const val SHOW_LAUNCH_IN_FOLDER = false
+            const val SHOW_LAUNCH_IN_FOLDER_SCALE = 1.0f
+            const val SHOW_LAUNCH_IN_MINUS = false
+            const val SHOW_LAUNCH_IN_MINUS_SCALE = 0.95f
+
+            const val APPS_BLUR = false
+            const val APPS_BLUR_RADIUS_STR = "100px"
+            const val APPS_DIM = false
+            const val APPS_DIM_MAX = 63
+            const val APPS_NONLINEAR_TYPE = 0
+            const val APPS_NONLINEAR_DECE_FACTOR = 1.0f
+            const val APPS_NONLINEAR_PATH_X1 = 0.2f
+            const val APPS_NONLINEAR_PATH_Y1 = 0.1f
+            const val APPS_NONLINEAR_PATH_X2 = 0.3f
+            const val APPS_NONLINEAR_PATH_Y2 = 1.0f
+
+            const val FOLDER_BLUR = false
+            const val FOLDER_BLUR_RADIUS_STR = "50px"
+            const val FOLDER_DIM = false
+            const val FOLDER_DIM_MAX = 53
+            const val FOLDER_NONLINEAR_TYPE = 0
+            const val FOLDER_NONLINEAR_DECE_FACTOR = 1.0f
+            const val FOLDER_NONLINEAR_PATH_X1 = 0.2f
+            const val FOLDER_NONLINEAR_PATH_Y1 = 0.1f
+            const val FOLDER_NONLINEAR_PATH_X2 = 0.3f
+            const val FOLDER_NONLINEAR_PATH_Y2 = 1.0f
+
+            const val WALLPAPER_BLUR = false
+            const val WALLPAPER_BLUR_RADIUS_STR = "40dp"
+            const val WALLPAPER_DIM = false
+            const val WALLPAPER_DIM_MAX = 37
+            const val WALLPAPER_NONLINEAR_TYPE = 0
+            const val WALLPAPER_NONLINEAR_DECE_FACTOR = 1.0f
+            const val WALLPAPER_NONLINEAR_PATH_X1 = 0.2f
+            const val WALLPAPER_NONLINEAR_PATH_Y1 = 0.1f
+            const val WALLPAPER_NONLINEAR_PATH_X2 = 0.3f
+            const val WALLPAPER_NONLINEAR_PATH_Y2 = 1.0f
+
+            const val MINUS_BLUR = false
+            const val MINUS_BLUR_RADIUS_STR = "80dp"
+            const val MINUS_DIM = false
+            const val MINUS_DIM_MAX = 37
         }
     }
 }

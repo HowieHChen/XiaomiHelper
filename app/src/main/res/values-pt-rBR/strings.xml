@@ -323,4 +323,5 @@
     <string name="android_rotation_switch_suggestions_before_false">Atualmente ativado. Tem certeza que deseja desativá-lo?</string>
     <string name="android_rotation_switch_suggestions_done_false">Sugestões de rotação desativadas</string>
     <string name="android_rotation_switch_suggestions_failed">Falha! Por favor, conceda permissão root para este app e tente novamente.</string>
+    <string name="home_refactor_launch_minus_tips">Não oculte a visualização da launcher ao acessar o Assistente</string>
 </resources>

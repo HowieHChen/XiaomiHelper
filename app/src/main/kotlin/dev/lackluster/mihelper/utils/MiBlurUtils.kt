@@ -68,7 +68,7 @@ object MiBlurUtils {
     }
 
     fun setBlurRadius(view: View, radius: Int) {
-        if (radius < 0 || radius > 200) {
+        if (radius < 0 || radius > 500) {
             Log.e("MiBlurUtils", "setMiBackgroundBlurRadius error radius is " + radius + " " + view.javaClass.name + " hashcode " + view.hashCode())
             return
         }

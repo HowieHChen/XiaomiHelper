@@ -56,7 +56,7 @@ class MiuiHomePage : BasePage() {
                 tipsId = R.string.home_exclusive_refactor_tips,
                 onClickListener = {
                     if (MIUIActivity.safeSP.getBoolean(Pref.Key.MiuiHome.REFACTOR, false)) {
-                        showFragment("home_refactor")
+                        showFragment("page_home_refactor")
                     }
                     else {
                         MIUIDialog(activity) {
@@ -66,7 +66,7 @@ class MiuiHomePage : BasePage() {
                                 dismiss()
                             }
                             setRButton(textId = R.string.button_ok) {
-                                showFragment("home_refactor")
+                                showFragment("page_home_refactor")
                                 dismiss()
                             }
                         }.show()

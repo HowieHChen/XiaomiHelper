@@ -27,7 +27,7 @@ import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.Prefs
 
 object WallpaperScaleRatio : YukiBaseHooker() {
-    private const val DEFAULT_RATIO = 1.2f
+    private const val DEFAULT_RATIO = 1.1f
     private val value by lazy {
         Prefs.getFloat(Pref.Key.Android.WALLPAPER_SCALE_RATIO, DEFAULT_RATIO)
     }

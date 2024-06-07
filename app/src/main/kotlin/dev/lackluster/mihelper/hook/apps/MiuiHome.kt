@@ -8,7 +8,6 @@ import dev.lackluster.mihelper.hook.rules.miuihome.recent.DisableFakeNavBar
 import dev.lackluster.mihelper.hook.rules.miuihome.gesture.DoubleTapToSleep
 import dev.lackluster.mihelper.hook.rules.miuihome.FakePremium
 import dev.lackluster.mihelper.hook.rules.miuihome.folder.FolderAdaptIconSize
-import dev.lackluster.mihelper.hook.rules.miuihome.BlurEnhance
 import dev.lackluster.mihelper.hook.rules.miuihome.folder.FolderColumns
 import dev.lackluster.mihelper.hook.rules.miuihome.icon.IconCornerForLarge
 import dev.lackluster.mihelper.hook.rules.miuihome.icon.PerfectIcon
@@ -27,6 +26,7 @@ import dev.lackluster.mihelper.hook.rules.miuihome.recent.StopWallpaperDarken
 import dev.lackluster.mihelper.hook.rules.miuihome.anim.WallpaperZoomSync
 import dev.lackluster.mihelper.hook.rules.miuihome.folder.AdvancedTexture
 import dev.lackluster.mihelper.hook.rules.miuihome.gesture.QuickBack
+import dev.lackluster.mihelper.hook.rules.miuihome.refactor.BlurRefactorEntry
 import dev.lackluster.mihelper.hook.rules.miuihome.widget.WidgetAnim
 import dev.lackluster.mihelper.hook.rules.miuihome.widget.WidgetResizable
 
@@ -59,8 +59,9 @@ object MiuiHome : YukiBaseHooker() {
         loadHooker(WidgetResizable)
         loadHooker(PadDockCustom)
         loadHooker(WallpaperZoomSync)
-        loadHooker(BlurEnhance)
+//        loadHooker(BlurRefactor)
         loadHooker(AllowMoreFreeformForHome)
 //        DexKit.closeDexKit()
+        loadHooker(BlurRefactorEntry)
     }
 }

@@ -36,6 +36,11 @@ import dev.lackluster.mihelper.hook.apps.Themes
 import dev.lackluster.mihelper.hook.apps.Updater
 import dev.lackluster.mihelper.hook.apps.MiAi
 import dev.lackluster.mihelper.hook.apps.MiTrust
+import dev.lackluster.mihelper.hook.rules.miuihome.refactor.BlurRefactorEntry
+import dev.lackluster.mihelper.hook.rules.personalassist.BlockOriginalBlur
+import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils
+import dev.lackluster.mihelper.hook.rules.systemui.media.StyleCustomHookEntry
+import dev.lackluster.mihelper.utils.Prefs
 import dev.lackluster.mihelper.utils.factory.hasEnable
 
 @InjectYukiHookWithXposed
@@ -51,36 +56,50 @@ class HookEntry : IYukiHookXposedInit {
 
     override fun onHook() = encase {
         hasEnable(Pref.Key.Module.ENABLED) {
-            loadSystem(Android)
-            loadApp(Scope.BROWSER, Browser)
-            loadApp(Scope.DOWNLOAD, Download)
-            loadApp(Scope.GALLERY, Gallery)
-            loadApp(Scope.GUARD_PROVIDER, GuardProvider)
-            loadApp(Scope.IN_CALL_UI, InCallUI)
-            loadApp(Scope.JOYOSE, Joyose)
-            loadApp(Scope.MARKET, Market)
-            loadApp(Scope.MEDIA_EDITOR , MediaEditor)
-            loadApp(Scope.MI_AI, MiAi)
-            loadApp(Scope.MI_LINK, MiLink)
-            loadApp(Scope.MI_SETTINGS, MiSettings)
-            loadApp(Scope.MI_SHARE, MiShare)
-            loadApp(Scope.MI_MIRROR, MiMirror)
-            loadApp(Scope.MI_TRUST, MiTrust)
-            loadApp(Scope.MIUI_HOME, MiuiHome)
-            loadApp(Scope.MMS, Mms)
-            loadApp(Scope.MUSIC, Music)
-            loadApp(Scope.PACKAGE_INSTALLER, PackageInstaller)
-            loadApp(Scope.PERSONAL_ASSIST, PersonalAssist)
-            loadApp(Scope.PHONE, Phone)
-            loadApp(Scope.POWER_KEEPER, PowerKeeper)
-            loadApp(Scope.SCREEN_RECORDER, ScreenRecorder)
-            loadApp(Scope.SCREENSHOT, Screenshot)
-            loadApp(Scope.SECURITY_CENTER, SecurityCenter)
-            loadApp(Scope.SETTINGS, Settings)
-            loadApp(Scope.SYSTEM_UI, SystemUI)
-            loadApp(Scope.TAPLUS, Taplus)
-            loadApp(Scope.THEMES, Themes)
-            loadApp(Scope.UPDATER, Updater)
+            val liteMode = Prefs.getBoolean(Pref.Key.Module.LITE_MODE, false)
+            if (liteMode) {
+                loadApp(Scope.SYSTEM_UI) {
+                    loadHooker(ResourcesUtils)
+                    loadHooker(StyleCustomHookEntry)
+                }
+                loadApp(Scope.MIUI_HOME) {
+                    loadHooker(BlurRefactorEntry)
+                }
+                loadApp(Scope.PERSONAL_ASSIST) {
+                    loadHooker(BlockOriginalBlur)
+                }
+            } else {
+                loadSystem(Android)
+                loadApp(Scope.BROWSER, Browser)
+                loadApp(Scope.DOWNLOAD, Download)
+                loadApp(Scope.GALLERY, Gallery)
+                loadApp(Scope.GUARD_PROVIDER, GuardProvider)
+                loadApp(Scope.IN_CALL_UI, InCallUI)
+                loadApp(Scope.JOYOSE, Joyose)
+                loadApp(Scope.MARKET, Market)
+                loadApp(Scope.MEDIA_EDITOR , MediaEditor)
+                loadApp(Scope.MI_AI, MiAi)
+                loadApp(Scope.MI_LINK, MiLink)
+                loadApp(Scope.MI_SETTINGS, MiSettings)
+                loadApp(Scope.MI_SHARE, MiShare)
+                loadApp(Scope.MI_MIRROR, MiMirror)
+                loadApp(Scope.MI_TRUST, MiTrust)
+                loadApp(Scope.MIUI_HOME, MiuiHome)
+                loadApp(Scope.MMS, Mms)
+                loadApp(Scope.MUSIC, Music)
+                loadApp(Scope.PACKAGE_INSTALLER, PackageInstaller)
+                loadApp(Scope.PERSONAL_ASSIST, PersonalAssist)
+                loadApp(Scope.PHONE, Phone)
+                loadApp(Scope.POWER_KEEPER, PowerKeeper)
+                loadApp(Scope.SCREEN_RECORDER, ScreenRecorder)
+                loadApp(Scope.SCREENSHOT, Screenshot)
+                loadApp(Scope.SECURITY_CENTER, SecurityCenter)
+                loadApp(Scope.SETTINGS, Settings)
+                loadApp(Scope.SYSTEM_UI, SystemUI)
+                loadApp(Scope.TAPLUS, Taplus)
+                loadApp(Scope.THEMES, Themes)
+                loadApp(Scope.UPDATER, Updater)
+            }
         }
     }
 }

@@ -150,8 +150,8 @@ class SystemFrameworkPage : BasePage(){
                     MIUIDialog(activity) {
                         setTitle(R.string.android_others_wallpaper_scale)
                         setMessage(
-                            "${activity.getString(R.string.common_default)}: 1.2, ${activity.getString(R.string.common_current)}: ${
-                                MIUIActivity.safeSP.getFloat(Pref.Key.Android.WALLPAPER_SCALE_RATIO, 1.2f)
+                            "${activity.getString(R.string.common_default)}: 1.1, ${activity.getString(R.string.common_current)}: ${
+                                MIUIActivity.safeSP.getFloat(Pref.Key.Android.WALLPAPER_SCALE_RATIO, 1.1f)
                             }"
                         )
                         setEditText("", "${activity.getString(R.string.common_range)}: 1.0-2.0")

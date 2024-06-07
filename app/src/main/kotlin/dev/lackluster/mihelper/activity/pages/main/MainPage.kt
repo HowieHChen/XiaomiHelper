@@ -21,10 +21,12 @@
 package dev.lackluster.mihelper.activity.pages.main
 
 import androidx.appcompat.content.res.AppCompatResources
+import cn.fkj233.ui.activity.MIUIActivity
 import cn.fkj233.ui.activity.annotation.BMMainPage
 import cn.fkj233.ui.activity.data.BasePage
 import cn.fkj233.ui.activity.view.TextSummaryV
 import dev.lackluster.mihelper.R
+import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.Device
 
 @BMMainPage()
@@ -33,14 +35,32 @@ class MainPage : BasePage() {
         return activity.getString(R.string.page_main)
     }
     override fun onCreate() {
+        val liteMode = MIUIActivity.safeSP.getBoolean(Pref.Key.Module.LITE_MODE, false)
         Page(
             pageHead = AppCompatResources.getDrawable(activity, R.drawable.ic_header_hyper_helper_gray)!!,
             textSummaryV = TextSummaryV(textId = R.string.page_module),
             onClickListener = {
                 showFragment("page_module")
+                this.itemList.clear()
             }
         )
         Line()
+        if (liteMode) {
+            initLiteMode()
+        } else {
+            initFullMode()
+        }
+        Line()
+        Page(
+            pageHead = AppCompatResources.getDrawable(activity, R.drawable.ic_header_about)!!,
+            textSummaryV = TextSummaryV(textId = R.string.page_about),
+            onClickListener = {
+                showFragment("page_about")
+            }
+        )
+    }
+
+    private fun initFullMode() {
         Page(
             pageHead = AppCompatResources.getDrawable(activity, R.drawable.ic_header_systemui)!!,
             textSummaryV = TextSummaryV(textId = R.string.page_systemui),
@@ -90,12 +110,21 @@ class MainPage : BasePage() {
                 showFragment("page_others")
             }
         )
-        Line()
+    }
+
+    private fun initLiteMode() {
         Page(
-            pageHead = AppCompatResources.getDrawable(activity, R.drawable.ic_header_about)!!,
-            textSummaryV = TextSummaryV(textId = R.string.page_about),
+            pageHead = AppCompatResources.getDrawable(activity, R.drawable.ic_header_systemui)!!,
+            textSummaryV = TextSummaryV(textId = R.string.page_virtual_media_control_style),
             onClickListener = {
-                showFragment("page_about")
+                showFragment("page_media_control")
+            }
+        )
+        Page(
+            pageHead = AppCompatResources.getDrawable(activity, R.drawable.ic_header_home)!!,
+            textSummaryV = TextSummaryV(textId = R.string.page_virtual_honme_refactor),
+            onClickListener = {
+                showFragment("page_home_refactor")
             }
         )
     }

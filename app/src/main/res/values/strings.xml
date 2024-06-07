@@ -3,6 +3,7 @@
     <string name="xposed_desc">Make HyperOS Great Again!</string>
     <string name="about_module">This module is made by YukiHookAPI. Learn more https://github.com/HighCapable/YuKiHookAPI</string>
     <string name="module_inactive_tips">Module is not activated. Please check the LSPosed version and module activation information and try again.</string>
+    <string name="module_disabled_tips">The module is not enabled. Please enable the module in the Module settings page.</string>
 
     <string name="common_default">Default</string>
     <string name="common_current">Current</string>
@@ -26,6 +27,9 @@
     <string name="page_main" translatable="false">@string/app_name</string>
     <string name="page_about">About module</string>
     <string name="page_menu">Menu</string>
+
+    <string name="page_virtual_media_control_style" translatable="false">@string/systemui_notif_media_control_style</string>
+    <string name="page_virtual_honme_refactor" translatable="false">@string/home_exclusive_refactor</string>
 
     <string name="page_module">Module settings</string>
     <string name="page_systemui">System UI</string>
@@ -117,6 +121,8 @@
     <!-- ModuleSettingsPage -->
     <string name="ui_title_module_general" translatable="false">@string/common_general</string>
     <string name="module_main_switch">Enable module</string>
+    <string name="module_lite_mode">Lite mode</string>
+    <string name="module_lite_mode_tips">Only load core functionality</string>
     <string name="module_hide_icon">Hide icon in launcher</string>
     <string name="module_show_in_settings">Module entry in system settings</string>
     <string name="module_settings_icon_style">Entry icon style</string>
@@ -456,6 +462,7 @@
     <string name="home_refactor_nonlinear_path_y2">Y-coordinate of control point 2</string>
     <string name="home_refactor_nonlinear_path_y2_tips">Control point (1,1) (Don\'t modify it if you don\'t know what it is)</string>
     <string name="ui_title_home_refactor_main">Main switch</string>
+    <string name="ui_title_home_refactor_general" translatable="false">@string/common_general</string>
     <string name="home_refactor_extra_compatibility">Compatibility mode</string>
     <string name="home_refactor_extra_compatibility_tips">Try to be compatible with other modules, but compatibility cannot be ensured. Not recommended to be enabled.</string>
     <string name="home_refactor_walppaper_scale_sync" translatable="false">@string/home_anim_zoom_sync</string>
@@ -464,11 +471,18 @@
     <string name="home_refactor_extra_fix_tips">Forces an animation to be added to avoid blurring not appearing in time on fast swipes. Enable this only if you notice this problem.</string>
     <string name="home_refactor_fix_small_window">Additional fixes for small window animations</string>
     <string name="home_refactor_fix_small_window_tips">Force an animation to be added to avoid flickering when dragging the app into a small window, not sure if this has a negative impact for now. Only enable this if you mind this a lot.</string>
-    <string name="ui_title_home_refactor_apps">Application blur</string>
+    <string name="ui_title_home_refactor_apps">Blur effect of app icons</string>
     <string name="home_refactor_apps_tips">Used to blur the application. Blurring occurs when launching an app, closing an app, and when in the recent tasks view.</string>
-    <string name="ui_title_home_refactor_wallpaper">Wallpaper blur</string>
-    <string name="home_refactor_wallpaper_tips">Used to blur the wallpaper. Blurring occurs while in edit mode and in folder view.</string>
+    <string name="ui_title_home_refactor_folder">Blur effect of folder background</string>
+    <string name="home_refactor_folder_tips">Used to blur the background when opening a folder</string>
+    <string name="ui_title_home_refactor_wallpaper">Blur effect of wallpaper</string>
+    <string name="home_refactor_wallpaper_tips">Used to blur the wallpaper. Blurring occurs while in edit mode.</string>
+    <string name="home_refactor_all_apps_bg">Use blur effect for app drawer background</string>
+    <string name="home_refactor_all_apps_bg_tips">Blur wallpaper when opening app drawer</string>
     <string name="ui_title_home_refactor_launch">Launcher view</string>
+    <string name="home_refactor_launch_recents_tips">Show launcher view when in the recent tasks view.</string>
+    <string name="home_refactor_launch_folder_tips">Show launcher view when opening a folder.</string>
+    <string name="home_refactor_launch_minus_tips">Don\'t hide the launcher view when going to the minus screen</string>
     <string name="home_refactor_launch_tips">Controls the launcher view behind the recent tasks view.</string>
     <string name="home_refactor_launch_show">Show launcher view</string>
     <string name="home_refactor_launch_show_tips">Don\'t hide the launcher view when in the recent tasks view</string>
@@ -477,7 +491,7 @@
     <string name="home_refactor_launch_scale_nonlinear" translatable="false">@string/home_refactor_nonlinear</string>
     <string name="home_refactor_launch_scale_nonlinear_factor" translatable="false">@string/home_refactor_nonlinear_factor</string>
     <string name="home_refactor_launch_scale_nonlinear_factor_tips" translatable="false">@string/home_refactor_nonlinear_factor_tips</string>
-    <string name="ui_title_home_refactor_minus">Minus screen blur</string>
+    <string name="ui_title_home_refactor_minus">Blur effect of Minus screen background</string>
     <string name="home_refactor_minus_tips">Used to blur the entire launcher view. Blurring occurs when in the minus screen.</string>
     <string name="home_refactor_minus_overlap_mode">Overlap mode</string>
     <string name="home_refactor_minus_overlap_mode_tips">Make the minus screen hover above the launcher</string>

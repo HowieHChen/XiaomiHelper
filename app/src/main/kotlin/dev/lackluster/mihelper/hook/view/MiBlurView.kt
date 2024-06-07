@@ -65,13 +65,28 @@ class MiBlurView(context: Context): View(context) {
         this.visibility = GONE
     }
 
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        this.visibility = VISIBLE
+        applyBlur(animCurrentRatio, false)
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        if (mainAnimator?.isRunning == true) {
+            mainAnimator?.cancel()
+        }
+        releaseBlur()
+    }
+
+    // Configure
     fun setPassWindowBlur(enabled: Boolean) {
         passWindowBlurEnabled = enabled
     }
 
     fun setBlur(useBlur: Boolean, maxRadius: Int) {
         blurEnabled = useBlur
-        blurMaxRadius = maxRadius
+        blurMaxRadius = maxRadius.coerceIn(0, 500)
         if (blurMaxRadius <= 0) {
             blurEnabled = false
         }
@@ -90,16 +105,7 @@ class MiBlurView(context: Context): View(context) {
         nonlinearInterpolator = interpolator
     }
 
-    fun show(useAnim: Boolean, targetRatio: Float = 1.0f) {
-        this.visibility = VISIBLE
-        applyBlur(targetRatio, useAnim)
-    }
-
-    fun hide(useAnim: Boolean, targetRatio: Float = 0.0f) {
-        this.visibility = VISIBLE
-        applyBlur(targetRatio, useAnim)
-    }
-
+    // Blur
     fun restore(directly: Boolean = false) {
         this.visibility = VISIBLE
         if (!directly) {
@@ -114,7 +120,20 @@ class MiBlurView(context: Context): View(context) {
         }
     }
 
-    fun showWithDuration(useAnim: Boolean, targetRatio: Float, duration: Int) {
+    fun setStatus(visible: Boolean, useAnim: Boolean = false) {
+        this.visibility = VISIBLE
+        applyBlur(
+            if (visible) 1.0f else 0.0f,
+            useAnim
+        )
+    }
+
+    fun setStatus(targetRatio: Float, useAnim: Boolean = false) {
+        this.visibility = VISIBLE
+        applyBlur(targetRatio, useAnim)
+    }
+
+    fun setStatus(targetRatio: Float, useAnim: Boolean, duration: Int) {
         this.visibility = VISIBLE
         applyBlur(targetRatio, useAnim, duration)
     }

@@ -1,31 +1,8 @@
-/*
- * SPDX-License-Identifier: AGPL-3.0-or-later
- *
- * This file is part of XiaomiHelper project
-
- * This file references HyperCeiler <https://github.com/ReChronoRain/HyperCeiler/blob/main/app/src/main/java/com/sevtinge/hyperceiler/module/hook/home/gesture/QuickBack.java>
- * Copyright (C) 2023-2024 HyperCeiler Contributions
-
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
-
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Affero General Public License for more details.
-
- * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
- */
-
 @file:Suppress("DEPRECATION")
 
 package dev.lackluster.mihelper.hook.rules.miuihome.gesture
 
 import android.app.ActivityManager
-import android.app.ActivityOptions
 import android.content.Context
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.method
@@ -35,36 +12,72 @@ import com.highcapable.yukihookapi.hook.type.java.BooleanType
 import com.highcapable.yukihookapi.hook.type.java.IntType
 import de.robv.android.xposed.XposedHelpers
 import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.hook.rules.miuihome.ResourcesUtils.recents_quick_switch_left_enter
-import dev.lackluster.mihelper.hook.rules.miuihome.ResourcesUtils.recents_quick_switch_left_exit
-import dev.lackluster.mihelper.hook.rules.miuihome.ResourcesUtils.recents_quick_switch_right_enter
-import dev.lackluster.mihelper.hook.rules.miuihome.ResourcesUtils.recents_quick_switch_right_exit
 import dev.lackluster.mihelper.utils.factory.hasEnable
 
-
 object QuickBack : YukiBaseHooker() {
+//    private val applicationClz by lazy {
+//        "com.miui.home.launcher.Application".toClass()
+//    }
+//    private val navStubViewClz by lazy {
+//        "com.miui.home.recents.NavStubView"
+//    }
+    private val gestureStubViewClz by lazy {
+        "com.miui.home.recents.GestureStubView".toClass()
+    }
+    private val recentsModelClz by lazy {
+        "com.miui.home.recents.RecentsModel".toClass()
+    }
     override fun onHook() {
         hasEnable(Pref.Key.MiuiHome.QUICK_BACK) {
-            "com.miui.home.recents.GestureStubView".toClass().method {
+            gestureStubViewClz.method {
                 name = "isDisableQuickSwitch"
             }.hook {
                 replaceToFalse()
             }
-            "com.miui.home.recents.GestureStubView".toClass().method {
+//            "com.miui.home.recents.GestureBackArrowView".toClass().method {
+//                name = "loadRecentTaskIcon"
+//            }.hook {
+//                before {
+//                    val instance = this.instance
+//                    val mNoneTaskIcon = XposedHelpers.getObjectField(instance, "mNoneTaskIcon") as Drawable
+//                    val mKeyguardManager = XposedHelpers.getObjectField(instance, "mKeyguardManager") as KeyguardManager
+//                    val mContentResolver = XposedHelpers.getObjectField(instance, "mContentResolver") as ContentResolver
+//                    val supportNextTask = XposedHelpers.callStaticMethod(gestureStubViewClz, "supportNextTask", mKeyguardManager, mContentResolver) as Boolean
+//                    if (!supportNextTask) {
+//                        this.result = mNoneTaskIcon
+//                        return@before
+//                    }
+//                    val position = if (XposedHelpers.getObjectField(instance, "mPosition") as Int == 0) 0 else 1 // 0 -> left; 1 -> right
+//                    val nextTask = XposedHelpers.callStaticMethod(gestureStubViewClz, "getNextTask", (instance as View).context, false, position)
+//                    if (nextTask != null) {
+//                        val taskIcon = XposedHelpers.getObjectField(nextTask, "icon") as Drawable?
+//                        if (taskIcon != null) {
+//                            this.result = taskIcon
+//                            return@before
+//                        }
+//                    }
+//                    this.result = mNoneTaskIcon
+//                }
+//            }
+            gestureStubViewClz.method {
                 name = "getNextTask"
                 param(ContextClass, BooleanType, IntType)
             }.hook {
                 before {
                     val context = this.args(0).any() as? Context ?: return@before
-                    var runningTask: ActivityManager.RunningTaskInfo? = null
-                    val recentsModel = XposedHelpers.callStaticMethod("com.miui.home.recents.RecentsModel".toClass(), "getInstance", context)
+                    val switch = this.args(1).boolean()
+                    // val position = this.args(2).int() // 0 -> left; 1 -> right
+
+                    val recentsModel = XposedHelpers.callStaticMethod(recentsModelClz, "getInstance", context)
                     val taskLoader = XposedHelpers.callMethod(recentsModel, "getTaskLoader")
-                    val createLoadPlan = XposedHelpers.callMethod(taskLoader, "createLoadPlan", context)
-                    XposedHelpers.callMethod(taskLoader, "preloadTasks", createLoadPlan, -1)
-                    val taskStack = XposedHelpers.callMethod(createLoadPlan, "getTaskStack")
-                    var activityOptions: ActivityOptions? = null
+                    val taskLoadPlan = XposedHelpers.callMethod(taskLoader, "createLoadPlan", context)
+                    XposedHelpers.callMethod(taskLoader, "preloadTasks", taskLoadPlan, -1)
+                    val taskStack = XposedHelpers.callMethod(taskLoadPlan, "getTaskStack")
+                    var runningTask: ActivityManager.RunningTaskInfo? = null
+                    // var activityOptions: ActivityOptions? = null
                     if (
-                        taskStack == null || XposedHelpers.callMethod(taskStack, "getTaskCount") as Int == 0 ||
+                        taskStack == null ||
+                        XposedHelpers.callMethod(taskStack, "getTaskCount") as Int == 0 ||
                         (XposedHelpers.callMethod(recentsModel, "getRunningTask" ) as ActivityManager.RunningTaskInfo?)?.also {
                             runningTask = it
                         } == null
@@ -75,27 +88,24 @@ object QuickBack : YukiBaseHooker() {
                     val stackTasks = XposedHelpers.callMethod(taskStack, "getStackTasks") as ArrayList<*>
                     val size = stackTasks.size
                     var task: Any? = null
-                    var i2 = 0
-                    while (true) {
-                        if (i2 >= size - 1) {
-                            break
-                        } else if (XposedHelpers.getObjectField(
-                                XposedHelpers.getObjectField(stackTasks[i2], "key"),
+                    for (index in stackTasks.indices) {
+                        if (XposedHelpers.getObjectField(
+                                XposedHelpers.getObjectField(stackTasks[index], "key"),
                                 "id"
-                            ) as Int == runningTask!!.id
-                        ) {
-                            task = stackTasks[i2 + 1]
+                            ) as Int == runningTask!!.id) {
+                            task = stackTasks[index + 1]
                             break
-                        } else {
-                            i2++
                         }
                     }
                     if (task == null && size >= 1 && "com.miui.home" == runningTask!!.baseActivity!!.packageName) {
                         task = stackTasks[0]
                     }
+
                     if (task != null && XposedHelpers.getObjectField(task, "icon") == null) {
                         XposedHelpers.setObjectField(
-                            task, "icon", XposedHelpers.callMethod(
+                            task,
+                            "icon",
+                            XposedHelpers.callMethod(
                                 taskLoader, "getAndUpdateActivityIcon",
                                 XposedHelpers.getObjectField(task, "key"),
                                 XposedHelpers.getObjectField(task, "taskDescription"),
@@ -103,60 +113,45 @@ object QuickBack : YukiBaseHooker() {
                             )
                         )
                     }
-                    if (!this.args(1).boolean() || task == null) {
+                    if (!switch || task == null) {
                         this.result = task
                         return@before
                     }
-                    val i = this.args(2).int()
-                    if (i == 0) {
-                        activityOptions = ActivityOptions.makeCustomAnimation(
-                            context,
-                            recents_quick_switch_left_enter,
-                            recents_quick_switch_left_exit
-                        )
-                    } else if (i == 1) {
-                        activityOptions = ActivityOptions.makeCustomAnimation(
-                            context,
-                            recents_quick_switch_right_enter,
-                            recents_quick_switch_right_exit
-                        )
-                    }
-                    val iActivityManager = XposedHelpers.callStaticMethod(
-                        "android.app.ActivityManagerNative".toClass(),
-                        "getDefault"
+//                    if (i == 0) {
+//                        activityOptions = ActivityOptions.makeCustomAnimation(
+//                            context,
+////                            R.anim.recents_quick_switch_left_enter,
+////                            R.anim.recents_quick_switch_left_exit
+//                            ResourcesUtils.recents_quick_switch_left_enter,
+//                            ResourcesUtils.recents_quick_switch_left_exit
+//                        )
+//                    } else if (i == 1) {
+//                        activityOptions = ActivityOptions.makeCustomAnimation(
+//                            context,
+////                            R.anim.recents_quick_switch_right_enter,
+////                            R.anim.recents_quick_switch_right_exit
+//                            ResourcesUtils.recents_quick_switch_right_enter,
+//                            ResourcesUtils.recents_quick_switch_right_exit
+//                        )
+//                    }
+                    val activityManagerWrapper = XposedHelpers.getStaticObjectField(
+                        "com.android.systemui.shared.recents.system.ActivityManagerWrapper".toClass(),
+                        "sInstance"
                     )
-                    if (iActivityManager != null) {
-                        try {
-                            if (XposedHelpers.getObjectField(
-                                    XposedHelpers.getObjectField(task, "key"),
-                                    "windowingMode"
-                                ) as Int == 3
-                            ) {
-                                if (activityOptions == null) {
-                                    activityOptions = ActivityOptions.makeBasic()
-                                }
-                                activityOptions!!.javaClass.getMethod(
-                                    "setLaunchWindowingMode",
-                                    Int::class.java
-                                ).invoke(activityOptions, 4)
-                            }
-                            XposedHelpers.callMethod(
-                                iActivityManager, "startActivityFromRecents",
-                                XposedHelpers.getObjectField(
-                                    XposedHelpers.getObjectField(task, "key"),
-                                    "id"
-                                ),
-                                activityOptions?.toBundle()
-                            )
-                            this.result = task
-                            return@before
-                        } catch (e: Exception) {
-                            YLog.error("$e")
-                            this.result = task
-                            return@before
-                        }
+                    if (activityManagerWrapper == null) {
+                        this.result = task
                     }
-                    this.result = task
+                    try {
+                        XposedHelpers.callMethod(
+                            activityManagerWrapper, "startActivityFromRecents",
+                            XposedHelpers.getObjectField(task, "key"),
+                            null // activityOptions
+                        )
+                        this.result = task
+                    } catch (t: Throwable) {
+                        YLog.error("$t")
+                        this.result = task
+                    }
                 }
             }
         }
