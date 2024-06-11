@@ -1,7 +1,7 @@
 package dev.lackluster.mihelper.data
 
 object Pref {
-    const val VERSION = 1
+    const val VERSION = 2
     object Key {
         object Module {
             const val ENABLED = "enable_module"
@@ -82,7 +82,6 @@ object Pref {
                 const val SHOW_LAUNCH_IN_MINUS_SCALE = "home_refactor_minus_launch_scale"
 
                 const val APPS_BLUR = "home_refactor_apps_blur"
-                const val APPS_BLUR_RADIUS = "home_refactor_apps_blur_radius"
                 const val APPS_BLUR_RADIUS_STR = "home_refactor_apps_radius_str"
                 const val APPS_DIM = "home_refactor_apps_dim"
                 const val APPS_DIM_MAX = "home_refactor_apps_dim_max"
@@ -94,7 +93,6 @@ object Pref {
                 const val APPS_NONLINEAR_PATH_Y2 = "home_refactor_apps_nonlinear_path_y2"
 
                 const val FOLDER_BLUR = "home_refactor_folder_blur"
-//                const val FOLDER_BLUR_RADIUS = "home_refactor_folder_blur_radius"
                 const val FOLDER_BLUR_RADIUS_STR = "home_refactor_folder_radius_str"
                 const val FOLDER_DIM = "home_refactor_folder_dim"
                 const val FOLDER_DIM_MAX = "home_refactor_folder_dim_max"
@@ -106,7 +104,6 @@ object Pref {
                 const val FOLDER_NONLINEAR_PATH_Y2 = "home_refactor_folder_nonlinear_path_y2"
 
                 const val WALLPAPER_BLUR = "home_refactor_wall_blur"
-                const val WALLPAPER_BLUR_RADIUS = "home_refactor_wall_radius"
                 const val WALLPAPER_BLUR_RADIUS_STR = "home_refactor_wall_radius_dp"
                 const val WALLPAPER_DIM = "home_refactor_wall_dim"
                 const val WALLPAPER_DIM_MAX = "home_refactor_wall_dim_max"
@@ -118,7 +115,6 @@ object Pref {
                 const val WALLPAPER_NONLINEAR_PATH_Y2 = "home_refactor_wall_nonlinear_path_y2"
 
                 const val MINUS_BLUR = "home_refactor_minus_blur"
-                const val MINUS_BLUR_RADIUS = "home_refactor_minus_radius"
                 const val MINUS_BLUR_RADIUS_STR = "home_refactor_minus_radius_str"
                 const val MINUS_DIM = "home_refactor_minus_dim"
                 const val MINUS_DIM_MAX = "home_refactor_minus_dim_max"
@@ -228,16 +224,15 @@ object Pref {
                 const val HIDE_WIFI_ACTIVITY = "statusbar_hide_wifi_activity"
                 const val HIDE_WIFI_TYPE = "statusbar_hide_wifi_type"
                 const val HOTSPOT = "statusbar_hide_hotspot"
-                const val HIDE_BATTERY = "statusbar_hide_battery"
-                const val HIDE_BATTERY_PERCENT = "statusbar_hide_battery_percent"
+                const val BATTERY_STYLE = "statusbar_battery_style"
+                const val BATTERY_PERCENTAGE_SYMBOL_STYLE = "statusbar_battery_percent_symbol_style"
                 const val HIDE_CHARGE = "statusbar_hide_charge"
+                const val BATTERY_MODIFY_PERCENTAGE_TEXT_SIZE = "statusbar_change_battery_percent_size"
+                const val BATTERY_PERCENTAGE_TEXT_SIZE = "statusbar_battery_percent_size"
                 const val SWAP_BATTERY_PERCENT = "statusbar_swap_battery_percent"
-                const val BATTERY_CUSTOM_LAYOUT = "statusbar_battery_custom"
-                const val BATTERY_PADDING_LEFT = "statusbar_battery_padding_left"
-                const val BATTERY_PADDING_RIGHT = "statusbar_battery_padding_right"
-                const val CHANGE_BATTERY_PERCENT_MARK = "statusbar_change_battery_percent_mark"
-                const val CHANGE_BATTERY_PERCENT_SIZE = "statusbar_change_battery_percent_size"
-                const val BATTERY_PERCENT_SIZE = "statusbar_battery_percent_size"
+                const val BATTERY_MODIFY_PADDING = "statusbar_battery_custom"
+                const val BATTERY_PADDING_LEFT = "statusbar_battery_custom_padding_left"
+                const val BATTERY_PADDING_RIGHT = "statusbar_battery_custom_padding_right"
                 const val FLIGHT_MODE = "statusbar_hide_flight_mode"
                 const val GPS = "statusbar_hide_gps"
                 const val BLUETOOTH = "statusbar_hide_bluetooth"
@@ -303,6 +298,24 @@ object Pref {
         }
         object Updater {
             const val DISABLE_VALIDATION = "updater_no_validation"
+        }
+    }
+    object OldKey {
+        object MiuiHome {
+            object Refactor {
+                const val D_APPS_BLUR_RADIUS = "home_refactor_apps_blur_radius"
+                const val D_WALLPAPER_BLUR_RADIUS = "home_refactor_wall_radius"
+                const val D_MINUS_BLUR_RADIUS = "home_refactor_minus_radius"
+            }
+        }
+        object SystemUI {
+            object IconTurner {
+                // const val D_HIDE_BATTERY = "statusbar_hide_battery"
+                const val D_HIDE_BATTERY_PERCENT_SYMBOL = "statusbar_hide_battery_percent"
+                const val D_CHANGE_BATTERY_PERCENT_SYMBOL = "statusbar_change_battery_percent_mark"
+                const val D_BATTERY_PADDING_LEFT = "statusbar_battery_padding_left"
+                const val D_BATTERY_PADDING_RIGHT = "statusbar_battery_padding_right"
+            }
         }
     }
     object DefValue {

@@ -39,6 +39,8 @@ class MiBlurView(context: Context): View(context) {
         const val DEFAULT_BLUR_MAX_RADIUS = 100
         const val DEFAULT_DIM_ENABLED = false
         const val DEFAULT_DIM_MAX_ALPHA = 64
+        const val DEFAULT_SCALE_ENABLED = false
+        const val DEFAULT_SCALE_MAX_RATIO = 0f
         const val DEFAULT_NONLINEAR_ENABLED = false
     }
 
@@ -52,6 +54,8 @@ class MiBlurView(context: Context): View(context) {
     private var blurMaxRadius = DEFAULT_BLUR_MAX_RADIUS
     private var dimEnabled = DEFAULT_DIM_ENABLED
     private var dimMaxAlpha = DEFAULT_DIM_MAX_ALPHA
+    private var scaleEnabled = DEFAULT_SCALE_ENABLED
+    private var scaleMaxRatio = DEFAULT_SCALE_MAX_RATIO
     private var nonlinearEnabled = DEFAULT_NONLINEAR_ENABLED
     private var nonlinearInterpolator: Interpolator = LinearInterpolator()
     private var passWindowBlurEnabled = false
@@ -97,6 +101,14 @@ class MiBlurView(context: Context): View(context) {
         dimMaxAlpha = maxAlpha
         if (maxAlpha <= 0) {
             dimEnabled = false
+        }
+    }
+
+    fun setScale(useScale: Boolean, maxRatio: Float) {
+        scaleEnabled = useScale
+        scaleMaxRatio = maxRatio.coerceIn(0.0f, 1.0f)
+        if (scaleMaxRatio !in 0.0f..1.0f) {
+            scaleEnabled = false
         }
     }
 
@@ -185,6 +197,9 @@ class MiBlurView(context: Context): View(context) {
             this.setBackgroundColor(
                 Math.linearInterpolate(0, dimMaxAlpha, ratio).shl(24)
             )
+        }
+        if (scaleEnabled) {
+            MiBlurUtils.setBackgroundBlurScaleRatio(this, Math.linearInterpolate(0.0f, scaleMaxRatio, ratio))
         }
         animCurrentRatio = ratio
         allowRestoreDirectly = true

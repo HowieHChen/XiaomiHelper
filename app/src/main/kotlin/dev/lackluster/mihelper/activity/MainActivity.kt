@@ -130,22 +130,48 @@ class MainActivity : MIUIActivity() {
         val spVersion = safeSP.getInt(Pref.Key.Module.SP_VERSION, 0)
         if (spVersion < 1) {
             if (safeSP.getString(Pref.Key.MiuiHome.Refactor.APPS_BLUR_RADIUS_STR, "") == "") {
-                val oldValue = safeSP.getInt(Pref.Key.MiuiHome.Refactor.APPS_BLUR_RADIUS, -1)
+                val oldValue = safeSP.getInt(Pref.OldKey.MiuiHome.Refactor.D_APPS_BLUR_RADIUS, -1)
                 if (oldValue != -1) {
                     safeSP.putAny(Pref.Key.MiuiHome.Refactor.APPS_BLUR_RADIUS_STR, "${oldValue}px")
                 }
             }
             if (safeSP.getString(Pref.Key.MiuiHome.Refactor.WALLPAPER_BLUR_RADIUS_STR, "") == "") {
-                val oldValue = safeSP.getInt(Pref.Key.MiuiHome.Refactor.WALLPAPER_BLUR_RADIUS, -1)
+                val oldValue = safeSP.getInt(Pref.OldKey.MiuiHome.Refactor.D_WALLPAPER_BLUR_RADIUS, -1)
                 if (oldValue != -1) {
                     safeSP.putAny(Pref.Key.MiuiHome.Refactor.WALLPAPER_BLUR_RADIUS_STR, "${oldValue}px")
                 }
             }
             if (safeSP.getString(Pref.Key.MiuiHome.Refactor.MINUS_BLUR_RADIUS_STR, "") == "") {
-                val oldValue = safeSP.getInt(Pref.Key.MiuiHome.Refactor.MINUS_BLUR_RADIUS, -1)
+                val oldValue = safeSP.getInt(Pref.OldKey.MiuiHome.Refactor.D_MINUS_BLUR_RADIUS, -1)
                 if (oldValue != -1) {
                     safeSP.putAny(Pref.Key.MiuiHome.Refactor.MINUS_BLUR_RADIUS_STR, "${oldValue}px")
                 }
+            }
+        }
+        if (spVersion < 2) {
+            if (safeSP.getFloat(Pref.Key.SystemUI.IconTurner.BATTERY_PADDING_LEFT, -1f) == -1f) {
+                val oldValue = safeSP.getInt(Pref.OldKey.SystemUI.IconTurner.D_BATTERY_PADDING_LEFT, -1)
+                if (oldValue != -1) {
+                    safeSP.putAny(Pref.Key.SystemUI.IconTurner.BATTERY_PADDING_LEFT, oldValue.toFloat())
+                }
+            }
+            if (safeSP.getFloat(Pref.Key.SystemUI.IconTurner.BATTERY_PADDING_RIGHT, -1f) == -1f) {
+                val oldValue = safeSP.getInt(Pref.OldKey.SystemUI.IconTurner.D_BATTERY_PADDING_RIGHT, -1)
+                if (oldValue != -1) {
+                    safeSP.putAny(Pref.Key.SystemUI.IconTurner.BATTERY_PADDING_RIGHT, oldValue.toFloat())
+                }
+            }
+            if (safeSP.getInt(Pref.Key.SystemUI.IconTurner.BATTERY_PERCENTAGE_SYMBOL_STYLE, -1) == -1) {
+                val hidePercentageSymbol = safeSP.getBoolean(Pref.OldKey.SystemUI.IconTurner.D_HIDE_BATTERY_PERCENT_SYMBOL, false)
+                val uniPercentageSymbolSize = safeSP.getBoolean(Pref.OldKey.SystemUI.IconTurner.D_CHANGE_BATTERY_PERCENT_SYMBOL, false)
+                val newValue = if (hidePercentageSymbol) {
+                    2
+                } else if (uniPercentageSymbolSize) {
+                    1
+                } else {
+                    0
+                }
+                safeSP.putAny(Pref.Key.SystemUI.IconTurner.BATTERY_PERCENTAGE_SYMBOL_STYLE, newValue)
             }
         }
         safeSP.putAny(Pref.Key.Module.SP_VERSION, Pref.VERSION)

@@ -8,6 +8,8 @@
     <string name="page_systemui">系统界面</string>
     <string name="common_general">通用</string>
     <string name="module_main_switch">启用模块</string>
+    <string name="module_lite_mode">精简模式</string>
+    <string name="module_lite_mode_tips">模块将只加载核心功能</string>
     <string name="module_hide_icon">隐藏桌面图标</string>
     <string name="ui_title_home_personal_asist">智能助理（负一屏）</string>
     <string name="scope_taplus">传送门</string>
@@ -156,6 +158,12 @@
     <string name="systemui_notif_redirect_settings_tips">打开通知设置时会导航至对应的通知类别设置，而不是应用通知设置</string>
     <string name="systemui_lock_hide_disturb">隐藏勿扰模式常驻通知</string>
     <string name="systemui_lock_hide_unlock_tip">隐藏锁屏界面底部的解锁提示</string>
+    <string name="icon_tuner_battery_style">电池指示器</string>
+    <string name="icon_tuner_battery_style_both">图标和百分比</string>
+    <string name="icon_tuner_battery_style_icon">仅图标</string>
+    <string name="icon_tuner_battery_style_percentage">仅百分比</string>
+    <string name="icon_tuner_battery_percentage_symbol_style">电池百分比符号</string>
+    <string name="icon_tuner_battery_percentage_symbol_style_uni">数字样式</string>
     <string name="icon_tuner_battery_hide_battery">隐藏电池图标</string>
     <string name="icon_tuner_battery_hide_battery_mark">隐藏电量百分比符号</string>
     <string name="icon_tuner_battery_hide_charge">隐藏充电图标</string>
@@ -306,7 +314,7 @@
     <string name="media_style_custom_default">HyperOS（默认）</string>
     <string name="media_style_custom_blur">模糊封面</string>
     <string name="home_refactor_minus_tips">用于模糊整个桌面视图，模糊会出现在处于负一屏时</string>
-    <string name="home_refactor_minus_overlap_mode">重叠模式</string>
+    <string name="home_refactor_minus_overlap_mode">负一屏重叠模式</string>
     <string name="ui_title_home_refactor_minus">负一屏背景的模糊</string>
     <string name="home_refactor_launch_show_minus_tips">在进入负一屏时不隐藏桌面视图</string>
     <string name="home_refactor_minus_overlap_mode_tips">让负一屏悬浮在桌面之上</string>

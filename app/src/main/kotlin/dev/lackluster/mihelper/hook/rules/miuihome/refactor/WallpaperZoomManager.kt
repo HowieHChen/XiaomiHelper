@@ -28,11 +28,13 @@ import androidx.dynamicanimation.animation.SpringAnimation
 import androidx.dynamicanimation.animation.SpringForce
 import dev.lackluster.mihelper.utils.Math
 import java.lang.reflect.Method
+import java.util.concurrent.Executor
 
 class WallpaperZoomManager(
     context: Context,
     private val windowToken: IBinder,
-    private val setWallpaperZoomOut: Method
+    private val setWallpaperZoomOut: Method,
+    private val wallPaperExecutor: Executor
 ) {
     private var currentTargetRatio = 0.0f
     private var currentVelocity = 0.0f
@@ -94,9 +96,11 @@ class WallpaperZoomManager(
     }
 
     private fun zoomToDirectly(ratio: Float) {
-        val zoomRatio = Math.linearInterpolate(1.0f, 0.6f, ratio)
-        setWallpaperZoomOut.invoke(wallpaperManager, windowToken, zoomRatio)
-        animCurrentRatio = ratio
-        allowRestoreDirectly = true
+        wallPaperExecutor.execute {
+            val zoomRatio = Math.linearInterpolate(1.0f, 0.6f, ratio)
+            setWallpaperZoomOut.invoke(wallpaperManager, windowToken, zoomRatio)
+            animCurrentRatio = ratio
+            allowRestoreDirectly = true
+        }
     }
 }

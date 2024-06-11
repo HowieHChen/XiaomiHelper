@@ -22,6 +22,9 @@ package dev.lackluster.mihelper.hook.rules.miuihome.anim
 
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.method
+import com.highcapable.yukihookapi.hook.type.java.BooleanType
+import de.robv.android.xposed.XC_MethodHook
+import de.robv.android.xposed.XposedHelpers
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.Device
 import dev.lackluster.mihelper.utils.Prefs
@@ -31,21 +34,24 @@ object WallpaperZoomSync : YukiBaseHooker() {
     private var allowZoom = false
     override fun onHook() {
         hasEnable(Pref.Key.MiuiHome.ANIM_WALLPAPER_ZOOM_SYNC, extraCondition = {
-            !Prefs.getBoolean(Pref.Key.MiuiHome.REFACTOR, false)
+            !(Prefs.getBoolean(Pref.Key.MiuiHome.REFACTOR, false) &&
+                    Prefs.getBoolean(Pref.Key.MiuiHome.Refactor.SYNC_WALLPAPER_SCALE, false))
         }) {
-            val launcherClz = "com.miui.home.launcher.Launcher".toClass()
-            val animateWallpaperZoomMethod = launcherClz.methods.first { it.name == "animateWallpaperZoom" }
-            animateWallpaperZoomMethod.hook {
-                before {
-                    if (this.args(0).boolean()) {
-                        if (allowZoom) {
-                            allowZoom = false
-                        } else {
-                            this.result = null
+            XposedHelpers.findAndHookMethod(
+                "com.miui.home.launcher.Launcher", this.appClassLoader,
+                "animateWallpaperZoom", BooleanType,
+                object : XC_MethodHook() {
+                    override fun beforeHookedMethod(param: MethodHookParam?) {
+                        if (param?.args?.get(0) == true) {
+                            if (allowZoom) {
+                                allowZoom = false
+                            } else {
+                                param.result = null
+                            }
                         }
                     }
                 }
-            }
+            )
             "com.miui.home.recents.QuickstepAppTransitionManagerImpl".toClass().method {
                 name = "startLauncherContentAnimator"
             }.hook {

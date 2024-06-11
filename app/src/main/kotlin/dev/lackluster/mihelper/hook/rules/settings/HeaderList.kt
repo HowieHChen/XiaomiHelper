@@ -22,24 +22,29 @@
 
 package dev.lackluster.mihelper.hook.rules.settings
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.Icon
 import android.os.Bundle
 import android.os.UserHandle
+import android.view.View
+import android.widget.ImageView
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.constructor
 import com.highcapable.yukihookapi.hook.factory.current
-import com.highcapable.yukihookapi.hook.factory.field
-import com.highcapable.yukihookapi.hook.factory.injectModuleAppResources
 import com.highcapable.yukihookapi.hook.factory.method
 import com.highcapable.yukihookapi.hook.type.java.ListClass
 import dev.lackluster.mihelper.BuildConfig
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.activity.MainActivity
 import dev.lackluster.mihelper.data.Pref
+import dev.lackluster.mihelper.utils.Device
 import dev.lackluster.mihelper.utils.Prefs
 
 object HeaderList : YukiBaseHooker() {
+    private const val XIAOMI_HELPER_IDENTIFIER = 9641L
     private val showSettingsEntry = Prefs.getBoolean(Pref.Key.Module.SHOW_IN_SETTINGS, false)
     private val iconStyle = Prefs.getInt(Pref.Key.Module.SETTINGS_ICON_STYLE, 0)
     private val iconColor = Prefs.getInt(Pref.Key.Module.SETTINGS_ICON_COLOR, 0)
@@ -68,12 +73,40 @@ object HeaderList : YukiBaseHooker() {
         }
     }
     private val showGoogleSettings = Prefs.getBoolean(Pref.Key.Settings.SHOE_GOOGLE, false)
-    private val isGlobal by lazy {
-        "miui.os.Build".toClass().field {
-            name = "IS_GLOBAL_BUILD"
-        }.get().boolean()
-    }
+    @SuppressLint("DiscouragedApi")
     override fun onHook() {
+        if (showSettingsEntry) {
+            "com.android.settings.MiuiSettings\$HeaderAdapter".toClass().method {
+                name = "setIcon"
+            }.hook {
+                before {
+                    val headerViewHolder = this.args(0).any() ?: return@before
+                    val header = this.args(1).any()
+                    val identifier = header?.current()?.field { name = "id" }?.long()
+                    if (identifier == XIAOMI_HELPER_IDENTIFIER) {
+                        val icon = headerViewHolder.current().field { name = "icon" }.any() as? ImageView ?: return@before
+                        if (icon.visibility != View.GONE) {
+                            try {
+                                icon.visibility = View.VISIBLE
+                                val moduleIcon = Icon.createWithResource(BuildConfig.APPLICATION_ID, iconDrawable).loadDrawable(icon.context)
+                                val headerIconPixelSize = icon.resources.getDimensionPixelSize(
+                                    icon.resources.getIdentifier("header_icon_size", "dimen", "com.android.settings")
+                                )
+                                val bitmap = "com.android.settings.Utils".toClass().method {
+                                    name = "createBitmap"
+                                    paramCount = 3
+                                    modifiers { isStatic }
+                                }.get().call(moduleIcon, headerIconPixelSize, headerIconPixelSize) as Bitmap
+                                icon.setImageBitmap(bitmap)
+                            } catch (tout: Throwable) {
+                                icon.visibility = View.INVISIBLE
+                            }
+                        }
+                        this.result = null
+                    }
+                }
+            }
+        }
         if (showSettingsEntry || showGoogleSettings) {
             val preferenceHeaderClz = "com.android.settingslib.miuisettings.preference.PreferenceActivity\$Header".toClassOrNull() ?: return
             val miuiSettingsClz = "com.android.settings.MiuiSettings".toClassOrNull() ?: return
@@ -82,29 +115,31 @@ object HeaderList : YukiBaseHooker() {
                 param(ListClass)
             }.hook {
                 after {
-                    val headerList = this.args(0).any() as MutableList<Any?>
+                    val headerList = this.args(0).list<Any?>() as MutableList<Any?>
                     if (showSettingsEntry) {
                         val activity = this.instance as Activity
-                        activity.injectModuleAppResources()
+                        val moduleRes = activity.packageManager.getResourcesForApplication(BuildConfig.APPLICATION_ID)
+                        val idMyDevice = activity.resources.getIdentifier("my_device", "id", "com.android.settings")
                         val intent = Intent()
                         intent.putExtra("isDisplayHomeAsUpEnabled", true)
                         intent.setClassName(BuildConfig.APPLICATION_ID, MainActivity::class.java.canonicalName!!)
                         val header = preferenceHeaderClz.constructor().get().call()
-                        header?.current()?.field { name = "id" }?.set(6666L)
+                        header?.current()?.field { name = "id" }?.set(XIAOMI_HELPER_IDENTIFIER)
                         header?.current()?.field { name = "intent" }?.set(intent)
-                        header?.current()?.field { name = "title" }?.set(activity.getString(entryName))
+                        header?.current()?.field { name = "title" }?.set(moduleRes.getString(entryName))
                         header?.current()?.field { name = "iconRes" }?.set(iconDrawable)
                         val bundle = Bundle()
-                        val users = arrayListOf<UserHandle>(
+                        val users = arrayListOf(
                             UserHandle::class.java.constructor().get().call(0) as UserHandle
                         )
                         bundle.putParcelableArrayList("header_user", users)
                         header?.current()?.field { name = "extras" }?.set(bundle)
+
                         var added = false
                         for ((position, head) in headerList.withIndex()) {
-                            val index = head?.current()?.field { name = "id" }?.long()
-                            if (index == -1L) {
-                                headerList.add(position, header)
+                            val identifier = head?.current()?.field { name = "id" }?.long()?.toInt()
+                            if (identifier == idMyDevice) {
+                                headerList.add(position + 1, header)
                                 added = true
                                 break
                             }
@@ -117,7 +152,7 @@ object HeaderList : YukiBaseHooker() {
                             }
                         }
                     }
-                    if (showGoogleSettings && !isGlobal) {
+                    if (showGoogleSettings && !Device.isGlobal) {
                         this.instance.current {
                             method {
                                 name = "AddGoogleSettingsHeaders"

@@ -31,6 +31,7 @@ import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
 import dev.lackluster.mihelper.hook.rules.miuihome.refactor.BlurRefactorEntry.wallpaperZoomManager
 import java.lang.reflect.Method
+import java.util.concurrent.Executor
 
 object SyncWallpaperScale : YukiBaseHooker() {
     private val setWallpaperZoomOut by lazy {
@@ -50,13 +51,43 @@ object SyncWallpaperScale : YukiBaseHooker() {
                 }
             }
         )
+        XposedHelpers.findAndHookMethod(
+            "com.miui.home.launcher.Launcher", this.appClassLoader,
+            "abortWallpaperAnimations",
+            object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: MethodHookParam?) {
+                    param?.result = null
+                }
+            }
+        )
         "com.miui.home.launcher.wallpaper.WallpaperZoomManager".toClass().apply {
             constructor().hook {
                 after {
-                    val context = (this.instance.current().field { name = "context" }.any() ?: return@after) as Context
-                    val windowToken = (this.instance.current().field { name = "mWindowToken" }.any() ?: return@after) as IBinder
-                    wallpaperZoomManager = WallpaperZoomManager(context, windowToken, setWallpaperZoomOut)
+                    val context = this.instance.current().field { name = "context" }.any() as? Context ?: return@after
+                    val windowToken = this.instance.current().field { name = "mWindowToken" }.any() as? IBinder ?: return@after
+                    val mWallPaperExecutor = this.instance.current().field { name = "mWallPaperExecutor" }.any() as? Executor ?: return@after
+                    wallpaperZoomManager = WallpaperZoomManager(context, windowToken, setWallpaperZoomOut, mWallPaperExecutor)
                 }
+            }
+            method {
+                name = "animateWallpaperZoom"
+            }.hook {
+                intercept()
+            }
+            method {
+                name = "abortAnimations"
+            }.hook {
+                intercept()
+            }
+            method {
+                name = "animateZoomOutTo"
+            }.hook {
+                intercept()
+            }
+            method {
+                name = "setWallpaperZoomOut"
+            }.hook {
+                intercept()
             }
         }
     }

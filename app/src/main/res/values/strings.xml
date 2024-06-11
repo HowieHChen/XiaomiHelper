@@ -387,6 +387,16 @@
     <string name="icon_tuner_wifi_hide_wifi_type">Hide Wi-Fi type icon</string>
     <string name="icon_tuner_wifi_hotspot">Hotspot icon</string>
     <string name="ui_title_icon_tuner_battery">Battery</string>
+    <string name="icon_tuner_battery_style">Battery indicator</string>
+    <string name="icon_tuner_battery_style_default" translatable="false">@string/icon_tuner_hide_selection_default</string>
+    <string name="icon_tuner_battery_style_both">Icon &amp; percentage</string>
+    <string name="icon_tuner_battery_style_icon">Icon only</string>
+    <string name="icon_tuner_battery_style_percentage">Percentage only</string>
+    <string name="icon_tuner_battery_style_hidden" translatable="false">@string/icon_tuner_hide_selection_hidden</string>
+    <string name="icon_tuner_battery_percentage_symbol_style">Battery percentage symbol</string>
+    <string name="icon_tuner_battery_percentage_symbol_style_default" translatable="false">@string/icon_tuner_hide_selection_default</string>
+    <string name="icon_tuner_battery_percentage_symbol_style_uni">Number style</string>
+    <string name="icon_tuner_battery_percentage_symbol_style_hidden" translatable="false">@string/icon_tuner_hide_selection_hidden</string>
     <string name="icon_tuner_battery_hide_battery">Hide battery icon</string>
     <string name="icon_tuner_battery_hide_battery_mark">Hide battery percentage symbol</string>
     <string name="icon_tuner_battery_hide_charge">Hide charging icon</string>
@@ -493,7 +503,7 @@
     <string name="home_refactor_launch_scale_nonlinear_factor_tips" translatable="false">@string/home_refactor_nonlinear_factor_tips</string>
     <string name="ui_title_home_refactor_minus">Blur effect of Minus screen background</string>
     <string name="home_refactor_minus_tips">Used to blur the entire launcher view. Blurring occurs when in the minus screen.</string>
-    <string name="home_refactor_minus_overlap_mode">Overlap mode</string>
+    <string name="home_refactor_minus_overlap_mode">Minus screen overlap mode</string>
     <string name="home_refactor_minus_overlap_mode_tips">Make the minus screen hover above the launcher</string>
     <string name="home_refactor_launch_show_minus_tips">Don\'t hide the launcher view when going to the minus screen</string>
 </resources>

@@ -187,46 +187,162 @@ class IconTunerPage : BasePage() {
         )
         Line()
         TitleText(textId = R.string.ui_title_icon_tuner_battery)
-        val swapBatteryBinding = GetDataBinding({
-            MIUIActivity.safeSP.getBoolean(IconTurner.HIDE_BATTERY, false)
-        }) { view, _, data ->
-            view.visibility = if (data as Boolean) View.GONE else View.VISIBLE
+        val batteryIndicatorStyle: HashMap<Int, String> = hashMapOf<Int, String>().also {
+            it[0] = getString(R.string.icon_tuner_battery_style_default)
+            it[1] = getString(R.string.icon_tuner_battery_style_both)
+            it[2] = getString(R.string.icon_tuner_battery_style_icon)
+            it[3] = getString(R.string.icon_tuner_battery_style_percentage)
+            it[4] = getString(R.string.icon_tuner_battery_style_hidden)
         }
-        val batteryPercentMarkBinding = GetDataBinding({
-            MIUIActivity.safeSP.getBoolean(IconTurner.HIDE_BATTERY_PERCENT, false)
-        }) { view, _, data ->
-            view.visibility = if (data as Boolean) View.GONE else View.VISIBLE
+        val batteryStyleBinding = GetDataBinding({
+            MIUIActivity.safeSP.getInt(IconTurner.BATTERY_STYLE, 0)
+        }) { view: View, flag: Int, data: Any ->
+            val selectionIndex = data as Int
+            when (flag) {
+                0 -> { // Battery percentage symbol
+                    view.visibility = if (selectionIndex == 2 || selectionIndex == 4) View.GONE else View.VISIBLE
+                }
+            }
         }
-        TextWithSwitch(
-            TextV(textId = R.string.icon_tuner_battery_hide_battery),
-            SwitchV(
-                key = IconTurner.HIDE_BATTERY, 
-                dataBindingSend = swapBatteryBinding.bindingSend)
+        TextWithSpinner(
+            TextV(textId = R.string.icon_tuner_battery_style),
+            SpinnerV(
+                batteryIndicatorStyle[MIUIActivity.safeSP.getInt(
+                    IconTurner.BATTERY_STYLE,
+                    0
+                )].toString()
+            ) {
+                add(batteryIndicatorStyle[0].toString()) {
+                    MIUIActivity.safeSP.putAny(IconTurner.BATTERY_STYLE, 0)
+                    batteryStyleBinding.bindingSend.send(0)
+                }
+                add(batteryIndicatorStyle[1].toString()) {
+                    MIUIActivity.safeSP.putAny(IconTurner.BATTERY_STYLE, 1)
+                    batteryStyleBinding.bindingSend.send(1)
+                }
+                add(batteryIndicatorStyle[2].toString()) {
+                    MIUIActivity.safeSP.putAny(IconTurner.BATTERY_STYLE, 2)
+                    batteryStyleBinding.bindingSend.send(2)
+                }
+                add(batteryIndicatorStyle[3].toString()) {
+                    MIUIActivity.safeSP.putAny(IconTurner.BATTERY_STYLE, 3)
+                    batteryStyleBinding.bindingSend.send(3)
+                }
+                add(batteryIndicatorStyle[4].toString()) {
+                    MIUIActivity.safeSP.putAny(IconTurner.BATTERY_STYLE, 4)
+                    batteryStyleBinding.bindingSend.send(4)
+                }
+            }
         )
-        TextWithSwitch(
-            TextV(textId = R.string.icon_tuner_battery_hide_battery_mark),
-            SwitchV(
-                key = IconTurner.HIDE_BATTERY_PERCENT, 
-                dataBindingSend = batteryPercentMarkBinding.bindingSend)
+        val batteryPercentageStyle: HashMap<Int, String> = hashMapOf<Int, String>().also {
+            it[0] = getString(R.string.icon_tuner_battery_percentage_symbol_style_default)
+            it[1] = getString(R.string.icon_tuner_battery_percentage_symbol_style_uni)
+            it[2] = getString(R.string.icon_tuner_battery_percentage_symbol_style_hidden)
+        }
+        TextWithSpinner(
+            TextV(textId = R.string.icon_tuner_battery_percentage_symbol_style),
+            SpinnerV(
+                batteryPercentageStyle[MIUIActivity.safeSP.getInt(
+                    IconTurner.BATTERY_PERCENTAGE_SYMBOL_STYLE,
+                    0
+                )].toString()
+            ) {
+                add(batteryPercentageStyle[0].toString()) {
+                    MIUIActivity.safeSP.putAny(IconTurner.BATTERY_PERCENTAGE_SYMBOL_STYLE, 0)
+                }
+                add(batteryPercentageStyle[1].toString()) {
+                    MIUIActivity.safeSP.putAny(IconTurner.BATTERY_PERCENTAGE_SYMBOL_STYLE, 1)
+                }
+                add(batteryPercentageStyle[2].toString()) {
+                    MIUIActivity.safeSP.putAny(IconTurner.BATTERY_PERCENTAGE_SYMBOL_STYLE, 2)
+                }
+            },
+            dataBindingRecv = batteryStyleBinding.binding.getRecv(0)
+        )
+        TextSummaryWithSwitch(
+            TextSummaryV(textId = R.string.icon_tuner_battery_swap_battery_percent),
+            SwitchV(IconTurner.SWAP_BATTERY_PERCENT),
+            dataBindingRecv = batteryStyleBinding.binding.getRecv(0)
         )
         TextWithSwitch(
             TextV(textId = R.string.icon_tuner_battery_hide_charge),
             SwitchV(IconTurner.HIDE_CHARGE)
         )
+        val batteryPercentSizeBinding = GetDataBinding({
+            MIUIActivity.safeSP.getBoolean(IconTurner.BATTERY_MODIFY_PERCENTAGE_TEXT_SIZE, false)
+        }) { view, _, data ->
+            view.visibility = if (data as Boolean) View.VISIBLE else View.GONE
+        }
         TextSummaryWithSwitch(
-            TextSummaryV(textId = R.string.icon_tuner_battery_swap_battery_percent),
-            SwitchV(IconTurner.SWAP_BATTERY_PERCENT),
-            dataBindingRecv = swapBatteryBinding.getRecv(1)
+            TextSummaryV(textId = R.string.icon_tuner_battery_battery_percent_size),
+            SwitchV(
+                key = IconTurner.BATTERY_MODIFY_PERCENTAGE_TEXT_SIZE,
+                dataBindingSend = batteryPercentSizeBinding.bindingSend)
         )
+        TextSummaryWithArrow(
+            TextSummaryV(
+                textId = R.string.icon_tuner_battery_percent_size,
+                onClickListener = {
+                    MIUIDialog(activity) {
+                        setTitle(R.string.icon_tuner_battery_percent_size)
+                        setMessage(
+                            "${activity.getString(R.string.common_default)}: 0.0\n${activity.getString(R.string.icon_tuner_battery_percent_size_default)}"
+                        )
+                        setEditText("", "${activity.getString(R.string.common_current)}: ${
+                            MIUIActivity.safeSP.getFloat(IconTurner.BATTERY_PERCENTAGE_TEXT_SIZE, 0f)
+                        }")
+                        setLButton(textId = R.string.button_cancel) {
+                            dismiss()
+                        }
+                        setRButton(textId = R.string.button_ok) {
+                            if (getEditText().isNotEmpty()) {
+                                runCatching {
+                                    MIUIActivity.safeSP.putAny(
+                                        IconTurner.BATTERY_PERCENTAGE_TEXT_SIZE,
+                                        getEditText().toFloat()
+                                    )
+                                }.onFailure {
+                                    Toast.makeText(activity, activity.getString(R.string.common_invalid_input), Toast.LENGTH_LONG).show()
+                                }
+                            }
+                            dismiss()
+                        }
+                    }.show()
+                }
+            ),
+            dataBindingRecv = batteryPercentSizeBinding.binding.getRecv(1)
+        )
+//        val swapBatteryBinding = GetDataBinding({
+//            MIUIActivity.safeSP.getBoolean(IconTurner.HIDE_BATTERY, false)
+//        }) { view, _, data ->
+//            view.visibility = if (data as Boolean) View.GONE else View.VISIBLE
+//        }
+//        val batteryPercentMarkBinding = GetDataBinding({
+//            MIUIActivity.safeSP.getBoolean(IconTurner.HIDE_BATTERY_PERCENT_SYMBOL, false)
+//        }) { view, _, data ->
+//            view.visibility = if (data as Boolean) View.GONE else View.VISIBLE
+//        }
+//        TextWithSwitch(
+//            TextV(textId = R.string.icon_tuner_battery_hide_battery),
+//            SwitchV(
+//                key = IconTurner.HIDE_BATTERY,
+//                dataBindingSend = swapBatteryBinding.bindingSend)
+//        )
+//        TextWithSwitch(
+//            TextV(textId = R.string.icon_tuner_battery_hide_battery_mark),
+//            SwitchV(
+//                key = IconTurner.HIDE_BATTERY_PERCENT_SYMBOL,
+//                dataBindingSend = batteryPercentMarkBinding.bindingSend)
+//        )
         val batteryPaddingBinding = GetDataBinding({
-            MIUIActivity.safeSP.getBoolean(IconTurner.BATTERY_CUSTOM_LAYOUT, false)
+            MIUIActivity.safeSP.getBoolean(IconTurner.BATTERY_MODIFY_PADDING, false)
         }) { view, _, data ->
             view.visibility = if (data as Boolean) View.VISIBLE else View.GONE
         }
         TextSummaryWithSwitch(
             TextSummaryV(textId = R.string.icon_tuner_battery_layout_custom),
             SwitchV(
-                key = IconTurner.BATTERY_CUSTOM_LAYOUT, 
+                key = IconTurner.BATTERY_MODIFY_PADDING,
                 dataBindingSend = batteryPaddingBinding.bindingSend)
         )
         TextSummaryWithArrow(
@@ -235,9 +351,9 @@ class IconTunerPage : BasePage() {
                 onClickListener = {
                     MIUIDialog(activity) {
                         setTitle(R.string.icon_tuner_battery_padding_left)
-                        setMessage("${activity.getString(R.string.common_default)}: 0")
+                        setMessage("${activity.getString(R.string.common_default)}: 0.0")
                         setEditText("", "${activity.getString(R.string.common_current)}: ${
-                            MIUIActivity.safeSP.getInt(IconTurner.BATTERY_PADDING_LEFT, 0)
+                            MIUIActivity.safeSP.getFloat(IconTurner.BATTERY_PADDING_LEFT, 0.0f)
                         }")
                         setLButton(textId = R.string.button_cancel) {
                             dismiss()
@@ -247,7 +363,7 @@ class IconTunerPage : BasePage() {
                                 runCatching {
                                     MIUIActivity.safeSP.putAny(
                                         IconTurner.BATTERY_PADDING_LEFT,
-                                        getEditText().toInt()
+                                        getEditText().toFloat()
                                     )
                                 }.onFailure {
                                     Toast.makeText(activity, activity.getString(R.string.common_invalid_input), Toast.LENGTH_LONG).show()
@@ -266,9 +382,9 @@ class IconTunerPage : BasePage() {
                 onClickListener = {
                     MIUIDialog(activity) {
                         setTitle(R.string.icon_tuner_battery_padding_right)
-                        setMessage("${activity.getString(R.string.common_default)}: 0")
+                        setMessage("${activity.getString(R.string.common_default)}: 0.0")
                         setEditText("", "${activity.getString(R.string.common_current)}: ${
-                            MIUIActivity.safeSP.getInt(IconTurner.BATTERY_PADDING_RIGHT, 0)
+                            MIUIActivity.safeSP.getFloat(IconTurner.BATTERY_PADDING_RIGHT, 0.0f)
                         }")
                         setLButton(textId = R.string.button_cancel) {
                             dismiss()
@@ -278,7 +394,7 @@ class IconTunerPage : BasePage() {
                                 runCatching {
                                     MIUIActivity.safeSP.putAny(
                                         IconTurner.BATTERY_PADDING_RIGHT,
-                                        getEditText().toInt()
+                                        getEditText().toFloat()
                                     )
                                 }.onFailure {
                                     Toast.makeText(activity, activity.getString(R.string.common_invalid_input), Toast.LENGTH_LONG).show()
@@ -291,55 +407,11 @@ class IconTunerPage : BasePage() {
             ),
             dataBindingRecv = batteryPaddingBinding.binding.getRecv(1)
         )
-        TextSummaryWithSwitch(
-            TextSummaryV(textId = R.string.icon_tuner_battery_uni_battery_mark),
-            SwitchV(IconTurner.CHANGE_BATTERY_PERCENT_MARK),
-            dataBindingRecv = batteryPercentMarkBinding.binding.getRecv(0)
-        )
-        val batteryPercentSizeBinding = GetDataBinding({
-            MIUIActivity.safeSP.getBoolean(IconTurner.CHANGE_BATTERY_PERCENT_SIZE, false)
-        }) { view, _, data ->
-            view.visibility = if (data as Boolean) View.VISIBLE else View.GONE
-        }
-        TextSummaryWithSwitch(
-            TextSummaryV(textId = R.string.icon_tuner_battery_battery_percent_size),
-            SwitchV(
-                key = IconTurner.CHANGE_BATTERY_PERCENT_SIZE, 
-                dataBindingSend = batteryPercentSizeBinding.bindingSend)
-        )
-        TextSummaryWithArrow(
-            TextSummaryV(
-                textId = R.string.icon_tuner_battery_percent_size,
-                onClickListener = {
-                    MIUIDialog(activity) {
-                        setTitle(R.string.icon_tuner_battery_percent_size)
-                        setMessage(
-                            "${activity.getString(R.string.common_default)}: 0\n${activity.getString(R.string.icon_tuner_battery_percent_size_default)}"
-                        )
-                        setEditText("", "${activity.getString(R.string.common_current)}: ${
-                            MIUIActivity.safeSP.getFloat(IconTurner.BATTERY_PERCENT_SIZE, 0f)
-                        }")
-                        setLButton(textId = R.string.button_cancel) {
-                            dismiss()
-                        }
-                        setRButton(textId = R.string.button_ok) {
-                            if (getEditText().isNotEmpty()) {
-                                runCatching {
-                                    MIUIActivity.safeSP.putAny(
-                                        IconTurner.BATTERY_PERCENT_SIZE,
-                                        getEditText().toFloat()
-                                    )
-                                }.onFailure {
-                                    Toast.makeText(activity, activity.getString(R.string.common_invalid_input), Toast.LENGTH_LONG).show()
-                                }
-                            }
-                            dismiss()
-                        }
-                    }.show()
-                }
-            ),
-            dataBindingRecv = batteryPercentSizeBinding.binding.getRecv(1)
-        )
+//        TextSummaryWithSwitch(
+//            TextSummaryV(textId = R.string.icon_tuner_battery_uni_battery_mark),
+//            SwitchV(IconTurner.CHANGE_BATTERY_PERCENT_SYMBOL),
+//            dataBindingRecv = batteryPercentMarkBinding.binding.getRecv(0)
+//        )
         Line()
         TitleText(textId = R.string.ui_title_icon_tuner_connectivity)
         TextWithSpinner(

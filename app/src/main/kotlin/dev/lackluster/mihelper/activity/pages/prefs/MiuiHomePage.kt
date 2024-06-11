@@ -96,13 +96,22 @@ class MiuiHomePage : BasePage() {
             ),
             SwitchV(Pref.Key.MiuiHome.ANIM_UNLOCK)
         )
+        val refactorWallpaperBinding = GetDataBinding({
+            MIUIActivity.safeSP.getBoolean(Pref.Key.MiuiHome.REFACTOR, false) &&
+                    MIUIActivity.safeSP.getBoolean(Pref.Key.MiuiHome.Refactor.SYNC_WALLPAPER_SCALE, false)
+        }) { view, flags, data ->
+            when (flags) {
+                0 -> view.visibility = if (data as Boolean) View.VISIBLE else View.GONE
+                1 -> view.visibility = if (data as Boolean) View.GONE else View.VISIBLE
+            }
+        }
         TextSummaryWithSwitch(
             TextSummaryV(
                 textId = R.string.home_anim_zoom_sync,
                 tipsId = R.string.home_anim_zoom_sync_tips
             ),
             SwitchV(Pref.Key.MiuiHome.ANIM_WALLPAPER_ZOOM_SYNC),
-            dataBindingRecv = refactorBinding.binding.getRecv(1)
+            dataBindingRecv = refactorWallpaperBinding.binding.getRecv(1)
         )
         TextWithSwitch(
             TextV(textId = R.string.home_anim_icon_zoom),

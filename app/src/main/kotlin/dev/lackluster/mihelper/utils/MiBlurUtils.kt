@@ -53,6 +53,7 @@ object MiBlurUtils {
     }
     fun clearAllBlur(view: View) {
         // resetBlurColor(view)
+        setBackgroundBlurScaleRatio(view, 0f)
         setViewBackgroundBlur(view, 0)
         setViewBlur(view, 0)
         setBlurRadius(view, 0)

@@ -4,7 +4,6 @@ import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import dev.lackluster.mihelper.hook.rules.shared.RemoveFreeformRestriction
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils
 import dev.lackluster.mihelper.hook.rules.systemui.lockscreen.BlockEditor
-import dev.lackluster.mihelper.hook.rules.systemui.statusbar.HideBatteryIcon
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.HideCarrierLabel
 import dev.lackluster.mihelper.hook.rules.systemui.lockscreen.HideDisturbNotification
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.HideStatusBarSpecialIcon
@@ -24,6 +23,7 @@ import dev.lackluster.mihelper.hook.rules.systemui.media.CustomElement
 import dev.lackluster.mihelper.hook.rules.systemui.media.StyleCustomHookEntry
 import dev.lackluster.mihelper.hook.rules.systemui.media.UnlockCustomAction
 import dev.lackluster.mihelper.hook.rules.systemui.notif.AdvancedTextures
+import dev.lackluster.mihelper.hook.rules.systemui.statusbar.BatteryIndicator
 
 object SystemUI : YukiBaseHooker() {
     override fun onHook() {
@@ -32,7 +32,7 @@ object SystemUI : YukiBaseHooker() {
         loadHooker(UnlockMultipleTask)
         loadHooker(HideTopBar)
         loadHooker(HideStatusBarIcon)
-        loadHooker(HideBatteryIcon)
+        loadHooker(BatteryIndicator)
         loadHooker(HideCarrierLabel)
         loadHooker(HideStatusBarSpecialIcon)
         loadHooker(HideWifiActivityAndType)

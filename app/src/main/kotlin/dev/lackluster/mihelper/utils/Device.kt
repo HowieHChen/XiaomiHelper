@@ -19,6 +19,14 @@ object Device {
             false
         }
     }
+    val isGlobal by lazy {
+        try {
+            Class.forName("miui.os.Build").getDeclaredField("IS_GLOBAL_BUILD").get(null) as Boolean
+        }
+        catch (e: Exception) {
+            false
+        }
+    }
     val androidVersion by lazy {
         Build.VERSION.SDK_INT
     }
