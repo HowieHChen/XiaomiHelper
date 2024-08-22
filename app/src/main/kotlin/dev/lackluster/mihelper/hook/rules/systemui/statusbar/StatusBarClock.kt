@@ -45,6 +45,7 @@ import kotlin.math.roundToInt
 
 object StatusBarClock : YukiBaseHooker() {
     private const val MIUI_CLOCK_CLZ = "com.android.systemui.statusbar.views.MiuiClock"
+    private const val MIUI_STATUS_BAR_CLOCK_CLZ = "com.android.systemui.statusbar.views.MiuiStatusBarClock"
     private val clockGeekMode by lazy {
         Prefs.getBoolean(Pref.Key.SystemUI.StatusBar.CLOCK_GEEK, false)
     }
@@ -113,6 +114,9 @@ object StatusBarClock : YukiBaseHooker() {
             }.hook {
                 after {
                     val miuiClock = this.instance as TextView
+                    if (this.args(2).int() == -1) {
+                        miuiClock.id = clock
+                    }
                     if (clockPaddingCustom) {
                         val scale = miuiClock.context.resources.displayMetrics.density
                         if (miuiClock.id == pad_clock) {
@@ -165,7 +169,7 @@ object StatusBarClock : YukiBaseHooker() {
                     handleUpdateGeek(this)
                 }
             }
-            "com.android.systemui.statusbar.views.MiuiStatusBarClock".toClass().method {
+            MIUI_STATUS_BAR_CLOCK_CLZ.toClass().method {
                 name = "updateTime"
             }.hook {
                 before {
@@ -181,7 +185,7 @@ object StatusBarClock : YukiBaseHooker() {
                         handleUpdateTime(this)
                     }
                 }
-                "com.android.systemui.statusbar.views.MiuiStatusBarClock".toClass().method {
+                MIUI_STATUS_BAR_CLOCK_CLZ.toClass().method {
                     name = "updateTime"
                 }.hook {
                     before {
@@ -280,7 +284,7 @@ object StatusBarClock : YukiBaseHooker() {
             }
             var fmtString = context.getString(fmtId)
             if (clockShowLeadingZero) {
-                fmtString = fmtString.replaceFirst(Regex("${hourStr}+:"), "${hourStr}${hourStr}:")
+                fmtString = fmtString.replaceFirst(Regex("[Hh]+:"), "${hourStr}${hourStr}:")
             }
             if (clockShowSecond) {
                 fmtString = if (miuiClock.id in setOf(clock, big_time)) {

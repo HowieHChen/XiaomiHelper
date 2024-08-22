@@ -26,150 +26,175 @@ import android.view.View
 import cn.fkj233.ui.activity.MIUIActivity
 import cn.fkj233.ui.activity.annotation.BMPage
 import cn.fkj233.ui.activity.data.BasePage
-import cn.fkj233.ui.activity.view.SpinnerV
-import cn.fkj233.ui.activity.view.SwitchV
-import cn.fkj233.ui.activity.view.TextSummaryV
-import cn.fkj233.ui.activity.view.TextV
+import cn.fkj233.ui.activity.data.CategoryData
+import cn.fkj233.ui.activity.data.SwitchData
+import cn.fkj233.ui.activity.data.DescData
+import cn.fkj233.ui.activity.data.DialogData
+import cn.fkj233.ui.activity.data.DropDownData
+import cn.fkj233.ui.activity.data.EditTextData
+import cn.fkj233.ui.activity.data.TextData
+import dev.lackluster.hyperx.app.AlertDialog
 import dev.lackluster.mihelper.BuildConfig
 import dev.lackluster.mihelper.R
+import dev.lackluster.mihelper.data.Pages
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.BackupUtils
 
-@BMPage("page_module", hideMenu = true)
+@BMPage(Pages.MODULE_SETTINGS, hideMenu = true)
 class ModuleSettingsPage : BasePage() {
     override fun getTitle(): String {
         return activity.getString(R.string.page_module)
     }
 
     override fun onCreate() {
-        TitleText(textId = R.string.ui_title_module_general)
-        TextWithSwitch(
-            TextV(textId = R.string.module_main_switch),
-            SwitchV(Pref.Key.Module.ENABLED)
-        )
-        TextSummaryWithSwitch(
-            TextSummaryV(
-                textId = R.string.module_lite_mode,
-                tipsId = R.string.module_lite_mode_tips
-            ),
-            SwitchV(key = Pref.Key.Module.LITE_MODE)
-        )
-        TextWithSwitch(
-            TextV(textId = R.string.module_hide_icon),
-            SwitchV(
-                key = Pref.Key.Module.HIDE_ICON,
-                onClickListener = {
-                    activity.packageManager.setComponentEnabledSetting(
-                        ComponentName(activity, "${BuildConfig.APPLICATION_ID}.launcher"),
-                        if (it) {
-                            PackageManager.COMPONENT_ENABLED_STATE_DISABLED
-                        } else {
-                            PackageManager.COMPONENT_ENABLED_STATE_ENABLED
-                        },
-                        PackageManager.DONT_KILL_APP
-                    )
-                }
-            )
-        )
         val showInSettingsBinding = GetDataBinding({
             MIUIActivity.safeSP.getBoolean(Pref.Key.Module.SHOW_IN_SETTINGS, false)
-        }) { view, _, data ->
-            view.visibility = if (data as Boolean) View.VISIBLE else View.GONE
+        }) { view, flag, data ->
+            when (flag) {
+                0 -> {
+                    if (data is Boolean) {
+                        view.visibility = if (data) View.VISIBLE else View.GONE
+                    }
+                }
+                1 -> {
+                    val visible = MIUIActivity.safeSP.getBoolean(Pref.Key.Module.SHOW_IN_SETTINGS, false) &&
+                            (MIUIActivity.safeSP.getInt(Pref.Key.Module.SETTINGS_NAME, 0) == 2)
+                    view.visibility = if (visible) View.VISIBLE else View.GONE
+                }
+            }
         }
-        TextWithSwitch(
-            TextV(textId = R.string.module_show_in_settings),
-            SwitchV(
-                key = Pref.Key.Module.SHOW_IN_SETTINGS,
-                dataBindingSend = showInSettingsBinding.bindingSend
+        PreferenceCategory(
+            DescData(titleId = R.string.ui_title_module_general),
+            CategoryData(hideLine = true)
+        ) {
+            SwitchPreference(
+                DescData(titleId = R.string.module_main_switch),
+                SwitchData(Pref.Key.Module.ENABLED)
             )
-        )
-        val settingsIconStyle: HashMap<Int, String> = hashMapOf<Int, String>().also {
-            it[0] = getString(R.string.module_settings_icon_style_default)
-            it[1] = getString(R.string.module_settings_icon_style_android)
+            SwitchPreference(
+                DescData(
+                    titleId = R.string.module_lite_mode,
+                    summaryId = R.string.module_lite_mode_tips
+                ),
+                SwitchData(Pref.Key.Module.LITE_MODE)
+            )
+            SwitchPreference(
+                DescData(titleId = R.string.module_hide_icon),
+                SwitchData(
+                    key = Pref.Key.Module.HIDE_ICON,
+                    onCheckedChangeListener = {
+                        activity.packageManager.setComponentEnabledSetting(
+                            ComponentName(activity, "${BuildConfig.APPLICATION_ID}.launcher"),
+                            if (it) {
+                                PackageManager.COMPONENT_ENABLED_STATE_DISABLED
+                            } else {
+                                PackageManager.COMPONENT_ENABLED_STATE_ENABLED
+                            },
+                            PackageManager.DONT_KILL_APP
+                        )
+                    }
+                )
+            )
+            SwitchPreference(
+                DescData(titleId = R.string.module_show_in_settings),
+                SwitchData(
+                    key = Pref.Key.Module.SHOW_IN_SETTINGS,
+                    dataBindingSend = showInSettingsBinding.bindingSend
+                )
+            )
+            DropDownPreference(
+                DescData(titleId = R.string.module_settings_icon_style),
+                DropDownData(
+                    key = Pref.Key.Module.SETTINGS_ICON_STYLE,
+                    entries = arrayOf(
+                        DropDownData.SpinnerItemData(getString(R.string.module_settings_icon_style_default), 0, R.drawable.ic_header_hyper_helper_gray),
+                        DropDownData.SpinnerItemData(getString(R.string.module_settings_icon_style_android), 1, R.drawable.ic_header_android_green)
+                    )
+                ),
+                dataBindingRecv = showInSettingsBinding.binding.getRecv(0)
+            )
+            DropDownPreference(
+                DescData(titleId = R.string.module_settings_icon_color),
+                DropDownData(
+                    key = Pref.Key.Module.SETTINGS_ICON_COLOR,
+                    entries = arrayOf(
+                        DropDownData.SpinnerItemData(getString(R.string.module_settings_icon_color_gray), 0, R.drawable.ic_color_gray),
+                        DropDownData.SpinnerItemData(getString(R.string.module_settings_icon_color_red), 1, R.drawable.ic_color_red),
+                        DropDownData.SpinnerItemData(getString(R.string.module_settings_icon_color_green), 2, R.drawable.ic_color_green),
+                        DropDownData.SpinnerItemData(getString(R.string.module_settings_icon_color_blue), 3, R.drawable.ic_color_blue),
+                        DropDownData.SpinnerItemData(getString(R.string.module_settings_icon_color_purple), 4, R.drawable.ic_color_purple),
+                        DropDownData.SpinnerItemData(getString(R.string.module_settings_icon_color_yellow), 5, R.drawable.ic_color_yellow)
+                    )
+                ),
+                dataBindingRecv = showInSettingsBinding.binding.getRecv(0)
+            )
+            DropDownPreference(
+                DescData(titleId = R.string.module_settings_name),
+                DropDownData(
+                    key = Pref.Key.Module.SETTINGS_NAME,
+                    entries = arrayOf(
+                        DropDownData.SpinnerItemData(getString(R.string.module_settings_name_helper), 0),
+                        DropDownData.SpinnerItemData(getString(R.string.module_settings_name_advanced), 1),
+                        DropDownData.SpinnerItemData(getString(R.string.module_settings_name_custom), 2)
+                    ),
+                    dataBindingSend = showInSettingsBinding.bindingSend
+                ),
+                dataBindingRecv = showInSettingsBinding.binding.getRecv(0)
+            )
+            EditTextPreference(
+                DescData(
+                    titleId = R.string.module_settings_custom_name
+                ),
+                EditTextData(
+                    key = Pref.Key.Module.SETTINGS_NAME_CUSTOM,
+                    valueType = EditTextData.ValueType.STRING,
+                    defValue = "Hyper Helper",
+                    hintText = "Hyper Helper",
+                    dialogData = DialogData(
+                        DescData(
+                            titleId = R.string.module_settings_custom_name
+                        )
+                    )
+                ),
+                dataBindingRecv = showInSettingsBinding.binding.getRecv(1)
+            )
         }
-        TextWithSpinner(
-            TextV(textId = R.string.module_settings_icon_style),
-            SpinnerV(
-                settingsIconStyle[MIUIActivity.safeSP.getInt(Pref.Key.Module.SETTINGS_ICON_STYLE, 0)].toString()
-            ) {
-                add(settingsIconStyle[0].toString()) {
-                    MIUIActivity.safeSP.putAny(Pref.Key.Module.SETTINGS_ICON_STYLE, 0)
-                }
-                add(settingsIconStyle[1].toString()) {
-                    MIUIActivity.safeSP.putAny(Pref.Key.Module.SETTINGS_ICON_STYLE, 1)
-                }
-            },
-            dataBindingRecv = showInSettingsBinding.binding.getRecv(0)
-        )
-        val settingsIconColor: HashMap<Int, String> = hashMapOf<Int, String>().also {
-            it[0] = getString(R.string.module_settings_icon_color_grey)
-            it[1] = getString(R.string.module_settings_icon_color_red)
-            it[2] = getString(R.string.module_settings_icon_color_green)
-            it[3] = getString(R.string.module_settings_icon_color_blue)
-            it[4] = getString(R.string.module_settings_icon_color_purple)
-            it[5] = getString(R.string.module_settings_icon_color_yellow)
-        }
-        TextWithSpinner(
-            TextV(textId = R.string.module_settings_icon_style),
-            SpinnerV(
-                settingsIconColor[MIUIActivity.safeSP.getInt(Pref.Key.Module.SETTINGS_ICON_COLOR, 0)].toString()
-            ) {
-                add(settingsIconColor[0].toString()) {
-                    MIUIActivity.safeSP.putAny(Pref.Key.Module.SETTINGS_ICON_COLOR, 0)
-                }
-                add(settingsIconColor[1].toString()) {
-                    MIUIActivity.safeSP.putAny(Pref.Key.Module.SETTINGS_ICON_COLOR, 1)
-                }
-                add(settingsIconColor[2].toString()) {
-                    MIUIActivity.safeSP.putAny(Pref.Key.Module.SETTINGS_ICON_COLOR, 2)
-                }
-                add(settingsIconColor[3].toString()) {
-                    MIUIActivity.safeSP.putAny(Pref.Key.Module.SETTINGS_ICON_COLOR, 3)
-                }
-                add(settingsIconColor[4].toString()) {
-                    MIUIActivity.safeSP.putAny(Pref.Key.Module.SETTINGS_ICON_COLOR, 4)
-                }
-                add(settingsIconColor[5].toString()) {
-                    MIUIActivity.safeSP.putAny(Pref.Key.Module.SETTINGS_ICON_COLOR, 5)
-                }
-            },
-            dataBindingRecv = showInSettingsBinding.binding.getRecv(0)
-        )
-        val settingsName: HashMap<Int, String> = hashMapOf<Int, String>().also {
-            it[0] = getString(R.string.module_settings_name_helper)
-            it[1] = getString(R.string.module_settings_name_advanced)
-        }
-        TextWithSpinner(
-            TextV(textId = R.string.module_settings_name),
-            SpinnerV(
-                settingsName[MIUIActivity.safeSP.getInt(Pref.Key.Module.SETTINGS_NAME, 0)].toString()
-            ) {
-                add(settingsName[0].toString()) {
-                    MIUIActivity.safeSP.putAny(Pref.Key.Module.SETTINGS_NAME, 0)
-                }
-                add(settingsName[1].toString()) {
-                    MIUIActivity.safeSP.putAny(Pref.Key.Module.SETTINGS_NAME, 1)
-                }
-            },
-            dataBindingRecv = showInSettingsBinding.binding.getRecv(0)
-        )
-        Line()
-        TitleText(textId = R.string.ui_title_module_backup)
-        TextWithArrow(
-            TextV(
-                textId = R.string.module_backup,
+        PreferenceCategory(
+            DescData(titleId = R.string.ui_title_module_backup),
+            CategoryData()
+        ) {
+            TextPreference(
+                DescData(titleId = R.string.module_backup),
+                TextData(),
                 onClickListener = {
                     BackupUtils.backup(activity)
                 }
             )
-        )
-        TextWithArrow(
-            TextV(
-                textId = R.string.module_restore,
+            TextPreference(
+                DescData(titleId = R.string.module_restore),
+                TextData(),
                 onClickListener = {
                     BackupUtils.restore(activity)
                 }
             )
-        )
+            TextPreference(
+                DescData(titleId = R.string.module_reset),
+                TextData(),
+                onClickListener = {
+                    AlertDialog.Builder(activity)
+                        .setTitle(R.string.dialog_warning)
+                        .setMessage(R.string.module_reset_warning)
+                        .setCancelable(false)
+                        .setNegativeButton(R.string.button_cancel) { dialog, _ ->
+                            dialog.dismiss()
+                        }
+                        .setPositiveButton(R.string.button_ok) { dialog, _ ->
+                            dialog.dismiss()
+                            BackupUtils.reset(activity)
+                        }
+                        .show()
+                }
+            )
+        }
     }
 }

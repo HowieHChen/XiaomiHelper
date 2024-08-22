@@ -4,8 +4,11 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import cn.fkj233.ui.activity.MIUIActivity
-import cn.fkj233.ui.dialog.MIUIDialog
+import dev.lackluster.hyperx.app.AlertDialog
 import dev.lackluster.mihelper.R
+import dev.lackluster.mihelper.activity.pages.bezier.AnimCurvePreviewAppsPage
+import dev.lackluster.mihelper.activity.pages.bezier.AnimCurvePreviewFolderPage
+import dev.lackluster.mihelper.activity.pages.bezier.AnimCurvePreviewWallpaperPage
 import dev.lackluster.mihelper.activity.pages.main.AboutPage
 import dev.lackluster.mihelper.activity.pages.main.MainPage
 import dev.lackluster.mihelper.activity.pages.main.MenuPage
@@ -22,43 +25,46 @@ import dev.lackluster.mihelper.activity.pages.sub.HomeRefactorPage
 import dev.lackluster.mihelper.activity.pages.sub.IconTunerPage
 import dev.lackluster.mihelper.activity.pages.sub.MediaControlStylePage
 import dev.lackluster.mihelper.activity.pages.sub.StatusBarClockPage
+import dev.lackluster.mihelper.data.Pages
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.BackupUtils
 import dev.lackluster.mihelper.utils.factory.getSP
 
-
 class MainActivity : MIUIActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        initAndCheck()
-        versionCompatible()
         super.onCreate(savedInstanceState)
+        initAndCheck()
     }
 
     @SuppressLint("WorldReadableFiles")
     private fun initAndCheck(): Boolean {
         try {
             setSP(getSP(this))
+            versionCompatible()
             if (!safeSP.getBoolean(Pref.Key.Module.ENABLED, false)) {
-                MIUIDialog(this) {
-                    setTitle(R.string.dialog_warning)
-                    setMessage(R.string.module_disabled_tips)
-                    setCancelable(false)
-                    setRButton(R.string.button_ok) {
-                        showFragment("page_module")
-                        dismiss()
+                AlertDialog.Builder(this)
+                    .setTitle(R.string.dialog_warning)
+                    .setMessage(R.string.module_disabled_tips)
+                    .setCancelable(false)
+                    .setNegativeButton(R.string.button_cancel) { dialog, _ ->
+                        dialog.dismiss()
                     }
-                }.show()
+                    .setPositiveButton(R.string.button_ok) { dialog, _ ->
+                        showFragment(Pages.MODULE_SETTINGS)
+                        dialog.dismiss()
+                    }
+                    .show()
             }
         } catch (exception: SecurityException) {
-            MIUIDialog(this) {
-                setTitle(R.string.dialog_error)
-                setMessage(R.string.module_inactive_tips)
-                setCancelable(false)
-                setRButton(R.string.button_ok) {
-                    dismiss()
+            AlertDialog.Builder(this)
+                .setTitle(R.string.dialog_error)
+                .setMessage(R.string.module_inactive_tips)
+                .setCancelable(false)
+                .setPositiveButton(R.string.button_ok) { dialog, _ ->
+                    dialog.dismiss()
                 }
-            }.show()
+                .show()
             return false
         }
         return true
@@ -81,6 +87,9 @@ class MainActivity : MIUIActivity() {
         registerPage(MediaControlStylePage::class.java)
         registerPage(DisableFixedOrientationPage::class.java)
         registerPage(HomeRefactorPage::class.java)
+        registerPage(AnimCurvePreviewAppsPage::class.java)
+        registerPage(AnimCurvePreviewFolderPage::class.java)
+        registerPage(AnimCurvePreviewWallpaperPage::class.java)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -114,15 +123,18 @@ class MainActivity : MIUIActivity() {
             }
             errMsg = "\n" + t.stackTraceToString()
         } finally {
-            MIUIDialog(this) {
-                setTitle(titleId)
-                setMessage(getString(msgId) + errMsg)
-                setCancelable(false)
-                setRButton(R.string.button_ok) {
-                    dismiss()
-                    if (requestCode == BackupUtils.READ_DOCUMENT_CODE) showFragment("__main__")
+            AlertDialog.Builder(this)
+                .setTitle(titleId)
+                .setMessage(getString(msgId) + errMsg)
+                .setCancelable(false)
+                .setPositiveButton(R.string.button_ok) { dialog, _ ->
+                    dialog.dismiss()
+                    if (requestCode == BackupUtils.READ_DOCUMENT_CODE) {
+                        showFragment(Pages.MAIN)
+                        initAndCheck()
+                    }
                 }
-            }.show()
+                .show()
         }
     }
 

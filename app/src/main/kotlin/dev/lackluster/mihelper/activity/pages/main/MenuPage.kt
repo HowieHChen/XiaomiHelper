@@ -24,133 +24,154 @@ import android.widget.Toast.LENGTH_LONG
 import android.widget.Toast.makeText
 import cn.fkj233.ui.activity.annotation.BMMenuPage
 import cn.fkj233.ui.activity.data.BasePage
-import cn.fkj233.ui.activity.view.TextSummaryV
-import cn.fkj233.ui.dialog.MIUIDialog
+import cn.fkj233.ui.activity.data.CategoryData
+import cn.fkj233.ui.activity.data.DescData
+import cn.fkj233.ui.activity.data.TextData
+import dev.lackluster.hyperx.app.AlertDialog
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.utils.ShellUtils
 
-@BMMenuPage()
+@BMMenuPage
 class MenuPage : BasePage() {
     override fun getTitle(): String {
         return activity.getString(R.string.page_menu)
     }
     override fun onCreate() {
-        TitleText(textId = R.string.ui_title_menu_reboot)
-        TextSummaryWithArrow(TextSummaryV(textId = R.string.menu_reboot_system, onClickListener = {
-            MIUIDialog(activity) {
-                setTitle(R.string.dialog_warning)
-                setMessage(R.string.menu_reboot_system_tips)
-                setLButton(R.string.button_cancel) {
-                    dismiss()
-                }
-                setRButton(R.string.button_ok) {
-                    try {
-                        ShellUtils.tryExec("/system/bin/sync;/system/bin/svc power reboot || reboot", useRoot = true, checkSuccess = true)
-                        dismiss()
-                    }
-                    catch (tout : Throwable) {
-                        makeText(
-                            activity,
-                            getString(R.string.menu_reboot_error_toast) + "(${tout.message})",
-                            LENGTH_LONG
-                        ).show()
-                        dismiss()
-                    }
-                }
-            }.show()
-        }))
-        TextSummaryWithArrow(TextSummaryV(textId = R.string.menu_reboot_scope, onClickListener = {
-            MIUIDialog(activity) {
-                setTitle(R.string.dialog_warning)
-                setMessage(R.string.menu_reboot_scope_tips)
-                setLButton(R.string.button_cancel) {
-                    dismiss()
-                }
-                setRButton(R.string.button_ok) {
-                    try {
-                        activity.resources.getStringArray(R.array.module_scope).forEach {
+        PreferenceCategory(
+            DescData(titleId = R.string.ui_title_menu_reboot),
+            CategoryData(hideLine = true)
+        ) {
+            TextPreference(
+                DescData(titleId = R.string.menu_reboot_system),
+                TextData(),
+                onClickListener = {
+                    AlertDialog.Builder(activity)
+                        .setTitle(R.string.dialog_warning)
+                        .setMessage(R.string.menu_reboot_system_tips)
+                        .setNegativeButton(R.string.button_cancel) { dialog, _ ->
+                            dialog.dismiss()
+                        }
+                        .setPositiveButton(R.string.button_ok) { dialog, _ ->
                             try {
-                                if (it != "android") ShellUtils.tryExec("killall -q $it", useRoot = true, checkSuccess = true)
-                            } catch (t: Throwable) {
-                                if (t.message?.contains("No such process") == false) {
-                                    throw t
-                                }
+                                ShellUtils.tryExec("/system/bin/sync;/system/bin/svc power reboot || reboot", useRoot = true, checkSuccess = true)
+                                dialog.dismiss()
+                            }
+                            catch (tout : Throwable) {
+                                makeText(
+                                    activity,
+                                    tout.message,
+                                    LENGTH_LONG
+                                ).show()
+                                dialog.dismiss()
                             }
                         }
-                        makeText(
-                            activity,
-                            getString(R.string.menu_reboot_done_toast),
-                            LENGTH_LONG
-                        ).show()
-                        dismiss()
-                    }
-                    catch (tout : Throwable) {
-                        makeText(
-                            activity,
-                            getString(R.string.menu_reboot_error_toast) + "(${tout.message})",
-                            LENGTH_LONG
-                        ).show()
-                        dismiss()
-                    }
+                        .show()
                 }
-            }.show()
-        }))
-        TextSummaryWithArrow(TextSummaryV(textId = R.string.menu_reboot_systemui, onClickListener = {
-            MIUIDialog(activity) {
-                setTitle(R.string.dialog_warning)
-                setMessage(R.string.menu_reboot_systemui_tips)
-                setLButton(R.string.button_cancel) {
-                    dismiss()
+            )
+            TextPreference(
+                DescData(titleId = R.string.menu_reboot_scope),
+                TextData(),
+                onClickListener = {
+                    AlertDialog.Builder(activity)
+                        .setTitle(R.string.dialog_warning)
+                        .setMessage(R.string.menu_reboot_scope_tips)
+                        .setNegativeButton(R.string.button_cancel) { dialog, _ ->
+                            dialog.dismiss()
+                        }
+                        .setPositiveButton(R.string.button_cancel) { dialog, _ ->
+                            try {
+                                activity.resources.getStringArray(R.array.module_scope).forEach {
+                                    try {
+                                        if (it != "android") ShellUtils.tryExec("killall -q $it", useRoot = true, checkSuccess = true)
+                                    } catch (t: Throwable) {
+                                        if (t.message?.contains("No such process") == false) {
+                                            throw t
+                                        }
+                                    }
+                                }
+                                makeText(
+                                    activity,
+                                    getString(R.string.menu_reboot_done_toast),
+                                    LENGTH_LONG
+                                ).show()
+                                dialog.dismiss()
+                            }
+                            catch (tout : Throwable) {
+                                makeText(
+                                    activity,
+                                    tout.message,
+                                    LENGTH_LONG
+                                ).show()
+                                dialog.dismiss()
+                            }
+                        }
+                        .show()
                 }
-                setRButton(R.string.button_ok) {
-                    try {
-                        ShellUtils.tryExec("killall com.android.systemui", useRoot = true, checkSuccess = true)
-                        makeText(
-                            activity,
-                            getString(R.string.menu_reboot_done_toast),
-                            LENGTH_LONG
-                        ).show()
-                        dismiss()
-                    }
-                    catch (tout : Throwable) {
-                        makeText(
-                            activity,
-                            getString(R.string.menu_reboot_error_toast) + "(${tout.message})",
-                            LENGTH_LONG
-                        ).show()
-                        dismiss()
-                    }
+            )
+            TextPreference(
+                DescData(titleId = R.string.menu_reboot_systemui),
+                TextData(),
+                onClickListener = {
+                    AlertDialog.Builder(activity)
+                        .setTitle(R.string.dialog_warning)
+                        .setMessage(R.string.menu_reboot_systemui_tips)
+                        .setNegativeButton(R.string.button_cancel) { dialog, _ ->
+                            dialog.dismiss()
+                        }
+                        .setPositiveButton(R.string.button_ok) { dialog, _ ->
+                            try {
+                                ShellUtils.tryExec("killall com.android.systemui", useRoot = true, checkSuccess = true)
+                                makeText(
+                                    activity,
+                                    getString(R.string.menu_reboot_done_toast),
+                                    LENGTH_LONG
+                                ).show()
+                                dialog.dismiss()
+                            }
+                            catch (tout : Throwable) {
+                                makeText(
+                                    activity,
+                                    tout.message,
+                                    LENGTH_LONG
+                                ).show()
+                                dialog.dismiss()
+                            }
+                        }
+                        .show()
                 }
-            }.show()
-        }))
-        TextSummaryWithArrow(TextSummaryV(textId = R.string.menu_reboot_launcher, onClickListener = {
-            MIUIDialog(activity) {
-                setTitle(R.string.dialog_warning)
-                setMessage(R.string.menu_reboot_launcher_tips)
-                setLButton(R.string.button_cancel) {
-                    dismiss()
+            )
+            TextPreference(
+                DescData(titleId = R.string.menu_reboot_launcher),
+                TextData(),
+                onClickListener = {
+                    AlertDialog.Builder(activity)
+                        .setTitle(R.string.dialog_warning)
+                        .setMessage(R.string.menu_reboot_launcher_tips)
+                        .setNegativeButton(R.string.button_cancel) { dialog, _ ->
+                            dialog.dismiss()
+                        }
+                        .setPositiveButton(R.string.button_ok) { dialog, _ ->
+                            try {
+                                ShellUtils.tryExec("killall com.miui.home", useRoot = true, checkSuccess = true)
+                                makeText(
+                                    activity,
+                                    getString(R.string.menu_reboot_done_toast),
+                                    LENGTH_LONG
+                                ).show()
+                                dialog.dismiss()
+                            }
+                            catch (tout : Throwable) {
+                                makeText(
+                                    activity,
+                                    tout.message,
+                                    LENGTH_LONG
+                                ).show()
+                                dialog.dismiss()
+                            }
+                        }
+                        .show()
                 }
-                setRButton(R.string.button_ok) {
-                    try {
-                        ShellUtils.tryExec("killall com.miui.home", useRoot = true, checkSuccess = true)
-                        makeText(
-                            activity,
-                            getString(R.string.menu_reboot_done_toast),
-                            LENGTH_LONG
-                        ).show()
-                        dismiss()
-                    }
-                    catch (tout : Throwable) {
-                        makeText(
-                            activity,
-                            getString(R.string.menu_reboot_error_toast) + "(${tout.message})",
-                            LENGTH_LONG
-                        ).show()
-                        dismiss()
-                    }
-                }
-            }.show()
-        }))
-        // TitleText(textId = R.string.ui_title_backup)
+            )
+        }
     }
 }

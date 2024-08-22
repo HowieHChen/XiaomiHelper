@@ -69,8 +69,12 @@ object HeaderList : YukiBaseHooker() {
         when (Prefs.getInt(Pref.Key.Module.SETTINGS_NAME, 0)) {
             0 -> R.string.module_settings_name_helper
             1 -> R.string.module_settings_name_advanced
+            2 -> -1
             else -> R.string.module_settings_name_helper
         }
+    }
+    private val entryNameCustom by lazy {
+        Prefs.getString(Pref.Key.Module.SETTINGS_NAME_CUSTOM, "Hyper Helper")
     }
     private val showGoogleSettings = Prefs.getBoolean(Pref.Key.Settings.SHOE_GOOGLE, false)
     @SuppressLint("DiscouragedApi")
@@ -126,7 +130,13 @@ object HeaderList : YukiBaseHooker() {
                         val header = preferenceHeaderClz.constructor().get().call()
                         header?.current()?.field { name = "id" }?.set(XIAOMI_HELPER_IDENTIFIER)
                         header?.current()?.field { name = "intent" }?.set(intent)
-                        header?.current()?.field { name = "title" }?.set(moduleRes.getString(entryName))
+                        header?.current()?.field { name = "title" }?.set(
+                            if (entryName == -1) {
+                                entryNameCustom
+                            } else {
+                                moduleRes.getString(entryName)
+                            }
+                        )
                         header?.current()?.field { name = "iconRes" }?.set(iconDrawable)
                         val bundle = Bundle()
                         val users = arrayListOf(

@@ -21,299 +21,289 @@
 package dev.lackluster.mihelper.activity.pages.prefs
 
 import android.view.View
-import android.widget.Toast
 import cn.fkj233.ui.activity.MIUIActivity
 import cn.fkj233.ui.activity.annotation.BMPage
 import cn.fkj233.ui.activity.data.BasePage
-import cn.fkj233.ui.activity.view.SpinnerV
-import cn.fkj233.ui.activity.view.SwitchV
-import cn.fkj233.ui.activity.view.TextSummaryV
-import cn.fkj233.ui.activity.view.TextV
-import cn.fkj233.ui.dialog.MIUIDialog
+import cn.fkj233.ui.activity.data.CategoryData
+import cn.fkj233.ui.activity.data.DescData
+import cn.fkj233.ui.activity.data.DialogData
+import cn.fkj233.ui.activity.data.DropDownData
+import cn.fkj233.ui.activity.data.EditTextData
+import cn.fkj233.ui.activity.data.SwitchData
 import dev.lackluster.mihelper.R
+import dev.lackluster.mihelper.data.Pages
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.Device
 
-@BMPage("page_others")
+@BMPage(Pages.OTHERS)
 class OthersPage : BasePage() {
     override fun getTitle(): String {
         return activity.getString(R.string.page_others)
     }
 
     override fun onCreate() {
-        val customSearchEngine: HashMap<Int, String> = hashMapOf<Int, String>().also {
-            it[0] = getString(R.string.search_engine_default)
-            it[1] = getString(R.string.search_engine_baidu)
-            it[2] = getString(R.string.search_engine_sogou)
-            it[3] = getString(R.string.search_engine_bing)
-            it[4] = getString(R.string.search_engine_google)
-            it[5] = getString(R.string.search_engine_custom)
+        val padBinding = GetDataBinding({
+            Device.isPad
+        }) { view, flags, data ->
+            when (flags) {
+                0 -> view.visibility = if (data as Boolean) View.VISIBLE else View.GONE
+                1 -> view.visibility = if (data as Boolean) View.GONE else View.VISIBLE
+            }
         }
-        TitleText(textId = R.string.ui_title_others_browser)
-        TextSummaryWithSwitch(
-            TextSummaryV(
-                textId = R.string.others_browser_debug_mode,
-                tipsId = R.string.others_browser_debug_mode_tips
-            ),
-            SwitchV(Pref.Key.Browser.DEBUG_MODE)
+        val customSearchEngineEntries = arrayOf(
+            DropDownData.SpinnerItemData(getString(R.string.search_engine_default), 0),
+            DropDownData.SpinnerItemData(getString(R.string.search_engine_baidu), 1),
+            DropDownData.SpinnerItemData(getString(R.string.search_engine_sogou), 2),
+            DropDownData.SpinnerItemData(getString(R.string.search_engine_bing), 3),
+            DropDownData.SpinnerItemData(getString(R.string.search_engine_google), 4),
+            DropDownData.SpinnerItemData(getString(R.string.search_engine_custom), 5),
         )
-        TextSummaryWithSwitch(
-            TextSummaryV(
-                textId = R.string.others_browser_switch_env,
-                tipsId = R.string.others_browser_switch_env_tips
-            ),
-            SwitchV(Pref.Key.Browser.SWITCH_ENV)
-        )
-        TextWithSwitch(
-            TextV(textId = R.string.others_browser_disable_update),
-            SwitchV(Pref.Key.Browser.BLOCK_UPDATE)
-        )
-        Line()
-        TitleText(textId = R.string.ui_title_others_download)
-        TextWithSwitch(
-            TextV(textId = R.string.others_download_fuck_xl),
-            SwitchV(Pref.Key.Download.FUCK_XL)
-        )
-        Line()
-        TitleText(textId = R.string.ui_title_others_gallery)
-        TextWithSwitch(
-            TextV(textId = R.string.others_gallery_unlimited_crop),
-            SwitchV(Pref.Key.Gallery.UNLIMITED_CROP)
-        )
-        TextSummaryWithSwitch(
-            TextSummaryV(
-                textId = R.string.others_gallery_path_optim,
-                tipsId = R.string.others_gallery_path_optim_tips
-            ),
-            SwitchV(Pref.Key.Gallery.PATH_OPTIM)
-        )
-        Line()
-        TitleText(textId = R.string.ui_title_others_joyose)
-        TextWithSwitch(
-            TextV(textId = R.string.others_joyose_no_cloud_control),
-            SwitchV(Pref.Key.Joyose.BLOCK_CLOUD_CONTROL)
-        )
-        Line()
-        TitleText(textId = R.string.ui_title_others_miai)
-        TextWithSwitch(
-            TextV(textId = R.string.others_miai_hide_watermark),
-            SwitchV(Pref.Key.MiAi.HIDE_WATERMARK)
-        )
+        PreferenceCategory(
+            DescData(titleId = R.string.ui_title_others_browser),
+            CategoryData(hideLine = true)
+        ) {
+            SwitchPreference(
+                DescData(
+                    titleId = R.string.others_browser_debug_mode,
+                    summaryId = R.string.others_browser_debug_mode_tips
+                ),
+                SwitchData(Pref.Key.Browser.DEBUG_MODE)
+            )
+            SwitchPreference(
+                DescData(
+                    titleId = R.string.others_browser_switch_env,
+                    summaryId = R.string.others_browser_switch_env_tips
+                ),
+                SwitchData(Pref.Key.Browser.SWITCH_ENV)
+            )
+            SwitchPreference(
+                DescData(titleId = R.string.others_browser_disable_update),
+                SwitchData(Pref.Key.Browser.BLOCK_UPDATE)
+            )
+        }
+        PreferenceCategory(
+            DescData(titleId = R.string.ui_title_others_download),
+            CategoryData()
+        ) {
+            SwitchPreference(
+                DescData(titleId = R.string.others_download_fuck_xl),
+                SwitchData(Pref.Key.Download.FUCK_XL)
+            )
+        }
+        PreferenceCategory(
+            DescData(titleId = R.string.ui_title_others_gallery),
+            CategoryData()
+        ) {
+            SwitchPreference(
+                DescData(titleId = R.string.others_gallery_unlimited_crop),
+                SwitchData(Pref.Key.Gallery.UNLIMITED_CROP)
+            )
+            SwitchPreference(
+                DescData(
+                    titleId = R.string.others_gallery_path_optim,
+                    summaryId = R.string.others_gallery_path_optim_tips
+                ),
+                SwitchData(Pref.Key.Gallery.PATH_OPTIM)
+            )
+        }
+        PreferenceCategory(
+            DescData(titleId = R.string.ui_title_others_joyose),
+            CategoryData()
+        ) {
+            SwitchPreference(
+                DescData(titleId = R.string.others_joyose_no_cloud_control),
+                SwitchData(Pref.Key.Joyose.BLOCK_CLOUD_CONTROL)
+            )
+        }
         val miAiUseBrowserBinding = GetDataBinding({
             MIUIActivity.safeSP.getBoolean(Pref.Key.MiAi.SEARCH_USE_BROWSER, false)
         }) { view, _, data ->
             view.visibility = if (data as Boolean) View.VISIBLE else View.GONE
         }
         val miAiCustomSearchBinding = GetDataBinding({
-            MIUIActivity.safeSP.getBoolean(Pref.Key.MiAi.SEARCH_USE_BROWSER, false) &&
-                    (MIUIActivity.safeSP.getInt(Pref.Key.MiAi.SEARCH_ENGINE, 0) == 5)
+            MIUIActivity.safeSP.getInt(Pref.Key.MiAi.SEARCH_ENGINE, 0)
         }) { view, _, data ->
-            view.visibility = if (data as Boolean) View.VISIBLE else View.GONE
+            view.visibility =
+                if (MIUIActivity.safeSP.getBoolean(Pref.Key.MiAi.SEARCH_USE_BROWSER, false) && data as Int == 5) View.VISIBLE else View.GONE
         }
-        TextWithSwitch(
-            TextV(textId = R.string.search_use_browser),
-            SwitchV(Pref.Key.MiAi.SEARCH_USE_BROWSER) {
-                miAiUseBrowserBinding.binding.Send().send(it)
-                miAiCustomSearchBinding.binding.Send().send(it
-                        && (MIUIActivity.safeSP.getInt(Pref.Key.MiAi.SEARCH_ENGINE, 0) == 5))
-            }
-        )
-        TextWithSpinner(
-            TextV(textId = R.string.search_engine), SpinnerV(
-                customSearchEngine[MIUIActivity.safeSP.getInt(Pref.Key.MiAi.SEARCH_ENGINE, 0)].toString()
-            ) {
-                add(customSearchEngine[0].toString()) {
-                    MIUIActivity.safeSP.putAny(Pref.Key.MiAi.SEARCH_ENGINE, 0)
-                    miAiCustomSearchBinding.binding.Send().send(false)
-                }
-                add(customSearchEngine[1].toString()) {
-                    MIUIActivity.safeSP.putAny(Pref.Key.MiAi.SEARCH_ENGINE, 1)
-                    miAiCustomSearchBinding.binding.Send().send(false)
-                }
-                add(customSearchEngine[2].toString()) {
-                    MIUIActivity.safeSP.putAny(Pref.Key.MiAi.SEARCH_ENGINE, 2)
-                    miAiCustomSearchBinding.binding.Send().send(false)
-                }
-                add(customSearchEngine[3].toString()) {
-                    MIUIActivity.safeSP.putAny(Pref.Key.MiAi.SEARCH_ENGINE, 3)
-                    miAiCustomSearchBinding.binding.Send().send(false)
-                }
-                add(customSearchEngine[4].toString()) {
-                    MIUIActivity.safeSP.putAny(Pref.Key.MiAi.SEARCH_ENGINE, 4)
-                    miAiCustomSearchBinding.binding.Send().send(false)
-                }
-                add(customSearchEngine[5].toString()) {
-                    MIUIActivity.safeSP.putAny(Pref.Key.MiAi.SEARCH_ENGINE, 5)
-                    miAiCustomSearchBinding.binding.Send().send(true)
-                }
-            }, dataBindingRecv = miAiUseBrowserBinding.binding.getRecv(1))
-        TextWithArrow(
-            TextV(textId = R.string.search_engine_custom_url, onClickListener = {
-                MIUIDialog(activity) {
-                    setTitle(R.string.search_engine_custom_url)
-                    setEditText(
-                        MIUIActivity.safeSP.getString(Pref.Key.MiAi.SEARCH_URL, ""),
-                        "https://example.com/s?q=%s"
+        PreferenceCategory(
+            DescData(titleId = R.string.ui_title_others_miai),
+            CategoryData()
+        ) {
+            SwitchPreference(
+                DescData(titleId = R.string.others_miai_hide_watermark),
+                SwitchData(Pref.Key.MiAi.HIDE_WATERMARK)
+            )
+            SwitchPreference(
+                DescData(titleId = R.string.search_use_browser),
+                SwitchData(Pref.Key.MiAi.SEARCH_USE_BROWSER) {
+                    miAiUseBrowserBinding.binding.Send().send(it)
+                    miAiCustomSearchBinding.binding.Send().send(
+                        MIUIActivity.safeSP.getInt(Pref.Key.MiAi.SEARCH_ENGINE, 0)
                     )
-                    setLButton(textId = R.string.button_cancel) {
-                        dismiss()
+                }
+            )
+            DropDownPreference(
+                DescData(titleId = R.string.search_engine),
+                DropDownData(
+                    key = Pref.Key.MiAi.SEARCH_ENGINE,
+                    entries = customSearchEngineEntries,
+                    dataBindingSend = miAiCustomSearchBinding.bindingSend
+                ),
+                dataBindingRecv = miAiUseBrowserBinding.binding.getRecv(0)
+            )
+            EditTextPreference(
+                DescData(titleId = R.string.search_engine_custom_url),
+                EditTextData(
+                    key = Pref.Key.MiAi.SEARCH_URL,
+                    valueType = EditTextData.ValueType.STRING,
+                    defValue = "",
+                    hintText = "https://example.com/s?q=%s",
+                    showValue = EditTextData.ValuePosition.SUMMARY_VIEW,
+                    dialogData = DialogData(
+                        DescData(
+                            titleId = R.string.search_engine_custom_url
+                        )
+                    ),
+                    isValueValid = { value ->
+                        val string = value as String
+                        return@EditTextData string.isEmpty() || string.contains("%s")
                     }
-                    setRButton(textId = R.string.button_ok) {
-                        if (getEditText().isBlank()) {
-                            MIUIActivity.safeSP.putAny(Pref.Key.MiAi.SEARCH_URL, "")
-                            dismiss()
-                        } else if (getEditText().contains("%s")) {
-                            MIUIActivity.safeSP.putAny(Pref.Key.MiAi.SEARCH_URL, getEditText())
-                            dismiss()
-                        } else {
-                            Toast.makeText(activity, getString(R.string.search_engine_custom_url_toast), Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                }.show()
-            }), dataBindingRecv = miAiCustomSearchBinding.binding.getRecv(1)
-        )
-        Line()
-        TitleText(textId = R.string.ui_title_others_package)
-        TextSummaryWithSwitch(
-            TextSummaryV(
-                textId = R.string.others_package_update_system_app,
-                tipsId = R.string.others_package_update_system_app_tips
-            ),
-            SwitchV(Pref.Key.PackageInstaller.UPDATE_SYSTEM_APP)
-        )
-//        TextWithSwitch(
-//            TextV(textId = R.string.others_package_more_info),
-//            SwitchV(Pref.Key.PackageInstaller.MORE_INFO)
-//        )
-        Line()
-        TitleText(textId = R.string.ui_title_others_screen_recorder)
-        TextSummaryWithSwitch(
-            TextSummaryV(
-                textId = R.string.others_screen_recorder_save_to_movies,
-                tipsId = R.string.others_screen_recorder_save_to_movies_tips
-            ),
-            SwitchV(Pref.Key.ScreenRecorder.SAVE_TO_MOVIES)
-        )
-        Line()
-        TitleText(textId = R.string.ui_title_others_screenshot)
-        TextWithSwitch(
-            TextV(textId = R.string.others_screenshot_save_as_png),
-            SwitchV(Pref.Key.Screenshot.SAVE_AS_PNG)
-        )
-        TextSummaryWithSwitch(
-            TextSummaryV(
-                textId = R.string.others_screenshot_save_to_picture,
-                tipsId = R.string.others_screenshot_save_to_picture_tips
-            ),
-            SwitchV(Pref.Key.Screenshot.SAVE_TO_PICTURE)
-        )
-        Line()
-        TitleText(textId = R.string.ui_title_others_settings)
-        TextWithSwitch(
-            TextV(textId = R.string.others_settings_show_google),
-            SwitchV(Pref.Key.Settings.SHOE_GOOGLE)
-        )
-        TextWithSwitch(
-            TextV(textId = R.string.others_settings_unlock_voip_assistant),
-            SwitchV(Pref.Key.Settings.UNLOCK_VOIP_ASSISTANT)
-        )
-        TextWithSwitch(
-            TextV(textId = R.string.others_settings_unlock_custom_refresh),
-            SwitchV(Pref.Key.Settings.UNLOCK_CUSTOM_REFRESH)
-        )
-        TextWithSwitch(
-            TextV(textId = R.string.others_settings_unlock_net_mode),
-            SwitchV(Pref.Key.Settings.UNLOCK_NET_MODE_SETTINGS)
-        )
-        if (Device.isPad) {
-            TextWithSwitch(
-                TextV(textId = R.string.others_settings_unlock_taplus_for_pad),
-                SwitchV(Pref.Key.Settings.UNLOCK_TAPLUS_FOR_PAD)
+                ),
+                dataBindingRecv = miAiCustomSearchBinding.binding.getRecv(0)
             )
         }
-        Line()
-        TitleText(textId = R.string.ui_title_others_taplus)
+        PreferenceCategory(
+            DescData(titleId = R.string.ui_title_others_package),
+            CategoryData()
+        ) {
+            SwitchPreference(
+                DescData(
+                    titleId = R.string.others_package_update_system_app,
+                    summaryId = R.string.others_package_update_system_app_tips
+                ),
+                SwitchData(Pref.Key.PackageInstaller.UPDATE_SYSTEM_APP)
+            )
+        }
+        PreferenceCategory(
+            DescData(titleId = R.string.ui_title_others_screen_recorder),
+            CategoryData()
+        ) {
+            SwitchPreference(
+                DescData(
+                    titleId = R.string.others_screen_recorder_save_to_movies,
+                    summaryId = R.string.others_screen_recorder_save_to_movies_tips
+                ),
+                SwitchData(Pref.Key.ScreenRecorder.SAVE_TO_MOVIES)
+            )
+        }
+        PreferenceCategory(
+            DescData(titleId = R.string.ui_title_others_screenshot),
+            CategoryData()
+        ) {
+            SwitchPreference(
+                DescData(titleId = R.string.others_screenshot_save_as_png),
+                SwitchData(Pref.Key.Screenshot.SAVE_AS_PNG)
+            )
+            SwitchPreference(
+                DescData(
+                    titleId = R.string.others_screenshot_save_to_picture,
+                    summaryId = R.string.others_screenshot_save_to_picture_tips
+                ),
+                SwitchData(Pref.Key.Screenshot.SAVE_TO_PICTURE)
+            )
+        }
+        PreferenceCategory(
+            DescData(titleId = R.string.ui_title_others_settings),
+            CategoryData()
+        ) {
+            SwitchPreference(
+                DescData(titleId = R.string.others_settings_show_google),
+                SwitchData(Pref.Key.Settings.SHOE_GOOGLE)
+            )
+            SwitchPreference(
+                DescData(titleId = R.string.others_settings_unlock_voip_assistant),
+                SwitchData(Pref.Key.Settings.UNLOCK_VOIP_ASSISTANT)
+            )
+            SwitchPreference(
+                DescData(titleId = R.string.others_settings_unlock_custom_refresh),
+                SwitchData(Pref.Key.Settings.UNLOCK_CUSTOM_REFRESH)
+            )
+            SwitchPreference(
+                DescData(titleId = R.string.others_settings_unlock_net_mode),
+                SwitchData(Pref.Key.Settings.UNLOCK_NET_MODE_SETTINGS)
+            )
+            SwitchPreference(
+                DescData(titleId = R.string.others_settings_unlock_taplus_for_pad),
+                SwitchData(Pref.Key.Settings.UNLOCK_TAPLUS_FOR_PAD),
+                dataBindingRecv = padBinding.binding.getRecv(0)
+            )
+        }
         val taplusUseBrowserBinding = GetDataBinding({
             MIUIActivity.safeSP.getBoolean(Pref.Key.Taplus.SEARCH_USE_BROWSER, false)
         }) { view, _, data ->
             view.visibility = if (data as Boolean) View.VISIBLE else View.GONE
         }
         val taplusCustomSearchBinding = GetDataBinding({
-            MIUIActivity.safeSP.getBoolean(Pref.Key.Taplus.SEARCH_USE_BROWSER, false) &&
-                    (MIUIActivity.safeSP.getInt(Pref.Key.Taplus.SEARCH_ENGINE, 0) == 5)
+            MIUIActivity.safeSP.getInt(Pref.Key.Taplus.SEARCH_ENGINE, 0)
         }) { view, _, data ->
-            view.visibility = if (data as Boolean) View.VISIBLE else View.GONE
+            view.visibility =
+                if (MIUIActivity.safeSP.getBoolean(Pref.Key.Taplus.SEARCH_USE_BROWSER, false) && data as Int == 5) View.VISIBLE else View.GONE
         }
-        TextWithSwitch(
-            TextV(textId = R.string.search_use_browser),
-            SwitchV(Pref.Key.Taplus.SEARCH_USE_BROWSER) {
-                taplusUseBrowserBinding.binding.Send().send(it)
-                taplusCustomSearchBinding.binding.Send().send(it
-                        && (MIUIActivity.safeSP.getInt(Pref.Key.Taplus.SEARCH_ENGINE, 0) == 5))
-            }
-        )
-        TextWithSpinner(
-            TextV(textId = R.string.search_engine), SpinnerV(
-                customSearchEngine[MIUIActivity.safeSP.getInt(Pref.Key.Taplus.SEARCH_ENGINE, 0)].toString()
-            ) {
-                add(customSearchEngine[0].toString()) {
-                    MIUIActivity.safeSP.putAny(Pref.Key.Taplus.SEARCH_ENGINE, 0)
-                    taplusCustomSearchBinding.binding.Send().send(false)
-                }
-                add(customSearchEngine[1].toString()) {
-                    MIUIActivity.safeSP.putAny(Pref.Key.Taplus.SEARCH_ENGINE, 1)
-                    taplusCustomSearchBinding.binding.Send().send(false)
-                }
-                add(customSearchEngine[2].toString()) {
-                    MIUIActivity.safeSP.putAny(Pref.Key.Taplus.SEARCH_ENGINE, 2)
-                    taplusCustomSearchBinding.binding.Send().send(false)
-                }
-                add(customSearchEngine[3].toString()) {
-                    MIUIActivity.safeSP.putAny(Pref.Key.Taplus.SEARCH_ENGINE, 3)
-                    taplusCustomSearchBinding.binding.Send().send(false)
-                }
-                add(customSearchEngine[4].toString()) {
-                    MIUIActivity.safeSP.putAny(Pref.Key.Taplus.SEARCH_ENGINE, 4)
-                    taplusCustomSearchBinding.binding.Send().send(false)
-                }
-                add(customSearchEngine[5].toString()) {
-                    MIUIActivity.safeSP.putAny(Pref.Key.Taplus.SEARCH_ENGINE, 5)
-                    taplusCustomSearchBinding.binding.Send().send(true)
-                }
-            }, dataBindingRecv = taplusUseBrowserBinding.binding.getRecv(1))
-        TextWithArrow(
-            TextV(textId = R.string.search_engine_custom_url, onClickListener = {
-                MIUIDialog(activity) {
-                    setTitle(R.string.search_engine_custom_url)
-                    setEditText(
-                        MIUIActivity.safeSP.getString(Pref.Key.Taplus.SEARCH_URL, ""),
-                        "https://example.com/s?q=%s"
+        PreferenceCategory(
+            DescData(titleId = R.string.ui_title_others_taplus),
+            CategoryData()
+        ) {
+            SwitchPreference(
+                DescData(titleId = R.string.search_use_browser),
+                SwitchData(Pref.Key.Taplus.SEARCH_USE_BROWSER) {
+                    taplusUseBrowserBinding.binding.Send().send(it)
+                    taplusCustomSearchBinding.binding.Send().send(
+                        MIUIActivity.safeSP.getInt(Pref.Key.Taplus.SEARCH_ENGINE, 0)
                     )
-                    setLButton(textId = R.string.button_cancel) {
-                        dismiss()
+                }
+            )
+            DropDownPreference(
+                DescData(titleId = R.string.search_engine),
+                DropDownData(
+                    key = Pref.Key.Taplus.SEARCH_ENGINE,
+                    entries = customSearchEngineEntries,
+                    dataBindingSend = taplusCustomSearchBinding.bindingSend
+                ),
+                dataBindingRecv = taplusUseBrowserBinding.binding.getRecv(0)
+            )
+            EditTextPreference(
+                DescData(titleId = R.string.search_engine_custom_url),
+                EditTextData(
+                    key = Pref.Key.Taplus.SEARCH_URL,
+                    valueType = EditTextData.ValueType.STRING,
+                    defValue = "",
+                    hintText = "https://example.com/s?q=%s",
+                    showValue = EditTextData.ValuePosition.SUMMARY_VIEW,
+                    dialogData = DialogData(
+                        DescData(
+                            titleId = R.string.search_engine_custom_url
+                        )
+                    ),
+                    isValueValid = { value ->
+                        val string = value as String
+                        return@EditTextData string.isEmpty() || string.contains("%s")
                     }
-                    setRButton(textId = R.string.button_ok) {
-                        if (getEditText().isBlank()) {
-                            MIUIActivity.safeSP.putAny(Pref.Key.Taplus.SEARCH_URL, "")
-                            dismiss()
-                        } else if (getEditText().contains("%s")) {
-                            MIUIActivity.safeSP.putAny(Pref.Key.Taplus.SEARCH_URL, getEditText())
-                            dismiss()
-                        } else {
-                            Toast.makeText(activity, getString(R.string.search_engine_custom_url_toast), Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                }.show()
-            }), dataBindingRecv = taplusCustomSearchBinding.binding.getRecv(1)
-        )
-        Line()
-        TitleText(textId = R.string.ui_title_others_updater)
-        TextSummaryWithSwitch(
-            TextSummaryV(
-                textId = R.string.others_updater_disable_validation,
-                tipsId = R.string.others_updater_disable_validation_tips
-            ),
-            SwitchV(Pref.Key.Updater.DISABLE_VALIDATION)
-        )
+                ),
+                dataBindingRecv = taplusCustomSearchBinding.binding.getRecv(0)
+            )
+        }
+        PreferenceCategory(
+            DescData(titleId = R.string.ui_title_others_updater),
+            CategoryData()
+        ) {
+            SwitchPreference(
+                DescData(
+                    titleId = R.string.others_updater_disable_validation,
+                    summaryId = R.string.others_updater_disable_validation_tips
+                ),
+                SwitchData(Pref.Key.Updater.DISABLE_VALIDATION)
+            )
+        }
     }
 }

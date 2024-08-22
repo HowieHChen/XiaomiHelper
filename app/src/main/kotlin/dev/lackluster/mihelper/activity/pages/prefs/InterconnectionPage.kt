@@ -22,34 +22,46 @@ package dev.lackluster.mihelper.activity.pages.prefs
 
 import cn.fkj233.ui.activity.annotation.BMPage
 import cn.fkj233.ui.activity.data.BasePage
-import cn.fkj233.ui.activity.view.SwitchV
-import cn.fkj233.ui.activity.view.TextV
+import cn.fkj233.ui.activity.data.CategoryData
+import cn.fkj233.ui.activity.data.DescData
+import cn.fkj233.ui.activity.data.SwitchData
 import dev.lackluster.mihelper.R
+import dev.lackluster.mihelper.data.Pages
 import dev.lackluster.mihelper.data.Pref
 
-@BMPage("page_interconnection", hideMenu = true)
+@BMPage(Pages.INTERCONNECTION)
 class InterconnectionPage : BasePage() {
     override fun getTitle(): String {
         return activity.getString(R.string.page_interconnection)
     }
 
     override fun onCreate() {
-        TitleText(textId = R.string.ui_title_interconnection_milink)
-        TextWithSwitch(
-            TextV(textId = R.string.interconnection_milink_fuck_hpplay),
-            SwitchV(Pref.Key.MiLink.FUCK_HPPLAY)
-        )
-        Line()
-        TitleText(textId = R.string.ui_title_interconnection_mimirror)
-        TextWithSwitch(
-            TextV(textId = R.string.interconnection_mimirror_all_app),
-            SwitchV(Pref.Key.MiMirror.CONTINUE_ALL_TASKS)
-        )
-        Line()
-        TitleText(textId = R.string.ui_title_interconnection_mishare)
-        TextWithSwitch(
-            TextV(textId = R.string.interconnection_mishare_no_auto_off),
-            SwitchV(Pref.Key.MiShare.ALWAYS_ON)
-        )
+        PreferenceCategory(
+            DescData(titleId = R.string.ui_title_interconnection_milink),
+            CategoryData(hideLine = true)
+        ) {
+            SwitchPreference(
+                DescData(titleId = R.string.interconnection_milink_fuck_hpplay),
+                SwitchData(Pref.Key.MiLink.FUCK_HPPLAY)
+            )
+        }
+        PreferenceCategory(
+            DescData(titleId = R.string.ui_title_interconnection_mimirror),
+            CategoryData()
+        ) {
+            SwitchPreference(
+                DescData(titleId = R.string.interconnection_mimirror_all_app),
+                SwitchData(Pref.Key.MiMirror.CONTINUE_ALL_TASKS)
+            )
+        }
+        PreferenceCategory(
+            DescData(titleId = R.string.ui_title_interconnection_mishare),
+            CategoryData()
+        ) {
+            SwitchPreference(
+                DescData(titleId = R.string.interconnection_mishare_no_auto_off),
+                SwitchData(Pref.Key.MiShare.ALWAYS_ON)
+            )
+        }
     }
 }

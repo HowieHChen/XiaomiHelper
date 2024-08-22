@@ -20,6 +20,8 @@
 
 package dev.lackluster.mihelper.hook.view
 
+import android.animation.Animator
+import android.animation.Animator.AnimatorListener
 import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Color
@@ -30,6 +32,7 @@ import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
 import dev.lackluster.mihelper.utils.Math
 import dev.lackluster.mihelper.utils.MiBlurUtils
+import dev.lackluster.mihelper.utils.MiBlurUtils.setBlurRoundRect
 import kotlin.math.abs
 
 class MiBlurView(context: Context): View(context) {
@@ -59,6 +62,7 @@ class MiBlurView(context: Context): View(context) {
     private var nonlinearEnabled = DEFAULT_NONLINEAR_ENABLED
     private var nonlinearInterpolator: Interpolator = LinearInterpolator()
     private var passWindowBlurEnabled = false
+    private val mAnimatorListener: AnimatorListener
 
     init {
         this.layoutParams = FrameLayout.LayoutParams(
@@ -67,6 +71,20 @@ class MiBlurView(context: Context): View(context) {
         )
         this.setBackgroundColor(Color.TRANSPARENT)
         this.visibility = GONE
+        mAnimatorListener = object : AnimatorListener {
+            override fun onAnimationStart(p0: Animator) {
+                animCount = 0
+            }
+            override fun onAnimationEnd(p0: Animator) {
+                if (animCurrentRatio == 0.0f) {
+                    releaseBlur()
+                }
+            }
+            override fun onAnimationCancel(p0: Animator) {
+            }
+            override fun onAnimationRepeat(p0: Animator) {
+            }
+        }
     }
 
     override fun onAttachedToWindow() {
@@ -109,6 +127,15 @@ class MiBlurView(context: Context): View(context) {
         scaleMaxRatio = maxRatio.coerceIn(0.0f, 1.0f)
         if (scaleMaxRatio !in 0.0f..1.0f) {
             scaleEnabled = false
+        }
+    }
+
+    fun setCornerRadius(radius: Int) {
+        if (radius > 0) {
+            setBlurRoundRect(radius)
+        } else {
+            clipToOutline = false
+            outlineProvider = null
         }
     }
 
@@ -171,6 +198,8 @@ class MiBlurView(context: Context): View(context) {
                 it.duration = (abs(currentRatio - targetRatio) * duration).toLong()
                 it.interpolator = LinearInterpolator()
                 it.removeAllUpdateListeners()
+                it.removeAllListeners()
+                it.addListener(mAnimatorListener)
                 it.addUpdateListener { animator ->
                     animCount++
                     val animaValue = animator.animatedValue as Float
@@ -182,7 +211,6 @@ class MiBlurView(context: Context): View(context) {
                         else { animaValue }
                     )
                 }
-                animCount = 0
                 it.start()
             }
         }
@@ -203,9 +231,9 @@ class MiBlurView(context: Context): View(context) {
         }
         animCurrentRatio = ratio
         allowRestoreDirectly = true
-        if (ratio == 0.0f || blurRadius == 0) {
-            releaseBlur()
-        }
+//        if (ratio == 0.0f || blurRadius == 0) {
+//            releaseBlur()
+//        }
     }
 
     private fun initBlur() {

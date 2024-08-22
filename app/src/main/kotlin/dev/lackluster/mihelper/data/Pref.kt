@@ -11,6 +11,7 @@ object Pref {
             const val SETTINGS_ICON_STYLE = "entry_icon_style"
             const val SETTINGS_ICON_COLOR = "entry_icon_color"
             const val SETTINGS_NAME = "entry_name"
+            const val SETTINGS_NAME_CUSTOM = "entry_name_custom"
             const val SP_VERSION = "sp_version"
         }
         object Android {
@@ -18,6 +19,7 @@ object Pref {
             const val ALLOW_MORE_FREEFORM = "android_freeform_allow_more"
             const val MULTI_TASK = "android_freeform_multi_task"
             const val HIDE_WINDOW_TOP_BAR = "android_freeform_hide_top_bar"
+            const val ROTATE_SUGGEST = "android_rotate_suggest"
             const val BLOCK_FIXED_ORIENTATION = "android_no_fixed_orientation"
             const val BLOCK_FIXED_ORIENTATION_LIST = "android_no_fixed_orientation_list"
             const val WALLPAPER_SCALE_RATIO = "android_wallpaper_scale"
@@ -261,6 +263,7 @@ object Pref {
                 const val HIDE_UNLOCK_TIP = "systemui_lockscreen_hide_tip"
                 const val HIDE_DISTURB = "systemui_lockscreen_hide_disturb"
                 const val BLOCK_EDITOR = "systemui_lockscreen_block_editor"
+                const val CARRIER_TEXT = "systemui_lockscreen_carrier_text"
             }
             object NotifCenter {
                 const val CLOCK_COLOR_FIX = "statusbar_clock_color_fix"

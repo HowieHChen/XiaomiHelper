@@ -24,107 +24,156 @@ import androidx.appcompat.content.res.AppCompatResources
 import cn.fkj233.ui.activity.MIUIActivity
 import cn.fkj233.ui.activity.annotation.BMMainPage
 import cn.fkj233.ui.activity.data.BasePage
-import cn.fkj233.ui.activity.view.TextSummaryV
+import cn.fkj233.ui.activity.data.CategoryData
+import cn.fkj233.ui.activity.data.DescData
+import cn.fkj233.ui.activity.data.HeaderData
 import dev.lackluster.mihelper.R
+import dev.lackluster.mihelper.data.Pages
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.Device
 
-@BMMainPage()
+@BMMainPage
 class MainPage : BasePage() {
     override fun getTitle(): String {
         return activity.getString(R.string.page_main)
     }
     override fun onCreate() {
         val liteMode = MIUIActivity.safeSP.getBoolean(Pref.Key.Module.LITE_MODE, false)
-        Page(
-            pageHead = AppCompatResources.getDrawable(activity, R.drawable.ic_header_hyper_helper_gray)!!,
-            textSummaryV = TextSummaryV(textId = R.string.page_module),
-            onClickListener = {
-                showFragment("page_module")
-                this.itemList.clear()
-            }
-        )
-        Line()
-        if (liteMode) {
-            initLiteMode()
-        } else {
-            initFullMode()
+        PreferenceCategory(
+            null,
+            CategoryData(hideTitle = true, hideLine = true)
+        ) {
+            HeaderPreference(
+                DescData(
+                    icon = AppCompatResources.getDrawable(activity, R.drawable.ic_header_hyper_helper_gray),
+                    titleId = R.string.page_module
+                ),
+                HeaderData(),
+                onClickListener = {
+                    showFragment(Pages.MODULE_SETTINGS)
+                    this.itemList.clear()
+                }
+            )
         }
-        Line()
-        Page(
-            pageHead = AppCompatResources.getDrawable(activity, R.drawable.ic_header_about)!!,
-            textSummaryV = TextSummaryV(textId = R.string.page_about),
-            onClickListener = {
-                showFragment("page_about")
+        PreferenceCategory(
+            null,
+            CategoryData(hideTitle = true)
+        ) {
+            if (liteMode) {
+                initLiteMode()
+            } else {
+                initFullMode()
             }
-        )
+        }
+        PreferenceCategory(
+            null,
+            CategoryData(hideTitle = true)
+        ) {
+            HeaderPreference(
+                DescData(
+                    AppCompatResources.getDrawable(activity, R.drawable.ic_header_about),
+                    titleId = R.string.page_about
+                ),
+                HeaderData(),
+                onClickListener = {
+                    showFragment(Pages.ABOUT)
+                }
+            )
+        }
     }
 
     private fun initFullMode() {
-        Page(
-            pageHead = AppCompatResources.getDrawable(activity, R.drawable.ic_header_systemui)!!,
-            textSummaryV = TextSummaryV(textId = R.string.page_systemui),
+        HeaderPreference(
+            DescData(
+                AppCompatResources.getDrawable(activity, R.drawable.ic_header_systemui),
+                titleId = R.string.page_systemui
+            ),
+            HeaderData(),
             onClickListener = {
-                showFragment("page_systemui")
+                showFragment(Pages.SYSTEM_UI)
             }
         )
-        Page(
-            pageHead = AppCompatResources.getDrawable(activity, R.drawable.ic_header_android_green)!!,
-            textSummaryV = TextSummaryV(textId = R.string.page_android),
+        HeaderPreference(
+            DescData(
+                AppCompatResources.getDrawable(activity, R.drawable.ic_header_android_green),
+                titleId = R.string.page_android
+            ),
+            HeaderData(),
             onClickListener = {
-                showFragment("page_android")
+                showFragment(Pages.SYSTEM_FRAMEWORK)
             }
         )
-        Page(
-            pageHead = AppCompatResources.getDrawable(activity, R.drawable.ic_header_home)!!,
-            textSummaryV = TextSummaryV(textId = R.string.page_miui_home),
+        HeaderPreference(
+            DescData(
+                AppCompatResources.getDrawable(activity, R.drawable.ic_header_home),
+                titleId = R.string.page_miui_home
+            ),
+            HeaderData(),
             onClickListener = {
-                showFragment("page_miui_home")
+                showFragment(Pages.MIUI_HOME)
             }
         )
-        Page(
-            pageHead = AppCompatResources.getDrawable(activity, R.drawable.ic_header_cleaner)!!,
-            textSummaryV = TextSummaryV(textId = R.string.page_cleaner),
+        HeaderPreference(
+            DescData(
+                AppCompatResources.getDrawable(activity, R.drawable.ic_header_cleaner),
+                titleId = R.string.page_cleaner
+            ),
+            HeaderData(),
             onClickListener = {
-                showFragment("page_cleaner")
+                showFragment(Pages.CLEAN_MASTER)
             }
         )
-        Page(
-            pageHead = AppCompatResources.getDrawable(activity, R.drawable.ic_header_security_center)!!,
-            textSummaryV = TextSummaryV(textId = if (Device.isPad) R.string.page_security_center_pad else R.string.page_security_center),
+        HeaderPreference(
+            DescData(
+                AppCompatResources.getDrawable(activity, R.drawable.ic_header_security_center),
+                titleId = if (Device.isPad) R.string.page_security_center_pad else R.string.page_security_center
+            ),
+            HeaderData(),
             onClickListener = {
-                showFragment("page_security_center")
+                showFragment(Pages.SECURITY_CENTER)
             }
         )
-        Page(
-            pageHead = AppCompatResources.getDrawable(activity, R.drawable.ic_header_interconnection)!!,
-            textSummaryV = TextSummaryV(textId = R.string.page_interconnection),
+        HeaderPreference(
+            DescData(
+                AppCompatResources.getDrawable(activity, R.drawable.ic_header_interconnection),
+                titleId = R.string.page_interconnection
+            ),
+            HeaderData(),
             onClickListener = {
-                showFragment("page_interconnection")
+                showFragment(Pages.INTERCONNECTION)
             }
         )
-        Page(
-            pageHead = AppCompatResources.getDrawable(activity, R.drawable.ic_header_others)!!,
-            textSummaryV = TextSummaryV(textId = R.string.page_others),
+        HeaderPreference(
+            DescData(
+                AppCompatResources.getDrawable(activity, R.drawable.ic_header_others),
+                titleId = R.string.page_others
+            ),
+            HeaderData(),
             onClickListener = {
-                showFragment("page_others")
+                showFragment(Pages.OTHERS)
             }
         )
     }
 
     private fun initLiteMode() {
-        Page(
-            pageHead = AppCompatResources.getDrawable(activity, R.drawable.ic_header_systemui)!!,
-            textSummaryV = TextSummaryV(textId = R.string.page_virtual_media_control_style),
+        HeaderPreference(
+            DescData(
+                AppCompatResources.getDrawable(activity, R.drawable.ic_header_systemui),
+                titleId = R.string.page_virtual_media_control_style
+            ),
+            HeaderData(),
             onClickListener = {
-                showFragment("page_media_control")
+                showFragment(Pages.MEDIA_CONTROL)
             }
         )
-        Page(
-            pageHead = AppCompatResources.getDrawable(activity, R.drawable.ic_header_home)!!,
-            textSummaryV = TextSummaryV(textId = R.string.page_virtual_honme_refactor),
+        HeaderPreference(
+            DescData(
+                AppCompatResources.getDrawable(activity, R.drawable.ic_header_home),
+                titleId = R.string.page_virtual_home_refactor
+            ),
+            HeaderData(),
             onClickListener = {
-                showFragment("page_home_refactor")
+                showFragment(Pages.HOME_REFACTOR)
             }
         )
     }

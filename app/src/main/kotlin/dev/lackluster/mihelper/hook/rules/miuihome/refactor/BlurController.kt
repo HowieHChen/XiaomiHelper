@@ -33,6 +33,7 @@ import com.highcapable.yukihookapi.hook.factory.field
 import com.highcapable.yukihookapi.hook.factory.method
 import com.highcapable.yukihookapi.hook.log.YLog
 import com.highcapable.yukihookapi.hook.type.android.BundleClass
+import com.highcapable.yukihookapi.hook.type.android.ConfigurationClass
 import com.highcapable.yukihookapi.hook.type.android.WindowClass
 import com.highcapable.yukihookapi.hook.type.defined.VagueType
 import com.highcapable.yukihookapi.hook.type.java.BooleanType
@@ -86,12 +87,40 @@ object BlurController : YukiBaseHooker() {
     private val EXTRA_FIX = Prefs.getBoolean(Refactor.EXTRA_FIX, HomeRefactor.EXTRA_FIX)
 
     private var isStartingApp = false
+    private var screenCornerRadius: Int = 84
 
     override fun onHook() {
         var transitionBlurView: MiBlurView? = null
         var folderBlurView: MiBlurView? = null
         var wallpaperBlurView: MiBlurView? = null
         var minusBlurView: MiBlurView? = null
+        // Get and update screen corner radius
+        XposedHelpers.findAndHookMethod(
+            "com.miui.home.launcher.Launcher", this.appClassLoader,
+            "onAttachedToWindow",
+            object : XC_MethodHook() {
+                override fun afterHookedMethod(param: MethodHookParam?) {
+                    screenCornerRadius = XposedHelpers.callStaticMethod(
+                        "com.miui.home.recents.util.WindowCornerRadiusUtil".toClass(),
+                        "getCornerRadius"
+                    ) as Int
+                    folderBlurView?.setCornerRadius(screenCornerRadius)
+                }
+            }
+        )
+        XposedHelpers.findAndHookMethod(
+            "com.miui.home.launcher.Launcher", this.appClassLoader,
+            "onConfigurationChanged", ConfigurationClass,
+            object : XC_MethodHook() {
+                override fun afterHookedMethod(param: MethodHookParam?) {
+                    screenCornerRadius = XposedHelpers.callStaticMethod(
+                        "com.miui.home.recents.util.WindowCornerRadiusUtil".toClass(),
+                        "getCornerRadius"
+                    ) as Int
+                    folderBlurView?.setCornerRadius(screenCornerRadius)
+                }
+            }
+        )
         // Inject blur views
         XposedHelpers.findAndHookMethod(
             "com.miui.home.launcher.Launcher", this.appClassLoader,
@@ -788,6 +817,7 @@ object BlurController : YukiBaseHooker() {
             it.setBlur(folderUseBlur, folderBlurRadius)
             it.setDim(folderUseDim, folderDimAlpha)
             it.setScale(false, 0f)
+            it.setCornerRadius(screenCornerRadius)
             when (folderUseNonlinearType) {
                 1 -> it.setNonlinear(true, DecelerateInterpolator(folderNonlinearDeceFactor))
                 2 -> it.setNonlinear(

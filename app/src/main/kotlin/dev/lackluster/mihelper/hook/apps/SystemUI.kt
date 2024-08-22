@@ -18,6 +18,7 @@ import dev.lackluster.mihelper.hook.rules.systemui.statusbar.NotificationMaxNumb
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.StatusBarClock
 import dev.lackluster.mihelper.hook.rules.systemui.freeform.HideTopBar
 import dev.lackluster.mihelper.hook.rules.systemui.freeform.UnlockMultipleTask
+import dev.lackluster.mihelper.hook.rules.systemui.lockscreen.CarrierText
 import dev.lackluster.mihelper.hook.rules.systemui.lockscreen.DoubleTapToSleep
 import dev.lackluster.mihelper.hook.rules.systemui.media.CustomElement
 import dev.lackluster.mihelper.hook.rules.systemui.media.StyleCustomHookEntry
@@ -51,5 +52,6 @@ object SystemUI : YukiBaseHooker() {
         loadHooker(StyleCustomHookEntry)
         loadHooker(UnlockCustomAction)
         loadHooker(CustomElement)
+        loadHooker(CarrierText)
     }
 }

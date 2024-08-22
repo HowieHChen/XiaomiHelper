@@ -97,7 +97,7 @@ object MiBlurUtils {
     }
 
     fun View.setBlurRoundRect(i: Int, i2: Int, i3: Int, i4: Int, i5: Int) {
-        this.clipToOutline = false
+        this.clipToOutline = true
         val outlineProvider = object : ViewOutlineProvider() {
             override fun getOutline(view: View, outline: Outline) {
                 outline.setRoundRect(

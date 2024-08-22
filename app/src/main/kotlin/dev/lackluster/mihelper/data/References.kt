@@ -12,6 +12,7 @@ object References {
         Triple("hosizoraru/StarVoyager", "GPL-3.0", "https://github.com/hosizoraru/StarVoyager"),
         Triple("ReChronoRain/HyperCeiler", "AGPL-3.0", "https://github.com/ReChronoRain/HyperCeiler"),
         Triple("Block-Network/blockmiui", "LGPL-2.1", "https://github.com/Block-Network/blockmiui"),
+        Triple("HowieHChen/blockmiui", "Unknown", "https://github.com/HowieHChen/blockmiui"),
         Triple("HighCapable/YukiHookAPI", "Apache-2.0", "https://github.com/HighCapable/YukiHookAPI"),
         Triple("hellokaton/TinyPinyin", "Apache-2.0", "https://github.com/hellokaton/TinyPinyin"),
     )

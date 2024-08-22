@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dev.lackluster.hyperx.smooth.SmoothContainerDrawable2 xmlns:android="http://schemas.android.com/apk/res/android"
+    android:radius="@dimen/bezier_curve_view_bg_radius">
+    <child>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/hyperx_filter_sort_tab_view2_bg_color_selected" />
+        </shape>
+    </child>
+</dev.lackluster.hyperx.smooth.SmoothContainerDrawable2>

@@ -21,25 +21,25 @@
 package dev.lackluster.mihelper.activity.pages.sub
 
 import android.view.View
-import android.widget.Toast
 import cn.fkj233.ui.activity.MIUIActivity
 import cn.fkj233.ui.activity.annotation.BMPage
 import cn.fkj233.ui.activity.data.BasePage
-import cn.fkj233.ui.activity.view.SwitchV
-import cn.fkj233.ui.activity.view.TextSummaryV
-import cn.fkj233.ui.activity.view.TextV
-import cn.fkj233.ui.dialog.MIUIDialog
+import cn.fkj233.ui.activity.data.CategoryData
+import cn.fkj233.ui.activity.data.DescData
+import cn.fkj233.ui.activity.data.DialogData
+import cn.fkj233.ui.activity.data.EditTextData
+import cn.fkj233.ui.activity.data.SwitchData
 import dev.lackluster.mihelper.R
+import dev.lackluster.mihelper.data.Pages
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.Device
 
-@BMPage("page_systemui_clock")
+@BMPage(Pages.STATUS_BAR_CLOCK, hideMenu = false)
 class StatusBarClockPage : BasePage() {
     override fun getTitle(): String {
         return activity.getString(R.string.page_status_bar_clock)
     }
     override fun onCreate() {
-        TitleText(textId = R.string.ui_title_clock_general)
         val clockGeekBinding = GetDataBinding({
             MIUIActivity.safeSP.getBoolean(Pref.Key.SystemUI.StatusBar.CLOCK_GEEK, false)
         }) { view, flag, data ->
@@ -54,209 +54,154 @@ class StatusBarClockPage : BasePage() {
         }) { view, _, data ->
             view.visibility = if (data as Boolean) View.VISIBLE else View.GONE
         }
-        TextWithSwitch(
-            TextV(textId = R.string.clock_general_custom_layout),
-            SwitchV(
-                key = Pref.Key.SystemUI.StatusBar.CLOCK_LAYOUT_CUSTOM,
-                dataBindingSend = clockPaddingBinding.bindingSend
+        PreferenceCategory(
+            DescData(titleId = R.string.ui_title_clock_general),
+            CategoryData(hideLine = true)
+        ) {
+            SwitchPreference(
+                DescData(titleId = R.string.clock_general_custom_layout),
+                SwitchData(
+                    key = Pref.Key.SystemUI.StatusBar.CLOCK_LAYOUT_CUSTOM,
+                    dataBindingSend = clockPaddingBinding.bindingSend
+                )
             )
-        )
-        TextWithArrow(
-            TextV(
-                textId = R.string.clock_general_padding_left,
-                onClickListener = {
-                    MIUIDialog(activity) {
-                        setTitle(R.string.clock_general_padding_left)
-                        setMessage("${activity.getString(R.string.common_default)}: 0")
-                        setEditText("", "${activity.getString(R.string.common_current)}: ${
-                            MIUIActivity.safeSP.getInt(Pref.Key.SystemUI.StatusBar.CLOCK_PADDING_LEFT, 0)
-                        }")
-                        setLButton(textId = R.string.button_cancel) {
-                            dismiss()
-                        }
-                        setRButton(textId = R.string.button_ok) {
-                            if (getEditText().isNotEmpty()) {
-                                runCatching {
-                                    MIUIActivity.safeSP.putAny(
-                                        Pref.Key.SystemUI.StatusBar.CLOCK_PADDING_LEFT,
-                                        getEditText().toInt()
-                                    )
-                                }.onFailure {
-                                    Toast.makeText(activity, activity.getString(R.string.common_invalid_input), Toast.LENGTH_LONG).show()
-                                }
-                            }
-                            dismiss()
-                        }
-                    }.show()
-                }
-            ),
-            dataBindingRecv = clockPaddingBinding.binding.getRecv(1)
-        )
-        TextWithArrow(
-            TextV(
-                textId = R.string.clock_general_padding_right,
-                onClickListener = {
-                    MIUIDialog(activity) {
-                        setTitle(R.string.clock_general_padding_right)
-                        setMessage("${activity.getString(R.string.common_default)}: 0")
-                        setEditText("", "${activity.getString(R.string.common_current)}: ${
-                            MIUIActivity.safeSP.getInt(Pref.Key.SystemUI.StatusBar.CLOCK_PADDING_RIGHT, 0)
-                        }")
-                        setLButton(textId = R.string.button_cancel) {
-                            dismiss()
-                        }
-                        setRButton(textId = R.string.button_ok) {
-                            if (getEditText().isNotEmpty()) {
-                                runCatching {
-                                    MIUIActivity.safeSP.putAny(
-                                        Pref.Key.SystemUI.StatusBar.CLOCK_PADDING_RIGHT,
-                                        getEditText().toInt()
-                                    )
-                                }.onFailure {
-                                    Toast.makeText(activity, activity.getString(R.string.common_invalid_input), Toast.LENGTH_LONG).show()
-                                }
-                            }
-                            dismiss()
-                        }
-                    }.show()
-                }
-            ),
-            dataBindingRecv = clockPaddingBinding.binding.getRecv(1)
-        )
-        TextWithSwitch(
-            TextV(textId = R.string.clock_general_geek),
-            SwitchV(
-                key = Pref.Key.SystemUI.StatusBar.CLOCK_GEEK,
-                dataBindingSend = clockGeekBinding.bindingSend
+            EditTextPreference(
+                DescData(titleId = R.string.clock_general_padding_left),
+                EditTextData(
+                    key = Pref.Key.SystemUI.StatusBar.CLOCK_PADDING_LEFT,
+                    valueType = EditTextData.ValueType.INT,
+                    defValue = 0,
+                    hintText = "0",
+                    dialogData = DialogData(
+                        DescData(
+                            titleId = R.string.clock_general_custom_layout,
+                            summaryId = R.string.clock_general_padding_left
+                        )
+                    ),
+                    isValueValid = { _ ->
+                        true
+                    }
+                ),
+                dataBindingRecv = clockPaddingBinding.binding.getRecv(1)
             )
-        )
-        Line()
-        TitleText(
-            textId = R.string.ui_title_clock_geek_mode,
+            EditTextPreference(
+                DescData(titleId = R.string.clock_general_padding_right),
+                EditTextData(
+                    key = Pref.Key.SystemUI.StatusBar.CLOCK_PADDING_RIGHT,
+                    valueType = EditTextData.ValueType.INT,
+                    defValue = 0,
+                    hintText = "0",
+                    dialogData = DialogData(
+                        DescData(
+                            titleId = R.string.clock_general_custom_layout,
+                            summaryId = R.string.clock_general_padding_right
+                        )
+                    ),
+                    isValueValid = { _ ->
+                        true
+                    }
+                ),
+                dataBindingRecv = clockPaddingBinding.binding.getRecv(1)
+            )
+            SwitchPreference(
+                DescData(titleId = R.string.clock_general_geek),
+                SwitchData(
+                    key = Pref.Key.SystemUI.StatusBar.CLOCK_GEEK,
+                    dataBindingSend = clockGeekBinding.bindingSend
+                )
+            )
+        }
+        PreferenceCategory(
+            DescData(titleId = R.string.ui_title_clock_geek_mode),
+            CategoryData(),
             dataBindingRecv = clockGeekBinding.binding.getRecv(0)
-        )
-        TextWithArrow(
-            TextV(
-                textId = R.string.clock_geek_time_format_pattern,
-                onClickListener = {
-                    MIUIDialog(activity) {
-                        setTitle(R.string.clock_geek_time_format_pattern)
-                        setMessage("${activity.getString(R.string.common_default)}: ${Pref.DefValue.SystemUI.CLOCK_GEEK_FORMAT}")
-                        setEditText("", "${activity.getString(R.string.common_current)}: ${
-                            MIUIActivity.safeSP.getString(Pref.Key.SystemUI.StatusBar.CLOCK_GEEK_FORMAT, Pref.DefValue.SystemUI.CLOCK_GEEK_FORMAT)
-                        }")
-                        setLButton(textId = R.string.button_cancel) {
-                            dismiss()
+        ) {
+            EditTextPreference(
+                DescData(titleId = R.string.clock_geek_time_format_pattern),
+                EditTextData(
+                    key = Pref.Key.SystemUI.StatusBar.CLOCK_GEEK_FORMAT,
+                    valueType = EditTextData.ValueType.STRING,
+                    defValue = Pref.DefValue.SystemUI.CLOCK_GEEK_FORMAT,
+                    hintText = Pref.DefValue.SystemUI.CLOCK_GEEK_FORMAT,
+                    dialogData = DialogData(
+                        DescData(
+                            titleId = R.string.clock_geek_time_format_pattern
+                        )
+                    ),
+                    isValueValid = { _ ->
+                        true
+                    }
+                ),
+                dataBindingRecv = clockGeekBinding.binding.getRecv(0)
+            )
+            if (Device.isPad) {
+                EditTextPreference(
+                    DescData(titleId = R.string.clock_geek_time_format_pattern_pad),
+                    EditTextData(
+                        key = Pref.Key.SystemUI.StatusBar.CLOCK_GEEK_FORMAT_PAD,
+                        valueType = EditTextData.ValueType.STRING,
+                        defValue = Pref.DefValue.SystemUI.CLOCK_GEEK_FORMAT_PAD,
+                        hintText = Pref.DefValue.SystemUI.CLOCK_GEEK_FORMAT_PAD,
+                        dialogData = DialogData(
+                            DescData(
+                                titleId = R.string.clock_geek_time_format_pattern_pad
+                            )
+                        ),
+                        isValueValid = { _ ->
+                            true
                         }
-                        setRButton(textId = R.string.button_ok) {
-                            if (getEditText().isNotEmpty()) {
-                                runCatching {
-                                    MIUIActivity.safeSP.putAny(
-                                        Pref.Key.SystemUI.StatusBar.CLOCK_GEEK_FORMAT,
-                                        getEditText()
-                                    )
-                                }.onFailure {
-                                    Toast.makeText(activity, activity.getString(R.string.common_invalid_input), Toast.LENGTH_LONG).show()
-                                }
-                            }
-                            dismiss()
-                        }
-                    }.show()
-                }
-            ),
-            dataBindingRecv = clockGeekBinding.binding.getRecv(0)
-        )
-        if (Device.isPad) {
-            TextWithArrow(
-                TextV(
-                    textId = R.string.clock_geek_time_format_pattern_pad,
-                    onClickListener = {
-                        MIUIDialog(activity) {
-                            setTitle(R.string.clock_geek_time_format_pattern_pad)
-                            setMessage("${activity.getString(R.string.common_default)}: ${Pref.DefValue.SystemUI.CLOCK_GEEK_FORMAT_PAD}")
-                            setEditText("", "${activity.getString(R.string.common_current)}: ${
-                                MIUIActivity.safeSP.getString(Pref.Key.SystemUI.StatusBar.CLOCK_GEEK_FORMAT_PAD, Pref.DefValue.SystemUI.CLOCK_GEEK_FORMAT_PAD)
-                            }")
-                            setLButton(textId = R.string.button_cancel) {
-                                dismiss()
-                            }
-                            setRButton(textId = R.string.button_ok) {
-                                if (getEditText().isNotEmpty()) {
-                                    runCatching {
-                                        MIUIActivity.safeSP.putAny(
-                                            Pref.Key.SystemUI.StatusBar.CLOCK_GEEK_FORMAT_PAD,
-                                            getEditText()
-                                        )
-                                    }.onFailure {
-                                        Toast.makeText(activity, activity.getString(R.string.common_invalid_input), Toast.LENGTH_LONG).show()
-                                    }
-                                }
-                                dismiss()
-                            }
-                        }.show()
+                    ),
+                    dataBindingRecv = clockGeekBinding.binding.getRecv(0)
+                )
+            }
+            EditTextPreference(
+                DescData(titleId = R.string.clock_geek_time_format_pattern_horizon),
+                EditTextData(
+                    key = Pref.Key.SystemUI.StatusBar.CLOCK_GEEK_FORMAT_HORIZON,
+                    valueType = EditTextData.ValueType.STRING,
+                    defValue = Pref.DefValue.SystemUI.CLOCK_GEEK_FORMAT_HORIZON,
+                    hintText = Pref.DefValue.SystemUI.CLOCK_GEEK_FORMAT_HORIZON,
+                    dialogData = DialogData(
+                        DescData(
+                            titleId = R.string.clock_geek_time_format_pattern_horizon
+                        )
+                    ),
+                    isValueValid = { _ ->
+                        true
                     }
                 ),
                 dataBindingRecv = clockGeekBinding.binding.getRecv(0)
             )
         }
-        TextWithArrow(
-            TextV(
-                textId = R.string.clock_geek_time_format_pattern_horizon,
-                onClickListener = {
-                    MIUIDialog(activity) {
-                        setTitle(R.string.clock_geek_time_format_pattern_horizon)
-                        setMessage("${activity.getString(R.string.common_default)}: ${Pref.DefValue.SystemUI.CLOCK_GEEK_FORMAT_HORIZON}")
-                        setEditText("", "${activity.getString(R.string.common_current)}: ${
-                            MIUIActivity.safeSP.getString(Pref.Key.SystemUI.StatusBar.CLOCK_GEEK_FORMAT_HORIZON, Pref.DefValue.SystemUI.CLOCK_GEEK_FORMAT_HORIZON)
-                        }")
-                        setLButton(textId = R.string.button_cancel) {
-                            dismiss()
-                        }
-                        setRButton(textId = R.string.button_ok) {
-                            if (getEditText().isNotEmpty()) {
-                                runCatching {
-                                    MIUIActivity.safeSP.putAny(
-                                        Pref.Key.SystemUI.StatusBar.CLOCK_GEEK_FORMAT_HORIZON,
-                                        getEditText()
-                                    )
-                                }.onFailure {
-                                    Toast.makeText(activity, activity.getString(R.string.common_invalid_input), Toast.LENGTH_LONG).show()
-                                }
-                            }
-                            dismiss()
-                        }
-                    }.show()
-                }
-            ),
-            dataBindingRecv = clockGeekBinding.binding.getRecv(0)
-        )
-        TitleText(
-            textId = R.string.ui_title_clock_easy,
+        PreferenceCategory(
+            DescData(titleId = R.string.ui_title_clock_easy),
+            CategoryData(),
             dataBindingRecv = clockGeekBinding.binding.getRecv(1)
-        )
-        TextSummaryWithSwitch(
-            TextSummaryV(
-                textId = R.string.clock_easy_show_ampm,
-                tipsId = R.string.clock_easy_show_ampm_tips
-            ),
-            SwitchV(Pref.Key.SystemUI.StatusBar.CLOCK_SHOW_AMPM),
-            dataBindingRecv = clockGeekBinding.binding.getRecv(1)
-        )
-        TextSummaryWithSwitch(
-            TextSummaryV(
-                textId = R.string.clock_easy_show_leading_zero,
-                tipsId = R.string.clock_easy_show_leading_zero_tips
-            ),
-            SwitchV(Pref.Key.SystemUI.StatusBar.CLOCK_SHOW_LEADING_ZERO),
-            dataBindingRecv = clockGeekBinding.binding.getRecv(1)
-        )
-        TextSummaryWithSwitch(
-            TextSummaryV(
-                textId = R.string.clock_easy_show_seconds,
-                tipsId = R.string.clock_easy_show_seconds_tips
-            ),
-            SwitchV(Pref.Key.SystemUI.StatusBar.CLOCK_SHOW_SECONDS),
-            dataBindingRecv = clockGeekBinding.binding.getRecv(1)
-        )
+        ) {
+            SwitchPreference(
+                DescData(
+                    titleId = R.string.clock_easy_show_ampm,
+                    summaryId = R.string.clock_easy_show_ampm_tips
+                ),
+                SwitchData(Pref.Key.SystemUI.StatusBar.CLOCK_SHOW_AMPM),
+                dataBindingRecv = clockGeekBinding.binding.getRecv(1)
+            )
+            SwitchPreference(
+                DescData(
+                    titleId = R.string.clock_easy_show_leading_zero,
+                    summaryId = R.string.clock_easy_show_leading_zero_tips
+                ),
+                SwitchData(Pref.Key.SystemUI.StatusBar.CLOCK_SHOW_LEADING_ZERO),
+                dataBindingRecv = clockGeekBinding.binding.getRecv(1)
+            )
+            SwitchPreference(
+                DescData(
+                    titleId = R.string.clock_easy_show_seconds,
+                    summaryId = R.string.clock_easy_show_seconds_tips
+                ),
+                SwitchData(Pref.Key.SystemUI.StatusBar.CLOCK_SHOW_SECONDS),
+                dataBindingRecv = clockGeekBinding.binding.getRecv(1)
+            )
+        }
     }
 }

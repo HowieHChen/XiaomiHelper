@@ -7,12 +7,17 @@
 
     <string name="common_default">Default</string>
     <string name="common_current">Current</string>
+    <string name="common_custom">Custom</string>
     <string name="common_general">General</string>
     <string name="common_invalid_input">Invalid Input</string>
     <string name="common_range">Range</string>
     <string name="common_search">Search</string>
     <string name="common_others">Others</string>
     <string name="common_tap_sleep">Double-tap the blank space to sleep</string>
+    <string name="common_disabled">Disabled</string>
+    <string name="common_enabled">Enabled</string>
+    <string name="common_on">On</string>
+    <string name="common_off">Off</string>
 
     <string name="button_cancel">Cancel</string>
     <string name="button_ok">OK</string>
@@ -29,7 +34,7 @@
     <string name="page_menu">Menu</string>
 
     <string name="page_virtual_media_control_style" translatable="false">@string/systemui_notif_media_control_style</string>
-    <string name="page_virtual_honme_refactor" translatable="false">@string/home_exclusive_refactor</string>
+    <string name="page_virtual_home_refactor" translatable="false">@string/home_exclusive_refactor</string>
 
     <string name="page_module">Module settings</string>
     <string name="page_systemui">System UI</string>
@@ -45,7 +50,7 @@
     <string name="page_status_bar_clock">Clock</string>
     <string name="page_status_bar_icon_tuner">Icon tuner</string>
     <string name="page_media_control_style">Media control style</string>
-    <string name="page_home_refactor">Customizing the blur effect</string>
+    <string name="page_home_refactor" translatable="false">@string/home_exclusive_refactor</string>
 
     <string name="scope_browser">Browser</string>
     <string name="scope_download">Download</string>
@@ -81,7 +86,7 @@
     <string name="search_engine_sogou">Sogou</string>
     <string name="search_engine_bing">Bing</string>
     <string name="search_engine_google">Google</string>
-    <string name="search_engine_custom">Custom</string>
+    <string name="search_engine_custom" translatable="false">@string/common_custom</string>
     <string name="search_engine_custom_url">Custom search engine</string>
     <string name="search_engine_custom_url_toast">The URL must contain \"%s\"</string>
 
@@ -129,7 +134,7 @@
     <string name="module_settings_icon_style_default" translatable="false">@string/common_default</string>
     <string name="module_settings_icon_style_android">Android</string>
     <string name="module_settings_icon_color">Entry icon color</string>
-    <string name="module_settings_icon_color_grey">Grey</string>
+    <string name="module_settings_icon_color_gray">Grey</string>
     <string name="module_settings_icon_color_red">Red</string>
     <string name="module_settings_icon_color_green">Green</string>
     <string name="module_settings_icon_color_blue">Blue</string>
@@ -138,13 +143,20 @@
     <string name="module_settings_name">Entry title</string>
     <string name="module_settings_name_helper" translatable="false">Hyper Helper</string>
     <string name="module_settings_name_advanced">Advanced Settings</string>
+    <string name="module_settings_name_custom" translatable="false">@string/common_custom</string>
+    <string name="module_settings_custom_name">Custom entry title</string>
     <string name="ui_title_module_backup">Backup &amp; restore</string>
     <string name="module_backup">Backup module preferences</string>
     <string name="module_restore">Restore module preferences</string>
+    <string name="module_reset">Reset module preferences</string>
+    <string name="module_reset_warning">Resetting all preferences is an irreversible operation, please make sure you have a backup. \nDo you want to continue?</string>
     <string name="module_backup_success">All preferences have been exported to the specified file.</string>
     <string name="module_backup_failure">Backup failed.</string>
     <string name="module_restore_success">Preferences have been restored from the file.</string>
     <string name="module_restore_failure">Restore failed. Please check the backup file.</string>
+    <string name="module_restore_failure_spversion">Backup file version mismatch (too high)</string>
+    <string name="module_reset_success">All preferences have been restored to default settings.</string>
+    <string name="module_reset_failure">Reset failed.</string>
     <string name="module_unknown_failure">Unknown error</string>
     <!-- SystemUIPage -->
     <string name="ui_title_systemui_status_bar">Status bar</string>
@@ -159,6 +171,10 @@
     <string name="systemui_lock_double_tap" translatable="false">@string/common_tap_sleep</string>
     <string name="systemui_lock_block_editor">Disable access to lock screen editor on lock screen</string>
     <string name="systemui_lock_block_editor_tips">You can edit the lock screen in Settings - Wallpaper &amp; personalization</string>
+    <string name="systemui_lock_carrier_text">Status bar carrier label</string>
+    <string name="systemui_lock_carrier_text_default">Default (invisible)</string>
+    <string name="systemui_lock_carrier_text_carrier">Carrier label</string>
+    <string name="systemui_lock_carrier_text_clock">Clock</string>
     <string name="ui_title_systemui_notification_center">Notification center</string>
     <string name="systemui_notif_redirect_settings">Redirect notification settings</string>
     <string name="systemui_notif_redirect_settings_tips">When you open the notification settings it navigates to the corresponding notification channel settings instead of the app notification settings</string>
@@ -457,20 +473,18 @@
     <string name="home_refactor_dim_tips">Layer an additional black mask on top of the blur layer</string>
     <string name="home_refactor_dim_alpha">Opacity of the mask used for dimming</string>
     <string name="home_refactor_dim_alpha_tips">Set 0 for transparent, set 255 for black.</string>
-    <string name="home_refactor_nonlinear">Non-linear animation</string>
+    <string name="home_refactor_anim_curve">Animation curve</string>
+    <string name="home_refactor_nonlinear_type">Animation curve type</string>
     <string name="home_refactor_nonlinear_type_non">Linear</string>
     <string name="home_refactor_nonlinear_type_dece">Ease out</string>
-    <string name="home_refactor_nonlinear_type_path">Quadratic Bézier curves</string>
-    <string name="home_refactor_nonlinear_factor">Non-linear animation factor</string>
-    <string name="home_refactor_nonlinear_factor_tips">The larger the value the greater the initial rate of change of the animation</string>
-    <string name="home_refactor_nonlinear_path_x1">X-coordinate of control point 1</string>
-    <string name="home_refactor_nonlinear_path_x1_tips">Control point (0,0) (Don\'t modify it if you don\'t know what it is)</string>
-    <string name="home_refactor_nonlinear_path_y1">Y-coordinate of control point 1</string>
-    <string name="home_refactor_nonlinear_path_y1_tips">Control point (0,0) (Don\'t modify it if you don\'t know what it is)</string>
-    <string name="home_refactor_nonlinear_path_x2">X-coordinate of control point 2</string>
-    <string name="home_refactor_nonlinear_path_x2_tips">Control point (1,1) (Don\'t modify it if you don\'t know what it is)</string>
-    <string name="home_refactor_nonlinear_path_y2">Y-coordinate of control point 2</string>
-    <string name="home_refactor_nonlinear_path_y2_tips">Control point (1,1) (Don\'t modify it if you don\'t know what it is)</string>
+    <string name="home_refactor_nonlinear_type_bezier">Cubic Bézier curves</string>
+    <string name="home_refactor_nonlinear_params">Animation parameters</string>
+    <string name="home_refactor_nonlinear_dece_factor">Animation factor</string>
+    <string name="home_refactor_nonlinear_dece_factor_tips">The larger the value the greater the initial rate of change of the animation</string>
+    <string name="home_refactor_nonlinear_bezier_x1">X-coordinate of control point 1</string>
+    <string name="home_refactor_nonlinear_bezier_y1">Y-coordinate of control point 1</string>
+    <string name="home_refactor_nonlinear_bezier_x2">X-coordinate of control point 2</string>
+    <string name="home_refactor_nonlinear_bezier_y2">Y-coordinate of control point 2</string>
     <string name="ui_title_home_refactor_main">Main switch</string>
     <string name="ui_title_home_refactor_general" translatable="false">@string/common_general</string>
     <string name="home_refactor_extra_compatibility">Compatibility mode</string>
@@ -498,9 +512,6 @@
     <string name="home_refactor_launch_show_tips">Don\'t hide the launcher view when in the recent tasks view</string>
     <string name="home_refactor_launch_scale">Launcher view zoom ratio</string>
     <string name="home_refactor_launch_scale_tips">Affects launcher view scaling in recent tasks view</string>
-    <string name="home_refactor_launch_scale_nonlinear" translatable="false">@string/home_refactor_nonlinear</string>
-    <string name="home_refactor_launch_scale_nonlinear_factor" translatable="false">@string/home_refactor_nonlinear_factor</string>
-    <string name="home_refactor_launch_scale_nonlinear_factor_tips" translatable="false">@string/home_refactor_nonlinear_factor_tips</string>
     <string name="ui_title_home_refactor_minus">Blur effect of Minus screen background</string>
     <string name="home_refactor_minus_tips">Used to blur the entire launcher view. Blurring occurs when in the minus screen.</string>
     <string name="home_refactor_minus_overlap_mode">Minus screen overlap mode</string>

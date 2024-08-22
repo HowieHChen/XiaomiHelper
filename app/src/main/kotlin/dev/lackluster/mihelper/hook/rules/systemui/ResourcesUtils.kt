@@ -27,6 +27,10 @@ object ResourcesUtils : YukiBaseHooker() {
     var notification_element_blend_shade_colors = 0
     var notification_element_blend_colors = 0
     var notification_item_bg_radius = 0
+    // Lockscreen
+    var pad_clock_xml = 0
+    var keyguard_carrier_text = 0
+    var TextAppearance_StatusBar_Clock = 0
     @SuppressLint("DiscouragedApi")
     override fun onHook() {
         onAppLifecycle {
@@ -50,6 +54,9 @@ object ResourcesUtils : YukiBaseHooker() {
                     notification_element_blend_shade_colors = this.getResID("notification_element_blend_shade_colors", "array", PKG_NAME)
                     notification_element_blend_colors = this.getResID("notification_element_blend_colors", "array", PKG_NAME)
                     notification_item_bg_radius = this.getResID("notification_item_bg_radius", "dimen", PKG_NAME)
+                    pad_clock_xml = this.getResID("pad_clock", "layout", PKG_NAME)
+                    keyguard_carrier_text = this.getResID("keyguard_carrier_text", "id", PKG_NAME)
+                    TextAppearance_StatusBar_Clock = this.getResID("TextAppearance.StatusBar.Clock", "style", PKG_NAME)
                     isInitialized = true
                 }
             }
