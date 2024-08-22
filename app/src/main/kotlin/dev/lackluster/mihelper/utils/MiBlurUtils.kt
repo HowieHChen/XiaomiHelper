@@ -1,8 +1,10 @@
 package dev.lackluster.mihelper.utils
 
 import android.annotation.SuppressLint
+import android.graphics.Outline
 import android.util.Log
 import android.view.View
+import android.view.ViewOutlineProvider
 
 @SuppressLint("PrivateApi")
 object MiBlurUtils {
@@ -51,6 +53,7 @@ object MiBlurUtils {
     }
     fun clearAllBlur(view: View) {
         // resetBlurColor(view)
+        setBackgroundBlurScaleRatio(view, 0f)
         setViewBackgroundBlur(view, 0)
         setViewBlur(view, 0)
         setBlurRadius(view, 0)
@@ -66,7 +69,7 @@ object MiBlurUtils {
     }
 
     fun setBlurRadius(view: View, radius: Int) {
-        if (radius < 0 || radius > 200) {
+        if (radius < 0 || radius > 500) {
             Log.e("MiBlurUtils", "setMiBackgroundBlurRadius error radius is " + radius + " " + view.javaClass.name + " hashcode " + view.hashCode())
             return
         }
@@ -91,5 +94,46 @@ object MiBlurUtils {
 
     fun supportBackgroundBlur() : Boolean {
         return isBackgroundBlurSupported
+    }
+
+    fun View.setBlurRoundRect(i: Int, i2: Int, i3: Int, i4: Int, i5: Int) {
+        this.clipToOutline = true
+        val outlineProvider = object : ViewOutlineProvider() {
+            override fun getOutline(view: View, outline: Outline) {
+                outline.setRoundRect(
+                    i2, i3, i4, i5, i.toFloat()
+                )
+            }
+        }
+        this.outlineProvider = outlineProvider
+    }
+
+    fun View.setBlurRoundRect(i: Int) {
+        this.clipToOutline = true
+        val outlineProvider = object : ViewOutlineProvider() {
+            override fun getOutline(view: View, outline: Outline) {
+                outline.setRoundRect(
+                    0, 0, view.width, view.height, i.toFloat()
+                )
+            }
+        }
+        this.outlineProvider = outlineProvider
+    }
+
+    fun View.setMiBackgroundBlendColors(iArr: IntArray, f: Float) {
+        var z: Boolean
+        clearMiBackgroundBlendColor.invoke(this)
+        val length = iArr.size / 2
+        for (i in 0 until length) {
+            val i2 = i * 2
+            var i3 = iArr[i2]
+            z = f == 1.0f
+            if (!z) {
+                val i4 = (i3 shr 24) and 255
+                i3 = (i3 and ((i4 shl 24).inv())) or (((i4 * f).toInt()) shl 24)
+            }
+            val i5 = iArr[i2 + 1]
+            addMiBackgroundBlendColor(this, i3, i5)
+        }
     }
 }

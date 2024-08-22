@@ -1,82 +1,180 @@
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
+ * This file is part of XiaomiHelper project
+ * Copyright (C) 2023 HowieHChen, howie.dev@outlook.com
+
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package dev.lackluster.mihelper.activity.pages.main
 
-import android.content.ComponentName
-import android.content.pm.PackageManager
+import androidx.appcompat.content.res.AppCompatResources
+import cn.fkj233.ui.activity.MIUIActivity
 import cn.fkj233.ui.activity.annotation.BMMainPage
 import cn.fkj233.ui.activity.data.BasePage
-import cn.fkj233.ui.activity.view.SwitchV
-import cn.fkj233.ui.activity.view.TextSummaryV
+import cn.fkj233.ui.activity.data.CategoryData
+import cn.fkj233.ui.activity.data.DescData
+import cn.fkj233.ui.activity.data.HeaderData
 import dev.lackluster.mihelper.R
-import dev.lackluster.mihelper.BuildConfig
-import dev.lackluster.mihelper.data.PrefKey
+import dev.lackluster.mihelper.data.Pages
+import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.Device
 
-@BMMainPage()
+@BMMainPage
 class MainPage : BasePage() {
     override fun getTitle(): String {
-        return activity.getString(R.string.ui_page_main)
+        return activity.getString(R.string.page_main)
     }
     override fun onCreate() {
-        activity.title
-        TitleText(textId = R.string.ui_title_general)
-        TextSummaryWithSwitch(
-            TextSummaryV(
-                textId = R.string.switch_main
-            ), SwitchV(PrefKey.ENABLE_MODULE, true)
+        val liteMode = MIUIActivity.safeSP.getBoolean(Pref.Key.Module.LITE_MODE, false)
+        PreferenceCategory(
+            null,
+            CategoryData(hideTitle = true, hideLine = true)
+        ) {
+            HeaderPreference(
+                DescData(
+                    icon = AppCompatResources.getDrawable(activity, R.drawable.ic_header_hyper_helper_gray),
+                    titleId = R.string.page_module
+                ),
+                HeaderData(),
+                onClickListener = {
+                    showFragment(Pages.MODULE_SETTINGS)
+                    this.itemList.clear()
+                }
+            )
+        }
+        PreferenceCategory(
+            null,
+            CategoryData(hideTitle = true)
+        ) {
+            if (liteMode) {
+                initLiteMode()
+            } else {
+                initFullMode()
+            }
+        }
+        PreferenceCategory(
+            null,
+            CategoryData(hideTitle = true)
+        ) {
+            HeaderPreference(
+                DescData(
+                    AppCompatResources.getDrawable(activity, R.drawable.ic_header_about),
+                    titleId = R.string.page_about
+                ),
+                HeaderData(),
+                onClickListener = {
+                    showFragment(Pages.ABOUT)
+                }
+            )
+        }
+    }
+
+    private fun initFullMode() {
+        HeaderPreference(
+            DescData(
+                AppCompatResources.getDrawable(activity, R.drawable.ic_header_systemui),
+                titleId = R.string.page_systemui
+            ),
+            HeaderData(),
+            onClickListener = {
+                showFragment(Pages.SYSTEM_UI)
+            }
         )
-        TextSummaryWithSwitch(
-            TextSummaryV(textId = R.string.switch_hide_icon),
-            SwitchV(PrefKey.HIDE_ICON, onClickListener = {
-                activity.packageManager.setComponentEnabledSetting(
-                    ComponentName(activity, "${BuildConfig.APPLICATION_ID}.launcher"),
-                    if (it) {
-                        PackageManager.COMPONENT_ENABLED_STATE_DISABLED
-                    } else {
-                        PackageManager.COMPONENT_ENABLED_STATE_ENABLED
-                    },
-                    PackageManager.DONT_KILL_APP
-                )
-            })
+        HeaderPreference(
+            DescData(
+                AppCompatResources.getDrawable(activity, R.drawable.ic_header_android_green),
+                titleId = R.string.page_android
+            ),
+            HeaderData(),
+            onClickListener = {
+                showFragment(Pages.SYSTEM_FRAMEWORK)
+            }
         )
-        Line()
-        TitleText(textId = R.string.ui_title_scope)
-        TextSummaryWithArrow(
-            TextSummaryV(
-                textId = R.string.ui_scope_systemui,
-                onClickListener = { showFragment("scope_systemui") })
+        HeaderPreference(
+            DescData(
+                AppCompatResources.getDrawable(activity, R.drawable.ic_header_home),
+                titleId = R.string.page_miui_home
+            ),
+            HeaderData(),
+            onClickListener = {
+                showFragment(Pages.MIUI_HOME)
+            }
         )
-        TextSummaryWithArrow(
-            TextSummaryV(
-                textId = R.string.ui_scope_android,
-                onClickListener = { showFragment("scope_android") })
+        HeaderPreference(
+            DescData(
+                AppCompatResources.getDrawable(activity, R.drawable.ic_header_cleaner),
+                titleId = R.string.page_cleaner
+            ),
+            HeaderData(),
+            onClickListener = {
+                showFragment(Pages.CLEAN_MASTER)
+            }
         )
-        TextSummaryWithArrow(
-            TextSummaryV(
-                textId = if (Device.isPad) R.string.ui_scope_security_center_pad else R.string.ui_scope_security_center,
-                onClickListener = { showFragment("scope_security_center") })
+        HeaderPreference(
+            DescData(
+                AppCompatResources.getDrawable(activity, R.drawable.ic_header_security_center),
+                titleId = if (Device.isPad) R.string.page_security_center_pad else R.string.page_security_center
+            ),
+            HeaderData(),
+            onClickListener = {
+                showFragment(Pages.SECURITY_CENTER)
+            }
         )
-        TextSummaryWithArrow(
-            TextSummaryV(
-                textId = R.string.ui_scope_mi_connect,
-                onClickListener = { showFragment("scope_mi_connect") })
+        HeaderPreference(
+            DescData(
+                AppCompatResources.getDrawable(activity, R.drawable.ic_header_interconnection),
+                titleId = R.string.page_interconnection
+            ),
+            HeaderData(),
+            onClickListener = {
+                showFragment(Pages.INTERCONNECTION)
+            }
         )
-        TextSummaryWithArrow(
-            TextSummaryV(
-                textId = R.string.ui_scope_miui_home,
-                onClickListener = { showFragment("scope_miui_home") })
-        )
-        TextSummaryWithArrow(
-            TextSummaryV(
-                textId = R.string.ui_scope_other,
-                onClickListener = { showFragment("scope_others") })
-        )
-        Line()
-        TitleText(textId = R.string.ui_title_about)
-        TextSummaryWithArrow(
-            TextSummaryV(
-                textId = R.string.ui_about_module,
-                onClickListener = { showFragment("about") })
+        HeaderPreference(
+            DescData(
+                AppCompatResources.getDrawable(activity, R.drawable.ic_header_others),
+                titleId = R.string.page_others
+            ),
+            HeaderData(),
+            onClickListener = {
+                showFragment(Pages.OTHERS)
+            }
         )
     }
 
+    private fun initLiteMode() {
+        HeaderPreference(
+            DescData(
+                AppCompatResources.getDrawable(activity, R.drawable.ic_header_systemui),
+                titleId = R.string.page_virtual_media_control_style
+            ),
+            HeaderData(),
+            onClickListener = {
+                showFragment(Pages.MEDIA_CONTROL)
+            }
+        )
+        HeaderPreference(
+            DescData(
+                AppCompatResources.getDrawable(activity, R.drawable.ic_header_home),
+                titleId = R.string.page_virtual_home_refactor
+            ),
+            HeaderData(),
+            onClickListener = {
+                showFragment(Pages.HOME_REFACTOR)
+            }
+        )
+    }
 }

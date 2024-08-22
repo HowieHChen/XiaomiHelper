@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="header_icon_size">28.0dp</dimen>
+
+    <dimen name="bezier_padding">24dp</dimen>
+    <dimen name="bezier_control_line_width">2dp</dimen>
+    <dimen name="bezier_path_line_width">4dp</dimen>
+    <dimen name="bezier_point_radius">4dp</dimen>
+    <dimen name="bezier_control_point_radius">8dp</dimen>
+    <dimen name="bezier_point_stroke_width">16dp</dimen>
+    <dimen name="bezier_curve_view_size">290dp</dimen>
+    <dimen name="bezier_curve_view_padding_horizontal">12dp</dimen>
+    <dimen name="bezier_curve_view_padding_top">17dp</dimen>
+    <dimen name="bezier_curve_view_padding_bottom">14dp</dimen>
+    <dimen name="bezier_curve_view_bg_radius">17dp</dimen>
+</resources>

@@ -1,766 +1,400 @@
 package dev.lackluster.mihelper.activity.pages.sub
 
 import android.view.View
-import android.widget.Toast
 import cn.fkj233.ui.activity.MIUIActivity
 import cn.fkj233.ui.activity.annotation.BMPage
 import cn.fkj233.ui.activity.data.BasePage
-import cn.fkj233.ui.activity.view.SpinnerV
-import cn.fkj233.ui.activity.view.SwitchV
-import cn.fkj233.ui.activity.view.TextSummaryV
-import cn.fkj233.ui.activity.view.TextV
-import cn.fkj233.ui.dialog.MIUIDialog
+import cn.fkj233.ui.activity.data.CategoryData
+import cn.fkj233.ui.activity.data.DescData
+import cn.fkj233.ui.activity.data.DialogData
+import cn.fkj233.ui.activity.data.EditTextData
+import cn.fkj233.ui.activity.data.SwitchData
+import cn.fkj233.ui.activity.data.TextData
 import dev.lackluster.mihelper.R
-import dev.lackluster.mihelper.data.PrefDefValue
-import dev.lackluster.mihelper.data.PrefKey
-import dev.lackluster.mihelper.utils.Device
+import dev.lackluster.mihelper.data.Pages
+import dev.lackluster.mihelper.data.Pref
+import dev.lackluster.mihelper.data.Pref.Key.MiuiHome.Refactor
+import dev.lackluster.mihelper.data.Pref.DefValue.HomeRefactor
+import dev.lackluster.mihelper.utils.factory.dp
+import dev.lackluster.mihelper.utils.factory.px
 
-@BMPage("home_refactor")
+@BMPage(Pages.HOME_REFACTOR, hideMenu = false)
 class HomeRefactorPage : BasePage() {
+    private val paramsHashMap = mapOf(
+        "recents_launch_view" to Pair(Refactor.SHOW_LAUNCH_IN_RECENTS, HomeRefactor.SHOW_LAUNCH_IN_RECENTS),
+        "recents_launch_scale" to Pair(Refactor.SHOW_LAUNCH_IN_RECENTS_SCALE, HomeRefactor.SHOW_LAUNCH_IN_RECENTS_SCALE),
+        "folder_launch_view" to Pair(Refactor.SHOW_LAUNCH_IN_FOLDER, HomeRefactor.SHOW_LAUNCH_IN_FOLDER),
+        "folder_launch_scale" to Pair(Refactor.SHOW_LAUNCH_IN_FOLDER_SCALE, HomeRefactor.SHOW_LAUNCH_IN_FOLDER_SCALE),
+        "minus_launch_view" to Pair(Refactor.SHOW_LAUNCH_IN_MINUS, HomeRefactor.SHOW_LAUNCH_IN_MINUS),
+        "minus_launch_scale" to Pair(Refactor.SHOW_LAUNCH_IN_MINUS_SCALE, HomeRefactor.SHOW_LAUNCH_IN_MINUS_SCALE),
+        "minus_overlap" to Pair(Refactor.MINUS_OVERLAP, HomeRefactor.MINUS_OVERLAP),
+
+        "apps_blur" to Pair(Refactor.APPS_BLUR, HomeRefactor.APPS_BLUR),
+        "apps_blur_radius" to Pair(Refactor.APPS_BLUR_RADIUS_STR, HomeRefactor.APPS_BLUR_RADIUS_STR),
+        "apps_dim" to Pair(Refactor.APPS_DIM, HomeRefactor.APPS_DIM),
+        "apps_dim_alpha" to Pair(Refactor.APPS_DIM_MAX, HomeRefactor.APPS_DIM_MAX),
+        "apps_nonlinear_type" to Pair(Refactor.APPS_NONLINEAR_TYPE, HomeRefactor.APPS_NONLINEAR_TYPE),
+        "apps_nonlinear_factor" to Pair(Refactor.APPS_NONLINEAR_DECE_FACTOR, HomeRefactor.APPS_NONLINEAR_DECE_FACTOR),
+        "apps_nonlinear_x1" to Pair(Refactor.APPS_NONLINEAR_PATH_X1, HomeRefactor.APPS_NONLINEAR_PATH_X1),
+        "apps_nonlinear_y1" to Pair(Refactor.APPS_NONLINEAR_PATH_Y1, HomeRefactor.APPS_NONLINEAR_PATH_Y1),
+        "apps_nonlinear_x2" to Pair(Refactor.APPS_NONLINEAR_PATH_X2, HomeRefactor.APPS_NONLINEAR_PATH_X2),
+        "apps_nonlinear_y2" to Pair(Refactor.APPS_NONLINEAR_PATH_Y2, HomeRefactor.APPS_NONLINEAR_PATH_Y2),
+
+        "folder_blur" to Pair(Refactor.FOLDER_BLUR, HomeRefactor.FOLDER_BLUR),
+        "folder_blur_radius" to Pair(Refactor.FOLDER_BLUR_RADIUS_STR, HomeRefactor.FOLDER_BLUR_RADIUS_STR),
+        "folder_dim" to Pair(Refactor.FOLDER_DIM, HomeRefactor.FOLDER_DIM),
+        "folder_dim_alpha" to Pair(Refactor.FOLDER_DIM_MAX, HomeRefactor.FOLDER_DIM_MAX),
+        "folder_nonlinear_type" to Pair(Refactor.FOLDER_NONLINEAR_TYPE, HomeRefactor.FOLDER_NONLINEAR_TYPE),
+        "folder_nonlinear_factor" to Pair(Refactor.FOLDER_NONLINEAR_DECE_FACTOR, HomeRefactor.FOLDER_NONLINEAR_DECE_FACTOR),
+        "folder_nonlinear_x1" to Pair(Refactor.FOLDER_NONLINEAR_PATH_X1, HomeRefactor.FOLDER_NONLINEAR_PATH_X1),
+        "folder_nonlinear_y1" to Pair(Refactor.FOLDER_NONLINEAR_PATH_Y1, HomeRefactor.FOLDER_NONLINEAR_PATH_Y1),
+        "folder_nonlinear_x2" to Pair(Refactor.FOLDER_NONLINEAR_PATH_X2, HomeRefactor.FOLDER_NONLINEAR_PATH_X2),
+        "folder_nonlinear_y2" to Pair(Refactor.FOLDER_NONLINEAR_PATH_Y2, HomeRefactor.FOLDER_NONLINEAR_PATH_Y2),
+
+        "wallpaper_blur" to Pair(Refactor.WALLPAPER_BLUR, HomeRefactor.WALLPAPER_BLUR),
+        "wallpaper_blur_radius" to Pair(Refactor.WALLPAPER_BLUR_RADIUS_STR, HomeRefactor.WALLPAPER_BLUR_RADIUS_STR),
+        "wallpaper_dim" to Pair(Refactor.WALLPAPER_DIM, HomeRefactor.WALLPAPER_DIM),
+        "wallpaper_dim_alpha" to Pair(Refactor.WALLPAPER_DIM_MAX, HomeRefactor.WALLPAPER_DIM_MAX),
+        "wallpaper_nonlinear_type" to Pair(Refactor.WALLPAPER_NONLINEAR_TYPE, HomeRefactor.WALLPAPER_NONLINEAR_TYPE),
+        "wallpaper_nonlinear_factor" to Pair(Refactor.WALLPAPER_NONLINEAR_DECE_FACTOR, HomeRefactor.WALLPAPER_NONLINEAR_DECE_FACTOR),
+        "wallpaper_nonlinear_x1" to Pair(Refactor.WALLPAPER_NONLINEAR_PATH_X1, HomeRefactor.WALLPAPER_NONLINEAR_PATH_X1),
+        "wallpaper_nonlinear_y1" to Pair(Refactor.WALLPAPER_NONLINEAR_PATH_Y1, HomeRefactor.WALLPAPER_NONLINEAR_PATH_Y1),
+        "wallpaper_nonlinear_x2" to Pair(Refactor.WALLPAPER_NONLINEAR_PATH_X2, HomeRefactor.WALLPAPER_NONLINEAR_PATH_X2),
+        "wallpaper_nonlinear_y2" to Pair(Refactor.WALLPAPER_NONLINEAR_PATH_Y2, HomeRefactor.WALLPAPER_NONLINEAR_PATH_Y2),
+
+        "minus_blur" to Pair(Refactor.MINUS_BLUR, HomeRefactor.MINUS_BLUR),
+        "minus_blur_radius" to Pair(Refactor.MINUS_BLUR_RADIUS_STR, HomeRefactor.MINUS_BLUR_RADIUS_STR),
+        "minus_dim" to Pair(Refactor.MINUS_DIM, HomeRefactor.MINUS_DIM),
+        "minus_dim_alpha" to Pair(Refactor.MINUS_DIM_MAX, HomeRefactor.MINUS_DIM_MAX),
+    )
+
+    private val blurRadiusRangeStr by lazy {
+        "0-500px / 0-${500.px(activity)}dp"
+    }
+
     override fun getTitle(): String {
-        return activity.getString(R.string.ui_page_home_refactor)
+        return activity.getString(R.string.page_home_refactor)
     }
     override fun onCreate() {
-        TitleText(textId = R.string.ui_title_home_refactor_main)
-        TextSummaryWithSwitch(
-            TextSummaryV(
-                textId = R.string.home_behavior_refactor,
-                tipsId = R.string.home_behavior_refactor_tips
-            ),
-            SwitchV(PrefKey.HOME_BLUR_REFACTOR)
-        )
-        TextSummaryWithSwitch(
-            TextSummaryV(
-                textId = R.string.home_refactor_extra_compatibility,
-                tipsId = R.string.home_refactor_extra_compatibility_tips
-            ),
-            SwitchV(PrefKey.HOME_REFACTOR_EXTRA_COMPATIBILITY)
-        )
-        TextSummaryWithSwitch(
-            TextSummaryV(
-                textId = R.string.home_refactor_walppaper_scale_sync,
-                tipsId = R.string.home_refactor_walppaper_scale_sync_tips
-            ),
-            SwitchV(PrefKey.HOME_REFACTOR_WALLPAPER_SCALE_SYNC)
-        )
-        TextSummaryWithSwitch(
-            TextSummaryV(
-                textId = R.string.home_refactor_extra_fix,
-                tipsId = R.string.home_refactor_extra_fix_tips
-            ),
-            SwitchV(PrefKey.HOME_REFACTOR_EXTRA_FIX)
-        )
-        TextSummaryWithSwitch(
-            TextSummaryV(
-                textId = R.string.home_refactor_fix_small_window,
-                tipsId = R.string.home_refactor_fix_small_window_tips
-            ),
-            SwitchV(PrefKey.HOME_REFACTOR_FIX_SMALL_WINDOW)
-        )
-        Line()
-        TitleText(textId = R.string.ui_title_home_refactor_apps)
-        TextSummaryWithSwitch(
-            TextSummaryV(
-                textId = R.string.home_refactor_blur,
-                tipsId = R.string.home_refactor_apps_tips
-            ),
-            SwitchV(PrefKey.HOME_REFACTOR_APPS_BLUR)
-        )
-        TextSummaryWithArrow(
-            TextSummaryV(
-                textId = R.string.home_refactor_blur_radius,
-                tipsId = R.string.home_refactor_blur_radius_tips,
-                onClickListener = {
-                    MIUIDialog(activity) {
-                        setTitle(R.string.home_refactor_blur_radius)
-                        setMessage("${activity.getString(R.string.dialog_default_value)}: ${PrefDefValue.HOME_REFACTOR_APPS_BLUR_RADIUS}, ${activity.getString(R.string.dialog_current_value)}: ${
-                            MIUIActivity.safeSP.getInt(PrefKey.HOME_REFACTOR_APPS_BLUR_RADIUS, PrefDefValue.HOME_REFACTOR_APPS_BLUR_RADIUS)
-                        }")
-                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0-200")
-                        setLButton(textId = R.string.button_cancel) {
-                            dismiss()
-                        }
-                        setRButton(textId = R.string.button_ok) {
-                            if (getEditText().isNotEmpty()) {
-                                runCatching {
-                                    MIUIActivity.safeSP.putAny(
-                                        PrefKey.HOME_REFACTOR_APPS_BLUR_RADIUS,
-                                        getEditText().toInt().coerceIn(0, 200)
-                                    )
-                                }.onFailure {
-                                    Toast.makeText(activity, activity.getString(R.string.invalid_input), Toast.LENGTH_LONG).show()
-                                }
-                            }
-                            dismiss()
-                        }
-                    }.show()
-                })
-        )
-        TextSummaryWithSwitch(
-            TextSummaryV(
-                textId = R.string.home_refactor_dim,
-                tipsId = R.string.home_refactor_dim_tips
-            ),
-            SwitchV(PrefKey.HOME_REFACTOR_APPS_DIM)
-        )
-        TextSummaryWithArrow(
-            TextSummaryV(
-                textId = R.string.home_refactor_dim_alpha,
-                tipsId = R.string.home_refactor_dim_alpha_tips,
-                onClickListener = {
-                    MIUIDialog(activity) {
-                        setTitle(R.string.home_refactor_dim_alpha)
-                        setMessage("${activity.getString(R.string.dialog_default_value)}: ${PrefDefValue.HOME_REFACTOR_APPS_DIM_MAX}, ${activity.getString(R.string.dialog_current_value)}: ${
-                            MIUIActivity.safeSP.getInt(PrefKey.HOME_REFACTOR_APPS_DIM_MAX, PrefDefValue.HOME_REFACTOR_APPS_DIM_MAX)
-                        }")
-                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0-255")
-                        setLButton(textId = R.string.button_cancel) {
-                            dismiss()
-                        }
-                        setRButton(textId = R.string.button_ok) {
-                            if (getEditText().isNotEmpty()) {
-                                runCatching {
-                                    MIUIActivity.safeSP.putAny(
-                                        PrefKey.HOME_REFACTOR_APPS_DIM_MAX,
-                                        getEditText().toInt().coerceIn(0, 255)
-                                    )
-                                }.onFailure {
-                                    Toast.makeText(activity, activity.getString(R.string.invalid_input), Toast.LENGTH_LONG).show()
-                                }
-                            }
-                            dismiss()
-                        }
-                    }.show()
-                })
-        )
-        val nonlinearType: HashMap<Int, String> = hashMapOf<Int, String>().also {
-            it[0] = getString(R.string.home_refactor_nonlinear_type_non)
-            it[1] = getString(R.string.home_refactor_nonlinear_type_dece)
-            it[2] = getString(R.string.home_refactor_nonlinear_type_path)
-        }
-        val appsNonlinearTypeBinding = GetDataBinding({
-            MIUIActivity.safeSP.getInt(PrefKey.HOME_REFACTOR_APPS_NONLINEAR_TYPE, 0)
-        }) { view, flags, data ->
-            when (flags) {
-                0 -> view.visibility = if ((data as Int) == 0) View.VISIBLE else View.GONE
-                1 -> view.visibility = if ((data as Int) == 1) View.VISIBLE else View.GONE
-                2 -> view.visibility = if ((data as Int) == 2) View.VISIBLE else View.GONE
-            }
-        }
-        TextWithSpinner(
-            TextV(textId = R.string.home_refactor_nonlinear),
-            SpinnerV(
-                nonlinearType[MIUIActivity.safeSP.getInt(
-                    PrefKey.HOME_REFACTOR_APPS_NONLINEAR_TYPE,
-                    0
-                )].toString()
-            ) {
-                add(nonlinearType[0].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.HOME_REFACTOR_APPS_NONLINEAR_TYPE, 0)
-                    appsNonlinearTypeBinding.bindingSend.send(0)
-                }
-                add(nonlinearType[1].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.HOME_REFACTOR_APPS_NONLINEAR_TYPE, 1)
-                    appsNonlinearTypeBinding.bindingSend.send(1)
-                }
-                add(nonlinearType[2].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.HOME_REFACTOR_APPS_NONLINEAR_TYPE, 2)
-                    appsNonlinearTypeBinding.bindingSend.send(2)
-                }
-            }
-        )
-        TextSummaryWithArrow(
-            TextSummaryV(
-                textId = R.string.home_refactor_nonlinear_factor,
-                tipsId = R.string.home_refactor_nonlinear_factor_tips,
-                onClickListener = {
-                    MIUIDialog(activity) {
-                        setTitle(R.string.home_refactor_nonlinear_factor)
-                        setMessage("${activity.getString(R.string.dialog_default_value)}: ${PrefDefValue.HOME_REFACTOR_APPS_NONLINEAR_DECE_FACTOR}, ${activity.getString(R.string.dialog_current_value)}: ${
-                            MIUIActivity.safeSP.getFloat(PrefKey.HOME_REFACTOR_APPS_NONLINEAR_DECE_FACTOR, PrefDefValue.HOME_REFACTOR_APPS_NONLINEAR_DECE_FACTOR)
-                        }")
-                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0.1-10.0")
-                        setLButton(textId = R.string.button_cancel) {
-                            dismiss()
-                        }
-                        setRButton(textId = R.string.button_ok) {
-                            if (getEditText().isNotEmpty()) {
-                                runCatching {
-                                    MIUIActivity.safeSP.putAny(
-                                        PrefKey.HOME_REFACTOR_APPS_NONLINEAR_DECE_FACTOR,
-                                        getEditText().toFloat().coerceIn(0.1f, 10.0f)
-                                    )
-                                }.onFailure {
-                                    Toast.makeText(activity, activity.getString(R.string.invalid_input), Toast.LENGTH_LONG).show()
-                                }
-                            }
-                            dismiss()
-                        }
-                    }.show()
-                }),
-            dataBindingRecv = appsNonlinearTypeBinding.binding.getRecv(1)
-        )
-        TextSummaryWithArrow(
-            TextSummaryV(
-                textId = R.string.home_refactor_nonlinear_path_x1,
-                tipsId = R.string.home_refactor_nonlinear_path_x1_tips,
-                onClickListener = {
-                    MIUIDialog(activity) {
-                        setTitle(R.string.home_refactor_nonlinear_path_x1)
-                        setMessage("${activity.getString(R.string.dialog_default_value)}: ${PrefDefValue.HOME_REFACTOR_APPS_NONLINEAR_PATH_X1}, ${activity.getString(R.string.dialog_current_value)}: ${
-                            MIUIActivity.safeSP.getFloat(PrefKey.HOME_REFACTOR_APPS_NONLINEAR_PATH_X1, PrefDefValue.HOME_REFACTOR_APPS_NONLINEAR_PATH_X1)
-                        }")
-                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0.0-1.0")
-                        setLButton(textId = R.string.button_cancel) {
-                            dismiss()
-                        }
-                        setRButton(textId = R.string.button_ok) {
-                            if (getEditText().isNotEmpty()) {
-                                runCatching {
-                                    MIUIActivity.safeSP.putAny(
-                                        PrefKey.HOME_REFACTOR_APPS_NONLINEAR_PATH_X1,
-                                        getEditText().toFloat().coerceIn(0.0f, 1.0f)
-                                    )
-                                }.onFailure {
-                                    Toast.makeText(activity, activity.getString(R.string.invalid_input), Toast.LENGTH_LONG).show()
-                                }
-                            }
-                            dismiss()
-                        }
-                    }.show()
-                }),
-            dataBindingRecv = appsNonlinearTypeBinding.binding.getRecv(2)
-        )
-        TextSummaryWithArrow(
-            TextSummaryV(
-                textId = R.string.home_refactor_nonlinear_path_y1,
-                tipsId = R.string.home_refactor_nonlinear_path_y1_tips,
-                onClickListener = {
-                    MIUIDialog(activity) {
-                        setTitle(R.string.home_refactor_nonlinear_path_y1)
-                        setMessage("${activity.getString(R.string.dialog_default_value)}: ${PrefDefValue.HOME_REFACTOR_APPS_NONLINEAR_PATH_Y1}, ${activity.getString(R.string.dialog_current_value)}: ${
-                            MIUIActivity.safeSP.getFloat(PrefKey.HOME_REFACTOR_APPS_NONLINEAR_PATH_Y1, PrefDefValue.HOME_REFACTOR_APPS_NONLINEAR_PATH_Y1)
-                        }")
-                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0.0-1.0")
-                        setLButton(textId = R.string.button_cancel) {
-                            dismiss()
-                        }
-                        setRButton(textId = R.string.button_ok) {
-                            if (getEditText().isNotEmpty()) {
-                                runCatching {
-                                    MIUIActivity.safeSP.putAny(
-                                        PrefKey.HOME_REFACTOR_APPS_NONLINEAR_PATH_Y1,
-                                        getEditText().toFloat().coerceIn(0.0f, 1.0f)
-                                    )
-                                }.onFailure {
-                                    Toast.makeText(activity, activity.getString(R.string.invalid_input), Toast.LENGTH_LONG).show()
-                                }
-                            }
-                            dismiss()
-                        }
-                    }.show()
-                }),
-            dataBindingRecv = appsNonlinearTypeBinding.binding.getRecv(2)
-        )
-        TextSummaryWithArrow(
-            TextSummaryV(
-                textId = R.string.home_refactor_nonlinear_path_x2,
-                tipsId = R.string.home_refactor_nonlinear_path_x2_tips,
-                onClickListener = {
-                    MIUIDialog(activity) {
-                        setTitle(R.string.home_refactor_nonlinear_path_x2)
-                        setMessage("${activity.getString(R.string.dialog_default_value)}: ${PrefDefValue.HOME_REFACTOR_APPS_NONLINEAR_PATH_X2}, ${activity.getString(R.string.dialog_current_value)}: ${
-                            MIUIActivity.safeSP.getFloat(PrefKey.HOME_REFACTOR_APPS_NONLINEAR_PATH_X2, PrefDefValue.HOME_REFACTOR_APPS_NONLINEAR_PATH_X2)
-                        }")
-                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0.0-1.0")
-                        setLButton(textId = R.string.button_cancel) {
-                            dismiss()
-                        }
-                        setRButton(textId = R.string.button_ok) {
-                            if (getEditText().isNotEmpty()) {
-                                runCatching {
-                                    MIUIActivity.safeSP.putAny(
-                                        PrefKey.HOME_REFACTOR_APPS_NONLINEAR_PATH_X2,
-                                        getEditText().toFloat().coerceIn(0.0f, 1.0f)
-                                    )
-                                }.onFailure {
-                                    Toast.makeText(activity, activity.getString(R.string.invalid_input), Toast.LENGTH_LONG).show()
-                                }
-                            }
-                            dismiss()
-                        }
-                    }.show()
-                }),
-            dataBindingRecv = appsNonlinearTypeBinding.binding.getRecv(2)
-        )
-        TextSummaryWithArrow(
-            TextSummaryV(
-                textId = R.string.home_refactor_nonlinear_path_y2,
-                tipsId = R.string.home_refactor_nonlinear_path_y2_tips,
-                onClickListener = {
-                    MIUIDialog(activity) {
-                        setTitle(R.string.home_refactor_nonlinear_path_y2)
-                        setMessage("${activity.getString(R.string.dialog_default_value)}: ${PrefDefValue.HOME_REFACTOR_APPS_NONLINEAR_PATH_Y2}, ${activity.getString(R.string.dialog_current_value)}: ${
-                            MIUIActivity.safeSP.getFloat(PrefKey.HOME_REFACTOR_APPS_NONLINEAR_PATH_Y2, PrefDefValue.HOME_REFACTOR_APPS_NONLINEAR_PATH_Y2)
-                        }")
-                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0.0-1.0")
-                        setLButton(textId = R.string.button_cancel) {
-                            dismiss()
-                        }
-                        setRButton(textId = R.string.button_ok) {
-                            if (getEditText().isNotEmpty()) {
-                                runCatching {
-                                    MIUIActivity.safeSP.putAny(
-                                        PrefKey.HOME_REFACTOR_APPS_NONLINEAR_PATH_Y2,
-                                        getEditText().toFloat().coerceIn(0.0f, 1.0f)
-                                    )
-                                }.onFailure {
-                                    Toast.makeText(activity, activity.getString(R.string.invalid_input), Toast.LENGTH_LONG).show()
-                                }
-                            }
-                            dismiss()
-                        }
-                    }.show()
-                }),
-            dataBindingRecv = appsNonlinearTypeBinding.binding.getRecv(2)
-        )
-        Line()
-        TitleText(textId = R.string.ui_title_home_refactor_wallpaper)
-        TextSummaryWithSwitch(
-            TextSummaryV(
-                textId = R.string.home_refactor_blur,
-                tipsId = R.string.home_refactor_wallpaper_tips
-            ),
-            SwitchV(PrefKey.HOME_REFACTOR_WALL_BLUR)
-        )
-        TextSummaryWithArrow(
-            TextSummaryV(
-                textId = R.string.home_refactor_blur_radius,
-                tipsId = R.string.home_refactor_blur_radius_tips,
-                onClickListener = {
-                    MIUIDialog(activity) {
-                        setTitle(R.string.home_refactor_blur_radius)
-                        setMessage("${activity.getString(R.string.dialog_default_value)}: ${PrefDefValue.HOME_REFACTOR_WALL_BLUR_RADIUS}, ${activity.getString(R.string.dialog_current_value)}: ${
-                            MIUIActivity.safeSP.getInt(PrefKey.HOME_REFACTOR_WALL_BLUR_RADIUS, PrefDefValue.HOME_REFACTOR_WALL_BLUR_RADIUS)
-                        }")
-                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0-200")
-                        setLButton(textId = R.string.button_cancel) {
-                            dismiss()
-                        }
-                        setRButton(textId = R.string.button_ok) {
-                            if (getEditText().isNotEmpty()) {
-                                runCatching {
-                                    MIUIActivity.safeSP.putAny(
-                                        PrefKey.HOME_REFACTOR_WALL_BLUR_RADIUS,
-                                        getEditText().toInt().coerceIn(0, 200)
-                                    )
-                                }.onFailure {
-                                    Toast.makeText(activity, activity.getString(R.string.invalid_input), Toast.LENGTH_LONG).show()
-                                }
-                            }
-                            dismiss()
-                        }
-                    }.show()
-                })
-        )
-        TextSummaryWithSwitch(
-            TextSummaryV(
-                textId = R.string.home_refactor_dim,
-                tipsId = R.string.home_refactor_dim_tips
-            ),
-            SwitchV(PrefKey.HOME_REFACTOR_WALL_DIM)
-        )
-        TextSummaryWithArrow(
-            TextSummaryV(
-                textId = R.string.home_refactor_dim_alpha,
-                tipsId = R.string.home_refactor_dim_alpha_tips,
-                onClickListener = {
-                    MIUIDialog(activity) {
-                        setTitle(R.string.home_refactor_dim_alpha)
-                        setMessage("${activity.getString(R.string.dialog_default_value)}: ${PrefDefValue.HOME_REFACTOR_WALL_DIM_MAX}, ${activity.getString(R.string.dialog_current_value)}: ${
-                            MIUIActivity.safeSP.getInt(PrefKey.HOME_REFACTOR_WALL_DIM_MAX, PrefDefValue.HOME_REFACTOR_WALL_DIM_MAX)
-                        }")
-                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0-255")
-                        setLButton(textId = R.string.button_cancel) {
-                            dismiss()
-                        }
-                        setRButton(textId = R.string.button_ok) {
-                            if (getEditText().isNotEmpty()) {
-                                runCatching {
-                                    MIUIActivity.safeSP.putAny(
-                                        PrefKey.HOME_REFACTOR_WALL_DIM_MAX,
-                                        getEditText().toInt().coerceIn(0, 255)
-                                    )
-                                }.onFailure {
-                                    Toast.makeText(activity, activity.getString(R.string.invalid_input), Toast.LENGTH_LONG).show()
-                                }
-                            }
-                            dismiss()
-                        }
-                    }.show()
-                })
-        )
-        val wallNonlinearTypeBinding = GetDataBinding({
-            MIUIActivity.safeSP.getInt(PrefKey.HOME_REFACTOR_WALL_NONLINEAR_TYPE, 0)
-        }) { view, flags, data ->
-            when (flags) {
-                0 -> view.visibility = if ((data as Int) == 0) View.VISIBLE else View.GONE
-                1 -> view.visibility = if ((data as Int) == 1) View.VISIBLE else View.GONE
-                2 -> view.visibility = if ((data as Int) == 2) View.VISIBLE else View.GONE
-            }
-        }
-        TextWithSpinner(
-            TextV(textId = R.string.home_refactor_nonlinear),
-            SpinnerV(
-                nonlinearType[MIUIActivity.safeSP.getInt(
-                    PrefKey.HOME_REFACTOR_WALL_NONLINEAR_TYPE,
-                    0
-                )].toString()
-            ) {
-                add(nonlinearType[0].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.HOME_REFACTOR_WALL_NONLINEAR_TYPE, 0)
-                    wallNonlinearTypeBinding.bindingSend.send(0)
-                }
-                add(nonlinearType[1].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.HOME_REFACTOR_WALL_NONLINEAR_TYPE, 1)
-                    wallNonlinearTypeBinding.bindingSend.send(1)
-                }
-                add(nonlinearType[2].toString()) {
-                    MIUIActivity.safeSP.putAny(PrefKey.HOME_REFACTOR_WALL_NONLINEAR_TYPE, 2)
-                    wallNonlinearTypeBinding.bindingSend.send(2)
-                }
-            }
-        )
-        TextSummaryWithArrow(
-            TextSummaryV(
-                textId = R.string.home_refactor_nonlinear_factor,
-                tipsId = R.string.home_refactor_nonlinear_factor_tips,
-                onClickListener = {
-                    MIUIDialog(activity) {
-                        setTitle(R.string.home_refactor_nonlinear_factor)
-                        setMessage("${activity.getString(R.string.dialog_default_value)}: ${PrefDefValue.HOME_REFACTOR_WALL_NONLINEAR_DECE_FACTOR}, ${activity.getString(R.string.dialog_current_value)}: ${
-                            MIUIActivity.safeSP.getFloat(PrefKey.HOME_REFACTOR_WALL_NONLINEAR_DECE_FACTOR, PrefDefValue.HOME_REFACTOR_WALL_NONLINEAR_DECE_FACTOR)
-                        }")
-                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0.1-10.0")
-                        setLButton(textId = R.string.button_cancel) {
-                            dismiss()
-                        }
-                        setRButton(textId = R.string.button_ok) {
-                            if (getEditText().isNotEmpty()) {
-                                runCatching {
-                                    MIUIActivity.safeSP.putAny(
-                                        PrefKey.HOME_REFACTOR_WALL_NONLINEAR_DECE_FACTOR,
-                                        getEditText().toFloat().coerceIn(0.1f, 10.0f)
-                                    )
-                                }.onFailure {
-                                    Toast.makeText(activity, activity.getString(R.string.invalid_input), Toast.LENGTH_LONG).show()
-                                }
-                            }
-                            dismiss()
-                        }
-                    }.show()
-                }),
-            dataBindingRecv = wallNonlinearTypeBinding.binding.getRecv(1)
-        )
-        TextSummaryWithArrow(
-            TextSummaryV(
-                textId = R.string.home_refactor_nonlinear_path_x1,
-                tipsId = R.string.home_refactor_nonlinear_path_x1_tips,
-                onClickListener = {
-                    MIUIDialog(activity) {
-                        setTitle(R.string.home_refactor_nonlinear_path_x1)
-                        setMessage("${activity.getString(R.string.dialog_default_value)}: ${PrefDefValue.HOME_REFACTOR_WALL_NONLINEAR_PATH_X1}, ${activity.getString(R.string.dialog_current_value)}: ${
-                            MIUIActivity.safeSP.getFloat(PrefKey.HOME_REFACTOR_WALL_NONLINEAR_PATH_X1, PrefDefValue.HOME_REFACTOR_WALL_NONLINEAR_PATH_X1)
-                        }")
-                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0.0-1.0")
-                        setLButton(textId = R.string.button_cancel) {
-                            dismiss()
-                        }
-                        setRButton(textId = R.string.button_ok) {
-                            if (getEditText().isNotEmpty()) {
-                                runCatching {
-                                    MIUIActivity.safeSP.putAny(
-                                        PrefKey.HOME_REFACTOR_WALL_NONLINEAR_PATH_X1,
-                                        getEditText().toFloat().coerceIn(0.0f, 1.0f)
-                                    )
-                                }.onFailure {
-                                    Toast.makeText(activity, activity.getString(R.string.invalid_input), Toast.LENGTH_LONG).show()
-                                }
-                            }
-                            dismiss()
-                        }
-                    }.show()
-                }),
-            dataBindingRecv = wallNonlinearTypeBinding.binding.getRecv(2)
-        )
-        TextSummaryWithArrow(
-            TextSummaryV(
-                textId = R.string.home_refactor_nonlinear_path_y1,
-                tipsId = R.string.home_refactor_nonlinear_path_y1_tips,
-                onClickListener = {
-                    MIUIDialog(activity) {
-                        setTitle(R.string.home_refactor_nonlinear_path_y1)
-                        setMessage("${activity.getString(R.string.dialog_default_value)}: ${PrefDefValue.HOME_REFACTOR_WALL_NONLINEAR_PATH_Y1}, ${activity.getString(R.string.dialog_current_value)}: ${
-                            MIUIActivity.safeSP.getFloat(PrefKey.HOME_REFACTOR_WALL_NONLINEAR_PATH_Y1, PrefDefValue.HOME_REFACTOR_WALL_NONLINEAR_PATH_Y1)
-                        }")
-                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0.0-1.0")
-                        setLButton(textId = R.string.button_cancel) {
-                            dismiss()
-                        }
-                        setRButton(textId = R.string.button_ok) {
-                            if (getEditText().isNotEmpty()) {
-                                runCatching {
-                                    MIUIActivity.safeSP.putAny(
-                                        PrefKey.HOME_REFACTOR_WALL_NONLINEAR_PATH_Y1,
-                                        getEditText().toFloat().coerceIn(0.0f, 1.0f)
-                                    )
-                                }.onFailure {
-                                    Toast.makeText(activity, activity.getString(R.string.invalid_input), Toast.LENGTH_LONG).show()
-                                }
-                            }
-                            dismiss()
-                        }
-                    }.show()
-                }),
-            dataBindingRecv = wallNonlinearTypeBinding.binding.getRecv(2)
-        )
-        TextSummaryWithArrow(
-            TextSummaryV(
-                textId = R.string.home_refactor_nonlinear_path_x2,
-                tipsId = R.string.home_refactor_nonlinear_path_x2_tips,
-                onClickListener = {
-                    MIUIDialog(activity) {
-                        setTitle(R.string.home_refactor_nonlinear_path_x2)
-                        setMessage("${activity.getString(R.string.dialog_default_value)}: ${PrefDefValue.HOME_REFACTOR_WALL_NONLINEAR_PATH_X2}, ${activity.getString(R.string.dialog_current_value)}: ${
-                            MIUIActivity.safeSP.getFloat(PrefKey.HOME_REFACTOR_WALL_NONLINEAR_PATH_X2, PrefDefValue.HOME_REFACTOR_WALL_NONLINEAR_PATH_X2)
-                        }")
-                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0.0-1.0")
-                        setLButton(textId = R.string.button_cancel) {
-                            dismiss()
-                        }
-                        setRButton(textId = R.string.button_ok) {
-                            if (getEditText().isNotEmpty()) {
-                                runCatching {
-                                    MIUIActivity.safeSP.putAny(
-                                        PrefKey.HOME_REFACTOR_WALL_NONLINEAR_PATH_X2,
-                                        getEditText().toFloat().coerceIn(0.0f, 1.0f)
-                                    )
-                                }.onFailure {
-                                    Toast.makeText(activity, activity.getString(R.string.invalid_input), Toast.LENGTH_LONG).show()
-                                }
-                            }
-                            dismiss()
-                        }
-                    }.show()
-                }),
-            dataBindingRecv = wallNonlinearTypeBinding.binding.getRecv(2)
-        )
-        TextSummaryWithArrow(
-            TextSummaryV(
-                textId = R.string.home_refactor_nonlinear_path_y2,
-                tipsId = R.string.home_refactor_nonlinear_path_y2_tips,
-                onClickListener = {
-                    MIUIDialog(activity) {
-                        setTitle(R.string.home_refactor_nonlinear_path_y2)
-                        setMessage("${activity.getString(R.string.dialog_default_value)}: ${PrefDefValue.HOME_REFACTOR_WALL_NONLINEAR_PATH_Y2}, ${activity.getString(R.string.dialog_current_value)}: ${
-                            MIUIActivity.safeSP.getFloat(PrefKey.HOME_REFACTOR_WALL_NONLINEAR_PATH_Y2, PrefDefValue.HOME_REFACTOR_WALL_NONLINEAR_PATH_Y2)
-                        }")
-                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0.0-1.0")
-                        setLButton(textId = R.string.button_cancel) {
-                            dismiss()
-                        }
-                        setRButton(textId = R.string.button_ok) {
-                            if (getEditText().isNotEmpty()) {
-                                runCatching {
-                                    MIUIActivity.safeSP.putAny(
-                                        PrefKey.HOME_REFACTOR_WALL_NONLINEAR_PATH_Y2,
-                                        getEditText().toFloat().coerceIn(0.0f, 1.0f)
-                                    )
-                                }.onFailure {
-                                    Toast.makeText(activity, activity.getString(R.string.invalid_input), Toast.LENGTH_LONG).show()
-                                }
-                            }
-                            dismiss()
-                        }
-                    }.show()
-                }),
-            dataBindingRecv = wallNonlinearTypeBinding.binding.getRecv(2)
-        )
-        Line()
-        TitleText(textId = R.string.ui_title_home_refactor_launch)
-        TitleText(textId = R.string.home_refactor_launch_tips)
-        if (!Device.isPad) {
-            TextSummaryWithSwitch(
-                TextSummaryV(
-                    textId = R.string.home_refactor_launch_show,
-                    tipsId = R.string.home_refactor_launch_show_tips
+        PreferenceCategory(
+            DescData(titleId = R.string.ui_title_home_refactor_main),
+            CategoryData(hideLine = true)
+        ) {
+            SwitchPreference(
+                DescData(
+                    titleId = R.string.home_exclusive_refactor,
+                    summaryId = R.string.home_exclusive_refactor_tips
                 ),
-                SwitchV(PrefKey.HOME_REFACTOR_LAUNCH_SHOW)
+                SwitchData(Pref.Key.MiuiHome.REFACTOR)
             )
         }
-        TextSummaryWithArrow(
-            TextSummaryV(
-                textId = R.string.home_refactor_launch_scale,
-                tipsId = R.string.home_refactor_launch_scale_tips,
-                onClickListener = {
-                    MIUIDialog(activity) {
-                        setTitle(R.string.home_refactor_launch_scale)
-                        setMessage("${activity.getString(R.string.dialog_default_value)}: 0.95, ${activity.getString(R.string.dialog_current_value)}: ${
-                            MIUIActivity.safeSP.getFloat(PrefKey.HOME_REFACTOR_LAUNCH_SCALE, 0.95f)
-                        }")
-                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0.6-1.2")
-                        setLButton(textId = R.string.button_cancel) {
-                            dismiss()
-                        }
-                        setRButton(textId = R.string.button_ok) {
-                            if (getEditText().isNotEmpty()) {
-                                runCatching {
-                                    MIUIActivity.safeSP.putAny(
-                                        PrefKey.HOME_REFACTOR_LAUNCH_SCALE,
-                                        getEditText().toFloat().coerceIn(0.6f, 1.2f)
-                                    )
-                                }.onFailure {
-                                    Toast.makeText(activity, activity.getString(R.string.invalid_input), Toast.LENGTH_LONG).show()
-                                }
-                            }
-                            dismiss()
-                        }
-                    }.show()
-                })
-        )
-//        TextSummaryWithSwitch(
-//            TextSummaryV(
-//                textId = R.string.home_refactor_launch_scale_nonlinear
-//            ),
-//            SwitchV(PrefKey.HOME_REFACTOR_LAUNCH_NONLINEAR)
-//        )
-//        TextSummaryWithArrow(
-//            TextSummaryV(
-//                textId = R.string.home_refactor_launch_scale_nonlinear_factor,
-//                tipsId = R.string.home_refactor_launch_scale_nonlinear_factor_tips,
-//                onClickListener = {
-//                    MIUIDialog(activity) {
-//                        setTitle(R.string.home_refactor_launch_scale_nonlinear_factor)
-//                        setMessage("${activity.getString(R.string.dialog_default_value)}: 1.0, ${activity.getString(R.string.dialog_current_value)}: ${
-//                            MIUIActivity.safeSP.getFloat(PrefKey.HOME_REFACTOR_LAUNCH_NONLINEAR_FACTOR, 1.0f)
-//                        }")
-//                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0.1-10.0")
-//                        setLButton(textId = R.string.button_cancel) {
-//                            dismiss()
-//                        }
-//                        setRButton(textId = R.string.button_ok) {
-//                            if (getEditText().isNotEmpty()) {
-//                                runCatching {
-//                                    MIUIActivity.safeSP.putAny(
-//                                        PrefKey.HOME_REFACTOR_LAUNCH_NONLINEAR_FACTOR,
-//                                        getEditText().toFloat().coerceIn(0.1f, 10.0f)
-//                                    )
-//                                }.onFailure {
-//                                    Toast.makeText(activity, activity.getString(R.string.invalid_input), Toast.LENGTH_LONG).show()
-//                                }
-//                            }
-//                            dismiss()
-//                        }
-//                    }.show()
-//                })
-//        )
-        Line()
-        TitleText(textId = R.string.ui_title_home_refactor_minus)
-        TextSummaryWithSwitch(
-            TextSummaryV(
-                textId = R.string.home_refactor_blur,
-                tipsId = R.string.home_refactor_minus_tips
-            ),
-            SwitchV(PrefKey.HOME_REFACTOR_MINUS_BLUR)
-        )
-        TextSummaryWithArrow(
-            TextSummaryV(
-                textId = R.string.home_refactor_blur_radius,
-                tipsId = R.string.home_refactor_blur_radius_tips,
-                onClickListener = {
-                    MIUIDialog(activity) {
-                        setTitle(R.string.home_refactor_blur_radius)
-                        setMessage("${activity.getString(R.string.dialog_default_value)}: ${PrefDefValue.HOME_REFACTOR_MINUS_BLUR_RADIUS}, ${activity.getString(R.string.dialog_current_value)}: ${
-                            MIUIActivity.safeSP.getInt(PrefKey.HOME_REFACTOR_MINUS_BLUR_RADIUS, PrefDefValue.HOME_REFACTOR_MINUS_BLUR_RADIUS)
-                        }")
-                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0-200")
-                        setLButton(textId = R.string.button_cancel) {
-                            dismiss()
-                        }
-                        setRButton(textId = R.string.button_ok) {
-                            if (getEditText().isNotEmpty()) {
-                                runCatching {
-                                    MIUIActivity.safeSP.putAny(
-                                        PrefKey.HOME_REFACTOR_MINUS_BLUR_RADIUS,
-                                        getEditText().toInt().coerceIn(0, 200)
-                                    )
-                                }.onFailure {
-                                    Toast.makeText(activity, activity.getString(R.string.invalid_input), Toast.LENGTH_LONG).show()
-                                }
-                            }
-                            dismiss()
-                        }
-                    }.show()
-                })
-        )
-        TextSummaryWithSwitch(
-            TextSummaryV(
-                textId = R.string.home_refactor_dim,
-                tipsId = R.string.home_refactor_dim_tips
-            ),
-            SwitchV(PrefKey.HOME_REFACTOR_MINUS_DIM)
-        )
-        TextSummaryWithArrow(
-            TextSummaryV(
-                textId = R.string.home_refactor_dim_alpha,
-                tipsId = R.string.home_refactor_dim_alpha_tips,
-                onClickListener = {
-                    MIUIDialog(activity) {
-                        setTitle(R.string.home_refactor_dim_alpha)
-                        setMessage("${activity.getString(R.string.dialog_default_value)}: ${PrefDefValue.HOME_REFACTOR_MINUS_DIM_MAX}, ${activity.getString(R.string.dialog_current_value)}: ${
-                            MIUIActivity.safeSP.getInt(PrefKey.HOME_REFACTOR_MINUS_DIM_MAX, PrefDefValue.HOME_REFACTOR_MINUS_DIM_MAX)
-                        }")
-                        setEditText("", "${activity.getString(R.string.dialog_value_range)}: 0-255")
-                        setLButton(textId = R.string.button_cancel) {
-                            dismiss()
-                        }
-                        setRButton(textId = R.string.button_ok) {
-                            if (getEditText().isNotEmpty()) {
-                                runCatching {
-                                    MIUIActivity.safeSP.putAny(
-                                        PrefKey.HOME_REFACTOR_MINUS_DIM_MAX,
-                                        getEditText().toInt().coerceIn(0, 255)
-                                    )
-                                }.onFailure {
-                                    Toast.makeText(activity, activity.getString(R.string.invalid_input), Toast.LENGTH_LONG).show()
-                                }
-                            }
-                            dismiss()
-                        }
-                    }.show()
-                })
-        )
-        val overlapBinding = GetDataBinding({
-            MIUIActivity.safeSP.getBoolean(PrefKey.HOME_REFACTOR_MINUS_OVERLAP, false)
+        PreferenceCategory(
+            DescData(titleId = R.string.ui_title_home_refactor_general),
+            CategoryData()
+        ) {
+            SwitchPreference(
+                DescData(
+                    titleId = R.string.home_refactor_all_apps_bg,
+                    summaryId = R.string.home_refactor_all_apps_bg_tips
+                ),
+                SwitchData(Refactor.ALL_APPS_BLUR_BG)
+            )
+            SwitchPreference(
+                DescData(
+                    titleId = R.string.home_refactor_extra_compatibility,
+                    summaryId = R.string.home_refactor_extra_compatibility_tips
+                ),
+                SwitchData(Refactor.EXTRA_COMPATIBILITY)
+            )
+            SwitchPreference(
+                DescData(
+                    titleId = R.string.home_refactor_walppaper_scale_sync,
+                    summaryId = R.string.home_refactor_walppaper_scale_sync_tips
+                ),
+                SwitchData(Refactor.SYNC_WALLPAPER_SCALE)
+            )
+            SwitchPreference(
+                DescData(
+                    titleId = R.string.home_refactor_extra_fix,
+                    summaryId = R.string.home_refactor_extra_fix_tips
+                ),
+                SwitchData(Refactor.EXTRA_FIX)
+            )
+            SwitchPreference(
+                DescData(
+                    titleId = R.string.home_refactor_fix_small_window,
+                    summaryId = R.string.home_refactor_fix_small_window_tips
+                ),
+                SwitchData(Refactor.FIX_SMALL_WINDOW_ANIM)
+            )
+        }
+        val recentsLaunchViewBinding = GetDataBinding({
+            MIUIActivity.safeSP.getBoolean(Refactor.SHOW_LAUNCH_IN_RECENTS, HomeRefactor.SHOW_LAUNCH_IN_RECENTS)
         }) { view, reverse, data ->
             when (reverse) {
+                0 -> view.visibility = if (data as Boolean) View.VISIBLE else View.GONE
                 1 -> view.visibility = if (data as Boolean) View.GONE else View.VISIBLE
             }
         }
-        TextSummaryWithSwitch(
-            TextSummaryV(
-                textId = R.string.home_refactor_minus_overlap_mode,
-                tipsId = R.string.home_refactor_minus_overlap_mode_tips
+        val folderLaunchViewBinding = GetDataBinding({
+            MIUIActivity.safeSP.getBoolean(Refactor.SHOW_LAUNCH_IN_FOLDER, HomeRefactor.SHOW_LAUNCH_IN_FOLDER)
+        }) { view, reverse, data ->
+            when (reverse) {
+                0 -> view.visibility = if (data as Boolean) View.VISIBLE else View.GONE
+                1 -> view.visibility = if (data as Boolean) View.GONE else View.VISIBLE
+            }
+        }
+        val minusLaunchViewBinding = GetDataBinding({
+            MIUIActivity.safeSP.getBoolean(Refactor.MINUS_OVERLAP, HomeRefactor.MINUS_OVERLAP)
+        }) { view, reverse, data ->
+            when (reverse) {
+                0 -> view.visibility = if (data as Boolean) View.VISIBLE else View.GONE
+                1 -> view.visibility = if (data as Boolean) View.GONE else View.VISIBLE
+            }
+        }
+        PreferenceCategory(
+            DescData(titleId = R.string.ui_title_home_refactor_launch),
+            CategoryData()
+        ) {
+            SwitchPreference(
+                DescData(
+                    titleId = R.string.home_refactor_launch_show,
+                    summaryId = R.string.home_refactor_launch_recents_tips
+                ),
+                SwitchData(
+                    key = "recents_launch_view".toParamKey(),
+                    defValue = "recents_launch_view".toParamValue() as Boolean? == true,
+                    dataBindingSend = recentsLaunchViewBinding.bindingSend
+                )
+            )
+            EditTextPreference(
+                DescData(
+                    titleId = R.string.home_refactor_launch_scale,
+                    summaryId = R.string.home_refactor_launch_recents_tips
+                ),
+                EditTextData(
+                    key = "recents_launch_scale".toParamKey(),
+                    valueType = EditTextData.ValueType.FLOAT,
+                    defValue = "recents_launch_scale".toParamValue() as Float? ?: 1.0f,
+                    hintText = ("recents_launch_scale".toParamValue() as Float? ?: 1.0f).toString(),
+                    dialogData = DialogData(
+                        DescData(
+                            titleId = R.string.home_refactor_launch_scale,
+                            summaryId = R.string.home_refactor_launch_recents_tips
+                        )
+                    ),
+                    isValueValid = { value ->
+                        return@EditTextData (value as Float? ?: 0.0f) in 0.6f..1.2f
+                    }
+                ),
+                dataBindingRecv = recentsLaunchViewBinding.binding.getRecv(0)
+            )
+            SwitchPreference(
+                DescData(
+                    titleId = R.string.home_refactor_launch_show,
+                    summaryId = R.string.home_refactor_launch_folder_tips
+                ),
+                SwitchData(
+                    key = "folder_launch_view".toParamKey(),
+                    defValue = "folder_launch_view".toParamValue() as Boolean? == true,
+                    dataBindingSend = folderLaunchViewBinding.bindingSend
+                )
+            )
+            EditTextPreference(
+                DescData(
+                    titleId = R.string.home_refactor_launch_scale,
+                    summaryId = R.string.home_refactor_launch_folder_tips
+                ),
+                EditTextData(
+                    key = "folder_launch_scale".toParamKey(),
+                    valueType = EditTextData.ValueType.FLOAT,
+                    defValue = "folder_launch_scale".toParamValue() as Float? ?: 1.0f,
+                    hintText = ("folder_launch_scale".toParamValue() as Float? ?: 1.0f).toString(),
+                    dialogData = DialogData(
+                        DescData(
+                            titleId = R.string.home_refactor_launch_scale,
+                            summaryId = R.string.home_refactor_launch_folder_tips
+                        )
+                    ),
+                    isValueValid = { value ->
+                        return@EditTextData (value as Float? ?: 0.0f) in 0.6f..1.2f
+                    }
+                ),
+                dataBindingRecv = folderLaunchViewBinding.binding.getRecv(0)
+            )
+            SwitchPreference(
+                DescData(
+                    titleId = R.string.home_refactor_minus_overlap_mode,
+                    summaryId = R.string.home_refactor_minus_overlap_mode_tips
+                ),
+                SwitchData(
+                    key = "minus_overlap".toParamKey(),
+                    defValue = "minus_overlap".toParamValue() as Boolean? == true,
+                    dataBindingSend = minusLaunchViewBinding.bindingSend
+                )
+            )
+            EditTextPreference(
+                DescData(
+                    titleId = R.string.home_refactor_launch_scale,
+                    summaryId = R.string.home_refactor_launch_minus_tips
+                ),
+                EditTextData(
+                    key = "minus_launch_scale".toParamKey(),
+                    valueType = EditTextData.ValueType.FLOAT,
+                    defValue = "minus_launch_scale".toParamValue() as Float? ?: 1.0f,
+                    hintText = ("minus_launch_scale".toParamValue() as Float? ?: 1.0f).toString(),
+                    dialogData = DialogData(
+                        DescData(
+                            titleId = R.string.home_refactor_launch_scale,
+                            summaryId = R.string.home_refactor_launch_minus_tips
+                        )
+                    ),
+                    isValueValid = { value ->
+                        return@EditTextData (value as Float? ?: 0.0f) in 0.6f..1.2f
+                    }
+                ),
+                dataBindingRecv = minusLaunchViewBinding.binding.getRecv(0)
+            )
+            SwitchPreference(
+                DescData(
+                    titleId = R.string.home_refactor_launch_show,
+                    summaryId = R.string.home_refactor_launch_show_minus_tips
+                ),
+                SwitchData(Refactor.SHOW_LAUNCH_IN_MINUS),
+                dataBindingRecv = minusLaunchViewBinding.binding.getRecv(1)
+            )
+        }
+        PreferenceCategory(
+            DescData(titleId = R.string.ui_title_home_refactor_apps),
+            CategoryData()
+        ) {
+            addBlurLayerSetting("apps", activity.getString(R.string.home_refactor_apps_tips), true)
+        }
+        PreferenceCategory(
+            DescData(titleId = R.string.ui_title_home_refactor_folder),
+            CategoryData()
+        ) {
+            addBlurLayerSetting("folder", activity.getString(R.string.home_refactor_folder_tips), true)
+        }
+        PreferenceCategory(
+            DescData(titleId = R.string.ui_title_home_refactor_wallpaper),
+            CategoryData()
+        ) {
+            addBlurLayerSetting("wallpaper", activity.getString(R.string.home_refactor_wallpaper_tips), true)
+        }
+        PreferenceCategory(
+            DescData(titleId = R.string.ui_title_home_refactor_minus),
+            CategoryData()
+        ) {
+            addBlurLayerSetting("minus", activity.getString(R.string.home_refactor_minus_tips), false)
+        }
+    }
+
+    private fun addBlurLayerSetting(prefix: String, descStr: String, addNonlinear: Boolean = false) {
+        SwitchPreference(
+            DescData(
+                titleId = R.string.home_refactor_blur,
+                summary = descStr
             ),
-            SwitchV(PrefKey.HOME_REFACTOR_MINUS_OVERLAP, dataBindingSend = overlapBinding.bindingSend)
+            SwitchData(
+                key = "${prefix}_blur".toParamKey(),
+                defValue = ("${prefix}_blur".toParamValue() as Boolean?) == true
+            )
         )
-        TextSummaryWithSwitch(
-            TextSummaryV(
-                textId = R.string.home_refactor_launch_show,
-                tipsId = R.string.home_refactor_launch_show_minus_tips
+        EditTextPreference(
+            DescData(
+                titleId = R.string.home_refactor_blur_radius,
+                summaryId = R.string.home_refactor_blur_radius_tips
             ),
-            SwitchV(PrefKey.HOME_REFACTOR_MINUS_LAUNCH),
-            dataBindingRecv = overlapBinding.binding.getRecv(1)
+            EditTextData(
+                key = "${prefix}_blur_radius".toParamKey(),
+                valueType = EditTextData.ValueType.STRING,
+                defValue = "${prefix}_blur_radius".toParamValue() as String,
+                hintText = "${prefix}_blur_radius".toParamValue() as String,
+                dialogData = DialogData(
+                    DescData(
+                        titleId = R.string.home_refactor_blur_radius,
+                        summary = "${activity.getString(R.string.common_range)}: ${blurRadiusRangeStr}\nDensity: ${activity.resources.displayMetrics.density}"
+                    )
+                ),
+                isValueValid = { value ->
+                    return@EditTextData isValueValid(value as String)
+                }
+            )
         )
+        SwitchPreference(
+            DescData(
+                titleId = R.string.home_refactor_dim,
+                summaryId = R.string.home_refactor_dim_tips
+            ),
+            SwitchData(
+                key = "${prefix}_dim".toParamKey(),
+                defValue = ("${prefix}_dim".toParamValue() as Boolean?) == true
+            )
+        )
+        EditTextPreference(
+            DescData(
+                titleId = R.string.home_refactor_dim_alpha,
+                summaryId = R.string.home_refactor_dim_alpha_tips
+            ),
+            EditTextData(
+                key = "${prefix}_dim_alpha".toParamKey(),
+                valueType = EditTextData.ValueType.INT,
+                defValue = "${prefix}_dim_alpha".toParamValue() as Int? ?: 0,
+                hintText = ("${prefix}_dim_alpha".toParamValue() as Int? ?: 0).toString(),
+                dialogData = DialogData(
+                    DescData(
+                        titleId = R.string.home_refactor_dim_alpha,
+                        summary = "${activity.getString(R.string.common_range)}: 0-255"
+                    )
+                ),
+                isValueValid = { value ->
+                    return@EditTextData (value as Int? ?: -1) in 0..255
+                }
+            )
+        )
+        if (!addNonlinear) {
+            return
+        }
+        TextPreference(
+            DescData(titleId = R.string.home_refactor_anim_curve),
+            TextData(
+                valueAdapter = {
+                    val animType = MIUIActivity.safeSP.getInt("${prefix}_nonlinear_type".toParamKey(), "${prefix}_nonlinear_type".toParamValue() as Int? ?: 0)
+                    when (animType) {
+                        1 -> activity.getString(R.string.home_refactor_nonlinear_type_dece)
+                        2 -> activity.getString(R.string.home_refactor_nonlinear_type_bezier)
+                        else -> activity.getString(R.string.home_refactor_nonlinear_type_non)
+                    }
+                }
+            ),
+            onClickListener = {
+                showFragment("${Pages.BEZIER_CURVE_BASE}_${prefix}")
+            }
+        )
+    }
+
+    private fun String.toParamKey(): String {
+        return paramsHashMap[this]?.first ?: throw NoSuchElementException("key=${this}")
+    }
+
+    private fun String.toParamValue(): Any {
+        return paramsHashMap[this]?.second ?: throw NoSuchElementException("key=${this}")
+    }
+
+    private fun isValueValid(value: String): Boolean {
+        var valid = false
+        runCatching {
+            valid = if (value.endsWith("dp")) {
+                value.replace("dp", "").toInt().dp(MIUIActivity.context) in 0..500
+            } else if (value.endsWith("px")) {
+                value.replace("px", "").toInt() in 0..500
+            } else {
+                value.toInt() in 0..500
+            }
+        }.onFailure {
+            valid = false
+        }
+        return valid
     }
 }

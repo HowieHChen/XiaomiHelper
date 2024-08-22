@@ -1,14 +1,18 @@
 package dev.lackluster.mihelper.utils
 
+import android.content.Context
 import de.robv.android.xposed.XSharedPreferences
 import dev.lackluster.mihelper.BuildConfig
+import dev.lackluster.mihelper.utils.factory.dp
 
 object Prefs {
-    const val Name = "config"
-    private var xPrefs = XSharedPreferences(BuildConfig.APPLICATION_ID, Name)
+    const val NAME = "config"
+    private val xPrefs by lazy {
+        XSharedPreferences(BuildConfig.APPLICATION_ID, NAME)
+    }
 
-    fun getXSP(prefName: String = Name): XSharedPreferences {
-        return xPrefs;
+    fun getXSP(prefName: String = NAME): XSharedPreferences {
+        return xPrefs
     }
 
     fun getBoolean(key: String, defValue: Boolean): Boolean {
@@ -46,16 +50,19 @@ object Prefs {
         return xPrefs.getStringSet(key, defValue) ?: defValue
     }
 
-    inline fun hasEnable(
-        key: String,
-        default: Boolean = false,
-        noinline extraCondition: (() -> Boolean)? = null,
-        crossinline block: () -> Unit
-    ) {
-        val conditionResult = if (extraCondition != null) extraCondition() else true
-        if (getBoolean(key, default) && conditionResult) {
-            block()
+    fun getPixelByStr(key: String, defStr: String = "0px", context: Context): Int {
+        if (xPrefs.hasFileChanged()) {
+            xPrefs.reload()
         }
+        val value = getString(key, defStr) ?: defStr
+        runCatching {
+            if (value.endsWith("dp")) {
+                return value.replace("dp", "").toInt().dp(context)
+            } else {
+                return value.replace("px", "").toInt()
+            }
+        }
+        return 0
     }
 }
 

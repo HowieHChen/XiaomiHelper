@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="foreground_dual_tone_full">#FFFFFFFF</color>
+    <color name="foreground_dual_tone_half">#4DFFFFFF</color>
+</resources>

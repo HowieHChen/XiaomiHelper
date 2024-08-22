@@ -20,6 +20,8 @@
 
 package dev.lackluster.mihelper.hook.view
 
+import android.animation.Animator
+import android.animation.Animator.AnimatorListener
 import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Color
@@ -30,6 +32,7 @@ import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
 import dev.lackluster.mihelper.utils.Math
 import dev.lackluster.mihelper.utils.MiBlurUtils
+import dev.lackluster.mihelper.utils.MiBlurUtils.setBlurRoundRect
 import kotlin.math.abs
 
 class MiBlurView(context: Context): View(context) {
@@ -39,6 +42,8 @@ class MiBlurView(context: Context): View(context) {
         const val DEFAULT_BLUR_MAX_RADIUS = 100
         const val DEFAULT_DIM_ENABLED = false
         const val DEFAULT_DIM_MAX_ALPHA = 64
+        const val DEFAULT_SCALE_ENABLED = false
+        const val DEFAULT_SCALE_MAX_RATIO = 0f
         const val DEFAULT_NONLINEAR_ENABLED = false
     }
 
@@ -52,9 +57,12 @@ class MiBlurView(context: Context): View(context) {
     private var blurMaxRadius = DEFAULT_BLUR_MAX_RADIUS
     private var dimEnabled = DEFAULT_DIM_ENABLED
     private var dimMaxAlpha = DEFAULT_DIM_MAX_ALPHA
+    private var scaleEnabled = DEFAULT_SCALE_ENABLED
+    private var scaleMaxRatio = DEFAULT_SCALE_MAX_RATIO
     private var nonlinearEnabled = DEFAULT_NONLINEAR_ENABLED
     private var nonlinearInterpolator: Interpolator = LinearInterpolator()
     private var passWindowBlurEnabled = false
+    private val mAnimatorListener: AnimatorListener
 
     init {
         this.layoutParams = FrameLayout.LayoutParams(
@@ -63,15 +71,44 @@ class MiBlurView(context: Context): View(context) {
         )
         this.setBackgroundColor(Color.TRANSPARENT)
         this.visibility = GONE
+        mAnimatorListener = object : AnimatorListener {
+            override fun onAnimationStart(p0: Animator) {
+                animCount = 0
+            }
+            override fun onAnimationEnd(p0: Animator) {
+                if (animCurrentRatio == 0.0f) {
+                    releaseBlur()
+                }
+            }
+            override fun onAnimationCancel(p0: Animator) {
+            }
+            override fun onAnimationRepeat(p0: Animator) {
+            }
+        }
     }
 
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        this.visibility = VISIBLE
+        applyBlur(animCurrentRatio, false)
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        if (mainAnimator?.isRunning == true) {
+            mainAnimator?.cancel()
+        }
+        releaseBlur()
+    }
+
+    // Configure
     fun setPassWindowBlur(enabled: Boolean) {
         passWindowBlurEnabled = enabled
     }
 
     fun setBlur(useBlur: Boolean, maxRadius: Int) {
         blurEnabled = useBlur
-        blurMaxRadius = maxRadius
+        blurMaxRadius = maxRadius.coerceIn(0, 500)
         if (blurMaxRadius <= 0) {
             blurEnabled = false
         }
@@ -85,21 +122,29 @@ class MiBlurView(context: Context): View(context) {
         }
     }
 
+    fun setScale(useScale: Boolean, maxRatio: Float) {
+        scaleEnabled = useScale
+        scaleMaxRatio = maxRatio.coerceIn(0.0f, 1.0f)
+        if (scaleMaxRatio !in 0.0f..1.0f) {
+            scaleEnabled = false
+        }
+    }
+
+    fun setCornerRadius(radius: Int) {
+        if (radius > 0) {
+            setBlurRoundRect(radius)
+        } else {
+            clipToOutline = false
+            outlineProvider = null
+        }
+    }
+
     fun setNonlinear(useNonlinear: Boolean, interpolator: Interpolator) {
         nonlinearEnabled = useNonlinear
         nonlinearInterpolator = interpolator
     }
 
-    fun show(useAnim: Boolean, targetRatio: Float = 1.0f) {
-        this.visibility = VISIBLE
-        applyBlur(targetRatio, useAnim)
-    }
-
-    fun hide(useAnim: Boolean, targetRatio: Float = 0.0f) {
-        this.visibility = VISIBLE
-        applyBlur(targetRatio, useAnim)
-    }
-
+    // Blur
     fun restore(directly: Boolean = false) {
         this.visibility = VISIBLE
         if (!directly) {
@@ -114,7 +159,20 @@ class MiBlurView(context: Context): View(context) {
         }
     }
 
-    fun showWithDuration(useAnim: Boolean, targetRatio: Float, duration: Int) {
+    fun setStatus(visible: Boolean, useAnim: Boolean = false) {
+        this.visibility = VISIBLE
+        applyBlur(
+            if (visible) 1.0f else 0.0f,
+            useAnim
+        )
+    }
+
+    fun setStatus(targetRatio: Float, useAnim: Boolean = false) {
+        this.visibility = VISIBLE
+        applyBlur(targetRatio, useAnim)
+    }
+
+    fun setStatus(targetRatio: Float, useAnim: Boolean, duration: Int) {
         this.visibility = VISIBLE
         applyBlur(targetRatio, useAnim, duration)
     }
@@ -140,6 +198,8 @@ class MiBlurView(context: Context): View(context) {
                 it.duration = (abs(currentRatio - targetRatio) * duration).toLong()
                 it.interpolator = LinearInterpolator()
                 it.removeAllUpdateListeners()
+                it.removeAllListeners()
+                it.addListener(mAnimatorListener)
                 it.addUpdateListener { animator ->
                     animCount++
                     val animaValue = animator.animatedValue as Float
@@ -151,7 +211,6 @@ class MiBlurView(context: Context): View(context) {
                         else { animaValue }
                     )
                 }
-                animCount = 0
                 it.start()
             }
         }
@@ -167,11 +226,14 @@ class MiBlurView(context: Context): View(context) {
                 Math.linearInterpolate(0, dimMaxAlpha, ratio).shl(24)
             )
         }
+        if (scaleEnabled) {
+            MiBlurUtils.setBackgroundBlurScaleRatio(this, Math.linearInterpolate(0.0f, scaleMaxRatio, ratio))
+        }
         animCurrentRatio = ratio
         allowRestoreDirectly = true
-        if (ratio == 0.0f || blurRadius == 0) {
-            releaseBlur()
-        }
+//        if (ratio == 0.0f || blurRadius == 0) {
+//            releaseBlur()
+//        }
     }
 
     private fun initBlur() {

@@ -21,9 +21,9 @@
 package dev.lackluster.mihelper.hook.rules.browser
 
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.PrefKey
+import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.DexKit
-import dev.lackluster.mihelper.utils.Prefs.hasEnable
+import dev.lackluster.mihelper.utils.factory.hasEnable
 import org.luckypray.dexkit.query.enums.StringMatchType
 
 object SwitchEnv : YukiBaseHooker() {
@@ -47,12 +47,14 @@ object SwitchEnv : YukiBaseHooker() {
             }
         }.singleOrNull()
     }
+
     override fun onHook() {
-        hasEnable(PrefKey.BROWSER_SWITCH_ENV) {
-            envGetMethod?.getMethodInstance(appClassLoader ?: return@hasEnable)?.hook {
+        hasEnable(Pref.Key.Browser.SWITCH_ENV) {
+            if (appClassLoader == null) return@hasEnable
+            envGetMethod?.getMethodInstance(appClassLoader!!)?.hook {
                 replaceTo("1")
             }
-            envSetMethod?.getMethodInstance(appClassLoader ?: return@hasEnable)?.hook {
+            envSetMethod?.getMethodInstance(appClassLoader!!)?.hook {
                 before {
                     this.args(0).set("1")
                 }

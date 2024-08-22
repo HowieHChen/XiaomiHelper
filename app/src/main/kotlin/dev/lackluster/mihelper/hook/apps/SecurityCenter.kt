@@ -1,6 +1,7 @@
 package dev.lackluster.mihelper.hook.apps
 
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
+import dev.lackluster.mihelper.hook.rules.securitycenter.AppDetailClickOpen
 import dev.lackluster.mihelper.hook.rules.securitycenter.DisableRiskAppNotification
 import dev.lackluster.mihelper.hook.rules.securitycenter.LockScore
 import dev.lackluster.mihelper.hook.rules.securitycenter.RemoveBubbleSettingsRestriction
@@ -22,6 +23,7 @@ object SecurityCenter : YukiBaseHooker() {
         loadHooker(ShowScreenBatteryUsage)
         loadHooker(RemoveReport)
         loadHooker(SystemAppWifiSettings)
+        loadHooker(AppDetailClickOpen)
         DexKit.closeDexKit()
     }
 }

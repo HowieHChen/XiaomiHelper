@@ -9,6 +9,7 @@
         <item>com.android.providers.downloads</item>
         <item>com.android.settings</item>
         <item>com.android.systemui</item>
+        <item>com.android.thememanager</item>
         <item>com.android.updater</item>
         <item>com.milink.service</item>
         <item>com.miui.contentextension</item>
@@ -29,5 +30,6 @@
         <item>com.xiaomi.market</item>
         <item>com.xiaomi.mirror</item>
         <item>com.xiaomi.misettings</item>
+        <item>com.xiaomi.trustservice</item>
     </string-array>
 </resources>
