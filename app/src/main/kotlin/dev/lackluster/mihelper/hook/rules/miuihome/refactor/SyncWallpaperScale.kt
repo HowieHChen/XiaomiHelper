@@ -25,6 +25,7 @@ import android.os.IBinder
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.constructor
 import com.highcapable.yukihookapi.hook.factory.current
+import com.highcapable.yukihookapi.hook.factory.field
 import com.highcapable.yukihookapi.hook.factory.method
 import com.highcapable.yukihookapi.hook.type.java.BooleanType
 import de.robv.android.xposed.XC_MethodHook
@@ -34,6 +35,12 @@ import java.lang.reflect.Method
 import java.util.concurrent.Executor
 
 object SyncWallpaperScale : YukiBaseHooker() {
+    private val mainThreadExecutor by lazy {
+        "com.miui.home.recents.TouchInteractionService".toClass().field {
+            name = "MAIN_THREAD_EXECUTOR"
+            modifiers { isStatic }
+        }.get().any() as Executor
+    }
     private val setWallpaperZoomOut by lazy {
         "com.miui.home.launcher.wallpaper.WallpaperZoomManagerKt".toClass().method{
             name = "findUpdateZoomMethod"
@@ -65,7 +72,7 @@ object SyncWallpaperScale : YukiBaseHooker() {
                 after {
                     val context = this.instance.current().field { name = "context" }.any() as? Context ?: return@after
                     val windowToken = this.instance.current().field { name = "mWindowToken" }.any() as? IBinder ?: return@after
-                    val mWallPaperExecutor = this.instance.current().field { name = "mWallPaperExecutor" }.any() as? Executor ?: return@after
+                    val mWallPaperExecutor = this.instance.current(true).field { name = "mWallPaperExecutor" }.any() as? Executor ?: mainThreadExecutor
                     wallpaperZoomManager = WallpaperZoomManager(context, windowToken, setWallpaperZoomOut, mWallPaperExecutor)
                 }
             }

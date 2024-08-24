@@ -49,6 +49,7 @@ class MiBlurView(context: Context): View(context) {
 
     private var mainAnimator: ValueAnimator? = null
     private var animCurrentRatio = 0.0f
+    private var animTargetRatio = 0.0f
     private var animCount = 0
     private var allowRestoreDirectly = false
     private var isBlurInitialized = false
@@ -74,11 +75,10 @@ class MiBlurView(context: Context): View(context) {
         mAnimatorListener = object : AnimatorListener {
             override fun onAnimationStart(p0: Animator) {
                 animCount = 0
+                initViewIfNeeded()
             }
             override fun onAnimationEnd(p0: Animator) {
-                if (animCurrentRatio == 0.0f) {
-                    releaseBlur()
-                }
+                releaseViewIfNeeded()
             }
             override fun onAnimationCancel(p0: Animator) {
             }
@@ -90,6 +90,7 @@ class MiBlurView(context: Context): View(context) {
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         this.visibility = VISIBLE
+        initViewIfNeeded()
         applyBlur(animCurrentRatio, false)
     }
 
@@ -98,7 +99,7 @@ class MiBlurView(context: Context): View(context) {
         if (mainAnimator?.isRunning == true) {
             mainAnimator?.cancel()
         }
-        releaseBlur()
+        releaseViewIfNeeded()
     }
 
     // Configure
@@ -146,21 +147,17 @@ class MiBlurView(context: Context): View(context) {
 
     // Blur
     fun restore(directly: Boolean = false) {
-        this.visibility = VISIBLE
         if (!directly) {
             applyBlur(animCurrentRatio, false)
         }
         else if (allowRestoreDirectly) {
             allowRestoreDirectly = false
-            if (blurEnabled && !isBlurInitialized) {
-                initBlur()
-            }
+            initViewIfNeeded()
             applyBlurDirectly(animCurrentRatio)
         }
     }
 
     fun setStatus(visible: Boolean, useAnim: Boolean = false) {
-        this.visibility = VISIBLE
         applyBlur(
             if (visible) 1.0f else 0.0f,
             useAnim
@@ -168,12 +165,10 @@ class MiBlurView(context: Context): View(context) {
     }
 
     fun setStatus(targetRatio: Float, useAnim: Boolean = false) {
-        this.visibility = VISIBLE
         applyBlur(targetRatio, useAnim)
     }
 
     fun setStatus(targetRatio: Float, useAnim: Boolean, duration: Int) {
-        this.visibility = VISIBLE
         applyBlur(targetRatio, useAnim, duration)
     }
 
@@ -182,35 +177,33 @@ class MiBlurView(context: Context): View(context) {
         if (mainAnimator?.isRunning == true) {
             mainAnimator?.cancel()
         }
-        if (blurEnabled && !isBlurInitialized) {
-            initBlur()
-        }
         if (!useAnim || animCurrentRatio == targetRatio) {
+            initViewIfNeeded()
             applyBlurDirectly(targetRatio)
         }
         else {
             val currentRatio = animCurrentRatio
+            animTargetRatio = targetRatio
             if (mainAnimator == null) {
-                mainAnimator = ValueAnimator()
+                mainAnimator = ValueAnimator().apply {
+                    interpolator = LinearInterpolator()
+                    addListener(mAnimatorListener)
+                    addUpdateListener { animator ->
+                        animCount++
+                        val animaValue = animator.animatedValue as Float
+                        if ((animCount % 2 != 1 || animaValue == animCurrentRatio) && animCurrentRatio != animTargetRatio) {
+                            return@addUpdateListener
+                        }
+                        applyBlurDirectly(
+                            if (nonlinearEnabled) { nonlinearInterpolator.getInterpolation(animaValue) }
+                            else { animaValue }
+                        )
+                    }
+                }
             }
             mainAnimator?.let {
                 it.setFloatValues(currentRatio, targetRatio)
                 it.duration = (abs(currentRatio - targetRatio) * duration).toLong()
-                it.interpolator = LinearInterpolator()
-                it.removeAllUpdateListeners()
-                it.removeAllListeners()
-                it.addListener(mAnimatorListener)
-                it.addUpdateListener { animator ->
-                    animCount++
-                    val animaValue = animator.animatedValue as Float
-                    if ((animCount % 2 != 1 || animaValue == currentRatio) && animaValue != targetRatio) {
-                        return@addUpdateListener
-                    }
-                    applyBlurDirectly(
-                        if (nonlinearEnabled) { nonlinearInterpolator.getInterpolation(animaValue) }
-                        else { animaValue }
-                    )
-                }
                 it.start()
             }
         }
@@ -231,9 +224,26 @@ class MiBlurView(context: Context): View(context) {
         }
         animCurrentRatio = ratio
         allowRestoreDirectly = true
-//        if (ratio == 0.0f || blurRadius == 0) {
-//            releaseBlur()
-//        }
+    }
+
+    private fun initViewIfNeeded() {
+        if (blurEnabled || scaleEnabled) {
+            initBlur()
+            this.visibility = VISIBLE
+        } else if (dimEnabled) {
+            this.visibility = VISIBLE
+        }
+    }
+
+    private fun releaseViewIfNeeded() {
+        if (blurEnabled || scaleEnabled) {
+            if (animCurrentRatio == 0.0f) {
+                releaseBlur()
+                this.visibility = GONE
+            }
+        } else if (dimEnabled) {
+            this.visibility = GONE
+        }
     }
 
     private fun initBlur() {
@@ -248,7 +258,6 @@ class MiBlurView(context: Context): View(context) {
     private fun releaseBlur() {
         if (!isBlurInitialized) return
         isBlurInitialized = false
-        this.visibility = GONE
         MiBlurUtils.clearAllBlur(this)
     }
 }

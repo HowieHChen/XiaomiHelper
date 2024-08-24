@@ -343,9 +343,56 @@ object BlurController : YukiBaseHooker() {
                 printDebugInfo("resetBlurWhenUseCompleteRecentsBlur useAnim: $useAnim")
                 mainThreadExecutor.execute {
                     wallpaperBlurView?.setStatus(
-                        isInNormalEditing(launcher) || isAllAppsShowing(
-                            launcher
-                        ), false
+                        isInNormalEditing(launcher) || isAllAppsShowing(launcher),
+                        false
+                    )
+                    folderBlurView?.setStatus(isFolderShowing(launcher), false)
+                    wallpaperZoomManager?.zoomIn(useAnim)
+                    transitionBlurView?.setStatus(visible = false, useAnim = useAnim)
+                }
+            }
+        }
+        // Similar to “fastBlurWhenUseCompleteRecentsBlur”
+        // Only on tablet devices, not used
+        blurUtilsClz.method {
+            name = "fastBlurWhenDontUseNoBlurTypeWhenRecents"
+            paramCount = 3
+            param(VagueType, FloatType, BooleanType)
+        }.ignored().hook {
+            replaceUnit {
+                val targetRatio = this.args(1).float()
+                val useAnim = this.args(2).boolean()
+                printDebugInfo("fastBlurWhenDontUseNoBlurTypeWhenRecents useAnim: $useAnim target: $targetRatio")
+                mainThreadExecutor.execute {
+                    if (useAnim) {
+                        transitionBlurView?.setStatus(targetRatio, true)
+                        wallpaperZoomManager?.zoomOut(true, targetRatio)
+                        isStartingApp = false
+                    } else if (isStartingApp) {
+                        transitionBlurView?.restore()
+                        wallpaperZoomManager?.restore()
+                    } else {
+                        transitionBlurView?.setStatus(targetRatio, false)
+                        wallpaperZoomManager?.zoomOut(false, targetRatio)
+                    }
+                }
+            }
+        }
+        // Similar to “resetBlurWhenUseCompleteRecentsBlur”
+        // Only on tablet devices, not used
+        blurUtilsClz.method {
+            name = "resetBlurWhenDontUseNoBlurTypeWhenRecents"
+            paramCount = 2
+            param(VagueType, BooleanType)
+        }.ignored().hook {
+            replaceUnit {
+                val launcher = this.args(0).any() ?: return@replaceUnit
+                val useAnim = this.args(1).boolean()
+                printDebugInfo("resetBlurWhenDontUseNoBlurTypeWhenRecents useAnim: $useAnim")
+                mainThreadExecutor.execute {
+                    wallpaperBlurView?.setStatus(
+                        isInNormalEditing(launcher) || isAllAppsShowing(launcher),
+                        false
                     )
                     folderBlurView?.setStatus(isFolderShowing(launcher), false)
                     wallpaperZoomManager?.zoomIn(useAnim)

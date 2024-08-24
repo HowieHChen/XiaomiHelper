@@ -180,7 +180,7 @@ class HomeRefactorPage : BasePage() {
                     dialogData = DialogData(
                         DescData(
                             titleId = R.string.home_refactor_launch_scale,
-                            summaryId = R.string.home_refactor_launch_recents_tips
+                            summary = "${getString(R.string.home_refactor_launch_recents_tips)}\n${getString(R.string.common_range)}: 0.6-1.2"
                         )
                     ),
                     isValueValid = { value ->
@@ -213,7 +213,7 @@ class HomeRefactorPage : BasePage() {
                     dialogData = DialogData(
                         DescData(
                             titleId = R.string.home_refactor_launch_scale,
-                            summaryId = R.string.home_refactor_launch_folder_tips
+                            summary = "${getString(R.string.home_refactor_launch_folder_tips)}\n${getString(R.string.common_range)}: 0.6-1.2"
                         )
                     ),
                     isValueValid = { value ->
@@ -246,7 +246,7 @@ class HomeRefactorPage : BasePage() {
                     dialogData = DialogData(
                         DescData(
                             titleId = R.string.home_refactor_launch_scale,
-                            summaryId = R.string.home_refactor_launch_minus_tips
+                            summary = "${getString(R.string.home_refactor_launch_minus_tips)}\n${getString(R.string.common_range)}: 0.6-1.2"
                         )
                     ),
                     isValueValid = { value ->

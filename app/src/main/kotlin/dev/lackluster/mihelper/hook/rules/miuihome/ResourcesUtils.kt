@@ -27,8 +27,6 @@ import dev.lackluster.mihelper.utils.factory.getResID
 object ResourcesUtils : YukiBaseHooker() {
     private const val PKG_NAME = Scope.MIUI_HOME
     private var isInitialized = false
-    var status_bar_recent_memory_info1 = 0
-    var status_bar_recent_memory_info2 = 0
     var recents_quick_switch_left_enter = 0
     var recents_quick_switch_left_exit = 0
     var recents_quick_switch_right_enter = 0
@@ -40,14 +38,17 @@ object ResourcesUtils : YukiBaseHooker() {
     var ic_start_new_window = 0
     var start_new_window = 0
     var small_window = 0
+    var accessibility_recent_task_memory_info = 0
+    var status_bar_recent_memory_giga = 0
+    var status_bar_recent_memory_info1 = 0
+    var status_bar_recent_memory_info2 = 0
+    var status_bar_recent_memory_mega = 0
 
     override fun onHook() {
         onAppLifecycle {
             onCreate {
                 if (!isInitialized) {
                     if (this.resources == null) return@onCreate
-                    status_bar_recent_memory_info1 = this.getResID("status_bar_recent_memory_info1", "string", PKG_NAME)
-                    status_bar_recent_memory_info2 = this.getResID("status_bar_recent_memory_info2", "string", PKG_NAME)
                     recents_quick_switch_left_enter = this.getResID("recents_quick_switch_left_enter", "anim", PKG_NAME)
                     recents_quick_switch_left_exit = this.getResID("recents_quick_switch_left_exit", "anim", PKG_NAME)
                     recents_quick_switch_right_enter = this.getResID("recents_quick_switch_right_enter", "anim", PKG_NAME)
@@ -59,6 +60,11 @@ object ResourcesUtils : YukiBaseHooker() {
                     ic_start_new_window = this.getResID("start_new_window", "drawable", PKG_NAME)
                     start_new_window = this.getResID("start_new_window", "string", PKG_NAME)
                     small_window = this.getResID("small_window", "string", PKG_NAME)
+                    accessibility_recent_task_memory_info = this.getResID("accessibility_recent_task_memory_info", "string", PKG_NAME)
+                    status_bar_recent_memory_giga = this.getResID("status_bar_recent_memory_giga", "string", PKG_NAME)
+                    status_bar_recent_memory_info1 = this.getResID("status_bar_recent_memory_info1", "string", PKG_NAME)
+                    status_bar_recent_memory_info2 = this.getResID("status_bar_recent_memory_info2", "string", PKG_NAME)
+                    status_bar_recent_memory_mega = this.getResID("status_bar_recent_memory_mega", "string", PKG_NAME)
                     isInitialized = true
                 }
             }
