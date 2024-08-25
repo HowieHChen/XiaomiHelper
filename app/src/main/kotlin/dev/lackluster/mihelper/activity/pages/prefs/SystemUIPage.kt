@@ -33,6 +33,7 @@ import cn.fkj233.ui.activity.data.TextData
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.data.Pages
 import dev.lackluster.mihelper.data.Pref
+import dev.lackluster.mihelper.utils.Device
 
 @BMPage(Pages.SYSTEM_UI, hideMenu = false)
 class SystemUIPage : BasePage() {
@@ -41,6 +42,14 @@ class SystemUIPage : BasePage() {
     }
 
     override fun onCreate() {
+        val padBinding = GetDataBinding({
+            Device.isPad
+        }) { view, flags, data ->
+            when (flags) {
+                0 -> view.visibility = if (data as Boolean) View.VISIBLE else View.GONE
+                1 -> view.visibility = if (data as Boolean) View.GONE else View.VISIBLE
+            }
+        }
         val notificationCountBinding = GetDataBinding({
             MIUIActivity.safeSP.getBoolean(Pref.Key.SystemUI.StatusBar.NOTIFICATION_COUNT, false)
         }) { view, _, data ->
@@ -160,6 +169,14 @@ class SystemUIPage : BasePage() {
                     summaryId = R.string.systemui_notif_clock_color_fix_tips
                 ),
                 SwitchData(Pref.Key.SystemUI.NotifCenter.CLOCK_COLOR_FIX)
+            )
+            SwitchPreference(
+                DescData(
+                    titleId = R.string.systemui_notif_clock_anim,
+                    summaryId = R.string.systemui_notif_clock_anim_tips
+                ),
+                SwitchData(Pref.Key.SystemUI.NotifCenter.CLOCK_PAD_ANIM),
+                dataBindingRecv = padBinding.binding.getRecv(0)
             )
             SwitchPreference(
                 DescData(titleId = R.string.systemui_notif_theme_blur),

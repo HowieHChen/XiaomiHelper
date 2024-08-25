@@ -105,6 +105,8 @@
     <string name="menu_reboot_launcher_tips">Are you sure you want to reboot the launcher?</string>
     <string name="menu_reboot_error_toast">Reboot failed! Please grant root permission to this app and try again.</string>
     <string name="menu_reboot_done_toast">All target apps have been restarted</string>
+    <string name="ui_title_menu_others" translatable="false">@string/common_others</string>
+    <string name="menu_shortcut_lsposed" translatable="false">LSPosed</string>
     <!-- AboutPage -->
     <string name="about_jump_error_toast">Some strange errors have occurred</string>
     <string name="about_easter_egg_toast">You clicked and nothing happened</string>
@@ -187,6 +189,8 @@
     <string name="systemui_notif_freeform_tips">Pull down notifications to open small windows. Some notifications pushed via Mi Push may not be supported.</string>
     <string name="systemui_notif_clock_color_fix">Fix clock color anomaly in animation</string>
     <string name="systemui_notif_clock_color_fix_tips">Fix color anomaly in clock dropdown animation when using theme</string>
+    <string name="systemui_notif_clock_anim">Force enable the transition animation of the clock</string>
+    <string name="systemui_notif_clock_anim_tips">Allow clock transition animation in landscape</string>
     <string name="systemui_notif_theme_blur">Allow advanced textures to be enabled when using themes</string>
     <string name="systemui_notif_media_control_style">Customize the style of the media control</string>
     <string name="ui_title_systemui_control_center">Control center</string>

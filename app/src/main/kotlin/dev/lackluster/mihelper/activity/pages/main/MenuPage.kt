@@ -55,8 +55,7 @@ class MenuPage : BasePage() {
                             try {
                                 ShellUtils.tryExec("/system/bin/sync;/system/bin/svc power reboot || reboot", useRoot = true, checkSuccess = true)
                                 dialog.dismiss()
-                            }
-                            catch (tout : Throwable) {
+                            } catch (tout : Throwable) {
                                 makeText(
                                     activity,
                                     tout.message,
@@ -95,8 +94,7 @@ class MenuPage : BasePage() {
                                     LENGTH_LONG
                                 ).show()
                                 dialog.dismiss()
-                            }
-                            catch (tout : Throwable) {
+                            } catch (tout : Throwable) {
                                 makeText(
                                     activity,
                                     tout.message,
@@ -127,8 +125,7 @@ class MenuPage : BasePage() {
                                     LENGTH_LONG
                                 ).show()
                                 dialog.dismiss()
-                            }
-                            catch (tout : Throwable) {
+                            } catch (tout : Throwable) {
                                 makeText(
                                     activity,
                                     tout.message,
@@ -159,8 +156,7 @@ class MenuPage : BasePage() {
                                     LENGTH_LONG
                                 ).show()
                                 dialog.dismiss()
-                            }
-                            catch (tout : Throwable) {
+                            } catch (tout : Throwable) {
                                 makeText(
                                     activity,
                                     tout.message,
@@ -170,6 +166,30 @@ class MenuPage : BasePage() {
                             }
                         }
                         .show()
+                }
+            )
+        }
+        PreferenceCategory(
+            DescData(titleId = R.string.ui_title_menu_others),
+            CategoryData()
+        ) {
+            TextPreference(
+                DescData(titleId = R.string.menu_shortcut_lsposed),
+                TextData(),
+                onClickListener = {
+                    try {
+                        ShellUtils.tryExec(
+                            "am start -a android.intent.action.MAIN -n com.android.shell/.BugreportWarningActivity -c org.lsposed.manager.LAUNCH_MANAGER -f 0x10000000",
+                            useRoot = true,
+                            checkSuccess = true
+                        )
+                    }catch (tout : Throwable) {
+                        makeText(
+                            activity,
+                            tout.message,
+                            LENGTH_LONG
+                        ).show()
+                    }
                 }
             )
         }

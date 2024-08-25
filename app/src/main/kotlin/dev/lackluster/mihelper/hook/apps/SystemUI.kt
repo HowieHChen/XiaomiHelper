@@ -25,6 +25,7 @@ import dev.lackluster.mihelper.hook.rules.systemui.media.StyleCustomHookEntry
 import dev.lackluster.mihelper.hook.rules.systemui.media.UnlockCustomAction
 import dev.lackluster.mihelper.hook.rules.systemui.notif.AdvancedTextures
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.BatteryIndicator
+import dev.lackluster.mihelper.hook.rules.systemui.statusbar.PadClockAnim
 
 object SystemUI : YukiBaseHooker() {
     override fun onHook() {
@@ -53,5 +54,6 @@ object SystemUI : YukiBaseHooker() {
         loadHooker(UnlockCustomAction)
         loadHooker(CustomElement)
         loadHooker(CarrierText)
+        loadHooker(PadClockAnim)
     }
 }

@@ -166,6 +166,7 @@ object HeaderList : YukiBaseHooker() {
                         this.instance.current {
                             method {
                                 name = "AddGoogleSettingsHeaders"
+                                superClass()
                             }.call(headerList)
                         }
                     }

@@ -423,4 +423,6 @@
     <string name="systemui_lock_carrier_text_carrier">运营商标签</string>
     <string name="systemui_lock_carrier_text_clock">时间</string>
     <string name="systemui_lock_carrier_text_default">默认（不可见）</string>
+    <string name="systemui_notif_clock_anim">强制启用时钟的过渡动画</string>
+    <string name="systemui_notif_clock_anim_tips">在横屏时允许使用时钟过渡动画</string>
 </resources>
