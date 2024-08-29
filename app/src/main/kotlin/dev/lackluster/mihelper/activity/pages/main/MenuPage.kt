@@ -77,7 +77,7 @@ class MenuPage : BasePage() {
                         .setNegativeButton(R.string.button_cancel) { dialog, _ ->
                             dialog.dismiss()
                         }
-                        .setPositiveButton(R.string.button_cancel) { dialog, _ ->
+                        .setPositiveButton(R.string.button_ok) { dialog, _ ->
                             try {
                                 activity.resources.getStringArray(R.array.module_scope).forEach {
                                     try {
