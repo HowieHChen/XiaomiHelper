@@ -119,7 +119,7 @@
     <string name="module_backup">モジュールの設定をバックアップ</string>
     <string name="module_restore">モジュールの設定を復元</string>
     <string name="module_reset">モジュールの設定をリセット</string>
-    <string name="module_reset_warning">設定をリセットすると元に戻すことはできません。バックアップがあることを確認してください。\n操作を続行しますか?</string>
+    <string name="module_reset_warning">設定をリセットすると元に戻すことはできません。バックアップがあることを確認してください。\n操作を続行しますか？</string>
     <string name="module_backup_success">すべての設定が指定されたファイルにエクスポートされました。</string>
     <string name="module_backup_failure">バックアップに失敗しました。</string>
     <string name="module_restore_success">設定がファイルから復元されました。</string>
