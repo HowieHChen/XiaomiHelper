@@ -100,7 +100,7 @@
     <!-- ModuleSettingsPage -->
     <string name="module_main_switch">モジュールを有効化する</string>
     <string name="module_lite_mode">ライトモード</string>
-    <string name="module_lite_mode_tips">コア機能のみを読み込む</string>
+    <string name="module_lite_mode_tips">コア機能のみを読み込みます</string>
     <string name="module_hide_icon">ランチャーにアイコンを表示しない</string>
     <string name="module_show_in_settings">モジュールエントリを設定に表示する</string>
     <string name="module_settings_icon_style">エントリアイコンのスタイル</string>
@@ -156,7 +156,7 @@
     <string name="systemui_notif_clock_anim">時計の遷移アニメーションを強制的に使用する</string>
     <string name="systemui_notif_clock_anim_tips">横方向の時計遷移アニメーションを許可する</string>
     <string name="systemui_notif_theme_blur">テーマを使用時に高度なテクスチャの有効化を可能にする</string>
-    <string name="systemui_notif_media_control_style">メディアコントロールのスタイルをカスタマイズ</string>
+    <string name="systemui_notif_media_control_style">メディアコントロールのスタイル</string>
     <string name="ui_title_systemui_control_center">コントロールセンター</string>
     <string name="systemui_control_hide_carrier_one">SIMカード1の通信事業者名ラベルを非表示にする</string>
     <string name="systemui_control_hide_carrier_two">SIMカード2の通信事業者名ラベルを非表示にする</string>
@@ -165,7 +165,7 @@
     <string name="ui_title_home_exclusive">独占機能</string>
     <string name="home_exclusive_refactor">高度なぼかし効果</string>
     <string name="home_exclusive_refactor_tips">パフォーマンスと消費電力を犠牲にする代わりに新しいインタラクティブな体験ができます</string>
-    <string name="home_exclusive_refactor_dialog_msg">!!実験的な機能です!!\n\nこの機能は高品質なマテリアルに基づいてランチャーをリファクタリングします。\n\nこの機能をオンにすると消費電力の増加、フレーム落ち、ジャンク化、クラッシュなどのリスクが発生します。\n\n改造されたランチャーを使用していないこと、ランチャーのぼかしやアニメーションに関連する他のモジュールが無効化されていることを確認してください。</string>
+    <string name="home_exclusive_refactor_dialog_msg">!! 実験的な機能です !!\n\nこの機能は高品質なマテリアルに基づいてランチャーをリファクタリングします。\n\nこの機能をオンにすると消費電力の増加、フレーム落ち、ジャンク化、クラッシュなどのリスクが発生します。\n\n改造されたランチャーを使用していないこと、ランチャーのぼかしやアニメーションに関連する他のモジュールが無効化されていることを確認してください。</string>
     <string name="ui_title_home_gesture">ジェスチャー</string>
     <string name="home_gesture_quick_back">強化された戻るジェスチャー</string>
     <string name="home_gesture_quick_back_tips">画面の端から横にスワイプすると前のアプリに戻ります</string>
