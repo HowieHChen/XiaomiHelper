@@ -51,6 +51,7 @@
     <string name="page_status_bar_icon_tuner">Icon tuner</string>
     <string name="page_media_control_style">Media control style</string>
     <string name="page_home_refactor" translatable="false">@string/home_exclusive_refactor</string>
+    <string name="page_minus_blur">Blur effect of Minus screen</string>
 
     <string name="scope_browser">Browser</string>
     <string name="scope_download">Download</string>
@@ -246,7 +247,12 @@
     <string name="home_shortcut_instance">Add "Multiple instance" shortcut</string>
     <string name="ui_title_home_personal_asist">Personal Assistant</string>
     <string name="home_minus_restore_setting">Restore minus screen setting</string>
+    <string name="home_minus_blur_type">Minus screen background</string>
+    <string name="home_minus_blur_type_def" translatable="false">@string/common_default</string>
+    <string name="home_minus_blur_type_sys">Legacy blurred background</string>
+    <string name="home_minus_blur_type_texture">Advanced Textures</string>
     <string name="home_minus_fold_style">Overlapped mode</string>
+    <string name="home_minus_page_minus_blur" translatable="false">@string/page_minus_blur</string>
     <string name="home_minus_blur">Enable blur for background</string>
     <string name="ui_title_home_others" translatable="false">@string/common_others</string>
     <string name="home_others_always_show_clock">Always show time in status bar</string>
@@ -499,6 +505,7 @@
     <string name="home_refactor_extra_fix_tips">Forces an animation to be added to avoid blurring not appearing in time on fast swipes. Enable this only if you notice this problem.</string>
     <string name="home_refactor_fix_small_window">Additional fixes for small window animations</string>
     <string name="home_refactor_fix_small_window_tips">Force an animation to be added to avoid flickering when dragging the app into a small window, not sure if this has a negative impact for now. Only enable this if you mind this a lot.</string>
+    <string name="home_refactor_minus_blur" translatable="false">@string/page_minus_blur</string>
     <string name="ui_title_home_refactor_apps">Blur effect of app icons</string>
     <string name="home_refactor_apps_tips">Used to blur the application. Blurring occurs when launching an app, closing an app, and when in the recent tasks view.</string>
     <string name="ui_title_home_refactor_folder">Blur effect of folder background</string>
@@ -508,17 +515,21 @@
     <string name="home_refactor_all_apps_bg">Use blur effect for app drawer background</string>
     <string name="home_refactor_all_apps_bg_tips">Blur wallpaper when opening app drawer</string>
     <string name="ui_title_home_refactor_launch">Launcher view</string>
+    <string name="home_refactor_launch_tips">Controls the launcher view behind the recent tasks view.</string>
+    <string name="home_refactor_launch_show">Show launcher view</string>
     <string name="home_refactor_launch_recents_tips">Show launcher view when in the recent tasks view.</string>
     <string name="home_refactor_launch_folder_tips">Show launcher view when opening a folder.</string>
     <string name="home_refactor_launch_minus_tips">Don\'t hide the launcher view when going to the minus screen</string>
-    <string name="home_refactor_launch_tips">Controls the launcher view behind the recent tasks view.</string>
-    <string name="home_refactor_launch_show">Show launcher view</string>
     <string name="home_refactor_launch_show_tips">Don\'t hide the launcher view when in the recent tasks view</string>
     <string name="home_refactor_launch_scale">Launcher view zoom ratio</string>
     <string name="home_refactor_launch_scale_tips">Affects launcher view scaling in recent tasks view</string>
+    <string name="home_refactor_launch_minus_mode_def" translatable="false">@string/systemui_lock_carrier_text_default</string>
+    <string name="home_refactor_launch_minus_mode_visible" translatable="false">@string/icon_tuner_hide_selection_show_all</string>
+    <string name="home_refactor_launch_minus_mode_overlap">Overlapping</string>
     <string name="ui_title_home_refactor_minus">Blur effect of Minus screen background</string>
     <string name="home_refactor_minus_tips">Used to blur the entire launcher view. Blurring occurs when in the minus screen.</string>
     <string name="home_refactor_minus_overlap_mode">Minus screen overlap mode</string>
     <string name="home_refactor_minus_overlap_mode_tips">Make the minus screen hover above the launcher</string>
     <string name="home_refactor_launch_show_minus_tips">Don\'t hide the launcher view when going to the minus screen</string>
+    <!-- MinusBlurPage -->
 </resources>

@@ -24,6 +24,7 @@ import dev.lackluster.mihelper.activity.pages.sub.DisableFixedOrientationPage
 import dev.lackluster.mihelper.activity.pages.sub.HomeRefactorPage
 import dev.lackluster.mihelper.activity.pages.sub.IconTunerPage
 import dev.lackluster.mihelper.activity.pages.sub.MediaControlStylePage
+import dev.lackluster.mihelper.activity.pages.sub.MinusBlurPage
 import dev.lackluster.mihelper.activity.pages.sub.StatusBarClockPage
 import dev.lackluster.mihelper.data.Pages
 import dev.lackluster.mihelper.data.Pref
@@ -90,6 +91,7 @@ class MainActivity : MIUIActivity() {
         registerPage(AnimCurvePreviewAppsPage::class.java)
         registerPage(AnimCurvePreviewFolderPage::class.java)
         registerPage(AnimCurvePreviewWallpaperPage::class.java)
+        registerPage(MinusBlurPage::class.java)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -184,6 +186,25 @@ class MainActivity : MIUIActivity() {
                     0
                 }
                 safeSP.putAny(Pref.Key.SystemUI.IconTurner.BATTERY_PERCENTAGE_SYMBOL_STYLE, newValue)
+            }
+        }
+        if (spVersion < 3) {
+            if (safeSP.getInt(Pref.Key.MiuiHome.MINUS_BLUR_TYPE, -1) == -1) {
+                val oldValue = safeSP.getBoolean(Pref.OldKey.MiuiHome.D_MINUS_BLUR, false)
+                val newValue = if (oldValue) 1 else 0
+                safeSP.putAny(Pref.Key.MiuiHome.MINUS_BLUR_TYPE, newValue)
+            }
+            if (safeSP.getInt(Pref.Key.MiuiHome.Refactor.MINUS_MODE, -1) == -1) {
+                val overlap = safeSP.getBoolean(Pref.OldKey.MiuiHome.Refactor.D_MINUS_OVERLAP, false)
+                val showLaunchInMinus = safeSP.getBoolean(Pref.OldKey.MiuiHome.Refactor.D_SHOW_LAUNCH_IN_MINUS, false)
+                val newValue = if (overlap) {
+                    2
+                } else if (showLaunchInMinus) {
+                    1
+                } else {
+                    0
+                }
+                safeSP.putAny(Pref.Key.MiuiHome.Refactor.MINUS_MODE, newValue)
             }
         }
         safeSP.putAny(Pref.Key.Module.SP_VERSION, Pref.VERSION)

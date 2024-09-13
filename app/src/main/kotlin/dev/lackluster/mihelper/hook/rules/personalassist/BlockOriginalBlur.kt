@@ -7,14 +7,13 @@ import dev.lackluster.mihelper.utils.Prefs
 
 object BlockOriginalBlur : YukiBaseHooker() {
     private val ENABLED = Prefs.getBoolean(Pref.Key.MiuiHome.REFACTOR, false)
-    private val MINUS_BLUR = Prefs.getBoolean(Pref.Key.MiuiHome.Refactor.MINUS_BLUR, Pref.DefValue.HomeRefactor.MINUS_BLUR)
-    private val MINUS_DIM = Prefs.getBoolean(Pref.Key.MiuiHome.Refactor.MINUS_DIM, Pref.DefValue.HomeRefactor.MINUS_DIM)
+    private val BLUR_TYPE = Prefs.getInt(Pref.Key.MiuiHome.MINUS_BLUR_TYPE, 0)
     private val deviceBlurBlendAdapterClz by lazy {
         "com.miui.personalassistant.device.DeviceBlurBlendAdapter".toClassOrNull()
     }
 
     override fun onHook() {
-        if (ENABLED && (MINUS_BLUR || MINUS_DIM)) {
+        if (ENABLED || BLUR_TYPE == 2) {
             deviceBlurBlendAdapterClz?.apply {
                 // Lcom/miui/personalassistant/device/DeviceBlurBlendAdapter;->onScrollProgressChanged(F)V
                 method {

@@ -20,20 +20,11 @@
 
 package dev.lackluster.mihelper.hook.rules.miuihome.refactor
 
-import android.content.Context
-import android.view.View
-import android.view.ViewGroup
-import android.view.animation.DecelerateInterpolator
-import android.view.animation.LinearInterpolator
-import android.view.animation.PathInterpolator
-import android.widget.FrameLayout
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.current
 import com.highcapable.yukihookapi.hook.factory.field
 import com.highcapable.yukihookapi.hook.factory.method
 import com.highcapable.yukihookapi.hook.log.YLog
-import com.highcapable.yukihookapi.hook.type.android.BundleClass
-import com.highcapable.yukihookapi.hook.type.android.ConfigurationClass
 import com.highcapable.yukihookapi.hook.type.android.WindowClass
 import com.highcapable.yukihookapi.hook.type.defined.VagueType
 import com.highcapable.yukihookapi.hook.type.java.BooleanType
@@ -41,30 +32,29 @@ import com.highcapable.yukihookapi.hook.type.java.FloatType
 import com.highcapable.yukihookapi.hook.type.java.IntType
 import com.highcapable.yukihookapi.hook.type.java.LongType
 import de.robv.android.xposed.XC_MethodHook
-import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
 import dev.lackluster.mihelper.BuildConfig
-import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.data.Pref.Key.MiuiHome.Refactor
 import dev.lackluster.mihelper.data.Pref.DefValue.HomeRefactor
-import dev.lackluster.mihelper.hook.rules.miuihome.refactor.BlurRefactorEntry.MINUS_BLUR
-import dev.lackluster.mihelper.hook.rules.miuihome.refactor.BlurRefactorEntry.MINUS_DIM
-import dev.lackluster.mihelper.hook.rules.miuihome.refactor.BlurRefactorEntry.MINUS_OVERLAP
+import dev.lackluster.mihelper.hook.rules.miuihome.refactor.BlurRefactorEntry.transitionBlurView
+import dev.lackluster.mihelper.hook.rules.miuihome.refactor.BlurRefactorEntry.wallpaperBlurView
+import dev.lackluster.mihelper.hook.rules.miuihome.refactor.BlurRefactorEntry.folderBlurView
+import dev.lackluster.mihelper.hook.rules.miuihome.refactor.BlurRefactorEntry.wallpaperZoomManager
 import dev.lackluster.mihelper.hook.rules.miuihome.refactor.BlurRefactorEntry.isAllAppsShowing
 import dev.lackluster.mihelper.hook.rules.miuihome.refactor.BlurRefactorEntry.isFolderShowing
 import dev.lackluster.mihelper.hook.rules.miuihome.refactor.BlurRefactorEntry.isInNormalEditing
-import dev.lackluster.mihelper.hook.rules.miuihome.refactor.BlurRefactorEntry.wallpaperZoomManager
-import dev.lackluster.mihelper.hook.view.MiBlurView
 import dev.lackluster.mihelper.utils.Prefs
 import java.util.concurrent.Executor
 
 object BlurController : YukiBaseHooker() {
+    private var isStartingApp = false
+
     private val blurUtilsClz by lazy {
         "com.miui.home.launcher.common.BlurUtils".toClass()
     }
-    private val blurUtilitiesClz by lazy {
-        "com.miui.home.launcher.common.BlurUtilities".toClass()
-    }
+//    private val blurUtilitiesClz by lazy {
+//        "com.miui.home.launcher.common.BlurUtilities".toClass()
+//    }
     private val mainThreadExecutor by lazy {
         "com.miui.home.recents.TouchInteractionService".toClass().field {
             name = "MAIN_THREAD_EXECUTOR"
@@ -77,132 +67,17 @@ object BlurController : YukiBaseHooker() {
             modifiers { isStatic }
         }.get().any()
     }
-
     // Configuration
     private val PRINT_DEBUG_INFO = BuildConfig.DEBUG // && false
     private val FIX_SMALL_WINDOW_ANIM = Prefs.getBoolean(Refactor.FIX_SMALL_WINDOW_ANIM, HomeRefactor.FIX_SMALL_WINDOW_ANIM)
     private val ALL_APPS_BLUR_BG = Prefs.getBoolean(Refactor.ALL_APPS_BLUR_BG, HomeRefactor.ALL_APPS_BLUR_BG)
-    private val SHOW_LAUNCH_IN_MINUS = Prefs.getBoolean(Refactor.SHOW_LAUNCH_IN_MINUS, HomeRefactor.SHOW_LAUNCH_IN_MINUS)
-    private val SHOW_LAUNCH_IN_MINUS_SCALE = Prefs.getFloat(Refactor.SHOW_LAUNCH_IN_MINUS_SCALE, HomeRefactor.SHOW_LAUNCH_IN_MINUS_SCALE)
     private val EXTRA_FIX = Prefs.getBoolean(Refactor.EXTRA_FIX, HomeRefactor.EXTRA_FIX)
-
-    private var isStartingApp = false
-    private var screenCornerRadius: Int = 84
+    private val EXTRA_COMPATIBILITY = Prefs.getBoolean(Refactor.EXTRA_COMPATIBILITY, HomeRefactor.EXTRA_COMPATIBILITY)
 
     override fun onHook() {
-        var transitionBlurView: MiBlurView? = null
-        var folderBlurView: MiBlurView? = null
-        var wallpaperBlurView: MiBlurView? = null
-        var minusBlurView: MiBlurView? = null
-        // Get and update screen corner radius
-        XposedHelpers.findAndHookMethod(
-            "com.miui.home.launcher.Launcher", this.appClassLoader,
-            "onAttachedToWindow",
-            object : XC_MethodHook() {
-                override fun afterHookedMethod(param: MethodHookParam?) {
-                    screenCornerRadius = XposedHelpers.callStaticMethod(
-                        "com.miui.home.recents.util.WindowCornerRadiusUtil".toClass(),
-                        "getCornerRadius"
-                    ) as Int
-                    folderBlurView?.setCornerRadius(screenCornerRadius)
-                }
-            }
-        )
-        XposedHelpers.findAndHookMethod(
-            "com.miui.home.launcher.Launcher", this.appClassLoader,
-            "onConfigurationChanged", ConfigurationClass,
-            object : XC_MethodHook() {
-                override fun afterHookedMethod(param: MethodHookParam?) {
-                    screenCornerRadius = XposedHelpers.callStaticMethod(
-                        "com.miui.home.recents.util.WindowCornerRadiusUtil".toClass(),
-                        "getCornerRadius"
-                    ) as Int
-                    folderBlurView?.setCornerRadius(screenCornerRadius)
-                }
-            }
-        )
-        // Inject blur views
-        XposedHelpers.findAndHookMethod(
-            "com.miui.home.launcher.Launcher", this.appClassLoader,
-            "onCreate", BundleClass,
-            object : XC_MethodHook() {
-                override fun afterHookedMethod(param: MethodHookParam?) {
-                    val launcher = param?.thisObject ?: return
-                    if (!XposedHelpers.getStaticBooleanField(blurUtilitiesClz, "IS_BACKGROUND_BLUR_ENABLED")) {
-                        if (!Prefs.getBoolean(Pref.Key.MiuiHome.FAKE_PREMIUM, false)) {
-                            YLog.warn("The High-quality materials function is disabled.")
-                        }
-                        XposedHelpers.setStaticBooleanField(blurUtilitiesClz, "IS_BACKGROUND_BLUR_ENABLED", true)
-                    }
-                    val viewGroup = XposedHelpers.getObjectField(launcher, "mLauncherView") as ViewGroup
-                    // Init views
-                    transitionBlurView = MiBlurView(launcher as Context)
-                    folderBlurView = MiBlurView(launcher)
-                    wallpaperBlurView = MiBlurView(launcher)
-                    minusBlurView = MiBlurView(launcher)
-                    initBlurView(launcher, transitionBlurView, folderBlurView, wallpaperBlurView, minusBlurView)
-                    // Transition
-                    val mOverviewPanel = XposedHelpers.getObjectField(launcher, "mOverviewPanel") as View
-                    viewGroup.addView(
-                        transitionBlurView,
-                        viewGroup.indexOfChild(mOverviewPanel).coerceAtLeast(0)
-                    )
-                    // Folder
-                    val mSearchEdgeLayout = XposedHelpers.getObjectField(launcher, "mSearchEdgeLayout") as FrameLayout
-                    val mFolderCling = XposedHelpers.getObjectField(launcher, "mFolderCling") as FrameLayout
-                    mSearchEdgeLayout.addView(
-                        folderBlurView,
-                        mSearchEdgeLayout.indexOfChild(mFolderCling).coerceAtLeast(0)
-                    )
-                    val mDragLayer = XposedHelpers.getObjectField(launcher, "mDragLayer") as FrameLayout
-                    mDragLayer.clipChildren = false
-                    val mShortcutMenuLayer = XposedHelpers.getObjectField(launcher, "mShortcutMenuLayer") as FrameLayout
-                    mShortcutMenuLayer.clipChildren = false
-                    // Wallpaper
-                    viewGroup.addView(wallpaperBlurView, 0)
-                    // Minus
-                    if (MINUS_BLUR || MINUS_DIM) {
-                        if (MINUS_OVERLAP) {
-                            viewGroup.addView(minusBlurView)
-                        } else {
-                            viewGroup.addView(minusBlurView, 0)
-                        }
-                    }
-                }
-            }
-        )
-        // Remove blur view from Launcher
-        XposedHelpers.findAndHookMethod(
-            "com.miui.home.launcher.Launcher", this.appClassLoader,
-            "onDestroy",
-            object : XC_MethodHook() {
-                override fun afterHookedMethod(param: MethodHookParam?) {
-                    val launcher = param?.thisObject ?: return
-                    val viewGroup = XposedHelpers.getObjectField(launcher, "mLauncherView") as ViewGroup
-                    if (transitionBlurView?.isAttachedToWindow == true) {
-                        viewGroup.removeView(transitionBlurView)
-                    }
-                    if (wallpaperBlurView?.isAttachedToWindow == true) {
-                        viewGroup.removeView(wallpaperBlurView)
-                    }
-                    if (minusBlurView?.isAttachedToWindow == true) {
-                        viewGroup.removeView(minusBlurView)
-                    }
-                    val mSearchEdgeLayout = XposedHelpers.getObjectField(launcher, "mSearchEdgeLayout") as FrameLayout
-                    if (folderBlurView?.isAttachedToWindow == true) {
-                        mSearchEdgeLayout.removeView(folderBlurView)
-                    }
-                    transitionBlurView = null
-                    folderBlurView = null
-                    wallpaperBlurView = null
-                    minusBlurView = null
-                    wallpaperZoomManager = null
-                }
-            }
-        )
         // Block original blur
         // Lcom/miui/home/launcher/common/BlurUtils;->fastBlurDirectly(FLandroid/view/Window;)V
-        if (BlurRefactorEntry.EXTRA_COMPATIBILITY) {
+        if (EXTRA_COMPATIBILITY) {
             blurUtilsClz.method {
                 name = "fastBlurDirectly"
                 paramCount = 2
@@ -653,128 +528,6 @@ object BlurController : YukiBaseHooker() {
                 }
             }
         }
-        // MinusScreen
-        if (MINUS_OVERLAP) {
-            "com.miui.home.launcher.overlay.assistant.AssistantDeviceAdapter".toClass().apply {
-                method {
-                    name = "inOverlapMode"
-                }.hook {
-                    replaceToTrue()
-                }
-            }
-        } else {
-            "com.miui.home.launcher.overlay.OverlayTransitionController".toClass().apply {
-                method {
-                    name = "onScrollChanged"
-                }.hook {
-                    replaceUnit {
-                        val mCurrentAnimation = this.instance.current()
-                            .field { name = "mCurrentAnimation"; superClass() }.any()
-                            ?: return@replaceUnit
-                        mCurrentAnimation.current().method {
-                            name = "setPlayFraction"
-                        }.call(
-                            if (this.instance.current()
-                                    .field { name = "isTargetOpenOverlay"; superClass() }.boolean()
-                            ) {
-                                this.args(0).float()
-                            } else {
-                                1.0f - this.args(0).float()
-                            }
-                        )
-                    }
-                }
-            }
-        }
-        if (!MINUS_OVERLAP && SHOW_LAUNCH_IN_MINUS) {
-            val superGetSearchBarProperty =
-                "com.miui.home.launcher.LauncherState".toClass().method {
-                    name = "getSearchBarProperty"
-                }.give() ?: return
-            superGetSearchBarProperty.hook {
-                before {
-                    // Make the original method accessible to avoid infinite loops
-                }
-            }
-            "com.miui.home.launcher.overlay.assistant.AssistantOverlayState".toClass().apply {
-                method {
-                    name = "getVisibleElements"
-                }.hook {
-                    replaceTo(1)
-                }
-                method {
-                    name = "getSearchBarProperty"
-                }.hook {
-                    before {
-                        val superResult = XposedBridge.invokeOriginalMethod(
-                            superGetSearchBarProperty,
-                            this.instance,
-                            this.args
-                        ) as FloatArray
-                        superResult[4] =
-                            this.instance.current().method { name = "getWorkspaceTranslationX" }
-                                .float(this.args[0])
-                        this.result = superResult
-                    }
-                }
-            }
-        }
-        if (MINUS_BLUR || MINUS_DIM) {
-            "com.miui.home.launcher.overlay.assistant.AssistantOverlayTransitionController".toClass()
-                .apply {
-                    // Lcom/miui/home/launcher/overlay/assistant/AssistantOverlayTransitionController;->onScrollChanged(F)V
-                    method {
-                        name = "onScrollChanged"
-                        paramCount = 1
-                    }.hook {
-                        before {
-                            val targetRatio = this.args(0).float()
-                            minusBlurView?.setStatus(targetRatio, false)
-                            if (MINUS_OVERLAP) {
-                                val mLauncher = this.instance.current().field {
-                                    name = "mLauncher"
-                                    superClass()
-                                }.any()
-                                val mScreenContent = XposedHelpers.getObjectField(mLauncher, "mScreenContent") as? FrameLayout ?: return@before
-                                val scale = SHOW_LAUNCH_IN_MINUS_SCALE + (1 - targetRatio) * (1 - SHOW_LAUNCH_IN_MINUS_SCALE)
-                                mScreenContent.scaleX = scale
-                                mScreenContent.scaleY = scale
-//                                mScreenContent.scaleX = 1.0f
-//                                mScreenContent.scaleY = 1.0f
-                                this.result = null
-                            }
-                        }
-                    }
-                    // Lcom/miui/home/launcher/overlay/assistant/AssistantOverlayTransitionController;->onScrollEnd(F)V
-                    method {
-                        name = "onScrollEnd"
-                        paramCount = 1
-                    }.hook {
-                        after {
-                            val targetRatio = this.args(0).float()
-                            minusBlurView?.setStatus(targetRatio, false)
-                            if (MINUS_OVERLAP) {
-                                val mLauncher = this.instance.current().field {
-                                    name = "mLauncher"
-                                    superClass()
-                                }.any()
-                                val mWorkspace = XposedHelpers.getObjectField(
-                                    mLauncher,
-                                    "mWorkspace"
-                                ) as? ViewGroup ?: return@after
-                                mWorkspace.scaleX = 1.0f
-                                mWorkspace.scaleY = 1.0f
-                                val mScreenContent = XposedHelpers.getObjectField(mLauncher, "mScreenContent") as? FrameLayout ?: return@after
-                                val scale = SHOW_LAUNCH_IN_MINUS_SCALE + (if (targetRatio == 1.0f) 0 else 1) * (1 - SHOW_LAUNCH_IN_MINUS_SCALE)
-                                mScreenContent.scaleX = scale
-                                mScreenContent.scaleY = scale
-//                                mScreenContent.scaleX = 1.0f
-//                                mScreenContent.scaleY = 1.0f
-                            }
-                        }
-                    }
-                }
-        }
         // Extra fix
         if (EXTRA_FIX) {
             "com.miui.home.recents.NavStubView".toClass().apply {
@@ -791,113 +544,6 @@ object BlurController : YukiBaseHooker() {
                         }
                     }
                 }
-            }
-        }
-    }
-
-    private fun initBlurView(
-        context: Context,
-        transitionBlurView: MiBlurView?,
-        folderBlurView: MiBlurView?,
-        wallpaperBlurView: MiBlurView?,
-        minusBlurView: MiBlurView?
-    ) {
-        // Transition
-        val appsUseBlur = Prefs.getBoolean(Refactor.APPS_BLUR, HomeRefactor.APPS_BLUR)
-        val appsBlurRadius = Prefs.getPixelByStr(Refactor.APPS_BLUR_RADIUS_STR, HomeRefactor.APPS_BLUR_RADIUS_STR, context)
-        val appsUseDim = Prefs.getBoolean(Refactor.APPS_DIM, HomeRefactor.APPS_DIM)
-        val appsDimAlpha = Prefs.getInt(Refactor.APPS_DIM_MAX, HomeRefactor.APPS_DIM_MAX)
-        val appsUseNonlinearType = Prefs.getInt(Refactor.APPS_NONLINEAR_TYPE, HomeRefactor.APPS_NONLINEAR_TYPE)
-        val appsNonlinearDeceFactor = Prefs.getFloat(Refactor.APPS_NONLINEAR_DECE_FACTOR, HomeRefactor.APPS_NONLINEAR_DECE_FACTOR)
-        val appsNonlinearPathX1 = Prefs.getFloat(Refactor.APPS_NONLINEAR_PATH_X1, HomeRefactor.APPS_NONLINEAR_PATH_X1)
-        val appsNonlinearPathY1 = Prefs.getFloat(Refactor.APPS_NONLINEAR_PATH_Y1, HomeRefactor.APPS_NONLINEAR_PATH_Y1)
-        val appsNonlinearPathX2 = Prefs.getFloat(Refactor.APPS_NONLINEAR_PATH_X2, HomeRefactor.APPS_NONLINEAR_PATH_X2)
-        val appsNonlinearPathY2 = Prefs.getFloat(Refactor.APPS_NONLINEAR_PATH_Y2, HomeRefactor.APPS_NONLINEAR_PATH_Y2)
-        // Folder
-        val folderUseBlur = Prefs.getBoolean(Refactor.FOLDER_BLUR, HomeRefactor.FOLDER_BLUR)
-        val folderBlurRadius = Prefs.getPixelByStr(Refactor.FOLDER_BLUR_RADIUS_STR, HomeRefactor.FOLDER_BLUR_RADIUS_STR, context)
-        val folderUseDim = Prefs.getBoolean(Refactor.FOLDER_DIM, HomeRefactor.FOLDER_DIM)
-        val folderDimAlpha = Prefs.getInt(Refactor.FOLDER_DIM_MAX, HomeRefactor.FOLDER_DIM_MAX)
-        val folderUseNonlinearType = Prefs.getInt(Refactor.FOLDER_NONLINEAR_TYPE, HomeRefactor.FOLDER_NONLINEAR_TYPE)
-        val folderNonlinearDeceFactor = Prefs.getFloat(Refactor.FOLDER_NONLINEAR_DECE_FACTOR, HomeRefactor.FOLDER_NONLINEAR_DECE_FACTOR)
-        val folderNonlinearPathX1 = Prefs.getFloat(Refactor.FOLDER_NONLINEAR_PATH_X1, HomeRefactor.FOLDER_NONLINEAR_PATH_X1)
-        val folderNonlinearPathY1 = Prefs.getFloat(Refactor.FOLDER_NONLINEAR_PATH_Y1, HomeRefactor.FOLDER_NONLINEAR_PATH_Y1)
-        val folderNonlinearPathX2 = Prefs.getFloat(Refactor.FOLDER_NONLINEAR_PATH_X2, HomeRefactor.FOLDER_NONLINEAR_PATH_X2)
-        val folderNonlinearPathY2 = Prefs.getFloat(Refactor.FOLDER_NONLINEAR_PATH_Y2, HomeRefactor.FOLDER_NONLINEAR_PATH_Y2)
-        // Wallpaper
-        val wallpaperUseBlur = Prefs.getBoolean(Refactor.WALLPAPER_BLUR, HomeRefactor.WALLPAPER_BLUR)
-        val wallpaperBlurRadius = Prefs.getPixelByStr(Refactor.WALLPAPER_BLUR_RADIUS_STR, HomeRefactor.WALLPAPER_BLUR_RADIUS_STR, context)
-        val wallpaperUseDim = Prefs.getBoolean(Refactor.WALLPAPER_DIM, HomeRefactor.WALLPAPER_DIM)
-        val wallpaperDimAlpha = Prefs.getInt(Refactor.WALLPAPER_DIM_MAX, HomeRefactor.WALLPAPER_DIM_MAX)
-        val wallpaperUseNonlinearType = Prefs.getInt(Refactor.WALLPAPER_NONLINEAR_TYPE, HomeRefactor.WALLPAPER_NONLINEAR_TYPE)
-        val wallpaperNonlinearDeceFactor = Prefs.getFloat(Refactor.WALLPAPER_NONLINEAR_DECE_FACTOR, HomeRefactor.WALLPAPER_NONLINEAR_DECE_FACTOR)
-        val wallpaperNonlinearPathX1 = Prefs.getFloat(Refactor.WALLPAPER_NONLINEAR_PATH_X1, HomeRefactor.WALLPAPER_NONLINEAR_PATH_X1)
-        val wallpaperNonlinearPathY1 = Prefs.getFloat(Refactor.WALLPAPER_NONLINEAR_PATH_Y1, HomeRefactor.WALLPAPER_NONLINEAR_PATH_Y1)
-        val wallpaperNonlinearPathX2 = Prefs.getFloat(Refactor.WALLPAPER_NONLINEAR_PATH_X2, HomeRefactor.WALLPAPER_NONLINEAR_PATH_X2)
-        val wallpaperNonlinearPathY2 = Prefs.getFloat(Refactor.WALLPAPER_NONLINEAR_PATH_Y2, HomeRefactor.WALLPAPER_NONLINEAR_PATH_Y2)
-        // Minus screen
-        val minusUseBlur = Prefs.getBoolean(Refactor.MINUS_BLUR, HomeRefactor.MINUS_BLUR)
-        val minusBlurRadius = Prefs.getPixelByStr(Refactor.MINUS_BLUR_RADIUS_STR, HomeRefactor.MINUS_BLUR_RADIUS_STR, context)
-        val minusUseDim = Prefs.getBoolean(Refactor.MINUS_DIM, HomeRefactor.MINUS_DIM)
-        val minusDimAlpha = Prefs.getInt(Refactor.MINUS_DIM_MAX, HomeRefactor.MINUS_DIM_MAX)
-        // Scale
-//        val minusUseScale = MINUS_OVERLAP
-//        val minusScaleRatio = 1.0f - SHOW_LAUNCH_IN_MINUS_SCALE
-
-        transitionBlurView?.let {
-            it.setPassWindowBlur(true)
-            it.setBlur(appsUseBlur, appsBlurRadius)
-            it.setDim(appsUseDim, appsDimAlpha)
-            it.setScale(false, 0f)
-            when (appsUseNonlinearType) {
-                1 -> it.setNonlinear(true, DecelerateInterpolator(appsNonlinearDeceFactor))
-                2 -> it.setNonlinear(
-                    true,
-                    PathInterpolator(appsNonlinearPathX1, appsNonlinearPathY1, appsNonlinearPathX2, appsNonlinearPathY2)
-                )
-                else -> it.setNonlinear(false, LinearInterpolator())
-            }
-            // it.setPassWindowBlur(BlurRefactorEntry.EXTRA_COMPATIBILITY)
-        }
-        folderBlurView?.let {
-            it.setPassWindowBlur(true)
-            it.setBlur(folderUseBlur, folderBlurRadius)
-            it.setDim(folderUseDim, folderDimAlpha)
-            it.setScale(false, 0f)
-            it.setCornerRadius(screenCornerRadius)
-            when (folderUseNonlinearType) {
-                1 -> it.setNonlinear(true, DecelerateInterpolator(folderNonlinearDeceFactor))
-                2 -> it.setNonlinear(
-                    true,
-                    PathInterpolator(folderNonlinearPathX1, folderNonlinearPathY1, folderNonlinearPathX2, folderNonlinearPathY2)
-                )
-                else -> it.setNonlinear(false, LinearInterpolator())
-            }
-            // it.setPassWindowBlur(BlurRefactorEntry.EXTRA_COMPATIBILITY)
-        }
-        wallpaperBlurView?.let {
-            it.setPassWindowBlur(true)
-            it.setBlur(wallpaperUseBlur, wallpaperBlurRadius)
-            it.setDim(wallpaperUseDim, wallpaperDimAlpha)
-            it.setScale(false, 0f)
-            when (wallpaperUseNonlinearType) {
-                1 -> it.setNonlinear(true, DecelerateInterpolator(wallpaperNonlinearDeceFactor))
-                2 -> it.setNonlinear(
-                    true,
-                    PathInterpolator(wallpaperNonlinearPathX1, wallpaperNonlinearPathY1, wallpaperNonlinearPathX2, wallpaperNonlinearPathY2)
-                )
-                else -> it.setNonlinear(false, LinearInterpolator())
-            }
-            // it.setPassWindowBlur(BlurRefactorEntry.EXTRA_COMPATIBILITY)
-        }
-        if (MINUS_BLUR || MINUS_DIM) {
-            minusBlurView?.let {
-                it.setPassWindowBlur(true)
-                it.setBlur(minusUseBlur, minusBlurRadius)
-                it.setDim(minusUseDim, minusDimAlpha)
-                it.setScale(false, 0f)
-                it.setNonlinear(false, LinearInterpolator())
-                // it.setPassWindowBlur(BlurRefactorEntry.EXTRA_COMPATIBILITY)
             }
         }
     }

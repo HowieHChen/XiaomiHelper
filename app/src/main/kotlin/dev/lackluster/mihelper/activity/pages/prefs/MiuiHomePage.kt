@@ -27,6 +27,7 @@ import cn.fkj233.ui.activity.data.BasePage
 import cn.fkj233.ui.activity.data.CategoryData
 import cn.fkj233.ui.activity.data.DescData
 import cn.fkj233.ui.activity.data.DialogData
+import cn.fkj233.ui.activity.data.DropDownData
 import cn.fkj233.ui.activity.data.EditTextData
 import cn.fkj233.ui.activity.data.SeekBarData
 import cn.fkj233.ui.activity.data.SwitchData
@@ -58,6 +59,20 @@ class MiuiHomePage : BasePage() {
             when (flags) {
                 0 -> view.visibility = if (data as Boolean) View.VISIBLE else View.GONE
                 1 -> view.visibility = if (data as Boolean) View.GONE else View.VISIBLE
+            }
+        }
+        val minusBlurTypeBinding = GetDataBinding({
+            0
+        }) { view, flags, _ ->
+            val refactor = MIUIActivity.safeSP.getBoolean(Pref.Key.MiuiHome.REFACTOR, false)
+            val blurType = MIUIActivity.safeSP.getInt(Pref.Key.MiuiHome.MINUS_BLUR_TYPE, 0)
+            when (flags) {
+                1 -> {
+                    view.visibility = if (!refactor && blurType == 1) View.VISIBLE else View.GONE
+                }
+                2 -> {
+                    view.visibility = if (!refactor && blurType == 2) View.VISIBLE else View.GONE
+                }
             }
         }
         PreferenceCategory(
@@ -313,15 +328,31 @@ class MiuiHomePage : BasePage() {
                 DescData(titleId = R.string.home_minus_restore_setting),
                 SwitchData(Pref.Key.MiuiHome.MINUS_RESTORE_SETTING)
             )
-            SwitchPreference(
-                DescData(titleId = R.string.home_minus_fold_style),
-                SwitchData(Pref.Key.MiuiHome.MINUS_FOLD_STYLE),
+            DropDownPreference(
+                DescData(titleId = R.string.home_minus_blur_type),
+                DropDownData(
+                    key = Pref.Key.MiuiHome.MINUS_BLUR_TYPE,
+                    entries = arrayOf(
+                        DropDownData.SpinnerItemData(getString(R.string.home_minus_blur_type_def), 0),
+                        DropDownData.SpinnerItemData(getString(R.string.home_minus_blur_type_sys), 1),
+                        DropDownData.SpinnerItemData(getString(R.string.home_minus_blur_type_texture), 2),
+                    ),
+                    dataBindingSend = minusBlurTypeBinding.bindingSend
+                ),
                 dataBindingRecv = refactorBinding.binding.getRecv(1)
             )
             SwitchPreference(
-                DescData(titleId = R.string.home_minus_blur),
-                SwitchData(Pref.Key.MiuiHome.MINUS_BLUR),
-                dataBindingRecv = refactorBinding.binding.getRecv(1)
+                DescData(titleId = R.string.home_minus_fold_style),
+                SwitchData(Pref.Key.MiuiHome.MINUS_FOLD_STYLE),
+                dataBindingRecv = minusBlurTypeBinding.binding.getRecv(1)
+            )
+            TextPreference(
+                DescData(titleId = R.string.home_minus_page_minus_blur),
+                TextData(),
+                onClickListener = {
+                    showFragment(Pages.MINUS_BLUR)
+                },
+                dataBindingRecv = minusBlurTypeBinding.binding.getRecv(2)
             )
         }
         PreferenceCategory(

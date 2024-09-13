@@ -30,26 +30,80 @@ import com.highcapable.yukihookapi.hook.type.java.BooleanType
 import com.highcapable.yukihookapi.hook.type.java.FloatType
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.Prefs
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import kotlin.math.max
 
 object BackgroundBlur : YukiBaseHooker() {
+    private val REFACTOR = Prefs.getBoolean(Pref.Key.MiuiHome.REFACTOR, false)
+    private val BLUR_TYPE = Prefs.getInt(Pref.Key.MiuiHome.MINUS_BLUR_TYPE, 0)
+    private var newVersion: Boolean = false
+
     override fun onHook() {
-        hasEnable(Pref.Key.MiuiHome.MINUS_BLUR, extraCondition = {
-            !Prefs.getBoolean(Pref.Key.MiuiHome.REFACTOR, false)
-        }) {
-            "com.miui.personalassistant.device.DeviceAdapter".toClass().method {
-                name = "create"
-            }.giveAll().hookAll {
-                before {
-                    this.result = "com.miui.personalassistant.device.FoldableDeviceAdapter".toClass()
-                        .constructor().get().newInstance(this.args(0).any())
-                }
-            }
-            "com.miui.personalassistant.device.FoldableDeviceAdapter".toClass().apply {
-                runCatching {
+        if (!REFACTOR && BLUR_TYPE == 1) {
+            val clzDeviceBlurBlendAdapter = "com.miui.personalassistant.device.DeviceBlurBlendAdapter".toClassOrNull()
+            newVersion = clzDeviceBlurBlendAdapter != null
+            if (clzDeviceBlurBlendAdapter != null) {
+                clzDeviceBlurBlendAdapter.apply {
                     method {
-                        name = "onEnter"
-                        param(BooleanType)
+                        name = "onScrollProgressChanged"
+                        superClass()
+                    }.hook {
+                        replaceUnit {
+                            val f = this.args(0).float()
+                            val windowScrollProgressOffset = this.instance.current().method {
+                                name = "getWindowScrollProgressOffset"
+                                superClass()
+                            }.float()
+                            val ratio = max(0.0f, f - windowScrollProgressOffset) / (1.0f - windowScrollProgressOffset)
+                            val maxBlurRadius = this.instance.current().field {
+                                name = "maxBlurRadius"
+                                superClass()
+                            }.int()
+                            this.instance.current().method {
+                                name = "onBlurRadiusChanged"
+                                superClass()
+                            }.call((maxBlurRadius * ratio).toInt())
+                            this.instance.current().method {
+                                name = "onBlendColorChanged"
+                                superClass()
+                            }.call(ratio)
+                        }
+                    }
+                }
+            } else {
+                val foldableDeviceAdapterClz = "com.miui.personalassistant.device.FoldableDeviceAdapter".toClass()
+                "com.miui.personalassistant.device.DeviceAdapter".toClass().method {
+                    name = "create"
+                }.giveAll().hookAll {
+                    before {
+                        this.result = foldableDeviceAdapterClz.constructor().get().newInstance(this.args(0).any())
+                    }
+                }
+                foldableDeviceAdapterClz.apply {
+                    runCatching {
+                        method {
+                            name = "onEnter"
+                            param(BooleanType)
+                        }.hook {
+                            before {
+                                this.instance.current().field {
+                                    name = "mScreenSize"
+                                }.set(3)
+                            }
+                        }
+                    }.onFailure {
+                        method {
+                            name = "onOpened"
+                        }.ignored().hook {
+                            before {
+                                this.instance.current().field {
+                                    name = "mScreenSize"
+                                }.set(3)
+                            }
+                        }
+                    }
+                    method {
+                        name = "onConfigurationChanged"
+                        param(Configuration::class.java)
                     }.hook {
                         before {
                             this.instance.current().field {
@@ -57,50 +111,35 @@ object BackgroundBlur : YukiBaseHooker() {
                             }.set(3)
                         }
                     }
-                }.onFailure {
                     method {
-                        name = "onOpened"
-                    }.ignored().hook {
-                        before {
-                            this.instance.current().field {
-                                name = "mScreenSize"
-                            }.set(3)
-                        }
-                    }
-                }
-                method {
-                    name = "onConfigurationChanged"
-                    param(Configuration::class.java)
-                }.hook {
-                    before {
-                        this.instance.current().field {
-                            name = "mScreenSize"
-                        }.set(3)
-                    }
-                }
-                method {
-                    name = "onScroll"
-                    param(FloatType)
-                }.hook {
-                    replaceUnit {
-                        val f = this.args(0).float()
-                        val i = (f * 100.0f).toInt()
-                        val mCurrentBlurRadius: Int = this.instance.current().field {
-                            name = "mCurrentBlurRadius"
-                        }.int()
-                        if (mCurrentBlurRadius != i) {
-                            if (mCurrentBlurRadius <= 0 || i >= 0) {
-                                this.instance.current().field {
-                                    name = "mCurrentBlurRadius"
-                                }.set(i)
-                            } else {
-                                this.instance.current().field {
-                                    name = "mCurrentBlurRadius"
-                                }.set(0)
+                        name = "onScroll"
+                        param(FloatType)
+                        superClass()
+                    }.hook {
+                        replaceUnit {
+                            val f = this.args(0).float()
+                            val i = (f * 100.0f).toInt()
+                            val mCurrentBlurRadius: Int = this.instance.current().field {
+                                name = "mCurrentBlurRadius"
+                                superClass()
+                            }.int()
+                            if (mCurrentBlurRadius != i) {
+                                if (mCurrentBlurRadius <= 0 || i >= 0) {
+                                    this.instance.current().field {
+                                        name = "mCurrentBlurRadius"
+                                        superClass()
+                                    }.set(i)
+                                } else {
+                                    this.instance.current().field {
+                                        name = "mCurrentBlurRadius"
+                                        superClass()
+                                    }.set(0)
+                                }
+                                this.instance.current().method {
+                                    name = "blurOverlayWindow"
+                                    superClass()
+                                }.call(mCurrentBlurRadius)
                             }
-                            this.instance.current().method {
-                                name = "blurOverlayWindow"
-                            }.call(mCurrentBlurRadius)
                         }
                     }
                 }

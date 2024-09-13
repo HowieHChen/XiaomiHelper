@@ -1,7 +1,7 @@
 package dev.lackluster.mihelper.data
 
 object Pref {
-    const val VERSION = 2
+    const val VERSION = 3
     object Key {
         object Module {
             const val ENABLED = "enable_module"
@@ -74,13 +74,12 @@ object Pref {
                 const val EXTRA_FIX = "home_refactor_extra_fix"
                 const val FIX_SMALL_WINDOW_ANIM = "home_refactor_small_window"
                 const val ALL_APPS_BLUR_BG = "home_refactor_allapps_blur_bg"
-                const val MINUS_OVERLAP = "home_refactor_minus_overlap"
+                const val MINUS_MODE = "home_refactor_minus_mode"
 
                 const val SHOW_LAUNCH_IN_RECENTS = "home_refactor_launch_show"
                 const val SHOW_LAUNCH_IN_RECENTS_SCALE = "home_refactor_launch_scale"
                 const val SHOW_LAUNCH_IN_FOLDER = "home_refactor_launch_folder"
                 const val SHOW_LAUNCH_IN_FOLDER_SCALE = "home_refactor_launch_folder_scale"
-                const val SHOW_LAUNCH_IN_MINUS = "home_refactor_minus_launch"
                 const val SHOW_LAUNCH_IN_MINUS_SCALE = "home_refactor_minus_launch_scale"
 
                 const val APPS_BLUR = "home_refactor_apps_blur"
@@ -149,7 +148,7 @@ object Pref {
             const val SHORTCUT_INSTANCE = "home_shortcut_instance"
             const val MINUS_RESTORE_SETTING = "home_minus_restore"
             const val MINUS_FOLD_STYLE = "home_minus_fold"
-            const val MINUS_BLUR = "person_assist_blur"
+            const val MINUS_BLUR_TYPE = "person_assist_blur_type"
             const val ALWAYS_SHOW_TIME = "home_always_show_time"
             const val FAKE_PREMIUM = "home_fake_premium"
         }
@@ -307,10 +306,13 @@ object Pref {
     object OldKey {
         object MiuiHome {
             object Refactor {
+                const val D_MINUS_OVERLAP = "home_refactor_minus_overlap"
+                const val D_SHOW_LAUNCH_IN_MINUS = "home_refactor_minus_launch"
                 const val D_APPS_BLUR_RADIUS = "home_refactor_apps_blur_radius"
                 const val D_WALLPAPER_BLUR_RADIUS = "home_refactor_wall_radius"
                 const val D_MINUS_BLUR_RADIUS = "home_refactor_minus_radius"
             }
+            const val D_MINUS_BLUR = "person_assist_blur"
         }
         object SystemUI {
             object IconTurner {
@@ -334,13 +336,14 @@ object Pref {
             const val EXTRA_FIX = false
             const val FIX_SMALL_WINDOW_ANIM = false
             const val ALL_APPS_BLUR_BG = false
-            const val MINUS_OVERLAP = false
+            const val MINUS_MODE = 0
+//            const val MINUS_OVERLAP = false
 
             const val SHOW_LAUNCH_IN_RECENTS = false
             const val SHOW_LAUNCH_IN_RECENTS_SCALE = 0.88f
             const val SHOW_LAUNCH_IN_FOLDER = false
             const val SHOW_LAUNCH_IN_FOLDER_SCALE = 1.0f
-            const val SHOW_LAUNCH_IN_MINUS = false
+//            const val SHOW_LAUNCH_IN_MINUS = false
             const val SHOW_LAUNCH_IN_MINUS_SCALE = 0.95f
 
             const val APPS_BLUR = false

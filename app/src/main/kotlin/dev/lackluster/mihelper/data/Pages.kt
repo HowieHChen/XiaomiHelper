@@ -18,6 +18,7 @@ object Pages {
     const val MEDIA_CONTROL = "page_media_control"
     const val DISABLE_FIXED_ORIENTATION = "disable_fixed_orientation"
     const val HOME_REFACTOR = "page_home_refactor"
+    const val MINUS_BLUR = "page_minus_blur"
 
     const val BEZIER_CURVE_BASE = "page_bezier_curve"
     const val BEZIER_CURVE_APPS = "page_bezier_curve_apps"

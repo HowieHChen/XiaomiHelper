@@ -1,6 +1,7 @@
 package dev.lackluster.mihelper.utils
 
 import android.content.Context
+import cn.fkj233.ui.activity.MIUIActivity
 import de.robv.android.xposed.XSharedPreferences
 import dev.lackluster.mihelper.BuildConfig
 import dev.lackluster.mihelper.utils.factory.dp
@@ -63,6 +64,22 @@ object Prefs {
             }
         }
         return 0
+    }
+
+    fun isPixelStrValid(value: String): Boolean {
+        var valid = false
+        runCatching {
+            valid = if (value.endsWith("dp")) {
+                value.replace("dp", "").toInt().dp(MIUIActivity.context) in 0..500
+            } else if (value.endsWith("px")) {
+                value.replace("px", "").toInt() in 0..500
+            } else {
+                value.toInt() in 0..500
+            }
+        }.onFailure {
+            valid = false
+        }
+        return valid
     }
 }
 

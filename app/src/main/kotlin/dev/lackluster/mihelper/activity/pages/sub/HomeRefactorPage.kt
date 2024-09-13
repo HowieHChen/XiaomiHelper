@@ -15,7 +15,7 @@ import dev.lackluster.mihelper.data.Pages
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.data.Pref.Key.MiuiHome.Refactor
 import dev.lackluster.mihelper.data.Pref.DefValue.HomeRefactor
-import dev.lackluster.mihelper.utils.factory.dp
+import dev.lackluster.mihelper.utils.Prefs
 import dev.lackluster.mihelper.utils.factory.px
 
 @BMPage(Pages.HOME_REFACTOR, hideMenu = false)
@@ -25,9 +25,6 @@ class HomeRefactorPage : BasePage() {
         "recents_launch_scale" to Pair(Refactor.SHOW_LAUNCH_IN_RECENTS_SCALE, HomeRefactor.SHOW_LAUNCH_IN_RECENTS_SCALE),
         "folder_launch_view" to Pair(Refactor.SHOW_LAUNCH_IN_FOLDER, HomeRefactor.SHOW_LAUNCH_IN_FOLDER),
         "folder_launch_scale" to Pair(Refactor.SHOW_LAUNCH_IN_FOLDER_SCALE, HomeRefactor.SHOW_LAUNCH_IN_FOLDER_SCALE),
-        "minus_launch_view" to Pair(Refactor.SHOW_LAUNCH_IN_MINUS, HomeRefactor.SHOW_LAUNCH_IN_MINUS),
-        "minus_launch_scale" to Pair(Refactor.SHOW_LAUNCH_IN_MINUS_SCALE, HomeRefactor.SHOW_LAUNCH_IN_MINUS_SCALE),
-        "minus_overlap" to Pair(Refactor.MINUS_OVERLAP, HomeRefactor.MINUS_OVERLAP),
 
         "apps_blur" to Pair(Refactor.APPS_BLUR, HomeRefactor.APPS_BLUR),
         "apps_blur_radius" to Pair(Refactor.APPS_BLUR_RADIUS_STR, HomeRefactor.APPS_BLUR_RADIUS_STR),
@@ -61,11 +58,6 @@ class HomeRefactorPage : BasePage() {
         "wallpaper_nonlinear_y1" to Pair(Refactor.WALLPAPER_NONLINEAR_PATH_Y1, HomeRefactor.WALLPAPER_NONLINEAR_PATH_Y1),
         "wallpaper_nonlinear_x2" to Pair(Refactor.WALLPAPER_NONLINEAR_PATH_X2, HomeRefactor.WALLPAPER_NONLINEAR_PATH_X2),
         "wallpaper_nonlinear_y2" to Pair(Refactor.WALLPAPER_NONLINEAR_PATH_Y2, HomeRefactor.WALLPAPER_NONLINEAR_PATH_Y2),
-
-        "minus_blur" to Pair(Refactor.MINUS_BLUR, HomeRefactor.MINUS_BLUR),
-        "minus_blur_radius" to Pair(Refactor.MINUS_BLUR_RADIUS_STR, HomeRefactor.MINUS_BLUR_RADIUS_STR),
-        "minus_dim" to Pair(Refactor.MINUS_DIM, HomeRefactor.MINUS_DIM),
-        "minus_dim_alpha" to Pair(Refactor.MINUS_DIM_MAX, HomeRefactor.MINUS_DIM_MAX),
     )
 
     private val blurRadiusRangeStr by lazy {
@@ -127,6 +119,13 @@ class HomeRefactorPage : BasePage() {
                 ),
                 SwitchData(Refactor.FIX_SMALL_WINDOW_ANIM)
             )
+            TextPreference(
+                DescData(titleId = R.string.home_refactor_minus_blur),
+                TextData(),
+                onClickListener = {
+                    showFragment(Pages.MINUS_BLUR)
+                }
+            )
         }
         val recentsLaunchViewBinding = GetDataBinding({
             MIUIActivity.safeSP.getBoolean(Refactor.SHOW_LAUNCH_IN_RECENTS, HomeRefactor.SHOW_LAUNCH_IN_RECENTS)
@@ -138,14 +137,6 @@ class HomeRefactorPage : BasePage() {
         }
         val folderLaunchViewBinding = GetDataBinding({
             MIUIActivity.safeSP.getBoolean(Refactor.SHOW_LAUNCH_IN_FOLDER, HomeRefactor.SHOW_LAUNCH_IN_FOLDER)
-        }) { view, reverse, data ->
-            when (reverse) {
-                0 -> view.visibility = if (data as Boolean) View.VISIBLE else View.GONE
-                1 -> view.visibility = if (data as Boolean) View.GONE else View.VISIBLE
-            }
-        }
-        val minusLaunchViewBinding = GetDataBinding({
-            MIUIActivity.safeSP.getBoolean(Refactor.MINUS_OVERLAP, HomeRefactor.MINUS_OVERLAP)
         }) { view, reverse, data ->
             when (reverse) {
                 0 -> view.visibility = if (data as Boolean) View.VISIBLE else View.GONE
@@ -222,75 +213,28 @@ class HomeRefactorPage : BasePage() {
                 ),
                 dataBindingRecv = folderLaunchViewBinding.binding.getRecv(0)
             )
-            SwitchPreference(
-                DescData(
-                    titleId = R.string.home_refactor_minus_overlap_mode,
-                    summaryId = R.string.home_refactor_minus_overlap_mode_tips
-                ),
-                SwitchData(
-                    key = "minus_overlap".toParamKey(),
-                    defValue = "minus_overlap".toParamValue() as Boolean? == true,
-                    dataBindingSend = minusLaunchViewBinding.bindingSend
-                )
-            )
-            EditTextPreference(
-                DescData(
-                    titleId = R.string.home_refactor_launch_scale,
-                    summaryId = R.string.home_refactor_launch_minus_tips
-                ),
-                EditTextData(
-                    key = "minus_launch_scale".toParamKey(),
-                    valueType = EditTextData.ValueType.FLOAT,
-                    defValue = "minus_launch_scale".toParamValue() as Float? ?: 1.0f,
-                    hintText = ("minus_launch_scale".toParamValue() as Float? ?: 1.0f).toString(),
-                    dialogData = DialogData(
-                        DescData(
-                            titleId = R.string.home_refactor_launch_scale,
-                            summary = "${getString(R.string.home_refactor_launch_minus_tips)}\n${getString(R.string.common_range)}: 0.6-1.2"
-                        )
-                    ),
-                    isValueValid = { value ->
-                        return@EditTextData (value as Float? ?: 0.0f) in 0.6f..1.2f
-                    }
-                ),
-                dataBindingRecv = minusLaunchViewBinding.binding.getRecv(0)
-            )
-            SwitchPreference(
-                DescData(
-                    titleId = R.string.home_refactor_launch_show,
-                    summaryId = R.string.home_refactor_launch_show_minus_tips
-                ),
-                SwitchData(Refactor.SHOW_LAUNCH_IN_MINUS),
-                dataBindingRecv = minusLaunchViewBinding.binding.getRecv(1)
-            )
         }
         PreferenceCategory(
             DescData(titleId = R.string.ui_title_home_refactor_apps),
             CategoryData()
         ) {
-            addBlurLayerSetting("apps", activity.getString(R.string.home_refactor_apps_tips), true)
+            addBlurLayerSetting("apps", activity.getString(R.string.home_refactor_apps_tips))
         }
         PreferenceCategory(
             DescData(titleId = R.string.ui_title_home_refactor_folder),
             CategoryData()
         ) {
-            addBlurLayerSetting("folder", activity.getString(R.string.home_refactor_folder_tips), true)
+            addBlurLayerSetting("folder", activity.getString(R.string.home_refactor_folder_tips))
         }
         PreferenceCategory(
             DescData(titleId = R.string.ui_title_home_refactor_wallpaper),
             CategoryData()
         ) {
-            addBlurLayerSetting("wallpaper", activity.getString(R.string.home_refactor_wallpaper_tips), true)
-        }
-        PreferenceCategory(
-            DescData(titleId = R.string.ui_title_home_refactor_minus),
-            CategoryData()
-        ) {
-            addBlurLayerSetting("minus", activity.getString(R.string.home_refactor_minus_tips), false)
+            addBlurLayerSetting("wallpaper", activity.getString(R.string.home_refactor_wallpaper_tips))
         }
     }
 
-    private fun addBlurLayerSetting(prefix: String, descStr: String, addNonlinear: Boolean = false) {
+    private fun addBlurLayerSetting(prefix: String, descStr: String) {
         SwitchPreference(
             DescData(
                 titleId = R.string.home_refactor_blur,
@@ -318,7 +262,7 @@ class HomeRefactorPage : BasePage() {
                     )
                 ),
                 isValueValid = { value ->
-                    return@EditTextData isValueValid(value as String)
+                    return@EditTextData Prefs.isPixelStrValid(value as String)
                 }
             )
         )
@@ -353,9 +297,6 @@ class HomeRefactorPage : BasePage() {
                 }
             )
         )
-        if (!addNonlinear) {
-            return
-        }
         TextPreference(
             DescData(titleId = R.string.home_refactor_anim_curve),
             TextData(
@@ -380,21 +321,5 @@ class HomeRefactorPage : BasePage() {
 
     private fun String.toParamValue(): Any {
         return paramsHashMap[this]?.second ?: throw NoSuchElementException("key=${this}")
-    }
-
-    private fun isValueValid(value: String): Boolean {
-        var valid = false
-        runCatching {
-            valid = if (value.endsWith("dp")) {
-                value.replace("dp", "").toInt().dp(MIUIActivity.context) in 0..500
-            } else if (value.endsWith("px")) {
-                value.replace("px", "").toInt() in 0..500
-            } else {
-                value.toInt() in 0..500
-            }
-        }.onFailure {
-            valid = false
-        }
-        return valid
     }
 }

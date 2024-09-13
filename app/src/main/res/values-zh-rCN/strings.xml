@@ -425,4 +425,9 @@
     <string name="systemui_lock_carrier_text_default">默认（不可见）</string>
     <string name="systemui_notif_clock_anim">强制启用时钟的过渡动画</string>
     <string name="systemui_notif_clock_anim_tips">在横屏时允许使用时钟过渡动画</string>
+    <string name="page_minus_blur">负一屏的模糊效果</string>
+    <string name="home_minus_blur_type">负一屏背景</string>
+    <string name="home_minus_blur_type_sys">传统模糊背景</string>
+    <string name="home_minus_blur_type_texture">高级材质</string>
+    <string name="home_refactor_launch_minus_mode_overlap">重叠模式</string>
 </resources>
