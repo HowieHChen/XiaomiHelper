@@ -1,0 +1,37 @@
+[versions]
+project-name = "XiaomiHelper"
+project-android-compileSdk = "34"
+project-android-minSdk = "34"
+project-android-targetSdk = "34"
+project-app-packageName = "dev.lackluster.mihelper"
+project-app-versionName = "3.0.4"
+project-app-versionCode = "226"
+
+androidGradlePlugin = "8.7.0"
+kotlin = "2.0.20"
+ksp = "2.0.20-1.0.25"
+tinypinyin = "2.0.3.RELEASE"
+xposed = "82"
+yukihookapi = "1.2.1"
+dexkit = "2.0.2"
+
+[libraries]
+xposed-api = { group = "de.robv.android.xposed", name = "api", version.ref = "xposed" }
+yukihookapi-api = { group = "com.highcapable.yukihookapi", name = "api", version.ref = "yukihookapi" }
+yukihookapi-ksp-xposed = { group = "com.highcapable.yukihookapi", name = "ksp-xposed", version.ref = "yukihookapi" }
+drawabletoolbox = { group = "com.github.duanhong169", name = "drawabletoolbox", version = "1.0.7" }
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version = "1.13.1" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version = "1.7.0" }
+google-material = { group = "com.google.android.material", name = "material", version = "1.12.0" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version = "2.1.4" }
+androidx-test-junit = { group = "androidx.test.ext", name = "junit", version = "1.2.1" }
+androidx-test-espresso = { group = "androidx.test.espresso", name = "espresso-core", version = "3.6.1" }
+junit = { group = "junit", name = "junit", version = "4.13.2" }
+
+dexkit = { module = "org.luckypray:dexkit", version.ref = "dexkit" }
+tinypinyin = { module = "io.github.biezhi:TinyPinyin", version.ref = "tinypinyin" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }

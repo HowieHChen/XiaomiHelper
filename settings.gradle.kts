@@ -1,16 +1,23 @@
+@file:Suppress("UnstableApiUsage")
+
 pluginManagement {
     repositories {
         gradlePluginPortal()
         google()
         mavenCentral()
+        maven("https://api.xposed.info/")
     }
 }
-plugins {
-    id("com.highcapable.sweetdependency") version "1.0.4"
-    id("com.highcapable.sweetproperty") version "1.0.5"
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven("https://jitpack.io/")
+        maven("https://api.xposed.info/")
+    }
 }
-sweetProperty {
-    rootProject { all { isEnable = false } }
-}
+
 rootProject.name = "XiaomiHelper"
 include(":app", ":blockmiui")

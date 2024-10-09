@@ -1,19 +1,19 @@
 plugins {
-    autowire(libs.plugins.android.application)
-    autowire(libs.plugins.kotlin.android)
-    autowire(libs.plugins.kotlin.ksp)
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.ksp)
 }
 
 android {
-    namespace = property.project.app.packageName
-    compileSdk = property.project.android.compileSdk
+    namespace = libs.versions.project.app.packageName.get()
+    compileSdk = libs.versions.project.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = property.project.app.packageName
-        minSdk = property.project.android.minSdk
-        targetSdk = property.project.android.targetSdk
-        versionName = property.project.app.versionName
-        versionCode = property.project.app.versionCode
+        applicationId = libs.versions.project.app.packageName.get()
+        minSdk = libs.versions.project.android.minSdk.get().toInt()
+        targetSdk = libs.versions.project.android.targetSdk.get().toInt()
+        versionName = libs.versions.project.app.versionName.get()
+        versionCode = libs.versions.project.app.versionCode.get().toInt()
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -56,18 +56,18 @@ android {
 }
 
 dependencies {
-    implementation("org.luckypray:dexkit:2.0.0")
-    implementation("io.github.biezhi:TinyPinyin:2.0.3.RELEASE")
+    implementation(libs.dexkit)
+    implementation(libs.tinypinyin)
     implementation(project(mapOf("path" to ":blockmiui")))
-    compileOnly(de.robv.android.xposed.api)
-    implementation(com.highcapable.yukihookapi.api)
-    ksp(com.highcapable.yukihookapi.ksp.xposed)
-    implementation(com.github.duanhong169.drawabletoolbox)
-    implementation(androidx.core.core.ktx)
-    implementation(androidx.appcompat.appcompat)
-    implementation(com.google.android.material.material)
-    implementation(androidx.constraintlayout.constraintlayout)
-    testImplementation(junit.junit)
-    androidTestImplementation(androidx.test.ext.junit)
-    androidTestImplementation(androidx.test.espresso.espresso.core)
+    compileOnly(libs.xposed.api)
+    implementation(libs.yukihookapi.api)
+    ksp(libs.yukihookapi.ksp.xposed)
+    implementation(libs.drawabletoolbox)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.google.material)
+    implementation(libs.androidx.constraintlayout)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.test.junit)
+    androidTestImplementation(libs.androidx.test.espresso)
 }
