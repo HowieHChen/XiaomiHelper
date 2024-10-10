@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">Hyper Helper</string>
     <string name="xposed_desc">HyperOSを再び偉大な存在にします</string>
-    <string name="about_module">このモジュールはYukiHookAPIによって作られました 詳細はこちら https://github.com/HighCapable/YuKiHookAPI</string>
+    <string name="about_module">YukiHookAPIを使用しています。 詳細はこちら https://github.com/HighCapable/YuKiHookAPI</string>
     <string name="module_inactive_tips">モジュールが有効化されていません。LSPosedのバージョンとモジュールが有効化されているかの情報を確認して、再度お試しください。</string>
     <string name="module_disabled_tips">モジュールが有効化されていません。モジュールの設定ページでモジュールを有効化してください。</string>
     <string name="common_default">デフォルト</string>
@@ -88,7 +88,7 @@
     <!-- AboutPage -->
     <string name="about_jump_error_toast">いくつかの奇妙なエラーが発生しました。</string>
     <string name="about_easter_egg_toast">タップをしても何も起こらないよ。</string>
-    <string name="about_yuki">このモジュールはYukiHookAPIによって作られました</string>
+    <string name="about_yuki">YukiHookAPIについて/string>
     <string name="about_yuki_tips">詳細はこちら https://github.com/HighCapable/YuKiHookAPI</string>
     <string name="ui_title_about_developer">開発者</string>
     <string name="about_author_tips">プロフィールまたは署名はありません</string>
