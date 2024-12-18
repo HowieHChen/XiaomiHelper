@@ -1,0 +1,6 @@
+[submodule "hyperx-compose"]
+	path = hyperx-compose
+	url = https://github.com/HowieHChen/hyperx-compose.git
+[submodule "blockmiui"]
+	path = blockmiui
+	url = https://github.com/HowieHChen/blockmiui.git
