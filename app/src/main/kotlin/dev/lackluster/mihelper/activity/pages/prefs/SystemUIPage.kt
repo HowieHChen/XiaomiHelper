@@ -38,7 +38,7 @@ import dev.lackluster.mihelper.utils.Device
 @BMPage(Pages.SYSTEM_UI, hideMenu = false)
 class SystemUIPage : BasePage() {
     override fun getTitle(): String {
-        return activity.getString(R.string.page_systemui)
+        return activity.getString(R.string.scope_systemui)
     }
 
     override fun onCreate() {

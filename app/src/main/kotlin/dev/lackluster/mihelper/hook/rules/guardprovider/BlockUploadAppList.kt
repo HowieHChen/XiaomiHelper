@@ -27,31 +27,21 @@ import dev.lackluster.mihelper.utils.factory.hasEnable
 import org.luckypray.dexkit.query.enums.StringMatchType
 
 object BlockUploadAppList : YukiBaseHooker() {
-    private val region by lazy {
-        DexKit.dexKitBridge.findMethod {
-            matcher {
-                addUsingString("ro.miui.customized.region", StringMatchType.Equals)
-            }
-        }.singleOrNull()
-    }
     private val detect by lazy {
-        DexKit.dexKitBridge.findMethod {
+        DexKit.findMethodWithCache("get_all_un_system_apps") {
             matcher {
+                returnType = "java.lang.String"
+                addUsingString("AntiDefraudAppManager", StringMatchType.Equals)
                 addUsingString("https://flash.sec.miui.com/detect/app", StringMatchType.Equals)
             }
-        }.singleOrNull()
+        }
     }
 
     override fun onHook() {
         hasEnable(Pref.Key.GuardProvider.BLOCK_UPLOAD_APP) {
             if (appClassLoader == null) return@hasEnable
-            region?.getMethodInstance(appClassLoader!!)?.hook {
-                replaceToFalse()
-            }
             detect?.getMethodInstance(appClassLoader!!)?.hook {
-                before {
-                    this.result = null
-                }
+                replaceTo(null)
             }
         }
     }

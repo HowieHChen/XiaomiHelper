@@ -1,20 +1,24 @@
+import java.text.SimpleDateFormat
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.ksp)
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
     namespace = libs.versions.project.app.packageName.get()
-    compileSdk = libs.versions.project.android.compileSdk.get().toInt()
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
         applicationId = libs.versions.project.app.packageName.get()
-        minSdk = libs.versions.project.android.minSdk.get().toInt()
-        targetSdk = libs.versions.project.android.targetSdk.get().toInt()
+        minSdk = libs.versions.android.minSdk.get().toInt()
+        targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionName = libs.versions.project.app.versionName.get()
         versionCode = libs.versions.project.app.versionCode.get().toInt()
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "BUILD_TIME", "\"" + SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()) + "\"")
     }
     buildTypes {
         release {
@@ -24,11 +28,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = "21"
         freeCompilerArgs = listOf(
             "-Xno-param-assertions",
             "-Xno-call-assertions",
@@ -56,17 +60,23 @@ android {
 }
 
 dependencies {
-    implementation(libs.dexkit)
-    implementation(libs.tinypinyin)
-    implementation(project(mapOf("path" to ":blockmiui")))
     compileOnly(libs.xposed.api)
     implementation(libs.yukihookapi.api)
     ksp(libs.yukihookapi.ksp.xposed)
-    implementation(libs.drawabletoolbox)
+
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.dynamicanimation.ktx)
+
+    implementation(libs.dexkit)
+    implementation(libs.tinypinyin)
+    implementation(project(mapOf("path" to ":blockmiui")))
+    implementation(project(mapOf("path" to ":hyperx-compose")))
+    implementation(libs.drawabletoolbox)
+
     implementation(libs.androidx.appcompat)
-    implementation(libs.google.material)
     implementation(libs.androidx.constraintlayout)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.junit)
     androidTestImplementation(libs.androidx.test.espresso)

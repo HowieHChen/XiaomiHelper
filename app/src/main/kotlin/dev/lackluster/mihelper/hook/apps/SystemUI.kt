@@ -2,6 +2,7 @@ package dev.lackluster.mihelper.hook.apps
 
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import dev.lackluster.mihelper.hook.rules.shared.RemoveFreeformRestriction
+import dev.lackluster.mihelper.hook.rules.systemui.FuckStatusBarGestures
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils
 import dev.lackluster.mihelper.hook.rules.systemui.lockscreen.BlockEditor
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.HideCarrierLabel
@@ -55,5 +56,6 @@ object SystemUI : YukiBaseHooker() {
         loadHooker(CustomElement)
         loadHooker(CarrierText)
         loadHooker(PadClockAnim)
+        loadHooker(FuckStatusBarGestures)
     }
 }

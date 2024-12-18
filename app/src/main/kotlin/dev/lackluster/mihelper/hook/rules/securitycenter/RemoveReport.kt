@@ -28,13 +28,13 @@ import org.luckypray.dexkit.query.enums.StringMatchType
 
 object RemoveReport : YukiBaseHooker() {
     private val reportMethod by lazy {
-        DexKit.dexKitBridge.findMethod {
+        DexKit.findMethodWithCache("remove_report") {
             matcher {
                 addUsingString("android.intent.action.VIEW", StringMatchType.Equals)
                 addUsingString("com.xiaomi.market", StringMatchType.Equals)
                 returnType = "boolean"
             }
-        }.singleOrNull()
+        }
     }
 
     override fun onHook() {

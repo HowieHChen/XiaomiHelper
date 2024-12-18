@@ -24,32 +24,25 @@ package dev.lackluster.mihelper.hook.rules.packageinstaller
 
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.DexKit.dexKitBridge
+import dev.lackluster.mihelper.utils.DexKit
 import dev.lackluster.mihelper.utils.factory.hasEnable
+import org.luckypray.dexkit.query.enums.StringMatchType
 import java.lang.reflect.Modifier
 
 object BlockUploadAppInfo : YukiBaseHooker() {
     private val layoutMethod by lazy {
-        dexKitBridge.findMethod {
+        DexKit.findMethodsWithCache("layout_method") {
             matcher {
                 paramCount = 7
                 paramTypes = listOf("java.lang.String", "java.lang.String", "java.lang.String", "java.lang.Integer", "java.lang.String", "java.lang.String", null)
             }
         }
     }
-    private val checkMethod by lazy {
-        dexKitBridge.findMethod {
-            matcher {
-                paramCount = 6
-                paramTypes = listOf("android.content.Context", null, "int", "com.miui.packageInstaller.model.ApkInfo", "java.util.HashMap", null)
-            }
-        }
-    }
     private val reportMethod by lazy {
-        dexKitBridge.findMethod {
+        DexKit.findMethodsWithCache("report_method") {
             matcher {
-                addUsingString("appSourcepackageName")
-                addUsingString("\$apkInfo")
+                addUsingString("appSourcepackageName", StringMatchType.Equals)
+                addUsingString("\$apkInfo", StringMatchType.Equals)
                 modifiers = Modifier.STATIC
             }
         }
@@ -59,12 +52,6 @@ object BlockUploadAppInfo : YukiBaseHooker() {
         hasEnable(Pref.Key.PackageInstaller.BLOCK_UPLOAD_INFO) {
             if (appClassLoader == null) return@hasEnable
             layoutMethod.forEach {
-                val instance = it.getMethodInstance(appClassLoader!!)
-                instance.hook {
-                    intercept()
-                }
-            }
-            checkMethod.forEach {
                 val instance = it.getMethodInstance(appClassLoader!!)
                 instance.hook {
                     intercept()

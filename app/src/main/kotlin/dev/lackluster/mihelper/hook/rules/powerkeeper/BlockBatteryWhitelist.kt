@@ -24,17 +24,17 @@ package dev.lackluster.mihelper.hook.rules.powerkeeper
 
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.DexKit.dexKitBridge
+import dev.lackluster.mihelper.utils.DexKit
 import dev.lackluster.mihelper.utils.factory.hasEnable
 import org.luckypray.dexkit.query.enums.StringMatchType
 
 object BlockBatteryWhitelist : YukiBaseHooker() {
     private val whitelist by lazy {
-        dexKitBridge.findMethod {
+        DexKit.findMethodWithCache("power_save_whitelist") {
             matcher {
-                addUsingString("addPowerSaveWhitelistApps", StringMatchType.Equals)
+                addUsingString("addPowerSaveWhitelistApps", StringMatchType.StartsWith)
             }
-        }.singleOrNull()
+        }
     }
 
     override fun onHook() {

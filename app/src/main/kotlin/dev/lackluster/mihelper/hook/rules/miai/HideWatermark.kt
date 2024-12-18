@@ -31,11 +31,11 @@ import org.luckypray.dexkit.query.enums.StringMatchType
 
 object HideWatermark : YukiBaseHooker(){
     private val addWatermark by lazy {
-        DexKit.dexKitBridge.findMethod {
+        DexKit.findMethodWithCache("add_watermark") {
             matcher {
                 addUsingString("add watermark", StringMatchType.Equals)
             }
-        }.singleOrNull()
+        }
     }
 
     override fun onHook() {

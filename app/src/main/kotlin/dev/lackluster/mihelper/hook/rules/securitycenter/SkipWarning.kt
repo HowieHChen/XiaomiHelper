@@ -20,56 +20,92 @@
 
 package dev.lackluster.mihelper.hook.rules.securitycenter
 
+import android.app.Activity
+import android.content.Intent
+import android.os.Bundle
 import android.os.Handler
+import android.view.View
+import android.widget.Button
+import android.widget.TextView
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.constructor
+import com.highcapable.yukihookapi.hook.factory.current
 import com.highcapable.yukihookapi.hook.factory.method
-import com.highcapable.yukihookapi.hook.log.YLog
-import com.highcapable.yukihookapi.hook.type.java.BooleanType
+import com.highcapable.yukihookapi.hook.type.android.HandlerClass
 import com.highcapable.yukihookapi.hook.type.java.IntType
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.factory.hasEnable
 
 object SkipWarning : YukiBaseHooker() {
+    private val adbInstallVerifyClass by lazy {
+        "com.miui.permcenter.install.AdbInstallVerifyActivity".toClassOrNull()
+    }
     override fun onHook() {
         hasEnable(Pref.Key.SecurityCenter.SKIP_WARNING) {
-            "android.widget.TextView".toClass().method {
-                name = "setEnabled"
-                param(BooleanType)
-            }.hook {
-                before {
-                    this.args(0).set(true)
+            // InterceptFragment
+            "com.miui.permcenter.privacymanager.InterceptBaseFragment".toClassOrNull()?.apply {
+                method {
+                    paramCount = 0
+                    returnType = IntType
+                    modifiers { isPublic }
+                }.hook {
+                    replaceTo(0)
                 }
             }
-            try {
-                val mInnerClasses = "com.miui.permcenter.privacymanager.InterceptBaseFragment".toClass().declaredClasses
-                var mHandlerClass: Class<*>? = null
-                for (mInnerClass in mInnerClasses) {
-                    if (Handler::class.java.isAssignableFrom(mInnerClass)) {
-                        mHandlerClass = mInnerClass
-                        break
-                    }
-                }
-                if (mHandlerClass != null) {
-                    mHandlerClass.constructor().hookAll {
-                        before {
-                            if (this.args.size == 2) {
-                                this.args(1).set(0)
-                            }
-                        }
-                    }
-                    mHandlerClass.method {
-                        returnType = Void.TYPE
-                        param(IntType)
-                    }.ignored().hook {
-                        before {
-                            this.args(0).set(0)
-                        }
+            "com.miui.permcenter.privacymanager.InterceptPermissionFragment".toClassOrNull()?.apply {
+                method {
+                    name = "onCreate"
+                }.hook {
+                    before {
+                        val bundle = this.args(0).cast<Bundle>() ?: Bundle()
+                        bundle.putInt("KET_STEP_COUNT", 0)
+                        bundle.putBoolean("KEY_ALLOW_ENABLE", true)
+                        this.args(0).set(bundle)
                     }
                 }
             }
-            catch (_: Throwable) {
-                YLog.info("Failed to find class: com.miui.permcenter.privacymanager.InterceptBaseFragment")
+            // ADB Input
+            "com.miui.permcenter.install.AdbInputApplyActivity".toClassOrNull()?.apply {
+                method {
+                    name = "onCreate"
+                }.hook {
+                    after {
+                        val activity = this.instance as? Activity ?: return@after
+                        activity.findViewById<TextView>(ResourcesUtils.warning_info)?.apply {
+                            val msg = context.getString(ResourcesUtils.usb_adb_input_apply_step_1) + "\n\n" +
+                                    context.getString(ResourcesUtils.usb_adb_input_apply_step_2) + "\n\n" +
+                                    context.getString(ResourcesUtils.usb_adb_input_apply_step_3)
+                            text = msg
+                        }
+                        activity.findViewById<Button>(ResourcesUtils.accept).apply {
+                            text = context.getString(ResourcesUtils.button_text_accept)
+                            isEnabled = true
+                        }
+                    }
+                }
+                method {
+                    name = "onClick"
+                }.hook {
+                    before {
+                        val view = this.args(0).cast<View>() ?: return@before
+                        if (view.id == ResourcesUtils.accept) {
+                            val activity = this.instance as? Activity ?: return@before
+                            this.instance.current().field {
+                                type = HandlerClass
+                            }.cast<Handler>()?.removeMessages(100)
+                            val intent = Intent(activity, adbInstallVerifyClass)
+                            intent.putExtra("is_input", true)
+                            activity.startActivityForResult(intent, 3)
+                            this.result = null
+                        }
+                    }
+                }
+            }
+            "com.miui.permcenter.install.AdbInputApplyActivity\$a".toClassOrNull()?.apply {
+                method {
+                    name = "handleMessage"
+                }.hook {
+                    intercept()
+                }
             }
         }
     }

@@ -20,4 +20,4 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "XiaomiHelper"
-include(":app", ":blockmiui")
+include(":app", ":blockmiui", ":hyperx-compose")

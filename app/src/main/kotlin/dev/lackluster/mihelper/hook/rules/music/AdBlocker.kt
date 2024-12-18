@@ -20,22 +20,48 @@
 
 package dev.lackluster.mihelper.hook.rules.music
 
-import android.app.Activity
+import android.view.View
+import android.widget.TextView
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
+import com.highcapable.yukihookapi.hook.factory.current
 import com.highcapable.yukihookapi.hook.factory.method
-import com.highcapable.yukihookapi.hook.type.android.BundleClass
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.factory.hasEnable
 
 object AdBlocker : YukiBaseHooker() {
     override fun onHook() {
         hasEnable(Pref.Key.Music.AD_BLOCKER) {
-            "com.tencent.qqmusiclite.activity.SplashAdActivity".toClassOrNull()?.method {
-                name = "onCreate"
-                param(BundleClass)
-            }?.ignored()?.hook {
-                after {
-                    Activity::class.java.getMethod("finish").invoke(this.instance)
+            "com.tencent.qqmusiclite.fragment.my.MyViewModel".toClassOrNull()?.apply {
+                method {
+                    name = "loadAd"
+                }.hook {
+                    intercept()
+                }
+            }
+            "com.tencent.qqmusiclite.ui.MyAssetsView\$LoginLayoutViewHolder".toClassOrNull()?.apply {
+                method {
+                    name = "setAutoPlayFlag"
+                }.hook {
+                    before {
+                        this.args(0).setFalse()
+                    }
+                }
+                method {
+                    name = "setVipTextSecond"
+                }.hook {
+                    before {
+                        this.args(0).setNull()
+                    }
+                }
+                method {
+                    name = "setVipBuy"
+                }.hook {
+                    before {
+                        this.instance.current().method {
+                            name = "getVipBuyLabel"
+                        }.invoke<TextView>()?.visibility = View.GONE
+                        this.result = null
+                    }
                 }
             }
         }

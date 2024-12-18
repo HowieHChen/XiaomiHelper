@@ -23,77 +23,36 @@
 
 package dev.lackluster.mihelper.utils
 
-import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import cn.fkj233.ui.activity.MIUIActivity
-import dev.lackluster.hyperx.app.AlertDialog
+import dev.lackluster.hyperx.compose.activity.SafeSP
 import dev.lackluster.mihelper.R
-import dev.lackluster.mihelper.data.Pages
+import dev.lackluster.mihelper.activity.MainActivity
 import dev.lackluster.mihelper.data.Pref
 import org.json.JSONObject
 import java.io.IOException
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
+import kotlin.system.exitProcess
 
 
 object BackupUtils {
     const val WRITE_DOCUMENT_CODE = 699050
     const val READ_DOCUMENT_CODE = 768955
-    private const val BACKUP_FILE_PREFIX = "hyper_helper_backup_"
+    const val BACKUP_FILE_PREFIX = "hyper_helper_backup_"
 
-    fun backup(activity: Activity) {
-        val timeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HHmmss")
-        val backupFileName = BACKUP_FILE_PREFIX + timeFormatter.format(LocalDateTime.now())
-        val intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
-        intent.addCategory(Intent.CATEGORY_OPENABLE)
-        intent.setType("application/json")
-        intent.putExtra(Intent.EXTRA_TITLE, backupFileName)
-        activity.startActivityForResult(intent, WRITE_DOCUMENT_CODE)
+    fun restartApp(context: Context) {
+        val intent =
+            Intent(context, MainActivity::class.java)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        context.startActivity(intent)
+        exitProcess(0)
     }
 
-    fun restore(activity: Activity) {
-        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
-        intent.addCategory(Intent.CATEGORY_OPENABLE)
-        intent.setType("application/json")
-        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false)
-        activity.startActivityForResult(intent, READ_DOCUMENT_CODE)
-    }
-
-    fun reset(activity: MIUIActivity) {
-        var titleId = R.string.dialog_error
-        var msgId = R.string.module_reset_failure
-        if (handleReset()) {
-            titleId = R.string.dialog_done
-            msgId = R.string.module_reset_success
-        }
-        AlertDialog.Builder(activity)
-            .setTitle(titleId)
-            .setMessage(msgId)
-            .setCancelable(false)
-            .setPositiveButton(R.string.button_ok) { dialog, _ ->
-                dialog.dismiss()
-                activity.showFragment(Pages.MAIN)
-                AlertDialog.Builder(activity)
-                    .setTitle(R.string.dialog_warning)
-                    .setMessage(R.string.module_disabled_tips)
-                    .setCancelable(false)
-                    .setNegativeButton(R.string.button_cancel) { dialog2, _ ->
-                        dialog2.dismiss()
-                    }
-                    .setPositiveButton(R.string.button_ok) { dialog2, _ ->
-                        activity.showFragment(Pages.MODULE_SETTINGS)
-                        dialog2.dismiss()
-                    }
-                    .show()
-            }
-            .show()
-    }
-
-    fun handleBackup(activity: MIUIActivity, data: Uri?) {
-        val sp = MIUIActivity.safeSP.mSP
+    fun handleBackup(context: Context, data: Uri?) {
+        val sp = SafeSP.mSP
         if (data == null || sp == null) return
-        val outputStream = activity.contentResolver.openOutputStream(data) ?: throw IOException("Can't open output stream")
+        val outputStream = context.contentResolver.openOutputStream(data) ?: throw IOException("Can't open output stream")
         val jsonObject = JSONObject()
         for (entry in sp.all) {
             when (entry.value) {
@@ -111,14 +70,14 @@ object BackupUtils {
         outputStream.bufferedWriter().use { it.write(jsonObject.toString()) }
     }
 
-    fun handleRestore(activity: MIUIActivity, data: Uri?) {
-        val sp = MIUIActivity.safeSP.mSP
+    fun handleRestore(context: Context, data: Uri?) {
+        val sp = SafeSP.mSP
         if (data == null || sp == null) return
-        val inputStream = activity.contentResolver.openInputStream(data) ?: throw IOException("Can't open input stream")
+        val inputStream = context.contentResolver.openInputStream(data) ?: throw IOException("Can't open input stream")
         val allText = inputStream.bufferedReader().use { it.readText() }
         val jsonObject = JSONObject(allText)
         if (!checkBackupFileValid(jsonObject)) {
-            throw IllegalArgumentException(activity.getString(R.string.module_restore_failure_spversion))
+            throw IllegalArgumentException(context.getString(R.string.module_restore_failure_spversion))
         }
         val editor = sp.edit()
         for (key in jsonObject.keys()) {
@@ -144,8 +103,8 @@ object BackupUtils {
         editor.apply()
     }
 
-    private fun handleReset(): Boolean {
-        val editor = MIUIActivity.safeSP.mSP?.edit() ?: return false
+    fun handleReset(): Boolean {
+        val editor = SafeSP.mSP?.edit() ?: return false
         editor.clear()
         editor.apply()
         return true

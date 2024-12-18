@@ -30,10 +30,12 @@ import dev.lackluster.mihelper.utils.factory.hasEnable
 object DisableRiskCheck : YukiBaseHooker() {
     override fun onHook() {
         hasEnable(Pref.Key.MiTrust.DISABLE_RISK_CHECK) {
-            "com.xiaomi.trustservice.remoteservice.eventhandle.statusEventHandle".toClassOrNull()?.method {
-                name = "initIMrmService"
-            }?.hook {
-                replaceToFalse()
+            "com.xiaomi.trustservice.remoteservice.eventhandle.statusEventHandle".toClassOrNull()?.apply {
+                method {
+                    name = "initIMrmService"
+                }.hook {
+                    replaceToFalse()
+                }
             }
         }
     }

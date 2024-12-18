@@ -33,18 +33,19 @@ object FuckXL : YukiBaseHooker() {
         hasEnable(Pref.Key.Download.FUCK_XL) {
             "com.android.providers.downloads.config.XLConfig".toClass().apply {
                 method {
+                    name = "isDebug"
+                }.hook {
+                    replaceToFalse()
+                }
+                method {
                     name = "setDebug"
                 }.hook {
-                    before {
-                        this.result = null
-                    }
+                    intercept()
                 }
                 method {
                     name = "setSoDebug"
                 }.hook {
-                    before {
-                        this.result = null
-                    }
+                    intercept()
                 }
             }
 //            File::class.java

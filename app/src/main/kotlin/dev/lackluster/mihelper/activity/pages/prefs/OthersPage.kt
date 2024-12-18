@@ -82,11 +82,11 @@ class OthersPage : BasePage() {
             )
         }
         PreferenceCategory(
-            DescData(titleId = R.string.ui_title_others_download),
+            DescData(titleId = R.string.ui_title_cleaner_download),
             CategoryData()
         ) {
             SwitchPreference(
-                DescData(titleId = R.string.others_download_fuck_xl),
+                DescData(titleId = R.string.cleaner_download_fuck_xl),
                 SwitchData(Pref.Key.Download.FUCK_XL)
             )
         }
@@ -226,7 +226,7 @@ class OthersPage : BasePage() {
                 SwitchData(Pref.Key.Settings.UNLOCK_VOIP_ASSISTANT)
             )
             SwitchPreference(
-                DescData(titleId = R.string.others_settings_unlock_custom_refresh),
+                DescData(titleId = R.string.security_power_unlock_custom_refresh),
                 SwitchData(Pref.Key.Settings.UNLOCK_CUSTOM_REFRESH)
             )
             SwitchPreference(

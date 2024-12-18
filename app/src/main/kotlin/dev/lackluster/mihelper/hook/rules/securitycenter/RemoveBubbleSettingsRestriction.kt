@@ -33,6 +33,18 @@ import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.factory.hasEnable
 
 object RemoveBubbleSettingsRestriction : YukiBaseHooker() {
+    private val bubbleAppClass by lazy {
+        "com.miui.bubbles.settings.BubbleApp".toClass()
+    }
+    private val getFreeformSuggestionListMethod by lazy {
+        "android.util.MiuiMultiWindowUtils".toClass().method {
+            name = "getFreeformSuggestionList"
+            param(ContextClass)
+            paramCount = 1
+            modifiers { isStatic }
+        }
+    }
+
     @SuppressLint("PrivateApi")
     override fun onHook() {
         hasEnable(Pref.Key.SecurityCenter.DISABLE_BUBBLE_RESTRICT) {
@@ -40,7 +52,6 @@ object RemoveBubbleSettingsRestriction : YukiBaseHooker() {
                 name = "getDefaultBubbles"
             }.hook {
                 before {
-                    val bubbleAppClz = "com.miui.bubbles.settings.BubbleApp".toClass()
                     val arrayMap = ArrayMap<String, Any>()
                     val context = this.instance.current().field {
                         name = "mContext"
@@ -48,15 +59,10 @@ object RemoveBubbleSettingsRestriction : YukiBaseHooker() {
                     val currentUserId = this.instance.current().field {
                         name = "mCurrentUserId"
                     }.int()
-                    val freeformSuggestionList = "android.util.MiuiMultiWindowUtils".toClass().method {
-                        name = "getFreeformSuggestionList"
-                        param(ContextClass)
-                        paramCount = 1
-                        modifiers { isStatic }
-                    }.get().list<String>(context)
+                    val freeformSuggestionList = getFreeformSuggestionListMethod.get().list<String>(context)
                     if (freeformSuggestionList.isNotEmpty()) {
                         for (str in freeformSuggestionList) {
-                            val bubbleApp = bubbleAppClz.constructor().get().call(str, currentUserId)
+                            val bubbleApp = bubbleAppClass.constructor().get().call(str, currentUserId)
                             bubbleApp?.current()?.method {
                                 name = "setChecked"
                                 param(BooleanType)

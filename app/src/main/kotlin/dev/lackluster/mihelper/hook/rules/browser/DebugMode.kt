@@ -29,13 +29,13 @@ import org.luckypray.dexkit.query.enums.StringMatchType
 
 object DebugMode : YukiBaseHooker() {
     private val debugMethod by lazy {
-        DexKit.dexKitBridge.findMethod {
+        DexKit.findMethodWithCache("get_debug_mode") {
             matcher {
                 name = "getDebugMode"
                 returnType = "boolean"
                 addUsingString("pref_key_debug_mode", StringMatchType.StartsWith)
             }
-        }.singleOrNull()
+        }
     }
 
     override fun onHook() {

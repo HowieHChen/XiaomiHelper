@@ -1,183 +1,187 @@
 package dev.lackluster.mihelper.activity
 
-import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
-import cn.fkj233.ui.activity.MIUIActivity
-import dev.lackluster.hyperx.app.AlertDialog
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableFloatState
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.navigation.compose.composable
+import dev.lackluster.hyperx.compose.activity.HyperXActivity
+import dev.lackluster.hyperx.compose.activity.SafeSP
+import dev.lackluster.hyperx.compose.base.HyperXApp
 import dev.lackluster.mihelper.R
-import dev.lackluster.mihelper.activity.pages.bezier.AnimCurvePreviewAppsPage
-import dev.lackluster.mihelper.activity.pages.bezier.AnimCurvePreviewFolderPage
-import dev.lackluster.mihelper.activity.pages.bezier.AnimCurvePreviewWallpaperPage
-import dev.lackluster.mihelper.activity.pages.main.AboutPage
-import dev.lackluster.mihelper.activity.pages.main.MainPage
-import dev.lackluster.mihelper.activity.pages.main.MenuPage
-import dev.lackluster.mihelper.activity.pages.prefs.CleanMasterPage
-import dev.lackluster.mihelper.activity.pages.prefs.InterconnectionPage
-import dev.lackluster.mihelper.activity.pages.prefs.MiuiHomePage
-import dev.lackluster.mihelper.activity.pages.prefs.ModuleSettingsPage
-import dev.lackluster.mihelper.activity.pages.prefs.OthersPage
-import dev.lackluster.mihelper.activity.pages.prefs.SecurityCenterPage
-import dev.lackluster.mihelper.activity.pages.prefs.SystemFrameworkPage
-import dev.lackluster.mihelper.activity.pages.prefs.SystemUIPage
-import dev.lackluster.mihelper.activity.pages.sub.DisableFixedOrientationPage
-import dev.lackluster.mihelper.activity.pages.sub.HomeRefactorPage
-import dev.lackluster.mihelper.activity.pages.sub.IconTunerPage
-import dev.lackluster.mihelper.activity.pages.sub.MediaControlStylePage
-import dev.lackluster.mihelper.activity.pages.sub.MinusBlurPage
-import dev.lackluster.mihelper.activity.pages.sub.StatusBarClockPage
+import dev.lackluster.mihelper.activity.page.AboutPage
+import dev.lackluster.mihelper.activity.page.CleanMasterPage
+import dev.lackluster.mihelper.activity.page.MainPage
+import dev.lackluster.mihelper.activity.page.MenuPage
+import dev.lackluster.mihelper.activity.page.ModuleSettingsPage
+import dev.lackluster.mihelper.activity.page.OthersPage
+import dev.lackluster.mihelper.activity.page.SecurityCenterPage
+import dev.lackluster.mihelper.activity.page.SystemUIPage
+import dev.lackluster.mihelper.activity.page.UITestPage
 import dev.lackluster.mihelper.data.Pages
 import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.BackupUtils
+import dev.lackluster.mihelper.utils.Device
+import dev.lackluster.mihelper.utils.ShellUtils
 import dev.lackluster.mihelper.utils.factory.getSP
+import top.yukonga.miuix.kmp.basic.Box
+import top.yukonga.miuix.kmp.theme.MiuixTheme
 
-class MainActivity : MIUIActivity() {
+class MainActivity : HyperXActivity() {
+    companion object {
+        val moduleActive: MutableState<Boolean> = mutableStateOf(false)
+        val moduleEnabled: MutableState<Boolean> = mutableStateOf(false)
+        val liteMode: MutableState<Boolean> = mutableStateOf(false)
+        val blurEnabled: MutableState<Boolean> = mutableStateOf(true)
+        val blurTintAlphaLight: MutableFloatState = mutableFloatStateOf(0.6f)
+        val blurTintAlphaDark: MutableFloatState = mutableFloatStateOf(0.5f)
+        val splitEnabled: MutableState<Boolean> = mutableStateOf(Device.isPad)
+        val rootGranted: MutableState<Boolean> = mutableStateOf(false)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initAndCheck()
     }
 
-    @SuppressLint("WorldReadableFiles")
-    private fun initAndCheck(): Boolean {
+    @Composable
+    override fun AppContent() {
+        HyperXApp(
+            autoSplitView = splitEnabled,
+            mainPageContent = { navController, adjustPadding, mode ->
+                MainPage(navController, adjustPadding, mode)
+            },
+            emptyPageContent = {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    val foregroundColor: Color
+                    val backgroundColor: Color
+                    MiuixTheme.colorScheme.onBackground.let {
+                        if (it.luminance() >= 0.5f) {
+                            foregroundColor = it.copy(alpha = 0.2f)
+                            backgroundColor = it.copy(alpha = 0.12f)
+                        }
+                        else {
+                            foregroundColor = it.copy(alpha = 0.1f)
+                            backgroundColor = it.copy(alpha = 0.06f)
+                        }
+                    }
+                    Image(
+                        modifier = Modifier.fillMaxSize(),
+                        painter = painterResource(R.drawable.empty_page_background),
+                        contentDescription = null,
+                        colorFilter = ColorFilter.tint(backgroundColor),
+                        contentScale = ContentScale.Crop
+                    )
+                    Image(
+                        modifier = Modifier.fillMaxSize(),
+                        painter = painterResource(R.drawable.empty_page_foreground),
+                        contentDescription = null,
+                        colorFilter = ColorFilter.tint(foregroundColor),
+                        contentScale = ContentScale.Inside
+                    )
+                }
+            },
+            otherPageBuilder = { navController, adjustPadding, mode ->
+                composable(Pages.MENU) { MenuPage(navController, adjustPadding, mode) }
+                composable(Pages.MODULE_SETTINGS) { ModuleSettingsPage(navController, adjustPadding) }
+                composable(Pages.SYSTEM_UI) { SystemUIPage(navController, adjustPadding)}
+
+                composable(Pages.CLEAN_MASTER) { CleanMasterPage(navController, adjustPadding, mode) }
+                composable(Pages.SECURITY_CENTER) { SecurityCenterPage(navController, adjustPadding, mode) }
+
+                composable(Pages.OTHERS) { OthersPage(navController, adjustPadding, mode) }
+                composable(Pages.ABOUT) { AboutPage(navController, adjustPadding, mode) }
+                composable(Pages.DEV_UI_TEST) { UITestPage(navController, adjustPadding, mode) }
+            }
+        )
+    }
+
+    private fun initAndCheck() {
         try {
-            setSP(getSP(this))
+            SafeSP.setSP(getSP(this))
             versionCompatible()
-            if (!safeSP.getBoolean(Pref.Key.Module.ENABLED, false)) {
-                AlertDialog.Builder(this)
-                    .setTitle(R.string.dialog_warning)
-                    .setMessage(R.string.module_disabled_tips)
-                    .setCancelable(false)
-                    .setNegativeButton(R.string.button_cancel) { dialog, _ ->
-                        dialog.dismiss()
-                    }
-                    .setPositiveButton(R.string.button_ok) { dialog, _ ->
-                        showFragment(Pages.MODULE_SETTINGS)
-                        dialog.dismiss()
-                    }
-                    .show()
+            moduleActive.value = true
+            moduleEnabled.value = SafeSP.getBoolean(Pref.Key.Module.ENABLED, false)
+            blurEnabled.value = SafeSP.getBoolean(Pref.Key.App.HAZE_BLUR, true)
+            blurTintAlphaLight.floatValue =
+                SafeSP.getInt(Pref.Key.App.HAZE_TINT_ALPHA_LIGHT, 60) / 100f
+            blurTintAlphaDark.floatValue =
+                SafeSP.getInt(Pref.Key.App.HAZE_TINT_ALPHA_LIGHT, 50) / 100f
+            splitEnabled.value = SafeSP.getBoolean(Pref.Key.App.SPLIT_VIEW, Device.isPad)
+            rootGranted.value = if (!SafeSP.getBoolean(Pref.Key.App.SKIP_ROOT_CHECK, false)) {
+                try {
+                    ShellUtils.tryExec(
+                        "whoami",
+                        useRoot = true,
+                        checkSuccess = true
+                    ).successMsg.trim().contentEquals("root")
+                } catch (exception: Exception) {
+                    false
+                }
+            } else {
+                true
             }
         } catch (exception: SecurityException) {
-            AlertDialog.Builder(this)
-                .setTitle(R.string.dialog_error)
-                .setMessage(R.string.module_inactive_tips)
-                .setCancelable(false)
-                .setPositiveButton(R.string.button_ok) { dialog, _ ->
-                    dialog.dismiss()
-                }
-                .show()
-            return false
-        }
-        return true
-    }
-
-    init {
-        registerPage(MainPage::class.java)
-        registerPage(MenuPage::class.java)
-        registerPage(AboutPage::class.java)
-        registerPage(ModuleSettingsPage::class.java)
-        registerPage(SystemUIPage::class.java)
-        registerPage(MiuiHomePage::class.java)
-        registerPage(CleanMasterPage::class.java)
-        registerPage(SystemFrameworkPage::class.java)
-        registerPage(SecurityCenterPage::class.java)
-        registerPage(InterconnectionPage::class.java)
-        registerPage(OthersPage::class.java)
-        registerPage(StatusBarClockPage::class.java)
-        registerPage(IconTunerPage::class.java)
-        registerPage(MediaControlStylePage::class.java)
-        registerPage(DisableFixedOrientationPage::class.java)
-        registerPage(HomeRefactorPage::class.java)
-        registerPage(AnimCurvePreviewAppsPage::class.java)
-        registerPage(AnimCurvePreviewFolderPage::class.java)
-        registerPage(AnimCurvePreviewWallpaperPage::class.java)
-        registerPage(MinusBlurPage::class.java)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (data == null) return
-        var titleId = R.string.dialog_error
-        var msgId = R.string.module_unknown_failure
-        var errMsg = ""
-        try {
-            when (requestCode) {
-                BackupUtils.WRITE_DOCUMENT_CODE -> {
-                    BackupUtils.handleBackup(this, data.data)
-                    titleId = R.string.dialog_done
-                    msgId = R.string.module_backup_success
-                }
-                BackupUtils.READ_DOCUMENT_CODE -> {
-                    BackupUtils.handleRestore(this, data.data)
-                    titleId = R.string.dialog_done
-                    msgId = R.string.module_restore_success
-                }
-                else -> return
-            }
-        } catch (t: Throwable) {
-            when (requestCode) {
-                BackupUtils.WRITE_DOCUMENT_CODE -> {
-                    msgId = R.string.module_backup_failure
-                }
-                BackupUtils.READ_DOCUMENT_CODE -> {
-                    msgId = R.string.module_restore_failure
-                }
-            }
-            errMsg = "\n" + t.stackTraceToString()
-        } finally {
-            AlertDialog.Builder(this)
-                .setTitle(titleId)
-                .setMessage(getString(msgId) + errMsg)
-                .setCancelable(false)
-                .setPositiveButton(R.string.button_ok) { dialog, _ ->
-                    dialog.dismiss()
-                    if (requestCode == BackupUtils.READ_DOCUMENT_CODE) {
-                        showFragment(Pages.MAIN)
-                        initAndCheck()
-                    }
-                }
-                .show()
+            moduleActive.value = false
+            moduleEnabled.value = false
+            blurEnabled.value = true
+            blurTintAlphaLight.floatValue = 0.6f
+            blurTintAlphaDark.floatValue = 0.5f
+            splitEnabled.value = Device.isPad
         }
     }
 
     private fun versionCompatible() {
-        val spVersion = safeSP.getInt(Pref.Key.Module.SP_VERSION, 0)
+        val spVersion = SafeSP.getInt(Pref.Key.Module.SP_VERSION, 0)
         if (spVersion < 1) {
-            if (safeSP.getString(Pref.Key.MiuiHome.Refactor.APPS_BLUR_RADIUS_STR, "") == "") {
-                val oldValue = safeSP.getInt(Pref.OldKey.MiuiHome.Refactor.D_APPS_BLUR_RADIUS, -1)
+            if (SafeSP.getString(Pref.Key.MiuiHome.Refactor.APPS_BLUR_RADIUS_STR, "") == "") {
+                val oldValue = SafeSP.getInt(Pref.OldKey.MiuiHome.Refactor.D_APPS_BLUR_RADIUS, -1)
                 if (oldValue != -1) {
-                    safeSP.putAny(Pref.Key.MiuiHome.Refactor.APPS_BLUR_RADIUS_STR, "${oldValue}px")
+                    SafeSP.putAny(Pref.Key.MiuiHome.Refactor.APPS_BLUR_RADIUS_STR, "${oldValue}px")
                 }
             }
-            if (safeSP.getString(Pref.Key.MiuiHome.Refactor.WALLPAPER_BLUR_RADIUS_STR, "") == "") {
-                val oldValue = safeSP.getInt(Pref.OldKey.MiuiHome.Refactor.D_WALLPAPER_BLUR_RADIUS, -1)
+            if (SafeSP.getString(Pref.Key.MiuiHome.Refactor.WALLPAPER_BLUR_RADIUS_STR, "") == "") {
+                val oldValue = SafeSP.getInt(Pref.OldKey.MiuiHome.Refactor.D_WALLPAPER_BLUR_RADIUS, -1)
                 if (oldValue != -1) {
-                    safeSP.putAny(Pref.Key.MiuiHome.Refactor.WALLPAPER_BLUR_RADIUS_STR, "${oldValue}px")
+                    SafeSP.putAny(Pref.Key.MiuiHome.Refactor.WALLPAPER_BLUR_RADIUS_STR, "${oldValue}px")
                 }
             }
-            if (safeSP.getString(Pref.Key.MiuiHome.Refactor.MINUS_BLUR_RADIUS_STR, "") == "") {
-                val oldValue = safeSP.getInt(Pref.OldKey.MiuiHome.Refactor.D_MINUS_BLUR_RADIUS, -1)
+            if (SafeSP.getString(Pref.Key.MiuiHome.Refactor.MINUS_BLUR_RADIUS_STR, "") == "") {
+                val oldValue = SafeSP.getInt(Pref.OldKey.MiuiHome.Refactor.D_MINUS_BLUR_RADIUS, -1)
                 if (oldValue != -1) {
-                    safeSP.putAny(Pref.Key.MiuiHome.Refactor.MINUS_BLUR_RADIUS_STR, "${oldValue}px")
+                    SafeSP.putAny(Pref.Key.MiuiHome.Refactor.MINUS_BLUR_RADIUS_STR, "${oldValue}px")
                 }
             }
         }
         if (spVersion < 2) {
-            if (safeSP.getFloat(Pref.Key.SystemUI.IconTurner.BATTERY_PADDING_LEFT, -1f) == -1f) {
-                val oldValue = safeSP.getInt(Pref.OldKey.SystemUI.IconTurner.D_BATTERY_PADDING_LEFT, -1)
+            if (SafeSP.getFloat(Pref.Key.SystemUI.IconTurner.BATTERY_PADDING_LEFT, -1f) == -1f) {
+                val oldValue = SafeSP.getInt(Pref.OldKey.SystemUI.IconTurner.D_BATTERY_PADDING_LEFT, -1)
                 if (oldValue != -1) {
-                    safeSP.putAny(Pref.Key.SystemUI.IconTurner.BATTERY_PADDING_LEFT, oldValue.toFloat())
+                    SafeSP.putAny(Pref.Key.SystemUI.IconTurner.BATTERY_PADDING_LEFT, oldValue.toFloat())
                 }
             }
-            if (safeSP.getFloat(Pref.Key.SystemUI.IconTurner.BATTERY_PADDING_RIGHT, -1f) == -1f) {
-                val oldValue = safeSP.getInt(Pref.OldKey.SystemUI.IconTurner.D_BATTERY_PADDING_RIGHT, -1)
+            if (SafeSP.getFloat(Pref.Key.SystemUI.IconTurner.BATTERY_PADDING_RIGHT, -1f) == -1f) {
+                val oldValue = SafeSP.getInt(Pref.OldKey.SystemUI.IconTurner.D_BATTERY_PADDING_RIGHT, -1)
                 if (oldValue != -1) {
-                    safeSP.putAny(Pref.Key.SystemUI.IconTurner.BATTERY_PADDING_RIGHT, oldValue.toFloat())
+                    SafeSP.putAny(Pref.Key.SystemUI.IconTurner.BATTERY_PADDING_RIGHT, oldValue.toFloat())
                 }
             }
-            if (safeSP.getInt(Pref.Key.SystemUI.IconTurner.BATTERY_PERCENTAGE_SYMBOL_STYLE, -1) == -1) {
-                val hidePercentageSymbol = safeSP.getBoolean(Pref.OldKey.SystemUI.IconTurner.D_HIDE_BATTERY_PERCENT_SYMBOL, false)
-                val uniPercentageSymbolSize = safeSP.getBoolean(Pref.OldKey.SystemUI.IconTurner.D_CHANGE_BATTERY_PERCENT_SYMBOL, false)
+            if (SafeSP.getInt(Pref.Key.SystemUI.IconTurner.BATTERY_PERCENTAGE_SYMBOL_STYLE, -1) == -1) {
+                val hidePercentageSymbol = SafeSP.getBoolean(Pref.OldKey.SystemUI.IconTurner.D_HIDE_BATTERY_PERCENT_SYMBOL, false)
+                val uniPercentageSymbolSize = SafeSP.getBoolean(Pref.OldKey.SystemUI.IconTurner.D_CHANGE_BATTERY_PERCENT_SYMBOL, false)
                 val newValue = if (hidePercentageSymbol) {
                     2
                 } else if (uniPercentageSymbolSize) {
@@ -185,18 +189,18 @@ class MainActivity : MIUIActivity() {
                 } else {
                     0
                 }
-                safeSP.putAny(Pref.Key.SystemUI.IconTurner.BATTERY_PERCENTAGE_SYMBOL_STYLE, newValue)
+                SafeSP.putAny(Pref.Key.SystemUI.IconTurner.BATTERY_PERCENTAGE_SYMBOL_STYLE, newValue)
             }
         }
         if (spVersion < 3) {
-            if (safeSP.getInt(Pref.Key.MiuiHome.MINUS_BLUR_TYPE, -1) == -1) {
-                val oldValue = safeSP.getBoolean(Pref.OldKey.MiuiHome.D_MINUS_BLUR, false)
+            if (SafeSP.getInt(Pref.Key.MiuiHome.MINUS_BLUR_TYPE, -1) == -1) {
+                val oldValue = SafeSP.getBoolean(Pref.OldKey.MiuiHome.D_MINUS_BLUR, false)
                 val newValue = if (oldValue) 1 else 0
-                safeSP.putAny(Pref.Key.MiuiHome.MINUS_BLUR_TYPE, newValue)
+                SafeSP.putAny(Pref.Key.MiuiHome.MINUS_BLUR_TYPE, newValue)
             }
-            if (safeSP.getInt(Pref.Key.MiuiHome.Refactor.MINUS_MODE, -1) == -1) {
-                val overlap = safeSP.getBoolean(Pref.OldKey.MiuiHome.Refactor.D_MINUS_OVERLAP, false)
-                val showLaunchInMinus = safeSP.getBoolean(Pref.OldKey.MiuiHome.Refactor.D_SHOW_LAUNCH_IN_MINUS, false)
+            if (SafeSP.getInt(Pref.Key.MiuiHome.Refactor.MINUS_MODE, -1) == -1) {
+                val overlap = SafeSP.getBoolean(Pref.OldKey.MiuiHome.Refactor.D_MINUS_OVERLAP, false)
+                val showLaunchInMinus = SafeSP.getBoolean(Pref.OldKey.MiuiHome.Refactor.D_SHOW_LAUNCH_IN_MINUS, false)
                 val newValue = if (overlap) {
                     2
                 } else if (showLaunchInMinus) {
@@ -204,9 +208,21 @@ class MainActivity : MIUIActivity() {
                 } else {
                     0
                 }
-                safeSP.putAny(Pref.Key.MiuiHome.Refactor.MINUS_MODE, newValue)
+                SafeSP.putAny(Pref.Key.MiuiHome.Refactor.MINUS_MODE, newValue)
             }
         }
-        safeSP.putAny(Pref.Key.Module.SP_VERSION, Pref.VERSION)
+        if (spVersion < 4) {
+            if (SafeSP.getInt(Pref.Key.PackageInstaller.INSTALL_SOURCE, -1) == -1) {
+                val oldValue = SafeSP.getBoolean(Pref.OldKey.PackageInstaller.UPDATE_SYSTEM_APP, false)
+                val newValue = if (oldValue) 1 else 0
+                SafeSP.putAny(Pref.Key.PackageInstaller.INSTALL_SOURCE, newValue)
+            }
+            if (SafeSP.getInt(Pref.Key.SecurityCenter.LINK_START, -1) == -1) {
+                val oldValue = SafeSP.getBoolean(Pref.OldKey.SecurityCenter.SKIP_WARNING, false)
+                val newValue = if (oldValue) 1 else 0
+                SafeSP.putAny(Pref.Key.SecurityCenter.LINK_START, newValue)
+            }
+        }
+        SafeSP.putAny(Pref.Key.Module.SP_VERSION, Pref.VERSION)
     }
 }

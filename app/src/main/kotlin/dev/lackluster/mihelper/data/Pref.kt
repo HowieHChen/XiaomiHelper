@@ -3,9 +3,17 @@ package dev.lackluster.mihelper.data
 object Pref {
     const val VERSION = 3
     object Key {
+        object App {
+            const val SPLIT_VIEW = "app_disable_split"
+            const val HAZE_BLUR = "app_haze_blur"
+            const val HAZE_TINT_ALPHA_LIGHT = "app_haze_tint_alpha_light"
+            const val HAZE_TINT_ALPHA_DARK = "app_haze_tint_alpha_dark"
+            const val SKIP_ROOT_CHECK = "app_ignore_root"
+        }
         object Module {
             const val ENABLED = "enable_module"
             const val LITE_MODE = "lite_mode"
+            const val DEXKIT_CACHE = "dexkit_cache"
             const val HIDE_ICON = "hide_icon"
             const val SHOW_IN_SETTINGS = "entry_in_settings"
             const val SETTINGS_ICON_STYLE = "entry_icon_style"
@@ -27,11 +35,16 @@ object Pref {
         }
         object Browser {
             const val DEBUG_MODE = "browser_debug_mode"
-            const val BLOCK_UPDATE = "browser_no_update"
             const val SWITCH_ENV = "browser_switch_env"
+            const val BLOCK_UPDATE = "browser_no_update"
+            const val SKIP_SPLASH = "browser_skip_splash"
+            const val REMOVE_APP_REC = "browser_remove_app_rec"
         }
         object Download {
             const val FUCK_XL = "download_remove_xl"
+        }
+        object DownloadUI {
+            const val HIDE_XL = "downloadui_remove_xl"
         }
         object Gallery {
             const val PATH_OPTIM = "gallery_path_optim"
@@ -39,6 +52,7 @@ object Pref {
         }
         object GuardProvider {
             const val BLOCK_UPLOAD_APP = "guard_forbid_upload_app"
+            const val BLOCK_ENV_CHECK = "guard_block_env_check"
         }
         object InCallUI {
             const val HIDE_CRBT = "incallui_hide_crbt"
@@ -46,8 +60,17 @@ object Pref {
         object Joyose {
             const val BLOCK_CLOUD_CONTROL = "joyose_no_cloud_control"
         }
+        object LBE {
+            const val BLOCK_REMOVE_AUTO_STARTUP = "lbe_block_rec_auto_startup"
+            const val CLIPBOARD_TOAST = "lbe_clipboard_toast"
+        }
         object Market {
             const val AD_BLOCKER = "market_ad_block"
+            const val SKIP_SPLASH = "market_skip_splash"
+            const val HIDE_TAB_GAME = "market_hide_tab_game"
+            const val HIDE_TAB_RANK = "market_hide_tab_rank"
+            const val HIDE_TAB_APP_ASSEMBLE = "market_hide_tab_assemble"
+            const val BLOCK_UPDATE_DIALOG = "market_block_up_dialog"
         }
         object MiAi {
             const val SEARCH_USE_BROWSER = "xiaoai_use_browser"
@@ -157,6 +180,10 @@ object Pref {
         }
         object Music {
             const val AD_BLOCKER = "music_ad_block"
+            const val SKIP_SPLASH = "music_skip_splash"
+            const val HIDE_LONG_AUDIO = "music_hide_long_audio"
+            const val MY_HIDE_BANNER = "music_my_hide_banner"
+            const val MY_HIDE_REC_PLAYLIST = "music_my_hide_rec"
         }
         object PackageInstaller {
             const val BLOCK_UPLOAD_INFO = "package_block_upload"
@@ -164,11 +191,15 @@ object Pref {
             const val DISABLE_COUNT_CHECK = "package_count_check"
             const val DISABLE_RISK_CHECK = "package_skip_risk_check"
             const val UPDATE_SYSTEM_APP = "package_update_system_app"
+            const val INSTALL_SOURCE = "package_install_source"
+            const val SOURCE_PKG_NAME = "package_source_pkg"
             const val MORE_INFO = "package_more_info"
         }
         object PowerKeeper {
             const val DO_NOT_KILL_APP = "power_donot_kill_app"
             const val BLOCK_BATTERY_WHITELIST = "power_battery_whitelist"
+            const val GMS_BG_RUNNING = "power_gms_bg_running"
+            const val UNLOCK_CUSTOM_REFRESH = "power_custom_refresh"
         }
         object ScreenRecorder {
             const val SAVE_TO_MOVIES = "screen_recorder_to_movies"
@@ -178,12 +209,19 @@ object Pref {
             const val SAVE_TO_PICTURE = "screenshot_to_picture"
         }
         object SecurityCenter {
+            const val SKIP_SPLASH = "security_skip_splash"
             const val LOCK_SCORE = "security_lock_score"
+            const val HIDE_RED_DOT = "security_hide_red_dot"
+            const val HIDE_HOME_REC = "security_hide_home_rec"
+            const val HIDE_HOME_COMMON = "security_hide_home_common"
+            const val HIDE_HOME_POPULAR = "security_hide_home_popular"
             const val DISABLE_RISK_APP_NOTIF = "security_no_risk_notification"
             const val REMOVE_REPORT = "security_remove_report"
             const val SKIP_WARNING = "security_skip_warn"
+            const val LINK_START = "security_link_start"
             const val SKIP_OPEN_APP = "security_skip_open_app"
             const val SHOW_SCREEN_BATTERY = "security_screen_battery"
+            const val SHOW_SYSTEM_BATTERY = "security_system_battery"
             const val DISABLE_BUBBLE_RESTRICT = "security_bubble_restriction"
             const val CTRL_SYSTEM_APP_WIFI = "security_system_app_wifi"
             const val CLICK_ICON_TO_OPEN = "security_click_icon_open"
@@ -286,6 +324,7 @@ object Pref {
                 const val HIDE_CARRIER_ONE = "statusbar_hide_carrier_one"
                 const val HIDE_CARRIER_TWO = "statusbar_hide_carrier_two"
             }
+            const val FUCK_GESTURES_DAT = "systemui_fuck_gesture_dat"
 //            object Others {
 //
 //            }
@@ -297,6 +336,7 @@ object Pref {
             const val SEARCH_URL = "taplus_search_url"
         }
         object Themes {
+            const val SKIP_SPLASH = "themes_skip_splash"
             const val AD_BLOCKER = "themes_ad_block"
         }
         object Updater {
@@ -322,6 +362,15 @@ object Pref {
                 const val D_BATTERY_PADDING_LEFT = "statusbar_battery_padding_left"
                 const val D_BATTERY_PADDING_RIGHT = "statusbar_battery_padding_right"
             }
+        }
+        object PackageInstaller {
+            const val UPDATE_SYSTEM_APP = "package_update_system_app"
+        }
+        object SecurityCenter {
+            const val SKIP_WARNING = "security_skip_warn"
+        }
+        object Themes {
+            const val AD_BLOCKER = "themes_ad_block"
         }
     }
     object DefValue {

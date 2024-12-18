@@ -31,8 +31,6 @@ object AdBlocker : YukiBaseHooker() {
     override fun onHook() {
         hasEnable(Pref.Key.Market.AD_BLOCKER) {
             val appDetailV3Cls = "com.xiaomi.market.common.network.retrofit.response.bean.AppDetailV3".toClassOrNull()
-            val detailSplashAdManagerCls = "com.xiaomi.market.ui.splash.DetailSplashAdManager".toClassOrNull()
-            val splashManagerCls = "com.xiaomi.market.ui.splash.SplashManager".toClassOrNull()
             runCatching {
                 for (method in setOf(
                     "isBrowserMarketAdOff",
@@ -69,42 +67,6 @@ object AdBlocker : YukiBaseHooker() {
                     "supportShowCompatChildForbidDownloadAlert",
                 )) {
                     appDetailV3Cls?.method {
-                        name = method
-                    }?.ignored()?.hook {
-                        replaceToFalse()
-                    }
-                }
-            }
-            runCatching {
-                for (method in setOf(
-                    "canRequestSplashAd",
-                    "isRequesting",
-                    "isOpenFromMsa",
-                )) {
-                    detailSplashAdManagerCls?.method {
-                        name = method
-                    }?.ignored()?.hook {
-                        replaceToFalse()
-                    }
-                }
-            }
-            runCatching {
-                detailSplashAdManagerCls?.method {
-                    name = "tryToRequestSplashAd"
-                }?.ignored()?.hook {
-                    before {
-                        this.result = null
-                    }
-                }
-            }
-            runCatching {
-                for (method in setOf(
-                    "canShowSplash",
-                    "needShowSplash",
-                    "needRequestFocusVideo",
-                    "isPassiveSplashAd",
-                )) {
-                    splashManagerCls?.method {
                         name = method
                     }?.ignored()?.hook {
                         replaceToFalse()

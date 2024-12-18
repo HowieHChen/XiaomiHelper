@@ -28,7 +28,7 @@ import org.luckypray.dexkit.query.enums.StringMatchType
 
 object DisableRiskAppNotification : YukiBaseHooker() {
     private val pkg by lazy {
-        DexKit.dexKitBridge.findMethod {
+        DexKit.findMethodsWithCache("block_risk_app_notification") {
             matcher {
                 addUsingString("riskPkgList", StringMatchType.Equals)
                 addUsingString("key_virus_pkg_list", StringMatchType.Equals)

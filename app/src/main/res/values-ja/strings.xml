@@ -3,8 +3,8 @@
     <string name="app_name">Hyper Helper</string>
     <string name="xposed_desc">HyperOSを再び偉大な存在にします</string>
     <string name="about_module">YukiHookAPIを使用しています。 詳細はこちら https://github.com/HighCapable/YuKiHookAPI</string>
-    <string name="module_inactive_tips">モジュールが有効化されていません。LSPosedのバージョンとモジュールが有効化されているかの情報を確認して、再度お試しください。</string>
-    <string name="module_disabled_tips">モジュールが有効化されていません。モジュールの設定ページでモジュールを有効化してください。</string>
+    <string name="main_module_inactive_tips">モジュールが有効化されていません。LSPosedのバージョンとモジュールが有効化されているかの情報を確認して、再度お試しください。</string>
+    <string name="main_module_disabled_tips">モジュールが有効化されていません。モジュールの設定ページでモジュールを有効化してください。</string>
     <string name="common_default">デフォルト</string>
     <string name="common_current">現在</string>
     <string name="common_custom">カスタム</string>
@@ -29,7 +29,7 @@
     <string name="page_about">モジュールについて</string>
     <string name="page_menu">メニュー</string>
     <string name="page_module">モジュールの設定</string>
-    <string name="page_systemui">システム UI</string>
+    <string name="scope_systemui">システム UI</string>
     <string name="page_android">Android フレームワーク</string>
     <string name="page_cleaner">Clean master</string>
     <string name="page_interconnection">相互接続性</string>
@@ -88,14 +88,14 @@
     <!-- AboutPage -->
     <string name="about_jump_error_toast">いくつかの奇妙なエラーが発生しました。</string>
     <string name="about_easter_egg_toast">タップをしても何も起こらないよ。</string>
-    <string name="about_yuki">YukiHookAPIについて/string>
+    <string name="about_yuki">YukiHookAPIについて</string>
     <string name="about_yuki_tips">詳細はこちら https://github.com/HighCapable/YuKiHookAPI</string>
     <string name="ui_title_about_developer">開発者</string>
     <string name="about_author_tips">プロフィールまたは署名はありません</string>
     <string name="about_donate">寄付をする</string>
     <string name="about_donate_tips">コーヒーを奢ってくれますか</string>
-    <string name="ui_title_about_open_source">ソースコード</string>
-    <string name="about_repository">GitHubリポジトリ</string>
+    <string name="about_repository">ソースコード</string>
+    <string name="about_repository_tips">GitHubリポジトリ</string>
     <string name="ui_title_about_reference">リファレンス</string>
     <!-- ModuleSettingsPage -->
     <string name="module_main_switch">モジュールを有効化する</string>
@@ -275,7 +275,7 @@
     <string name="others_browser_switch_env">内部アドレスのスイッチ</string>
     <string name="others_browser_switch_env_tips">プレリリース環境で使用してください。一部の広告を削除できる場合があります。検索エンジンのカスタマイズなどの設定ができなくなる可能性があるため、設定を済ませてからオンにしてください！</string>
     <string name="others_browser_disable_update">アップデートの確認を無効化する</string>
-    <string name="others_download_fuck_xl">「.xlDownload」フォルダの作成をブロックする</string>
+    <string name="cleaner_download_fuck_xl">「.xlDownload」フォルダの作成をブロックする</string>
     <string name="others_gallery_unlimited_crop">無制限の画像のトリミング</string>
     <string name="others_gallery_path_optim">ディレクトリの認識を最適化する</string>
     <string name="others_gallery_path_optim_tips">「Pictures/Screenshots」内の画像をスクリーンショット、「Movies/ScreenRecorder」内の動画をスクリーンレコードと認識させて対応するアルバムに表示します</string>
@@ -291,7 +291,7 @@
     <string name="others_screenshot_save_to_picture_tips">スクリーンショットを「DCIM/Screenshots/」ではなく、「Pictures/Screenshots/」に変更します</string>
     <string name="others_settings_show_google">Googleの設定を表示する</string>
     <string name="others_settings_unlock_voip_assistant">VoIPアシスタントをアンロック</string>
-    <string name="others_settings_unlock_custom_refresh">高リフレッシュレートのアプリをカスタマイズする</string>
+    <string name="security_power_unlock_custom_refresh">高リフレッシュレートのアプリをカスタマイズする</string>
     <string name="others_settings_unlock_net_mode">モバイルネットワークタイプの設定を表示する</string>
     <string name="others_settings_unlock_taplus_for_pad">タブレットを強制的に有効化する</string>
     <string name="others_updater_disable_validation">OTAの検証を無効化する</string>

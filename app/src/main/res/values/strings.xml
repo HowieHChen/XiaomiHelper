@@ -2,9 +2,6 @@
     <string name="app_name">Hyper Helper</string>
     <string name="xposed_desc">Make HyperOS Great Again!</string>
     <string name="about_module">This module is made by YukiHookAPI. Learn more https://github.com/HighCapable/YuKiHookAPI</string>
-    <string name="module_inactive_tips">Module isn\'t activated. Please check the LSPosed version and module activation information and try again.</string>
-    <string name="module_disabled_tips">The module isn\'t enabled. Please enable the module in the Module settings page.</string>
-
     <string name="common_default">Default</string>
     <string name="common_current">Current</string>
     <string name="common_custom">Custom</string>
@@ -24,12 +21,16 @@
     <string name="button_clear">Clear</string>
     <string name="button_enable">Enable</string>
     <string name="button_disable">Disable</string>
+    <string name="button_ignore">Ignore</string>
 
     <string name="dialog_done">Done</string>
     <string name="dialog_warning">Warning</string>
     <string name="dialog_error">Error</string>
 
     <string name="page_main" translatable="false">@string/app_name</string>
+    <string name="page_dev_ui_test">UI Element Test</string>
+    
+    
     <string name="page_about">About module</string>
     <string name="page_menu">Menu</string>
 
@@ -37,7 +38,7 @@
     <string name="page_virtual_home_refactor" translatable="false">@string/home_exclusive_refactor</string>
 
     <string name="page_module">Module settings</string>
-    <string name="page_systemui">System UI</string>
+    <string name="page_systemui" translatable="false">@string/scope_systemui</string>
     <string name="page_android">Android Framework</string>
     <string name="page_miui_home" translatable="false">@string/scope_miui_home</string>
     <string name="page_cleaner">Clean master</string>
@@ -59,6 +60,7 @@
     <string name="scope_guard_provider">System security components</string>
     <string name="scope_in_call_ui">InCall UI</string>
     <string name="scope_joyose">Joyose</string>
+    <string name="scope_lbe">Permissions</string>
     <string name="scope_market">GetApps</string>
     <string name="scope_mi_ai">Mi AI</string>
     <string name="scope_mi_link">Interconnectivity services</string>
@@ -75,6 +77,7 @@
     <string name="scope_security_center">Security</string>
     <string name="scope_security_center_pad">@string/scope_security_center</string>
     <string name="scope_settings">Settings</string>
+    <string name="scope_systemui">System UI</string>
     <string name="scope_taplus">Taplus</string>
     <string name="scope_themes">Themes</string>
     <string name="scope_updater">Updater</string>
@@ -93,6 +96,11 @@
     <string name="share_center">Xiaomi Smart Hub</string>
     <string name="floating_window">Freeform</string>
     <string name="new_task">New task</string>
+    <!-- MainPage -->
+    <string name="main_module_inactive_dialog_lsposed" translatable="false">LSPosed</string>
+    <string name="main_module_inactive_tips">Module isn\'t activated. Please check the LSPosed version and module activation information and try again.</string>
+    <string name="main_module_disabled_tips">The module isn\'t enabled. Please enable the module in the Module settings page.</string>
+    <string name="main_app_root_tips">Lack of root privileges can prevent some features from working properly.</string>
     <!-- MenuPage -->
     <string name="ui_title_menu_reboot">Reboot</string>
     <string name="menu_reboot_system">Reboot system</string>
@@ -111,6 +119,12 @@
     <string name="about_jump_error_toast">Some strange errors have occurred</string>
     <string name="about_easter_egg_toast">You clicked and nothing happened</string>
     <string name="about_easter_egg_url" translatable="false">https://www.bilibili.com/video/BV1Xa4y1D7G3</string>
+    <string name="about_hyperx_compose">This app is made by HyperX Compose</string>
+    <string name="about_hyperx_compose_tips">HyperX Compose is a shared Compose UI library for Android based on Miuix</string>
+    <string name="about_hyperx_compose_url" translatable="false">https://github.com/HowieHChen/hyperx-compose</string>
+    <string name="about_miuix">This app is made by Miuix</string>
+    <string name="about_miuix_tips">Miuix is a shared UI library for Compose Multiplatform</string>
+    <string name="about_miuix_url" translatable="false">https://github.com/miuix-kotlin-multiplatform/miuix</string>
     <string name="about_yuki">This module is made by YukiHookAPI</string>
     <string name="about_yuki_tips">Learn more https://github.com/HighCapable/YuKiHookAPI</string>
     <string name="about_yuki_url" translatable="false">https://github.com/HighCapable/YuKiHookAPI</string>
@@ -118,19 +132,25 @@
     <string name="about_author" translatable="false">HowieHChen</string>
     <string name="about_author_tips">No profile or signature</string>
     <string name="about_author_url" translatable="false">https://github.com/HowieHChen</string>
+    <string name="ui_title_about_others" translatable="false">@string/common_others</string>
     <string name="about_donate">Donate</string>
     <string name="about_donate_tips">Buy me a coffee</string>
     <string name="about_donate_url" translatable="false">https://github.com/HowieHChen/XiaomiHelper/blob/master/DONATE.md</string>
-    <string name="ui_title_about_open_source">Source code</string>
-    <string name="about_repository">GitHub repository</string>
+    <string name="about_repository">Source code</string>
+    <string name="about_repository_tips">GitHub repository</string>
     <string name="about_repository_url" translatable="false">https://github.com/HowieHChen/XiaomiHelper</string>
     <string name="ui_title_about_reference">References</string>
+    <string name="ui_title_about_dev_options">Developer options</string>
     <!-- ModuleSettingsPage -->
     <string name="ui_title_module_general" translatable="false">@string/common_general</string>
     <string name="module_main_switch">Enable module</string>
     <string name="module_lite_mode">Lite mode</string>
     <string name="module_lite_mode_tips">Only load core functionality</string>
+    <string name="module_dexkit_cache">Cache DexKit results</string>
+    <string name="module_dexkit_cache_tips">Using caches reduces the negative impact on performance, but generates a cache file in the host application directory. After turning off this feature, the cache file will be cleared on the next host application startup (if it exists).</string>
     <string name="module_hide_icon">Hide icon in Home screen</string>
+    <string name="module_skip_root_check">Disable root privilege checking</string>
+    <string name="module_skip_root_check_tips">Effective after restarting the app</string>
     <string name="module_show_in_settings">Module entry in system settings</string>
     <string name="module_settings_icon_style">Entry icon style</string>
     <string name="module_settings_icon_style_default" translatable="false">@string/common_default</string>
@@ -147,6 +167,13 @@
     <string name="module_settings_name_advanced">Advanced settings</string>
     <string name="module_settings_name_custom" translatable="false">@string/common_custom</string>
     <string name="module_settings_custom_name">Custom entry title</string>
+    <string name="ui_title_module_ui">Interface and display</string>
+    <string name="module_ui_blur">Blur effect</string>
+    <string name="module_ui_blur_tint_alpha_light">Opacity of tinted colors in light mode</string>
+    <string name="module_ui_blur_tint_alpha_dark">Opacity of tinted colors in dark mode</string>
+    <string name="module_ui_blur_tint_alpha_tips">Opacity should be an integer from 0 to 100, most transparent for a value of 0.</string>
+    <string name="module_ui_split">Adaptive layouts</string>
+    <string name="module_ui_split_tips">App will automatically switch to dual-panel layout on large-screen devices or landscape screens</string>
     <string name="ui_title_module_backup">Backup &amp; restore</string>
     <string name="module_backup">Backup module preferences</string>
     <string name="module_restore">Restore module preferences</string>
@@ -263,28 +290,64 @@
     <string name="cleaner_ad_blocker_mms" translatable="false">@string/scope_mms</string>
     <string name="cleaner_ad_blocker_music" translatable="false">@string/scope_music</string>
     <string name="cleaner_ad_blocker_theme" translatable="false">@string/scope_themes</string>
+    <string name="ui_title_cleaner_skip_splash">Disable splash screen</string>
+    <string name="cleaner_skip_splash_tips">Should also disable ads on the splash screen (no guarantees)</string>
     <string name="ui_title_cleaner_privacy">Privacy</string>
     <string name="cleaner_privacy_block_upload_app">Block uploading of installed apps list</string>
     <string name="cleaner_privacy_block_upload_app_tips" translatable="false">@string/scope_guard_provider</string>
     <string name="cleaner_privacy_block_ul_app_info">Block uploading of information about the app when it\'s installed</string>
     <string name="cleaner_privacy_block_ul_app_info_tips" translatable="false">@string/scope_package_installer</string>
-    <string name="ui_title_cleaner_mi_trust_service" translatable="false">@string/scope_mi_trust</string>
-    <string name="mi_trust_disable_risk_check" translatable="false">@string/cleaner_package_skip_risk_check</string>
+    <string name="ui_title_cleaner_browser" translatable="false">@string/scope_browser</string>
+    <string name="cleaner_browser_remove_app_rec">Remove app recommendations</string>
+    <string name="cleaner_browser_remove_app_rec_tips">Remove app recommendations from search box suggestions</string>
+    <string name="ui_title_cleaner_download" translatable="false">@string/scope_download</string>
+    <string name="cleaner_downloadui_hide_xl">Hide Xunlei icons and text</string>
+    <string name="cleaner_download_fuck_xl">Block creation of .xlDownload folder</string>
+    <string name="ui_title_cleaner_market" translatable="false">@string/scope_market</string>
+    <string name="cleaner_market_block_update_dailog">Block update push dialog</string>
+    <string name="cleaner_market_block_update_dailog_tips">Block the dialog that prompts you to turn on update push, when update push is turned off and the update button is clicked.</string>
+    <string name="cleaner_market_hide_game">Hide Game</string>
+    <string name="cleaner_market_hide_game_tips">Remove the Game from the bottom tab</string>
+    <string name="cleaner_market_hide_rank">Hide Rank</string>
+    <string name="cleaner_market_hide_rank_tips">Remove the Rank from the bottom tab</string>
+    <string name="cleaner_market_hide_video">Hide App Assemble/Video</string>
+    <string name="cleaner_market_hide_video_tips">Remove the App Assemble/Video from the bottom tab</string>
+    <string name="ui_title_cleaner_music" translatable="false">@string/scope_music</string>
+    <string name="cleaner_music_hide_long_audio">Hide long audio</string>
+    <string name="cleaner_music_hide_long_audio_tips">Remove the long audio from the top tab on the home page</string>
+    <string name="cleaner_music_hide_my_banner">Hide the banner on my page</string>
+    <string name="cleaner_music_hide_my_rec_playlist">Hide recommended songs my page</string>
     <string name="ui_title_cleaner_package" translatable="false">@string/scope_package_installer</string>
     <string name="cleaner_package_remove_element">Disable redundant features and remove related elements</string>
     <string name="cleaner_package_skip_risk_check">Disable the monitoring of risks</string>
     <string name="cleaner_package_no_count_check">Disable frequently installed app check</string>
+    <string name="cleaner_package_install_source">Custom install source</string>
+    <string name="cleaner_package_install_source_tips">Bypass system application installation restrictions by disguising the installation source as a system application.</string>
+    <string name="cleaner_package_install_source_disabled" translatable="false">@string/common_disabled</string>
+    <string name="cleaner_package_install_source_file">File Manager</string>
+    <string name="cleaner_package_install_source_market" translatable="false">@string/scope_market</string>
+    <string name="cleaner_package_install_source_custom" translatable="false">@string/common_custom</string>
+    <string name="cleaner_package_custom_install_source">Package name of the install source</string>
     <string name="ui_title_cleaner_security" translatable="false">@string/scope_security_center</string>
     <string name="ui_title_cleaner_security_pad" translatable="false">@string/scope_security_center_pad</string>
     <string name="cleaner_security_lock_score">Disable health check optimization</string>
     <string name="cleaner_security_lock_score_tips">Lock the security score to 100 and disable the \"Optimize\" button</string>
+    <string name="cleaner_security_hide_red_dot">Hide the red alert dots</string>
+    <string name="cleaner_security_hide_red_dot_tips">Hide the red alert dots on the home page grid items</string>
+    <string name="cleaner_security_hide_home_rec">Hide recommended function</string>
+    <string name="cleaner_security_hide_home_rec_tips">Hide the recommend function banner below the function grid</string>
+    <string name="cleaner_security_hide_home_common">Hide commonly used functions</string>
+    <string name="cleaner_security_hide_home_popular">Hide popular functions</string>
+    <string name="cleaner_security_hide_home_popular_tips">Hide popular function recommendations at the bottom of the page</string>
     <string name="cleaner_security_disable_risk_app_notif">Disable \"Malicious app found\" notifications</string>
     <string name="cleaner_security_remove_report">Remove the \"Report\" button from the app info page</string>
     <string name="ui_title_in_call_ui" translatable="false">@string/scope_in_call_ui</string>
     <string name="cleaner_incallui_hide_crbt">Hide CRBT (Coloring Ring Back Tone)</string>
     <string name="ui_title_home" translatable="false">@string/scope_miui_home</string>
     <string name="cleaner_home_remove_report">Remove the \"Report\" button from the uninstall app pop-up window</string>
-    <string name="ui_title_taplus" translatable="false">@string/scope_taplus</string>
+    <string name="ui_title_cleaner_systemui" translatable="false">@string/scope_systemui</string>
+    <string name="cleaner_systemui_fuck_gesture">Block creation of statusbar_gestures.dat file</string>
+    <string name="ui_title_cleaner_taplus" translatable="false">@string/scope_taplus</string>
     <string name="cleaner_taplus_hide_shop">Hide shopping button</string>
     <!-- SystemFrameworkPage -->
     <string name="ui_title_android_freeform">Floating windows</string>
@@ -317,14 +380,30 @@
     <string name="security_security_skip_warning_tips">Skip wait times when using USB debugging, unknown sources, and accessibility.</string>
     <string name="security_security_skip_open_app">Remove pop-ups when opening apps</string>
     <string name="security_security_skip_open_app_tips">Remove chained startup warning pop-ups containing \"Allow XXX to open XXX\"</string>
+    <string name="security_security_skip_open_default" translatable="false">@string/common_default</string>
+    <string name="security_security_skip_open_no_restriction">Disable chain start mgmt</string>
+    <string name="security_security_skip_open_auto_approve">Approve automatically</string>
     <string name="security_security_screen_battery">Show screen usage in power consumption ranking</string>
     <string name="security_security_screen_battery_tips">Battery usage of apps that are hidden by default will also be shown</string>
+    <string name="security_security_hide_screen_system">Show Android System in power consumption ranking</string>
     <string name="security_security_bubble_restriction">Remove bubble notification app restrictions</string>
     <string name="security_security_system_app_wifi">Allow management Wi-Fi permissions for system apps</string>
     <string name="security_security_icon_open">Tap the icon in the app info to launch the app</string>
     <string name="ui_title_security_power" translatable="false">@string/scope_power_keeper</string>
+    <string name="ui_title_security_guard" translatable="false">@string/scope_guard_provider</string>
+    <string name="security_guard_env_check">Disable environmental check</string>
+    <string name="ui_title_lbe" translatable="false">@string/scope_lbe</string>
+    <string name="security_lbe_block_remove_auto_start">Blocks the removal of auto-start permission</string>
+    <string name="security_lbe_block_remove_auto_start_tips">Block the system from removing apps\' auto-start permission</string>
+    <string name="security_lbe_clipboard_toast">Use Toast to show clipboard read prompts</string>
+    <string name="security_lbe_clipboard_toast_tips">Using Toast allows the element behind the prompt to be clickable</string>
+    <string name="ui_title_security_mi_trust_service" translatable="false">@string/scope_mi_trust</string>
+    <string name="mi_trust_disable_risk_check" translatable="false">@string/cleaner_package_skip_risk_check</string>
     <string name="security_power_do_not_kill_app">Prevent killing background apps</string>
+    <string name="security_power_unlock_custom_refresh">Unlock Apps using high refresh rate</string>
     <string name="security_power_block_battery_whitelist">Prevent recovery of battery optimization whitelist</string>
+    <string name="security_power_gms_bg_running">Remove restrictions on GMS background running</string>
+    <string name="security_power_gms_bg_running_tips">Disguised as an international version of the system, it allows GMS to run in the background, preventing the FCM connection from being interrupted after locking the screen.</string>
     <string name="security_power_battery_optimization">Battery optimization</string>
     <string name="security_power_battery_optimization_tips">Open the battery optimization page that is hidden by default</string>
     <string name="security_power_battery_optimization_failed_toast">Failed to open, probably not supported by the system.</string>
@@ -342,8 +421,6 @@
     <string name="others_browser_switch_env">Switch internal address</string>
     <string name="others_browser_switch_env_tips">Use the pre-release environment. It may be possible to remove some of the ads. It may not be possible to use settings such as customized search engine, so please finish setting before turning it on!</string>
     <string name="others_browser_disable_update">Disable update check</string>
-    <string name="ui_title_others_download" translatable="false">@string/scope_download</string>
-    <string name="others_download_fuck_xl">Block creation of .xlDownload folder</string>
     <string name="ui_title_others_gallery" translatable="false">@string/scope_gallery</string>
     <string name="others_gallery_unlimited_crop">Unlimited image cropping</string>
     <string name="others_gallery_path_optim">Optimize recognition of directories</string>
@@ -351,7 +428,7 @@
     <string name="ui_title_others_joyose" translatable="false">@string/scope_joyose</string>
     <string name="others_joyose_no_cloud_control">Disable Cloud control</string>
     <string name="ui_title_others_miai" translatable="false">@string/scope_mi_ai</string>
-    <string name="others_miai_hide_watermark">Hide the watermark of the beta version</string>
+    <string name="others_miai_hide_watermark">Hide beta and AIGC watermarks</string>
     <string name="ui_title_others_package" translatable="false">@string/scope_package_installer</string>
     <string name="others_package_update_system_app">Remove system app installation restrictions</string>
     <string name="others_package_update_system_app_tips">Allow any non-system channel to install system apps</string>
@@ -366,7 +443,6 @@
     <string name="ui_title_others_settings" translatable="false">@string/scope_settings</string>
     <string name="others_settings_show_google">Show Google settings</string>
     <string name="others_settings_unlock_voip_assistant">Unlock VoIP Assistant</string>
-    <string name="others_settings_unlock_custom_refresh">Unlock Apps using high refresh rate</string>
     <string name="others_settings_unlock_net_mode">Unlock mobile network type settings</string>
     <string name="others_settings_unlock_taplus_for_pad">Unlock Taplus for tablet</string>
     <string name="ui_title_others_taplus" translatable="false">@string/scope_taplus</string>

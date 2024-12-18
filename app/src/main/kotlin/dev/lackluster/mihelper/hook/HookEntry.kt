@@ -9,10 +9,12 @@ import dev.lackluster.mihelper.data.Scope
 import dev.lackluster.mihelper.hook.apps.Android
 import dev.lackluster.mihelper.hook.apps.Browser
 import dev.lackluster.mihelper.hook.apps.Download
+import dev.lackluster.mihelper.hook.apps.DownloadUI
 import dev.lackluster.mihelper.hook.apps.Gallery
 import dev.lackluster.mihelper.hook.apps.GuardProvider
 import dev.lackluster.mihelper.hook.apps.InCallUI
 import dev.lackluster.mihelper.hook.apps.Joyose
+import dev.lackluster.mihelper.hook.apps.LBE
 import dev.lackluster.mihelper.hook.apps.Market
 import dev.lackluster.mihelper.hook.apps.MediaEditor
 import dev.lackluster.mihelper.hook.apps.MiLink
@@ -72,10 +74,12 @@ class HookEntry : IYukiHookXposedInit {
                 loadSystem(Android)
                 loadApp(Scope.BROWSER, Browser)
                 loadApp(Scope.DOWNLOAD, Download)
+                loadApp(Scope.DOWNLOAD_UI, DownloadUI)
                 loadApp(Scope.GALLERY, Gallery)
                 loadApp(Scope.GUARD_PROVIDER, GuardProvider)
                 loadApp(Scope.IN_CALL_UI, InCallUI)
                 loadApp(Scope.JOYOSE, Joyose)
+                loadApp(Scope.LBE, LBE)
                 loadApp(Scope.MARKET, Market)
                 loadApp(Scope.MEDIA_EDITOR , MediaEditor)
                 loadApp(Scope.MI_AI, MiAi)

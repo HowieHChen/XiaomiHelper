@@ -3,8 +3,8 @@
     <string name="app_name">Hyper Helper</string>
     <string name="xposed_desc">Torne o HyperOS ótimo novamente!</string>
     <string name="about_module">Este módulo foi feito por YukiHookAPI. Saiba mais em https://github.com/HighCapable/YuKiHookAPI</string>
-    <string name="module_inactive_tips">O módulo não está ativado. Verifique a versão do LSPosed e se o módulo está ativo e tente novamente.</string>
-    <string name="module_disabled_tips">O módulo não está ativado. Ative o módulo na página Configurações do módulo.</string>
+    <string name="main_module_inactive_tips">O módulo não está ativado. Verifique a versão do LSPosed e se o módulo está ativo e tente novamente.</string>
+    <string name="main_module_disabled_tips">O módulo não está ativado. Ative o módulo na página Configurações do módulo.</string>
     <string name="common_default">Padrão</string>
     <string name="common_current">Corrente</string>
     <string name="common_custom">Personalizado</string>
@@ -29,7 +29,7 @@
     <string name="page_about">Sobre o módulo</string>
     <string name="page_menu">Menu</string>
     <string name="page_module">Configurações do módulo</string>
-    <string name="page_systemui">UI do Sistema</string>
+    <string name="scope_systemui">UI do Sistema</string>
     <string name="page_android">Framework do Sistema</string>
     <string name="page_cleaner">Limpeza</string>
     <string name="page_interconnection">Interconectividade</string>
@@ -94,8 +94,8 @@
     <string name="about_author_tips">Sem perfil ou assinatura</string>
     <string name="about_donate">Doar</string>
     <string name="about_donate_tips">Me compre um café</string>
-    <string name="ui_title_about_open_source">Código-fonte</string>
-    <string name="about_repository">Repositório GitHub</string>
+    <string name="about_repository">Código-fonte</string>
+    <string name="about_repository_tips">Repositório GitHub</string>
     <string name="ui_title_about_reference">Referências</string>
     <!-- ModuleSettingsPage -->
     <string name="module_main_switch">Ativar módulo</string>
@@ -277,7 +277,7 @@
     <string name="others_browser_switch_env">Mudar endereço interno</string>
     <string name="others_browser_switch_env_tips">Use o ambiente de pré-lançamento. Pode ser possível remover alguns dos anúncios. Pode não ser possível usar as configurações como mecanismo de pesquisa personalizado, portanto, conclua a configuração antes de ativá-lo!</string>
     <string name="others_browser_disable_update">Desativar verificação de atualização</string>
-    <string name="others_download_fuck_xl">Bloquear a criação da pasta .xlDownload</string>
+    <string name="cleaner_download_fuck_xl">Bloquear a criação da pasta .xlDownload</string>
     <string name="others_gallery_unlimited_crop">Corte ilimitado de imagens</string>
     <string name="others_gallery_path_optim">Otimizar reconhecimento de diretórios</string>
     <string name="others_gallery_path_optim_tips">Reconheça imagens em \"Pictures/Screenshots\" como capturas de tela e vídeos em \"Movies/ScreenRecorder\" como gravações de tela e exibi-los nos álbuns correspondentes.</string>
@@ -293,7 +293,7 @@
     <string name="others_screenshot_save_to_picture_tips">Salve as capturas de tela em \"Pictures/Screenshots\" em vez de \"DCIM/Screenshots\"</string>
     <string name="others_settings_show_google">Mostrar configurações do Google</string>
     <string name="others_settings_unlock_voip_assistant">Desbloquear Assistente VoIP</string>
-    <string name="others_settings_unlock_custom_refresh">Desbloquear Apps que usam alta taxa de atualização</string>
+    <string name="security_power_unlock_custom_refresh">Desbloquear Apps que usam alta taxa de atualização</string>
     <string name="others_settings_unlock_net_mode">Mostrar configurações do tipo de rede móvel</string>
     <string name="others_settings_unlock_taplus_for_pad">Forçar ativação em tablet</string>
     <string name="others_updater_disable_validation">Remover verificação OTA</string>

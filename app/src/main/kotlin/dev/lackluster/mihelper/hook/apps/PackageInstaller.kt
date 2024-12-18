@@ -5,18 +5,21 @@ import dev.lackluster.mihelper.hook.rules.packageinstaller.AdBlocker
 import dev.lackluster.mihelper.hook.rules.packageinstaller.BlockUploadAppInfo
 import dev.lackluster.mihelper.hook.rules.packageinstaller.DisableCountCheck
 import dev.lackluster.mihelper.hook.rules.packageinstaller.DisableRiskCheck
-import dev.lackluster.mihelper.hook.rules.packageinstaller.MoreInfo
-import dev.lackluster.mihelper.hook.rules.packageinstaller.UpdateSystemApps
+import dev.lackluster.mihelper.hook.rules.packageinstaller.RemoveElement
+import dev.lackluster.mihelper.hook.rules.packageinstaller.ResourcesUtils
+import dev.lackluster.mihelper.hook.rules.packageinstaller.CustomInstallSource
 import dev.lackluster.mihelper.utils.DexKit
 
 object PackageInstaller : YukiBaseHooker(){
     override fun onHook() {
         DexKit.initDexKit(this)
+        loadHooker(ResourcesUtils)
         loadHooker(AdBlocker)
+        loadHooker(RemoveElement)
         loadHooker(DisableCountCheck)
         loadHooker(DisableRiskCheck)
         loadHooker(BlockUploadAppInfo)
-        loadHooker(UpdateSystemApps)
+        loadHooker(CustomInstallSource)
 //        loadHooker(MoreInfo)
         DexKit.closeDexKit()
     }

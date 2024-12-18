@@ -31,12 +31,12 @@ import org.luckypray.dexkit.query.enums.StringMatchType
 
 object CustomSearch : YukiBaseHooker() {
     private val openBrowser by lazy {
-        DexKit.dexKitBridge.findMethod {
+        DexKit.findMethodWithCache("open_browser") {
             matcher {
                 addUsingString("sendIntentInner fail because empty type", StringMatchType.Equals)
                 returnType = "int"
             }
-        }.singleOrNull()
+        }
     }
     private val searchEngine = Prefs.getInt(Pref.Key.MiAi.SEARCH_ENGINE, 0)
     private val searchEngineUrl = Prefs.getString(Pref.Key.MiAi.SEARCH_URL, "")

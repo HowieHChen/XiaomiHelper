@@ -28,24 +28,24 @@ import org.luckypray.dexkit.query.enums.StringMatchType
 
 object SwitchEnv : YukiBaseHooker() {
     private val envGetMethod by lazy {
-        DexKit.dexKitBridge.findMethod {
+        DexKit.findMethodWithCache("env_get") {
             matcher {
                 returnType = "java.lang.String"
                 addUsingString("environment_flag_file", StringMatchType.Equals)
                 addUsingString("environment_flag", StringMatchType.Equals)
                 addUsingString("0", StringMatchType.Equals)
             }
-        }.singleOrNull()
+        }
     }
     private val envSetMethod by lazy {
-        DexKit.dexKitBridge.findMethod {
+        DexKit.findMethodWithCache("env_set") {
             matcher {
                 returnType = "void"
                 addUsingString("environment_flag_file", StringMatchType.Equals)
                 addUsingString("environment_flag", StringMatchType.Equals)
                 addUsingString("3", StringMatchType.Equals)
             }
-        }.singleOrNull()
+        }
     }
 
     override fun onHook() {

@@ -1,16 +1,22 @@
 package dev.lackluster.mihelper.data
 
 object Pages {
-    const val MAIN = "__main__"
-    const val MODULE_SETTINGS = "page_module"
+    const val MAIN = "MainPage"
+    const val EMPTY = "EmptyPage"
+    const val MENU = "MenuPage"
+    const val MODULE_SETTINGS = "ModuleSettingsPage"
+
+    const val OTHERS = "OthersPage"
+    const val ABOUT = "AboutPage"
+    const val DEV_UI_TEST = "DevUITestPage"
+
     const val SYSTEM_UI = "page_systemui"
     const val SYSTEM_FRAMEWORK = "page_android"
     const val MIUI_HOME = "page_miui_home"
     const val CLEAN_MASTER = "page_cleaner"
     const val SECURITY_CENTER = "page_security_center"
     const val INTERCONNECTION = "page_interconnection"
-    const val OTHERS = "page_others"
-    const val ABOUT = "page_about"
+
 
 
     const val STATUS_BAR_CLOCK = "page_systemui_clock"

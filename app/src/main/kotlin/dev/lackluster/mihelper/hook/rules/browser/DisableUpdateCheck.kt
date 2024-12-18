@@ -36,21 +36,20 @@ object DisableUpdateCheck : YukiBaseHooker() {
         }
     }
     private val miMarketDoInBackground by lazy {
-        DexKit.dexKitBridge.findMethod {
+        DexKit.findMethodWithCache("disable_update_1") {
             matcher {
                 name = "doInBackground"
-                returnType = "java.lang.Integer"
             }
             searchClasses = miMarketUpdateClass
-        }.singleOrNull()
+        }
     }
     private val miMarketOnPostExecute by lazy {
-        DexKit.dexKitBridge.findMethod {
+        DexKit.findMethodWithCache("disable_update_2") {
             matcher {
                 name = "onPostExecute"
             }
             searchClasses = miMarketUpdateClass
-        }.singleOrNull()
+        }
     }
 
     override fun onHook() {

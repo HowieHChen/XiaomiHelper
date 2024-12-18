@@ -87,7 +87,7 @@ class CleanMasterPage : BasePage() {
             )
         }
         PreferenceCategory(
-            DescData(titleId = R.string.ui_title_cleaner_mi_trust_service),
+            DescData(titleId = R.string.ui_title_security_mi_trust_service),
             CategoryData()
         ) {
             SwitchPreference(
@@ -153,7 +153,7 @@ class CleanMasterPage : BasePage() {
             )
         }
         PreferenceCategory(
-            DescData(titleId = R.string.ui_title_taplus),
+            DescData(titleId = R.string.ui_title_cleaner_taplus),
             CategoryData()
         ) {
             SwitchPreference(

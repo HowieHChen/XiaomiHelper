@@ -21,141 +21,141 @@
 package dev.lackluster.mihelper.hook.rules.packageinstaller
 
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.app.Dialog
-import android.content.Context
-import android.view.LayoutInflater
-import android.view.View
-import android.widget.CheckBox
-import android.widget.ImageView
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
+import com.highcapable.yukihookapi.hook.factory.constructor
 import com.highcapable.yukihookapi.hook.factory.current
 import com.highcapable.yukihookapi.hook.factory.method
-import com.highcapable.yukihookapi.hook.type.android.ContextClass
-import com.highcapable.yukihookapi.hook.type.android.DialogClass
+import com.highcapable.yukihookapi.hook.type.java.BooleanType
+import com.highcapable.yukihookapi.hook.type.java.IntType
 import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.data.Scope
 import dev.lackluster.mihelper.utils.DexKit
 import dev.lackluster.mihelper.utils.factory.hasEnable
 import org.luckypray.dexkit.query.enums.StringMatchType
-import java.lang.reflect.Modifier
 
 object AdBlocker : YukiBaseHooker() {
-    private val ads by lazy {
-        DexKit.dexKitBridge.findMethod {
+    private val cloudParamsClass by lazy {
+        "com.miui.packageInstaller.model.CloudParams".toClassOrNull()
+    }
+    private val cloudParamsMethod by lazy {
+        DexKit.findMethodWithCache("cloud_params") {
+            matcher {
+                addUsingString("callingPackage.callingPackage", StringMatchType.Equals)
+                addUsingString("apkSignature3Sha256", StringMatchType.Equals)
+            }
+        }
+    }
+    private val adsEnableMethod by lazy {
+        DexKit.findMethodWithCache("ads_enable") {
             matcher {
                 addUsingString("ads_enable", StringMatchType.Equals)
                 returnType = "boolean"
             }
-        }.singleOrNull()
+        }
     }
-    private val adSettings by lazy {
-        DexKit.dexKitBridge.findMethod {
+    private val appStoreRecommendMethod by lazy {
+        DexKit.findMethodWithCache("app_store_recommend") {
+            matcher {
+                addUsingString("app_store_recommend", StringMatchType.Equals)
+            }
+        }
+    }
+    private val isPersonalizedAdEnabledMethod by lazy {
+        DexKit.findMethodWithCache("personalized_ad_enable") {
             matcher {
                 addUsingString("android.provider.MiuiSettings\$Ad", StringMatchType.Equals)
                 returnType = "boolean"
             }
-        }.singleOrNull()
+        }
     }
-    private val recommend by lazy {
-        DexKit.dexKitBridge.findMethod {
-            matcher {
-                addUsingString("app_store_recommend", StringMatchType.Equals)
-                returnType = "boolean"
-            }
-        }.singleOrNull()
-    }
-    private val scan by lazy {
-        DexKit.dexKitBridge.findMethod {
+    private val virusScanInstallMethod by lazy {
+        DexKit.findMethodWithCache("virus_scan_install") {
             matcher {
                 addUsingString("virus_scan_install", StringMatchType.Equals)
                 returnType = "boolean"
             }
-        }.singleOrNull()
-    }
-    private val initMethod by lazy {
-        DexKit.dexKitBridge.findMethod {
-            matcher {
-                addUsingString("findViewById(R.id.loading_icon_container)", StringMatchType.Equals)
-            }
-        }.singleOrNull()
-    }
-    private val showPopup by lazy {
-        DexKit.dexKitBridge.findMethod {
-            matcher {
-                addUsingString("null cannot be cast to non-null type com.miui.packageInstaller.analytics.IPage" ,StringMatchType.Equals)
-                addUsingString("safe_mode_guidance_popup" ,StringMatchType.Equals)
-                addUsingString("safe_mode_guidance_popup_open_btn" ,StringMatchType.Equals)
-                addUsingString("safe_mode_guidance_popup_cancel_btn" ,StringMatchType.Equals)
-            }
-        }.singleOrNull()
-    }
-    private val cancelClick by lazy {
-        DexKit.dexKitBridge.findMethod {
-            matcher {
-                addUsingString("pure_mode_guide_dialog_day_finish", StringMatchType.Equals)
-                addUsingString("is_remember", StringMatchType.Equals)
-                addUsingString("safe_mode_guidance_popup_cancel_btn", StringMatchType.Equals)
-                modifiers = Modifier.STATIC
-            }
-        }.singleOrNull()
+        }
     }
 
     @SuppressLint("DiscouragedApi")
     override fun onHook() {
         hasEnable(Pref.Key.PackageInstaller.REMOVE_ELEMENT) {
             if (appClassLoader == null) return@hasEnable
-            ads?.getMethodInstance(appClassLoader!!)?.hook {
+            adsEnableMethod?.getMethodInstance(appClassLoader!!)?.hook {
                 replaceToFalse()
             }
-            adSettings?.getMethodInstance(appClassLoader!!)?.hook {
+            appStoreRecommendMethod?.getMethodInstance(appClassLoader!!)?.hook {
                 replaceToFalse()
             }
-            recommend?.getMethodInstance(appClassLoader!!)?.hook {
+            isPersonalizedAdEnabledMethod?.getMethodInstance(appClassLoader!!)?.hook {
                 replaceToFalse()
             }
-            scan?.getMethodInstance(appClassLoader!!)?.hook {
+            virusScanInstallMethod?.getMethodInstance(appClassLoader!!)?.hook {
                 replaceToFalse()
             }
-            initMethod?.getMethodInstance(appClassLoader!!)?.hook {
-                after {
-                    val activity = this.instance as Activity
-                    val reportButton = activity.findViewById<ImageView>(
-                        activity.resources.getIdentifier("feedback_icon","id", activity.packageName)
-                    )
-                    reportButton.visibility = View.GONE
-                }
-            }
-            "com.miui.packageInstaller.ui.listcomponets.SafeModeTipViewObject".toClassOrNull()?.method {
-                param("com.miui.packageInstaller.ui.listcomponets.SafeModeTipViewObject\$ViewHolder".toClass())
-                paramCount = 1
-            }?.ignored()?.hookAll {
-                after {
-                    val viewHolder = this.args(0).any()
-                    (viewHolder?.current()?.method {
-                        name = "getClContentView"
-                    }?.call() as? View)?.visibility = View.GONE
-                }
-            }
-            val cancelClickInstance = cancelClick?.getMethodInstance(appClassLoader!!)
-            showPopup?.getMethodInstance(appClassLoader!!)?.hook {
+            cloudParamsMethod?.getMethodInstance(appClassLoader!!)?.hook {
                 before {
-                    val dialog = this.instance.current().field { type = DialogClass }.any() as Dialog
-                    if (cancelClickInstance == null) {
-                        dialog.dismiss()
+                    val cloudParams = cloudParamsClass?.constructor()?.get()?.call() ?: return@before
+                    this.result = cloudParams
+                }
+            }
+            cloudParamsClass?.apply {
+                constructor().hook {
+                    after {
+                        this.instance.current().field {
+                            name = "installNotAllow"
+                            type = BooleanType
+                        }.setFalse()
+                        this.instance.current().field {
+                            name = "showSafeModeTip"
+                            type = BooleanType
+                        }.setFalse()
+                        this.instance.current().field {
+                            name = "showAdsBefore"
+                            type = BooleanType
+                        }.setFalse()
+                        this.instance.current().field {
+                            name = "showAdsAfter"
+                            type = BooleanType
+                        }.setFalse()
+                        this.instance.current().field {
+                            name = "useSystemAppRules"
+                            type = BooleanType
+                        }.setTrue()
+                        this.instance.current().field {
+                            name = "registrationStatus"
+                            type = IntType
+                        }.set(2)
                     }
-                    else {
-                        val context = this.instance.current().field { type = ContextClass }.any() as Context
-                        val checkBox = LayoutInflater.from(context).inflate(
-                            context.resources.getIdentifier("pure_mode_dialog_layout", "layout", Scope.PACKAGE_INSTALLER),
-                            null,
-                            false
-                        ).findViewById<CheckBox>(
-                            context.resources.getIdentifier("cb_do_show_again", "id", Scope.PACKAGE_INSTALLER)
-                        )
-                        cancelClickInstance.invoke(null, this.instance, checkBox, dialog, -2)
-                    }
-                    this.result = null
+                }
+                method {
+                    name = "getAppRegisterScene"
+                }.hook {
+                    replaceTo("registered")
+                }
+                method {
+                    name = "isMarketApp"
+                }.hook {
+                    replaceToFalse()
+                }
+                method {
+                    name = "isMarketApp64NotInstallAllow"
+                }.hook {
+                    replaceToFalse()
+                }
+                method {
+                    name = "isProhibitInstalling"
+                }.hook {
+                    replaceToFalse()
+                }
+                method {
+                    name = "isNewUnregistered"
+                }.hook {
+                    replaceToFalse()
+                }
+                method {
+                    name = "isUnrecorded"
+                }.hook {
+                    replaceToFalse()
                 }
             }
         }

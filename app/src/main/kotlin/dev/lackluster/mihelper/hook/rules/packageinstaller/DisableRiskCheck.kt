@@ -28,20 +28,36 @@ import org.luckypray.dexkit.query.enums.StringMatchType
 
 object DisableRiskCheck : YukiBaseHooker() {
     private val verifyEnable by lazy {
-        DexKit.dexKitBridge.findMethod {
+        DexKit.findMethodWithCache("secure_verify_enable") {
             matcher {
                 addUsingString("secure_verify_enable", StringMatchType.Equals)
                 returnType = "boolean"
             }
-        }.singleOrNull()
+        }
     }
     private val openSafeMode by lazy {
-        DexKit.dexKitBridge.findMethod {
+        DexKit.findMethodWithCache("open_safety_model") {
             matcher {
                 addUsingString("installerOpenSafetyModel", StringMatchType.Equals)
                 returnType = "boolean"
             }
-        }.singleOrNull()
+        }
+    }
+    private val closeSafeMode by lazy {
+        DexKit.findMethodWithCache("close_safety_model") {
+            matcher {
+                addUsingString("installerCloseSafetyModel", StringMatchType.Equals)
+                returnType = "boolean"
+            }
+        }
+    }
+    private val singleAuth by lazy {
+        DexKit.findMethodWithCache("single_auth") {
+            matcher {
+                addUsingString("installerSingleAuth", StringMatchType.Equals)
+                returnType = "boolean"
+            }
+        }
     }
     override fun onHook() {
         hasEnable(Pref.Key.PackageInstaller.DISABLE_RISK_CHECK) {
@@ -50,6 +66,12 @@ object DisableRiskCheck : YukiBaseHooker() {
                 replaceToFalse()
             }
             openSafeMode?.getMethodInstance(appClassLoader!!)?.hook {
+                replaceToFalse()
+            }
+            closeSafeMode?.getMethodInstance(appClassLoader!!)?.hook {
+                replaceToFalse()
+            }
+            singleAuth?.getMethodInstance(appClassLoader!!)?.hook {
                 replaceToFalse()
             }
         }
