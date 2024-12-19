@@ -391,7 +391,7 @@
     <string name="ui_title_android_screen_rotation">屏幕旋转</string>
     <string name="security_security_icon_open">点击应用信息页的图标启动应用</string>
     <string name="security_power_block_battery_whitelist">阻止恢复电池优化白名单</string>
-    <string name="interconnection_milink_fuck_hpplay">阻止创建乐播投屏相关文件</string>
+    <string name="cleaner_milink_fuck_hpplay">阻止创建乐播投屏相关文件</string>
     <string name="others_package_update_system_app">移除系统应用安装限制</string>
     <string name="others_package_update_system_app_tips">允许从第三方应用更新系统应用</string>
     <string name="others_package_more_info">应用信息页显示更多信息</string>

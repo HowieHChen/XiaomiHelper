@@ -56,11 +56,16 @@ fun CleanMasterPage(navController: NavController, adjustPadding: PaddingValues, 
     ) {
         item {
             PreferenceGroup(
-                title = stringResource(R.string.ui_title_cleaner_ad_blocker)
+                title = stringResource(R.string.ui_title_cleaner_ad_blocker),
+                first = true
             ) {
                 SwitchPreference(
                     title = stringResource(R.string.scope_market),
                     key = Pref.Key.Market.AD_BLOCKER
+                )
+                SwitchPreference(
+                    title = stringResource(R.string.scope_mms),
+                    key = Pref.Key.MMS.AD_BLOCKER
                 )
                 SwitchPreference(
                     title = stringResource(R.string.scope_music),
@@ -152,6 +157,16 @@ fun CleanMasterPage(navController: NavController, adjustPadding: PaddingValues, 
         }
         item {
             PreferenceGroup(
+                title = stringResource(R.string.ui_title_cleaner_incallui)
+            ) {
+                SwitchPreference(
+                    title = stringResource(R.string.cleaner_incallui_hide_crbt),
+                    key = Pref.Key.InCallUI.HIDE_CRBT
+                )
+            }
+        }
+        item {
+            PreferenceGroup(
                 title = stringResource(R.string.ui_title_cleaner_market)
             ) {
                 SwitchPreference(
@@ -173,6 +188,16 @@ fun CleanMasterPage(navController: NavController, adjustPadding: PaddingValues, 
                     title = stringResource(R.string.cleaner_market_hide_video),
                     summary = stringResource(R.string.cleaner_market_hide_video_tips),
                     key = Pref.Key.Market.HIDE_TAB_APP_ASSEMBLE
+                )
+            }
+        }
+        item {
+            PreferenceGroup(
+                title = stringResource(R.string.ui_title_cleaner_milink)
+            ) {
+                SwitchPreference(
+                    title = stringResource(R.string.cleaner_milink_fuck_hpplay),
+                    key = Pref.Key.MiLink.FUCK_HPPLAY
                 )
             }
         }
@@ -288,7 +313,8 @@ fun CleanMasterPage(navController: NavController, adjustPadding: PaddingValues, 
         }
         item {
             PreferenceGroup(
-                title = stringResource(R.string.ui_title_cleaner_taplus)
+                title = stringResource(R.string.ui_title_cleaner_taplus),
+                last = true
             ) {
                 SwitchPreference(
                     title = stringResource(R.string.cleaner_taplus_hide_shop),

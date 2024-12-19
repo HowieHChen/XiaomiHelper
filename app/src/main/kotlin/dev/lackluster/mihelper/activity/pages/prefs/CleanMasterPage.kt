@@ -133,7 +133,7 @@ class CleanMasterPage : BasePage() {
             )
         }
         PreferenceCategory(
-            DescData(titleId = R.string.ui_title_in_call_ui),
+            DescData(titleId = R.string.ui_title_cleaner_incallui),
             CategoryData()
         ) {
             SwitchPreference(

@@ -266,7 +266,7 @@
     <string name="security_power_battery_optimization_tips">デフォルトでは非表示になっているバッテリーの最適化ページを開きます</string>
     <string name="security_power_battery_optimization_failed_toast">開けませんでした、おそらくシステムが対応していません。</string>
     <!-- InterconnectionPage -->
-    <string name="interconnection_milink_fuck_hpplay">｢hpplay｣フォルダの作成をブロックする</string>
+    <string name="cleaner_milink_fuck_hpplay">｢hpplay｣フォルダの作成をブロックする</string>
     <string name="interconnection_mishare_no_auto_off">Mi シェアの自動オフを無効化する</string>
     <string name="interconnection_mimirror_all_app">すべてのアプリを別のデバイスで開く事を可能にする</string>
     <!-- OthersPage -->

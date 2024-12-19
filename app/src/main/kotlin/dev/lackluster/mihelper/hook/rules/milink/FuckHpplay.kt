@@ -21,31 +21,86 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+@file:Suppress("DEPRECATION")
+
 package dev.lackluster.mihelper.hook.rules.milink
 
+import android.content.Context
 import android.os.Environment
+import android.preference.PreferenceManager
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
+import com.highcapable.yukihookapi.hook.factory.field
 import com.highcapable.yukihookapi.hook.factory.method
-import com.highcapable.yukihookapi.hook.type.java.StringArrayClass
 import com.highcapable.yukihookapi.hook.type.java.StringClass
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.factory.hasEnable
 import java.io.File
-import java.io.FileNotFoundException
 
 object FuckHpplay : YukiBaseHooker() {
+    private val preferenceClass by lazy {
+        "com.hpplay.sdk.source.common.store.Preference".toClassOrNull()
+    }
+    private val hpplayClass by lazy {
+        "com.hpplay.common.utils.ContextPath".toClassOrNull()
+    }
+
     override fun onHook() {
         hasEnable(Pref.Key.MiLink.FUCK_HPPLAY) {
-            val targetPath = File(Environment.getExternalStorageDirectory(), "com.milink.service").absolutePath
-            val hpplayClz = "com.hpplay.common.utils.ContextPath".toClassOrNull()
-            hpplayClz?.method {
-                name = "makeDir"
-                paramCount = 2
-                param(StringArrayClass, StringClass)
-            }?.hook {
-                before {
-                    if (this.args(1).string().startsWith(targetPath)) {
-                        FileNotFoundException().throwToApp()
+            "com.xiaomi.aivsbluetoothsdk.utils.FileUtil".toClassOrNull()?.apply {
+                method {
+                    name = "splicingFilePath"
+                    param(StringClass, StringClass, StringClass, StringClass)
+                }.hook {
+                    before {
+                        val rootDir = this.args(0).string()
+                        if (rootDir.startsWith("com.milink.service")) {
+                            this.args(0).set("MIUI${File.separator}AIVS${File.separator}${rootDir}")
+                        }
+                    }
+                }
+            }
+            val keyExist = preferenceClass?.field {
+                name = "KEY_SDCARD_DIR_ENABLE"
+                type = StringClass
+                modifiers { isStatic && isFinal }
+            }?.give() != null
+            if (keyExist) {
+                hpplayClass?.apply {
+                    method {
+                        name = "initDirs"
+                    }.hook {
+                        before {
+                            val context = this.args(0).cast<Context>() ?: return@before
+                            PreferenceManager.getDefaultSharedPreferences(context)
+                                .edit()
+                                .putBoolean("key_sdcard_dir_enable", false)
+                                .apply()
+                        }
+                    }
+                }
+                "com.hpplay.sdk.source.api.LelinkSourceSDK".toClassOrNull()?.apply {
+                    method {
+                        name = "enableSDCard"
+                    }.hook {
+                        before {
+                            this.args(0).setFalse()
+                        }
+                    }
+                }
+            } else {
+                val sdcardPath = Environment.getExternalStorageDirectory().absolutePath
+                hpplayClass?.apply {
+                    method {
+                        name = "jointPath"
+                    }.hook {
+                        before {
+                            val args = this.args(0).cast<Array<Any>>() ?: return@before
+                            val stringArgs = args.map { it.toString() }.toMutableList()
+                            if (stringArgs.size == 3 && stringArgs[0] == sdcardPath && stringArgs[1] == "com.milink.service") {
+                                stringArgs.add(1, "MIUI")
+                                this.args(0).set(stringArgs.toTypedArray())
+                            }
+                        }
                     }
                 }
             }

@@ -303,6 +303,8 @@
     <string name="ui_title_cleaner_download" translatable="false">@string/scope_download</string>
     <string name="cleaner_downloadui_hide_xl">Hide Xunlei icons and text</string>
     <string name="cleaner_download_fuck_xl">Block creation of .xlDownload folder</string>
+    <string name="ui_title_cleaner_incallui" translatable="false">@string/scope_in_call_ui</string>
+    <string name="cleaner_incallui_hide_crbt">Hide CRBT (Coloring Ring Back Tone)</string>
     <string name="ui_title_cleaner_market" translatable="false">@string/scope_market</string>
     <string name="cleaner_market_block_update_dailog">Block update push dialog</string>
     <string name="cleaner_market_block_update_dailog_tips">Block the dialog that prompts you to turn on update push, when update push is turned off and the update button is clicked.</string>
@@ -312,6 +314,8 @@
     <string name="cleaner_market_hide_rank_tips">Remove the Rank from the bottom tab</string>
     <string name="cleaner_market_hide_video">Hide App Assemble/Video</string>
     <string name="cleaner_market_hide_video_tips">Remove the App Assemble/Video from the bottom tab</string>
+    <string name="ui_title_cleaner_milink" translatable="false">@string/scope_mi_link</string>
+    <string name="cleaner_milink_fuck_hpplay">Block creation of hpplay folders</string>
     <string name="ui_title_cleaner_music" translatable="false">@string/scope_music</string>
     <string name="cleaner_music_hide_long_audio">Hide long audio</string>
     <string name="cleaner_music_hide_long_audio_tips">Remove the long audio from the top tab on the home page</string>
@@ -341,8 +345,6 @@
     <string name="cleaner_security_hide_home_popular_tips">Hide popular function recommendations at the bottom of the page</string>
     <string name="cleaner_security_disable_risk_app_notif">Disable \"Malicious app found\" notifications</string>
     <string name="cleaner_security_remove_report">Remove the \"Report\" button from the app info page</string>
-    <string name="ui_title_in_call_ui" translatable="false">@string/scope_in_call_ui</string>
-    <string name="cleaner_incallui_hide_crbt">Hide CRBT (Coloring Ring Back Tone)</string>
     <string name="ui_title_home" translatable="false">@string/scope_miui_home</string>
     <string name="cleaner_home_remove_report">Remove the \"Report\" button from the uninstall app pop-up window</string>
     <string name="ui_title_cleaner_systemui" translatable="false">@string/scope_systemui</string>
@@ -408,8 +410,6 @@
     <string name="security_power_battery_optimization_tips">Open the battery optimization page that is hidden by default</string>
     <string name="security_power_battery_optimization_failed_toast">Failed to open, probably not supported by the system.</string>
     <!-- InterconnectionPage -->
-    <string name="ui_title_interconnection_milink" translatable="false">@string/scope_mi_link</string>
-    <string name="interconnection_milink_fuck_hpplay">Block creation of hpplay folders</string>
     <string name="ui_title_interconnection_mishare" translatable="false">@string/scope_mi_share</string>
     <string name="interconnection_mishare_no_auto_off">Disable Xiaomi Share auto-off</string>
     <string name="ui_title_interconnection_mimirror" translatable="false">@string/scope_mi_mirror</string>

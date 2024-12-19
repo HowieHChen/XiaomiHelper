@@ -28,27 +28,35 @@ import dev.lackluster.mihelper.utils.factory.hasEnable
 import org.luckypray.dexkit.query.enums.StringMatchType
 
 object AdBlocker : YukiBaseHooker() {
-    private val cloudControlMethod by lazy {
+    private val messageCardClass by lazy {
         DexKit.dexKitBridge.findClass {
             matcher {
                 addUsingString("Unknown type of the message: ", StringMatchType.Equals)
             }
-        }.singleOrNull()
+        }
     }
+    private val messageType11Method by lazy {
+        DexKit.findMethodWithCache("is_type_11") {
+            matcher {
+                returnType = "boolean"
+                addUsingNumber(11)
+            }
+            searchClasses = messageCardClass
+        }
+    }
+
     override fun onHook() {
         hasEnable(Pref.Key.MMS.AD_BLOCKER) {
             if (appClassLoader == null) return@hasEnable
-            runCatching {
-                cloudControlMethod?.getInstance(appClassLoader!!)?.method {
-                    name = "j"
-                }?.ignored()?.hook {
+            messageType11Method?.getMethodInstance(appClassLoader!!)?.hook {
+                replaceToFalse()
+            }
+            "com.miui.smsextra.ui.BottomMenu".toClassOrNull()?.apply {
+                method {
+                    name = "allowMenuMode"
+                }.hook {
                     replaceToFalse()
                 }
-            }
-            "com.miui.smsextra.ui.BottomMenu".toClass().method {
-                name = "allowMenuMode"
-            }.hook {
-                replaceToFalse()
             }
         }
     }

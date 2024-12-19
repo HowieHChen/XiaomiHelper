@@ -28,12 +28,14 @@ import dev.lackluster.mihelper.utils.factory.hasEnable
 object HideCRBT : YukiBaseHooker() {
     override fun onHook() {
         hasEnable(Pref.Key.InCallUI.HIDE_CRBT) {
-            "com.android.incallui.Call".toClass().method {
-                name = "setPlayingVideoCrbt"
-            }.hook {
-                before {
-                    this.args(0).set(0)
-                    this.args(1).setFalse()
+            "com.android.incallui.Call".toClassOrNull()?.apply {
+                method {
+                    name = "setPlayingVideoCrbt"
+                }.hook {
+                    before {
+                        this.args(0).set(0)
+                        this.args(1).setFalse()
+                    }
                 }
             }
         }

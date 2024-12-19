@@ -268,7 +268,7 @@
     <string name="security_power_battery_optimization_tips">Abra a página de otimização de bateria que está oculta por padrão</string>
     <string name="security_power_battery_optimization_failed_toast">Falha ao abrir, provavelmente não é compatível com o sistema.</string>
     <!-- InterconnectionPage -->
-    <string name="interconnection_milink_fuck_hpplay">Bloquear a criação de pastas hpplay</string>
+    <string name="cleaner_milink_fuck_hpplay">Bloquear a criação de pastas hpplay</string>
     <string name="interconnection_mishare_no_auto_off">Desativar fechamento automático do Xiaomi Share</string>
     <string name="interconnection_mimirror_all_app">Todos os apps podem ser abertos em outro dispositivo</string>
     <!-- OthersPage -->

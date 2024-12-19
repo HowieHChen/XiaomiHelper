@@ -37,11 +37,11 @@ class InterconnectionPage : BasePage() {
 
     override fun onCreate() {
         PreferenceCategory(
-            DescData(titleId = R.string.ui_title_interconnection_milink),
+            DescData(titleId = R.string.ui_title_cleaner_milink),
             CategoryData(hideLine = true)
         ) {
             SwitchPreference(
-                DescData(titleId = R.string.interconnection_milink_fuck_hpplay),
+                DescData(titleId = R.string.cleaner_milink_fuck_hpplay),
                 SwitchData(Pref.Key.MiLink.FUCK_HPPLAY)
             )
         }
