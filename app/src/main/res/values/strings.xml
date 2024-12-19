@@ -28,8 +28,7 @@
     <string name="dialog_error">Error</string>
 
     <string name="page_main" translatable="false">@string/app_name</string>
-    <string name="page_dev_ui_test">UI Element Test</string>
-    
+    <string name="page_dev_ui_test">UI element test</string>
     
     <string name="page_about">About module</string>
     <string name="page_menu">Menu</string>
@@ -125,7 +124,7 @@
     <string name="about_miuix">This app is made by Miuix</string>
     <string name="about_miuix_tips">Miuix is a shared UI library for Compose Multiplatform</string>
     <string name="about_miuix_url" translatable="false">https://github.com/miuix-kotlin-multiplatform/miuix</string>
-    <string name="about_yuki">This module is made by YukiHookAPI</string>
+    <string name="about_yuki">This app is made by YukiHookAPI</string>
     <string name="about_yuki_tips">Learn more https://github.com/HighCapable/YuKiHookAPI</string>
     <string name="about_yuki_url" translatable="false">https://github.com/HighCapable/YuKiHookAPI</string>
     <string name="ui_title_about_developer">Developer</string>
@@ -147,33 +146,33 @@
     <string name="module_lite_mode">Lite mode</string>
     <string name="module_lite_mode_tips">Only load core functionality</string>
     <string name="module_dexkit_cache">Cache DexKit results</string>
-    <string name="module_dexkit_cache_tips">Using caches reduces the negative impact on performance, but generates a cache file in the host application directory. After turning off this feature, the cache file will be cleared on the next host application startup (if it exists).</string>
+    <string name="module_dexkit_cache_tips">Using caches reduces the negative impact on performance but generates a cache file in the host app directory. When this feature is turned off, the cache file will be cleared the next time the host app starts (if it exists).</string>
     <string name="module_hide_icon">Hide icon in Home screen</string>
     <string name="module_skip_root_check">Disable root privilege checking</string>
-    <string name="module_skip_root_check_tips">Effective after restarting the app</string>
-    <string name="module_show_in_settings">Module entry in system settings</string>
-    <string name="module_settings_icon_style">Entry icon style</string>
+    <string name="module_skip_root_check_tips">Takes effect after restarting the app</string>
+    <string name="module_show_in_settings">Icon in Settings</string>
+    <string name="module_settings_icon_style">Icon style in Settings</string>
     <string name="module_settings_icon_style_default" translatable="false">@string/common_default</string>
     <string name="module_settings_icon_style_android">Android</string>
-    <string name="module_settings_icon_color">Entry icon color</string>
+    <string name="module_settings_icon_color">Icon color in Settings</string>
     <string name="module_settings_icon_color_gray">Grey</string>
     <string name="module_settings_icon_color_red">Red</string>
     <string name="module_settings_icon_color_green">Green</string>
     <string name="module_settings_icon_color_blue">Blue</string>
     <string name="module_settings_icon_color_purple">Purple</string>
     <string name="module_settings_icon_color_yellow">Yellow</string>
-    <string name="module_settings_name">Entry title</string>
+    <string name="module_settings_name">Name in Settings</string>
     <string name="module_settings_name_helper" translatable="false">Hyper Helper</string>
     <string name="module_settings_name_advanced">Advanced settings</string>
     <string name="module_settings_name_custom" translatable="false">@string/common_custom</string>
     <string name="module_settings_custom_name">Custom entry title</string>
     <string name="ui_title_module_ui">Interface and display</string>
     <string name="module_ui_blur">Blur effect</string>
-    <string name="module_ui_blur_tint_alpha_light">Opacity of tinted colors in light mode</string>
-    <string name="module_ui_blur_tint_alpha_dark">Opacity of tinted colors in dark mode</string>
-    <string name="module_ui_blur_tint_alpha_tips">Opacity should be an integer from 0 to 100, most transparent for a value of 0.</string>
+    <string name="module_ui_blur_tint_alpha_light">Opacity of tinted colors in Light mode</string>
+    <string name="module_ui_blur_tint_alpha_dark">Opacity of tinted colors in Dark mode</string>
+    <string name="module_ui_blur_tint_alpha_tips">Opacity should be an integer between 0 and 100, with 0 being the value that represents the highest transparency.</string>
     <string name="module_ui_split">Adaptive layouts</string>
-    <string name="module_ui_split_tips">App will automatically switch to dual-panel layout on large-screen devices or landscape screens</string>
+    <string name="module_ui_split_tips">The app will automatically switch to a dual-panel layout on large-screen devices or landscape screens</string>
     <string name="ui_title_module_backup">Backup &amp; restore</string>
     <string name="module_backup">Backup module preferences</string>
     <string name="module_restore">Restore module preferences</string>
@@ -195,10 +194,10 @@
     <string name="systemui_statusbar_icon" translatable="false">@string/page_status_bar_icon_tuner</string>
     <string name="systemui_statusbar_tap_to_sleep" translatable="false">@string/common_tap_sleep</string>
     <string name="ui_title_systemui_lock_screen">Lock screen</string>
-    <string name="systemui_lock_hide_unlock_tip">Hide the unlock prompt at the bottom of the lock screen interface</string>
+    <string name="systemui_lock_hide_unlock_tip">Hide unlock request at the bottom of the screen</string>
     <string name="systemui_lock_hide_disturb">Hide Do Not Disturb mode resident notifications</string>
     <string name="systemui_lock_double_tap" translatable="false">@string/common_tap_sleep</string>
-    <string name="systemui_lock_block_editor">Disable access to lock screen editor on Lock screen</string>
+    <string name="systemui_lock_block_editor">Disable long press to access Lock screen editor</string>
     <string name="systemui_lock_block_editor_tips">You can edit the Lock screen in Settings > Wallpaper &amp; personalization</string>
     <string name="systemui_lock_carrier_text">Status bar carrier label</string>
     <string name="systemui_lock_carrier_text_default">Default (invisible)</string>
@@ -206,7 +205,7 @@
     <string name="systemui_lock_carrier_text_clock">Clock</string>
     <string name="ui_title_systemui_notification_center">Notification shade</string>
     <string name="systemui_notif_redirect_settings">Redirect notification settings</string>
-    <string name="systemui_notif_redirect_settings_tips">When you open the notification settings it navigates to the corresponding notification channel settings instead of the app notification settings</string>
+    <string name="systemui_notif_redirect_settings_tips">When you open the notification settings, it navigates to the corresponding notification channel settings instead of the app notification settings.</string>
     <string name="systemui_notif_redirect_dialog">Show pop-up when opening notification settings</string>
     <string name="systemui_notif_redirect_dialog_tips">Use the pop-up window to choose whether to turn on the app notification settings or the notification channel settings</string>
     <string name="systemui_notif_redirect_dialog_negative_default">App settings</string>
@@ -290,8 +289,8 @@
     <string name="cleaner_ad_blocker_mms" translatable="false">@string/scope_mms</string>
     <string name="cleaner_ad_blocker_music" translatable="false">@string/scope_music</string>
     <string name="cleaner_ad_blocker_theme" translatable="false">@string/scope_themes</string>
-    <string name="ui_title_cleaner_skip_splash">Disable splash screen</string>
-    <string name="cleaner_skip_splash_tips">Should also disable ads on the splash screen (no guarantees)</string>
+    <string name="ui_title_cleaner_skip_splash">Disable Home screen</string>
+    <string name="cleaner_skip_splash_tips">It should also disable ads on the Home screen (no guarantees)</string>
     <string name="ui_title_cleaner_privacy">Privacy</string>
     <string name="cleaner_privacy_block_upload_app">Block uploading of installed apps list</string>
     <string name="cleaner_privacy_block_upload_app_tips" translatable="false">@string/scope_guard_provider</string>
@@ -322,11 +321,11 @@
     <string name="cleaner_music_hide_my_banner">Hide the banner on my page</string>
     <string name="cleaner_music_hide_my_rec_playlist">Hide recommended songs my page</string>
     <string name="ui_title_cleaner_package" translatable="false">@string/scope_package_installer</string>
-    <string name="cleaner_package_remove_element">Disable redundant features and remove related elements</string>
+    <string name="cleaner_package_remove_element">Disable redundant features</string>
     <string name="cleaner_package_skip_risk_check">Disable the monitoring of risks</string>
     <string name="cleaner_package_no_count_check">Disable frequently installed app check</string>
     <string name="cleaner_package_install_source">Custom install source</string>
-    <string name="cleaner_package_install_source_tips">Bypass system application installation restrictions by disguising the installation source as a system application.</string>
+    <string name="cleaner_package_install_source_tips">Ignore the system app installation restrictions by disguising the installation source as a system app.</string>
     <string name="cleaner_package_install_source_disabled" translatable="false">@string/common_disabled</string>
     <string name="cleaner_package_install_source_file">File Manager</string>
     <string name="cleaner_package_install_source_market" translatable="false">@string/scope_market</string>
@@ -336,8 +335,8 @@
     <string name="ui_title_cleaner_security_pad" translatable="false">@string/scope_security_center_pad</string>
     <string name="cleaner_security_lock_score">Disable health check optimization</string>
     <string name="cleaner_security_lock_score_tips">Lock the security score to 100 and disable the \"Optimize\" button</string>
-    <string name="cleaner_security_hide_red_dot">Hide the red alert dots</string>
-    <string name="cleaner_security_hide_red_dot_tips">Hide the red alert dots on the home page grid items</string>
+    <string name="cleaner_security_hide_red_dot">Hide red alert dots</string>
+    <string name="cleaner_security_hide_red_dot_tips">Hide the red alert dots on Home screen grid icons</string>
     <string name="cleaner_security_hide_home_rec">Hide recommended function</string>
     <string name="cleaner_security_hide_home_rec_tips">Hide the recommend function banner below the function grid</string>
     <string name="cleaner_security_hide_home_common">Hide commonly used functions</string>
@@ -362,9 +361,9 @@
     <string name="android_rotation_switch_suggestions">Toggle rotation suggestions status</string>
     <string name="android_rotation_switch_suggestions_tips">Controls whether rotation suggestions are displayed</string>
     <string name="android_rotation_switch_suggestions_before_true">Currently disabled. Are you sure you want to enable it?</string>
-    <string name="android_rotation_switch_suggestions_done_true">Enabled rotation suggestions</string>
+    <string name="android_rotation_switch_suggestions_done_true">Rotation suggestions enabled</string>
     <string name="android_rotation_switch_suggestions_before_false">Currently enabled. Are you sure you want to disable it?</string>
-    <string name="android_rotation_switch_suggestions_done_false">Disabled rotation suggestions</string>
+    <string name="android_rotation_switch_suggestions_done_false">Rotation suggestions disabled</string>
     <string name="android_rotation_switch_suggestions_failed">Failed! Please grant root permission to this app and try again.</string>
     <string name="android_rotation_disable_fixed_orientation">Disable fixed orientation</string>
     <string name="android_rotation_disable_fixed_orientation_tips">Disable some apps fixed orientation</string>
@@ -373,17 +372,17 @@
     <string name="ui_title_android_others" translatable="false">@string/common_others</string>
     <string name="android_others_wallpaper_scale">Wallpaper scale</string>
     <string name="android_others_wallpaper_scale_tips">Affects the wallpaper zoom animation when launching/exiting apps on the desktop</string>
-    <string name="android_others_force_dark">Disable whitelisting of forced dark</string>
-    <string name="android_others_force_dark_tips">Make it possible to enable the forced dark mode feature for most apps, except for system apps, etc.</string>
+    <string name="android_others_force_dark">Disable whitelisting of forced Dark mode</string>
+    <string name="android_others_force_dark_tips">Make it possible to enable the Forced dark mode feature for most apps, except for system apps, etc.</string>
     <!-- SecurityCenterPage -->
     <string name="ui_title_security_security" translatable="false">@string/scope_security_center</string>
     <string name="ui_title_security_security_pad" translatable="false">@string/scope_security_center_pad</string>
     <string name="security_security_skip_warning">Skip the wait time on warnings</string>
     <string name="security_security_skip_warning_tips">Skip wait times when using USB debugging, unknown sources, and accessibility.</string>
     <string name="security_security_skip_open_app">Remove pop-ups when opening apps</string>
-    <string name="security_security_skip_open_app_tips">Remove chained startup warning pop-ups containing \"Allow XXX to open XXX\"</string>
+    <string name="security_security_skip_open_app_tips">Remove \"Allow XXX to open XXX\" chain start pop-up</string>
     <string name="security_security_skip_open_default" translatable="false">@string/common_default</string>
-    <string name="security_security_skip_open_no_restriction">Disable chain start mgmt</string>
+    <string name="security_security_skip_open_no_restriction">Disable chain start management</string>
     <string name="security_security_skip_open_auto_approve">Approve automatically</string>
     <string name="security_security_screen_battery">Show screen usage in power consumption ranking</string>
     <string name="security_security_screen_battery_tips">Battery usage of apps that are hidden by default will also be shown</string>
@@ -393,12 +392,12 @@
     <string name="security_security_icon_open">Tap the icon in the app info to launch the app</string>
     <string name="ui_title_security_power" translatable="false">@string/scope_power_keeper</string>
     <string name="ui_title_security_guard" translatable="false">@string/scope_guard_provider</string>
-    <string name="security_guard_env_check">Disable environmental check</string>
+    <string name="security_guard_env_check">Disable environment check</string>
     <string name="ui_title_lbe" translatable="false">@string/scope_lbe</string>
-    <string name="security_lbe_block_remove_auto_start">Blocks the removal of auto-start permission</string>
-    <string name="security_lbe_block_remove_auto_start_tips">Block the system from removing apps\' auto-start permission</string>
-    <string name="security_lbe_clipboard_toast">Use Toast to show clipboard read prompts</string>
-    <string name="security_lbe_clipboard_toast_tips">Using Toast allows the element behind the prompt to be clickable</string>
+    <string name="security_lbe_block_remove_auto_start">Block removal of auto-start permission</string>
+    <string name="security_lbe_block_remove_auto_start_tips">Prevents the system from removing the auto-start permission from apps</string>
+    <string name="security_lbe_clipboard_toast">Use toast to show clipboard read prompts</string>
+    <string name="security_lbe_clipboard_toast_tips">Using toast allows the element behind the prompt to be clickable</string>
     <string name="ui_title_security_mi_trust_service" translatable="false">@string/scope_mi_trust</string>
     <string name="mi_trust_disable_risk_check" translatable="false">@string/cleaner_package_skip_risk_check</string>
     <string name="security_power_do_not_kill_app">Prevent killing background apps</string>
@@ -547,7 +546,7 @@
     <string name="media_style_custom_blur">Blurred cover</string>
     <string name="media_style_custom_android_old">Android (Old)</string>
     <string name="media_style_custom_android_new">Android (New)</string>
-    <string name="media_style_android_anim">Use transition animation when changing text color [Experimental!]</string>
+    <string name="media_style_android_anim">Experimental feature. Use transition animation when changing text color.</string>
     <string name="media_style_blur_radius">Blur radius</string>
     <string name="media_style_android_reverse">Auto-reverse color</string>
     <!-- HomeRefactorPage -->
