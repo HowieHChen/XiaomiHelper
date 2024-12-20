@@ -22,6 +22,7 @@ package dev.lackluster.mihelper.hook.rules.mms
 
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.method
+import com.highcapable.yukihookapi.hook.type.java.BooleanType
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.DexKit
 import dev.lackluster.mihelper.utils.factory.hasEnable
@@ -54,6 +55,21 @@ object AdBlocker : YukiBaseHooker() {
             "com.miui.smsextra.ui.BottomMenu".toClassOrNull()?.apply {
                 method {
                     name = "allowMenuMode"
+                }.hook {
+                    replaceToFalse()
+                }
+            }
+            "com.miui.smsextra.ui.UnderstandButton".toClassOrNull()?.apply {
+                method {
+                    name = "requestADInAdvance"
+                }.ignored().hook {
+                    intercept()
+                }
+                method {
+                    returnType = BooleanType
+                    name {
+                        it == "needRequestAD" || it == "requestAD"
+                    }
                 }.hook {
                     replaceToFalse()
                 }
