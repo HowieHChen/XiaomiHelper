@@ -1,10 +1,8 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Hyper Helper</string>
     <string name="xposed_desc">Torne o HyperOS ótimo novamente!</string>
     <string name="about_module">Este módulo foi feito por YukiHookAPI. Saiba mais em https://github.com/HighCapable/YuKiHookAPI</string>
-    <string name="main_module_inactive_tips">O módulo não está ativado. Verifique a versão do LSPosed e se o módulo está ativo e tente novamente.</string>
-    <string name="main_module_disabled_tips">O módulo não está ativado. Ative o módulo na página Configurações do módulo.</string>
     <string name="common_default">Padrão</string>
     <string name="common_current">Corrente</string>
     <string name="common_custom">Personalizado</string>
@@ -23,13 +21,14 @@
     <string name="button_clear">Limpar</string>
     <string name="button_enable">Ativar</string>
     <string name="button_disable">Desativar</string>
+    <string name="button_ignore">Ignorar</string>
     <string name="dialog_done">Pronto</string>
     <string name="dialog_warning">Aviso</string>
     <string name="dialog_error">Erro</string>
+    <string name="page_dev_ui_test">Teste de elemento de IU</string>
     <string name="page_about">Sobre o módulo</string>
     <string name="page_menu">Menu</string>
     <string name="page_module">Configurações do módulo</string>
-    <string name="scope_systemui">UI do Sistema</string>
     <string name="page_android">Framework do Sistema</string>
     <string name="page_cleaner">Limpeza</string>
     <string name="page_interconnection">Interconectividade</string>
@@ -43,6 +42,7 @@
     <string name="scope_guard_provider">Componentes de segurança do sistema</string>
     <string name="scope_in_call_ui">Ui de chamadas</string>
     <string name="scope_joyose">Joyose</string>
+    <string name="scope_lbe">Permissões</string>
     <string name="scope_market">GetApps</string>
     <string name="scope_mi_ai">Mi AI</string>
     <string name="scope_mi_link">Serviços de interconectividade</string>
@@ -58,6 +58,7 @@
     <string name="scope_screenshot">Captura de tela</string>
     <string name="scope_security_center">Segurança</string>
     <string name="scope_settings">Configurações</string>
+    <string name="scope_systemui">UI do Sistema</string>
     <string name="scope_taplus">Taplus</string>
     <string name="scope_themes">Temas</string>
     <string name="scope_updater">Atualizações</string>
@@ -73,6 +74,10 @@
     <string name="share_center">Xiaomi Smart Hub</string>
     <string name="floating_window">Janela flutuante</string>
     <string name="new_task">Nova tarefa</string>
+    <!-- MainPage -->
+    <string name="main_module_inactive_tips">O módulo não está ativado. Verifique a versão do LSPosed e se o módulo está ativo e tente novamente.</string>
+    <string name="main_module_disabled_tips">O módulo não está ativado. Ative o módulo na página Configurações do módulo.</string>
+    <string name="main_app_root_tips">A falta de privilégios root pode impedir que alguns recursos funcionem corretamente.</string>
     <!-- MenuPage -->
     <string name="ui_title_menu_reboot">Reiniciar</string>
     <string name="menu_reboot_system">Reiniciar sistema</string>
@@ -88,7 +93,11 @@
     <!-- AboutPage -->
     <string name="about_jump_error_toast">Alguns erros estranhos ocorreram</string>
     <string name="about_easter_egg_toast">Você clicou e nada aconteceu</string>
-    <string name="about_yuki">Este módulo foi feito por YukiHookAPI</string>
+    <string name="about_hyperx_compose">Este app foi feito por HyperX Compose</string>
+    <string name="about_hyperx_compose_tips">HyperX Compose é uma biblioteca Compose UI compartilhada para Android baseada em Miuix</string>
+    <string name="about_miuix">Este app foi feito por Miuix</string>
+    <string name="about_miuix_tips">Miuix é uma biblioteca de UI compartilhada para Compose Multiplatform</string>
+    <string name="about_yuki">Este app foi feito por YukiHookAPI</string>
     <string name="about_yuki_tips">Saiba mais em https://github.com/HighCapable/YuKiHookAPI</string>
     <string name="ui_title_about_developer">Desenvolvedor</string>
     <string name="about_author_tips">Sem perfil ou assinatura</string>
@@ -97,11 +106,16 @@
     <string name="about_repository">Código-fonte</string>
     <string name="about_repository_tips">Repositório GitHub</string>
     <string name="ui_title_about_reference">Referências</string>
+    <string name="ui_title_about_dev_options">Opções do desenvolvedor</string>
     <!-- ModuleSettingsPage -->
     <string name="module_main_switch">Ativar módulo</string>
     <string name="module_lite_mode">Modo lite</string>
     <string name="module_lite_mode_tips">Carrega apenas a funcionalidade principal</string>
+    <string name="module_dexkit_cache">Resultados do cache DexKit</string>
+    <string name="module_dexkit_cache_tips">O uso de caches reduz o impacto negativo no desempenho, mas gera um arquivo de cache no diretório do app hospedeiro. Quando esse recurso for desativado, o arquivo de cache será limpo na próxima vez em que o app hospedeiro for iniciado (se existir).</string>
     <string name="module_hide_icon">Ocultar ícone na Tela inicial</string>
+    <string name="module_skip_root_check">Desativar verificação de privilégios root</string>
+    <string name="module_skip_root_check_tips">Entra em vigor após reiniciar o app</string>
     <string name="module_show_in_settings">Ícone nas Configurações</string>
     <string name="module_settings_icon_style">Estilo do ícone nas Configurações</string>
     <string name="module_settings_icon_style_android">Android</string>
@@ -115,6 +129,13 @@
     <string name="module_settings_name">Nome nas Configurações</string>
     <string name="module_settings_name_advanced">Configurações avançadas</string>
     <string name="module_settings_custom_name">Nome nas Configurações personalizado</string>
+    <string name="ui_title_module_ui">Interface e exibição</string>
+    <string name="module_ui_blur">Efeito do blur</string>
+    <string name="module_ui_blur_tint_alpha_light">Opacidade das cores coloridas no Modo claro</string>
+    <string name="module_ui_blur_tint_alpha_dark">Opacidade das cores coloridas no Modo escuro</string>
+    <string name="module_ui_blur_tint_alpha_tips">A opacidade deve ser um número inteiro de 0 a 100, sendo 0 o valor que representa a maior transparência.</string>
+    <string name="module_ui_split">Layouts adaptativos</string>
+    <string name="module_ui_split_tips">O app mudará automaticamente para o layout de painel duplo em dispositivos de tela grande ou em paisagem</string>
     <string name="ui_title_module_backup">Backup e restauração</string>
     <string name="module_backup">Fazer backup das preferências do módulo</string>
     <string name="module_restore">Restaurar preferências do módulo</string>
@@ -172,7 +193,7 @@
     <string name="home_anim_unlock">Otimizar animação de desbloqueio</string>
     <string name="home_anim_unlock_tips">Otimize a animação dos ícones ao desbloquear</string>
     <string name="home_anim_zoom_sync">Sincronizar zoom do plano de fundo ao abrir o app</string>
-    <string name="home_anim_zoom_sync_tips">Evita uma situação em que o app não seja iniciado, mas o plano de fundo seja ampliado. Isso fará com que a abertura do app pareça mais lenta. Não é recomendado ativá-lo.</string>
+    <string name="home_anim_zoom_sync_tips">Evite uma situação em que o app não seja iniciado, mas o plano de fundo seja ampliado. Isso fará com que a abertura do app pareça mais lenta. Não é recomendado ativá-lo.</string>
     <string name="home_anim_icon_zoom">Desativar animação de zoom quando o ícone for clicado</string>
     <string name="home_anim_icon_darken">Desativar animação escurecida quando o ícone for clicado</string>
     <string name="ui_title_home_folder">Pasta</string>
@@ -211,23 +232,54 @@
     <string name="home_minus_blur_type_texture">Texturas avançadas</string>
     <string name="home_minus_fold_style">Modo sobreposto</string>
     <string name="home_minus_blur">Ativar blur de fundo</string>
-    <string name="home_others_always_show_clock">Não ocultar a hora na barra de status</string>
+    <string name="home_others_always_show_clock">Mostrar sempre a hora na barra de status</string>
     <string name="home_others_fake_premium">Disfarçar modelo como high-end</string>
-    <string name="home_others_fake_premium_tips">Remova as restrições do modelo em alguns recursos</string>
+    <string name="home_others_fake_premium_tips">Remove as restrições do modelo em alguns recursos</string>
     <!-- CleanMasterPage -->
     <string name="ui_title_cleaner_ad_blocker">Bloqueador de anúncios</string>
+    <string name="ui_title_cleaner_skip_splash">Desativar Tela inicial</string>
+    <string name="cleaner_skip_splash_tips">Também deve desativar os anúncios na Tela inicial (sem garantias)</string>
     <string name="ui_title_cleaner_privacy">Privacidade</string>
     <string name="cleaner_privacy_block_upload_app">Impedir upload automático da lista de apps instalados</string>
     <string name="cleaner_privacy_block_ul_app_info">Impedir upload de informações sobre o app quando ele estiver instalado</string>
+    <string name="cleaner_browser_remove_app_rec">Remover recomendações de apps</string>
+    <string name="cleaner_browser_remove_app_rec_tips">Remove as recomendações de apps das sugestões da caixa de pesquisa</string>
+    <string name="cleaner_downloadui_hide_xl">Ocultar ícones e texto da Xunlei</string>
+    <string name="cleaner_download_fuck_xl">Bloquear a criação da pasta .xlDownload</string>
+    <string name="cleaner_incallui_hide_crbt">Ocultar tom de toque colorido personalizado</string>
+    <string name="cleaner_market_block_update_dailog">Bloquear caixa de diálogo push de atualização</string>
+    <string name="cleaner_market_block_update_dailog_tips">Bloqueie a caixa de diálogo que solicita que você ative o push de atualização, quando o push de atualização estiver desativado e o botão de atualização for clicado.</string>
+    <string name="cleaner_market_hide_game">Ocultar jogo</string>
+    <string name="cleaner_market_hide_game_tips">Remove o Jogo da guia inferior</string>
+    <string name="cleaner_market_hide_rank">Ocultar classificação</string>
+    <string name="cleaner_market_hide_rank_tips">Remove a Classificação da guia inferior</string>
+    <string name="cleaner_market_hide_video">Ocultar Montagem/vídeo do app</string>
+    <string name="cleaner_market_hide_video_tips">Remove o Montagem/vídeo do app da guia inferior</string>
+    <string name="cleaner_milink_fuck_hpplay">Bloquear a criação de pastas hpplay</string>
+    <string name="cleaner_music_hide_long_audio">Ocultar áudio longo</string>
+    <string name="cleaner_music_hide_long_audio_tips">Remove o áudio longo da guia superior da página inicial</string>
+    <string name="cleaner_music_hide_my_banner">Ocultar banner na minha página</string>
+    <string name="cleaner_music_hide_my_rec_playlist">Ocultar músicas recomendadas da minha página</string>
     <string name="cleaner_package_remove_element">Desativar recursos redundantes</string>
     <string name="cleaner_package_skip_risk_check">Desativar verificação de risco</string>
     <string name="cleaner_package_no_count_check">Desativar verificação de apps instalados com frequência</string>
+    <string name="cleaner_package_install_source">Fonte de instalação personalizada</string>
+    <string name="cleaner_package_install_source_tips">Ignore as restrições de instalação de apps do sistema disfarçando a fonte de instalação como um app do sistema.</string>
+    <string name="cleaner_package_install_source_file">Arquivos</string>
+    <string name="cleaner_package_custom_install_source">Nome do pacote da fonte de instalação</string>
     <string name="cleaner_security_lock_score">Desativar otimização de verificação de saúde</string>
     <string name="cleaner_security_lock_score_tips">Bloqueie a pontuação de segurança em 100 e desative o botão Otimizar</string>
+    <string name="cleaner_security_hide_red_dot">Ocultar os pontos de alerta vermelhos</string>
+    <string name="cleaner_security_hide_red_dot_tips">Oculte os pontos de alerta vermelhos nos ícones da grade da Tela inicial</string>
+    <string name="cleaner_security_hide_home_rec">Ocultar função recomendada</string>
+    <string name="cleaner_security_hide_home_rec_tips">Oculte o banner de função recomendada abaixo da grade de funções</string>
+    <string name="cleaner_security_hide_home_common">Ocultar funções comumente usadas</string>
+    <string name="cleaner_security_hide_home_popular">Ocultar funções populares</string>
+    <string name="cleaner_security_hide_home_popular_tips">Oculte as recomendações de funções populares na parte inferior da página</string>
     <string name="cleaner_security_disable_risk_app_notif">Desativar notificações de \"App malicioso encontrado\"</string>
     <string name="cleaner_security_remove_report">Remover botão \"Denunciar\" da página de informações do app</string>
-    <string name="cleaner_incallui_hide_crbt">Ocultar tom de toque colorido personalizado</string>
     <string name="cleaner_home_remove_report">Remover botão \"Denunciar\" da janela pop-up de desinstalação do app</string>
+    <string name="cleaner_systemui_fuck_gesture">Bloquear criação do arquivo statusbar_gestures.dat</string>
     <string name="cleaner_taplus_hide_shop">Ocultar botão de compras</string>
     <!-- SystemFrameworkPage -->
     <string name="ui_title_android_freeform">Janelas flutuantes</string>
@@ -257,32 +309,41 @@
     <string name="security_security_skip_warning_tips">Ignore os tempos de espera ao usar a depuração USB, fontes desconhecidas e acessibilidade.</string>
     <string name="security_security_skip_open_app">Remover pop-ups ao abrir apps</string>
     <string name="security_security_skip_open_app_tips">Remova o pop-up \"Permitir que XXX abra XXX\" do início da cadeia</string>
+    <string name="security_security_skip_open_no_restriction">Desativar gerenciamento de inicialização em cadeia</string>
+    <string name="security_security_skip_open_auto_approve">Aprovar automaticamente</string>
     <string name="security_security_screen_battery">Exibir dados detalhados do consumo de energia</string>
     <string name="security_security_screen_battery_tips">O uso da bateria de apps ocultos por padrão também será mostrado</string>
+    <string name="security_security_hide_screen_system">Mostrar Sistema Android na classificação do consumo de energia</string>
     <string name="security_security_bubble_restriction">Remover restrições do app de conversas em bolhas</string>
     <string name="security_security_system_app_wifi">Permitir permissões de gerenciamento de Wi-Fi para apps do sistema</string>
     <string name="security_security_icon_open">Tocar no ícone nas informações do app para iniciá-lo</string>
+    <string name="security_guard_env_check">Desativar verificação de ambiente</string>
+    <string name="security_lbe_block_remove_auto_start">Bloquear remoção da permissão de início automático</string>
+    <string name="security_lbe_block_remove_auto_start_tips">Impede que o sistema remova a permissão de início automático de apps</string>
+    <string name="security_lbe_clipboard_toast">Usar dica para mostrar prompts de leitura da área de transferência</string>
+    <string name="security_lbe_clipboard_toast_tips">Usar a dica permite que o elemento por trás do prompt seja clicável</string>
     <string name="security_power_do_not_kill_app">Tente não encerrar os apps</string>
+    <string name="security_power_unlock_custom_refresh">Desbloquear Apps que usam alta taxa de atualização</string>
     <string name="security_power_block_battery_whitelist">Impedir a recuperação da lista de permissões de bateria</string>
+    <string name="security_power_gms_bg_running">Remover restrições de execução em segundo plano do GMS</string>
+    <string name="security_power_gms_bg_running_tips">Disfarçado de versão internacional do sistema, permite que o GMS rode em segundo plano, evitando que a conexão do FCM seja interrompida após o bloqueio da tela.</string>
     <string name="security_power_battery_optimization">Otimização de bateria</string>
     <string name="security_power_battery_optimization_tips">Abra a página de otimização de bateria que está oculta por padrão</string>
     <string name="security_power_battery_optimization_failed_toast">Falha ao abrir, provavelmente não é compatível com o sistema.</string>
     <!-- InterconnectionPage -->
-    <string name="cleaner_milink_fuck_hpplay">Bloquear a criação de pastas hpplay</string>
     <string name="interconnection_mishare_no_auto_off">Desativar fechamento automático do Xiaomi Share</string>
     <string name="others_mimirror_all_app">Todos os apps podem ser abertos em outro dispositivo</string>
     <!-- OthersPage -->
     <string name="others_browser_debug_mode">Ativar ambiente de depuração</string>
-    <string name="others_browser_debug_mode_tips">Força a ativação do ambiente de depuração. Funciona apenas com versões mais antigas do navegador.</string>
+    <string name="others_browser_debug_mode_tips">Force a ativação do ambiente de depuração. Funciona apenas com versões mais antigas do navegador.</string>
     <string name="others_browser_switch_env">Mudar endereço interno</string>
     <string name="others_browser_switch_env_tips">Use o ambiente de pré-lançamento. Pode ser possível remover alguns dos anúncios. Pode não ser possível usar as configurações como mecanismo de pesquisa personalizado, portanto, conclua a configuração antes de ativá-lo!</string>
     <string name="others_browser_disable_update">Desativar verificação de atualização</string>
-    <string name="cleaner_download_fuck_xl">Bloquear a criação da pasta .xlDownload</string>
     <string name="others_gallery_unlimited_crop">Corte ilimitado de imagens</string>
     <string name="others_gallery_path_optim">Otimizar reconhecimento de diretórios</string>
     <string name="others_gallery_path_optim_tips">Reconheça imagens em \"Pictures/Screenshots\" como capturas de tela e vídeos em \"Movies/ScreenRecorder\" como gravações de tela e exibi-los nos álbuns correspondentes.</string>
     <string name="others_joyose_no_cloud_control">Desativar Controle de nuvem</string>
-    <string name="others_miai_hide_watermark">Ocultar marca d\'água da versão beta</string>
+    <string name="others_miai_hide_watermark">Ocultar marcas d\'água beta e AIGC</string>
     <string name="others_package_update_system_app">Remover restrições de instalação de apps do sistema</string>
     <string name="others_package_update_system_app_tips">Permite que qualquer canal que não seja do sistema instale apps do sistema</string>
     <string name="others_package_more_info">Exibir mais informações do pacote</string>
@@ -293,7 +354,6 @@
     <string name="others_screenshot_save_to_picture_tips">Salve as capturas de tela em \"Pictures/Screenshots\" em vez de \"DCIM/Screenshots\"</string>
     <string name="others_settings_show_google">Mostrar configurações do Google</string>
     <string name="others_settings_unlock_voip_assistant">Desbloquear Assistente VoIP</string>
-    <string name="security_power_unlock_custom_refresh">Desbloquear Apps que usam alta taxa de atualização</string>
     <string name="others_settings_unlock_net_mode">Mostrar configurações do tipo de rede móvel</string>
     <string name="others_settings_unlock_taplus_for_pad">Forçar ativação em tablet</string>
     <string name="others_updater_disable_validation">Remover verificação OTA</string>
@@ -345,8 +405,6 @@
     <string name="icon_tuner_battery_hide_battery">Ocultar ícone da bateria</string>
     <string name="icon_tuner_battery_hide_battery_mark">Ocultar símbolo de porcentagem da bateria</string>
     <string name="icon_tuner_battery_hide_charge">Ocultar ícone de carregamento</string>
-
-
     <string name="icon_tuner_battery_swap_battery_percent">Trocar ícone da bateria e a porcentagem da bateria</string>
     <string name="icon_tuner_battery_layout_custom">Personalizar preenchimento do ícone da bateria</string>
     <string name="icon_tuner_battery_padding_left">Preenchimento esquerdo</string>
@@ -391,7 +449,7 @@
     <string name="media_style_custom_blur">Capa desfocada</string>
     <string name="media_style_custom_android_old">Android (Velho)</string>
     <string name="media_style_custom_android_new">Android (Novo)</string>
-    <string name="media_style_android_anim">Usar animação de transição ao alterar a cor do texto [Experimental!]</string>
+    <string name="media_style_android_anim">Recurso experimental. Usar animação de transição ao alterar a cor do texto.</string>
     <string name="media_style_blur_radius">Raio de blur</string>
     <string name="media_style_android_reverse">Cor de reversão automática</string>
     <!-- HomeRefactorPage -->
@@ -419,7 +477,7 @@
     <string name="home_refactor_extra_compatibility_tips">Tente ser compatível com outros módulos, porém a compatibilidade pode não ser garantida. Não é recomendado ativar.</string>
     <string name="home_refactor_walppaper_scale_sync_tips">Tente ativar o dimensionamento do plano de fundo quando parecer anormal</string>
     <string name="home_refactor_extra_fix">Correções adicionais para falta de blur</string>
-    <string name="home_refactor_extra_fix_tips">Força a adição de uma animação para evitar que o blur não apareça a tempo em movimentos rápidos. Ative isso somente se você notar esse problema.</string>
+    <string name="home_refactor_extra_fix_tips">Force a adição de uma animação para evitar que o blur não apareça a tempo em movimentos rápidos. Ative isso somente se você notar esse problema.</string>
     <string name="home_refactor_fix_small_window">Correções adicionais para animações da janela flutuante pequena</string>
     <string name="home_refactor_fix_small_window_tips">Force a adição de uma animação para evitar oscilações ao arrastar o app para uma janela flutuante pequena, não tenho certeza se isso terá um impacto negativo por enquanto. Só ative isso se você se importa muito com isso.</string>
     <string name="ui_title_home_refactor_apps">Efeito de blur de ícones de apps</string>

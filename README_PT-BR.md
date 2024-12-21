@@ -21,7 +21,7 @@
 
 Módulos leves apenas para o HyperOS! Módulo de autouso, desenvolvido com base no Xiaomi 12S Pro e Xiaomi Pad 6 Pro. A maioria das funções é baseada em outros módulos, com uma pequena quantidade de originais.
 
-## Código fonte
+## Código-fonte
 
 - [「XiaomiHelper」por HowieHChen](https://github.com/HowieHChen/XiaomiHelper)
 
