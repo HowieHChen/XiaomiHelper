@@ -429,7 +429,7 @@
     <string name="ui_title_others_mimirror" translatable="false">@string/scope_mi_mirror</string>
     <string name="others_mimirror_all_app">All apps can be opened on another device</string>
     <string name="others_mimirror_enhance_continue">Allow more apps to be transferred</string>
-    <string name="others_mimirror_enhance_continue_tips">Some apps still can\'t be opened on other devices due to the built-in whitelist. Enable this selection to try to transfer more apps. This feature requires a cache file to be generated within the host application directory and may cause lag when no cache is available. (The receiving device will also need to have this app installed and this feature enabled)</string>
+    <string name="others_mimirror_enhance_continue_tips">Some apps still cannot be opened on other devices due to the built-in whitelist. To transfer more apps, enable this feature. It requires the generation of a cache file in the host app\'s directory, which may cause a delay if the cache is unavailable. Additionally, the receiving device will also need to have this app installed and this feature enabled.</string>
     <string name="ui_title_others_package" translatable="false">@string/scope_package_installer</string>
     <string name="others_package_update_system_app">Remove system app installation restrictions</string>
     <string name="others_package_update_system_app_tips">Allow any non-system channel to install system apps</string>
