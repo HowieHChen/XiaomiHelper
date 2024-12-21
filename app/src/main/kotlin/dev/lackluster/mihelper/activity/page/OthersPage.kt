@@ -30,6 +30,7 @@ fun OthersPage(navController: NavController, adjustPadding: PaddingValues, mode:
     var visibilityMiAiCustomEntryName by remember { mutableStateOf(SafeSP.getInt(Pref.Key.MiAi.SEARCH_ENGINE) == 5) }
     var spTaplusBrowserSearch by remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.Taplus.SEARCH_USE_BROWSER)) }
     var visibilityTaplusCustomEntryName by remember { mutableStateOf(SafeSP.getInt(Pref.Key.Taplus.SEARCH_ENGINE) == 5) }
+    var spContinueAllTasks by remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.MiMirror.CONTINUE_ALL_TASKS)) }
 
     val dropdownEntriesSearchEngine = listOf(
         DropDownEntry(stringResource(R.string.search_engine_default)),
@@ -111,6 +112,27 @@ fun OthersPage(navController: NavController, adjustPadding: PaddingValues, mode:
                             )
                         }
                     }
+                }
+            }
+        }
+        item {
+            PreferenceGroup(
+                title = stringResource(R.string.ui_title_others_mimirror)
+            ) {
+                SwitchPreference(
+                    title = stringResource(R.string.others_mimirror_all_app),
+                    key = Pref.Key.MiMirror.CONTINUE_ALL_TASKS
+                ) {
+                    spContinueAllTasks = it
+                }
+                AnimatedVisibility(
+                    visible = spContinueAllTasks
+                ) {
+                    SwitchPreference(
+                        title = stringResource(R.string.others_mimirror_enhance_continue),
+                        summary = stringResource(R.string.others_mimirror_enhance_continue_tips),
+                        key = Pref.Key.MiMirror.ENHANCE_CONTINUE_TASKS
+                    )
                 }
             }
         }

@@ -24,6 +24,7 @@ import dev.lackluster.mihelper.activity.page.AboutPage
 import dev.lackluster.mihelper.activity.page.CleanMasterPage
 import dev.lackluster.mihelper.activity.page.MainPage
 import dev.lackluster.mihelper.activity.page.MenuPage
+import dev.lackluster.mihelper.activity.page.MiuiHomePage
 import dev.lackluster.mihelper.activity.page.ModuleSettingsPage
 import dev.lackluster.mihelper.activity.page.OthersPage
 import dev.lackluster.mihelper.activity.page.SecurityCenterPage
@@ -99,6 +100,7 @@ class MainActivity : HyperXActivity() {
                 composable(Pages.MODULE_SETTINGS) { ModuleSettingsPage(navController, adjustPadding) }
                 composable(Pages.SYSTEM_UI) { SystemUIPage(navController, adjustPadding)}
 
+                composable(Pages.MIUI_HOME) { MiuiHomePage(navController, adjustPadding, mode) }
                 composable(Pages.CLEAN_MASTER) { CleanMasterPage(navController, adjustPadding, mode) }
                 composable(Pages.SECURITY_CENTER) { SecurityCenterPage(navController, adjustPadding, mode) }
 

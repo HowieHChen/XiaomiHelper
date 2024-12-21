@@ -412,8 +412,6 @@
     <!-- InterconnectionPage -->
     <string name="ui_title_interconnection_mishare" translatable="false">@string/scope_mi_share</string>
     <string name="interconnection_mishare_no_auto_off">Disable Xiaomi Share auto-off</string>
-    <string name="ui_title_interconnection_mimirror" translatable="false">@string/scope_mi_mirror</string>
-    <string name="interconnection_mimirror_all_app">All apps can be opened on another device</string>
     <!-- OthersPage -->
     <string name="ui_title_others_browser" translatable="false">@string/scope_browser</string>
     <string name="others_browser_debug_mode">Enable debug mode</string>
@@ -429,6 +427,10 @@
     <string name="others_joyose_no_cloud_control">Disable Cloud control</string>
     <string name="ui_title_others_miai" translatable="false">@string/scope_mi_ai</string>
     <string name="others_miai_hide_watermark">Hide beta and AIGC watermarks</string>
+    <string name="ui_title_others_mimirror" translatable="false">@string/scope_mi_mirror</string>
+    <string name="others_mimirror_all_app">All apps can be opened on another device</string>
+    <string name="others_mimirror_enhance_continue">Allow more apps to be transferred</string>
+    <string name="others_mimirror_enhance_continue_tips">Some apps still can\'t be opened on other devices due to the built-in whitelist. Enable this selection to try to transfer more apps. This feature requires a cache file to be generated within the host application directory and may cause lag when no cache is available. (The receiving device will also need to have this app installed and this feature enabled)</string>
     <string name="ui_title_others_package" translatable="false">@string/scope_package_installer</string>
     <string name="others_package_update_system_app">Remove system app installation restrictions</string>
     <string name="others_package_update_system_app_tips">Allow any non-system channel to install system apps</string>

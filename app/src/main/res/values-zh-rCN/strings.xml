@@ -56,7 +56,7 @@
     <string name="page_interconnection">互联互通</string>
     <string name="interconnection_mishare_no_auto_off">禁止小米互传自动关闭</string>
     <string name="scope_mi_share">小米互传</string>
-    <string name="interconnection_mimirror_all_app">所有应用都可在其它设备上打开</string>
+    <string name="others_mimirror_all_app">所有应用都可在其它设备上打开</string>
     <string name="scope_security_center">手机管家</string>
     <string name="scope_security_center_pad">平板管家</string>
     <string name="security_security_skip_warning">跳过警告等待时间</string>
@@ -489,4 +489,6 @@
     <string name="security_lbe_clipboard_toast_tips">使用 Toast 会让提示背后的元素仍能点击</string>
     <string name="security_lbe_block_remove_auto_start">阻止关闭自启动权限</string>
     <string name="security_guard_env_check">禁用环境检查</string>
+    <string name="others_mimirror_enhance_continue">允许传输更多应用</string>
+    <string name="others_mimirror_enhance_continue_tips">由于内置白名单，有些应用程序仍然无法在其他设备上打开。启用此选项可尝试传输更多应用程序。此功能需要在宿主应用目录内生成缓存文件，在无缓存时可能导致卡顿。(接收设备也需要安装此应用程序并启用此功能）</string>
 </resources>

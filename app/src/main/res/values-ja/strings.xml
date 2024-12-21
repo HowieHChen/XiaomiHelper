@@ -268,7 +268,7 @@
     <!-- InterconnectionPage -->
     <string name="cleaner_milink_fuck_hpplay">｢hpplay｣フォルダの作成をブロックする</string>
     <string name="interconnection_mishare_no_auto_off">Mi シェアの自動オフを無効化する</string>
-    <string name="interconnection_mimirror_all_app">すべてのアプリを別のデバイスで開く事を可能にする</string>
+    <string name="others_mimirror_all_app">すべてのアプリを別のデバイスで開く事を可能にする</string>
     <!-- OthersPage -->
     <string name="others_browser_debug_mode">デバッグモードを有効化する</string>
     <string name="others_browser_debug_mode_tips">デバッグモードを強制的に有効化します。古いバージョンのブラウザーのみで動作します</string>

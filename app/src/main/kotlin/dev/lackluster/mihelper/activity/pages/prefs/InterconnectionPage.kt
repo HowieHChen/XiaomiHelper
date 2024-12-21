@@ -46,11 +46,11 @@ class InterconnectionPage : BasePage() {
             )
         }
         PreferenceCategory(
-            DescData(titleId = R.string.ui_title_interconnection_mimirror),
+            DescData(titleId = R.string.ui_title_others_mimirror),
             CategoryData()
         ) {
             SwitchPreference(
-                DescData(titleId = R.string.interconnection_mimirror_all_app),
+                DescData(titleId = R.string.others_mimirror_all_app),
                 SwitchData(Pref.Key.MiMirror.CONTINUE_ALL_TASKS)
             )
         }

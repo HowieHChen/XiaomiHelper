@@ -83,6 +83,7 @@ object Pref {
         }
         object MiMirror {
             const val CONTINUE_ALL_TASKS = "mismarthub_all_app"
+            const val ENHANCE_CONTINUE_TASKS = "mismarthub_enhance_continue"
         }
         object MiShare {
             const val ALWAYS_ON = "mishare_no_auto_off"

@@ -270,7 +270,7 @@
     <!-- InterconnectionPage -->
     <string name="cleaner_milink_fuck_hpplay">Bloquear a criação de pastas hpplay</string>
     <string name="interconnection_mishare_no_auto_off">Desativar fechamento automático do Xiaomi Share</string>
-    <string name="interconnection_mimirror_all_app">Todos os apps podem ser abertos em outro dispositivo</string>
+    <string name="others_mimirror_all_app">Todos os apps podem ser abertos em outro dispositivo</string>
     <!-- OthersPage -->
     <string name="others_browser_debug_mode">Ativar ambiente de depuração</string>
     <string name="others_browser_debug_mode_tips">Força a ativação do ambiente de depuração. Funciona apenas com versões mais antigas do navegador.</string>
