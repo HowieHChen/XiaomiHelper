@@ -333,6 +333,8 @@
     <!-- InterconnectionPage -->
     <string name="interconnection_mishare_no_auto_off">Desativar fechamento automático do Xiaomi Share</string>
     <string name="others_mimirror_all_app">Todos os apps podem ser abertos em outro dispositivo</string>
+    <string name="others_mimirror_enhance_continue">Permitir que mais apps sejam transferidos</string>
+    <string name="others_mimirror_enhance_continue_tips">Alguns apps ainda não podem ser abertos em outros dispositivos devido à lista de permissões integrada. Para transferir mais apps, ative este recurso. Ela exige a geração de um arquivo de cache no diretório do app hospedeiro, o que pode causar um atraso caso o cache não esteja disponível. Além disso, o dispositivo receptor também precisará ter o app instalado e esse recurso ativado.</string>
     <!-- OthersPage -->
     <string name="others_browser_debug_mode">Ativar ambiente de depuração</string>
     <string name="others_browser_debug_mode_tips">Force a ativação do ambiente de depuração. Funciona apenas com versões mais antigas do navegador.</string>
