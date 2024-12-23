@@ -209,6 +209,11 @@ object Pref {
             const val SAVE_AS_PNG = "screenshot_save_png"
             const val SAVE_TO_PICTURE = "screenshot_to_picture"
         }
+        object Search {
+            const val MORE_SEARCH_ENGINE = "search_more_engine"
+            const val CUSTOM_SEARCH_ENGINE = "search_custom_engine"
+            const val CUSTOM_SEARCH_ENGINE_ENTITY = "search_custom_engine_entity"
+        }
         object SecurityCenter {
             const val SKIP_SPLASH = "security_skip_splash"
             const val LOCK_SCORE = "security_lock_score"

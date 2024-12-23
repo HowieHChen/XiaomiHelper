@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.ksp)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -68,6 +69,7 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.androidx.dynamicanimation.ktx)
 
+    implementation(libs.kotlinx.serialization.json)
     implementation(libs.dexkit)
     implementation(libs.tinypinyin)
     implementation(project(mapOf("path" to ":blockmiui")))

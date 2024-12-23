@@ -21,7 +21,7 @@ object DexKit {
     private const val PREF_FILE_NAME = "hyper_helper_dexkit"
     private const val PREF_KEY_HOST_VERSION = "ver__host"
     private const val PREF_KEY_MODULE_VERSION = "ver__module"
-    private const val PREF_KEY_CLASS_PREFIX = "cla_"
+    private const val PREF_KEY_CLASS_PREFIX = "clz_"
     private const val PREF_KEY_CLASSES_PREFIX = "cls_"
     private const val PREF_KEY_METHOD_PREFIX = "met_"
     private const val PREF_KEY_METHODS_PREFIX = "mes_"
@@ -30,12 +30,7 @@ object DexKit {
     private var sp: SharedPreferences? = null
     private var isInitialized = false
 
-    val dexKitBridge: DexKitBridge by lazy {
-        System.loadLibrary("dexkit")
-        DexKitBridge.create(hostDir).also {
-            isInitialized = true
-        }
-    }
+    lateinit var dexKitBridge: DexKitBridge
 
     fun initDexKit(param: PackageParam) {
         hostDir = param.appInfo.sourceDir
@@ -68,6 +63,10 @@ object DexKit {
             if (spFile.exists()) {
                 spFile.delete()
             }
+        }
+        System.loadLibrary("dexkit")
+        dexKitBridge = DexKitBridge.create(hostDir).also {
+            isInitialized = true
         }
     }
 

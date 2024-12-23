@@ -18,6 +18,8 @@ object Pages {
     const val INTERCONNECTION = "page_interconnection"
 
 
+    const val DIALOG_SEARCH_CUSTOM_ENGINE = "CustomEngineDialog"
+
 
     const val STATUS_BAR_CLOCK = "page_systemui_clock"
     const val ICON_TUNER = "page_systemui_icon_tuner"

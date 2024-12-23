@@ -13,7 +13,8 @@ ksp = "2.1.0-1.0.29"
 tinypinyin = "2.0.3.RELEASE"
 xposed = "82"
 yukihookapi = "1.2.1"
-dexkit = "2.0.2"
+dexkit = "2.0.3"
+serialization-json = "1.7.3"
 
 ezxhelper = "2.2.0"
 
@@ -31,6 +32,7 @@ junit = { group = "junit", name = "junit", version = "4.13.2" }
 
 dexkit = { module = "org.luckypray:dexkit", version.ref = "dexkit" }
 tinypinyin = { module = "io.github.biezhi:TinyPinyin", version.ref = "tinypinyin" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization-json" }
 
 androidx-ui = { group = "androidx.compose.ui", name = "ui" }
 ezXHelper = { module = "com.github.kyuubiran:EzXHelper", version.ref = "ezxhelper" }
@@ -45,6 +47,7 @@ androidx-dynamicanimation-ktx = { group = "androidx.dynamicanimation", name = "d
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 

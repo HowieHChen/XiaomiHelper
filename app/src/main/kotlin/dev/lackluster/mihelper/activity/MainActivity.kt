@@ -20,6 +20,7 @@ import dev.lackluster.hyperx.compose.activity.HyperXActivity
 import dev.lackluster.hyperx.compose.activity.SafeSP
 import dev.lackluster.hyperx.compose.base.HyperXApp
 import dev.lackluster.mihelper.R
+import dev.lackluster.mihelper.activity.dialog.SearchCustomEngineDialog
 import dev.lackluster.mihelper.activity.page.AboutPage
 import dev.lackluster.mihelper.activity.page.CleanMasterPage
 import dev.lackluster.mihelper.activity.page.MainPage
@@ -107,6 +108,8 @@ class MainActivity : HyperXActivity() {
                 composable(Pages.OTHERS) { OthersPage(navController, adjustPadding, mode) }
                 composable(Pages.ABOUT) { AboutPage(navController, adjustPadding, mode) }
                 composable(Pages.DEV_UI_TEST) { UITestPage(navController, adjustPadding, mode) }
+
+                composable(Pages.DIALOG_SEARCH_CUSTOM_ENGINE) { SearchCustomEngineDialog(navController, adjustPadding, mode) }
             }
         )
     }

@@ -13,15 +13,18 @@ import androidx.navigation.NavController
 import dev.lackluster.hyperx.compose.activity.SafeSP
 import dev.lackluster.hyperx.compose.base.BasePage
 import dev.lackluster.hyperx.compose.base.BasePageDefaults
+import dev.lackluster.hyperx.compose.navigation.navigateTo
 import dev.lackluster.hyperx.compose.preference.DropDownEntry
 import dev.lackluster.hyperx.compose.preference.DropDownPreference
 import dev.lackluster.hyperx.compose.preference.EditTextDataType
 import dev.lackluster.hyperx.compose.preference.EditTextPreference
 import dev.lackluster.hyperx.compose.preference.PreferenceGroup
 import dev.lackluster.hyperx.compose.preference.SwitchPreference
+import dev.lackluster.hyperx.compose.preference.TextPreference
 import dev.lackluster.hyperx.compose.preference.ValuePosition
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.activity.MainActivity
+import dev.lackluster.mihelper.data.Pages
 import dev.lackluster.mihelper.data.Pref
 
 @Composable
@@ -31,6 +34,7 @@ fun OthersPage(navController: NavController, adjustPadding: PaddingValues, mode:
     var spTaplusBrowserSearch by remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.Taplus.SEARCH_USE_BROWSER)) }
     var visibilityTaplusCustomEntryName by remember { mutableStateOf(SafeSP.getInt(Pref.Key.Taplus.SEARCH_ENGINE) == 5) }
     var spContinueAllTasks by remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.MiMirror.CONTINUE_ALL_TASKS)) }
+    var spSearchMoreEngines by remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.Search.MORE_SEARCH_ENGINE)) }
 
     val dropdownEntriesSearchEngine = listOf(
         DropDownEntry(stringResource(R.string.search_engine_default)),
@@ -133,6 +137,37 @@ fun OthersPage(navController: NavController, adjustPadding: PaddingValues, mode:
                         summary = stringResource(R.string.others_mimirror_enhance_continue_tips),
                         key = Pref.Key.MiMirror.ENHANCE_CONTINUE_TASKS
                     )
+                }
+            }
+        }
+        item {
+            PreferenceGroup(
+                title = stringResource(R.string.ui_title_others_search)
+            ) {
+                SwitchPreference(
+                    title = stringResource(R.string.others_search_more_search_engines),
+                    summary = stringResource(R.string.others_search_more_search_engines_tips),
+                    key = Pref.Key.Search.MORE_SEARCH_ENGINE
+                ) {
+                    spSearchMoreEngines = it
+                }
+                AnimatedVisibility(
+                    spSearchMoreEngines
+                ) {
+                    Column {
+                        TextPreference(
+                            title = stringResource(R.string.others_search_custom_search_engine),
+                            value = stringResource(
+                                if (SafeSP.getBoolean(Pref.Key.Search.CUSTOM_SEARCH_ENGINE)) {
+                                    R.string.common_enabled
+                                } else {
+                                    R.string.common_disabled
+                                }
+                            )
+                        ) {
+                            navController.navigateTo(Pages.DIALOG_SEARCH_CUSTOM_ENGINE)
+                        }
+                    }
                 }
             }
         }

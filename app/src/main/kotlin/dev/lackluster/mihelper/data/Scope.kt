@@ -27,6 +27,7 @@ object Scope {
     const val POWER_KEEPER = "com.miui.powerkeeper"
     const val SCREEN_RECORDER = "com.miui.screenrecorder"
     const val SCREENSHOT = "com.miui.screenshot"
+    const val SEARCH = "com.android.quicksearchbox"
     const val SECURITY_CENTER = "com.miui.securitycenter"
     const val SETTINGS = "com.android.settings"
     const val SYSTEM_UI = "com.android.systemui"

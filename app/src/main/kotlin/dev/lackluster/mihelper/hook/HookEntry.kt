@@ -38,6 +38,7 @@ import dev.lackluster.mihelper.hook.apps.Themes
 import dev.lackluster.mihelper.hook.apps.Updater
 import dev.lackluster.mihelper.hook.apps.MiAi
 import dev.lackluster.mihelper.hook.apps.MiTrust
+import dev.lackluster.mihelper.hook.apps.Search
 import dev.lackluster.mihelper.hook.rules.miuihome.refactor.BlurRefactorEntry
 import dev.lackluster.mihelper.hook.rules.personalassist.BlockOriginalBlur
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils
@@ -97,6 +98,7 @@ class HookEntry : IYukiHookXposedInit {
                 loadApp(Scope.POWER_KEEPER, PowerKeeper)
                 loadApp(Scope.SCREEN_RECORDER, ScreenRecorder)
                 loadApp(Scope.SCREENSHOT, Screenshot)
+                loadApp(Scope.SEARCH, Search)
                 loadApp(Scope.SECURITY_CENTER, SecurityCenter)
                 loadApp(Scope.SETTINGS, Settings)
                 loadApp(Scope.SYSTEM_UI, SystemUI)

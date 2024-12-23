@@ -57,6 +57,7 @@
     <string name="interconnection_mishare_no_auto_off">禁止小米互传自动关闭</string>
     <string name="scope_mi_share">小米互传</string>
     <string name="others_mimirror_all_app">所有应用都可在其它设备上打开</string>
+    <string name="scope_search">搜索</string>
     <string name="scope_security_center">手机管家</string>
     <string name="scope_security_center_pad">平板管家</string>
     <string name="security_security_skip_warning">跳过警告等待时间</string>
@@ -491,4 +492,23 @@
     <string name="security_guard_env_check">禁用环境检查</string>
     <string name="others_mimirror_enhance_continue">允许传输更多应用</string>
     <string name="others_mimirror_enhance_continue_tips">由于内置白名单，有些应用程序仍然无法在其他设备上打开。启用此选项可尝试传输更多应用程序。此功能需要在宿主应用目录内生成缓存文件，在无缓存时可能导致卡顿。(接收设备也需要安装此应用程序并启用此功能）</string>
+    <string name="others_search_custom_title_zh_cn">中文（中华人民共和国）</string>
+    <string name="others_search_custom_title_zh_tw">中文（中国台湾）</string>
+    <string name="others_search_custom_title_en_us">英语（美国）</string>
+    <string name="others_search_custom_title_bo_cn">藏语（中国）</string>
+    <string name="others_search_custom_title_ug_cn">维吾尔语（中国）</string>
+    <string name="others_search_custom_title">标题</string>
+    <string name="others_search_custom_icon_url">图标</string>
+    <string name="others_search_custom_icon_url_tips">URL 或 Base64（以 \"data:image/png;base64,\" 开头）</string>
+    <string name="others_search_custom_channel">频道</string>
+    <string name="others_search_custom_channel_tips">如果没有特殊情况请留空</string>
+    <string name="others_search_custom_icon">图标</string>
+    <string name="others_search_custom_show_icon">显示图标</string>
+    <string name="others_search_custom_url">URL</string>
+    <string name="others_search_custom_search_url">搜索 URL</string>
+    <string name="others_search_custom_search_url_tips">URL 必须包含 \"{searchTerms}\" 作为搜索关键词的占位符</string>
+    <string name="others_search_more_search_engines">添加更多搜索引擎选项</string>
+    <string name="others_search_more_search_engines_tips">将必应和谷歌添加到搜索引擎选项</string>
+    <string name="others_search_custom_search_engine">添加自定义搜索引擎</string>
+    <string name="others_search_custom_reset">重置</string>
 </resources>

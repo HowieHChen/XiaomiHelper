@@ -73,6 +73,7 @@
     <string name="scope_power_keeper">Battery and performance</string>
     <string name="scope_screen_recorder">Screen Recorder</string>
     <string name="scope_screenshot">Screenshot</string>
+    <string name="scope_search">Search</string>
     <string name="scope_security_center">Security</string>
     <string name="scope_security_center_pad">@string/scope_security_center</string>
     <string name="scope_settings">Settings</string>
@@ -441,6 +442,29 @@
     <string name="others_screenshot_save_as_png">Saving images in PNG</string>
     <string name="others_screenshot_save_to_picture">Save to a standardized directory</string>
     <string name="others_screenshot_save_to_picture_tips">Save screenshots to \"Pictures/Screenshots\" instead of \"DCIM/Screenshots\"</string>
+    <string name="ui_title_others_search" translatable="false">@string/scope_search</string>
+    <string name="others_search_more_search_engines">Add more search engine options</string>
+    <string name="others_search_more_search_engines_tips">Add Bing and Google to Search Engine Options</string>
+    <string name="others_search_custom_search_engine">Add custom search engine</string>
+    <string name="others_search_custom_url">URL</string>
+    <string name="others_search_custom_search_url">Search URL</string>
+    <string name="others_search_custom_search_url_tips">The URL must contain \"{searchTerms}\" as a placeholder for the search keyword</string>
+    <string name="others_search_custom_search_url_hint" translatable="false">https://example.com/search?q={searchTerms}</string>
+    <string name="others_search_custom_channel">Channel</string>
+    <string name="others_search_custom_channel_tips">Leave blank if there are no special circumstances</string>
+    <string name="others_search_custom_icon">Icon</string>
+    <string name="others_search_custom_show_icon">Show icon</string>
+    <string name="others_search_custom_icon_url">Icon</string>
+    <string name="others_search_custom_icon_url_tips">URL or Base64 (starts with \"data:image/png;base64,\")</string>
+    <string name="others_search_custom_icon_url_hint" translatable="false">https://example.com/search.png</string>
+    <string name="others_search_custom_title">Title</string>
+    <string name="others_search_custom_title_hint" translatable="false">@string/others_search_custom_title</string>
+    <string name="others_search_custom_title_zh_cn">zh-CN</string>
+    <string name="others_search_custom_title_zh_tw">zh-TW</string>
+    <string name="others_search_custom_title_en_us">en-US</string>
+    <string name="others_search_custom_title_bo_cn">bo-CN</string>
+    <string name="others_search_custom_title_ug_cn">ug-CN</string>
+    <string name="others_search_custom_reset">Reset</string>
     <string name="ui_title_others_settings" translatable="false">@string/scope_settings</string>
     <string name="others_settings_show_google">Show Google settings</string>
     <string name="others_settings_unlock_voip_assistant">Unlock VoIP Assistant</string>
