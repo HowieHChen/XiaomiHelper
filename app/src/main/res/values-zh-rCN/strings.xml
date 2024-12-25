@@ -36,6 +36,7 @@
     <string name="others_browser_debug_mode">Debug 模式</string>
     <string name="others_browser_debug_mode_tips">强制启用 Debug 模式，仅适用于旧版本的浏览器</string>
     <string name="others_browser_disable_update">禁用更新检查</string>
+    <string name="scope_weather">天气</string>
     <string name="search_use_browser">使用浏览器搜索</string>
     <string name="search_engine">搜索引擎</string>
     <string name="search_engine_default">默认</string>
@@ -512,4 +513,8 @@
     <string name="others_search_more_search_engines_tips">将必应和谷歌添加到搜索引擎选项</string>
     <string name="others_search_custom_search_engine">添加自定义搜索引擎</string>
     <string name="others_search_custom_reset">重置</string>
+    <string name="weather_card_color">卡片背景颜色</string>
+    <string name="weather_card_color_tips">默认情况下，卡片会根据日出日落切换背景颜色。强制浅色/深色以使卡片背景始终不变。</string>
+    <string name="weather_card_color_light">强制浅色</string>
+    <string name="weather_card_color_dark">强制深色</string>
 </resources>

@@ -38,6 +38,7 @@ import dev.lackluster.mihelper.hook.apps.Updater
 import dev.lackluster.mihelper.hook.apps.MiAi
 import dev.lackluster.mihelper.hook.apps.MiTrust
 import dev.lackluster.mihelper.hook.apps.Search
+import dev.lackluster.mihelper.hook.apps.Weather
 import dev.lackluster.mihelper.hook.rules.miuihome.refactor.BlurRefactorEntry
 import dev.lackluster.mihelper.hook.rules.personalassist.BlockOriginalBlur
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils
@@ -103,6 +104,7 @@ class HookEntry : IYukiHookXposedInit {
                 loadApp(Scope.TAPLUS, Taplus)
                 loadApp(Scope.THEMES, Themes)
                 loadApp(Scope.UPDATER, Updater)
+                loadApp(Scope.WEATHER, Weather)
             }
         }
     }

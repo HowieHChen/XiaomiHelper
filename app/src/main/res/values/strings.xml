@@ -81,6 +81,7 @@
     <string name="scope_taplus">Taplus</string>
     <string name="scope_themes">Themes</string>
     <string name="scope_updater">Updater</string>
+    <string name="scope_weather">Weather</string>
 
     <string name="search_use_browser">Search using browser</string>
     <string name="search_engine">Search engine</string>
@@ -475,6 +476,12 @@
     <string name="ui_title_others_updater" translatable="false">@string/scope_updater</string>
     <string name="others_updater_disable_validation">Remove OTA validation</string>
     <string name="others_updater_disable_validation_tips">Only VAB devices are supported, don\'t turn it on for non-VAB devices!</string>
+    <string name="ui_title_others_weather" translatable="false">@string/scope_weather</string>
+    <string name="weather_card_color">Card background color</string>
+    <string name="weather_card_color_tips">The cards will switch the background color according to the sunrise and sunset by default. Force light/dark to keep the card background constant.</string>
+    <string name="weather_card_color_default" translatable="false">@string/common_default</string>
+    <string name="weather_card_color_light">Force light</string>
+    <string name="weather_card_color_dark">Force dark</string>
     <!-- StatusBarClockPage -->
     <string name="ui_title_clock_general" translatable="false">@string/common_general</string>
     <string name="clock_general_custom_layout">Customized time padding</string>

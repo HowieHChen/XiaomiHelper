@@ -10,8 +10,10 @@ import dev.lackluster.mihelper.BuildConfig
 import dev.lackluster.mihelper.data.Pref
 import org.luckypray.dexkit.DexKitBridge
 import org.luckypray.dexkit.query.FindClass
+import org.luckypray.dexkit.query.FindField
 import org.luckypray.dexkit.query.FindMethod
 import org.luckypray.dexkit.wrap.DexClass
+import org.luckypray.dexkit.wrap.DexField
 import org.luckypray.dexkit.wrap.DexMethod
 import java.io.File
 import java.text.SimpleDateFormat
@@ -25,6 +27,8 @@ object DexKit {
     private const val PREF_KEY_CLASSES_PREFIX = "cls_"
     private const val PREF_KEY_METHOD_PREFIX = "met_"
     private const val PREF_KEY_METHODS_PREFIX = "mes_"
+    private const val PREF_KEY_FIELD_PREFIX = "fld_"
+    private const val PREF_KEY_FIELDS_PREFIX = "fls_"
     private lateinit var hostDir: String
     private var enableCache = Prefs.getBoolean(Pref.Key.Module.DEXKIT_CACHE, true)
     private var sp: SharedPreferences? = null
@@ -141,6 +145,43 @@ object DexKit {
                 putStringSet(prefKey, dexMethodsSet.takeIf { set -> set.isNotEmpty() } ?: setOf("null"))
             }
             return dexMethods
+        }
+    }
+
+    fun findFieldWithCache(key: String, init: FindField.() -> Unit): DexField? {
+        if (!enableCache) {
+            return dexKitBridge.findField(init).singleOrNull()?.toDexField()
+        } else {
+            val prefKey = "${PREF_KEY_FIELD_PREFIX}_${key}"
+            val descriptor = sp?.getString(prefKey, null)
+            descriptor?.let {
+                return if (it == "null") null else DexField(it)
+            }
+            val dexField = dexKitBridge.findField(init).singleOrNull()?.toDexField()
+            sp?.edit {
+                putString(prefKey, dexField?.serialize() ?: "null")
+                apply()
+            }
+            return dexField
+        }
+    }
+
+    fun findFieldsWithCache(key: String, init: FindField.() -> Unit): Set<DexField> {
+        if (!enableCache) {
+            return dexKitBridge.findField(init).map { it.toDexField() }.toSet()
+        } else {
+            val prefKey = "${PREF_KEY_FIELDS_PREFIX}_${key}"
+            val descriptors = sp?.getStringSet(prefKey, null)
+            descriptors?.let {
+                return if (it.size == 1 && it.contains("null")) emptySet()
+                else it.map { descriptor -> DexField(descriptor) }.toSet()
+            }
+            val dexFields = dexKitBridge.findField(init).map { it.toDexField() }.toSet()
+            sp?.edit {
+                val dexMethodsSet = dexFields.map { dexField -> dexField.serialize() }.toSet()
+                putStringSet(prefKey, dexMethodsSet.takeIf { set -> set.isNotEmpty() } ?: setOf("null"))
+            }
+            return dexFields
         }
     }
 

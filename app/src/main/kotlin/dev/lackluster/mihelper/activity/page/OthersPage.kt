@@ -49,6 +49,11 @@ fun OthersPage(navController: NavController, adjustPadding: PaddingValues, mode:
         DropDownEntry(stringResource(R.string.search_engine_google)),
         DropDownEntry(stringResource(R.string.search_engine_custom))
     )
+    val dropDownEntriesWeatherCard = listOf(
+        DropDownEntry(stringResource(R.string.weather_card_color_default)),
+        DropDownEntry(stringResource(R.string.weather_card_color_light)),
+        DropDownEntry(stringResource(R.string.weather_card_color_dark)),
+    )
 
     BasePage(
         navController,
@@ -249,13 +254,25 @@ fun OthersPage(navController: NavController, adjustPadding: PaddingValues, mode:
         }
         item {
             PreferenceGroup(
-                title = stringResource(R.string.ui_title_others_updater),
-                last = true
+                title = stringResource(R.string.ui_title_others_updater)
             ) {
                 SwitchPreference(
                     title = stringResource(R.string.others_updater_disable_validation),
                     summary = stringResource(R.string.others_updater_disable_validation_tips),
                     key = Pref.Key.Updater.DISABLE_VALIDATION
+                )
+            }
+        }
+        item {
+            PreferenceGroup(
+                title = stringResource(R.string.ui_title_others_weather),
+                last = true
+            ) {
+                DropDownPreference(
+                    title = stringResource(R.string.weather_card_color),
+                    summary = stringResource(R.string.weather_card_color_tips),
+                    entries = dropDownEntriesWeatherCard,
+                    key = Pref.Key.Weather.CARD_COLOR
                 )
             }
         }

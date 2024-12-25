@@ -348,6 +348,9 @@ object Pref {
         object Updater {
             const val DISABLE_VALIDATION = "updater_no_validation"
         }
+        object Weather {
+            const val CARD_COLOR = "weather_card_color"
+        }
     }
     object OldKey {
         object MiuiHome {
