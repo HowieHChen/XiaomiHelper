@@ -306,6 +306,8 @@
     <string name="cleaner_download_fuck_xl">Block creation of .xlDownload folder</string>
     <string name="ui_title_cleaner_incallui" translatable="false">@string/scope_in_call_ui</string>
     <string name="cleaner_incallui_hide_crbt">Hide CRBT (Coloring Ring Back Tone)</string>
+    <string name="ui_title_cleaner_home" translatable="false">@string/scope_miui_home</string>
+    <string name="cleaner_home_remove_report">Remove the \"Report\" button from the uninstall app pop-up window</string>
     <string name="ui_title_cleaner_market" translatable="false">@string/scope_market</string>
     <string name="cleaner_market_block_update_dailog">Block update push dialog</string>
     <string name="cleaner_market_block_update_dailog_tips">Block the dialog that prompts you to turn on update push, when update push is turned off and the update button is clicked.</string>
@@ -346,8 +348,6 @@
     <string name="cleaner_security_hide_home_popular_tips">Hide popular function recommendations at the bottom of the page</string>
     <string name="cleaner_security_disable_risk_app_notif">Disable \"Malicious app found\" notifications</string>
     <string name="cleaner_security_remove_report">Remove the \"Report\" button from the app info page</string>
-    <string name="ui_title_home" translatable="false">@string/scope_miui_home</string>
-    <string name="cleaner_home_remove_report">Remove the \"Report\" button from the uninstall app pop-up window</string>
     <string name="ui_title_cleaner_systemui" translatable="false">@string/scope_systemui</string>
     <string name="cleaner_systemui_fuck_gesture">Block creation of statusbar_gestures.dat file</string>
     <string name="ui_title_cleaner_taplus" translatable="false">@string/scope_taplus</string>

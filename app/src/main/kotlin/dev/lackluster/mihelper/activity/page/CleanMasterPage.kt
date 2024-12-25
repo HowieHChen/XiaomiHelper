@@ -157,6 +157,16 @@ fun CleanMasterPage(navController: NavController, adjustPadding: PaddingValues, 
         }
         item {
             PreferenceGroup(
+                title = stringResource(R.string.ui_title_cleaner_home)
+            ) {
+                SwitchPreference(
+                    title = stringResource(R.string.cleaner_home_remove_report),
+                    key = Pref.Key.MiuiHome.REMOVE_REPORT
+                )
+            }
+        }
+        item {
+            PreferenceGroup(
                 title = stringResource(R.string.ui_title_cleaner_incallui)
             ) {
                 SwitchPreference(

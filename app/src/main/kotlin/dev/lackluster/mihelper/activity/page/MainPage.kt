@@ -189,12 +189,12 @@ fun MainPage(navController: NavController, adjustPadding: PaddingValues, mode: B
                         ) {
                             navController.navigateWithPopup(Pages.SECURITY_CENTER)
                         }
-                        TextPreference(
-                            icon = ImageIcon(iconRes = R.drawable.ic_header_interconnection),
-                            title = stringResource(R.string.page_interconnection)
-                        ) {
-                            navController.navigateWithPopup(Pages.INTERCONNECTION)
-                        }
+//                        TextPreference(
+//                            icon = ImageIcon(iconRes = R.drawable.ic_header_interconnection),
+//                            title = stringResource(R.string.page_interconnection)
+//                        ) {
+//                            navController.navigateWithPopup(Pages.INTERCONNECTION)
+//                        }
                         TextPreference(
                             icon = ImageIcon(iconRes = R.drawable.ic_header_others),
                             title = stringResource(R.string.page_others)

@@ -142,7 +142,7 @@ class CleanMasterPage : BasePage() {
             )
         }
         PreferenceCategory(
-            DescData(titleId = R.string.ui_title_home),
+            DescData(titleId = R.string.ui_title_cleaner_home),
             CategoryData(),
             dataBindingRecv = padBinding.binding.getRecv(1)
         ) {

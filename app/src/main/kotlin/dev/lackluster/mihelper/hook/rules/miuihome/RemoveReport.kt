@@ -37,13 +37,14 @@ object RemoveReport : YukiBaseHooker(){
                 paramCount = 2
             }.hook {
                 after {
-                    val report = (this.instance.current().field {
+                    this.instance.current().field {
                         name = "mDialogView"
                         superClass()
-                    }.any())?.current(true)?.field {
+                    }.any()?.current(true)?.field {
                         name = "mReport"
-                    }?.any() as? TextView?
-                    report?.visibility = View.GONE
+                    }?.any()?.let {
+                        (it as? TextView)?.visibility = View.GONE
+                    }
                 }
             }
         }
