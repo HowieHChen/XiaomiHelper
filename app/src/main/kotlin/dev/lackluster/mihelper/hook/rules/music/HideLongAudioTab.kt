@@ -14,7 +14,7 @@ object HideLongAudioTab : YukiBaseHooker() {
                     name = "setupViewPager"
                 }.hook {
                     before {
-                        this.instance.current().field {
+                        this.instance.current(true).field {
                             name = "mIsLongAudioEnable"
                         }.setFalse()
                     }

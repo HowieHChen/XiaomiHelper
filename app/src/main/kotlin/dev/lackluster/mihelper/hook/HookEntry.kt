@@ -26,7 +26,6 @@ import dev.lackluster.mihelper.hook.apps.Mms
 import dev.lackluster.mihelper.hook.apps.Music
 import dev.lackluster.mihelper.hook.apps.PackageInstaller
 import dev.lackluster.mihelper.hook.apps.PersonalAssist
-import dev.lackluster.mihelper.hook.apps.Phone
 import dev.lackluster.mihelper.hook.apps.PowerKeeper
 import dev.lackluster.mihelper.hook.apps.ScreenRecorder
 import dev.lackluster.mihelper.hook.apps.Screenshot
@@ -94,7 +93,6 @@ class HookEntry : IYukiHookXposedInit {
                 loadApp(Scope.MUSIC, Music)
                 loadApp(Scope.PACKAGE_INSTALLER, PackageInstaller)
                 loadApp(Scope.PERSONAL_ASSIST, PersonalAssist)
-                loadApp(Scope.PHONE, Phone)
                 loadApp(Scope.POWER_KEEPER, PowerKeeper)
                 loadApp(Scope.SCREEN_RECORDER, ScreenRecorder)
                 loadApp(Scope.SCREENSHOT, Screenshot)

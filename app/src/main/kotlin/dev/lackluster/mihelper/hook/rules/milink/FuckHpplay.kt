@@ -63,7 +63,7 @@ object FuckHpplay : YukiBaseHooker() {
                 name = "KEY_SDCARD_DIR_ENABLE"
                 type = StringClass
                 modifiers { isStatic && isFinal }
-            }?.give() != null
+            }?.ignored()?.give() != null
             if (keyExist) {
                 hpplayClass?.apply {
                     method {

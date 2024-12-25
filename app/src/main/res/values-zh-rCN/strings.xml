@@ -46,7 +46,7 @@
     <string name="common_custom">自定义</string>
     <string name="search_engine_custom_url">自定义搜索引擎（URL）</string>
     <string name="cleaner_taplus_hide_shop">隐藏购物按钮</string>
-    <string name="others_settings_unlock_taplus_for_pad">强制在平板上启用</string>
+    <string name="others_settings_unlock_taplus_for_pad">解锁传送门</string>
     <string name="scope_settings">设置</string>
     <string name="security_security_skip_open_no_restriction">禁用链式启动管理</string>
     <string name="security_security_skip_open_auto_approve">自动批准启动</string>
@@ -277,6 +277,7 @@
     <string name="systemui_notif_redirect_dialog_negative_default">应用通知设置</string>
     <string name="systemui_notif_redirect_dialog_positive_default">通知类别设置</string>
     <string name="systemui_notif_redirect_dialog_tips">使用弹窗选择打开应用通知设置还是通知类别设置</string>
+    <string name="others_settings_cellular_debug">蜂窝网络调试</string>
     <string name="others_settings_unlock_voip_assistant">解锁网络通话助手</string>
     <string name="home_recent_dock_time">呼出 Dock 的长按时间</string>
     <string name="home_recent_dock_time_tips">不建议设置超过1000毫秒的值</string>

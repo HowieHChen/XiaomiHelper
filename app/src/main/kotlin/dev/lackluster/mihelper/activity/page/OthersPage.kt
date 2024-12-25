@@ -1,5 +1,8 @@
 package dev.lackluster.mihelper.activity.page
 
+import android.content.ComponentName
+import android.content.Intent
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -10,6 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
+import dev.lackluster.hyperx.compose.activity.HyperXActivity
 import dev.lackluster.hyperx.compose.activity.SafeSP
 import dev.lackluster.hyperx.compose.base.BasePage
 import dev.lackluster.hyperx.compose.base.BasePageDefaults
@@ -26,6 +30,7 @@ import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.activity.MainActivity
 import dev.lackluster.mihelper.data.Pages
 import dev.lackluster.mihelper.data.Pref
+import dev.lackluster.mihelper.utils.Device
 
 @Composable
 fun OthersPage(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
@@ -208,6 +213,37 @@ fun OthersPage(navController: NavController, adjustPadding: PaddingValues, mode:
                             )
                         }
                     }
+                }
+            }
+        }
+        item {
+            PreferenceGroup(
+                title = stringResource(R.string.ui_title_others_settings)
+            ) {
+                SwitchPreference(
+                    title = stringResource(R.string.others_settings_show_google),
+                    key = Pref.Key.Settings.SHOE_GOOGLE
+                )
+                TextPreference(
+                    title = stringResource(R.string.others_settings_cellular_debug)
+                ) {
+                    HyperXActivity.context.let {
+                        val intent = Intent().apply {
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                            component = ComponentName("com.xiaomi.phone", "com.xiaomi.phone.settings.development.CellularNetworkActivity")
+                        }
+                        try {
+                            it.startActivity(intent)
+                        } catch (t: Throwable) {
+                            Toast.makeText(it, t.message, Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+                if (Device.isPad) {
+                    SwitchPreference(
+                        title = stringResource(R.string.others_settings_unlock_taplus_for_pad),
+                        key = Pref.Key.Settings.UNLOCK_TAPLUS_FOR_PAD
+                    )
                 }
             }
         }

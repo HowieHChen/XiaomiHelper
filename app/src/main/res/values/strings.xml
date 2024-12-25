@@ -467,6 +467,7 @@
     <string name="others_search_custom_reset">Reset</string>
     <string name="ui_title_others_settings" translatable="false">@string/scope_settings</string>
     <string name="others_settings_show_google">Show Google settings</string>
+    <string name="others_settings_cellular_debug">Cellular network debugging</string>
     <string name="others_settings_unlock_voip_assistant">Unlock VoIP Assistant</string>
     <string name="others_settings_unlock_net_mode">Unlock mobile network type settings</string>
     <string name="others_settings_unlock_taplus_for_pad">Unlock Taplus for tablet</string>
