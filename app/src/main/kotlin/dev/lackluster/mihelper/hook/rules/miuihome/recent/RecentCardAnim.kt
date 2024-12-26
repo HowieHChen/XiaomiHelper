@@ -31,6 +31,7 @@ import com.highcapable.yukihookapi.hook.type.android.ViewClass
 import com.highcapable.yukihookapi.hook.type.java.FloatType
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.factory.hasEnable
+import kotlin.math.abs
 
 object RecentCardAnim : YukiBaseHooker() {
     override fun onHook() {
@@ -38,48 +39,56 @@ object RecentCardAnim : YukiBaseHooker() {
             val swipeHelperForRecentsCls = "com.miui.home.recents.views.SwipeHelperForRecents".toClass()
             val taskStackViewLayoutStyleHorizontalCls = "com.miui.home.recents.TaskStackViewLayoutStyleHorizontal".toClass()
             val verticalSwipeCls = "com.miui.home.recents.views.VerticalSwipe".toClass()
-            val sineEaseInOutConstructor = "miuix.view.animation.SineEaseInOutInterpolator".toClass().constructor().get()
+            val physicBasedInterpolatorClass = "com.miui.home.launcher.anim.PhysicBasedInterpolator".toClass().constructor {
+                paramCount = 2
+            }.get()
             val getScreenHeightMethod = "com.miui.home.launcher.DeviceConfig".toClass().method {
                 name = "getScreenHeight"
                 modifiers { isStatic }
             }.get()
-            val getAsScreenHeightWhenDismissMethod = verticalSwipeCls.method {
-                name = "getAsScreenHeightWhenDismiss"
-                modifiers { isStatic }
-            }.get()
 
-            swipeHelperForRecentsCls.method {
-                name = "isScaleSmallEnoughForDismiss"
-            }.hook {
-                replaceAny {
-                    this.instance.current().method {
-                        name = "isSwipedFarEnoughForDismiss"
-                        superClass()
-                    }.boolean()
+            swipeHelperForRecentsCls.apply {
+                method {
+                    name = "isScaleSmallEnoughForDismiss"
+                }.hook {
+                    replaceAny {
+                        val mCurrView = this.instance.current().field {
+                            name = "mCurrView"
+                            superClass()
+                        }.cast<View>()
+                        mCurrView?.let {
+                            abs(it.translationY) > (it.measuredHeight * 0.8f)
+                        } ?: false
+                    }
                 }
             }
-            taskStackViewLayoutStyleHorizontalCls.method {
-                name = "createScaleDismissAnimation"
-                param(ViewClass, FloatType)
-            }.hook {
-                replaceAny {
-                    val view = this.args(0).any() as View
-                    val getScreenHeight = getScreenHeightMethod.int()
-                    val easeInOutInterpolator = sineEaseInOutConstructor.newInstance<Interpolator>()
-                    ObjectAnimator.ofFloat(
-                        view,
-                        View.TRANSLATION_Y,
-                        view.translationY,
-                        -getScreenHeight * 1.15f
-                    ).apply {
-                        interpolator = easeInOutInterpolator
-                        duration = 300L
+            taskStackViewLayoutStyleHorizontalCls.apply {
+                method {
+                    name = "createScaleDismissAnimation"
+                    param(ViewClass, FloatType)
+                }.hook {
+                    replaceAny {
+                        val view = this.args(0).any() as View
+                        val getScreenHeight = getScreenHeightMethod.int().toFloat()
+                        val physicBasedInterpolator = physicBasedInterpolatorClass.newInstance<Interpolator>(0.72f, 0.72f)
+                        ObjectAnimator.ofFloat(
+                            view,
+                            View.TRANSLATION_Y,
+                            view.translationY,
+                            -getScreenHeight
+                        ).apply {
+                            interpolator = physicBasedInterpolator
+                            duration = 450L
+                        }
                     }
                 }
             }
             verticalSwipeCls.apply {
                 constructor().hook {
                     after {
+                        this.instance.current().field {
+                            name = "mCurAlpha"
+                        }.set(1.0f)
                         this.instance.current().field {
                             name = "mCurScale"
                         }.set(1.0f)
@@ -91,22 +100,15 @@ object RecentCardAnim : YukiBaseHooker() {
                 }.hook {
                     replaceUnit {
                         val f = this.args(0).float()
-                        val alpha: Float
                         val transY: Float
                         if (f <= 0.0f) {
-                            val asScreenHeightWhenDismiss = getAsScreenHeightWhenDismissMethod.int()
-                            alpha = (1.0f + f / asScreenHeightWhenDismiss).coerceIn(0.0f, 1.0f)
                             transY = f
                         } else {
                             val mCanLockTaskView = this.instance.current().field {
                                 name = "mCanLockTaskView"
                             }.boolean()
-                            alpha = 1.0f
                             transY = f / if (mCanLockTaskView) 3.0f else 6.0f
                         }
-                        this.instance.current().field {
-                            name = "mCurAlpha"
-                        }.set(alpha)
                         this.instance.current().field {
                             name = "mCurTransY"
                         }.set(transY)
