@@ -63,6 +63,7 @@
     <string name="scope_taplus">Taplus</string>
     <string name="scope_themes">Temas</string>
     <string name="scope_updater">Atualizações</string>
+    <string name="scope_weather">Clima</string>
     <string name="search_use_browser">Pesquisar usando o navegador</string>
     <string name="search_engine">Mecanismo de pesquisa</string>
     <string name="search_engine_default">Padrão</string>
@@ -247,6 +248,7 @@
     <string name="cleaner_browser_remove_app_rec_tips">Remove as recomendações de apps das sugestões da caixa de pesquisa</string>
     <string name="cleaner_downloadui_hide_xl">Ocultar ícones e texto da Xunlei</string>
     <string name="cleaner_download_fuck_xl">Bloquear a criação da pasta .xlDownload</string>
+    <string name="cleaner_home_remove_report">Remover botão \"Denunciar\" da janela pop-up de desinstalação do app</string>
     <string name="cleaner_incallui_hide_crbt">Ocultar tom de toque colorido personalizado</string>
     <string name="cleaner_market_block_update_dailog">Bloquear caixa de diálogo push de atualização</string>
     <string name="cleaner_market_block_update_dailog_tips">Bloqueie a caixa de diálogo que solicita que você ative o push de atualização, quando o push de atualização estiver desativado e o botão de atualização for clicado.</string>
@@ -279,7 +281,6 @@
     <string name="cleaner_security_hide_home_popular_tips">Oculte as recomendações de funções populares na parte inferior da página</string>
     <string name="cleaner_security_disable_risk_app_notif">Desativar notificações de \"App malicioso encontrado\"</string>
     <string name="cleaner_security_remove_report">Remover botão \"Denunciar\" da página de informações do app</string>
-    <string name="cleaner_home_remove_report">Remover botão \"Denunciar\" da janela pop-up de desinstalação do app</string>
     <string name="cleaner_systemui_fuck_gesture">Bloquear criação do arquivo statusbar_gestures.dat</string>
     <string name="cleaner_taplus_hide_shop">Ocultar botão de compras</string>
     <!-- SystemFrameworkPage -->
@@ -370,11 +371,16 @@
     <string name="others_search_custom_title">Título</string>
     <string name="others_search_custom_reset">Redefinir</string>
     <string name="others_settings_show_google">Mostrar configurações do Google</string>
+    <string name="others_settings_cellular_debug">Depuração de rede celular</string>
     <string name="others_settings_unlock_voip_assistant">Desbloquear Assistente VoIP</string>
     <string name="others_settings_unlock_net_mode">Mostrar configurações do tipo de rede móvel</string>
     <string name="others_settings_unlock_taplus_for_pad">Forçar ativação em tablet</string>
     <string name="others_updater_disable_validation">Remover verificação OTA</string>
     <string name="others_updater_disable_validation_tips">Apenas dispositivos VAB são suportados. Por favor, não ative outros dispositivos não-VAB!</string>
+    <string name="weather_card_color">Cor de fundo do cartão</string>
+    <string name="weather_card_color_tips">Os cartões mudarão a cor de fundo de acordo com o nascer e o pôr do sol por padrão. Forçar claro/escuro para manter o fundo do cartão constante.</string>
+    <string name="weather_card_color_light">Modo claro</string>
+    <string name="weather_card_color_dark">Modo escuro</string>
     <!-- StatusBarClockPage -->
     <string name="clock_general_custom_layout">Preenchimento de tempo personalizado</string>
     <string name="clock_general_padding_left">Preenchimento esquerdo</string>
