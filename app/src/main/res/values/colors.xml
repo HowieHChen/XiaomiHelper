@@ -6,4 +6,6 @@
     <color name="trans">#00000000</color>
     <color name="foreground_dual_tone_full">#99000000</color>
     <color name="foreground_dual_tone_half">#3D000000</color>
+    <color name="ic_stat_sys_tint_fg">#4D4D4D</color>
+    <color name="ic_stat_sys_tint_bg">#E6E6E6</color>
 </resources>

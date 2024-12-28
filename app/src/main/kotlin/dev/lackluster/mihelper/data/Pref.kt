@@ -71,6 +71,7 @@ object Pref {
             const val HIDE_TAB_RANK = "market_hide_tab_rank"
             const val HIDE_TAB_APP_ASSEMBLE = "market_hide_tab_assemble"
             const val BLOCK_UPDATE_DIALOG = "market_block_up_dialog"
+            const val HIDE_APP_SECURITY = "market_hide_app_security"
         }
         object MiAi {
             const val SEARCH_USE_BROWSER = "xiaoai_use_browser"
@@ -147,11 +148,16 @@ object Pref {
             const val REMOVE_REPORT = "home_remove_report"
             const val REFACTOR = "home_refactor"
             const val DOUBLE_TAP_TO_SLEEP = "home_double_tap_sleep"
-            const val QUICK_BACK = "home_quick_back"
+            const val BACK_HAPTIC = "home_back_haptic"
+            const val QUICK_SWITCH = "home_quick_back"
+            const val QUICK_SWITCH_LEFT = "home_quick_back_left"
+            const val QUICK_SWITCH_RIGHT = "home_quick_back_right"
             const val ANIM_UNLOCK = "home_anim_unlock"
             const val ANIM_WALLPAPER_ZOOM_SYNC = "home_wallpaper_sync"
             const val ANIM_ICON_ZOOM = "home_anim_icon_zoom"
             const val ANIM_ICON_DARKEN = " home_anim_icon_darken"
+            const val ANIM_FOLDER_ZOOM = "home_anim_folder_zoom"
+            const val ANIM_FOLDER_ICON_DARKEN = "home_anim_folder_icon_darken"
             const val FOLDER_ADAPT_SIZE ="home_folder_aapt_size"
             const val FOLDER_NO_PADDING = "home_folder_no_padding"
             const val FOLDER_COLUMNS = "home_folder_columns"
@@ -160,9 +166,12 @@ object Pref {
             const val ICON_CORNER4LARGE = "home_icon_corner4large"
             const val ICON_PERFECT = "home_icon_perfect_icon"
             const val PAD_RECENT_SHOW_MEMORY = "home_recent_pad_memory"
+            const val PAD_RECENT_HIDE_WORLD = "home_recent_pad_world"
             const val RECENT_SHOW_REAL_MEMORY = "home_recent_real_memory"
             const val RECENT_WALLPAPER_DARKEN = "home_recent_wallpaper"
             const val RECENT_CARD_ANIM = "home_recent_anim"
+            const val RECENT_HIDE_CLEAR_BUTTON = "home_recent_hide_clear_button"
+            const val RECENT_MEM_INFO_CLEAR = "home_recent_mem_info_clear"
             const val RECENT_DISABLE_FAKE_NAVBAR = "home_disable_fake_navbar"
             const val PAD_DOCK_TIME_DURATION = "home_pad_dock_time_duration"
             const val PAD_DOCK_SAFE_AREA_HEIGHT = "home_pad_dock_safe_height"
@@ -175,6 +184,9 @@ object Pref {
             const val MINUS_BLUR_TYPE = "person_assist_blur_type"
             const val ALWAYS_SHOW_TIME = "home_always_show_time"
             const val FAKE_PREMIUM = "home_fake_premium"
+            const val FORCE_COLOR_STATUS_BAR = "home_force_color_status_bar"
+            const val FORCE_COLOR_TEXT_ICON = "home_force_color_text_icon"
+            const val FORCE_COLOR_MINUS = "home_force_color_minus"
         }
         object MMS {
             const val AD_BLOCKER = "mms_ad_block"
@@ -254,6 +266,7 @@ object Pref {
                 const val NOTIFICATION_COUNT = "statusbar_notif_max"
                 const val NOTIFICATION_COUNT_ICON = "statusbar_notif_icon_max"
                 const val DOUBLE_TAP_TO_SLEEP = "statusbar_double_tap_sleep"
+                const val DISABLE_SMART_DARK = "systemui_disable_smart_dark"
             }
             object IconTurner {
                 const val HIDE_SIM_ONE = "statusbar_hide_sim_one"

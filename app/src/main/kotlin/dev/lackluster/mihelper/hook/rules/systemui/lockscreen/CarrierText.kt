@@ -38,8 +38,11 @@ import dev.lackluster.mihelper.utils.Device
 import dev.lackluster.mihelper.utils.Prefs
 
 object CarrierText : YukiBaseHooker() {
-    private const val MIUI_STATUS_BAR_CLOCK_CLZ = "com.android.systemui.statusbar.views.MiuiStatusBarClock"
+    private val miuiClockClass by lazy {
+        "com.android.systemui.statusbar.views.MiuiClock".toClass()
+    }
     private val carrierTextType = Prefs.getInt(Pref.Key.SystemUI.LockScreen.CARRIER_TEXT, 0)
+
     override fun onHook() {
         if (carrierTextType != 0) {
             "com.android.systemui.statusbar.phone.MiuiKeyguardStatusBarView".toClass().method {
@@ -57,7 +60,7 @@ object CarrierText : YukiBaseHooker() {
                             layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT)
                         }
                         val padClock = LayoutInflater.from(context).inflate(ResourcesUtils.pad_clock_xml, null) as TextView
-                        val clockView = MIUI_STATUS_BAR_CLOCK_CLZ.toClass().constructor {
+                        val clockView = miuiClockClass.constructor {
                             paramCount = 3
                         }.get().call(context, null, -1) as TextView
                         clockView.setTextAppearance(ResourcesUtils.TextAppearance_StatusBar_Clock)
@@ -65,13 +68,20 @@ object CarrierText : YukiBaseHooker() {
                         clockView.typeface = padClock.typeface
                         clockView.gravity = Gravity.CENTER or Gravity.START
                         clockView.isSingleLine = true
+                        val clockMarginStart = ResourcesUtils.status_bar_padding_extra_start.takeIf { it != 0 }?.let {
+                            context.resources.getDimensionPixelSize(it)
+                        } ?: 0
+                        val clockMarginEnd = ResourcesUtils.status_bar_clock_margin_end.takeIf { it != 0 }?.let {
+                            context.resources.getDimensionPixelSize(it)
+                        } ?: dp2px(context, 4.0f)
                         clockContainer.addView(
                             clockView,
                             ViewGroup.MarginLayoutParams(
                                 ViewGroup.LayoutParams.WRAP_CONTENT,
                                 ViewGroup.LayoutParams.MATCH_PARENT
                             ).apply {
-                                marginEnd = dp2px(context, 4.0f)
+                                marginStart = clockMarginStart
+                                marginEnd = clockMarginEnd
                             }
                         )
                         if (Device.isPad)
@@ -81,7 +91,8 @@ object CarrierText : YukiBaseHooker() {
                                     ViewGroup.LayoutParams.WRAP_CONTENT,
                                     ViewGroup.LayoutParams.MATCH_PARENT
                                 ).apply {
-                                    marginEnd = dp2px(context, 4.0f)
+                                    marginStart = clockMarginStart
+                                    marginEnd = clockMarginEnd
                                 }
                             )
                         if (parent is FrameLayout) {
@@ -96,7 +107,7 @@ object CarrierText : YukiBaseHooker() {
             }
         }
         if (carrierTextType == 2) {
-            MIUI_STATUS_BAR_CLOCK_CLZ.toClass().constructor {
+            miuiClockClass.constructor {
                 paramCount = 3
             }.hook {
                 after {

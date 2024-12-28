@@ -167,8 +167,8 @@
     <string name="home_exclusive_refactor_tips">パフォーマンスと消費電力を犠牲にする代わりに新しいインタラクティブな体験ができます</string>
     <string name="home_exclusive_refactor_dialog_msg">!! 実験的な機能です !!\n\nこの機能は高品質なマテリアルに基づいてランチャーをリファクタリングします。\n\nこの機能をオンにすると消費電力の増加、フレーム落ち、ジャンク化、クラッシュなどのリスクが発生します。\n\n改造されたランチャーを使用していないこと、ランチャーのぼかしやアニメーションに関連する他のモジュールが無効化されていることを確認してください。</string>
     <string name="ui_title_home_gesture">ジェスチャー</string>
-    <string name="home_gesture_quick_back">強化された戻るジェスチャー</string>
-    <string name="home_gesture_quick_back_tips">画面の端から横にスワイプすると前のアプリに戻ります</string>
+    <string name="home_gesture_quick_switch">強化された戻るジェスチャー</string>
+    <string name="home_gesture_quick_switch_tips">画面の端から横にスワイプすると前のアプリに戻ります</string>
     <string name="ui_title_home_anim">アニメーション</string>
     <string name="home_anim_unlock">ロック解除アニメーションの最適化</string>
     <string name="home_anim_unlock_tips">ロック解除時のアイコンのアニメーションを最適化します</string>

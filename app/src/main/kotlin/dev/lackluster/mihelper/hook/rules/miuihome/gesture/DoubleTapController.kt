@@ -35,24 +35,27 @@ class DoubleTapController internal constructor(mContext: Context)  {
     private var mFirstClickRawX: Float = 0f
     private var mFirstClickRawY: Float = 0f
     private var mLastClickTime: Long = 0
-    private val mTouchSlop: Int = ViewConfiguration.get(mContext).scaledTouchSlop * 2
+    private val mTouchSlop: Float = (ViewConfiguration.get(mContext).scaledTouchSlop * 2).toFloat()
+
     fun isDoubleTapEvent(motionEvent: MotionEvent): Boolean {
         val action = motionEvent.actionMasked
-        return when {
-            action == MotionEvent.ACTION_DOWN -> {
+        return when(action) {
+            MotionEvent.ACTION_DOWN -> {
                 mActionDownRawX = motionEvent.rawX
                 mActionDownRawY = motionEvent.rawY
                 false
             }
-
-            action != MotionEvent.ACTION_UP -> false
-            else -> {
+            MotionEvent.ACTION_UP -> {
                 val rawX = motionEvent.rawX
                 val rawY = motionEvent.rawY
-                if (abs(rawX - mActionDownRawX) <= mTouchSlop.toFloat() && abs(rawY - mActionDownRawY) <= mTouchSlop.toFloat()) {
+                if (abs(rawX - mActionDownRawX) <= mTouchSlop && abs(rawY - mActionDownRawY) <= mTouchSlop) {
                     if (
-                        SystemClock.elapsedRealtime() - mLastClickTime > maxDuration || rawY - mFirstClickRawY > mTouchSlop.toFloat() || rawX - mFirstClickRawX > mTouchSlop.toFloat()
-                    ) mClickCount = 0
+                        SystemClock.elapsedRealtime() - mLastClickTime > maxDuration ||
+                        rawY - mFirstClickRawY > mTouchSlop ||
+                        rawX - mFirstClickRawX > mTouchSlop
+                    ) {
+                        mClickCount = 0
+                    }
                     mClickCount++
                     if (mClickCount == 1) {
                         mFirstClickRawX = rawX
@@ -60,7 +63,9 @@ class DoubleTapController internal constructor(mContext: Context)  {
                         mLastClickTime = SystemClock.elapsedRealtime()
                         return false
                     } else if (
-                        abs(rawY - mFirstClickRawY) <= mTouchSlop.toFloat() && abs(rawX - mFirstClickRawX) <= mTouchSlop.toFloat() && SystemClock.elapsedRealtime() - mLastClickTime <= maxDuration
+                        abs(rawY - mFirstClickRawY) <= mTouchSlop &&
+                        abs(rawX - mFirstClickRawX) <= mTouchSlop &&
+                        SystemClock.elapsedRealtime() - mLastClickTime <= maxDuration
                     ) {
                         mClickCount = 0
                         return true
@@ -69,6 +74,7 @@ class DoubleTapController internal constructor(mContext: Context)  {
                 mClickCount = 0
                 false
             }
+            else -> false
         }
     }
 }

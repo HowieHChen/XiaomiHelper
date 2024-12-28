@@ -23,6 +23,7 @@ import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.activity.dialog.SearchCustomEngineDialog
 import dev.lackluster.mihelper.activity.page.AboutPage
 import dev.lackluster.mihelper.activity.page.CleanMasterPage
+import dev.lackluster.mihelper.activity.page.IconTurnerPage
 import dev.lackluster.mihelper.activity.page.MainPage
 import dev.lackluster.mihelper.activity.page.MenuPage
 import dev.lackluster.mihelper.activity.page.MiuiHomePage
@@ -108,6 +109,8 @@ class MainActivity : HyperXActivity() {
                 composable(Pages.OTHERS) { OthersPage(navController, adjustPadding, mode) }
                 composable(Pages.ABOUT) { AboutPage(navController, adjustPadding, mode) }
                 composable(Pages.DEV_UI_TEST) { UITestPage(navController, adjustPadding, mode) }
+
+                composable(Pages.ICON_TUNER) { IconTurnerPage(navController, adjustPadding, mode) }
 
                 composable(Pages.DIALOG_SEARCH_CUSTOM_ENGINE) { SearchCustomEngineDialog(navController, adjustPadding, mode) }
             }

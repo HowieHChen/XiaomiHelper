@@ -83,6 +83,13 @@
     <string name="scope_updater">Updater</string>
     <string name="scope_weather">Weather</string>
 
+    <string name="action_notifications">Notification drawer</string>
+    <string name="action_quick_settings">Quick Settings panel</string>
+    <string name="action_lock_screen">Turn off screen</string>
+    <string name="action_screenshot">Take screenshot</string>
+    <string name="action_home">Home</string>
+    <string name="action_recents">Overview (Recent Apps)</string>
+
     <string name="search_use_browser">Search using browser</string>
     <string name="search_engine">Search engine</string>
     <string name="search_engine_default">Default</string>
@@ -195,6 +202,8 @@
     <string name="systemui_statusbar_notif_count_icon">Maximum number of status bar notification icons</string>
     <string name="systemui_statusbar_icon" translatable="false">@string/page_status_bar_icon_tuner</string>
     <string name="systemui_statusbar_tap_to_sleep" translatable="false">@string/common_tap_sleep</string>
+    <string name="systemui_statusbar_disable_smart_dark">Disable Smart Dark</string>
+    <string name="systemui_statusbar_disable_smart_dark_tips">The Smart Dark feature causes the status bar to ignore application-specified colors and enable area sampling to change color automatically when in dark mode. Disable this feature to restore the Android default behavior.</string>
     <string name="ui_title_systemui_lock_screen">Lock screen</string>
     <string name="systemui_lock_hide_unlock_tip">Hide unlock request at the bottom of the screen</string>
     <string name="systemui_lock_hide_disturb">Hide Do Not Disturb mode resident notifications</string>
@@ -233,15 +242,22 @@
     <string name="home_exclusive_refactor_dialog_msg">!!EXPERIMENTAL FEATURES!!\n\nThis feature refactors the launcher based on Advanced textures, please make sure your device supports Advanced textures.\n\nIf you turn it on, you will be exposed to risks including, but not limited to, power consumption, frame drops, jank, and even crashes.\n\nMake sure you aren\'t using a modified launcher and have disabled any other modules related to launcher blurring and animation.</string>
     <string name="ui_title_home_gesture">Gesture</string>
     <string name="home_gesture_double_tap" translatable="false">@string/common_tap_sleep</string>
-    <string name="home_gesture_quick_back">Enhanced back gesture</string>
-    <string name="home_gesture_quick_back_tips">Swipe across the screen starting from the edge to go back to previous app</string>
+    <string name="home_gesture_back_haptic">Enhanced back gesture haptic feedback</string>
+    <string name="home_gesture_back_haptic_tips">Perform haptic feedback on the start and release of swipes</string>
+    <string name="home_gesture_quick_switch">Enhanced back gesture</string>
+    <string name="home_gesture_quick_switch_tips">In the back gesture, a long swipe will trigger a specific function.</string>
+    <string name="home_gesture_quick_switch_left">Left enhanced back gesture function</string>
+    <string name="home_gesture_quick_switch_right">Right enhanced back gesture function</string>
+    <string name="home_gesture_quick_switch_previous_app">Previous app</string>
     <string name="ui_title_home_anim">Animation</string>
     <string name="home_anim_unlock">Optimize unlocking animation</string>
     <string name="home_anim_unlock_tips">Optimize the animation of the icon when unlocking</string>
     <string name="home_anim_zoom_sync">Synchronize wallpaper zoom with app launch</string>
     <string name="home_anim_zoom_sync_tips">Prevents a situation where the app isn\'t launched but the wallpaper is zoomed. Will make the app launch look slower and isn\'t recommended to be enabled.</string>
-    <string name="home_anim_icon_zoom">Disable zoom animation when icon clicked</string>
-    <string name="home_anim_icon_darken">Disable dim animation on icon clicks</string>
+    <string name="home_anim_icon_zoom">Disable zoom animation on icon click</string>
+    <string name="home_anim_icon_darken">Disable dim animation on icon click</string>
+    <string name="home_anim_folder_zoom">Disable zoom animation on folder click</string>
+    <string name="home_anim_folder_icon_darken">Disable dim animation when clicking on icon in folder</string>
     <string name="ui_title_home_folder">Folder</string>
     <string name="home_folder_adapt_icon_size">Adaptive icon size in large folders</string>
     <string name="home_folder_adapt_icon_size_tips">When a large folder (3x3 or 2x2) is just filled with icons (number of 9 or 4), the last icon is also a large icon.</string>
@@ -255,11 +271,14 @@
     <string name="home_icon_corner4large">Uniform corner radius for large icons</string>
     <string name="home_icon_corner4large_tips">Capsule shape icons will become rounded rectangle icons</string>
     <string name="ui_title_home_recent">Recent tasks</string>
+    <string name="home_recent_dismiss_anim">Modify card animation when dismissing recent tasks</string>
     <string name="home_recent_pad_show_memory">Show memory usage on tablet</string>
+    <string name="home_recent_pad_hide_world">Hide Mi Smart Hub button</string>
+    <string name="home_recent_hide_clear_all">Hide Clear all button</string>
+    <string name="home_Recent_mem_info_clear">Long click on memory info to clear all</string>
     <string name="home_recent_show_real_memory">Show real memory usage</string>
     <string name="home_recent_wallpaper_darken">Stop reducing the brightness of wallpaper</string>
     <string name="home_recent_wallpaper_darken_tips">Stop the automatic reduction of the wallpaper\'s brightness when entering the recent tasks view</string>
-    <string name="home_recent_dismiss_anim">Modify card animation when dismissing recent tasks</string>
     <string name="home_recent_disable_fake_navbar">Disable fake navigation bar handle</string>
     <string name="home_recent_disable_fake_navbar_tips">Disable the fake navigation bar handles on the horizontal recent tasks screen and use the real one</string>
     <string name="home_recent_dock_time">Holding time for calling out the dock</string>
@@ -285,6 +304,12 @@
     <string name="home_others_always_show_clock">Always show time in status bar</string>
     <string name="home_others_fake_premium">Disguised as a high-end model</string>
     <string name="home_others_fake_premium_tips">Remove model restrictions on some features</string>
+    <string name="home_others_force_color_scheme_element">Application label color</string>
+    <string name="home_others_force_color_scheme_element_tips">Specify widget and application label color (ignore wallpaper color)</string>
+    <string name="home_others_force_color_scheme_statusbar">Status bar text and icon color</string>
+    <string name="home_others_force_color_scheme_statusbar_tips">Specify the color of the status bar text and icons (ignore wallpaper color). Requires enabling "Disable Smart Dark" on the System UI page.</string>
+    <string name="home_others_force_color_scheme_minus">Minus screen color</string>
+    <string name="home_others_force_color_scheme_minus_tips">Specify the color of the status bar text and icons for the minus screen (ignore wallpaper color). Requires enabling "Disable Smart Dark" on the System UI page.</string>
     <!-- CleanMasterPage -->
     <string name="ui_title_cleaner_ad_blocker">Ad blocker</string>
     <string name="cleaner_ad_blocker_market" translatable="false">@string/scope_market</string>
@@ -317,13 +342,15 @@
     <string name="cleaner_market_hide_rank_tips">Remove the Rank from the bottom tab</string>
     <string name="cleaner_market_hide_video">Hide App Assemble/Video</string>
     <string name="cleaner_market_hide_video_tips">Remove the App Assemble/Video from the bottom tab</string>
+    <string name="cleaner_market_hide_app_security">Hide app security</string>
+    <string name="cleaner_market_hide_app_security_tips">Hide the app security card on my page</string>
     <string name="ui_title_cleaner_milink" translatable="false">@string/scope_mi_link</string>
     <string name="cleaner_milink_fuck_hpplay">Block creation of hpplay folders</string>
     <string name="ui_title_cleaner_music" translatable="false">@string/scope_music</string>
     <string name="cleaner_music_hide_long_audio">Hide long audio</string>
     <string name="cleaner_music_hide_long_audio_tips">Remove the long audio from the top tab on the home page</string>
     <string name="cleaner_music_hide_my_banner">Hide the banner on my page</string>
-    <string name="cleaner_music_hide_my_rec_playlist">Hide recommended songs my page</string>
+    <string name="cleaner_music_hide_my_rec_playlist">Hide recommended songs on my page</string>
     <string name="ui_title_cleaner_package" translatable="false">@string/scope_package_installer</string>
     <string name="cleaner_package_remove_element">Disable redundant features</string>
     <string name="cleaner_package_skip_risk_check">Disable the monitoring of risks</string>

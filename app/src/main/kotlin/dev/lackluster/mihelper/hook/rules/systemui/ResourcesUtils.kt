@@ -31,6 +31,9 @@ object ResourcesUtils : YukiBaseHooker() {
     var pad_clock_xml = 0
     var keyguard_carrier_text = 0
     var TextAppearance_StatusBar_Clock = 0
+    var status_bar_padding_extra_start = 0
+    var status_bar_clock_margin_end = 0
+
     @SuppressLint("DiscouragedApi")
     override fun onHook() {
         onAppLifecycle {
@@ -57,6 +60,8 @@ object ResourcesUtils : YukiBaseHooker() {
                     pad_clock_xml = this.getResID("pad_clock", "layout", PKG_NAME)
                     keyguard_carrier_text = this.getResID("keyguard_carrier_text", "id", PKG_NAME)
                     TextAppearance_StatusBar_Clock = this.getResID("TextAppearance.StatusBar.Clock", "style", PKG_NAME)
+                    status_bar_padding_extra_start = this.getResID("status_bar_padding_extra_start", "dimen", PKG_NAME)
+                    status_bar_clock_margin_end = this.getResID("status_bar_clock_margin_end", "dimen", PKG_NAME)
                     isInitialized = true
                 }
             }

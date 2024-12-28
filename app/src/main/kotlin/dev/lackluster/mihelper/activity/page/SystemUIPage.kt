@@ -21,6 +21,7 @@ import dev.lackluster.hyperx.compose.activity.SafeSP
 import dev.lackluster.hyperx.compose.base.AlertDialog
 import dev.lackluster.hyperx.compose.base.AlertDialogMode
 import dev.lackluster.hyperx.compose.base.BasePage
+import dev.lackluster.hyperx.compose.navigation.navigateTo
 import dev.lackluster.hyperx.compose.preference.DropDownEntry
 import dev.lackluster.hyperx.compose.preference.DropDownPreference
 import dev.lackluster.hyperx.compose.preference.PreferenceGroup
@@ -29,6 +30,7 @@ import dev.lackluster.hyperx.compose.preference.SwitchPreference
 import dev.lackluster.hyperx.compose.preference.TextPreference
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.activity.MainActivity
+import dev.lackluster.mihelper.data.Pages
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.ShellUtils
 import top.yukonga.miuix.kmp.basic.Icon
@@ -150,11 +152,16 @@ fun SystemUIPage(navController: NavController, adjustPadding: PaddingValues) {
                 TextPreference(
                     title = stringResource(R.string.systemui_statusbar_icon)
                 ) {
-
+                    navController.navigateTo(Pages.ICON_TUNER)
                 }
                 SwitchPreference(
                     title = stringResource(R.string.systemui_statusbar_tap_to_sleep),
                     key = Pref.Key.SystemUI.StatusBar.DOUBLE_TAP_TO_SLEEP
+                )
+                SwitchPreference(
+                    title = stringResource(R.string.systemui_statusbar_disable_smart_dark),
+                    summary = stringResource(R.string.systemui_statusbar_disable_smart_dark_tips),
+                    key = Pref.Key.SystemUI.StatusBar.DISABLE_SMART_DARK
                 )
             }
         }
@@ -174,6 +181,17 @@ fun SystemUIPage(navController: NavController, adjustPadding: PaddingValues) {
                     title = stringResource(R.string.systemui_lock_carrier_text),
                     entries = lockscreenCarrierLabelEntries,
                     key = Pref.Key.SystemUI.LockScreen.CARRIER_TEXT
+                )
+            }
+        }
+        item {
+            PreferenceGroup(
+                title = stringResource(R.string.ui_title_systemui_notification_center)
+            ) {
+                SwitchPreference(
+                    title = stringResource(R.string.systemui_notif_freeform),
+                    summary = stringResource(R.string.systemui_notif_freeform_tips),
+                    key = Pref.Key.SystemUI.NotifCenter.NOTIF_FREEFORM
                 )
             }
         }

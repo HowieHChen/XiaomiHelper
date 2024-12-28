@@ -199,6 +199,11 @@ fun CleanMasterPage(navController: NavController, adjustPadding: PaddingValues, 
                     summary = stringResource(R.string.cleaner_market_hide_video_tips),
                     key = Pref.Key.Market.HIDE_TAB_APP_ASSEMBLE
                 )
+                SwitchPreference(
+                    title = stringResource(R.string.cleaner_market_hide_app_security),
+                    summary = stringResource(R.string.cleaner_market_hide_app_security_tips),
+                    key = Pref.Key.Market.HIDE_APP_SECURITY
+                )
             }
         }
         item {

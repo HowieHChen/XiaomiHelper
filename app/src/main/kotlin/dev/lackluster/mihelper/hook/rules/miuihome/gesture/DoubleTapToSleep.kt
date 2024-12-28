@@ -23,67 +23,76 @@ package dev.lackluster.mihelper.hook.rules.miuihome.gesture
 import android.content.Context
 import android.content.Intent
 import android.view.MotionEvent
+import android.view.View
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.constructor
-import com.highcapable.yukihookapi.hook.factory.current
 import com.highcapable.yukihookapi.hook.factory.method
-import com.highcapable.yukihookapi.hook.type.android.MotionEventClass
 import de.robv.android.xposed.XposedHelpers
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.factory.hasEnable
 
 object DoubleTapToSleep : YukiBaseHooker() {
+    private const val DOUBLE_TAP_CONTROLLER = "mDoubleTapControllerEx"
+    private val workspaceClass by lazy {
+        "com.miui.home.launcher.Workspace".toClass()
+    }
+    private val cellLayoutClass by lazy {
+        "com.miui.home.launcher.CellLayout".toClass()
+    }
+    private val getCurrentCellLayoutMethod by lazy {
+        workspaceClass.method {
+            name = "getCurrentCellLayout"
+            superClass()
+        }.give()
+    }
+    private val isInNormalEditingModeMethod by lazy {
+        workspaceClass.method {
+            name = "isInNormalEditingMode"
+            superClass()
+        }.give()
+    }
+    private val lastDownOnOccupiedCellMethod by lazy {
+        cellLayoutClass.method {
+            name = "lastDownOnOccupiedCell"
+        }.give()
+    }
+
     override fun onHook() {
         hasEnable(Pref.Key.MiuiHome.DOUBLE_TAP_TO_SLEEP) {
-            "com.miui.home.launcher.Workspace".toClass().constructor().giveAll().hookAll {
-                after {
-                    var mDoubleTapControllerEx = XposedHelpers.getAdditionalInstanceField(this.instance, "mDoubleTapControllerEx")
-                    if (mDoubleTapControllerEx != null) return@after
-                    mDoubleTapControllerEx = DoubleTapController((this.args(0).any() as Context))
-                    XposedHelpers.setAdditionalInstanceField(
-                        this.instance,
-                        "mDoubleTapControllerEx",
-                        mDoubleTapControllerEx
-                    )
+            workspaceClass.apply {
+                constructor {
+                    paramCount = 3
+                }.hook {
+                    after {
+                        val context = this.args(0).cast<Context>() ?: return@after
+                        if (XposedHelpers.getAdditionalInstanceField(this.instance, DOUBLE_TAP_CONTROLLER) == null) {
+                            XposedHelpers.setAdditionalInstanceField(this.instance, DOUBLE_TAP_CONTROLLER, DoubleTapController(context))
+                        }
+                    }
                 }
-            }
-            "com.miui.home.launcher.Workspace".toClass().method {
-                name = "dispatchTouchEvent"
-                param(MotionEventClass)
-            }.hook {
-                before {
-                    val mDoubleTapControllerEx = XposedHelpers.getAdditionalInstanceField(this.instance, "mDoubleTapControllerEx") as DoubleTapController
-                    if (!mDoubleTapControllerEx.isDoubleTapEvent(this.args(0).any() as MotionEvent)) return@before
-                    val mCurrentScreenIndex = this.instance.current().field {
-                        name = "mCurrentScreenIndex"
-                        superClass()
-                    }.int()
-                    val cellLayout = this.instance.current().method {
-                        name = "getCellLayout"
-                        superClass()
-                    }.call(mCurrentScreenIndex)
-                    if (cellLayout != null)
+                method {
+                    name = "dispatchTouchEvent"
+                }.hook {
+                    before {
+                        val mDoubleTapControllerEx = XposedHelpers.getAdditionalInstanceField(this.instance, DOUBLE_TAP_CONTROLLER) as? DoubleTapController ?: return@before
+                        val motionEvent = this.args(0).cast<MotionEvent>() ?: return@before
+                        if (!mDoubleTapControllerEx.isDoubleTapEvent(motionEvent)) return@before
+                        val currentCellLayout = getCurrentCellLayoutMethod?.invoke(this.instance)
                         if (
-                            cellLayout.current().method {
-                                name = "lastDownOnOccupiedCell"
-                            }.boolean()
-                        ) return@before
-                    if (
-                        this.instance.current().method {
-                            name = "isInNormalEditingMode"
-                        }.boolean()
-                    ) return@before
-                    val context = this.instance.current().method {
-                        name = "getContext"
-                        superClass()
-                    }.call() as Context
-                    context.sendBroadcast(
-                        Intent("com.miui.app.ExtraStatusBarManager.action_TRIGGER_TOGGLE")
-                            .putExtra(
-                                "com.miui.app.ExtraStatusBarManager.extra_TOGGLE_ID",
-                                10
-                            )
-                    )
+                            currentCellLayout == null ||
+                            (lastDownOnOccupiedCellMethod?.invoke(currentCellLayout) as? Boolean) != false ||
+                            (isInNormalEditingModeMethod?.invoke(this.instance) as? Boolean) != false
+                        ) {
+                            return@before
+                        }
+                        (this.instance as? View)?.context?.sendBroadcast(
+                            Intent("com.miui.app.ExtraStatusBarManager.action_TRIGGER_TOGGLE")
+                                .putExtra(
+                                    "com.miui.app.ExtraStatusBarManager.extra_TOGGLE_ID",
+                                    10
+                                )
+                        )
+                    }
                 }
             }
         }

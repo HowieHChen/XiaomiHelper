@@ -29,8 +29,12 @@ import dev.lackluster.mihelper.utils.factory.hasEnable
 object HideDisturbNotification : YukiBaseHooker() {
     override fun onHook() {
         hasEnable(Pref.Key.SystemUI.LockScreen.HIDE_DISTURB) {
-            "com.android.systemui.statusbar.notification.zen.ZenModeViewController".toClass() .method {
-                name = "updateVisibility"
+            "com.android.systemui.statusbar.notification.zen.ZenModeViewController".toClass().method {
+                name = "updateVisibility\$1"
+            }.remedys {
+                method {
+                    name = "updateVisibility"
+                }
             }.hook {
                 before {
                     this.instance.current().field {

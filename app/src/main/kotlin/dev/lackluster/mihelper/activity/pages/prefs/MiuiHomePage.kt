@@ -124,10 +124,10 @@ class MiuiHomePage : BasePage() {
             )
             SwitchPreference(
                 DescData(
-                    titleId = R.string.home_gesture_quick_back,
-                    summaryId = R.string.home_gesture_quick_back_tips
+                    titleId = R.string.home_gesture_quick_switch,
+                    summaryId = R.string.home_gesture_quick_switch_tips
                 ),
-                SwitchData(Pref.Key.MiuiHome.QUICK_BACK)
+                SwitchData(Pref.Key.MiuiHome.QUICK_SWITCH)
             )
         }
         val refactorWallpaperBinding = GetDataBinding({

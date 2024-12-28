@@ -2,8 +2,10 @@ package dev.lackluster.mihelper.hook.apps
 
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import dev.lackluster.mihelper.hook.rules.shared.RemoveFreeformRestriction
+import dev.lackluster.mihelper.hook.rules.systemui.DisableSmartDark
 import dev.lackluster.mihelper.hook.rules.systemui.FuckStatusBarGestures
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils
+import dev.lackluster.mihelper.hook.rules.systemui.StatusBarActions
 import dev.lackluster.mihelper.hook.rules.systemui.lockscreen.BlockEditor
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.HideCarrierLabel
 import dev.lackluster.mihelper.hook.rules.systemui.lockscreen.HideDisturbNotification
@@ -31,10 +33,23 @@ import dev.lackluster.mihelper.hook.rules.systemui.statusbar.PadClockAnim
 object SystemUI : YukiBaseHooker() {
     override fun onHook() {
         loadHooker(ResourcesUtils)
+        loadHooker(CarrierText)
+        loadHooker(DoubleTapToSleep)
+        loadHooker(HideDisturbNotification)
+
+        loadHooker(NotifFreeform)
+        loadHooker(NotifWhitelist)
+
+        loadHooker(HideStatusBarIcon)
+
+        loadHooker(DisableSmartDark)
+        loadHooker(StatusBarActions)
+        loadHooker(FuckStatusBarGestures)
+        return
         loadHooker(RemoveFreeformRestriction)
         loadHooker(UnlockMultipleTask)
         loadHooker(HideTopBar)
-        loadHooker(HideStatusBarIcon)
+
         loadHooker(BatteryIndicator)
         loadHooker(HideCarrierLabel)
         loadHooker(HideStatusBarSpecialIcon)
@@ -42,20 +57,16 @@ object SystemUI : YukiBaseHooker() {
         loadHooker(StatusBarClock)
         loadHooker(BlockEditor)
         loadHooker(dev.lackluster.mihelper.hook.rules.systemui.statusbar.DoubleTapToSleep)
-        loadHooker(DoubleTapToSleep)
-        loadHooker(HideDisturbNotification)
         loadHooker(HideUnlockTip)
         loadHooker(IconPosition)
         loadHooker(NotificationMaxNumber)
-        loadHooker(NotifFreeform)
+
         loadHooker(NotifSettingsRedirect)
-        loadHooker(NotifWhitelist)
+
         loadHooker(AdvancedTextures)
         loadHooker(StyleCustomHookEntry)
         loadHooker(UnlockCustomAction)
         loadHooker(CustomElement)
-        loadHooker(CarrierText)
         loadHooker(PadClockAnim)
-        loadHooker(FuckStatusBarGestures)
     }
 }

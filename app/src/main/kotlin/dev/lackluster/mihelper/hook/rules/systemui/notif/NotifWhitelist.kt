@@ -29,10 +29,15 @@ import dev.lackluster.mihelper.utils.factory.hasEnable
 object NotifWhitelist : YukiBaseHooker() {
     override fun onHook() {
         hasEnable(Pref.Key.SystemUI.NotifCenter.NOTIF_NO_WHITELIST, extraCondition = { !Device.isInternationalBuild }) {
-            "com.android.systemui.statusbar.notification.NotificationSettingsManager".toClassOrNull()?.field {
-                name = "USE_WHITE_LISTS"
-                modifiers { isStatic }
-            }?.get()?.setFalse()
+            val targetClass =
+                "com.miui.systemui.notification.NotificationSettingsManager".toClassOrNull() ?:
+                "com.android.systemui.statusbar.notification.NotificationSettingsManager".toClassOrNull()
+            targetClass?.apply {
+                field {
+                    name = "USE_WHITE_LISTS"
+                    modifiers { isStatic }
+                }.get().setFalse()
+            }
         }
     }
 }

@@ -208,122 +208,140 @@ object FolderAdaptIconSize : YukiBaseHooker() {
                     }
                 }
             } else {
-                val folderIcon2x2 = "com.miui.home.launcher.folder.FolderIcon2x2".toClassOrNull()
-                val folderIcon2x2p9 = "com.miui.home.launcher.folder.FolderIconPreviewContainer2X2_9".toClassOrNull()
-                val folderIcon2x2p4 = "com.miui.home.launcher.folder.FolderIconPreviewContainer2X2_4".toClassOrNull()
-                folderIcon2x2?.method {
+                val folderIcon2x2 = "com.miui.home.launcher.folder.FolderIcon2x2".toClass()
+                val baseFolderPreview = "com.miui.home.launcher.folder.BaseFolderIconPreviewContainer2X2".toClass()
+                val folderIcon2x2p9 = "com.miui.home.launcher.folder.FolderIconPreviewContainer2X2_9".toClass()
+                val folderIcon2x2p4 = "com.miui.home.launcher.folder.FolderIconPreviewContainer2X2_4".toClass()
+                val setMItemsMaxCountMethod = folderIcon2x2.method {
+                    name = "setMItemsMaxCount"
+                }.give() ?: return@hasEnable
+                val setMLargeIconNumMethod = folderIcon2x2.method {
+                    name = "setMLargeIconNum"
+                }.give() ?: return@hasEnable
+
+                val getMRealPvChildCountPreview = baseFolderPreview.method {
+                    name = "getMRealPvChildCount"
+                }.give() ?: return@hasEnable
+                val setMItemsMaxCountPreview = baseFolderPreview.method {
+                    name = "setMItemsMaxCount"
+                }.give() ?: return@hasEnable
+                val getMItemsMaxCount = baseFolderPreview.method {
+                    name = "getMItemsMaxCount"
+                }.give() ?: return@hasEnable
+                val setMLargeIconNumPreview = baseFolderPreview.method {
+                    name = "setMLargeIconNum"
+                }.give() ?: return@hasEnable
+                val getMLargeIconNumPreview = baseFolderPreview.method {
+                    name = "getMLargeIconNum"
+                }.give() ?: return@hasEnable
+
+                folderIcon2x2.method {
                     name = "addItemOnclickListener"
-                }?.hook {
+                }.hook {
                     before {
                         val realPvChildCount = this.instance.current().field {
                             name = "mPreviewContainer"
                             superClass()
-                        }.any()?.current()?.method {
-                            name = "getMRealPvChildCount"
-                            superClass()
-                        }?.int() ?: return@before
+                        }.any()?.let {
+                            getMRealPvChildCountPreview.invoke(it) as? Int
+                        }?: return@before
                         val largeIconNum = this.instance.current().method {
                             name = "getMLargeIconNum"
                             superClass()
                         }.int()
                         if (largeIconNum == 3 || largeIconNum == 4) {
                             if (realPvChildCount < 5) {
-                                this.instance.current().method {
-                                    name = "setMItemsMaxCount"
-                                    superClass()
-                                }.call(4)
-                                this.instance.current().method {
-                                    name = "setMLargeIconNum"
-                                    superClass()
-                                }.call(4)
+                                setMItemsMaxCountMethod.invoke(this.instance, 4)
+                                setMLargeIconNumMethod.invoke(this.instance, 4)
                             } else {
-                                this.instance.current().method {
-                                    name = "setMItemsMaxCount"
-                                    superClass()
-                                }.call(7)
-                                this.instance.current().method {
-                                    name = "setMLargeIconNum"
-                                    superClass()
-                                }.call(3)
+                                setMItemsMaxCountMethod.invoke(this.instance, 7)
+                                setMLargeIconNumMethod.invoke(this.instance, 3)
                             }
                         } else if (largeIconNum == 8 || largeIconNum == 9) {
                             if (realPvChildCount < 10) {
-                                this.instance.current().method {
-                                    name = "setMItemsMaxCount"
-                                    superClass()
-                                }.call(9)
-                                this.instance.current().method {
-                                    name = "setMLargeIconNum"
-                                    superClass()
-                                }.call(9)
+                                setMItemsMaxCountMethod.invoke(this.instance, 9)
+                                setMLargeIconNumMethod.invoke(this.instance, 9)
                             } else {
-                                this.instance.current().method {
-                                    name = "setMItemsMaxCount"
-                                    superClass()
-                                }.call(12)
-                                this.instance.current().method {
-                                    name = "setMLargeIconNum"
-                                    superClass()
-                                }.call(8)
+                                setMItemsMaxCountMethod.invoke(this.instance, 12)
+                                setMLargeIconNumMethod.invoke(this.instance, 8)
                             }
                         }
                     }
                 }
-                folderIcon2x2p9?.method {
-                    name = "preSetup2x2"
-                }?.hook {
-                    before {
-                        val realPvChildCount = this.instance.current().method {
-                            name = "getMRealPvChildCount"
-                            superClass()
-                        }.int()
-                        if (realPvChildCount < 10) {
-                            this.instance.current().method {
-                                name = "setMItemsMaxCount"
+                baseFolderPreview.apply {
+                    method {
+                        name = "addPreView"
+                    }.hook {
+                        before {
+                            if (this.args(0).cast<View>() == null) return@before
+                            val mLargeIconNum = getMLargeIconNumPreview.invoke(this.instance) as Int
+                            if (mLargeIconNum == 4) {
+                                setMItemsMaxCountPreview.invoke(this.instance, 7)
+                                setMLargeIconNumPreview.invoke(this.instance, 3)
+                            } else if (mLargeIconNum == 9) {
+                                setMItemsMaxCountPreview.invoke(this.instance, 12)
+                                setMLargeIconNumPreview.invoke(this.instance, 8)
+                            }
+                        }
+                    }
+                    method {
+                        name = "removeLastPreView"
+                    }.hook {
+                        before {
+                            val lastView = this.instance.current().method {
+                                name = "getLastView"
                                 superClass()
-                            }.call(9)
-                            this.instance.current().method {
-                                name = "setMLargeIconNum"
-                                superClass()
-                            }.call(9)
-                        } else {
-                            this.instance.current().method {
-                                name = "setMItemsMaxCount"
-                                superClass()
-                            }.call(12)
-                            this.instance.current().method {
-                                name = "setMLargeIconNum"
-                                superClass()
-                            }.call(8)
+                            }.call()
+                            if (lastView !is View) {
+                                return@before
+                            }
+                            val mRealPvChildCount = getMRealPvChildCountPreview.invoke(this.instance) as Int
+                            val mLargeIconNum = getMLargeIconNumPreview.invoke(this.instance) as Int
+                            if (mLargeIconNum == 3 && mRealPvChildCount == 5) {
+                                setMItemsMaxCountPreview.invoke(this.instance, 4)
+                                setMLargeIconNumPreview.invoke(this.instance, 4)
+                            } else if (mLargeIconNum == 8 && mRealPvChildCount == 10) {
+                                setMItemsMaxCountPreview.invoke(this.instance, 9)
+                                setMLargeIconNumPreview.invoke(this.instance, 9)
+                            }
+                        }
+                    }
+                    method {
+                        name = "isPreViewContainerOverload"
+                    }.hook {
+                        before {
+                            val mItemsMaxCount = getMItemsMaxCount.invoke(this.instance) as Int
+                            if (mItemsMaxCount == 4 || mItemsMaxCount == 9) {
+                                this.result = false
+                            }
                         }
                     }
                 }
-                folderIcon2x2p4?.method {
+                folderIcon2x2p9.method {
                     name = "preSetup2x2"
-                }?.hook {
+                }.hook {
                     before {
-                        val realPvChildCount = this.instance.current().method {
-                            name = "getMRealPvChildCount"
-                            superClass()
-                        }.int()
-                        if (realPvChildCount < 5) {
-                            this.instance.current().method {
-                                name = "setMItemsMaxCount"
-                                superClass()
-                            }.call(4)
-                            this.instance.current().method {
-                                name = "setMLargeIconNum"
-                                superClass()
-                            }.call(4)
+                        val realPvChildCount = getMRealPvChildCountPreview.invoke(this.instance) as? Int ?: return@before
+                        if (realPvChildCount < 10) {
+                            setMItemsMaxCountPreview.invoke(this.instance, 9)
+                            setMLargeIconNumPreview.invoke(this.instance, 9)
                         } else {
-                            this.instance.current().method {
-                                name = "setMItemsMaxCount"
-                                superClass()
-                            }.call(7)
-                            this.instance.current().method {
-                                name = "setMLargeIconNum"
-                                superClass()
-                            }.call(3)
+                            setMItemsMaxCountPreview.invoke(this.instance, 12)
+                            setMLargeIconNumPreview.invoke(this.instance, 8)
+                        }
+                    }
+                }
+                folderIcon2x2p4.method {
+                    name = "preSetup2x2"
+                }.hook {
+                    before {
+                        val realPvChildCount = getMRealPvChildCountPreview.invoke(this.instance) as? Int ?: return@before
+                        if (realPvChildCount < 5) {
+                            setMItemsMaxCountPreview.invoke(this.instance, 4)
+                            setMLargeIconNumPreview.invoke(this.instance, 4)
+                        } else {
+                            setMItemsMaxCountPreview.invoke(this.instance, 7)
+                            setMLargeIconNumPreview.invoke(this.instance, 3)
                         }
                     }
                 }

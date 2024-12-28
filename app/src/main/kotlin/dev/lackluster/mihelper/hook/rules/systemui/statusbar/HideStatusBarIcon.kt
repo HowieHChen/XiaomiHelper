@@ -53,18 +53,17 @@ object HideStatusBarIcon : YukiBaseHooker() {
     private val hideWirelessHeadset = Prefs.getInt(IconTurner.WIRELESS_HEADSET, 0)
 
     override fun onHook() {
-        val statusBarList = "com.android.systemui.statusbar.phone.MiuiIconManagerUtils".toClass()
-            .field {
-                name = "RIGHT_BLOCK_LIST"
-                modifiers { isStatic }
-            }
-            .get().list<String>().toMutableList()
-        val controlList = "com.android.systemui.statusbar.phone.MiuiIconManagerUtils".toClass()
-            .field {
-                name = "CONTROL_CENTER_BLOCK_LIST"
-                modifiers { isStatic }
-            }
-            .get().list<String>().toMutableList()
+        val miuiIconManagerUtilsClass = "com.android.systemui.statusbar.phone.MiuiIconManagerUtils".toClass()
+        val rightBlockListField = miuiIconManagerUtilsClass.field {
+            name = "RIGHT_BLOCK_LIST"
+            modifiers { isStatic }
+        }.get()
+        val controlCenterBlockListField = miuiIconManagerUtilsClass.field {
+            name = "CONTROL_CENTER_BLOCK_LIST"
+            modifiers { isStatic }
+        }.get()
+        val statusBarList = rightBlockListField.list<String>().toMutableList()
+        val controlList = controlCenterBlockListField.list<String>().toMutableList()
         hideIcon(hideAirplane, "airplane", statusBarList, controlList)
         hideIcon(hideAlarmClock, "alarm_clock", statusBarList, controlList)
         hideIcon(hideBluetooth, "bluetooth", statusBarList, controlList)
@@ -90,14 +89,8 @@ object HideStatusBarIcon : YukiBaseHooker() {
         hideIcon(hideStereo, "stereo", statusBarList, controlList)
         hideIcon(hideTV, "tv", statusBarList, controlList)
         hideIcon(hideWirelessHeadset, "wireless_headset", statusBarList, controlList)
-        "com.android.systemui.statusbar.phone.MiuiIconManagerUtils".toClass().field {
-            name = "RIGHT_BLOCK_LIST"
-            modifiers { isStatic }
-        }.get().set(statusBarList)
-        "com.android.systemui.statusbar.phone.MiuiIconManagerUtils".toClass().field {
-            name = "CONTROL_CENTER_BLOCK_LIST"
-            modifiers { isStatic }
-        }.get().set(controlList)
+        rightBlockListField.set(statusBarList)
+        controlCenterBlockListField.set(controlList)
     }
 
     private fun hideIcon(value: Int, name: String, statusBarList: MutableList<String>, controlList: MutableList<String>) {

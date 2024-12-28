@@ -29,13 +29,15 @@ import dev.lackluster.mihelper.utils.factory.hasEnable
 object NotifFreeform : YukiBaseHooker() {
     override fun onHook() {
         hasEnable(Pref.Key.SystemUI.NotifCenter.NOTIF_FREEFORM) {
-            "com.android.systemui.statusbar.notification.row.MiuiExpandableNotificationRow".toClassOrNull()?.method {
-                name = "updateMiniWindowBar"
-            }?.hook {
-                after {
-                    this.instance.current().field {
-                        name = "mCanSlide"
-                    }.setTrue()
+            "com.android.systemui.statusbar.notification.row.MiuiExpandableNotificationRow".toClassOrNull()?.apply {
+                method {
+                    name = "updateMiniWindowBar"
+                }.hook {
+                    after {
+                        this.instance.current().field {
+                            name = "mCanSlide"
+                        }.setTrue()
+                    }
                 }
             }
         }

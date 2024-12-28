@@ -30,7 +30,6 @@ import dev.lackluster.hyperx.core.util.SystemProperties
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.hook.rules.miuihome.ResourcesUtils.status_bar_recent_memory_giga
 import dev.lackluster.mihelper.hook.rules.miuihome.ResourcesUtils.status_bar_recent_memory_mega
-import dev.lackluster.mihelper.utils.Device
 import dev.lackluster.mihelper.utils.factory.hasEnable
 import java.text.DecimalFormat
 import kotlin.math.ceil
@@ -40,7 +39,7 @@ object PadShowMemory : YukiBaseHooker() {
     private var mExternalRam: Float = 0.0f
     private var mTotalMemory: Long = 0
     override fun onHook() {
-        hasEnable(Pref.Key.MiuiHome.PAD_RECENT_SHOW_MEMORY, extraCondition = { Device.isPad }) {
+        hasEnable(Pref.Key.MiuiHome.PAD_RECENT_SHOW_MEMORY) {
             "com.miui.home.recents.views.RecentsDecorations".toClass().apply {
                 constructor().hook {
                     after {

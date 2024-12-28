@@ -2,4 +2,6 @@
 <resources>
     <color name="foreground_dual_tone_full">#FFFFFFFF</color>
     <color name="foreground_dual_tone_half">#4DFFFFFF</color>
+    <color name="ic_stat_sys_tint_fg">#FFFFFF</color>
+    <color name="ic_stat_sys_tint_bg">#474747</color>
 </resources>
