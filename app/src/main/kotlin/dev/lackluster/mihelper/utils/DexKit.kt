@@ -59,7 +59,7 @@ object DexKit {
                     }
                 }
             } catch (t: Throwable) {
-                YLog.warn("Cannot create cache file")
+                YLog.warn("Cannot create cache file\n${t.message}")
                 enableCache = false
             }
         } else {
