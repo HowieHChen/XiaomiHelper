@@ -83,12 +83,12 @@
     <string name="scope_updater">Updater</string>
     <string name="scope_weather">Weather</string>
 
-    <string name="action_notifications">Notification drawer</string>
-    <string name="action_quick_settings">Quick Settings panel</string>
+    <string name="action_notifications">Notification shade</string>
+    <string name="action_quick_settings">Quick settings panel</string>
     <string name="action_lock_screen">Turn off screen</string>
     <string name="action_screenshot">Take screenshot</string>
     <string name="action_home">Home</string>
-    <string name="action_recents">Overview (Recent Apps)</string>
+    <string name="action_recents">Overview (recent apps)</string>
 
     <string name="search_use_browser">Search using browser</string>
     <string name="search_engine">Search engine</string>
@@ -202,8 +202,8 @@
     <string name="systemui_statusbar_notif_count_icon">Maximum number of status bar notification icons</string>
     <string name="systemui_statusbar_icon" translatable="false">@string/page_status_bar_icon_tuner</string>
     <string name="systemui_statusbar_tap_to_sleep" translatable="false">@string/common_tap_sleep</string>
-    <string name="systemui_statusbar_disable_smart_dark">Disable Smart Dark</string>
-    <string name="systemui_statusbar_disable_smart_dark_tips">The Smart Dark feature causes the status bar to ignore application-specified colors and enable area sampling to change color automatically when in dark mode. Disable this feature to restore the Android default behavior.</string>
+    <string name="systemui_statusbar_disable_smart_dark">Disable Smart dark</string>
+    <string name="systemui_statusbar_disable_smart_dark_tips">The Smart Dark feature makes the status bar ignore the colors specified by the app and allows the sampling of the area to change color automatically when in Dark mode. Disable this feature to restore the default behavior of Android.</string>
     <string name="ui_title_systemui_lock_screen">Lock screen</string>
     <string name="systemui_lock_hide_unlock_tip">Hide unlock request at the bottom of the screen</string>
     <string name="systemui_lock_hide_disturb">Hide Do Not Disturb mode resident notifications</string>
@@ -273,7 +273,7 @@
     <string name="ui_title_home_recent">Recent tasks</string>
     <string name="home_recent_dismiss_anim">Modify card animation when dismissing recent tasks</string>
     <string name="home_recent_pad_show_memory">Show memory usage on tablet</string>
-    <string name="home_recent_pad_hide_world">Hide Mi Smart Hub button</string>
+    <string name="home_recent_pad_hide_world">Hide Xiaomi Smart Hub button</string>
     <string name="home_recent_hide_clear_all">Hide Clear all button</string>
     <string name="home_Recent_mem_info_clear">Long click on memory info to clear all</string>
     <string name="home_recent_show_real_memory">Show real memory usage</string>
@@ -304,12 +304,12 @@
     <string name="home_others_always_show_clock">Always show time in status bar</string>
     <string name="home_others_fake_premium">Disguised as a high-end model</string>
     <string name="home_others_fake_premium_tips">Remove model restrictions on some features</string>
-    <string name="home_others_force_color_scheme_element">Application label color</string>
-    <string name="home_others_force_color_scheme_element_tips">Specify widget and application label color (ignore wallpaper color)</string>
+    <string name="home_others_force_color_scheme_element">App label color</string>
+    <string name="home_others_force_color_scheme_element_tips">Specify widget and app label color (ignore wallpaper color)</string>
     <string name="home_others_force_color_scheme_statusbar">Status bar text and icon color</string>
-    <string name="home_others_force_color_scheme_statusbar_tips">Specify the color of the status bar text and icons (ignore wallpaper color). Requires enabling "Disable Smart Dark" on the System UI page.</string>
+    <string name="home_others_force_color_scheme_statusbar_tips">Specify the color of the status bar text and icons (ignore wallpaper color). Requires enabling \"Disable Smart dark\" on the System UI page.</string>
     <string name="home_others_force_color_scheme_minus">Minus screen color</string>
-    <string name="home_others_force_color_scheme_minus_tips">Specify the color of the status bar text and icons for the minus screen (ignore wallpaper color). Requires enabling "Disable Smart Dark" on the System UI page.</string>
+    <string name="home_others_force_color_scheme_minus_tips">Specify the color of the status bar text and icons for the minus screen (ignore wallpaper color). Requires enabling \"Disable Smart dark\" on the System UI page.</string>
     <!-- CleanMasterPage -->
     <string name="ui_title_cleaner_ad_blocker">Ad blocker</string>
     <string name="cleaner_ad_blocker_market" translatable="false">@string/scope_market</string>
