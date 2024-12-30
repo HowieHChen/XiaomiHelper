@@ -36,19 +36,28 @@ object DexKit {
 
     lateinit var dexKitBridge: DexKitBridge
 
+    @SuppressLint("SdCardPath")
     fun initDexKit(param: PackageParam) {
         hostDir = param.appInfo.sourceDir
         if (enableCache) {
             try {
-                sp = try {
-                    param.systemContext
-                        .createPackageContext(param.packageName, Context.CONTEXT_IGNORE_SECURITY)
-                        .getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE)
-                } catch (_: Throwable) {
+                val userDeSP = File("${param.appInfo.dataDir.replace("/data/user/", "/data/user_de/")}/shared_prefs/${PREF_FILE_NAME}.xml")
+                sp = if (userDeSP.exists()) {
                     param.systemContext
                         .createPackageContext(param.packageName, Context.CONTEXT_IGNORE_SECURITY)
                         .createDeviceProtectedStorageContext()
                         .getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE)
+                } else {
+                    try {
+                        param.systemContext
+                            .createPackageContext(param.packageName, Context.CONTEXT_IGNORE_SECURITY)
+                            .getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE)
+                    } catch (_: Throwable) {
+                        param.systemContext
+                            .createPackageContext(param.packageName, Context.CONTEXT_IGNORE_SECURITY)
+                            .createDeviceProtectedStorageContext()
+                            .getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE)
+                    }
                 }
                 val cachedHostVersion = sp?.getString(PREF_KEY_HOST_VERSION, "") ?: "null"
                 val currentHostVersion = getPackageVersionString(param)
@@ -70,9 +79,11 @@ object DexKit {
                 enableCache = false
             }
         } else {
-            val spFile = File("${param.appInfo.dataDir}/shared_prefs/${PREF_FILE_NAME}.xml")
-            if (spFile.exists()) {
-                spFile.delete()
+            File("${param.appInfo.dataDir}/shared_prefs/${PREF_FILE_NAME}.xml").let {
+                if (it.exists()) it.delete()
+            }
+            File("${param.appInfo.dataDir.replace("/data/user/", "/data/user_de/")}/shared_prefs/${PREF_FILE_NAME}.xml").let {
+                if (it.exists()) it.delete()
             }
         }
         System.loadLibrary("dexkit")
