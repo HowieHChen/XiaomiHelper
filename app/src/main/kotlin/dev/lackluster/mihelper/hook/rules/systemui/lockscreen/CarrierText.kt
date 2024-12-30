@@ -223,6 +223,8 @@ object CarrierText : YukiBaseHooker() {
                             darkCarrierText.isSingleLine = true
                             darkCarrierText.marqueeRepeatLimit = 1
                             darkCarrierText.textDirection = View.TEXT_DIRECTION_LOCALE
+                            darkCarrierText.isSelected = true
+                            darkCarrierText.isHorizontalFadingEdgeEnabled = true
                             darkCarrierText.id = CUSTOM_VIEW_ID
                             darkCarrierText.tag = CUSTOM_VIEW_ID
                             mCarrierTextControllerField.get(darkCarrierText).set(mCarrierTextController)
