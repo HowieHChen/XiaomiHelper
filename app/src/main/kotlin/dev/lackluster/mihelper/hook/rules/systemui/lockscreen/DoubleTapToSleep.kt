@@ -40,27 +40,14 @@ object DoubleTapToSleep : YukiBaseHooker() {
             }.hook {
                 before {
                     val view = this.instance as View
-                    XposedHelpers.setAdditionalInstanceField(
-                        view,
-                        "currentTouchTime",
-                        0L
-                    )
-                    XposedHelpers.setAdditionalInstanceField(
-                        view,
-                        "currentTouchX",
-                        0f
-                    )
-                    XposedHelpers.setAdditionalInstanceField(
-                        view,
-                        "currentTouchY",
-                        0f
-                    )
-                    view.setOnTouchListener(View.OnTouchListener { v, motionEvent ->
-                        if (motionEvent.action != MotionEvent.ACTION_DOWN) return@OnTouchListener false
-
-                        var currentTouchTime = XposedHelpers.getAdditionalInstanceField(view, "currentTouchTime") as Long
-                        var currentTouchX = XposedHelpers.getAdditionalInstanceField(view, "currentTouchX") as Float
-                        var currentTouchY = XposedHelpers.getAdditionalInstanceField(view, "currentTouchY") as Float
+                    XposedHelpers.setAdditionalInstanceField(view, "currentTouchTime", 0L)
+                    XposedHelpers.setAdditionalInstanceField(view, "currentTouchX", 0f)
+                    XposedHelpers.setAdditionalInstanceField(view, "currentTouchY", 0f)
+                    view.setOnTouchListener { v, motionEvent ->
+                        if (motionEvent.action != MotionEvent.ACTION_DOWN) return@setOnTouchListener false
+                        var currentTouchTime = XposedHelpers.getAdditionalInstanceField(v, "currentTouchTime") as? Long ?: 0L
+                        var currentTouchX = XposedHelpers.getAdditionalInstanceField(v, "currentTouchX") as? Float ?: 0f
+                        var currentTouchY = XposedHelpers.getAdditionalInstanceField(v, "currentTouchY") as? Float ?: 0f
                         val lastTouchTime = currentTouchTime
                         val lastTouchX = currentTouchX
                         val lastTouchY = currentTouchY
@@ -73,8 +60,7 @@ object DoubleTapToSleep : YukiBaseHooker() {
                             && abs(currentTouchX - lastTouchX) < 100f
                             && abs(currentTouchY - lastTouchY) < 100f
                         ) {
-                            val keyguardMgr =
-                                v.context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+                            val keyguardMgr = v.context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
                             if (keyguardMgr.isKeyguardLocked) {
                                 XposedHelpers.callMethod(
                                     v.context.getSystemService(Context.POWER_SERVICE),
@@ -86,24 +72,12 @@ object DoubleTapToSleep : YukiBaseHooker() {
                             currentTouchX = 0f
                             currentTouchY = 0f
                         }
-                        XposedHelpers.setAdditionalInstanceField(
-                            view,
-                            "currentTouchTime",
-                            currentTouchTime
-                        )
-                        XposedHelpers.setAdditionalInstanceField(
-                            view,
-                            "currentTouchX",
-                            currentTouchX
-                        )
-                        XposedHelpers.setAdditionalInstanceField(
-                            view,
-                            "currentTouchY",
-                            currentTouchY
-                        )
+                        XposedHelpers.setAdditionalInstanceField(v, "currentTouchTime", currentTouchTime)
+                        XposedHelpers.setAdditionalInstanceField(v, "currentTouchX", currentTouchX)
+                        XposedHelpers.setAdditionalInstanceField(v, "currentTouchY", currentTouchY)
                         v.performClick()
-                        false
-                    })
+                        return@setOnTouchListener false
+                    }
                 }
             }
         }

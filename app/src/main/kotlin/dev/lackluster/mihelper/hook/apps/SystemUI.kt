@@ -29,6 +29,7 @@ import dev.lackluster.mihelper.hook.rules.systemui.media.UnlockCustomAction
 import dev.lackluster.mihelper.hook.rules.systemui.notif.AdvancedTextures
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.BatteryIndicator
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.PadClockAnim
+import dev.lackluster.mihelper.hook.rules.systemui.statusbar.StatusBarDoubleTapToSleep
 
 object SystemUI : YukiBaseHooker() {
     override fun onHook() {
@@ -40,7 +41,9 @@ object SystemUI : YukiBaseHooker() {
         loadHooker(NotifFreeform)
         loadHooker(NotifWhitelist)
 
+        loadHooker(BatteryIndicator)
         loadHooker(HideStatusBarIcon)
+        loadHooker(StatusBarDoubleTapToSleep)
 
         loadHooker(DisableSmartDark)
         loadHooker(StatusBarActions)
@@ -50,13 +53,12 @@ object SystemUI : YukiBaseHooker() {
         loadHooker(UnlockMultipleTask)
         loadHooker(HideTopBar)
 
-        loadHooker(BatteryIndicator)
         loadHooker(HideCarrierLabel)
         loadHooker(HideStatusBarSpecialIcon)
         loadHooker(HideWifiActivityAndType)
         loadHooker(StatusBarClock)
         loadHooker(BlockEditor)
-        loadHooker(dev.lackluster.mihelper.hook.rules.systemui.statusbar.DoubleTapToSleep)
+
         loadHooker(HideUnlockTip)
         loadHooker(IconPosition)
         loadHooker(NotificationMaxNumber)

@@ -32,36 +32,36 @@ fun MiuiHomePage(navController: NavController, adjustPadding: PaddingValues, mod
     val tintColor = MiuixTheme.colorScheme.onSurfaceSecondary
     val dropdownEntriesQuickSwitchAction = listOf(
         DropDownEntry(
-            stringResource(R.string.home_gesture_quick_switch_previous_app),
+            title = stringResource(R.string.home_gesture_quick_switch_previous_app),
             iconRes = R.drawable.ic_header_android_green,
         ),
         DropDownEntry(
-            stringResource(R.string.action_notifications),
+            title = stringResource(R.string.action_notifications),
             iconRes = R.drawable.ic_quick_switch_notifications,
             iconTint = tintColor
         ),
         DropDownEntry(
-            stringResource(R.string.action_quick_settings),
+            title = stringResource(R.string.action_quick_settings),
             iconRes = R.drawable.ic_quick_switch_quick_settings,
             iconTint = tintColor
         ),
         DropDownEntry(
-            stringResource(R.string.action_lock_screen),
+            title = stringResource(R.string.action_lock_screen),
             iconRes = R.drawable.ic_quick_switch_lock_screen,
             iconTint = tintColor
         ),
         DropDownEntry(
-            stringResource(R.string.action_screenshot),
+            title = stringResource(R.string.action_screenshot),
             iconRes = R.drawable.ic_quick_switch_screenshot,
             iconTint = tintColor
         ),
         DropDownEntry(
-            stringResource(R.string.action_home),
+            title = stringResource(R.string.action_home),
             iconRes = R.drawable.ic_quick_switch_home,
             iconTint = tintColor
         ),
         DropDownEntry(
-            stringResource(R.string.action_recents),
+            title = stringResource(R.string.action_recents),
             iconRes = R.drawable.ic_quick_switch_recents,
             iconTint = tintColor
         ),

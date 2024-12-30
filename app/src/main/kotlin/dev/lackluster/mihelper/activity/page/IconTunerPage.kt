@@ -1,27 +1,79 @@
 package dev.lackluster.mihelper.activity.page
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
+import dev.lackluster.hyperx.compose.activity.SafeSP
 import dev.lackluster.hyperx.compose.base.BasePage
 import dev.lackluster.hyperx.compose.base.BasePageDefaults
 import dev.lackluster.hyperx.compose.base.ImageIcon
 import dev.lackluster.hyperx.compose.preference.DropDownEntry
+import dev.lackluster.hyperx.compose.preference.DropDownMode
 import dev.lackluster.hyperx.compose.preference.DropDownPreference
+import dev.lackluster.hyperx.compose.preference.EditTextDataType
+import dev.lackluster.hyperx.compose.preference.EditTextPreference
 import dev.lackluster.hyperx.compose.preference.PreferenceGroup
+import dev.lackluster.hyperx.compose.preference.SwitchPreference
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.activity.MainActivity
 import dev.lackluster.mihelper.data.Pref
 
 @Composable
 fun IconTurnerPage(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
+    var spValueBatteryStyle by remember { mutableIntStateOf(SafeSP.getInt(Pref.Key.SystemUI.IconTurner.BATTERY_STYLE)) }
+    var spValueModifyBatteryPercentageSize by remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.SystemUI.IconTurner.BATTERY_MODIFY_PERCENTAGE_TEXT_SIZE)) }
+    var spValueModifyBatteryPadding by remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.SystemUI.IconTurner.BATTERY_MODIFY_PADDING)) }
+
     val dropdownEntriesAdvVisible = listOf(
         DropDownEntry(stringResource(R.string.icon_tuner_hide_selection_default)),
         DropDownEntry(stringResource(R.string.icon_tuner_hide_selection_show_all)),
         DropDownEntry(stringResource(R.string.icon_tuner_hide_selection_show_statusbar)),
         DropDownEntry(stringResource(R.string.icon_tuner_hide_selection_show_qs)),
         DropDownEntry(stringResource(R.string.icon_tuner_hide_selection_hidden)),
+    )
+    val dropdownEntriesBatteryStyle = listOf(
+        DropDownEntry(
+            title = stringResource(R.string.icon_tuner_battery_style_default),
+            iconRes = R.drawable.ic_battery_style_default
+        ),
+        DropDownEntry(
+            title = stringResource(R.string.icon_tuner_battery_style_both),
+            iconRes = R.drawable.ic_battery_style_both
+        ),
+        DropDownEntry(
+            title = stringResource(R.string.icon_tuner_battery_style_icon),
+            iconRes = R.drawable.ic_battery_style_icon
+        ),
+        DropDownEntry(
+            title = stringResource(R.string.icon_tuner_battery_style_percentage),
+            iconRes = R.drawable.ic_battery_style_digit
+        ),
+        DropDownEntry(
+            title = stringResource(R.string.icon_tuner_battery_style_hidden),
+            iconRes = R.drawable.ic_battery_style_hidden
+        ),
+    )
+    val dropdownEntriesBatteryPercentage = listOf(
+        DropDownEntry(
+            title = stringResource(R.string.icon_tuner_battery_percentage_symbol_style_default),
+            iconRes = R.drawable.ic_battery_percentage_style_default
+        ),
+        DropDownEntry(
+            title = stringResource(R.string.icon_tuner_battery_percentage_symbol_style_uni),
+            iconRes = R.drawable.ic_battery_percentage_style_digit
+        ),
+        DropDownEntry(
+            title = stringResource(R.string.icon_tuner_battery_percentage_symbol_style_hidden),
+            iconRes = R.drawable.ic_battery_percentage_style_hidden
+        ),
     )
 
     BasePage(
@@ -70,7 +122,6 @@ fun IconTurnerPage(navController: NavController, adjustPadding: PaddingValues, m
                 )
             }
         }
-
         item {
             PreferenceGroup(
                 title = stringResource(R.string.ui_title_icon_tuner_connectivity)
@@ -213,6 +264,88 @@ fun IconTurnerPage(navController: NavController, adjustPadding: PaddingValues, m
                     entries = dropdownEntriesAdvVisible,
                     key = Pref.Key.SystemUI.IconTurner.ZEN
                 )
+            }
+        }
+        item {
+            PreferenceGroup(
+                title = stringResource(R.string.ui_title_icon_tuner_battery)
+            ) {
+                DropDownPreference(
+                    title = stringResource(R.string.icon_tuner_battery_style),
+                    entries = dropdownEntriesBatteryStyle,
+                    key = Pref.Key.SystemUI.IconTurner.BATTERY_STYLE,
+                    mode = DropDownMode.Dialog
+                ) {
+                    spValueBatteryStyle = it
+                }
+                AnimatedVisibility(
+                    spValueBatteryStyle in listOf(0, 1, 3)
+                ) {
+                    Column {
+                        DropDownPreference(
+                            title = stringResource(R.string.icon_tuner_battery_percentage_symbol_style),
+                            entries = dropdownEntriesBatteryPercentage,
+                            key = Pref.Key.SystemUI.IconTurner.BATTERY_PERCENTAGE_SYMBOL_STYLE,
+                            mode = DropDownMode.Dialog
+                        )
+                        SwitchPreference(
+                            title = stringResource(R.string.icon_tuner_battery_battery_percent_size),
+                            key = Pref.Key.SystemUI.IconTurner.BATTERY_MODIFY_PERCENTAGE_TEXT_SIZE
+                        ) {
+                            spValueModifyBatteryPercentageSize = it
+                        }
+                        AnimatedVisibility(
+                            spValueModifyBatteryPercentageSize
+                        ) {
+                            EditTextPreference(
+                                title = stringResource(R.string.icon_tuner_battery_percent_size),
+                                key = Pref.Key.SystemUI.IconTurner.BATTERY_PERCENTAGE_TEXT_SIZE,
+                                defValue = 13.454498f,
+                                dataType = EditTextDataType.FLOAT,
+                                isValueValid = {
+                                    (it as? Float ?: -1.0f) >= 0.0f
+                                }
+                            )
+                        }
+
+                    }
+                }
+                AnimatedVisibility(
+                    spValueBatteryStyle in listOf(0, 1)
+                ) {
+                    SwitchPreference(
+                        title = stringResource(R.string.icon_tuner_battery_swap_battery_percent),
+                        key = Pref.Key.SystemUI.IconTurner.SWAP_BATTERY_PERCENT
+                    )
+                }
+                SwitchPreference(
+                    title = stringResource(R.string.icon_tuner_battery_hide_charge),
+                    key = Pref.Key.SystemUI.IconTurner.HIDE_CHARGE
+                )
+                SwitchPreference(
+                    title = stringResource(R.string.icon_tuner_battery_layout_custom),
+                    key = Pref.Key.SystemUI.IconTurner.BATTERY_MODIFY_PADDING
+                ) {
+                    spValueModifyBatteryPadding = it
+                }
+                AnimatedVisibility(
+                    spValueModifyBatteryPadding
+                ) {
+                    Column {
+                        EditTextPreference(
+                            title = stringResource(R.string.icon_tuner_battery_padding_left),
+                            key = Pref.Key.SystemUI.IconTurner.BATTERY_PADDING_LEFT,
+                            defValue = 0.0f,
+                            dataType = EditTextDataType.FLOAT
+                        )
+                        EditTextPreference(
+                            title = stringResource(R.string.icon_tuner_battery_padding_right),
+                            key = Pref.Key.SystemUI.IconTurner.BATTERY_PADDING_RIGHT,
+                            defValue = 0.0f,
+                            dataType = EditTextDataType.FLOAT
+                        )
+                    }
+                }
             }
         }
     }
