@@ -40,9 +40,16 @@ object DexKit {
         hostDir = param.appInfo.sourceDir
         if (enableCache) {
             try {
-                sp = param.systemContext
-                    .createPackageContext(param.packageName, Context.CONTEXT_IGNORE_SECURITY)
-                    .getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE)
+                sp = try {
+                    param.systemContext
+                        .createPackageContext(param.packageName, Context.CONTEXT_IGNORE_SECURITY)
+                        .getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE)
+                } catch (_: Throwable) {
+                    param.systemContext
+                        .createPackageContext(param.packageName, Context.CONTEXT_IGNORE_SECURITY)
+                        .createDeviceProtectedStorageContext()
+                        .getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE)
+                }
                 val cachedHostVersion = sp?.getString(PREF_KEY_HOST_VERSION, "") ?: "null"
                 val currentHostVersion = getPackageVersionString(param)
                 val cachedModuleVersion = sp?.getString(PREF_KEY_MODULE_VERSION, "") ?: "null"
