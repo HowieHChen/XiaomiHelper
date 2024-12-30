@@ -193,6 +193,24 @@ fun SystemUIPage(navController: NavController, adjustPadding: PaddingValues) {
                     summary = stringResource(R.string.systemui_notif_freeform_tips),
                     key = Pref.Key.SystemUI.NotifCenter.NOTIF_FREEFORM
                 )
+                SwitchPreference(
+                    title = stringResource(R.string.systemui_notif_disable_whitelist),
+                    key = Pref.Key.SystemUI.NotifCenter.NOTIF_NO_WHITELIST
+                )
+            }
+        }
+        item {
+            PreferenceGroup(
+                title = stringResource(R.string.ui_title_systemui_control_center)
+            ) {
+                SwitchPreference(
+                    title = stringResource(R.string.systemui_control_hide_carrier_one),
+                    key = Pref.Key.SystemUI.ControlCenter.HIDE_CARRIER_ONE
+                )
+                SwitchPreference(
+                    title = stringResource(R.string.systemui_control_hide_carrier_two),
+                    key = Pref.Key.SystemUI.ControlCenter.HIDE_CARRIER_TWO
+                )
             }
         }
     }

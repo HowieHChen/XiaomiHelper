@@ -23,6 +23,7 @@ package dev.lackluster.mihelper.hook.rules.systemui.statusbar
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.current
 import com.highcapable.yukihookapi.hook.factory.method
+import de.robv.android.xposed.XposedHelpers
 import dev.lackluster.mihelper.data.Pref.Key.SystemUI.ControlCenter
 import dev.lackluster.mihelper.utils.Prefs
 
@@ -33,7 +34,6 @@ object HideCarrierLabel : YukiBaseHooker() {
     private val hideSimTwo by lazy {
         Prefs.getBoolean(ControlCenter.HIDE_CARRIER_TWO, false)
     }
-    private var cardDisableArray = BooleanArray(2)
 
     override fun onHook() {
         if (hideSimOne || hideSimTwo) {
@@ -44,11 +44,11 @@ object HideCarrierLabel : YukiBaseHooker() {
                     val mCardDisable = this.instance.current().field { name = "mCardDisable" }.any() as BooleanArray
                     val mPhoneCount = this.instance.current().field { name = "mPhoneCount" }.int()
                     if (hideSimOne && mPhoneCount >= 1) {
-                        cardDisableArray[0] = mCardDisable[0]
+                        XposedHelpers.setAdditionalInstanceField(this.instance, "mOriCardDisable0", mCardDisable[0])
                         mCardDisable[0] = true
                     }
                     if (hideSimTwo && mPhoneCount >= 2) {
-                        cardDisableArray[1] = mCardDisable[1]
+                        XposedHelpers.setAdditionalInstanceField(this.instance, "mOriCardDisable1", mCardDisable[1])
                         mCardDisable[1] = true
                     }
                 }
@@ -56,10 +56,14 @@ object HideCarrierLabel : YukiBaseHooker() {
                     val mCardDisable = this.instance.current().field { name = "mCardDisable" }.any() as BooleanArray
                     val mPhoneCount = this.instance.current().field { name = "mPhoneCount" }.int()
                     if (hideSimOne && mPhoneCount >= 1) {
-                        mCardDisable[0] = cardDisableArray[0]
+                        (XposedHelpers.getAdditionalInstanceField(this.instance, "mOriCardDisable0") as? Boolean)?.let {
+                            mCardDisable[0] = it
+                        }
                     }
                     if (hideSimTwo && mPhoneCount >= 2) {
-                        mCardDisable[1] = cardDisableArray[1]
+                        (XposedHelpers.getAdditionalInstanceField(this.instance, "mOriCardDisable1") as? Boolean)?.let {
+                            mCardDisable[1] = it
+                        }
                     }
                 }
             }
