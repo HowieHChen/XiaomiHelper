@@ -72,7 +72,6 @@ fun SystemUIPage(navController: NavController, adjustPadding: PaddingValues) {
         MainActivity.blurEnabled,
         MainActivity.blurTintAlphaLight,
         MainActivity.blurTintAlphaDark,
-        navigationIcon = {},
         actions = {
             if (isTopPopupExpanded.value) {
                 ListPopup(

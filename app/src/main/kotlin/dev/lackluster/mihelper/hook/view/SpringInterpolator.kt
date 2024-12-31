@@ -1,4 +1,4 @@
-package dev.lackluster.mihelper.hook.utils
+package dev.lackluster.mihelper.hook.view
 
 import android.view.animation.Interpolator
 import kotlin.math.abs

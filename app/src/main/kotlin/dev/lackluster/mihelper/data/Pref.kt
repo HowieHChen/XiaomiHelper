@@ -269,18 +269,25 @@ object Pref {
                 const val DISABLE_SMART_DARK = "systemui_disable_smart_dark"
             }
             object IconTurner {
+                const val MOBILE = "statusbar_hide_mobile"
                 const val HIDE_SIM_ONE = "statusbar_hide_sim_one"
                 const val HIDE_SIM_TWO = "statusbar_hide_sim_two"
                 const val NO_SIM = "statusbar_hide_no_sim"
                 const val HIDE_MOBILE_ACTIVITY = "statusbar_hide_mobile_activity"
                 const val HIDE_MOBILE_TYPE = "statusbar_hide_mobile_type"
-                const val HIDE_HD_SMALL = "statusbar_hide_hd_small"
-                const val HIDE_HD_LARGE = "statusbar_hide_hd_large"
                 const val HD_NEW = "statusbar_hide_hd_new"
+                const val HIDE_HD_SMALL = "statusbar_hide_hd_small"
+                @Deprecated("Use HD_NEW")
+                const val HIDE_HD_LARGE = "statusbar_hide_hd_large"
+                @Deprecated("")
                 const val HIDE_HD_NO_SERVICE = "statusbar_hide_hd_no_service"
+                const val HIDE_ROAM = "statusbar_hide_roam"
+                const val HIDE_ROAM_SMALL = "statusbar_hide_roam_small"
+                const val HIDE_VOLTE = "statusbar_hide_volte"
+                const val HIDE_VOWIFI = "statusbar_hide_vowifi"
                 const val WIFI = "statusbar_hide_wifi"
                 const val HIDE_WIFI_ACTIVITY = "statusbar_hide_wifi_activity"
-                const val HIDE_WIFI_TYPE = "statusbar_hide_wifi_type"
+                const val HIDE_WIFI_STANDARD = "statusbar_hide_wifi_type"
                 const val HOTSPOT = "statusbar_hide_hotspot"
                 const val BATTERY_STYLE = "statusbar_battery_style"
                 const val BATTERY_PERCENTAGE_SYMBOL_STYLE = "statusbar_battery_percent_symbol_style"

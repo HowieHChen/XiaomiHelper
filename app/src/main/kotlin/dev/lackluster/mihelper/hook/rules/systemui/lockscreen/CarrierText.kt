@@ -43,7 +43,7 @@ import com.highcapable.yukihookapi.hook.type.android.ViewClass
 import de.robv.android.xposed.XposedHelpers
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils
-import dev.lackluster.mihelper.hook.utils.SpringInterpolator
+import dev.lackluster.mihelper.hook.view.SpringInterpolator
 import dev.lackluster.mihelper.utils.Device
 import dev.lackluster.mihelper.utils.Prefs
 import java.util.ArrayList

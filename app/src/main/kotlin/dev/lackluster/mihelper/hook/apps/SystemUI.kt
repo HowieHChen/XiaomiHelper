@@ -9,10 +9,8 @@ import dev.lackluster.mihelper.hook.rules.systemui.StatusBarActions
 import dev.lackluster.mihelper.hook.rules.systemui.lockscreen.BlockEditor
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.HideCarrierLabel
 import dev.lackluster.mihelper.hook.rules.systemui.lockscreen.HideDisturbNotification
-import dev.lackluster.mihelper.hook.rules.systemui.statusbar.HideStatusBarSpecialIcon
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.HideStatusBarIcon
 import dev.lackluster.mihelper.hook.rules.systemui.lockscreen.HideUnlockTip
-import dev.lackluster.mihelper.hook.rules.systemui.statusbar.HideWifiActivityAndType
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.IconPosition
 import dev.lackluster.mihelper.hook.rules.systemui.notif.NotifFreeform
 import dev.lackluster.mihelper.hook.rules.systemui.notif.NotifSettingsRedirect
@@ -28,6 +26,8 @@ import dev.lackluster.mihelper.hook.rules.systemui.media.StyleCustomHookEntry
 import dev.lackluster.mihelper.hook.rules.systemui.media.UnlockCustomAction
 import dev.lackluster.mihelper.hook.rules.systemui.notif.AdvancedTextures
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.BatteryIndicator
+import dev.lackluster.mihelper.hook.rules.systemui.statusbar.HideCellularIcon
+import dev.lackluster.mihelper.hook.rules.systemui.statusbar.HideWiFiIcon
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.PadClockAnim
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.StatusBarDoubleTapToSleep
 
@@ -43,7 +43,10 @@ object SystemUI : YukiBaseHooker() {
 
         loadHooker(BatteryIndicator)
         loadHooker(HideCarrierLabel)
+        loadHooker(HideCellularIcon)
         loadHooker(HideStatusBarIcon)
+        loadHooker(HideWiFiIcon)
+        loadHooker(IconPosition)
         loadHooker(StatusBarDoubleTapToSleep)
 
         loadHooker(DisableSmartDark)
@@ -54,14 +57,10 @@ object SystemUI : YukiBaseHooker() {
         loadHooker(UnlockMultipleTask)
         loadHooker(HideTopBar)
 
-
-        loadHooker(HideStatusBarSpecialIcon)
-        loadHooker(HideWifiActivityAndType)
         loadHooker(StatusBarClock)
         loadHooker(BlockEditor)
 
         loadHooker(HideUnlockTip)
-        loadHooker(IconPosition)
         loadHooker(NotificationMaxNumber)
 
         loadHooker(NotifSettingsRedirect)

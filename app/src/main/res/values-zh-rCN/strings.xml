@@ -189,17 +189,19 @@
     <string name="icon_tuner_connect_bluetooth_battery">蓝牙设备电量</string>
     <string name="icon_tuner_connect_nfc">NFC 图标</string>
     <string name="icon_tuner_mobile_hide_hd_small">隐藏小高清通话图标</string>
+    <string name="icon_tuner_mobile_hide_vowifi">隐藏 VoWiFi图标</string>
     <string name="icon_tuner_mobile_hide_hd_large">隐藏大高清通话图标</string>
     <string name="icon_tuner_mobile_hd_new">新高清通话图标</string>
     <string name="icon_tuner_mobile_hide_hd_no_service">隐藏高清通话无服务图标</string>
     <string name="icon_tuner_mobile_no_sim">无 SIM 卡图标</string>
-    <string name="icon_tuner_mobile_hide_sim_one">隐藏 SIM 卡1的移动网络图标</string>
+    <string name="icon_tuner_mobile_mobile">移动网络图标</string>
+    <string name="icon_tuner_mobile_hide_sim_one">隐藏 SIM 卡 1 的移动网络图标</string>
     <string name="icon_tuner_mobile_hide_sim_two">隐藏 SIM 卡2的移动网络图标</string>
     <string name="icon_tuner_mobile_hide_mobile_activity">隐藏移动网络活动图标</string>
     <string name="icon_tuner_mobile_hide_mobile_type">隐藏移动网络类型图标</string>
-    <string name="icon_tuner_wifi_wifi">WIFI 图标</string>
-    <string name="icon_tuner_wifi_hide_wifi_activity">隐藏 WIFI 活动图标</string>
-    <string name="icon_tuner_wifi_hide_wifi_type">隐藏 WIFI 类型图标</string>
+    <string name="icon_tuner_wifi_wifi">Wi-Fi 图标</string>
+    <string name="icon_tuner_wifi_hide_wifi_activity">隐藏 Wi-Fi 活动图标</string>
+    <string name="icon_tuner_wifi_hide_wifi_type">隐藏 Wi-Fi 标准图标</string>
     <string name="icon_tuner_wifi_hotspot">热点图标</string>
     <string name="icon_tuner_connect_vpn">VPN 图标</string>
     <string name="icon_tuner_connect_flight_mode">飞行模式图标</string>
@@ -220,13 +222,14 @@
     <string name="icon_tuner_battery_percent_size">电池百分比文字大小</string>
     <string name="page_status_bar_clock">时间</string>
     <string name="ui_title_icon_tuner_connectivity">连接</string>
+    <string name="icon_tuner_hide_mobile_wifi_warning">强烈建议不要隐藏！</string>
     <string name="ui_title_icon_tuner_mobile">移动网络</string>
-    <string name="ui_title_icon_tuner_wifi">WIFI</string>
+    <string name="ui_title_icon_tuner_wifi">Wi-Fi</string>
     <string name="icon_tuner_battery_percent_size_default">（当值为0时将不会更改电池百分比文字大小）</string>
     <string name="systemui_statusbar_notif_count">自定义通知的最大显示数量</string>
     <string name="systemui_statusbar_notif_count_icon">状态栏通知图标最大数量</string>
     <string name="icon_tuner_battery_swap_battery_percent">交换电池图标和电池百分比</string>
-    <string name="icon_tuner_other_swap_mobile_wifi">交换移动网络图标和 WIFI 图标</string>
+    <string name="icon_tuner_other_swap_mobile_wifi">交换移动网络图标和 Wi-Fi 图标</string>
     <string name="clock_general_custom_layout">自定义时间内边距</string>
     <string name="clock_general_padding_left">左内边距</string>
     <string name="clock_general_padding_right">右内边距</string>
@@ -259,7 +262,7 @@
     <string name="cleaner_security_hide_home_popular_tips">隐藏页面底部的“大家都在用”功能推荐</string>
     <string name="cleaner_security_disable_risk_app_notif">禁止发送“发现恶意应用”通知</string>
     <string name="cleaner_security_remove_report">移除应用信息页的“举报”按钮</string>
-    <string name="security_security_system_app_wifi">允许管理系统应用的 WIFI 权限</string>
+    <string name="security_security_system_app_wifi">允许管理系统应用的 Wi-Fi 权限</string>
     <string name="scope_mi_ai">小爱同学</string>
     <string name="others_miai_hide_watermark">隐藏内测版本和人工智能生成内容水印</string>
     <string name="scope_updater">系统更新</string>
@@ -543,4 +546,7 @@
     <string name="action_notifications">通知中心</string>
     <string name="action_home">主页</string>
     <string name="home_gesture_back_haptic">增强返回手势触觉反馈</string>
+    <string name="icon_tuner_mobile_hide_roam">隐藏漫游图标</string>
+    <string name="icon_tuner_mobile_hide_roam_small">隐藏小漫游图标</string>
+    <string name="icon_tuner_mobile_hide_volte">隐藏 VoLTE 图标</string>
 </resources>

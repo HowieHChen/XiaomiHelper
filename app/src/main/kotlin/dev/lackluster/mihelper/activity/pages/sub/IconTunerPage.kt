@@ -111,7 +111,7 @@ class IconTunerPage : BasePage() {
             )
             SwitchPreference(
                 DescData(titleId = R.string.icon_tuner_wifi_hide_wifi_type),
-                SwitchData(IconTurner.HIDE_WIFI_TYPE)
+                SwitchData(IconTurner.HIDE_WIFI_STANDARD)
             )
             DropDownPreference(
                 DescData(titleId = R.string.icon_tuner_wifi_hotspot),

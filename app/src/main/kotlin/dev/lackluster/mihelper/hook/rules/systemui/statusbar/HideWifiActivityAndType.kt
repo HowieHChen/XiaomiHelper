@@ -49,7 +49,7 @@ object HideWifiActivityAndType : YukiBaseHooker() {
                 name = "mWifiActivityView"
             }.any() as? ImageView)?.visibility = View.INVISIBLE
         }
-        hasEnable(IconTurner.HIDE_WIFI_TYPE) {
+        hasEnable(IconTurner.HIDE_WIFI_STANDARD) {
             (param.instance.current().field {
                 name = "mWifiStandardView"
             }.any() as? ImageView)?.visibility = View.INVISIBLE

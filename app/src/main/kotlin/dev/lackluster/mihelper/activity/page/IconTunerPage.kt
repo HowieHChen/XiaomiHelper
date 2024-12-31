@@ -91,6 +91,33 @@ fun IconTurnerPage(navController: NavController, adjustPadding: PaddingValues, m
                 first = true
             ) {
                 DropDownPreference(
+                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_mobile),
+                    title = stringResource(R.string.icon_tuner_mobile_mobile),
+                    summary = stringResource(R.string.icon_tuner_hide_mobile_wifi_warning),
+                    entries = dropdownEntriesAdvVisible,
+                    key = Pref.Key.SystemUI.IconTurner.MOBILE
+                )
+                SwitchPreference(
+                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_mobile_1),
+                    title = stringResource(R.string.icon_tuner_mobile_hide_sim_one),
+                    key = Pref.Key.SystemUI.IconTurner.HIDE_SIM_ONE
+                )
+                SwitchPreference(
+                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_mobile_2),
+                    title = stringResource(R.string.icon_tuner_mobile_hide_sim_two),
+                    key = Pref.Key.SystemUI.IconTurner.HIDE_SIM_TWO
+                )
+                SwitchPreference(
+                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_mobile_activity),
+                    title = stringResource(R.string.icon_tuner_mobile_hide_mobile_activity),
+                    key = Pref.Key.SystemUI.IconTurner.HIDE_MOBILE_ACTIVITY
+                )
+                SwitchPreference(
+                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_mobile_type),
+                    title = stringResource(R.string.icon_tuner_mobile_hide_mobile_type),
+                    key = Pref.Key.SystemUI.IconTurner.HIDE_MOBILE_TYPE
+                )
+                DropDownPreference(
                     icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_no_sim),
                     title = stringResource(R.string.icon_tuner_mobile_no_sim),
                     entries = dropdownEntriesAdvVisible,
@@ -102,6 +129,31 @@ fun IconTurnerPage(navController: NavController, adjustPadding: PaddingValues, m
                     entries = dropdownEntriesAdvVisible,
                     key = Pref.Key.SystemUI.IconTurner.HD_NEW
                 )
+                SwitchPreference(
+                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_hd_small),
+                    title = stringResource(R.string.icon_tuner_mobile_hide_hd_small),
+                    key = Pref.Key.SystemUI.IconTurner.HIDE_HD_SMALL
+                )
+                SwitchPreference(
+                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_roam),
+                    title = stringResource(R.string.icon_tuner_mobile_hide_roam),
+                    key = Pref.Key.SystemUI.IconTurner.HIDE_ROAM
+                )
+                SwitchPreference(
+                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_roam_small),
+                    title = stringResource(R.string.icon_tuner_mobile_hide_roam_small),
+                    key = Pref.Key.SystemUI.IconTurner.HIDE_ROAM_SMALL
+                )
+                SwitchPreference(
+                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_volte),
+                    title = stringResource(R.string.icon_tuner_mobile_hide_volte),
+                    key = Pref.Key.SystemUI.IconTurner.HIDE_VOLTE
+                )
+                SwitchPreference(
+                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_vowifi),
+                    title = stringResource(R.string.icon_tuner_mobile_hide_vowifi),
+                    key = Pref.Key.SystemUI.IconTurner.HIDE_VOWIFI
+                )
             }
         }
         item {
@@ -111,8 +163,19 @@ fun IconTurnerPage(navController: NavController, adjustPadding: PaddingValues, m
                 DropDownPreference(
                     icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_wifi),
                     title = stringResource(R.string.icon_tuner_wifi_wifi),
+                    summary = stringResource(R.string.icon_tuner_hide_mobile_wifi_warning),
                     entries = dropdownEntriesAdvVisible,
                     key = Pref.Key.SystemUI.IconTurner.WIFI
+                )
+                SwitchPreference(
+                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_wifi_activity),
+                    title = stringResource(R.string.icon_tuner_wifi_hide_wifi_activity),
+                    key = Pref.Key.SystemUI.IconTurner.HIDE_WIFI_ACTIVITY
+                )
+                SwitchPreference(
+                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_wifi_standard),
+                    title = stringResource(R.string.icon_tuner_wifi_hide_wifi_type),
+                    key = Pref.Key.SystemUI.IconTurner.HIDE_WIFI_STANDARD
                 )
                 DropDownPreference(
                     icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_hotspot),
@@ -346,6 +409,17 @@ fun IconTurnerPage(navController: NavController, adjustPadding: PaddingValues, m
                         )
                     }
                 }
+            }
+        }
+        item {
+            PreferenceGroup(
+                title = stringResource(R.string.ui_title_icon_tuner_other),
+                last = true
+            ) {
+                SwitchPreference(
+                    title = stringResource(R.string.icon_tuner_other_swap_mobile_wifi),
+                    key = Pref.Key.SystemUI.IconTurner.SWAP_MOBILE_WIFI
+                )
             }
         }
     }
