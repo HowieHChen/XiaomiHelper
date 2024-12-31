@@ -196,7 +196,7 @@
     <string name="icon_tuner_mobile_no_sim">无 SIM 卡图标</string>
     <string name="icon_tuner_mobile_mobile">移动网络图标</string>
     <string name="icon_tuner_mobile_hide_sim_one">隐藏 SIM 卡 1 的移动网络图标</string>
-    <string name="icon_tuner_mobile_hide_sim_two">隐藏 SIM 卡2的移动网络图标</string>
+    <string name="icon_tuner_mobile_hide_sim_two">隐藏 SIM 卡 2 的移动网络图标</string>
     <string name="icon_tuner_mobile_hide_mobile_activity">隐藏移动网络活动图标</string>
     <string name="icon_tuner_mobile_hide_mobile_type">隐藏移动网络类型图标</string>
     <string name="icon_tuner_wifi_wifi">Wi-Fi 图标</string>
@@ -209,8 +209,8 @@
     <string name="icon_tuner_other_headset">耳机图标</string>
     <string name="icon_tuner_other_volume">声音模式图标</string>
     <string name="icon_tuner_other_zen">免打扰模式图标</string>
-    <string name="systemui_control_hide_carrier_one">隐藏 SIM 卡1的运营商标签</string>
-    <string name="systemui_control_hide_carrier_two">隐藏 SIM 卡2的运营商标签</string>
+    <string name="systemui_control_hide_carrier_one">隐藏 SIM 卡 1 的运营商标签</string>
+    <string name="systemui_control_hide_carrier_two">隐藏 SIM 卡 2 的运营商标签</string>
     <string name="icon_tuner_connect_net_speed">网络速度</string>
     <string name="icon_tuner_hide_selection_default">默认</string>
     <string name="icon_tuner_hide_selection_show_all">可见</string>
