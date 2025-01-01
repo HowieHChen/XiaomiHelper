@@ -47,6 +47,7 @@ object SystemUI : YukiBaseHooker() {
         loadHooker(HideStatusBarIcon)
         loadHooker(HideWiFiIcon)
         loadHooker(IconPosition)
+        loadHooker(NotificationMaxNumber)
         loadHooker(StatusBarDoubleTapToSleep)
 
         loadHooker(DisableSmartDark)
@@ -61,7 +62,6 @@ object SystemUI : YukiBaseHooker() {
         loadHooker(BlockEditor)
 
         loadHooker(HideUnlockTip)
-        loadHooker(NotificationMaxNumber)
 
         loadHooker(NotifSettingsRedirect)
 

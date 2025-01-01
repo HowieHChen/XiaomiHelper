@@ -24,12 +24,14 @@ import android.content.Context
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.constructor
 import com.highcapable.yukihookapi.hook.factory.current
+import com.highcapable.yukihookapi.hook.factory.field
 import com.highcapable.yukihookapi.hook.factory.method
 import com.highcapable.yukihookapi.hook.type.android.ContentResolverClass
 import com.highcapable.yukihookapi.hook.type.java.IntType
 import com.highcapable.yukihookapi.hook.type.java.JavaClass
 import com.highcapable.yukihookapi.hook.type.java.StringClass
 import dev.lackluster.mihelper.data.Pref
+import dev.lackluster.mihelper.utils.KotlinFlowHelper.MutableStateFlow
 import dev.lackluster.mihelper.utils.Prefs
 import dev.lackluster.mihelper.utils.factory.hasEnable
 import java.lang.ClassCastException
@@ -38,13 +40,36 @@ import java.lang.ref.WeakReference
 
 object NotificationMaxNumber : YukiBaseHooker() {
     private val maxIcon by lazy {
-        Prefs.getInt(Pref.Key.SystemUI.StatusBar.NOTIFICATION_COUNT_ICON, 1)
+        Prefs.getInt(Pref.Key.SystemUI.StatusBar.NOTIFICATION_COUNT_ICON, 3)
     }
+    private val notificationIconObserverClass by lazy {
+        "com.android.systemui.statusbar.policy.NotificationIconObserver".toClass()
+    }
+
     private var showNotificationIcons = -1
     private var newVersion = true
 
     override fun onHook() {
         hasEnable(Pref.Key.SystemUI.StatusBar.NOTIFICATION_COUNT) {
+            val mMaxFiled = notificationIconObserverClass.field {
+                name = "mMax"
+                type = "kotlinx.coroutines.flow.StateFlowImpl"
+            }.give()
+            if (mMaxFiled != null) {
+                notificationIconObserverClass.constructor().hookAll {
+                    after {
+                        mMaxFiled.set(this.instance, MutableStateFlow(maxIcon as Int?))
+                    }
+                }
+                "com.android.systemui.statusbar.policy.NotificationIconObserver\$notificationIconObserver\$1".toClassOrNull()?.apply {
+                    method {
+                        name = "onChange"
+                    }.hook {
+                        intercept()
+                    }
+                }
+                return@hasEnable
+            }
             "com.android.systemui.statusbar.phone.NotificationIconContainer".toClass().constructor().hook {
                 after {
                     this.instance.current().field {
