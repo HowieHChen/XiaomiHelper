@@ -263,6 +263,7 @@ object Pref {
                 const val CLOCK_SHOW_AMPM = "statusbar_clock_show_ampm"
                 const val CLOCK_SHOW_SECONDS = "statusbar_clock_show_seconds"
                 const val CLOCK_SHOW_LEADING_ZERO = "statusbar_clock_show_zero"
+                const val CLOCK_FIXED_WIDTH = "statusbar_clock_fixed_width"
                 const val NOTIFICATION_COUNT = "statusbar_notif_max"
                 const val NOTIFICATION_COUNT_ICON = "statusbar_notif_icon_max"
                 const val DOUBLE_TAP_TO_SLEEP = "statusbar_double_tap_sleep"
@@ -329,6 +330,7 @@ object Pref {
                 const val CARRIER_TEXT = "systemui_lockscreen_carrier_text"
             }
             object NotifCenter {
+                @Deprecated("Unnecessary")
                 const val CLOCK_COLOR_FIX = "statusbar_clock_color_fix"
                 const val NOTIF_CHANNEL_SETTINGS = "systemui_notif_channel_setting"
                 const val NOTIF_CHANNEL_DIALOG = "systemui_notif_channel_dialog"

@@ -128,7 +128,7 @@ fun SystemUIPage(navController: NavController, adjustPadding: PaddingValues) {
                 TextPreference(
                     title = stringResource(R.string.systemui_statusbar_clock)
                 ) {
-
+                    navController.navigateTo(Pages.STATUS_BAR_CLOCK)
                 }
                 SwitchPreference(
                     title = stringResource(R.string.systemui_statusbar_notif_count),

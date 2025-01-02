@@ -249,8 +249,8 @@ object CarrierText : YukiBaseHooker() {
                             }
                             val padClock = LayoutInflater.from(context).inflate(ResourcesUtils.pad_clock_xml, null) as TextView
                             val clockView = miuiClockClass.constructor {
-                                paramCount = 2
-                            }.get().call(context, null) as TextView
+                                paramCount = 3
+                            }.get().call(context, null, -1) as TextView
                             clockView.setTextAppearance(ResourcesUtils.TextAppearance_StatusBar_Clock)
                             clockView.setTextSize(TypedValue.COMPLEX_UNIT_PX, padClock.textSize)
                             clockView.typeface = padClock.typeface

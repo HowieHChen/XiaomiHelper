@@ -526,6 +526,8 @@
     <string name="clock_easy_show_leading_zero_tips">Recommended to be turned on when using the 24-hour clock format</string>
     <string name="clock_easy_show_seconds">Display seconds</string>
     <string name="clock_easy_show_seconds_tips">It will also enable the status bar to refresh every second</string>
+    <string name="clock_easy_fixed_width">Fixed TextView width</string>
+    <string name="clock_easy_fixed_width_tips">Fixed the width of TextView so that the notification icons don\'t keep changing position when the clock displays seconds.</string>
     <!-- IconTunerPage -->
     <string name="icon_tuner_hide_selection_default">Default</string>
     <string name="icon_tuner_hide_selection_show_all">Visible</string>

@@ -212,6 +212,7 @@
     <string name="systemui_control_hide_carrier_one">隐藏 SIM 卡 1 的运营商标签</string>
     <string name="systemui_control_hide_carrier_two">隐藏 SIM 卡 2 的运营商标签</string>
     <string name="icon_tuner_connect_net_speed">网络速度</string>
+    <string name="clock_easy_fixed_width_tips">固定 TextView 的宽度，使时钟显示秒数时通知图标的位置不会不断变化。</string>
     <string name="icon_tuner_hide_selection_default">默认</string>
     <string name="icon_tuner_hide_selection_show_all">可见</string>
     <string name="icon_tuner_hide_selection_show_statusbar">状态栏可见</string>
@@ -549,4 +550,5 @@
     <string name="icon_tuner_mobile_hide_roam">隐藏漫游图标</string>
     <string name="icon_tuner_mobile_hide_roam_small">隐藏小漫游图标</string>
     <string name="icon_tuner_mobile_hide_volte">隐藏 VoLTE 图标</string>
+    <string name="clock_easy_fixed_width">固定文本宽度</string>
 </resources>
