@@ -22,8 +22,6 @@ package dev.lackluster.mihelper.hook.rules.systemui.statusbar
 
 import android.annotation.SuppressLint
 import android.os.Handler
-import android.util.TypedValue
-import android.view.LayoutInflater
 import android.widget.TextView
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.constructor
@@ -38,7 +36,6 @@ import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.big_time
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.horizontal_time
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.date_time
 import dev.lackluster.mihelper.utils.Prefs
-import java.util.TimeZone
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import kotlin.math.ceil
@@ -68,8 +65,7 @@ object StatusBarClock : YukiBaseHooker() {
         if (clockShowSecond) {
             if (clockShowAMPM) { ResourcesUtils.fmt_time_12hour_minute_second_pm }
             else { ResourcesUtils.fmt_time_12hour_minute_second }
-        }
-        else {
+        } else {
             if (clockShowAMPM) { ResourcesUtils.fmt_time_12hour_minute_pm }
             else { ResourcesUtils.fmt_time_12hour_minute }
         }
@@ -103,7 +99,7 @@ object StatusBarClock : YukiBaseHooker() {
                 }
             }
         }
-        if (clockPaddingCustom || (!clockGeekMode && clockFixedWidth)) {
+        if (clockPaddingCustom) {
             miuiClockClass.constructor {
                 paramCount = 3
             }.hook {
@@ -111,78 +107,22 @@ object StatusBarClock : YukiBaseHooker() {
                     val miuiClock = this.instance as TextView
                     if (this.args(2).int() == -1 && miuiClock.id == -1) {
                         miuiClock.id = CUSTOM_VIEW_ID
-                        val padClock = LayoutInflater.from(miuiClock.context).inflate(ResourcesUtils.pad_clock_xml, null) as TextView
-                        miuiClock.setTextAppearance(ResourcesUtils.TextAppearance_StatusBar_Clock)
-                        miuiClock.setTextSize(TypedValue.COMPLEX_UNIT_PX, padClock.textSize)
-                        miuiClock.typeface = padClock.typeface
                     }
-                    if (clockPaddingCustom) {
-                        val scale = miuiClock.context.resources.displayMetrics.density
-                        if (miuiClock.id == pad_clock) {
-                            miuiClock.setPadding(
-                                miuiClock.paddingLeft,
-                                miuiClock.paddingTop,
-                                (clockPaddingRight * scale).roundToInt(),
-                                miuiClock.paddingBottom
-                            )
-                        } else {
-                            miuiClock.setPadding(
-                                (clockPaddingLeft * scale).roundToInt(),
-                                miuiClock.paddingTop,
-                                (clockPaddingRight * scale).roundToInt(),
-                                miuiClock.paddingBottom
-                            )
-                        }
-                    }
-                    if (!clockGeekMode && clockFixedWidth) {
-                        val miuiStatusBarClockController = this.instance.current().field {
-                            name = "mMiuiStatusBarClockController"
-                            superClass()
-                        }.any() ?: return@after
-                        val context = miuiClock.context
-                        val is24 = miuiStatusBarClockController.current().field {
-                            name = "mIs24"
-                        }.boolean()
-                        val hourStr = if (is24) { "H" } else { "h" }
-                        val fmtId = if (miuiClock.id in setOf(clock, big_time, CUSTOM_VIEW_ID)) {
-                            if (is24) { clockFormatName24Id } else { clockFormatName12Id }
-                        } else {
-                            if (is24) { ResourcesUtils.status_bar_clock_date_time_format } else { ResourcesUtils.status_bar_clock_date_time_format_12 }
-                        }
-                        val fmtString = if (clockShowLeadingZero) {
-                            context.getString(fmtId).replaceFirst(Regex("[Hh]+:"), "${hourStr}${hourStr}:")
-                        } else {
-                            context.getString(fmtId)
-                        }
-                        if (fmtString.isNotBlank()) {
-                            val calendar = miuiStatusBarClockController.current().field {
-                                name = "mCalendar"
-                            }.any() ?: return@after
-                            val timeZone = calendar.current().method {
-                                name = "getTimeZone"
-                            }.invoke<TimeZone>()
-                            calendar.current().method {
-                                name = "setTimeZone"
-                            }.call(TimeZone.getTimeZone("UTC"))
-                            calendar.current().method {
-                                name = "setTimeInMillis"
-                            }.call(
-                                if (clockShowLeadingZero) 3748104000000L // 2088-10-08 20:00:00 UTC+0
-                                else 3748068000000L // 2088-10-08 10:00:00 UTC+0
-                            )
-                            val dateTime = calendar.current().method {
-                                name = "format"
-                                paramCount = 2
-                            }.string(context, fmtString)
-                            calendar.current().method {
-                                name = "setTimeZone"
-                            }.call(timeZone)
-                            calendar.current().method {
-                                name = "setTimeInMillis"
-                            }.call(System.currentTimeMillis())
-                            val textWidth = ceil(miuiClock.paint.measureText(dateTime)).toInt()
-                            miuiClock.minWidth = textWidth + miuiClock.paddingLeft + miuiClock.paddingRight
-                        }
+                    val scale = miuiClock.context.resources.displayMetrics.density
+                    if (miuiClock.id == pad_clock) {
+                        miuiClock.setPadding(
+                            miuiClock.paddingLeft,
+                            miuiClock.paddingTop,
+                            (clockPaddingRight * scale).roundToInt(),
+                            miuiClock.paddingBottom
+                        )
+                    } else {
+                        miuiClock.setPadding(
+                            (clockPaddingLeft * scale).roundToInt(),
+                            miuiClock.paddingTop,
+                            (clockPaddingRight * scale).roundToInt(),
+                            miuiClock.paddingBottom
+                        )
                     }
                 }
             }
@@ -242,7 +182,10 @@ object StatusBarClock : YukiBaseHooker() {
             }
             var fmtString = context.getString(fmtId)
             if (clockShowLeadingZero) {
-                fmtString = fmtString.replaceFirst(Regex("[Hh]+:"), "${hourStr}${hourStr}:")
+                fmtString = fmtString
+                    .replaceFirst(Regex("[Hh]+:"), "${hourStr}${hourStr}:")
+                    .replaceFirst(Regex(":ms$"), ":ss")
+                    .replaceFirst(Regex(":s+$"), ":ss")
             }
             if (fmtString.isNotBlank()) {
                 val dateTime = calendar.current().method {
@@ -250,6 +193,9 @@ object StatusBarClock : YukiBaseHooker() {
                     paramCount = 2
                 }.string(context, fmtString)
                 miuiClock.text = dateTime
+                if (clockShowSecond && clockFixedWidth && dateTime.endsWith(":00")) {
+                    miuiClock.minWidth = ceil(miuiClock.paint.measureText(dateTime)).toInt() + miuiClock.paddingLeft + miuiClock.paddingRight
+                }
                 param.result = null
             }
         }

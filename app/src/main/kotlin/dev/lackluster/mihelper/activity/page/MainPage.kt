@@ -206,7 +206,9 @@ fun MainPage(navController: NavController, adjustPadding: PaddingValues, mode: B
             }
         }
         item {
-            PreferenceGroup {
+            PreferenceGroup(
+                last = true
+            ) {
                 TextPreference(
                     icon = ImageIcon(iconRes = R.drawable.ic_header_about),
                     title = stringResource(R.string.page_about)

@@ -21,6 +21,7 @@ import dev.lackluster.hyperx.compose.activity.SafeSP
 import dev.lackluster.hyperx.compose.base.AlertDialog
 import dev.lackluster.hyperx.compose.base.AlertDialogMode
 import dev.lackluster.hyperx.compose.base.BasePage
+import dev.lackluster.hyperx.compose.base.BasePageDefaults
 import dev.lackluster.hyperx.compose.preference.DropDownEntry
 import dev.lackluster.hyperx.compose.preference.DropDownPreference
 import dev.lackluster.hyperx.compose.preference.EditTextDataType
@@ -41,7 +42,7 @@ import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
 
 @Composable
-fun ModuleSettingsPage(navController: NavController, adjustPadding: PaddingValues) {
+fun ModuleSettingsPage(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
     val dropdownEntriesEntryIcon = listOf(
         DropDownEntry(iconRes = R.drawable.ic_header_hyper_helper_gray, title = stringResource(R.string.module_settings_icon_style_default)),
         DropDownEntry(iconRes = R.drawable.ic_header_android_green, title = stringResource(R.string.module_settings_icon_style_android)),
@@ -100,6 +101,7 @@ fun ModuleSettingsPage(navController: NavController, adjustPadding: PaddingValue
         MainActivity.blurEnabled,
         MainActivity.blurTintAlphaLight,
         MainActivity.blurTintAlphaDark,
+        mode
     ) {
         item {
             PreferenceGroup(

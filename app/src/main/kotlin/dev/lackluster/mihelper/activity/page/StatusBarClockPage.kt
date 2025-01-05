@@ -26,6 +26,7 @@ import dev.lackluster.mihelper.utils.Device
 fun StatusBarClockPage(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
     var spValueLayoutCustom by remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.SystemUI.StatusBar.CLOCK_LAYOUT_CUSTOM)) }
     var spValueGeekMode by remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.SystemUI.StatusBar.CLOCK_GEEK)) }
+    var spValueShowSecond by remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.SystemUI.StatusBar.CLOCK_SHOW_SECONDS)) }
 
     BasePage(
         navController,
@@ -128,12 +129,18 @@ fun StatusBarClockPage(navController: NavController, adjustPadding: PaddingValue
                             title = stringResource(R.string.clock_easy_show_seconds),
                             summary = stringResource(R.string.clock_easy_show_seconds_tips),
                             key = Pref.Key.SystemUI.StatusBar.CLOCK_SHOW_SECONDS
-                        )
-                        SwitchPreference(
-                            title = stringResource(R.string.clock_easy_fixed_width),
-                            summary = stringResource(R.string.clock_easy_fixed_width_tips),
-                            key = Pref.Key.SystemUI.StatusBar.CLOCK_FIXED_WIDTH
-                        )
+                        ) {
+                            spValueShowSecond = it
+                        }
+                        AnimatedVisibility(
+                            spValueShowSecond
+                        ) {
+                            SwitchPreference(
+                                title = stringResource(R.string.clock_easy_fixed_width),
+                                summary = stringResource(R.string.clock_easy_fixed_width_tips),
+                                key = Pref.Key.SystemUI.StatusBar.CLOCK_FIXED_WIDTH
+                            )
+                        }
                     }
                 }
             }

@@ -21,6 +21,7 @@ import dev.lackluster.hyperx.compose.activity.SafeSP
 import dev.lackluster.hyperx.compose.base.AlertDialog
 import dev.lackluster.hyperx.compose.base.AlertDialogMode
 import dev.lackluster.hyperx.compose.base.BasePage
+import dev.lackluster.hyperx.compose.base.BasePageDefaults
 import dev.lackluster.hyperx.compose.navigation.navigateTo
 import dev.lackluster.hyperx.compose.preference.DropDownEntry
 import dev.lackluster.hyperx.compose.preference.DropDownPreference
@@ -46,7 +47,7 @@ import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissDialog
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissPopup
 
 @Composable
-fun SystemUIPage(navController: NavController, adjustPadding: PaddingValues) {
+fun SystemUIPage(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
     val isTopPopupExpanded = remember { mutableStateOf(false) }
     val showTopPopup = remember { mutableStateOf(false) }
     val dialogRestartVisibility = remember { mutableStateOf(false) }
@@ -72,6 +73,7 @@ fun SystemUIPage(navController: NavController, adjustPadding: PaddingValues) {
         MainActivity.blurEnabled,
         MainActivity.blurTintAlphaLight,
         MainActivity.blurTintAlphaDark,
+        mode,
         actions = {
             if (isTopPopupExpanded.value) {
                 ListPopup(

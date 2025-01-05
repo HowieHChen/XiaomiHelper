@@ -31,6 +31,7 @@ import dev.lackluster.mihelper.activity.page.ModuleSettingsPage
 import dev.lackluster.mihelper.activity.page.OthersPage
 import dev.lackluster.mihelper.activity.page.SecurityCenterPage
 import dev.lackluster.mihelper.activity.page.StatusBarClockPage
+import dev.lackluster.mihelper.activity.page.SystemFrameworkPage
 import dev.lackluster.mihelper.activity.page.SystemUIPage
 import dev.lackluster.mihelper.activity.page.UITestPage
 import dev.lackluster.mihelper.data.Pages
@@ -99,20 +100,19 @@ class MainActivity : HyperXActivity() {
                 }
             },
             otherPageBuilder = { navController, adjustPadding, mode ->
-                composable(Pages.MENU) { MenuPage(navController, adjustPadding, mode) }
-                composable(Pages.MODULE_SETTINGS) { ModuleSettingsPage(navController, adjustPadding) }
-                composable(Pages.SYSTEM_UI) { SystemUIPage(navController, adjustPadding)}
-
+                composable(Pages.MODULE_SETTINGS) { ModuleSettingsPage(navController, adjustPadding, mode) }
+                composable(Pages.SYSTEM_UI) { SystemUIPage(navController, adjustPadding, mode)}
+                composable(Pages.SYSTEM_FRAMEWORK) { SystemFrameworkPage(navController, adjustPadding, mode) }
                 composable(Pages.MIUI_HOME) { MiuiHomePage(navController, adjustPadding, mode) }
                 composable(Pages.CLEAN_MASTER) { CleanMasterPage(navController, adjustPadding, mode) }
                 composable(Pages.SECURITY_CENTER) { SecurityCenterPage(navController, adjustPadding, mode) }
-
                 composable(Pages.OTHERS) { OthersPage(navController, adjustPadding, mode) }
                 composable(Pages.ABOUT) { AboutPage(navController, adjustPadding, mode) }
-                composable(Pages.DEV_UI_TEST) { UITestPage(navController, adjustPadding, mode) }
 
-                composable(Pages.ICON_TUNER) { IconTurnerPage(navController, adjustPadding, mode) }
+                composable(Pages.MENU) { MenuPage(navController, adjustPadding, mode) }
+                composable(Pages.DEV_UI_TEST) { UITestPage(navController, adjustPadding, mode) }
                 composable(Pages.STATUS_BAR_CLOCK) { StatusBarClockPage(navController, adjustPadding, mode) }
+                composable(Pages.ICON_TUNER) { IconTurnerPage(navController, adjustPadding, mode) }
 
                 composable(Pages.DIALOG_SEARCH_CUSTOM_ENGINE) { SearchCustomEngineDialog(navController, adjustPadding, mode) }
             }
