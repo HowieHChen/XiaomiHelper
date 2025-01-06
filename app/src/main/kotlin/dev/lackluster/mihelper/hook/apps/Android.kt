@@ -10,6 +10,7 @@ import dev.lackluster.mihelper.hook.rules.android.WallpaperScaleRatio
 object Android : YukiBaseHooker() {
     override fun onHook() {
         loadHooker(DarkModeForAll)
+        return
         loadHooker(DisableFixedOrientation)
         loadHooker(RemoveFreeformRestriction)
         loadHooker(AllowMoreFreeform)
