@@ -27,6 +27,7 @@ import dev.lackluster.mihelper.hook.rules.miuihome.recent.StopWallpaperDarken
 import dev.lackluster.mihelper.hook.rules.miuihome.anim.WallpaperZoomSync
 import dev.lackluster.mihelper.hook.rules.miuihome.folder.AdvancedTexture
 import dev.lackluster.mihelper.hook.rules.miuihome.gesture.BackGestureHaptic
+import dev.lackluster.mihelper.hook.rules.miuihome.gesture.LineGesture
 import dev.lackluster.mihelper.hook.rules.miuihome.gesture.QuickSwitch
 import dev.lackluster.mihelper.hook.rules.miuihome.recent.HideClearButton
 import dev.lackluster.mihelper.hook.rules.miuihome.recent.PadHideWorldView
@@ -44,6 +45,7 @@ object MiuiHome : YukiBaseHooker() {
         loadHooker(BackGestureHaptic)
         loadHooker(DoubleTapToSleep)
         loadHooker(QuickSwitch)
+        loadHooker(LineGesture)
         loadHooker(HideClearButton)
         loadHooker(RecentCardAnim)
         loadHooker(ShowRealMemory)

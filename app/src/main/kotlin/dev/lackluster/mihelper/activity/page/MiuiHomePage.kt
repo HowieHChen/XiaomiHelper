@@ -65,6 +65,63 @@ fun MiuiHomePage(navController: NavController, adjustPadding: PaddingValues, mod
             iconRes = R.drawable.ic_quick_switch_recents,
             iconTint = tintColor
         ),
+        DropDownEntry(
+            title = stringResource(R.string.action_recognize_screen),
+            iconRes = R.drawable.ic_quick_switch_recognize_screen,
+            iconTint = tintColor
+        ),
+        DropDownEntry(
+            title = stringResource(R.string.action_xiaoai),
+            iconRes = R.drawable.ic_quick_switch_xiaoai,
+            iconTint = tintColor
+        ),
+    )
+    val dropdownEntriesLineGestureAction = listOf(
+        DropDownEntry(
+            title = stringResource(R.string.common_disabled),
+            iconRes = R.drawable.ic_quick_switch_empty,
+            iconTint = tintColor
+        ),
+        DropDownEntry(
+            title = stringResource(R.string.action_notifications),
+            iconRes = R.drawable.ic_quick_switch_notifications,
+            iconTint = tintColor
+        ),
+        DropDownEntry(
+            title = stringResource(R.string.action_quick_settings),
+            iconRes = R.drawable.ic_quick_switch_quick_settings,
+            iconTint = tintColor
+        ),
+        DropDownEntry(
+            title = stringResource(R.string.action_lock_screen),
+            iconRes = R.drawable.ic_quick_switch_lock_screen,
+            iconTint = tintColor
+        ),
+        DropDownEntry(
+            title = stringResource(R.string.action_screenshot),
+            iconRes = R.drawable.ic_quick_switch_screenshot,
+            iconTint = tintColor
+        ),
+        DropDownEntry(
+            title = stringResource(R.string.action_home),
+            iconRes = R.drawable.ic_quick_switch_home,
+            iconTint = tintColor
+        ),
+        DropDownEntry(
+            title = stringResource(R.string.action_recents),
+            iconRes = R.drawable.ic_quick_switch_recents,
+            iconTint = tintColor
+        ),
+        DropDownEntry(
+            title = stringResource(R.string.action_recognize_screen),
+            iconRes = R.drawable.ic_quick_switch_recognize_screen,
+            iconTint = tintColor
+        ),
+        DropDownEntry(
+            title = stringResource(R.string.action_xiaoai),
+            iconRes = R.drawable.ic_quick_switch_xiaoai,
+            iconTint = tintColor
+        ),
     )
     val dropdownEntriesForceColorScheme = listOf(
         DropDownEntry(stringResource(R.string.weather_card_color_default)),
@@ -151,6 +208,18 @@ fun MiuiHomePage(navController: NavController, adjustPadding: PaddingValues, mod
                         )
                     }
                 }
+                DropDownPreference(
+                    title = stringResource(R.string.home_gesture_line_long_press),
+                    summary = stringResource(R.string.home_gesture_line_long_press_tips),
+                    entries = dropdownEntriesLineGestureAction,
+                    key = Pref.Key.MiuiHome.LINE_GESTURE_LONG_PRESS
+                )
+                DropDownPreference(
+                    title = stringResource(R.string.home_gesture_line_double_tap),
+                    summary = stringResource(R.string.home_gesture_line_double_tap_tips),
+                    entries = dropdownEntriesLineGestureAction,
+                    key = Pref.Key.MiuiHome.LINE_GESTURE_DOUBLE_TAP
+                )
             }
         }
         item {

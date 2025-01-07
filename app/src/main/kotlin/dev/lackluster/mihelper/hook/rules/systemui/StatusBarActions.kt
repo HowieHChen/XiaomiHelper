@@ -14,7 +14,7 @@ import dev.lackluster.mihelper.data.Constants.ACTION_RECENTS
 import dev.lackluster.mihelper.data.Constants.PER_MIUI_INTERNAL_API
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.data.Scope
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.utils.Prefs
 
 object StatusBarActions : YukiBaseHooker() {
     private val actionReceiver by lazy {
@@ -37,7 +37,11 @@ object StatusBarActions : YukiBaseHooker() {
     }
 
     override fun onHook() {
-        hasEnable(Pref.Key.MiuiHome.QUICK_SWITCH) {
+        if (
+            Prefs.getBoolean(Pref.Key.MiuiHome.QUICK_SWITCH, false) ||
+            Prefs.getInt(Pref.Key.MiuiHome.LINE_GESTURE_LONG_PRESS, 0) != 0 ||
+            Prefs.getInt(Pref.Key.MiuiHome.LINE_GESTURE_DOUBLE_TAP, 0) != 0
+        ) {
             "com.android.systemui.accessibility.SystemActions".toClass().method {
                 name = "start"
             }.hook {

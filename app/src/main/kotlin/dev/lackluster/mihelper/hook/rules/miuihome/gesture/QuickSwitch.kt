@@ -4,6 +4,7 @@ package dev.lackluster.mihelper.hook.rules.miuihome.gesture
 
 import android.app.ActivityManager
 import android.app.ActivityOptions
+import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
@@ -39,12 +40,20 @@ object QuickSwitch : YukiBaseHooker() {
     4 -> CAPTURE_SCREENSHOT;
     5 -> SYSTEM_ACTION_HOME;
     6 -> SYSTEM_ACTION_RECENTS;
+    7 -> MI_AI_SCREEN;
+    8 -> MI_AI_WAKE_UP;
      */
     private val actionQuickSwitchLeft = Prefs.getInt(Pref.Key.MiuiHome.QUICK_SWITCH_LEFT, 0)
     private val actionQuickSwitchRight = Prefs.getInt(Pref.Key.MiuiHome.QUICK_SWITCH_RIGHT, 0)
     private val backGestureHaptic = Prefs.getBoolean(Pref.Key.MiuiHome.BACK_HAPTIC, false)
     private var fakeTaskLeft: Any? = null
     private var fakeTaskRight: Any? = null
+    private val applicationGetInstanceMethod by lazy {
+        "com.miui.home.launcher.Application".toClass().method {
+            name = "getInstance"
+            modifiers { isStatic }
+        }.get()
+    }
     private val gestureBackArrowViewClass by lazy {
         "com.miui.home.recents.GestureBackArrowView".toClass()
     }
@@ -162,6 +171,8 @@ object QuickSwitch : YukiBaseHooker() {
                                         4 -> R.drawable.ic_quick_switch_screenshot
                                         5 -> R.drawable.ic_quick_switch_home
                                         6 -> R.drawable.ic_quick_switch_recents
+                                        7 -> R.drawable.ic_quick_switch_recognize_screen
+                                        8 -> R.drawable.ic_quick_switch_xiaoai
                                         else -> R.drawable.ic_quick_switch_empty
                                     }
                                     val moduleIcon = Icon.createWithResource(BuildConfig.APPLICATION_ID, iconResId).loadDrawable(context)
@@ -184,6 +195,18 @@ object QuickSwitch : YukiBaseHooker() {
                                     }
                                     4 -> {
                                         context.sendBroadcast(Intent(ACTION_SCREENSHOT))
+                                    }
+                                    7,8 -> {
+                                        applicationGetInstanceMethod.invoke<Application>()?.startForegroundService(
+                                            Intent("android.intent.action.ASSIST").apply {
+                                                setClassName("com.miui.voiceassist", "com.xiaomi.voiceassistant.VoiceService")
+                                                putExtra(
+                                                    "voice_assist_start_from_key",
+                                                    if (targetFunction == 7) "long_press_fullscreen_gesture_line"
+                                                    else "double_click_fullscreen_gesture_line"
+                                                )
+                                            }
+                                        )
                                     }
                                     else -> {
                                         val intent = when(targetFunction) {

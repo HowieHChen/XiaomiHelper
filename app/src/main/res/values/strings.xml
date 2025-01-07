@@ -89,6 +89,8 @@
     <string name="action_screenshot">Take screenshot</string>
     <string name="action_home">Home</string>
     <string name="action_recents">Overview (recent apps)</string>
+    <string name="action_recognize_screen">Recognize screen</string>
+    <string name="action_xiaoai">Xiaomi Hyper XiaoAi</string>
 
     <string name="search_use_browser">Search using browser</string>
     <string name="search_engine">Search engine</string>
@@ -249,6 +251,10 @@
     <string name="home_gesture_quick_switch_left">Left enhanced back gesture function</string>
     <string name="home_gesture_quick_switch_right">Right enhanced back gesture function</string>
     <string name="home_gesture_quick_switch_previous_app">Previous app</string>
+    <string name="home_gesture_line_long_press">Long press on the full screen indicator</string>
+    <string name="home_gesture_line_long_press_tips">Long press on the full screen indicator to trigger a specific function.</string>
+    <string name="home_gesture_line_double_tap">Double tap on the full screen indicator</string>
+    <string name="home_gesture_line_double_tap_tips">Double tap on the full screen indicator to trigger a specific function.</string>
     <string name="ui_title_home_anim">Animation</string>
     <string name="home_anim_unlock">Optimize unlocking animation</string>
     <string name="home_anim_unlock_tips">Optimize the animation of the icon when unlocking</string>

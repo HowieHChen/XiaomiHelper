@@ -38,6 +38,7 @@
     <string name="others_browser_disable_update">禁用更新检查</string>
     <string name="scope_weather">天气</string>
     <string name="action_recents">最近任务</string>
+    <string name="action_xiaoai">超级小爱</string>
     <string name="search_use_browser">使用浏览器搜索</string>
     <string name="search_engine">搜索引擎</string>
     <string name="search_engine_default">默认</string>
@@ -101,6 +102,10 @@
     <string name="home_anim_unlock_tips">优化解锁时的图标飞入动画</string>
     <string name="home_gesture_quick_switch_right">右侧增强返回手势功能</string>
     <string name="home_gesture_quick_switch_previous_app">上一个应用</string>
+    <string name="home_gesture_line_long_press">长按手势提示线</string>
+    <string name="home_gesture_line_long_press_tips">长按手势提示线触发特定功能</string>
+    <string name="home_gesture_line_double_tap">双击手势提示线</string>
+    <string name="home_gesture_line_double_tap_tips">双击手势提示线触发特定功能</string>
     <string name="ui_title_home_anim">动画</string>
     <string name="home_others_fake_premium">伪装为高端机型</string>
     <string name="home_others_fake_premium_tips">解除部分功能对机型的限制</string>
@@ -552,4 +557,5 @@
     <string name="icon_tuner_mobile_hide_roam_small">隐藏小漫游图标</string>
     <string name="icon_tuner_mobile_hide_volte">隐藏 VoLTE 图标</string>
     <string name="clock_easy_fixed_width">固定文本宽度</string>
+    <string name="action_recognize_screen">超级小爱识屏</string>
 </resources>

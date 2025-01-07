@@ -152,6 +152,8 @@ object Pref {
             const val QUICK_SWITCH = "home_quick_back"
             const val QUICK_SWITCH_LEFT = "home_quick_back_left"
             const val QUICK_SWITCH_RIGHT = "home_quick_back_right"
+            const val LINE_GESTURE_DOUBLE_TAP = "home_line_double_tap"
+            const val LINE_GESTURE_LONG_PRESS = "home_line_long_press"
             const val ANIM_UNLOCK = "home_anim_unlock"
             const val ANIM_WALLPAPER_ZOOM_SYNC = "home_wallpaper_sync"
             const val ANIM_ICON_ZOOM = "home_anim_icon_zoom"
