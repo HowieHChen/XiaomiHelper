@@ -404,6 +404,7 @@
     <string name="cleaner_package_remove_element">禁用多余的功能并移除相关界面</string>
     <string name="ui_title_android_freeform">小窗</string>
     <string name="android_freeform_allow_more">允许打开更多小窗</string>
+    <string name="android_freeform_allow_more_tips">修改小窗数量上限为255，可同时打开更多小窗</string>
     <string name="android_freeform_multi_task">允许单应用多实例</string>
     <string name="android_freeform_hide_topbar">隐藏小窗的控制条（三个点）</string>
     <string name="ui_title_android_screen_rotation">屏幕旋转</string>

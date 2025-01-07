@@ -384,6 +384,7 @@
     <string name="android_freeform_restriction">Allow all apps to be in small window mode</string>
     <string name="android_freeform_restriction_tips">Ignore system blacklists and software\'s own disabling of small windows</string>
     <string name="android_freeform_allow_more">Allow more floating windows</string>
+    <string name="android_freeform_allow_more_tips">Modify the maximum number of floating to 255 to allow more floating windows to be open at the same time.</string>
     <string name="android_freeform_multi_task">Allow multiple instances of the same app</string>
     <string name="android_freeform_hide_topbar">Hide top window control bar</string>
     <string name="ui_title_android_screen_rotation">Screen rotation</string>

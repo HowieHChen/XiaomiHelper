@@ -24,6 +24,7 @@ package dev.lackluster.mihelper.hook.rules.shared
 
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.current
+import com.highcapable.yukihookapi.hook.factory.field
 import com.highcapable.yukihookapi.hook.factory.method
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.factory.hasEnable
@@ -31,22 +32,17 @@ import dev.lackluster.mihelper.utils.factory.hasEnable
 object RemoveFreeformRestriction : YukiBaseHooker() {
     override fun onHook() {
         hasEnable(Pref.Key.Android.DISABLE_FREEFORM_RESTRICT) {
-            val activityTaskManagerService = "com.android.server.wm.ActivityTaskManagerService".toClassOrNull()
-            val settingsObserver = "com.android.server.wm.WindowManagerService\$SettingsObserver".toClassOrNull()
-            val wmTask = "com.android.server.wm.Task".toClassOrNull()
-            val miuiMultiWindowAdapter = "android.util.MiuiMultiWindowAdapter".toClassOrNull()
-            val miuiMultiWindowUtils = "android.util.MiuiMultiWindowUtils".toClassOrNull()
-            runCatching {
-                "android.app.ActivityTaskManager".toClass().method {
+            "android.app.ActivityTaskManager".toClassOrNull()?.apply {
+                method {
                     name = "supportsSplitScreen"
-                }.giveAll().hookAll {
+                }.ignored().hookAll {
                     replaceToTrue()
                 }
             }
-            runCatching {
-                activityTaskManagerService?.method {
+            "com.android.server.wm.ActivityTaskManagerService".toClassOrNull()?.apply {
+                method {
                     name = "retrieveSettings"
-                }?.hookAll {
+                }.ignored().hookAll {
                     after {
                         this.instance.current().field {
                             name = "mDevEnableNonResizableMultiWindow"
@@ -54,41 +50,42 @@ object RemoveFreeformRestriction : YukiBaseHooker() {
                     }
                 }
             }
-            runCatching {
-                settingsObserver?.apply {
-                    method {
-                        name = "updateDevEnableNonResizableMultiWindow"
-                    }.hookAll {
-                        after {
-                            val this0 = this.instance.current().field {
-                                name = "this\$0"
-                            }.any() ?: return@after
-                            val mAtmService = this0.current().field {
-                                name = "mAtmService"
-                            }.any() ?: return@after
-                            mAtmService.current().field {
-                                name = "mDevEnableNonResizableMultiWindow"
-                            }.setTrue()
-                        }
-                    }
-                    method {
-                        name = "onChange"
-                    }.hookAll {
-                        after {
-                            val this0 = this.instance.current().field {
-                                name = "this\$0"
-                            }.any() ?: return@after
-                            val mAtmService = this0.current().field {
-                                name = "mAtmService"
-                            }.any() ?: return@after
-                            mAtmService.current().field {
-                                name = "mDevEnableNonResizableMultiWindow"
-                            }.setTrue()
-                        }
+            "com.android.server.wm.Task".toClassOrNull()?.apply {
+                method {
+                    name = "isResizeable"
+                }.ignored().hookAll {
+                    replaceToTrue()
+                }
+            }
+            "com.android.server.wm.WindowManagerService\$SettingsObserver".toClassOrNull()?.apply {
+                method {
+                    name = "updateDevEnableNonResizableMultiWindow"
+                }.ignored().hook {
+                    after {
+                        val this0 = this.instance.current().field {
+                            name = "this\$0"
+                        }.any() ?: return@after
+                        val mAtmService = this0.current().field {
+                            name = "mAtmService"
+                        }.any() ?: return@after
+                        mAtmService.current().field {
+                            name = "mDevEnableNonResizableMultiWindow"
+                        }.setTrue()
                     }
                 }
             }
-            runCatching {
+            "android.util.MiuiMultiWindowAdapter".toClassOrNull()?.apply {
+                for (fieldName in setOf(
+                    "FREEFORM_BLACK_LIST",
+                    "ABNORMAL_FREEFORM_BLACK_LIST",
+                    "START_FROM_FREEFORM_BLACK_LIST_ACTIVITY",
+                    "FOREGROUND_PIN_APP_BLACK_LIST",
+                )) {
+                    field {
+                        name = fieldName
+                        modifiers { isStatic }
+                    }.ignored().get().set(mutableListOf<String>())
+                }
                 for (methodName in setOf(
                     "getFreeformBlackList",
                     "getFreeformBlackListFromCloud",
@@ -97,30 +94,23 @@ object RemoveFreeformRestriction : YukiBaseHooker() {
                     "getStartFromFreeformBlackList",
                     "getStartFromFreeformBlackListFromCloud",
                     "getForegroundPinAppBlackList",
-                    "getForegroundPinAppBlackListFromCloud"
+                    "getForegroundPinAppBlackListFromCloud",
                 )) {
-                    miuiMultiWindowAdapter?.method {
+                    method {
                         name = methodName
-                    }?.ignored()?.giveAll()?.hookAll {
+                    }.ignored().hookAll {
                         replaceTo(mutableListOf<String>())
                     }
                 }
             }
-            runCatching {
-                wmTask?.method {
-                    name = "isResizeable"
-                }?.hook {
-                    replaceToTrue()
-                }
-            }
-            runCatching {
+            "android.util.MiuiMultiWindowUtils".toClassOrNull()?.apply {
                 for (methodName in setOf(
                     "isForceResizeable",
                     "supportFreeform"
                 )) {
-                    miuiMultiWindowUtils?.method {
+                    method {
                         name = methodName
-                    }?.ignored()?.giveAll()?.hookAll {
+                    }.ignored().hookAll {
                         replaceToTrue()
                     }
                 }

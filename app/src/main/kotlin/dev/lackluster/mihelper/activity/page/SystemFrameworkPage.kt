@@ -25,6 +25,23 @@ fun SystemFrameworkPage(navController: NavController, adjustPadding: PaddingValu
     ) {
         item {
             PreferenceGroup(
+                title = stringResource(R.string.ui_title_android_freeform),
+                first = true
+            ) {
+                SwitchPreference(
+                    title = stringResource(R.string.android_freeform_restriction),
+                    summary = stringResource(R.string.android_freeform_restriction_tips),
+                    key = Pref.Key.Android.DISABLE_FREEFORM_RESTRICT
+                )
+                SwitchPreference(
+                    title = stringResource(R.string.android_freeform_allow_more),
+                    summary = stringResource(R.string.android_freeform_allow_more_tips),
+                    key = Pref.Key.Android.ALLOW_MORE_FREEFORM
+                )
+            }
+        }
+        item {
+            PreferenceGroup(
                 title = stringResource(R.string.ui_title_android_others),
                 last = true
             ) {
