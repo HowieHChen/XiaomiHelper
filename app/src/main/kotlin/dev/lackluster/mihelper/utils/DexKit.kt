@@ -3,6 +3,7 @@ package dev.lackluster.mihelper.utils
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
+import android.os.Build
 import androidx.core.content.edit
 import com.highcapable.yukihookapi.hook.log.YLog
 import com.highcapable.yukihookapi.hook.param.PackageParam
@@ -20,9 +21,10 @@ import java.text.SimpleDateFormat
 
 
 object DexKit {
-    private const val PREF_FILE_NAME = "hyper_helper_dexkit"
-    private const val PREF_KEY_HOST_VERSION = "ver__host"
-    private const val PREF_KEY_MODULE_VERSION = "ver__module"
+    private const val FILE_NAME = "hyper_helper_dexkit"
+    private const val KEY_HOST_VERSION = "ver__host"
+    private const val KEY_MODULE_VERSION = "ver__module"
+    private const val KEY_SYSTEM_VERSION = "ver__system"
     private const val PREF_KEY_CLASS_PREFIX = "clz_"
     private const val PREF_KEY_CLASSES_PREFIX = "cls_"
     private const val PREF_KEY_METHOD_PREFIX = "met_"
@@ -41,36 +43,40 @@ object DexKit {
         hostDir = param.appInfo.sourceDir
         if (enableCache) {
             try {
-                val userDeSP = File("${param.appInfo.dataDir.replace("/data/user/", "/data/user_de/")}/shared_prefs/${PREF_FILE_NAME}.xml")
+                val userDeSP = File("${param.appInfo.dataDir.replace("/data/user/", "/data/user_de/")}/shared_prefs/${FILE_NAME}.xml")
                 sp = if (userDeSP.exists()) {
                     param.systemContext
                         .createPackageContext(param.packageName, Context.CONTEXT_IGNORE_SECURITY)
                         .createDeviceProtectedStorageContext()
-                        .getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE)
+                        .getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE)
                 } else {
                     try {
                         param.systemContext
                             .createPackageContext(param.packageName, Context.CONTEXT_IGNORE_SECURITY)
-                            .getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE)
+                            .getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE)
                     } catch (_: Throwable) {
                         param.systemContext
                             .createPackageContext(param.packageName, Context.CONTEXT_IGNORE_SECURITY)
                             .createDeviceProtectedStorageContext()
-                            .getSharedPreferences(PREF_FILE_NAME, Context.MODE_PRIVATE)
+                            .getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE)
                     }
                 }
-                val cachedHostVersion = sp?.getString(PREF_KEY_HOST_VERSION, "") ?: "null"
+                val cachedHostVersion = sp?.getString(KEY_HOST_VERSION, "") ?: "null"
                 val currentHostVersion = getPackageVersionString(param)
-                val cachedModuleVersion = sp?.getString(PREF_KEY_MODULE_VERSION, "") ?: "null"
+                val cachedModuleVersion = sp?.getString(KEY_MODULE_VERSION, "") ?: "null"
                 val currentModuleVersion = BuildConfig.BUILD_TIME
+                val cachedSystemVersion = sp?.getString(KEY_SYSTEM_VERSION, "") ?: "null"
+                val currentSystemVersion = Build.TIME.toString()
                 if (
                     cachedHostVersion == "null" || cachedHostVersion != currentHostVersion ||
-                    cachedModuleVersion == "null" || cachedModuleVersion != currentModuleVersion
+                    cachedModuleVersion == "null" || cachedModuleVersion != currentModuleVersion ||
+                    cachedSystemVersion == "null" || cachedSystemVersion != currentSystemVersion
                 ) {
                     sp?.edit {
                         clear()
-                        putString(PREF_KEY_HOST_VERSION, currentHostVersion)
-                        putString(PREF_KEY_MODULE_VERSION, currentModuleVersion)
+                        putString(KEY_HOST_VERSION, currentHostVersion)
+                        putString(KEY_MODULE_VERSION, currentModuleVersion)
+                        putString(KEY_SYSTEM_VERSION, currentSystemVersion)
                         apply()
                     }
                 }
@@ -79,10 +85,10 @@ object DexKit {
                 enableCache = false
             }
         } else {
-            File("${param.appInfo.dataDir}/shared_prefs/${PREF_FILE_NAME}.xml").let {
+            File("${param.appInfo.dataDir}/shared_prefs/${FILE_NAME}.xml").let {
                 if (it.exists()) it.delete()
             }
-            File("${param.appInfo.dataDir.replace("/data/user/", "/data/user_de/")}/shared_prefs/${PREF_FILE_NAME}.xml").let {
+            File("${param.appInfo.dataDir.replace("/data/user/", "/data/user_de/")}/shared_prefs/${FILE_NAME}.xml").let {
                 if (it.exists()) it.delete()
             }
         }
