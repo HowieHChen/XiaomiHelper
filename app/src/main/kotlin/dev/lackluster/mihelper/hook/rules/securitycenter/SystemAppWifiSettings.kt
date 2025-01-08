@@ -39,6 +39,7 @@ object SystemAppWifiSettings : YukiBaseHooker() {
             }
         }
     }
+
     override fun onHook() {
         hasEnable(Pref.Key.SecurityCenter.CTRL_SYSTEM_APP_WIFI) {
             if (appClassLoader == null) return@hasEnable

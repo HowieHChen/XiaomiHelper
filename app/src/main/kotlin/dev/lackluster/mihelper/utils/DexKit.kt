@@ -61,16 +61,16 @@ object DexKit {
                             .getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE)
                     }
                 }
-                val cachedHostVersion = sp?.getString(KEY_HOST_VERSION, "") ?: "null"
+                val cachedHostVersion = sp?.getString(KEY_HOST_VERSION, "")
                 val currentHostVersion = getPackageVersionString(param)
-                val cachedModuleVersion = sp?.getString(KEY_MODULE_VERSION, "") ?: "null"
+                val cachedModuleVersion = sp?.getString(KEY_MODULE_VERSION, "")
                 val currentModuleVersion = BuildConfig.BUILD_TIME
-                val cachedSystemVersion = sp?.getString(KEY_SYSTEM_VERSION, "") ?: "null"
-                val currentSystemVersion = Build.TIME.toString()
+                val cachedSystemVersion = sp?.getString(KEY_SYSTEM_VERSION, "")
+                val currentSystemVersion = getSystemVersionString()
                 if (
-                    cachedHostVersion == "null" || cachedHostVersion != currentHostVersion ||
-                    cachedModuleVersion == "null" || cachedModuleVersion != currentModuleVersion ||
-                    cachedSystemVersion == "null" || cachedSystemVersion != currentSystemVersion
+                    cachedHostVersion.isNullOrEmpty() || cachedHostVersion != currentHostVersion ||
+                    cachedModuleVersion.isNullOrEmpty() || cachedModuleVersion != currentModuleVersion ||
+                    cachedSystemVersion.isNullOrEmpty() || cachedSystemVersion != currentSystemVersion
                 ) {
                     sp?.edit {
                         clear()
@@ -231,5 +231,11 @@ object DexKit {
             } catch (_: Throwable) { }
         }
         return "null"
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    private fun getSystemVersionString(): String {
+        val formatter = SimpleDateFormat("yyyyMMddHHmmss")
+        return formatter.format(Build.TIME)
     }
 }
