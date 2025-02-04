@@ -70,6 +70,8 @@
     <string name="action_screenshot">Tirar uma captura de tela</string>
     <string name="action_home">Início</string>
     <string name="action_recents">Visão geral (apps recentes)</string>
+    <string name="action_recognize_screen">Reconhecer tela</string>
+    <string name="action_xiaoai">Xiaomi Hyper XiaoAi</string>
     <string name="search_use_browser">Pesquisar usando o navegador</string>
     <string name="search_engine">Mecanismo de pesquisa</string>
     <string name="search_engine_default">Padrão</string>
@@ -165,7 +167,7 @@
     <string name="systemui_statusbar_disable_smart_dark_tips">O recurso Escuro inteligente faz com que a barra de status ignore as cores especificadas pelo app e permite que a amostragem da área mude de cor automaticamente quando estiver no Modo escuro. Desative este recurso para restaurar o comportamento padrão do Android.</string>
     <string name="ui_title_systemui_lock_screen">Tela de bloqueio</string>
     <string name="systemui_lock_hide_unlock_tip">Ocultar solicitação de desbloqueio na parte inferior da tela</string>
-    <string name="systemui_lock_hide_disturb">Ocultar notificações de residentes do modo Não perturbe</string>
+    <string name="systemui_lock_hide_disturb">Ocultar notificações de residentes do Não perturbe</string>
     <string name="systemui_lock_block_editor">Desativar toque longo para editar a Tela de bloqueio</string>
     <string name="systemui_lock_block_editor_tips">Você pode editar a Tela de bloqueio em Configurações > Personalização</string>
     <string name="systemui_lock_carrier_text">Nome da operadora na barra de status</string>
@@ -204,6 +206,10 @@
     <string name="home_gesture_quick_switch_left">Função do gesto de voltar aprimorada para a esquerda</string>
     <string name="home_gesture_quick_switch_right">Função do gesto de voltar aprimorada para a direita</string>
     <string name="home_gesture_quick_switch_previous_app">App anterior</string>
+    <string name="home_gesture_line_long_press">Pressionar longamente o indicador de tela cheia</string>
+    <string name="home_gesture_line_long_press_tips">Pressione longamente o indicador de tela cheia para acionar uma função específica.</string>
+    <string name="home_gesture_line_double_tap">Toque duas vezes no indicador de tela cheia</string>
+    <string name="home_gesture_line_double_tap_tips">Toque duas vezes no indicador de tela cheia para acionar uma função específica.</string>
     <string name="ui_title_home_anim">Animação</string>
     <string name="home_anim_unlock">Otimizar animação de desbloqueio</string>
     <string name="home_anim_unlock_tips">Otimize a animação dos ícones ao desbloquear</string>
@@ -314,6 +320,7 @@
     <string name="android_freeform_restriction">Permitir todos os apps no modo janela flutuante pequena</string>
     <string name="android_freeform_restriction_tips">Ignore a lista negra do sistema e a desativação da janela flutuante pequena pelo próprio software</string>
     <string name="android_freeform_allow_more">Permitir mais janelas flutuantes</string>
+    <string name="android_freeform_allow_more_tips">Modifique o número máximo de janelas flutuantes para 255 para permitir que mais janelas flutuantes sejam abertas ao mesmo tempo.</string>
     <string name="android_freeform_multi_task">Permitir várias janelas do mesmo app</string>
     <string name="android_freeform_hide_topbar">Ocultar barra de controle da janela superior</string>
     <string name="ui_title_android_screen_rotation">Rotação da tela</string>
