@@ -420,6 +420,7 @@
     <string name="others_package_update_system_app_tips">允许从第三方应用更新系统应用</string>
     <string name="others_package_more_info">应用信息页显示更多信息</string>
     <string name="clock_general_geek">极客模式</string>
+    <string name="clock_font_tnum_tips">启用表格数字显示。使数字等宽，易于像表格那样对齐。</string>
     <string name="ui_title_clock_geek_mode">极客模式</string>
     <string name="clock_geek_time_format_pattern">状态栏时间格式</string>
     <string name="clock_geek_time_format_pattern_pad">状态栏日期格式</string>
@@ -558,4 +559,5 @@
     <string name="icon_tuner_mobile_hide_volte">隐藏 VoLTE 图标</string>
     <string name="clock_easy_fixed_width">固定文本宽度</string>
     <string name="action_recognize_screen">超级小爱识屏</string>
+    <string name="clock_font_tnum">表格数字</string>
 </resources>

@@ -53,6 +53,9 @@ object BatteryIndicator : YukiBaseHooker() {
     private val batteryPercentTextSize by lazy {
         Prefs.getFloat(IconTurner.BATTERY_PERCENTAGE_TEXT_SIZE, 13.454498f)
     }
+    private val batteryPercentTNum by lazy {
+        Prefs.getBoolean(IconTurner.BATTERY_PERCENTAGE_TNUM, false)
+    }
     private val swapIconAndPercentage by lazy {
         Prefs.getBoolean(IconTurner.SWAP_BATTERY_PERCENT, false)
     }
@@ -102,6 +105,9 @@ object BatteryIndicator : YukiBaseHooker() {
                     if (batteryStyle in setOf(0, 1, 3)) {
                         if (modifyPercentageTextSize) {
                             mBatteryPercentView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, batteryPercentTextSize)
+                        }
+                        if (batteryPercentTNum) {
+                            mBatteryPercentView.fontFeatureSettings = "tnum"
                         }
                         when (percentageSymbolStyle) {
                             1 -> {

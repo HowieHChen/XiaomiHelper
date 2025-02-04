@@ -54,7 +54,7 @@ android {
         applicationVariants.all {
             outputs.all {
                 (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName =
-                    "XiaomiHelper_${versionName}_${versionCode}_${buildType.name}.apk"
+                    "${libs.versions.project.name.get()}_${versionName}_${versionCode}_${buildType.name}.apk"
             }
         }
     }

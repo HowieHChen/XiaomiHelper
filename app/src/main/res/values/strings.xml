@@ -522,6 +522,8 @@
     <string name="clock_general_padding_left">Left padding</string>
     <string name="clock_general_padding_right">Right padding</string>
     <string name="clock_general_geek">Geek mode</string>
+    <string name="clock_font_tnum">Tabular numerals</string>
+    <string name="clock_font_tnum_tips">Activating the set of figures where numbers are all of the same size, allowing them to be easily aligned like in tables.</string>
     <string name="ui_title_clock_geek_mode">Geek mode</string>
     <string name="clock_geek_time_format_pattern">Time format pattern (status bar)</string>
     <string name="clock_geek_time_format_pattern_pad">Date format pattern (status bar)</string>
@@ -584,6 +586,8 @@
     <string name="icon_tuner_battery_battery_percent_size">Customize battery percentage text size</string>
     <string name="icon_tuner_battery_percent_size">Battery percentage text font size</string>
     <string name="icon_tuner_battery_percent_size_default">(When the value is 0 it will not change the battery percentage text size)</string>
+    <string name="icon_tuner_battery_percent_font_tnum" translatable="false">@string/clock_font_tnum</string>
+    <string name="icon_tuner_battery_percent_font_tnum_tips" translatable="false">@string/clock_font_tnum_tips</string>
     <string name="ui_title_icon_tuner_connectivity">Connectivity</string>
     <string name="icon_tuner_connect_flight_mode">Airplane mode icon</string>
     <string name="icon_tuner_connect_gps">Location icon</string>

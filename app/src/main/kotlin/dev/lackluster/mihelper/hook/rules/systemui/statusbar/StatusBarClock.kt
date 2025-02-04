@@ -60,6 +60,7 @@ object StatusBarClock : YukiBaseHooker() {
     private val clockPaddingLeft = Prefs.getFloat(Pref.Key.SystemUI.StatusBar.CLOCK_PADDING_LEFT, 0.0f)
     private val clockPaddingRight = Prefs.getFloat(Pref.Key.SystemUI.StatusBar.CLOCK_PADDING_RIGHT, 0.0f)
     private val clockFixedWidth = Prefs.getBoolean(Pref.Key.SystemUI.StatusBar.CLOCK_FIXED_WIDTH, false)
+    private val clockTNum = Prefs.getBoolean(Pref.Key.SystemUI.StatusBar.CLOCK_TNUM, false)
 
     private val clockFormatName12Id by lazy {
         if (clockShowSecond) {
@@ -99,7 +100,7 @@ object StatusBarClock : YukiBaseHooker() {
                 }
             }
         }
-        if (clockPaddingCustom) {
+        if (clockPaddingCustom || clockTNum) {
             miuiClockClass.constructor {
                 paramCount = 3
             }.hook {
@@ -108,21 +109,26 @@ object StatusBarClock : YukiBaseHooker() {
                     if (this.args(2).int() == -1 && miuiClock.id == -1) {
                         miuiClock.id = CUSTOM_VIEW_ID
                     }
-                    val scale = miuiClock.context.resources.displayMetrics.density
-                    if (miuiClock.id == pad_clock) {
-                        miuiClock.setPadding(
-                            miuiClock.paddingLeft,
-                            miuiClock.paddingTop,
-                            (clockPaddingRight * scale).roundToInt(),
-                            miuiClock.paddingBottom
-                        )
-                    } else {
-                        miuiClock.setPadding(
-                            (clockPaddingLeft * scale).roundToInt(),
-                            miuiClock.paddingTop,
-                            (clockPaddingRight * scale).roundToInt(),
-                            miuiClock.paddingBottom
-                        )
+                    if (clockTNum) {
+                        miuiClock.fontFeatureSettings = "tnum"
+                    }
+                    if (clockPaddingCustom) {
+                        val scale = miuiClock.context.resources.displayMetrics.density
+                        if (miuiClock.id == pad_clock) {
+                            miuiClock.setPadding(
+                                miuiClock.paddingLeft,
+                                miuiClock.paddingTop,
+                                (clockPaddingRight * scale).roundToInt(),
+                                miuiClock.paddingBottom
+                            )
+                        } else {
+                            miuiClock.setPadding(
+                                (clockPaddingLeft * scale).roundToInt(),
+                                miuiClock.paddingTop,
+                                (clockPaddingRight * scale).roundToInt(),
+                                miuiClock.paddingBottom
+                            )
+                        }
                     }
                 }
             }

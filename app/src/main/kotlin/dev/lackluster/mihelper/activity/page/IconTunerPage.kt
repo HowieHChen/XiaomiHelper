@@ -357,6 +357,11 @@ fun IconTurnerPage(navController: NavController, adjustPadding: PaddingValues, m
                         ) {
                             spValueModifyBatteryPercentageSize = it
                         }
+                        SwitchPreference(
+                            title = stringResource(R.string.icon_tuner_battery_percent_font_tnum),
+                            summary = stringResource(R.string.icon_tuner_battery_percent_font_tnum_tips),
+                            key = Pref.Key.SystemUI.IconTurner.BATTERY_PERCENTAGE_TNUM
+                        )
                         AnimatedVisibility(
                             spValueModifyBatteryPercentageSize
                         ) {

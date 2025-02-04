@@ -74,6 +74,11 @@ fun StatusBarClockPage(navController: NavController, adjustPadding: PaddingValue
                 ) {
                     spValueGeekMode = it
                 }
+                SwitchPreference(
+                    title = stringResource(R.string.clock_font_tnum),
+                    summary = stringResource(R.string.clock_font_tnum_tips),
+                    key = Pref.Key.SystemUI.StatusBar.CLOCK_TNUM
+                )
             }
         }
         item {
