@@ -419,6 +419,8 @@
     <string name="clock_general_padding_left">Preenchimento esquerdo</string>
     <string name="clock_general_padding_right">Preenchimento direito</string>
     <string name="clock_general_geek">Modo geek</string>
+    <string name="clock_font_tnum">Numerais tabulares</string>
+    <string name="clock_font_tnum_tips">Ativando o conjunto de figuras onde os números são todos do mesmo tamanho, permitindo que sejam facilmente alinhados como nas tabelas.</string>
     <string name="ui_title_clock_geek_mode">Modo geek</string>
     <string name="clock_geek_time_format_pattern">Padrão de formato de hora (barra de status)</string>
     <string name="clock_geek_time_format_pattern_pad">Padrão de formato de data (barra de status)</string>
