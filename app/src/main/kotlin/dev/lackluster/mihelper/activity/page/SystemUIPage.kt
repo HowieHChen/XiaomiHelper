@@ -151,6 +151,11 @@ fun SystemUIPage(navController: NavController, adjustPadding: PaddingValues, mod
                     )
                 }
                 TextPreference(
+                    title = stringResource(R.string.systemui_statusbar_font)
+                ) {
+                    navController.navigateTo(Pages.STATUS_BAR_FONT)
+                }
+                TextPreference(
                     title = stringResource(R.string.systemui_statusbar_icon)
                 ) {
                     navController.navigateTo(Pages.ICON_TUNER)

@@ -15,6 +15,7 @@ object Pages {
     const val MENU = "MenuPage"
     const val DEV_UI_TEST = "DevUITestPage"
     const val STATUS_BAR_CLOCK = "StatusBarClockPage"
+    const val STATUS_BAR_FONT = "StatusBarFontPage"
     const val ICON_TUNER = "IconTunerPage"
 
     const val DIALOG_SEARCH_CUSTOM_ENGINE = "CustomEngineDialog"

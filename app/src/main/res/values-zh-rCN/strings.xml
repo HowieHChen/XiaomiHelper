@@ -218,6 +218,7 @@
     <string name="systemui_control_hide_carrier_two">隐藏 SIM 卡 2 的运营商标签</string>
     <string name="icon_tuner_connect_net_speed">网络速度</string>
     <string name="clock_easy_fixed_width_tips">固定 TextView 的宽度，使时钟显示秒数时通知图标的位置不会不断变化。</string>
+    <string name="font_lockscreen_carrier_weight">运营商标签的字重</string>
     <string name="icon_tuner_hide_selection_default">默认</string>
     <string name="icon_tuner_hide_selection_show_all">可见</string>
     <string name="icon_tuner_hide_selection_show_statusbar">状态栏可见</string>
@@ -359,6 +360,7 @@
     <string name="button_ignore">忽略</string>
     <string name="dialog_done">完成</string>
     <string name="page_cleaner">净化</string>
+    <string name="page_status_bar_font">字体</string>
     <string name="page_media_control_style">媒体控件风格</string>
     <string name="scope_mi_link">互联互通服务</string>
     <string name="scope_mi_mirror">跨屏协同服务</string>
@@ -560,4 +562,23 @@
     <string name="clock_easy_fixed_width">固定文本宽度</string>
     <string name="action_recognize_screen">超级小爱识屏</string>
     <string name="clock_font_tnum">表格数字</string>
+    <string name="font_general_path">字体文件路径</string>
+    <string name="font_general_path_tips">请使用可变字体。只对下方启用的目标生效。</string>
+    <string name="font_sb_clock_weight">时间的字重</string>
+    <string name="font_sb_focus">焦点通知</string>
+    <string name="font_sb_focus_weight">焦点通知的字重</string>
+    <string name="font_sb_bat_pct_out">电池百分比（图标外部）</string>
+    <string name="font_sb_bat_pct_out_weight">电池百分比（图标外部）的字重</string>
+    <string name="font_sb_bat_pct_mark">电池百分比符号</string>
+    <string name="font_sb_bat_pct_mark_weight">电池百分比符号的字重</string>
+    <string name="font_icon_bat_pct_in">电池百分比（图标内部）</string>
+    <string name="font_icon_bat_pct_in_weight">电池百分比（图标内部）的字重</string>
+    <string name="font_icon_net_speed_num">网络速度数字</string>
+    <string name="font_icon_net_speed_num_weight">网络速度数字的字重</string>
+    <string name="font_icon_net_speed_unit">网络速度单位</string>
+    <string name="font_icon_net_speed_unit_weight">网络速度单位的字重</string>
+    <string name="font_icon_mobile_type">移动网络类型</string>
+    <string name="font_icon_mobile_type_weight">移动网络类型的字重</string>
+    <string name="font_notif_clock">时间（通知中心）</string>
+    <string name="font_notif_clock_weight">时间（通知中心）的字重</string>
 </resources>
