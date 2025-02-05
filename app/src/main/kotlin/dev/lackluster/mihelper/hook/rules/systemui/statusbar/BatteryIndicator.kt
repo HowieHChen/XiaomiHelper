@@ -31,6 +31,7 @@ import com.highcapable.yukihookapi.hook.factory.current
 import com.highcapable.yukihookapi.hook.factory.method
 import dev.lackluster.mihelper.data.Pref.Key.SystemUI.FontWeight
 import dev.lackluster.mihelper.data.Pref.Key.SystemUI.IconTurner
+import dev.lackluster.mihelper.hook.rules.systemui.statusbar.ElementsFontWeight.fontPath
 import dev.lackluster.mihelper.utils.Prefs
 import kotlin.math.roundToInt
 
@@ -70,7 +71,6 @@ object BatteryIndicator : YukiBaseHooker() {
     private val batteryPaddingRight by lazy {
         Prefs.getFloat(IconTurner.BATTERY_PADDING_RIGHT, 0.0f)
     }
-    private val fontPath = Prefs.getString(FontWeight.FONT_PATH, "/system/fonts/MiSansVF.ttf") ?: "/system/fonts/MiSansVF.ttf"
     private val batteryPercentInFont = Prefs.getBoolean(FontWeight.BATTERY_PERCENTAGE_IN, false)
     private val batteryPercentInFontWeight = Prefs.getInt(FontWeight.BATTERY_PERCENTAGE_IN_WEIGHT, 430)
     private val batteryPercentOutFont = Prefs.getBoolean(FontWeight.BATTERY_PERCENTAGE_OUT, false)

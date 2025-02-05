@@ -44,6 +44,7 @@ import com.highcapable.yukihookapi.hook.type.android.ViewClass
 import de.robv.android.xposed.XposedHelpers
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils
+import dev.lackluster.mihelper.hook.rules.systemui.statusbar.ElementsFontWeight.fontPath
 import dev.lackluster.mihelper.hook.view.SpringInterpolator
 import dev.lackluster.mihelper.utils.Device
 import dev.lackluster.mihelper.utils.Prefs
@@ -82,7 +83,6 @@ object CarrierText : YukiBaseHooker() {
         }.give()
     }
     private val carrierTextType = Prefs.getInt(Pref.Key.SystemUI.LockScreen.CARRIER_TEXT, 0)
-    private val fontPath = Prefs.getString(Pref.Key.SystemUI.FontWeight.FONT_PATH, "/system/fonts/MiSansVF.ttf") ?: "/system/fonts/MiSansVF.ttf"
     private val carrierFont = Prefs.getBoolean(Pref.Key.SystemUI.FontWeight.CARRIER, false)
     private val carrierFontWeight = Prefs.getInt(Pref.Key.SystemUI.FontWeight.CARRIER_WEIGHT, 430)
 

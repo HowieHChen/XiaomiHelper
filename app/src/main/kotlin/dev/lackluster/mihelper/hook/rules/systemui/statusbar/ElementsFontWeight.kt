@@ -9,10 +9,16 @@ import com.highcapable.yukihookapi.hook.factory.field
 import com.highcapable.yukihookapi.hook.factory.method
 import dev.lackluster.mihelper.data.Pref.Key.SystemUI.FontWeight
 import dev.lackluster.mihelper.utils.Prefs
+import java.io.File
 import kotlin.math.abs
 
 object ElementsFontWeight : YukiBaseHooker() {
-    private val fontPath = Prefs.getString(FontWeight.FONT_PATH, "/system/fonts/MiSansVF.ttf") ?: "/system/fonts/MiSansVF.ttf"
+    val fontPath by lazy {
+        val defaultPath = "/system/fonts/MiSansVF.ttf"
+        val prefPath = Prefs.getString(FontWeight.FONT_PATH, defaultPath) ?: defaultPath
+        val fontFile = File(prefPath)
+        if (fontFile.exists() && fontFile.isFile) prefPath else defaultPath
+    }
     private val clockFont = Prefs.getBoolean(FontWeight.CLOCK, false)
     private val clockFontWeight = Prefs.getInt(FontWeight.CLOCK_WEIGHT, 430)
     private val clockNotifFont = Prefs.getBoolean(FontWeight.CLOCK_NOTIFICATION, false)
