@@ -34,6 +34,7 @@
     <string name="page_interconnection">Interconectividade</string>
     <string name="page_status_bar_clock">Relógio</string>
     <string name="page_status_bar_icon_tuner">Sintonizador de ícones</string>
+    <string name="page_status_bar_font">Fonte</string>
     <string name="page_media_control_style">Estilo do controle de mídia</string>
     <string name="page_minus_blur">Efeito de blur do Assistente</string>
     <string name="scope_browser">Navegador Mi</string>
@@ -434,6 +435,27 @@
     <string name="clock_easy_show_seconds_tips">Isso também permitirá que a barra de status seja atualizada a cada segundo</string>
     <string name="clock_easy_fixed_width">Largura do TextView corrigida</string>
     <string name="clock_easy_fixed_width_tips">Corrigida a largura do TextView para que os ícones de notificação não fiquem mudando de posição quando o relógio exibir os segundos.</string>
+    <!-- StatusBarFontPage -->
+    <string name="font_general_path">Caminho do arquivo de fonte</string>
+    <string name="font_general_path_tips">Por favor, use fontes variáveis. Funciona apenas para os alvos ativados abaixo.</string>
+    <string name="font_sb_clock_weight">Peso da fonte do relógio</string>
+    <string name="font_sb_focus">Notificação de foco</string>
+    <string name="font_sb_focus_weight">Peso da fonte da notificação de foco</string>
+    <string name="font_sb_bat_pct_out">Porcentagem da bateria (externa)</string>
+    <string name="font_sb_bat_pct_out_weight">Peso da fonte da porcentagem da bateria (externa)</string>
+    <string name="font_sb_bat_pct_mark">Símbolo de porcentagem da bateria</string>
+    <string name="font_sb_bat_pct_mark_weight">Peso da fonte do símbolo de porcentagem da bateria</string>
+    <string name="font_icon_bat_pct_in">Porcentagem da bateria (interna)</string>
+    <string name="font_icon_bat_pct_in_weight">Peso da fonte da porcentagem da bateria (interna)</string>
+    <string name="font_icon_net_speed_num">Números da velocidade da rede</string>
+    <string name="font_icon_net_speed_num_weight">Peso da fonte da velocidade da rede (números)</string>
+    <string name="font_icon_net_speed_unit">Texto unitário da velocidade da rede</string>
+    <string name="font_icon_net_speed_unit_weight">Peso da fonte da velocidade da rede (unidade)</string>
+    <string name="font_icon_mobile_type">Tipo de rede móvel</string>
+    <string name="font_icon_mobile_type_weight">Peso da fonte do tipo de rede móvel</string>
+    <string name="font_notif_clock">Relógio (área de notificações)</string>
+    <string name="font_notif_clock_weight">Peso da fonte do relógio (área de notificações)</string>
+    <string name="font_lockscreen_carrier_weight">Peso da fonte do rótulo da operadora</string>
     <!-- IconTunerPage -->
     <string name="icon_tuner_hide_selection_default">Padrão</string>
     <string name="icon_tuner_hide_selection_show_all">Visível</string>
