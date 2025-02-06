@@ -26,6 +26,7 @@ import dev.lackluster.mihelper.hook.rules.systemui.media.StyleCustomHookEntry
 import dev.lackluster.mihelper.hook.rules.systemui.media.UnlockCustomAction
 import dev.lackluster.mihelper.hook.rules.systemui.notif.AdvancedTextures
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.BatteryIndicator
+import dev.lackluster.mihelper.hook.rules.systemui.statusbar.ElementsFontWeight
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.HideCellularIcon
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.HideWiFiIcon
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.PadClockAnim
@@ -48,6 +49,7 @@ object SystemUI : YukiBaseHooker() {
         loadHooker(HideWiFiIcon)
         loadHooker(IconPosition)
         loadHooker(NotificationMaxNumber)
+        loadHooker(ElementsFontWeight)
         loadHooker(StatusBarClock)
         loadHooker(StatusBarDoubleTapToSleep)
 

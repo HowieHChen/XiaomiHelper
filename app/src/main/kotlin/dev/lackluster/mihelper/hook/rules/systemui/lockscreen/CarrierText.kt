@@ -23,6 +23,7 @@ package dev.lackluster.mihelper.hook.rules.systemui.lockscreen
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
 import android.graphics.Rect
+import android.graphics.Typeface
 import android.text.TextUtils
 import android.util.TypedValue
 import android.view.Gravity
@@ -43,6 +44,7 @@ import com.highcapable.yukihookapi.hook.type.android.ViewClass
 import de.robv.android.xposed.XposedHelpers
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils
+import dev.lackluster.mihelper.hook.rules.systemui.statusbar.ElementsFontWeight.fontPath
 import dev.lackluster.mihelper.hook.view.SpringInterpolator
 import dev.lackluster.mihelper.utils.Device
 import dev.lackluster.mihelper.utils.Prefs
@@ -74,13 +76,15 @@ object CarrierText : YukiBaseHooker() {
             modifiers { isStatic }
         }.get()
     }
-    private val carrierTextType = Prefs.getInt(Pref.Key.SystemUI.LockScreen.CARRIER_TEXT, 0)
     private val onDarkChangedMethod by lazy {
         "com.android.systemui.plugins.DarkIconDispatcher\$DarkReceiver".toClass().method {
             name = "onDarkChanged"
             paramCount = 6
         }.give()
     }
+    private val carrierTextType = Prefs.getInt(Pref.Key.SystemUI.LockScreen.CARRIER_TEXT, 0)
+    private val carrierFont = Prefs.getBoolean(Pref.Key.SystemUI.FontWeight.CARRIER, false)
+    private val carrierFontWeight = Prefs.getInt(Pref.Key.SystemUI.FontWeight.CARRIER_WEIGHT, 430)
 
     override fun onHook() {
         if (carrierTextType != 0) {
@@ -227,6 +231,9 @@ object CarrierText : YukiBaseHooker() {
                             darkCarrierText.isHorizontalFadingEdgeEnabled = true
                             darkCarrierText.id = CUSTOM_VIEW_ID
                             darkCarrierText.tag = CUSTOM_VIEW_ID
+                            if (carrierFont) {
+                                darkCarrierText.typeface = Typeface.Builder(fontPath).setFontVariationSettings("'wght' $carrierFontWeight").build()
+                            }
                             mCarrierTextControllerField.get(darkCarrierText).set(mCarrierTextController)
                             XposedHelpers.setAdditionalInstanceField(darkCarrierText, "mTintAreas", ArrayList<Rect>())
                             XposedHelpers.setAdditionalInstanceField(darkCarrierText, "mDarkIntensity", 0.0f)

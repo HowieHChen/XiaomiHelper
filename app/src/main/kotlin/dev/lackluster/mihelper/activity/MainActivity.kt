@@ -31,6 +31,7 @@ import dev.lackluster.mihelper.activity.page.ModuleSettingsPage
 import dev.lackluster.mihelper.activity.page.OthersPage
 import dev.lackluster.mihelper.activity.page.SecurityCenterPage
 import dev.lackluster.mihelper.activity.page.StatusBarClockPage
+import dev.lackluster.mihelper.activity.page.StatusBarFontPage
 import dev.lackluster.mihelper.activity.page.SystemFrameworkPage
 import dev.lackluster.mihelper.activity.page.SystemUIPage
 import dev.lackluster.mihelper.activity.page.UITestPage
@@ -112,6 +113,7 @@ class MainActivity : HyperXActivity() {
                 composable(Pages.MENU) { MenuPage(navController, adjustPadding, mode) }
                 composable(Pages.DEV_UI_TEST) { UITestPage(navController, adjustPadding, mode) }
                 composable(Pages.STATUS_BAR_CLOCK) { StatusBarClockPage(navController, adjustPadding, mode) }
+                composable(Pages.STATUS_BAR_FONT) { StatusBarFontPage(navController, adjustPadding, mode) }
                 composable(Pages.ICON_TUNER) { IconTurnerPage(navController, adjustPadding, mode) }
 
                 composable(Pages.DIALOG_SEARCH_CUSTOM_ENGINE) { SearchCustomEngineDialog(navController, adjustPadding, mode) }

@@ -49,6 +49,7 @@
     <string name="page_disable_fixed_orientation" translatable="false">@string/android_rotation_disable_fixed_orientation_scope</string>
     <string name="page_status_bar_clock">Clock</string>
     <string name="page_status_bar_icon_tuner">Icon tuner</string>
+    <string name="page_status_bar_font">Font</string>
     <string name="page_media_control_style">Media control style</string>
     <string name="page_home_refactor" translatable="false">@string/home_exclusive_refactor</string>
     <string name="page_minus_blur">Blur effect of Minus screen</string>
@@ -203,6 +204,7 @@
     <string name="systemui_statusbar_notif_count">Customize the maximum number of notifications to display</string>
     <string name="systemui_statusbar_notif_count_icon">Maximum number of status bar notification icons</string>
     <string name="systemui_statusbar_icon" translatable="false">@string/page_status_bar_icon_tuner</string>
+    <string name="systemui_statusbar_font" translatable="false">@string/page_status_bar_font</string>
     <string name="systemui_statusbar_tap_to_sleep" translatable="false">@string/common_tap_sleep</string>
     <string name="systemui_statusbar_disable_smart_dark">Disable Smart dark</string>
     <string name="systemui_statusbar_disable_smart_dark_tips">The Smart Dark feature makes the status bar ignore the colors specified by the app and allows the sampling of the area to change color automatically when in Dark mode. Disable this feature to restore the default behavior of Android.</string>
@@ -537,6 +539,34 @@
     <string name="clock_easy_show_seconds_tips">It will also enable the status bar to refresh every second</string>
     <string name="clock_easy_fixed_width">Fixed TextView width</string>
     <string name="clock_easy_fixed_width_tips">Fixed the width of TextView so that the notification icons don\'t keep changing position when the clock displays seconds.</string>
+    <!-- StatusBarFontPage -->
+    <string name="ui_title_font_general" translatable="false">@string/common_general</string>
+    <string name="font_general_path">Font file path</string>
+    <string name="font_general_path_tips">Please use variable fonts. Only works for the targets enabled below.</string>
+    <string name="ui_title_font_sb" translatable="false">@string/ui_title_systemui_status_bar</string>
+    <string name="font_sb_clock" translatable="false">@string/systemui_statusbar_clock</string>
+    <string name="font_sb_clock_weight">Font weight of clock</string>
+    <string name="font_sb_focus">Focus notification</string>
+    <string name="font_sb_focus_weight">Font weight of focus notification</string>
+    <string name="font_sb_bat_pct_out">Battery percentage (outside)</string>
+    <string name="font_sb_bat_pct_out_weight">Font weight of Battery percentage (outside)</string>
+    <string name="font_sb_bat_pct_mark">Battery percentage symbol</string>
+    <string name="font_sb_bat_pct_mark_weight">Font weight of Battery percentage symbol</string>
+    <string name="ui_title_font_icon" translatable="false">@string/systemui_statusbar_icon</string>
+    <string name="font_icon_bat_pct_in">Battery percentage (inside)</string>
+    <string name="font_icon_bat_pct_in_weight">Font weight of Battery percentage (inside)</string>
+    <string name="font_icon_net_speed_num">Numbers of network speed</string>
+    <string name="font_icon_net_speed_num_weight">Font weight of network speed (numbers)</string>
+    <string name="font_icon_net_speed_unit">Unit text of network speed</string>
+    <string name="font_icon_net_speed_unit_weight">Font weight of network speed (unit)</string>
+    <string name="font_icon_mobile_type">Mobile network type</string>
+    <string name="font_icon_mobile_type_weight">Font weight of mobile network type</string>
+    <string name="ui_title_font_notification" translatable="false">@string/ui_title_systemui_notification_center</string>
+    <string name="font_notif_clock">Clock (notification shade)</string>
+    <string name="font_notif_clock_weight">Font weight of clock (notification shade)</string>
+    <string name="ui_title_font_lockscreen" translatable="false">@string/ui_title_systemui_lock_screen</string>
+    <string name="font_lockscreen_carrier" translatable="false">@string/systemui_lock_carrier_text_carrier</string>
+    <string name="font_lockscreen_carrier_weight">Font weight of carrier label</string>
     <!-- IconTunerPage -->
     <string name="icon_tuner_hide_selection_default">Default</string>
     <string name="icon_tuner_hide_selection_show_all">Visible</string>
