@@ -549,12 +549,12 @@
     <string name="font_sb_focus">Focus notification</string>
     <string name="font_sb_focus_weight">Font weight of focus notification</string>
     <string name="font_sb_bat_pct_out">Battery percentage (outside)</string>
-    <string name="font_sb_bat_pct_out_weight">Font weight of Battery percentage (outside)</string>
+    <string name="font_sb_bat_pct_out_weight">Font weight of battery percentage (outside)</string>
     <string name="font_sb_bat_pct_mark">Battery percentage symbol</string>
-    <string name="font_sb_bat_pct_mark_weight">Font weight of Battery percentage symbol</string>
+    <string name="font_sb_bat_pct_mark_weight">Font weight of battery percentage symbol</string>
     <string name="ui_title_font_icon" translatable="false">@string/systemui_statusbar_icon</string>
     <string name="font_icon_bat_pct_in">Battery percentage (inside)</string>
-    <string name="font_icon_bat_pct_in_weight">Font weight of Battery percentage (inside)</string>
+    <string name="font_icon_bat_pct_in_weight">Font weight of battery percentage (inside)</string>
     <string name="font_icon_net_speed_num">Numbers of network speed</string>
     <string name="font_icon_net_speed_num_weight">Font weight of network speed (numbers)</string>
     <string name="font_icon_net_speed_unit">Unit text of network speed</string>
