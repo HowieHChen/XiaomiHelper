@@ -2,6 +2,7 @@ package dev.lackluster.mihelper.activity
 
 import android.os.Bundle
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableFloatState
@@ -40,7 +41,6 @@ import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.Device
 import dev.lackluster.mihelper.utils.ShellUtils
 import dev.lackluster.mihelper.utils.factory.getSP
-import top.yukonga.miuix.kmp.basic.Box
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 class MainActivity : HyperXActivity() {

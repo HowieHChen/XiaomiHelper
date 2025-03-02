@@ -8,6 +8,7 @@ import android.widget.Toast.makeText
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -48,7 +49,6 @@ import dev.lackluster.mihelper.activity.MainActivity
 import dev.lackluster.mihelper.data.Contributors
 import dev.lackluster.mihelper.data.Pages
 import dev.lackluster.mihelper.data.References
-import top.yukonga.miuix.kmp.basic.Box
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme

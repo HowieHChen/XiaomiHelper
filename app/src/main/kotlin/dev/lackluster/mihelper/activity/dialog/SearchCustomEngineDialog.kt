@@ -3,6 +3,7 @@ package dev.lackluster.mihelper.activity.dialog
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -32,7 +33,6 @@ import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.activity.MainActivity
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.hook.rules.search.SearchEngineItem
-import top.yukonga.miuix.kmp.basic.Box
 import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.IconButton
 import top.yukonga.miuix.kmp.basic.Text

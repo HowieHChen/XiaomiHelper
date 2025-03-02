@@ -1,7 +1,5 @@
 @file:Suppress("UnstableApiUsage")
 
-include(":magic")
-
 
 pluginManagement {
     repositories {

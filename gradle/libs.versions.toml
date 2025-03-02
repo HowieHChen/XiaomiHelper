@@ -5,16 +5,16 @@ android-minSdk = "34"
 android-targetSdk = "35"
 project-app-packageName = "dev.lackluster.mihelper"
 project-app-versionName = "3.0.6-compose"
-project-app-versionCode = "235"
+project-app-versionCode = "236"
 
-androidGradlePlugin = "8.8.0"
+androidGradlePlugin = "8.8.2"
 kotlin = "2.1.0"
 ksp = "2.1.0-1.0.29"
 tinypinyin = "2.0.3.RELEASE"
 xposed = "82"
 yukihookapi = "1.2.1"
 dexkit = "2.0.3"
-serialization-json = "1.7.3"
+serialization-json = "1.8.0"
 
 ezxhelper = "2.2.0"
 
@@ -25,7 +25,7 @@ yukihookapi-ksp-xposed = { group = "com.highcapable.yukihookapi", name = "ksp-xp
 drawabletoolbox = { group = "com.github.duanhong169", name = "drawabletoolbox", version = "1.0.7" }
 
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version = "1.7.0" }
-androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version = "2.2.0" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version = "2.2.1" }
 androidx-test-junit = { group = "androidx.test.ext", name = "junit", version = "1.2.1" }
 androidx-test-espresso = { group = "androidx.test.espresso", name = "espresso-core", version = "3.6.1" }
 junit = { group = "junit", name = "junit", version = "4.13.2" }
