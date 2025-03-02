@@ -211,7 +211,8 @@ fun AboutPage(navController: NavController, adjustPadding: PaddingValues, mode: 
         }
         item {
             PreferenceGroup(
-                title = stringResource(R.string.ui_title_about_reference)
+                title = stringResource(R.string.ui_title_about_reference),
+                last = true
             ) {
                 for (project in References.list) {
                     TextPreference(
