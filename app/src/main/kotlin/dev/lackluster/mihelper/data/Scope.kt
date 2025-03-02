@@ -24,6 +24,7 @@ object Scope {
     const val PACKAGE_INSTALLER = "com.miui.packageinstaller"
     const val PERSONAL_ASSIST = "com.miui.personalassistant"
     const val POWER_KEEPER = "com.miui.powerkeeper"
+    const val REMOTE_CONTROLLER = "com.duokan.phone.remotecontroller"
     const val SCREEN_RECORDER = "com.miui.screenrecorder"
     const val SCREENSHOT = "com.miui.screenshot"
     const val SEARCH = "com.android.quicksearchbox"

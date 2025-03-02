@@ -216,6 +216,9 @@ object Pref {
             const val GMS_BG_RUNNING = "power_gms_bg_running"
             const val UNLOCK_CUSTOM_REFRESH = "power_custom_refresh"
         }
+        object RemoteController {
+            const val AD_BLOCKER = "remote_ad_block"
+        }
         object ScreenRecorder {
             const val SAVE_TO_MOVIES = "screen_recorder_to_movies"
         }

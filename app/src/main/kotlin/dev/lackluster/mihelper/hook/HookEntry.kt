@@ -37,6 +37,7 @@ import dev.lackluster.mihelper.hook.apps.Themes
 import dev.lackluster.mihelper.hook.apps.Updater
 import dev.lackluster.mihelper.hook.apps.MiAi
 import dev.lackluster.mihelper.hook.apps.MiTrust
+import dev.lackluster.mihelper.hook.apps.RemoteController
 import dev.lackluster.mihelper.hook.apps.Search
 import dev.lackluster.mihelper.hook.apps.Weather
 import dev.lackluster.mihelper.hook.rules.miuihome.refactor.BlurRefactorEntry
@@ -95,6 +96,7 @@ class HookEntry : IYukiHookXposedInit {
                 loadApp(Scope.PACKAGE_INSTALLER, PackageInstaller)
                 loadApp(Scope.PERSONAL_ASSIST, PersonalAssist)
                 loadApp(Scope.POWER_KEEPER, PowerKeeper)
+                loadApp(Scope.REMOTE_CONTROLLER, RemoteController)
                 loadApp(Scope.SCREEN_RECORDER, ScreenRecorder)
                 loadApp(Scope.SCREENSHOT, Screenshot)
                 loadApp(Scope.SEARCH, Search)

@@ -12,6 +12,7 @@
         <item>com.android.systemui</item>
         <item>com.android.thememanager</item>
         <item>com.android.updater</item>
+        <item>com.duokan.phone.remotecontroller</item>
         <item>com.lbe.security.miui</item>
         <item>com.milink.service</item>
         <item>com.miui.contentextension</item>

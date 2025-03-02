@@ -140,6 +140,7 @@
     <string name="scope_gallery">相册</string>
     <string name="others_gallery_path_optim">目录识别优化</string>
     <string name="others_gallery_path_optim_tips">将“Pictures/Screenshots”中的图像识别为截图，将“Movies/ScreenRecorder”中的视频识别为屏幕录像，并展示在对应的相册中</string>
+    <string name="scope_remote_controller">万能遥控</string>
     <string name="scope_screen_recorder">屏幕录制</string>
     <string name="others_screen_recorder_save_to_movies">保存至规范的目录</string>
     <string name="others_screen_recorder_save_to_movies_tips">将录屏保存至“Pictures/ScreenRecorder/”而不是“DCIM/ScreenRecorder/”</string>

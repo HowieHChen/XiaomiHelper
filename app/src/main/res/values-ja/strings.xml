@@ -53,6 +53,7 @@
     <string name="scope_music">ミュージック</string>
     <string name="scope_package_installer">パッケージインストーラー</string>
     <string name="scope_power_keeper">バッテリーとパフォーマンス</string>
+    <string name="scope_remote_controller">Mi リモート</string>
     <string name="scope_screen_recorder">スクリーンレコーダー</string>
     <string name="scope_screenshot">スクリーンショット</string>
     <string name="scope_security_center">セキュリティセンター</string>

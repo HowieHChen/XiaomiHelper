@@ -72,6 +72,7 @@
     <string name="scope_music">Music</string>
     <string name="scope_package_installer">Package installer</string>
     <string name="scope_power_keeper">Battery and performance</string>
+    <string name="scope_remote_controller">Mi Remote</string>
     <string name="scope_screen_recorder">Screen Recorder</string>
     <string name="scope_screenshot">Screenshot</string>
     <string name="scope_search">Search</string>

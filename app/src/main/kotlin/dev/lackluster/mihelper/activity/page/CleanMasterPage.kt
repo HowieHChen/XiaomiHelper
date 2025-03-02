@@ -71,6 +71,10 @@ fun CleanMasterPage(navController: NavController, adjustPadding: PaddingValues, 
                     title = stringResource(R.string.scope_music),
                     key = Pref.Key.Music.AD_BLOCKER
                 )
+                SwitchPreference(
+                    title = stringResource(R.string.scope_remote_controller),
+                    key = Pref.Key.RemoteController.AD_BLOCKER
+                )
             }
         }
         item {
