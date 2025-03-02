@@ -1,25 +1,15 @@
 package dev.lackluster.mihelper.activity.page
 
-import android.widget.Toast.LENGTH_LONG
-import android.widget.Toast.LENGTH_SHORT
-import android.widget.Toast.makeText
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import dev.lackluster.hyperx.compose.activity.HyperXActivity
 import dev.lackluster.hyperx.compose.activity.SafeSP
-import dev.lackluster.hyperx.compose.base.AlertDialog
-import dev.lackluster.hyperx.compose.base.AlertDialogMode
 import dev.lackluster.hyperx.compose.base.BasePage
 import dev.lackluster.hyperx.compose.base.BasePageDefaults
 import dev.lackluster.hyperx.compose.navigation.navigateTo
@@ -31,31 +21,13 @@ import dev.lackluster.hyperx.compose.preference.SwitchPreference
 import dev.lackluster.hyperx.compose.preference.TextPreference
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.activity.MainActivity
+import dev.lackluster.mihelper.activity.component.RebootMenuItem
 import dev.lackluster.mihelper.data.Pages
 import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.ShellUtils
-import top.yukonga.miuix.kmp.basic.Icon
-import top.yukonga.miuix.kmp.basic.IconButton
-import top.yukonga.miuix.kmp.basic.ListPopup
-import top.yukonga.miuix.kmp.basic.ListPopupColumn
-import top.yukonga.miuix.kmp.basic.ListPopupDefaults
-import top.yukonga.miuix.kmp.basic.PopupPositionProvider
-import top.yukonga.miuix.kmp.extra.DropdownImpl
-import top.yukonga.miuix.kmp.icon.MiuixIcons
-import top.yukonga.miuix.kmp.icon.icons.ImmersionMore
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissDialog
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissPopup
+import dev.lackluster.mihelper.data.Scope
 
 @Composable
 fun SystemUIPage(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
-    val isTopPopupExpanded = remember { mutableStateOf(false) }
-    val showTopPopup = remember { mutableStateOf(false) }
-    val dialogRestartVisibility = remember { mutableStateOf(false) }
-
-    val contextMenuItems = listOf(
-        stringResource(R.string.ui_title_menu_reboot),
-        stringResource(R.string.menu_shortcut_lsposed)
-    )
     val lockscreenCarrierLabelEntries = listOf(
         DropDownEntry(stringResource(R.string.systemui_lock_carrier_text_default)),
         DropDownEntry(stringResource(R.string.systemui_lock_carrier_text_carrier)),
@@ -75,51 +47,10 @@ fun SystemUIPage(navController: NavController, adjustPadding: PaddingValues, mod
         MainActivity.blurTintAlphaDark,
         mode,
         actions = {
-            if (isTopPopupExpanded.value) {
-                ListPopup(
-                    show = showTopPopup,
-                    popupPositionProvider = ListPopupDefaults.ContextMenuPositionProvider,
-                    alignment = PopupPositionProvider.Align.TopRight,
-                    onDismissRequest = {
-                        isTopPopupExpanded.value = false
-                    }
-                ) {
-                    ListPopupColumn {
-                        contextMenuItems.forEachIndexed { index, string ->
-                            DropdownImpl(
-                                text = string,
-                                optionSize = contextMenuItems.size,
-                                isSelected = false,
-                                onSelectedIndexChange = {
-                                    when(it) {
-                                        0 -> {
-                                            dialogRestartVisibility.value = true
-                                        }
-                                        1 -> {
-
-                                        }
-                                    }
-                                    dismissPopup(showTopPopup)
-                                    isTopPopupExpanded.value = false
-                                },
-                                index = index
-                            )
-                        }
-                    }
-                }
-                showTopPopup.value = true
-            }
-            IconButton(
-                modifier = Modifier.padding(end = 21.dp).size(40.dp),
-                onClick = {
-                    isTopPopupExpanded.value = true
-                }
-            ) {
-                Icon(
-                    imageVector = MiuixIcons.ImmersionMore,
-                    contentDescription = "Menu"
-                )
-            }
+            RebootMenuItem(
+                appName = stringResource(R.string.scope_systemui),
+                appPkg = Scope.SYSTEM_UI
+            )
         }
     ) {
         item {
@@ -220,31 +151,4 @@ fun SystemUIPage(navController: NavController, adjustPadding: PaddingValues, mod
             }
         }
     }
-    AlertDialog(
-        dialogRestartVisibility,
-        stringResource(R.string.menu_reboot_systemui),
-        stringResource(R.string.menu_reboot_systemui_tips),
-        mode = AlertDialogMode.NegativeAndPositive,
-        onPositiveButton = {
-            try {
-                ShellUtils.tryExec("killall com.android.systemui", useRoot = true, checkSuccess = true)
-                HyperXActivity.context.let {
-                    makeText(
-                        it,
-                        it.getString(R.string.menu_reboot_done_toast),
-                        LENGTH_SHORT
-                    ).show()
-                }
-            } catch (tout : Throwable) {
-                HyperXActivity.context.let {
-                    makeText(
-                        it,
-                        tout.message,
-                        LENGTH_LONG
-                    ).show()
-                }
-            }
-            dismissDialog(dialogRestartVisibility)
-        }
-    )
 }

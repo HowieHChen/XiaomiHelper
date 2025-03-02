@@ -41,6 +41,7 @@ import top.yukonga.miuix.kmp.basic.PopupPositionProvider
 import top.yukonga.miuix.kmp.extra.DropdownImpl
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.icons.ImmersionMore
+import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissDialog
 import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissPopup
 
@@ -119,8 +120,10 @@ fun MainPage(navController: NavController, adjustPadding: PaddingValues, mode: B
                 }
             ) {
                 Icon(
+                    modifier = Modifier.size(26.dp),
                     imageVector = MiuixIcons.ImmersionMore,
-                    contentDescription = "Menu"
+                    contentDescription = "Menu",
+                    tint = MiuixTheme.colorScheme.onSurfaceSecondary
                 )
             }
         }

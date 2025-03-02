@@ -10,7 +10,9 @@ import dev.lackluster.hyperx.compose.preference.PreferenceGroup
 import dev.lackluster.hyperx.compose.preference.SwitchPreference
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.activity.MainActivity
+import dev.lackluster.mihelper.activity.component.RebootMenuItem
 import dev.lackluster.mihelper.data.Pref
+import dev.lackluster.mihelper.data.Scope
 
 @Composable
 fun SystemFrameworkPage(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
@@ -21,7 +23,13 @@ fun SystemFrameworkPage(navController: NavController, adjustPadding: PaddingValu
         MainActivity.blurEnabled,
         MainActivity.blurTintAlphaLight,
         MainActivity.blurTintAlphaDark,
-        mode
+        mode,
+        actions = {
+            RebootMenuItem(
+                appName = stringResource(R.string.scope_android),
+                appPkg = Scope.ANDROID
+            )
+        }
     ) {
         item {
             PreferenceGroup(

@@ -1,7 +1,7 @@
 package dev.lackluster.mihelper.data
 
 object Scope {
-    // const val ANDROID = "android"
+    const val ANDROID = "android"
     const val BROWSER = "com.android.browser"
     const val DOWNLOAD = "com.android.providers.downloads"
     const val DOWNLOAD_UI = "com.android.providers.downloads.ui"

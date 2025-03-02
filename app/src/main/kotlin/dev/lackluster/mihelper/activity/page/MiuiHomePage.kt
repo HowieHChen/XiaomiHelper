@@ -19,7 +19,9 @@ import dev.lackluster.hyperx.compose.preference.PreferenceGroup
 import dev.lackluster.hyperx.compose.preference.SwitchPreference
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.activity.MainActivity
+import dev.lackluster.mihelper.activity.component.RebootMenuItem
 import dev.lackluster.mihelper.data.Pref
+import dev.lackluster.mihelper.data.Scope
 import dev.lackluster.mihelper.utils.Device
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
@@ -136,7 +138,13 @@ fun MiuiHomePage(navController: NavController, adjustPadding: PaddingValues, mod
         MainActivity.blurEnabled,
         MainActivity.blurTintAlphaLight,
         MainActivity.blurTintAlphaDark,
-        mode
+        mode,
+        actions = {
+            RebootMenuItem(
+                appName = stringResource(R.string.scope_miui_home),
+                appPkg = Scope.MIUI_HOME
+            )
+        }
     ) {
         item {
             PreferenceGroup(

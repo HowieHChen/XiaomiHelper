@@ -38,7 +38,6 @@ import dev.lackluster.hyperx.compose.base.BasePage
 import dev.lackluster.hyperx.compose.base.BasePageDefaults
 import dev.lackluster.hyperx.compose.base.IconSize
 import dev.lackluster.hyperx.compose.base.ImageIcon
-import dev.lackluster.hyperx.compose.navigation.navigateTo
 import dev.lackluster.hyperx.compose.preference.PreferenceGroup
 import dev.lackluster.hyperx.compose.preference.TextPreference
 import dev.lackluster.mihelper.BuildConfig.BUILD_TYPE
@@ -47,7 +46,6 @@ import dev.lackluster.mihelper.BuildConfig.VERSION_NAME
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.activity.MainActivity
 import dev.lackluster.mihelper.data.Contributors
-import dev.lackluster.mihelper.data.Pages
 import dev.lackluster.mihelper.data.References
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.Text
@@ -203,6 +201,12 @@ fun AboutPage(navController: NavController, adjustPadding: PaddingValues, mode: 
                 ) {
                     HyperXActivity.context.openUrl(R.string.about_repository_url)
                 }
+                TextPreference(
+                    title = stringResource(R.string.about_telegram),
+                    summary = stringResource(R.string.about_telegram_tips)
+                ) {
+                    HyperXActivity.context.openUrl(R.string.about_telegram_url)
+                }
             }
         }
         item {
@@ -219,6 +223,7 @@ fun AboutPage(navController: NavController, adjustPadding: PaddingValues, mode: 
                 }
             }
         }
+        /*
         item {
             PreferenceGroup(
                 title = stringResource(R.string.ui_title_about_dev_options),
@@ -231,6 +236,7 @@ fun AboutPage(navController: NavController, adjustPadding: PaddingValues, mode: 
                 }
             }
         }
+         */
     }
 }
 

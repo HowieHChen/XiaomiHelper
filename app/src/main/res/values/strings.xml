@@ -54,6 +54,7 @@
     <string name="page_home_refactor" translatable="false">@string/home_exclusive_refactor</string>
     <string name="page_minus_blur">Blur effect of Minus screen</string>
 
+    <string name="scope_android">System</string>
     <string name="scope_browser">Browser</string>
     <string name="scope_download">Download</string>
     <string name="scope_gallery">Gallery</string>
@@ -123,6 +124,8 @@
     <string name="menu_reboot_systemui_tips">Are you sure you want to reboot the system interface?</string>
     <string name="menu_reboot_launcher">Reboot System launcher</string>
     <string name="menu_reboot_launcher_tips">Are you sure you want to reboot the launcher?</string>
+    <string name="menu_reboot_common_title">Reboot %s</string>
+    <string name="menu_reboot_common_message">Are you sure you want to reboot the %s?</string>
     <string name="menu_reboot_error_toast">Reboot failed! Please grant root permission to this app and try again.</string>
     <string name="menu_reboot_done_toast">All target apps have been restarted</string>
     <string name="ui_title_menu_others" translatable="false">@string/common_others</string>
@@ -151,6 +154,9 @@
     <string name="about_repository">Source code</string>
     <string name="about_repository_tips">GitHub repository</string>
     <string name="about_repository_url" translatable="false">https://github.com/HowieHChen/XiaomiHelper</string>
+    <string name="about_telegram">Telegram channel</string>
+    <string name="about_telegram_tips">Join the Telegram channel to give feedback and get internal updates.</string>
+    <string name="about_telegram_url" translatable="false">https://t.me/lackluster_stuff</string>
     <string name="ui_title_about_reference">References</string>
     <string name="ui_title_about_dev_options">Developer options</string>
     <!-- ModuleSettingsPage -->

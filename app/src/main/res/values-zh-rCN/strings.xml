@@ -28,10 +28,12 @@
     <string name="menu_reboot_scope_tips">确定要重启全部作用域内应用吗？</string>
     <string name="menu_reboot_systemui_tips">确定要重启系统界面吗？</string>
     <string name="menu_reboot_launcher_tips">确定要重启桌面吗？</string>
+    <string name="menu_reboot_common_message">确定要重启%s吗？</string>
     <string name="menu_reboot_error_toast">重启失败！请授予本应用 Root 权限后重试</string>
     <string name="menu_reboot_done_toast">已重启所有目标应用</string>
     <string name="main_module_inactive_tips">模块未激活。请检查 LSPosed 版本和模块激活信息后重试。</string>
     <string name="scope_power_keeper">电量和性能</string>
+    <string name="scope_android">系统</string>
     <string name="scope_browser">浏览器</string>
     <string name="others_browser_debug_mode">Debug 模式</string>
     <string name="others_browser_debug_mode_tips">强制启用 Debug 模式，仅适用于旧版本的浏览器</string>
@@ -582,4 +584,7 @@
     <string name="font_icon_mobile_type_weight">移动网络类型的字重</string>
     <string name="font_notif_clock">时间（通知中心）</string>
     <string name="font_notif_clock_weight">时间（通知中心）的字重</string>
+    <string name="menu_reboot_common_title">重启%s</string>
+    <string name="about_telegram">Telegram 频道</string>
+    <string name="about_telegram_tips">加入 Telegram 频道以反馈问题并获取内部更新</string>
 </resources>
