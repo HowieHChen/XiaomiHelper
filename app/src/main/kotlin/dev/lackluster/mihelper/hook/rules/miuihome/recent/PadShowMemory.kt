@@ -26,10 +26,10 @@ import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.constructor
 import com.highcapable.yukihookapi.hook.factory.current
 import com.highcapable.yukihookapi.hook.factory.method
-import dev.lackluster.hyperx.core.util.SystemProperties
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.hook.rules.miuihome.ResourcesUtils.status_bar_recent_memory_giga
 import dev.lackluster.mihelper.hook.rules.miuihome.ResourcesUtils.status_bar_recent_memory_mega
+import dev.lackluster.mihelper.utils.SystemProperties
 import dev.lackluster.mihelper.utils.factory.hasEnable
 import java.text.DecimalFormat
 import kotlin.math.ceil

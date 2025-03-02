@@ -1,11 +1,4 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="Theme.AppDefault" parent="HyperXTheme.Light">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/colorPrimaryAccent</item>
-        <!-- Status bar color. -->
-<!--        <item name="android:statusBarColor">@color/white</item>-->
-<!--        <item name="android:windowLightStatusBar">true</item>-->
-        <!-- Customize your theme here. -->
-    </style>
+    <style name="Theme.AppDefault" parent="android:Theme.Material.Light.NoActionBar" />
 </resources>

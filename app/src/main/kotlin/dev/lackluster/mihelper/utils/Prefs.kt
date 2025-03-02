@@ -1,8 +1,8 @@
 package dev.lackluster.mihelper.utils
 
 import android.content.Context
-import cn.fkj233.ui.activity.MIUIActivity
 import de.robv.android.xposed.XSharedPreferences
+import dev.lackluster.hyperx.compose.activity.HyperXActivity
 import dev.lackluster.mihelper.BuildConfig
 import dev.lackluster.mihelper.utils.factory.dp
 
@@ -70,7 +70,7 @@ object Prefs {
         var valid = false
         runCatching {
             valid = if (value.endsWith("dp")) {
-                value.replace("dp", "").toInt().dp(MIUIActivity.context) in 0..500
+                value.replace("dp", "").toInt().dp(HyperXActivity.context) in 0..500
             } else if (value.endsWith("px")) {
                 value.replace("px", "").toInt() in 0..500
             } else {

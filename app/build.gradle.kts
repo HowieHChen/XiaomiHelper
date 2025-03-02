@@ -72,7 +72,6 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.dexkit)
     implementation(libs.tinypinyin)
-    implementation(project(mapOf("path" to ":blockmiui")))
     implementation(project(mapOf("path" to ":hyperx-compose")))
     implementation(libs.drawabletoolbox)
 

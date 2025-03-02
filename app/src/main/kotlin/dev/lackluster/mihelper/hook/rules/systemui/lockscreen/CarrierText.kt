@@ -34,7 +34,6 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.animation.addListener
-import cn.fkj233.ui.activity.dp2px
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.constructor
 import com.highcapable.yukihookapi.hook.factory.field
@@ -48,6 +47,7 @@ import dev.lackluster.mihelper.hook.rules.systemui.statusbar.ElementsFontWeight.
 import dev.lackluster.mihelper.hook.view.SpringInterpolator
 import dev.lackluster.mihelper.utils.Device
 import dev.lackluster.mihelper.utils.Prefs
+import dev.lackluster.mihelper.utils.factory.dp
 import java.util.ArrayList
 
 object CarrierText : YukiBaseHooker() {
@@ -223,7 +223,7 @@ object CarrierText : YukiBaseHooker() {
                             darkCarrierText.setTextAppearance(ResourcesUtils.TextAppearance_StatusBar_Clock)
                             darkCarrierText.ellipsize = TextUtils.TruncateAt.MARQUEE
                             darkCarrierText.gravity = Gravity.CENTER_VERTICAL
-                            darkCarrierText.maxWidth = dp2px(context, 100.0f)
+                            darkCarrierText.maxWidth = 100.0f.dp(context)
                             darkCarrierText.isSingleLine = true
                             darkCarrierText.marqueeRepeatLimit = 1
                             darkCarrierText.textDirection = View.TEXT_DIRECTION_LOCALE
@@ -277,7 +277,7 @@ object CarrierText : YukiBaseHooker() {
                             } ?: 0
                             val clockMarginEnd = ResourcesUtils.status_bar_clock_margin_end.takeIf { it != 0 }?.let {
                                 context.resources.getDimensionPixelSize(it)
-                            } ?: dp2px(context, 4.0f)
+                            } ?: 4.0f.dp(context)
                             clockContainer.addView(
                                 clockView,
                                 ViewGroup.MarginLayoutParams(
