@@ -37,6 +37,7 @@
     <string name="page_status_bar_font">Fonte</string>
     <string name="page_media_control_style">Estilo do controle de mídia</string>
     <string name="page_minus_blur">Efeito de blur do Assistente</string>
+    <string name="scope_android">Sistema</string>
     <string name="scope_browser">Navegador Mi</string>
     <string name="scope_download">Downloads</string>
     <string name="scope_gallery">Galeria</string>
@@ -100,6 +101,8 @@
     <string name="menu_reboot_systemui_tips">Tem certeza que deseja reiniciar a UI do Sistema?</string>
     <string name="menu_reboot_launcher">Reiniciar Launcher do sistema</string>
     <string name="menu_reboot_launcher_tips">Tem certeza que deseja reiniciar a Launcher do sistema?</string>
+    <string name="menu_reboot_common_title">Reiniciar %s</string>
+    <string name="menu_reboot_common_message">Tem certeza que deseja reiniciar %s?</string>
     <string name="menu_reboot_error_toast">Falha ao reiniciar! Conceda permissão root para este app e tente novamente.</string>
     <string name="menu_reboot_done_toast">Todos os apps de destino foram reiniciados</string>
     <!-- AboutPage -->
@@ -117,6 +120,8 @@
     <string name="about_donate_tips">Me compre um café</string>
     <string name="about_repository">Código-fonte</string>
     <string name="about_repository_tips">Repositório GitHub</string>
+    <string name="about_telegram">Canal Telegram</string>
+    <string name="about_telegram_tips">Junte-se ao canal do Telegram para dar feedback e receber atualizações internas.</string>
     <string name="ui_title_about_reference">Referências</string>
     <string name="ui_title_about_dev_options">Opções do desenvolvedor</string>
     <!-- ModuleSettingsPage -->
