@@ -504,8 +504,10 @@
     <string name="cleaner_market_hide_rank_tips">从底部应用栏中移除榜单选项</string>
     <string name="cleaner_market_hide_video">隐藏应用号和视频</string>
     <string name="cleaner_market_hide_video_tips">从底部应用栏中移除应用号和视频选项</string>
+    <string name="cleaner_music_hide_karaoke_tips">从首页的顶部应用栏中移除K歌选项</string>
     <string name="cleaner_music_hide_long_audio">隐藏有声</string>
     <string name="cleaner_music_hide_long_audio_tips">从首页的顶部应用栏中移除有声选项</string>
+    <string name="cleaner_music_hide_discover_tips">从首页的顶部应用栏中移除发现选项</string>
     <string name="cleaner_music_hide_my_banner">隐藏“我的”页的顶部横幅</string>
     <string name="cleaner_music_hide_my_rec_playlist">隐藏“我的”页的底部歌曲推荐</string>
     <string name="module_dexkit_cache">缓存 DexKit 结果</string>
@@ -587,4 +589,6 @@
     <string name="menu_reboot_common_title">重启%s</string>
     <string name="about_telegram">Telegram 频道</string>
     <string name="about_telegram_tips">加入 Telegram 频道以反馈问题并获取内部更新</string>
+    <string name="cleaner_music_hide_karaoke">隐藏K歌</string>
+    <string name="cleaner_music_hide_discover">隐藏发现</string>
 </resources>

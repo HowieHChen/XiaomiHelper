@@ -362,8 +362,12 @@
     <string name="ui_title_cleaner_milink" translatable="false">@string/scope_mi_link</string>
     <string name="cleaner_milink_fuck_hpplay">Block creation of hpplay folders</string>
     <string name="ui_title_cleaner_music" translatable="false">@string/scope_music</string>
+    <string name="cleaner_music_hide_karaoke">Hide karaoke</string>
+    <string name="cleaner_music_hide_karaoke_tips">Remove the karaoke from the top tab on the home page</string>
     <string name="cleaner_music_hide_long_audio">Hide long audio</string>
     <string name="cleaner_music_hide_long_audio_tips">Remove the long audio from the top tab on the home page</string>
+    <string name="cleaner_music_hide_discover">Hide discover</string>
+    <string name="cleaner_music_hide_discover_tips">Remove the discover from the top tab on the home page</string>
     <string name="cleaner_music_hide_my_banner">Hide the banner on my page</string>
     <string name="cleaner_music_hide_my_rec_playlist">Hide recommended songs on my page</string>
     <string name="ui_title_cleaner_package" translatable="false">@string/scope_package_installer</string>

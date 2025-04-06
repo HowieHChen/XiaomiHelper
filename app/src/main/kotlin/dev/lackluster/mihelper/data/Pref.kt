@@ -196,7 +196,9 @@ object Pref {
         object Music {
             const val AD_BLOCKER = "music_ad_block"
             const val SKIP_SPLASH = "music_skip_splash"
+            const val HIDE_KARAOKE = "music_hide_karaoke"
             const val HIDE_LONG_AUDIO = "music_hide_long_audio"
+            const val HIDE_DISCOVER = "music_hide_discover"
             const val MY_HIDE_BANNER = "music_my_hide_banner"
             const val MY_HIDE_REC_PLAYLIST = "music_my_hide_rec"
         }

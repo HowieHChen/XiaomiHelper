@@ -47,6 +47,20 @@ object AdBlocker : YukiBaseHooker() {
                     }
                 }
                 method {
+                    name = "setVipTextFirst"
+                }.hook {
+                    before {
+                        val vipTextList = this.instance.current().field {
+                            name = "vipTextList"
+                        }.list<String>()
+                        this.args(0).set(
+                            vipTextList.firstOrNull {
+                                it.contains("/")
+                            } ?: vipTextList.firstOrNull { it.contains("到期") }
+                        )
+                    }
+                }
+                method {
                     name = "setVipTextSecond"
                 }.hook {
                     before {

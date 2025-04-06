@@ -225,9 +225,19 @@ fun CleanMasterPage(navController: NavController, adjustPadding: PaddingValues, 
                 title = stringResource(R.string.ui_title_cleaner_music)
             ) {
                 SwitchPreference(
+                    title = stringResource(R.string.cleaner_music_hide_karaoke),
+                    summary = stringResource(R.string.cleaner_music_hide_karaoke_tips),
+                    key = Pref.Key.Music.HIDE_KARAOKE
+                )
+                SwitchPreference(
                     title = stringResource(R.string.cleaner_music_hide_long_audio),
                     summary = stringResource(R.string.cleaner_music_hide_long_audio_tips),
                     key = Pref.Key.Music.HIDE_LONG_AUDIO
+                )
+                SwitchPreference(
+                    title = stringResource(R.string.cleaner_music_hide_discover),
+                    summary = stringResource(R.string.cleaner_music_hide_discover_tips),
+                    key = Pref.Key.Music.HIDE_DISCOVER
                 )
                 SwitchPreference(
                     title = stringResource(R.string.cleaner_music_hide_my_banner),
