@@ -298,8 +298,12 @@
     <string name="cleaner_market_hide_app_security">Ocultar segurança do app</string>
     <string name="cleaner_market_hide_app_security_tips">Oculte o cartão de segurança do app na minha página</string>
     <string name="cleaner_milink_fuck_hpplay">Bloquear a criação de pastas hpplay</string>
+    <string name="cleaner_music_hide_karaoke">Ocultar karaokê</string>
+    <string name="cleaner_music_hide_karaoke_tips">Remove o karaokê da aba superior da página inicial</string>
     <string name="cleaner_music_hide_long_audio">Ocultar áudio longo</string>
     <string name="cleaner_music_hide_long_audio_tips">Remove o áudio longo da guia superior da página inicial</string>
+    <string name="cleaner_music_hide_discover">Ocultar discover</string>
+    <string name="cleaner_music_hide_discover_tips">Remove o discover da guia superior na página inicial</string>
     <string name="cleaner_music_hide_my_banner">Ocultar banner na minha página</string>
     <string name="cleaner_music_hide_my_rec_playlist">Ocultar músicas recomendadas na minha página</string>
     <string name="cleaner_package_remove_element">Desativar recursos redundantes</string>
