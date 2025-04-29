@@ -168,6 +168,7 @@
     <string name="common_search">搜索</string>
     <string name="common_invalid_input">无效输入</string>
     <string name="scope_package_installer">应用包管理组件</string>
+    <string name="cleaner_package_no_network">伪装成无网状态</string>
     <string name="cleaner_package_no_count_check">禁用频繁安装应用检查</string>
     <string name="cleaner_package_skip_risk_check">禁用风险监测</string>
     <string name="page_status_bar_icon_tuner">图标调整</string>

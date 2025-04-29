@@ -262,6 +262,10 @@ fun CleanMasterPage(navController: NavController, adjustPadding: PaddingValues, 
                     key = Pref.Key.PackageInstaller.DISABLE_RISK_CHECK
                 )
                 SwitchPreference(
+                    title = stringResource(R.string.cleaner_package_no_network),
+                    key = Pref.Key.PackageInstaller.DISGUISE_NO_NETWORK
+                )
+                SwitchPreference(
                     title = stringResource(R.string.cleaner_package_no_count_check),
                     key = Pref.Key.PackageInstaller.DISABLE_COUNT_CHECK
                 )

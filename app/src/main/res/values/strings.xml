@@ -373,6 +373,7 @@
     <string name="ui_title_cleaner_package" translatable="false">@string/scope_package_installer</string>
     <string name="cleaner_package_remove_element">Disable redundant features</string>
     <string name="cleaner_package_skip_risk_check">Disable the monitoring of risks</string>
+    <string name="cleaner_package_no_network">Disguise as no network</string>
     <string name="cleaner_package_no_count_check">Disable frequently installed app check</string>
     <string name="cleaner_package_install_source">Custom install source</string>
     <string name="cleaner_package_install_source_tips">Ignore the system app installation restrictions by disguising the installation source as a system app.</string>

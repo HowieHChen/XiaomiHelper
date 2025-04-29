@@ -211,6 +211,7 @@ object Pref {
             const val INSTALL_SOURCE = "package_install_source"
             const val SOURCE_PKG_NAME = "package_source_pkg"
             const val MORE_INFO = "package_more_info"
+            const val DISGUISE_NO_NETWORK = "package_no_network"
         }
         object PowerKeeper {
             const val DO_NOT_KILL_APP = "power_donot_kill_app"

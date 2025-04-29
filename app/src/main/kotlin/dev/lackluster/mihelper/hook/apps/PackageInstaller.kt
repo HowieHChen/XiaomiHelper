@@ -8,6 +8,7 @@ import dev.lackluster.mihelper.hook.rules.packageinstaller.DisableRiskCheck
 import dev.lackluster.mihelper.hook.rules.packageinstaller.RemoveElement
 import dev.lackluster.mihelper.hook.rules.packageinstaller.ResourcesUtils
 import dev.lackluster.mihelper.hook.rules.packageinstaller.CustomInstallSource
+import dev.lackluster.mihelper.hook.rules.packageinstaller.DisguiseNoNet
 import dev.lackluster.mihelper.utils.DexKit
 
 object PackageInstaller : YukiBaseHooker(){
@@ -20,6 +21,7 @@ object PackageInstaller : YukiBaseHooker(){
         loadHooker(DisableRiskCheck)
         loadHooker(BlockUploadAppInfo)
         loadHooker(CustomInstallSource)
+        loadHooker(DisguiseNoNet)
 //        loadHooker(MoreInfo)
         DexKit.closeDexKit()
     }
