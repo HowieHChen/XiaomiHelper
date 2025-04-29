@@ -11,7 +11,7 @@ object BlockUpdateDialog : YukiBaseHooker() {
             "com.xiaomi.market.ui.UpdateListFragment".toClassOrNull()?.apply {
                 method {
                     name = "tryShowDialog"
-                }.hook {
+                }.ignored().hook {
                     intercept()
                 }
             }

@@ -37,8 +37,8 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 androidx-ui = { group = "androidx.compose.ui", name = "ui" }
 ezXHelper = { module = "com.github.kyuubiran:EzXHelper", version.ref = "ezxhelper" }
 
-androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version = "1.15.0" }
-androidx-dynamicanimation-ktx = { group = "androidx.dynamicanimation", name = "dynamicanimation", version = "1.1.0-alpha03" }
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version = "1.16.0" }
+androidx-dynamicanimation-ktx = { group = "androidx.dynamicanimation", name = "dynamicanimation", version = "1.1.0" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
