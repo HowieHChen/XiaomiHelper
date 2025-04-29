@@ -592,4 +592,5 @@
     <string name="about_telegram_tips">加入 Telegram 频道以反馈问题并获取内部更新</string>
     <string name="cleaner_music_hide_karaoke">隐藏K歌</string>
     <string name="cleaner_music_hide_discover">隐藏发现</string>
+    <string name="cleaner_music_block_try_excellent">屏蔽“臻品母带”弹窗</string>
 </resources>

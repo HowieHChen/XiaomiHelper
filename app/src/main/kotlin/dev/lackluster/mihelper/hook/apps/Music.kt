@@ -2,6 +2,7 @@ package dev.lackluster.mihelper.hook.apps
 
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import dev.lackluster.mihelper.hook.rules.music.AdBlocker
+import dev.lackluster.mihelper.hook.rules.music.BlockExcellentTryDialog
 import dev.lackluster.mihelper.hook.rules.music.HideTopTab
 import dev.lackluster.mihelper.hook.rules.music.HideMyPageElement
 import dev.lackluster.mihelper.hook.rules.music.SkipSplash
@@ -12,5 +13,6 @@ object Music : YukiBaseHooker() {
         loadHooker(SkipSplash)
         loadHooker(HideTopTab)
         loadHooker(HideMyPageElement)
+        loadHooker(BlockExcellentTryDialog)
     }
 }

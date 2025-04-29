@@ -247,6 +247,10 @@ fun CleanMasterPage(navController: NavController, adjustPadding: PaddingValues, 
                     title = stringResource(R.string.cleaner_music_hide_my_rec_playlist),
                     key = Pref.Key.Music.MY_HIDE_REC_PLAYLIST
                 )
+                SwitchPreference(
+                    title = stringResource(R.string.cleaner_music_block_try_excellent),
+                    key = Pref.Key.Music.BLOCK_TRY_EXCELLENT
+                )
             }
         }
         item {

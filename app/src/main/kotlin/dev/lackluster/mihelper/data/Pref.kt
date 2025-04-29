@@ -201,6 +201,7 @@ object Pref {
             const val HIDE_DISCOVER = "music_hide_discover"
             const val MY_HIDE_BANNER = "music_my_hide_banner"
             const val MY_HIDE_REC_PLAYLIST = "music_my_hide_rec"
+            const val BLOCK_TRY_EXCELLENT = "music_block_excellent"
         }
         object PackageInstaller {
             const val BLOCK_UPLOAD_INFO = "package_block_upload"
