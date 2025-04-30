@@ -10,7 +10,7 @@
     <string name="common_range">Range</string>
     <string name="common_search">Search</string>
     <string name="common_others">Others</string>
-    <string name="common_tap_sleep">Double-tap the blank space to sleep</string>
+    <string name="common_tap_sleep">Double-tap on empty space to lock the screen</string>
     <string name="common_disabled">Disabled</string>
     <string name="common_enabled">Enabled</string>
     <string name="common_on">On</string>
@@ -52,10 +52,10 @@
     <string name="page_status_bar_font">Font</string>
     <string name="page_media_control_style">Media control style</string>
     <string name="page_home_refactor" translatable="false">@string/home_exclusive_refactor</string>
-    <string name="page_minus_blur">Blur effect of Minus screen</string>
+    <string name="page_minus_blur">Blur effect of Personal assistant</string>
 
     <string name="scope_android">System</string>
-    <string name="scope_browser">Browser</string>
+    <string name="scope_browser">Mi Browser</string>
     <string name="scope_download">Download</string>
     <string name="scope_gallery">Gallery</string>
     <string name="scope_guard_provider">System security components</string>
@@ -111,8 +111,8 @@
     <string name="new_task">New task</string>
     <!-- MainPage -->
     <string name="main_module_inactive_dialog_lsposed" translatable="false">LSPosed</string>
-    <string name="main_module_inactive_tips">Module isn\'t enabled. Please check the LSPosed version and module activation information and try again.</string>
-    <string name="main_module_disabled_tips">Module isn\'t enabled. Please enable the module in the Module settings page.</string>
+    <string name="main_module_inactive_tips">The module isn\'t enabled. Please check the LSPosed version and module activation information and try again.</string>
+    <string name="main_module_disabled_tips">The module isn\'t enabled. Please enable the module in the Module settings page.</string>
     <string name="main_app_root_tips">Lack of root privileges can prevent some features from working properly.</string>
     <!-- MenuPage -->
     <string name="ui_title_menu_reboot">Reboot</string>
@@ -121,9 +121,9 @@
     <string name="menu_reboot_scope">Reboot all scopes</string>
     <string name="menu_reboot_scope_tips">Are you sure you want to reboot all scope apps?</string>
     <string name="menu_reboot_systemui">Reboot System UI</string>
-    <string name="menu_reboot_systemui_tips">Are you sure you want to reboot the system interface?</string>
+    <string name="menu_reboot_systemui_tips">Are you sure you want to reboot the System UI?</string>
     <string name="menu_reboot_launcher">Reboot System launcher</string>
-    <string name="menu_reboot_launcher_tips">Are you sure you want to reboot the launcher?</string>
+    <string name="menu_reboot_launcher_tips">Are you sure you want to reboot the System launcher?</string>
     <string name="menu_reboot_common_title">Reboot %s</string>
     <string name="menu_reboot_common_message">Are you sure you want to reboot the %s?</string>
     <string name="menu_reboot_error_toast">Reboot failed! Please grant root permission to this app and try again.</string>
@@ -214,7 +214,7 @@
     <string name="systemui_statusbar_font" translatable="false">@string/page_status_bar_font</string>
     <string name="systemui_statusbar_tap_to_sleep" translatable="false">@string/common_tap_sleep</string>
     <string name="systemui_statusbar_disable_smart_dark">Disable Smart dark</string>
-    <string name="systemui_statusbar_disable_smart_dark_tips">The Smart Dark feature makes the status bar ignore the colors specified by the app and allows the sampling of the area to change color automatically when in Dark mode. Disable this feature to restore the default behavior of Android.</string>
+    <string name="systemui_statusbar_disable_smart_dark_tips">The Smart dark feature makes the status bar ignore the colors specified by the app and allows the sampling of the area to change color automatically when in Dark mode. Disable this feature to restore the default behavior of Android.</string>
     <string name="ui_title_systemui_lock_screen">Lock screen</string>
     <string name="systemui_lock_hide_unlock_tip">Hide unlock request at the bottom of the screen</string>
     <string name="systemui_lock_hide_disturb">Hide Do Not Disturb mode resident notifications</string>
@@ -307,8 +307,8 @@
     <string name="home_shortcut_freeform">Add "Floating window" shortcut</string>
     <string name="home_shortcut_instance">Add "Multiple instance" shortcut</string>
     <string name="ui_title_home_personal_asist">Personal assistant</string>
-    <string name="home_minus_restore_setting">Restore minus screen setting</string>
-    <string name="home_minus_blur_type">Minus screen background</string>
+    <string name="home_minus_restore_setting">Restore Personal assistant settings</string>
+    <string name="home_minus_blur_type">Personal assistant background</string>
     <string name="home_minus_blur_type_def" translatable="false">@string/common_default</string>
     <string name="home_minus_blur_type_sys">Legacy blurred background</string>
     <string name="home_minus_blur_type_texture">Advanced textures</string>
@@ -323,8 +323,8 @@
     <string name="home_others_force_color_scheme_element_tips">Specify widget and app label color (ignore wallpaper color)</string>
     <string name="home_others_force_color_scheme_statusbar">Status bar text and icon color</string>
     <string name="home_others_force_color_scheme_statusbar_tips">Specify the color of the status bar text and icons (ignore wallpaper color). Requires enabling \"Disable Smart dark\" on the System UI page.</string>
-    <string name="home_others_force_color_scheme_minus">Minus screen color</string>
-    <string name="home_others_force_color_scheme_minus_tips">Specify the color of the status bar text and icons for the minus screen (ignore wallpaper color). Requires enabling \"Disable Smart dark\" on the System UI page.</string>
+    <string name="home_others_force_color_scheme_minus">Personal assistant color</string>
+    <string name="home_others_force_color_scheme_minus_tips">Specify the color of the status bar text and icons for the Personal assistant (ignore wallpaper color). Requires enabling \"Disable Smart dark\" on the System UI page.</string>
     <!-- CleanMasterPage -->
     <string name="ui_title_cleaner_ad_blocker">Ad blocker</string>
     <string name="cleaner_ad_blocker_market" translatable="false">@string/scope_market</string>
@@ -370,7 +370,7 @@
     <string name="cleaner_music_hide_discover_tips">Remove the discover from the top tab on the home page</string>
     <string name="cleaner_music_hide_my_banner">Hide the banner on my page</string>
     <string name="cleaner_music_hide_my_rec_playlist">Hide recommended songs on my page</string>
-    <string name="cleaner_music_block_try_excellent">Block the \"Try Excellent Quality\" dialog</string>
+    <string name="cleaner_music_block_try_excellent">Block the \"Try Excellent quality\" dialog</string>
     <string name="ui_title_cleaner_package" translatable="false">@string/scope_package_installer</string>
     <string name="cleaner_package_remove_element">Disable redundant features</string>
     <string name="cleaner_package_skip_risk_check">Disable the monitoring of risks</string>
@@ -716,17 +716,17 @@
     <string name="home_refactor_launch_show">Show launcher view</string>
     <string name="home_refactor_launch_recents_tips">Show launcher view when in the recent tasks view.</string>
     <string name="home_refactor_launch_folder_tips">Show launcher view when opening a folder.</string>
-    <string name="home_refactor_launch_minus_tips">Don\'t hide the launcher view when going to the minus screen</string>
+    <string name="home_refactor_launch_minus_tips">Don\'t hide the launcher view when going to the Personal assistant</string>
     <string name="home_refactor_launch_show_tips">Don\'t hide the launcher view when in the recent tasks view</string>
     <string name="home_refactor_launch_scale">Launcher view zoom ratio</string>
     <string name="home_refactor_launch_scale_tips">Affects launcher view scaling in recent tasks view</string>
     <string name="home_refactor_launch_minus_mode_def" translatable="false">@string/systemui_lock_carrier_text_default</string>
     <string name="home_refactor_launch_minus_mode_visible" translatable="false">@string/icon_tuner_hide_selection_show_all</string>
     <string name="home_refactor_launch_minus_mode_overlap">Overlapping</string>
-    <string name="ui_title_home_refactor_minus">Blur effect of Minus screen background</string>
-    <string name="home_refactor_minus_tips">Used to blur the entire launcher view. Blurring occurs when in the minus screen.</string>
-    <string name="home_refactor_minus_overlap_mode">Minus screen overlap mode</string>
-    <string name="home_refactor_minus_overlap_mode_tips">Make the minus screen hover above the launcher</string>
-    <string name="home_refactor_launch_show_minus_tips">Don\'t hide the launcher view when going to the minus screen</string>
+    <string name="ui_title_home_refactor_minus">Blur effect of Personal assistant background</string>
+    <string name="home_refactor_minus_tips">Used to blur the entire launcher view. Blurring occurs when in the Personal assistant.</string>
+    <string name="home_refactor_minus_overlap_mode">Personal assistant overlap mode</string>
+    <string name="home_refactor_minus_overlap_mode_tips">Make the Personal assistant hover above the launcher</string>
+    <string name="home_refactor_launch_show_minus_tips">Don\'t hide the launcher view when going to the Personal assistant</string>
     <!-- MinusBlurPage -->
 </resources>

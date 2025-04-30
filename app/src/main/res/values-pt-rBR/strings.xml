@@ -11,7 +11,7 @@
     <string name="common_range">Alcance</string>
     <string name="common_search">Pesquisar</string>
     <string name="common_others">Outros</string>
-    <string name="common_tap_sleep">Toque duas vezes em um local vazio para desligar a tela</string>
+    <string name="common_tap_sleep">Toque duas vezes em um local vazio para bloquear a tela</string>
     <string name="common_disabled">Desativado</string>
     <string name="common_enabled">Ativado</string>
     <string name="common_on">Ligado</string>
@@ -306,8 +306,10 @@
     <string name="cleaner_music_hide_discover_tips">Remove o discover da guia superior na página inicial</string>
     <string name="cleaner_music_hide_my_banner">Ocultar banner na minha página</string>
     <string name="cleaner_music_hide_my_rec_playlist">Ocultar músicas recomendadas na minha página</string>
+    <string name="cleaner_music_block_try_excellent">Bloquear caixa de diálogo \"Experimentar qualidade excelente\"</string>
     <string name="cleaner_package_remove_element">Desativar recursos redundantes</string>
     <string name="cleaner_package_skip_risk_check">Desativar verificação de risco</string>
+    <string name="cleaner_package_no_network">Disfarçar como nenhuma rede</string>
     <string name="cleaner_package_no_count_check">Desativar verificação de apps instalados com frequência</string>
     <string name="cleaner_package_install_source">Fonte de instalação personalizada</string>
     <string name="cleaner_package_install_source_tips">Ignore as restrições de instalação de apps do sistema disfarçando a fonte de instalação como um app do sistema.</string>
