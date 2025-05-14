@@ -283,6 +283,8 @@
     <string name="cleaner_privacy_block_ul_app_info">Impedir upload de informações sobre o app quando ele estiver instalado</string>
     <string name="cleaner_browser_remove_app_rec">Remover recomendações de apps</string>
     <string name="cleaner_browser_remove_app_rec_tips">Remove as recomendações de apps das sugestões da caixa de pesquisa</string>
+    <string name="cleaner_browser_hide_ai_mode_btn">Ocultar entrada para explorar a página inicial</string>
+    <string name="cleaner_browser_hide_ai_mode_btn_tips">Oculte a entrada da página inicial do explorador no topo da página inicial simplificada.</string>
     <string name="cleaner_downloadui_hide_xl">Ocultar ícones e texto da Xunlei</string>
     <string name="cleaner_download_fuck_xl">Bloquear a criação da pasta .xlDownload</string>
     <string name="cleaner_home_remove_report">Remover botão \"Denunciar\" da janela pop-up de desinstalação do app</string>
