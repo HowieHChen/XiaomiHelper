@@ -143,6 +143,11 @@ fun CleanMasterPage(navController: NavController, adjustPadding: PaddingValues, 
                     summary = stringResource(R.string.cleaner_browser_remove_app_rec_tips),
                     key = Pref.Key.Browser.REMOVE_APP_REC
                 )
+                SwitchPreference(
+                    title = stringResource(R.string.cleaner_browser_hide_ai_mode_btn),
+                    summary = stringResource(R.string.cleaner_browser_hide_ai_mode_btn_tips),
+                    key = Pref.Key.Browser.HIDE_AI_MODE_BUTTON
+                )
             }
         }
         item {

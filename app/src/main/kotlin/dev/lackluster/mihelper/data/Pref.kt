@@ -39,6 +39,7 @@ object Pref {
             const val BLOCK_UPDATE = "browser_no_update"
             const val SKIP_SPLASH = "browser_skip_splash"
             const val REMOVE_APP_REC = "browser_remove_app_rec"
+            const val HIDE_AI_MODE_BUTTON = "browser_hide_ai_mode_button"
         }
         object Download {
             const val FUCK_XL = "download_remove_xl"

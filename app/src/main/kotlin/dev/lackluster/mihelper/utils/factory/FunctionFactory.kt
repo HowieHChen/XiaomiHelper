@@ -67,6 +67,15 @@ fun Application.getResID(name: String, defType: String, pkg: String): Int {
     }
 }
 
+@SuppressLint("DiscouragedApi")
+fun Context.getResID(name: String, defType: String, pkg: String): Int {
+    return try {
+        this.resources.getIdentifier(name, defType, pkg)
+    } catch (t: Throwable) {
+        0
+    }
+}
+
 inline fun hasEnable(
     key: String,
     default: Boolean = false,

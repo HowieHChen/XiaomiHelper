@@ -593,4 +593,6 @@
     <string name="cleaner_music_hide_karaoke">隐藏K歌</string>
     <string name="cleaner_music_hide_discover">隐藏发现</string>
     <string name="cleaner_music_block_try_excellent">屏蔽“臻品母带”弹窗</string>
+    <string name="cleaner_browser_hide_ai_mode_btn">隐藏探索版主页入口</string>
+    <string name="cleaner_browser_hide_ai_mode_btn_tips">隐藏简洁版主页顶部的探索版主页入口</string>
 </resources>
