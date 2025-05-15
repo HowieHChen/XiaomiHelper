@@ -144,9 +144,9 @@ fun CleanMasterPage(navController: NavController, adjustPadding: PaddingValues, 
                     key = Pref.Key.Browser.REMOVE_APP_REC
                 )
                 SwitchPreference(
-                    title = stringResource(R.string.cleaner_browser_hide_ai_mode_btn),
-                    summary = stringResource(R.string.cleaner_browser_hide_ai_mode_btn_tips),
-                    key = Pref.Key.Browser.HIDE_AI_MODE_BUTTON
+                    title = stringResource(R.string.cleaner_browser_hide_homepage_topbar),
+                    summary = stringResource(R.string.cleaner_browser_hide_homepage_topbar_tips),
+                    key = Pref.Key.Browser.HIDE_HOMEPAGE_TOP_BAR
                 )
             }
         }
