@@ -8,18 +8,35 @@ import dev.lackluster.mihelper.utils.factory.hasEnable
 object SkipSplash : YukiBaseHooker() {
     override fun onHook() {
         hasEnable(Pref.Key.Music.SKIP_SPLASH) {
-            "com.tencent.qqmusiclite.activity.MainActivity".toClassOrNull()?.apply {
-                method {
-                    name = "checkColdSplash"
-                }.hook {
-                    intercept()
+            val enableClass = "com.tencent.qqmusiclite.business.splashad.data.enums.Enable".toClassOrNull()
+            val disableVIP = if (enableClass?.isEnum == true) enableClass.enumConstants[4] else null
+            if (disableVIP != null) {
+                "com.tencent.qqmusiclite.business.splashad.ams.AmsGlobal".toClassOrNull()?.apply {
+                    method {
+                        name = "isNeedAd"
+                    }.hook {
+                        replaceTo(disableVIP)
+                    }
+                    method {
+                        name = "isNeedSplashAd"
+                    }.hook {
+                        replaceTo(disableVIP)
+                    }
                 }
-            }
-            "com.tencent.qqmusiclite.business.splashad.ams.AmsGlobal".toClassOrNull()?.apply {
-                method {
-                    name = "checkHotSplash"
-                }.hook {
-                    intercept()
+            } else {
+                "com.tencent.qqmusiclite.activity.MainActivity".toClassOrNull()?.apply {
+                    method {
+                        name = "checkColdSplash"
+                    }.hook {
+                        intercept()
+                    }
+                }
+                "com.tencent.qqmusiclite.business.splashad.ams.AmsGlobal".toClassOrNull()?.apply {
+                    method {
+                        name = "checkHotSplash"
+                    }.hook {
+                        intercept()
+                    }
                 }
             }
         }

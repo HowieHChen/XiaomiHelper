@@ -25,6 +25,8 @@ import android.widget.TextView
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.current
 import com.highcapable.yukihookapi.hook.factory.method
+import de.robv.android.xposed.XC_MethodHook
+import de.robv.android.xposed.XposedBridge
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.factory.hasEnable
 
@@ -36,6 +38,20 @@ object AdBlocker : YukiBaseHooker() {
                     name = "loadAd"
                 }.hook {
                     intercept()
+                }
+            }
+            "com.tencent.qqmusiclite.business.main.promote.data.MainPromoteInfo".toClassOrNull()?.apply {
+                method {
+                    name = "isVisible"
+                }.hook {
+                    replaceToFalse()
+                }
+            }
+            "com.tencent.qqmusiclite.business.main.promote.view.HomeVipEntryInfo".toClassOrNull()?.apply {
+                method {
+                    name = "isShow"
+                }.hook {
+                    replaceToFalse()
                 }
             }
             "com.tencent.qqmusiclite.ui.MyAssetsView\$LoginLayoutViewHolder".toClassOrNull()?.apply {
@@ -75,6 +91,48 @@ object AdBlocker : YukiBaseHooker() {
                             name = "getVipBuyLabel"
                         }.invoke<TextView>()?.visibility = View.GONE
                         this.result = null
+                    }
+                }
+            }
+            "com.tencent.qqmusiclite.freemode.ExcellentTryStrategy".toClassOrNull()?.apply {
+                method {
+                    name = "tryShowExcellentGuideAlert"
+                }.give()?.let {
+                    XposedBridge.hookMethod(
+                        it,
+                        object : XC_MethodHook() {
+                            override fun beforeHookedMethod(param: MethodHookParam?) {
+                                param?.result = false as Any?
+                            }
+                        }
+                    )
+                }
+                method {
+                    name = "checkNeedShowExcellentGuideAlert"
+                }.give()?.let {
+                    XposedBridge.hookMethod(
+                        it,
+                        object : XC_MethodHook() {
+                            override fun beforeHookedMethod(param: MethodHookParam?) {
+                                param?.result = false as Any?
+                            }
+                        }
+                    )
+                }
+            }
+            "com.tencent.qqmusiclite.activity.player.song.PlayerSongFragment".toClassOrNull()?.apply {
+                method {
+                    name = "setNewTipsTextAndShowWithFadeIn"
+                }.hook {
+                    intercept()
+                }
+            }
+            "com.tencent.qqmusiclite.ui.minibar.MiniBarController".toClassOrNull()?.apply {
+                method {
+                    name = "setMinibarBubbleVisibility"
+                }.hook {
+                    before {
+                        this.args(0).setFalse()
                     }
                 }
             }
