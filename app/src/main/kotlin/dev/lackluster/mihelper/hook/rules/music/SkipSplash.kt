@@ -9,7 +9,7 @@ object SkipSplash : YukiBaseHooker() {
     override fun onHook() {
         hasEnable(Pref.Key.Music.SKIP_SPLASH) {
             val enableClass = "com.tencent.qqmusiclite.business.splashad.data.enums.Enable".toClassOrNull()
-            val disableVIP = if (enableClass?.isEnum == true) enableClass.enumConstants[4] else null
+            val disableVIP = if (enableClass?.isEnum == true) enableClass.enumConstants?.get(4) else null
             if (disableVIP != null) {
                 "com.tencent.qqmusiclite.business.splashad.ams.AmsGlobal".toClassOrNull()?.apply {
                     method {

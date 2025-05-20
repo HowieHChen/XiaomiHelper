@@ -119,6 +119,37 @@ object AdBlocker : YukiBaseHooker() {
                         }
                     )
                 }
+                method {
+                    name = "checkCanShow"
+                }.give()?.let {
+                    XposedBridge.hookMethod(
+                        it,
+                        object : XC_MethodHook() {
+                            override fun beforeHookedMethod(param: MethodHookParam?) {
+                                param?.result = false as Any?
+                            }
+                        }
+                    )
+                }
+                method {
+                    name = "tryShowTryEndAlert"
+                }.ignored().hook {
+                    replaceToFalse()
+                }
+            }
+            "com.tencent.config.AppConfig".toClassOrNull()?.apply {
+                method {
+                    name = "isNeedAd"
+                }.hook {
+                    replaceToFalse()
+                }
+            }
+            "com.tencent.qqmusiclite.activity.main.usecase.operation.OperationDialogLauncher".toClassOrNull()?.apply {
+                method {
+                    name = "checkAndShowOperationDialog"
+                }.hook {
+                    intercept()
+                }
             }
             "com.tencent.qqmusiclite.activity.player.song.PlayerSongFragment".toClassOrNull()?.apply {
                 method {
