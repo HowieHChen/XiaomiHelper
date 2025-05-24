@@ -25,6 +25,7 @@ import dev.lackluster.mihelper.hook.rules.systemui.media.CustomElement
 import dev.lackluster.mihelper.hook.rules.systemui.media.StyleCustomHookEntry
 import dev.lackluster.mihelper.hook.rules.systemui.media.UnlockCustomAction
 import dev.lackluster.mihelper.hook.rules.systemui.notif.AdvancedTextures
+import dev.lackluster.mihelper.hook.rules.systemui.notif.MiuiXExpandButton
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.BatteryIndicator
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.ElementsFontWeight
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.HideCellularIcon
@@ -41,6 +42,7 @@ object SystemUI : YukiBaseHooker() {
 
         loadHooker(NotifFreeform)
         loadHooker(NotifWhitelist)
+        loadHooker(MiuiXExpandButton)
 
         loadHooker(BatteryIndicator)
         loadHooker(HideCarrierLabel)

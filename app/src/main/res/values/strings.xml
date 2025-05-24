@@ -241,6 +241,8 @@
     <string name="systemui_notif_clock_anim_tips">Allow clock transition animation in landscape</string>
     <string name="systemui_notif_theme_blur">Allow Advanced textures to be enabled when using themes</string>
     <string name="systemui_notif_media_control_style">Customize the style of the media control</string>
+    <string name="systemui_notif_miuix_expand_btn">Miuix style expand button</string>
+    <string name="systemui_notif_miuix_expand_btn_tips">Replace the expand button of Android-style notifications with Miuix button.</string>
     <string name="ui_title_systemui_control_center">Control center</string>
     <string name="systemui_control_hide_carrier_one">Hide carrier label for SIM card 1</string>
     <string name="systemui_control_hide_carrier_two">Hide carrier label for SIM card 2</string>

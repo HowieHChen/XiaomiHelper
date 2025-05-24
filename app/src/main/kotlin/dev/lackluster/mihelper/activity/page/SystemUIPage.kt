@@ -134,6 +134,11 @@ fun SystemUIPage(navController: NavController, adjustPadding: PaddingValues, mod
                     title = stringResource(R.string.systemui_notif_disable_whitelist),
                     key = Pref.Key.SystemUI.NotifCenter.NOTIF_NO_WHITELIST
                 )
+                SwitchPreference(
+                    title = stringResource(R.string.systemui_notif_miuix_expand_btn),
+                    summary = stringResource(R.string.systemui_notif_miuix_expand_btn_tips),
+                    key = Pref.Key.SystemUI.NotifCenter.MIUIX_EXPAND_BUTTON
+                )
             }
         }
         item {

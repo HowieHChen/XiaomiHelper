@@ -175,6 +175,8 @@
     <string name="systemui_statusbar_disable_smart_dark_tips">智能深色特性会使状态栏在深色模式下忽略应用程序指定的颜色并启用区域采样自动改变颜色。禁用此特性以还原 Android 默认行为。</string>
     <string name="ui_title_systemui_lock_screen">锁屏</string>
     <string name="ui_title_systemui_notification_center">通知中心</string>
+    <string name="systemui_notif_miuix_expand_btn">Miuix 样式的展开按钮</string>
+    <string name="systemui_notif_miuix_expand_btn_tips">使用 Miuix 按钮替换 Android 样式通知的展开按钮</string>
     <string name="ui_title_systemui_control_center">控制中心</string>
     <string name="ui_title_systemui_status_bar">状态栏</string>
     <string name="systemui_notif_disable_whitelist">禁用通知白名单</string>

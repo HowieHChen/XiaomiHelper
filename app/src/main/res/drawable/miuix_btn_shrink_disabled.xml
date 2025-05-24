@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:height="@dimen/miuix_btn_size"
+    android:width="@dimen/miuix_btn_size"
+    android:autoMirrored="true"
+    android:viewportWidth="26.0"
+    android:viewportHeight="26.0">
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M13,25.3676C19.8305,25.3676 25.3676,19.8305 25.3676,13C25.3676,6.1695 19.8305,0.6324 13,0.6324C6.1695,0.6324 0.6324,6.1695 0.6324,13C0.6324,19.8305 6.1695,25.3676 13,25.3676Z"
+        android:strokeColor="#00000000"
+        android:strokeWidth="0.735294"
+        android:strokeAlpha="0.1"
+        android:fillAlpha="0.03" />
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M8.793,15.6677C8.3623,15.237 8.3623,14.5387 8.793,14.108L12.4411,10.4599C12.73,10.171 13.1391,10.0759 13.5073,10.1744C13.7017,10.2193 13.8863,10.3176 14.0379,10.4691L17.686,14.1172C18.1167,14.5479 18.1167,15.2462 17.686,15.677C17.2552,16.1077 16.5569,16.1077 16.1262,15.677L13.2349,12.7857L10.3528,15.6677C9.9221,16.0985 9.2237,16.0985 8.793,15.6677Z"
+        android:fillAlpha="0.14999999"
+        android:fillType="evenOdd" />
+</vector>
