@@ -23,6 +23,7 @@ import dev.lackluster.mihelper.hook.rules.systemui.freeform.UnlockMultipleTask
 import dev.lackluster.mihelper.hook.rules.systemui.lockscreen.CarrierText
 import dev.lackluster.mihelper.hook.rules.systemui.lockscreen.DoubleTapToSleep
 import dev.lackluster.mihelper.hook.rules.systemui.media.CustomElement
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaHookEntry
 import dev.lackluster.mihelper.hook.rules.systemui.media.StyleCustomHookEntry
 import dev.lackluster.mihelper.hook.rules.systemui.media.UnlockCustomAction
 import dev.lackluster.mihelper.hook.rules.systemui.notif.AdvancedTextures
@@ -60,6 +61,8 @@ object SystemUI : YukiBaseHooker() {
         loadHooker(DisableSmartDark)
         loadHooker(StatusBarActions)
         loadHooker(FuckStatusBarGestures)
+
+        loadHooker(MediaHookEntry)
         return
         loadHooker(RemoveFreeformRestriction)
         loadHooker(UnlockMultipleTask)

@@ -20,17 +20,7 @@
 
 package dev.lackluster.mihelper.hook.rules.systemui.media
 
-import android.graphics.Bitmap
-import android.graphics.Color
-import android.graphics.HardwareRenderer
 import android.graphics.Paint
-import android.graphics.PixelFormat
-import android.graphics.RenderEffect
-import android.graphics.RenderNode
-import android.graphics.Shader
-import android.graphics.drawable.TransitionDrawable
-import android.hardware.HardwareBuffer
-import android.media.ImageReader
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.current
 import com.highcapable.yukihookapi.hook.factory.method
@@ -46,11 +36,11 @@ object StyleCustomHookEntry : YukiBaseHooker() {
 
     override fun onHook() {
         when (background) {
-            1 -> loadHooker(EnhancedStyle)
+            1 -> loadHooker(CoverArtStyle)
             2 -> loadHooker(AdvancedTexturesStyle)
             3 -> loadHooker(BlurredCoverStyle)
-            4 -> loadHooker(AndroidNewStyle)
-            5 -> loadHooker(AndroidOldStyle)
+            4 -> loadHooker(RadialGradientStyle)
+            5 -> loadHooker(LinearGradientStyle)
             else -> return
         }
         playerTwoCircleViewClass.apply {
@@ -81,80 +71,5 @@ object StyleCustomHookEntry : YukiBaseHooker() {
         }
     }
 
-    fun scaleTransitionDrawableLayer(
-        transitionDrawable: TransitionDrawable, layer: Int, targetWidth: Int, targetHeight: Int
-    ) {
-        val drawable = transitionDrawable.getDrawable(layer) ?: return
 
-        val width = drawable.intrinsicWidth
-        val height = drawable.intrinsicHeight
-        if (width == 0 || height == 0 || targetWidth == 0 || targetHeight == 0) {
-            return
-        }
-        val scale = if (width / height.toFloat() > targetWidth / targetHeight.toFloat()) {
-            // Drawable is wider than target view, scale to match height
-            targetHeight / height.toFloat()
-        } else {
-            // Drawable is taller than target view, scale to match width
-            targetWidth / width.toFloat()
-        }
-        transitionDrawable.setLayerSize(layer, (scale * width).toInt(), (scale * height).toInt())
-    }
-
-    fun Bitmap.brightness(): Float {
-        var totalBrightness = 0f
-        val totalPixels = this.width * this.height / 25
-
-        for (x in 0 until this.width / 5) {
-            for (y in 0 until this.height step 5) {
-                val pixel = this.getPixel(x, y)
-                val red = Color.red(pixel)
-                val green = Color.green(pixel)
-                val blue = Color.blue(pixel)
-                val brightness =
-                    0.299f * red + 0.587f * green + 0.114f * blue
-                totalBrightness += brightness
-            }
-        }
-
-        return totalBrightness / totalPixels
-    }
-
-    fun Bitmap.hardwareBlur(radius: Float): Bitmap {
-        val imageReader = ImageReader.newInstance(
-            this.width, this.height,
-            PixelFormat.RGBA_8888, 1,
-            HardwareBuffer.USAGE_GPU_SAMPLED_IMAGE or HardwareBuffer.USAGE_GPU_COLOR_OUTPUT
-        )
-        val renderNode = RenderNode("BlurEffect")
-        val hardwareRenderer = HardwareRenderer()
-
-        hardwareRenderer.setSurface(imageReader.surface)
-        hardwareRenderer.setContentRoot(renderNode)
-        renderNode.setPosition(0, 0, imageReader.width, imageReader.height)
-        val blurRenderEffect = RenderEffect.createBlurEffect(
-            radius, radius,
-            Shader.TileMode.MIRROR
-        )
-        renderNode.setRenderEffect(blurRenderEffect)
-
-        val renderCanvas = renderNode.beginRecording()
-        renderCanvas.drawBitmap(this, 0f, 0f, null)
-        renderNode.endRecording()
-        hardwareRenderer.createRenderRequest()
-            .setWaitForPresent(true)
-            .syncAndDraw()
-
-        val image = imageReader.acquireNextImage() ?: throw RuntimeException("No Image")
-        val hardwareBuffer = image.hardwareBuffer ?: throw RuntimeException("No HardwareBuffer")
-        val bitmap = Bitmap.wrapHardwareBuffer(hardwareBuffer, null)
-            ?: throw RuntimeException("Create Bitmap Failed")
-
-        hardwareBuffer.close()
-        image.close()
-        imageReader.close()
-        renderNode.discardDisplayList()
-        hardwareRenderer.destroy()
-        return bitmap.copy(Bitmap.Config.ARGB_8888, false)
-    }
 }

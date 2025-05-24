@@ -1,4 +1,4 @@
-package dev.lackluster.mihelper.hook.rules.systemui.media
+package dev.lackluster.mihelper.hook.drawable
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
@@ -11,7 +11,7 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 
-class CustomDrawable(
+class LinearGradientDrawable(
     private var artwork: Drawable,
     color: Int = Color.BLACK
 ) : Drawable() {

@@ -25,7 +25,6 @@ package dev.lackluster.mihelper.hook.rules.systemui.media
 import android.app.WallpaperColors
 import android.content.Context
 import android.content.res.ColorStateList
-import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
@@ -33,8 +32,6 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
 import android.graphics.RectF
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.Icon
 import android.graphics.drawable.TransitionDrawable
@@ -52,9 +49,13 @@ import com.highcapable.yukihookapi.hook.factory.current
 import com.highcapable.yukihookapi.hook.factory.method
 import com.highcapable.yukihookapi.hook.log.YLog
 import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.hook.rules.systemui.media.StyleCustomHookEntry.hardwareBlur
-import dev.lackluster.mihelper.hook.rules.systemui.media.StyleCustomHookEntry.scaleTransitionDrawableLayer
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaHookEntry.hardwareBlur
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaHookEntry.scaleTransitionDrawableLayer
 import dev.lackluster.mihelper.utils.Prefs
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.scale
+import androidx.core.graphics.drawable.toDrawable
+import dev.lackluster.mihelper.hook.drawable.RadialGradientDrawable
 
 
 object BlurredCoverStyle : YukiBaseHooker() {
@@ -67,7 +68,7 @@ object BlurredCoverStyle : YukiBaseHooker() {
         "com.android.systemui.monet.ColorScheme".toClass()
     }
     private val contentStyle by lazy {
-        "com.android.systemui.monet.Style".toClass().enumConstants[6]
+        "com.android.systemui.monet.Style".toClass().enumConstants?.get(6)
     }
     private var mArtworkBoundId = 0
     private var mArtworkNextBindRequestId = 0
@@ -129,13 +130,13 @@ object BlurredCoverStyle : YukiBaseHooker() {
                 val albumView = mMediaViewHolder.current(true).field { name = "albumView" }.any() as ImageView
 
                 val artworkLayer = artworkIcon?.loadDrawable(mContext) ?: return@after
-                val artworkBitmap = Bitmap.createBitmap(artworkLayer.intrinsicWidth, artworkLayer.intrinsicHeight, Bitmap.Config.ARGB_8888)
+                val artworkBitmap = createBitmap(artworkLayer.intrinsicWidth, artworkLayer.intrinsicHeight)
                 val canvas = Canvas(artworkBitmap)
                 artworkLayer.setBounds(0, 0, artworkLayer.intrinsicWidth, artworkLayer.intrinsicHeight)
                 artworkLayer.draw(canvas)
-                val resizedBitmap = Bitmap.createScaledBitmap(artworkBitmap, 300, 300, true)
+                val resizedBitmap = artworkBitmap.scale(300, 300)
                 val radius = 45f
-                val newBitmap = Bitmap.createBitmap(resizedBitmap.width, resizedBitmap.height, Bitmap.Config.ARGB_8888)
+                val newBitmap = createBitmap(resizedBitmap.width, resizedBitmap.height)
                 val canvas1 = Canvas(newBitmap)
                 val paint = Paint()
                 val rect = Rect(0, 0, resizedBitmap.width, resizedBitmap.height)
@@ -146,7 +147,7 @@ object BlurredCoverStyle : YukiBaseHooker() {
                 canvas1.drawRoundRect(rectF, radius, radius, paint)
                 paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
                 canvas1.drawBitmap(resizedBitmap, rect, rect, paint)
-                albumView.setImageDrawable(BitmapDrawable(mContext.resources, newBitmap))
+                albumView.setImageDrawable(newBitmap.toDrawable(mContext.resources))
 
                 // Capture width & height from views in foreground for artwork scaling in background
                 val width: Int
@@ -203,23 +204,23 @@ object BlurredCoverStyle : YukiBaseHooker() {
                     }.call(artworkIcon) as? WallpaperColors?
                     if (wallpaperColors != null) {
                         mutableColorScheme = colorSchemeClass.constructor {
-                            paramCount = 2
-                        }.get().call(wallpaperColors, contentStyle)
+                            paramCount = 3
+                        }.get().call(wallpaperColors, true, contentStyle)
                         artwork = this.instance.current().method {
-                            name = "addGradientToPlayerAlbum"
+                            name = "getScaledBackground"
                             superClass()
-                        }.call(artworkIcon, mutableColorScheme, width, height) as Drawable?
+                        }.call(artworkIcon, height, height) as Drawable? ?: Color.TRANSPARENT.toDrawable()
                         isArtworkBound = true
                     } else {
                         // If there's no artwork, use colors from the app icon
-                        artwork = ColorDrawable(Color.TRANSPARENT)
+                        artwork = Color.TRANSPARENT.toDrawable()
                         isArtworkBound = false
                         try {
                             val icon = mContext.packageManager.getApplicationIcon(packageName)
                             mutableColorScheme = colorSchemeClass.constructor {
-                                paramCount = 2
-                            }.get().call(WallpaperColors.fromDrawable(icon), contentStyle)
-                        } catch (e: Exception) {
+                                paramCount = 3
+                            }.get().call(WallpaperColors.fromDrawable(icon), true, contentStyle)
+                        } catch (_: Exception) {
                             YLog.warn("application not found!")
                             Trace.endAsyncSection(traceName, traceCookie)
                             return@execute
@@ -227,20 +228,38 @@ object BlurredCoverStyle : YukiBaseHooker() {
                     }
                     var textPrimary = Color.WHITE
                     var textSecondary = Color.BLACK
+                    var bgStartColor = Color.BLACK
+                    var bgEndColor = Color.BLACK
                     var colorSchemeChanged = false
                     if (mutableColorScheme != null) {
-                        val neutral1 = mutableColorScheme.current().field { name = "neutral1" }.any()!!.current().field {
+                        val neutral1 = mutableColorScheme.current().field {
+                            name = "mNeutral1"
+                        }.any()!!.current().field {
                             name = "allShades"
                         }.list<Int?>()
-                        val neutral2 = mutableColorScheme.current().field { name = "neutral2" }.any()!!.current().field {
+                        val neutral2 = mutableColorScheme.current().field {
+                            name = "mNeutral2"
+                        }.any()!!.current().field {
+                            name = "allShades"
+                        }.list<Int?>()
+                        val accent1 = mutableColorScheme.current().field {
+                            name = "mAccent1"
+                        }.any()!!.current().field {
+                            name = "allShades"
+                        }.list<Int?>()
+                        val accent2 = mutableColorScheme.current(true).field {
+                            name = "mAccent2"
+                        }.any()!!.current().field {
                             name = "allShades"
                         }.list<Int?>()
                         textPrimary = neutral1[1]!!
                         textSecondary = neutral2[3]!!
+                        bgStartColor = accent2[9]!!
+                        bgEndColor = accent1[9]!!
                         colorSchemeChanged = textPrimary != mPrevTextPrimaryColor
                         mPrevTextPrimaryColor = textPrimary
                     }
-                    val blurredBitmap = artwork!!.toBitmap().hardwareBlur(height.toFloat() / 100 * blurRadius)
+                    val blurredBitmap = RadialGradientDrawable(artwork, bgStartColor, bgEndColor).toBitmap().hardwareBlur(height.toFloat() / 100 * blurRadius)
 
                     mediaBg.post(Runnable {
                         if (reqId < mArtworkBoundId) {
@@ -298,7 +317,7 @@ object BlurredCoverStyle : YukiBaseHooker() {
                             }
                         }
 
-                        val finalBackground = BitmapDrawable(mContext.resources, blurredBitmap)
+                        val finalBackground = blurredBitmap.toDrawable(mContext.resources)
                         // Bind the album view to the artwork or a transition drawable
                         mediaBg.setPadding(0, 0, 0, 0)
                         if (updateBackground || (!mIsArtworkBound && isArtworkBound)) {
