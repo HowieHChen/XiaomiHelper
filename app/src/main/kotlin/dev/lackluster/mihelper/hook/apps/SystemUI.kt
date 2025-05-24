@@ -4,6 +4,7 @@ import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import dev.lackluster.mihelper.hook.rules.shared.RemoveFreeformRestriction
 import dev.lackluster.mihelper.hook.rules.systemui.DisableSmartDark
 import dev.lackluster.mihelper.hook.rules.systemui.FuckStatusBarGestures
+import dev.lackluster.mihelper.hook.rules.systemui.MonetOverlay
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils
 import dev.lackluster.mihelper.hook.rules.systemui.StatusBarActions
 import dev.lackluster.mihelper.hook.rules.systemui.lockscreen.BlockEditor
@@ -43,6 +44,7 @@ object SystemUI : YukiBaseHooker() {
         loadHooker(NotifFreeform)
         loadHooker(NotifWhitelist)
         loadHooker(MiuiXExpandButton)
+        loadHooker(MonetOverlay)
 
         loadHooker(BatteryIndicator)
         loadHooker(HideCarrierLabel)

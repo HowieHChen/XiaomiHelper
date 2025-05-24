@@ -242,11 +242,16 @@
     <string name="systemui_notif_theme_blur">Allow Advanced textures to be enabled when using themes</string>
     <string name="systemui_notif_media_control_style">Customize the style of the media control</string>
     <string name="systemui_notif_miuix_expand_btn">Miuix style expand button</string>
-    <string name="systemui_notif_miuix_expand_btn_tips">Replace the expand button of Android-style notifications with Miuix button.</string>
+    <string name="systemui_notif_miuix_expand_btn_tips">Replace the expand button of Android-style notifications with Miuix button</string>
     <string name="ui_title_systemui_control_center">Control center</string>
     <string name="systemui_control_hide_carrier_one">Hide carrier label for SIM card 1</string>
     <string name="systemui_control_hide_carrier_two">Hide carrier label for SIM card 2</string>
-<!--<string name="ui_title_systemui_others" translatable="false">@string/common_others</string>-->
+    <string name="ui_title_systemui_others" translatable="false">@string/common_others</string>
+    <string name="systemui_others_monet_overlay">Customize theme color</string>
+    <string name="systemui_others_monet_overlay_tips">Customize theme colors instead of fetching colors from system wallpaper</string>
+    <string name="systemui_others_monet_color">Theme color</string>
+    <string name="systemui_others_monet_color_tips">This color will affect all apps that use dynamic color schemes</string>
+    <string name="systemui_others_monet_color_msg">Hex color code starting with # \n(e.g. #FF123456, #FF00FF)</string>
     <!-- MiuiHomePage -->
     <string name="ui_title_home_exclusive">Exclusive feature</string>
     <string name="home_exclusive_refactor">Advanced blur effects</string>

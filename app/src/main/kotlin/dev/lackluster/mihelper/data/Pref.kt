@@ -373,6 +373,8 @@ object Pref {
                 const val ADVANCED_TEXTURE = "systemui_notif_adv_texture"
                 const val CLOCK_PAD_ANIM = "statusbar_clock_pad_anim"
                 const val MIUIX_EXPAND_BUTTON = "systemui_notif_miuix_expand"
+                const val MONET_OVERLAY = "systemui_notif_monet_overlay"
+                const val MONET_OVERLAY_COLOR = "systemui_notif_monet_color"
             }
             object MediaControl {
                 const val UNLOCK_ACTION = "media_unlock_action"

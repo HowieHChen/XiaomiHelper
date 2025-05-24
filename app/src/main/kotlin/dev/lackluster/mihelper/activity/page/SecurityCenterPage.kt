@@ -124,7 +124,8 @@ fun SecurityCenterPage(navController: NavController, adjustPadding: PaddingValue
         }
         item {
             PreferenceGroup(
-                title = stringResource(R.string.ui_title_security_power)
+                title = stringResource(R.string.ui_title_security_power),
+                last = true
             ) {
                 SwitchPreference(
                     title = stringResource(R.string.security_power_unlock_custom_refresh),

@@ -177,6 +177,8 @@
     <string name="ui_title_systemui_notification_center">通知中心</string>
     <string name="systemui_notif_miuix_expand_btn">Miuix 样式的展开按钮</string>
     <string name="systemui_notif_miuix_expand_btn_tips">使用 Miuix 按钮替换 Android 样式通知的展开按钮</string>
+    <string name="systemui_others_monet_color_tips">此颜色将影响所有使用动态配色方案的应用程序</string>
+    <string name="systemui_others_monet_color_msg">以 # 开头的十六进制颜色代码\n（如 #FF123456 #FF00FF）</string>
     <string name="ui_title_systemui_control_center">控制中心</string>
     <string name="ui_title_systemui_status_bar">状态栏</string>
     <string name="systemui_notif_disable_whitelist">禁用通知白名单</string>
@@ -597,4 +599,7 @@
     <string name="cleaner_music_block_try_excellent">屏蔽“臻品母带”弹窗</string>
     <string name="cleaner_browser_hide_homepage_topbar">隐藏主页顶栏</string>
     <string name="cleaner_browser_hide_homepage_topbar_tips">隐藏简洁版主页的顶栏（包含探索版主页入口和主页设置按钮）</string>
+    <string name="systemui_others_monet_overlay">自定义主题色</string>
+    <string name="systemui_others_monet_overlay_tips">使用自定义的主题色，而不是从壁纸中提取出的颜色</string>
+    <string name="systemui_others_monet_color">主题色</string>
 </resources>

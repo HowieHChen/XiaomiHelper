@@ -15,6 +15,8 @@ import dev.lackluster.hyperx.compose.base.BasePageDefaults
 import dev.lackluster.hyperx.compose.navigation.navigateTo
 import dev.lackluster.hyperx.compose.preference.DropDownEntry
 import dev.lackluster.hyperx.compose.preference.DropDownPreference
+import dev.lackluster.hyperx.compose.preference.EditTextDataType
+import dev.lackluster.hyperx.compose.preference.EditTextPreference
 import dev.lackluster.hyperx.compose.preference.PreferenceGroup
 import dev.lackluster.hyperx.compose.preference.SeekBarPreference
 import dev.lackluster.hyperx.compose.preference.SwitchPreference
@@ -36,6 +38,9 @@ fun SystemUIPage(navController: NavController, adjustPadding: PaddingValues, mod
 
     var visibilityCustomNotifCount by remember { mutableStateOf(
         SafeSP.getBoolean(Pref.Key.SystemUI.StatusBar.NOTIFICATION_COUNT)
+    ) }
+    var visibilityMonetColor by remember { mutableStateOf(
+        SafeSP.getBoolean(Pref.Key.SystemUI.NotifCenter.MONET_OVERLAY)
     ) }
 
     BasePage(
@@ -153,6 +158,37 @@ fun SystemUIPage(navController: NavController, adjustPadding: PaddingValues, mod
                     title = stringResource(R.string.systemui_control_hide_carrier_two),
                     key = Pref.Key.SystemUI.ControlCenter.HIDE_CARRIER_TWO
                 )
+            }
+        }
+        item {
+            PreferenceGroup(
+                title = stringResource(R.string.ui_title_systemui_others),
+                last = true
+            ) {
+                SwitchPreference(
+                    title = stringResource(R.string.systemui_others_monet_overlay),
+                    summary = stringResource(R.string.systemui_others_monet_overlay_tips),
+                    key = Pref.Key.SystemUI.NotifCenter.MONET_OVERLAY
+                ) {
+                    visibilityMonetColor = it
+                }
+                AnimatedVisibility(
+                    visibilityMonetColor
+                ) {
+                    EditTextPreference(
+                        title = stringResource(R.string.systemui_others_monet_color),
+                        summary = stringResource(R.string.systemui_others_monet_color_tips),
+                        key = Pref.Key.SystemUI.NotifCenter.MONET_OVERLAY_COLOR,
+                        defValue = "#FF3482FF",
+                        dataType = EditTextDataType.STRING,
+                        dialogMessage = stringResource(R.string.systemui_others_monet_color_msg),
+                        isValueValid = { color ->
+                            (color as? String)?.let {
+                                color.matches("#[0-9a-fA-f]{8}".toRegex()) || color.matches("#[0-9a-fA-f]{6}".toRegex())
+                            } == true
+                        }
+                    )
+                }
             }
         }
     }
