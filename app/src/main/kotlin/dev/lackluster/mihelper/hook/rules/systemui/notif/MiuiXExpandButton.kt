@@ -38,8 +38,8 @@ object MiuiXExpandButton : YukiBaseHooker() {
                         mIconView.setPadding(0, 0, 0, 0)
                         if (expandButtonSize == null || expand == null || shrink == null) {
                             val context = mIconView.context.createPackageContext(BuildConfig.APPLICATION_ID, Context.CONTEXT_IGNORE_SECURITY)
-                            expand = context.getDrawable(R.drawable.miuix_btn_expand_normal)
-                            shrink = context.getDrawable(R.drawable.miuix_btn_shrink_normal)
+                            expand = context.getDrawable(R.drawable.miuix_btn_expand_pressed)
+                            shrink = context.getDrawable(R.drawable.miuix_btn_shrink_pressed)
                             expandButtonSize = context.resources.getDimensionPixelSize(R.dimen.miuix_btn_size)
                         }
                         expandButtonSize?.let {
