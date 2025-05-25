@@ -17,12 +17,12 @@ object Pages {
     const val STATUS_BAR_CLOCK = "StatusBarClockPage"
     const val STATUS_BAR_FONT = "StatusBarFontPage"
     const val ICON_TUNER = "IconTunerPage"
+    const val MEDIA_CONTROL = "MediaControlPage"
 
     const val DIALOG_SEARCH_CUSTOM_ENGINE = "CustomEngineDialog"
 
     @Deprecated("")
     const val INTERCONNECTION = "page_interconnection"
-    const val MEDIA_CONTROL = "page_media_control"
     const val DISABLE_FIXED_ORIENTATION = "disable_fixed_orientation"
     const val HOME_REFACTOR = "page_home_refactor"
     const val MINUS_BLUR = "page_minus_blur"

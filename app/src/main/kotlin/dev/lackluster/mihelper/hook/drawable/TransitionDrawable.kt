@@ -7,17 +7,14 @@ import android.graphics.ColorFilter
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.GradientDrawable
 import dev.lackluster.mihelper.utils.Math
-import kotlin.math.min
+import kotlin.math.abs
 
-
-class LinearGradientDrawable(
+class TransitionDrawable(
     private var artwork: Drawable,
     color: Int = Color.BLACK,
     private val useAnim: Boolean = true
 ) : Drawable() {
-    private var gradient: GradientDrawable = GradientDrawable()
     private var background: ColorDrawable = ColorDrawable()
     private val argbEvaluator = ArgbEvaluator()
     private var nextArtwork: Drawable? = null
@@ -36,20 +33,9 @@ class LinearGradientDrawable(
     private var currentSize: Int = 0
     private var targetSize: Int = 0
 
-    init {
-        gradient.gradientType = GradientDrawable.LINEAR_GRADIENT
-        gradient.orientation = GradientDrawable.Orientation.LEFT_RIGHT
-        gradient.shape = GradientDrawable.RECTANGLE
-        background.color = currentColor
-        gradient.colors = intArrayOf(
-            currentColor and 0x00ffffff or (51 shl 24),
-            currentColor and 0x00ffffff or (51 shl 24)
-        )
-    }
-
     override fun onBoundsChange(bounds: Rect) {
         super.onBoundsChange(bounds)
-        val newSize = min(bounds.width(), bounds.height())
+        val newSize = abs(bounds.width() - bounds.height()) / 2
         if (currentSize == 0) {
             currentSize = newSize
         }
@@ -101,29 +87,23 @@ class LinearGradientDrawable(
             else -> {}
         }
         background.color = currentColor
-        background.setBounds(0, 0, bounds.width(), bounds.height())
+        background.setBounds(0, 0, bounds.width(), bounds.width())
         background.draw(p0)
         if (alpha == 0 || alpha == 255) {
-            artwork.setBounds(bounds.width() - currentSize, 0, bounds.width(), currentSize)
+            artwork.setBounds(0, -currentSize, bounds.width(), bounds.width() - currentSize)
             artwork.draw(p0)
         } else {
-            artwork.setBounds(bounds.width() - currentSize, 0, bounds.width(), currentSize)
+            artwork.setBounds(0, -currentSize, bounds.width(), bounds.width() - currentSize)
             artwork.alpha = 255 - alpha
             artwork.draw(p0)
             artwork.alpha = 255
             nextArtwork?.let {
-                it.setBounds(bounds.width() - currentSize, 0, bounds.width(), currentSize)
+                it.setBounds(0, -currentSize, bounds.width(), bounds.width() - currentSize)
                 it.alpha = alpha
                 it.draw(p0)
                 it.alpha = 255
             }
         }
-        gradient.colors = intArrayOf(
-            currentColor,
-            currentColor and 0x00ffffff or (51 shl 24),
-        )
-        gradient.setBounds(bounds.width() - currentSize, 0, bounds.width(), bounds.height())
-        gradient.draw(p0)
         if (albumState != AnimationState.DONE || resizeState != AnimationState.DONE) {
             invalidateSelf()
         }
@@ -132,7 +112,6 @@ class LinearGradientDrawable(
     override fun setAlpha(p0: Int) {
         artwork.alpha = p0
         background.alpha = p0
-        gradient.alpha = p0
         invalidateSelf()
     }
 
@@ -147,10 +126,8 @@ class LinearGradientDrawable(
 
     fun setNewAlbum(artwork: Drawable, color: Int) {
         nextArtwork = artwork
-        if (color != targetColor) {
-            sourceColor = currentColor
-            targetColor = color
-        }
+        sourceColor = currentColor
+        targetColor = color
         albumState = AnimationState.STARTING
         invalidateSelf()
     }

@@ -670,17 +670,21 @@
     <string name="media_general_unlock_action">Display all control icons</string>
     <string name="media_general_squiggly_progress">Use squiggly progress</string>
     <string name="media_general_hide_app_icon">Hide app icons</string>
-    <string name="ui_title_media_style">Style</string>
-    <string name="media_style_custom">Background style</string>
-    <string name="media_style_custom_default">HyperOS (Default)</string>
-    <string name="media_style_custom_enhance">HyperOS (Enhanced)</string>
-    <string name="media_style_custom_texture">Advanced textures</string>
-    <string name="media_style_custom_blur">Blurred cover</string>
-    <string name="media_style_custom_android_old">Android (Old)</string>
-    <string name="media_style_custom_android_new">Android (New)</string>
-    <string name="media_style_android_anim">Experimental feature. Use transition animation when changing text color.</string>
-    <string name="media_style_blur_radius">Blur radius</string>
-    <string name="media_style_android_reverse">Auto-reverse color</string>
+    <string name="ui_title_media_bg">Background</string>
+    <string name="media_bg_custom">Background style</string>
+    <string name="media_bg_custom_default" translatable="false">@string/common_default</string>
+    <string name="media_bg_custom_art">Cover art</string>
+    <string name="media_bg_custom_blur">Blurred cover</string>
+    <string name="media_bg_custom_radial_gradient">Radial gradient</string>
+    <string name="media_bg_custom_linear_gradient">Linear gradient</string>
+    <string name="media_bg_blur_radius">Blur radius</string>
+    <string name="media_bg_auto_color_reverse">Auto-reverse color</string>
+
+    <string name="ui_title_media_others" translatable="false">@string/common_others</string>
+    <string name="media_others_color_anim">Color animation</string>
+    <string name="media_others_color_anim_tips">Experimental feature. Use transition animation when changing text color.</string>
+
+
     <!-- HomeRefactorPage -->
     <string name="home_refactor_blur">Blur effect</string>
     <string name="home_refactor_blur_radius">Blur radius</string>

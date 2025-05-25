@@ -34,10 +34,8 @@ import android.graphics.Rect
 import android.graphics.RectF
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.Icon
-import android.graphics.drawable.TransitionDrawable
 import android.os.AsyncTask
 import android.os.Trace
-import android.view.Gravity
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.SeekBar
@@ -48,7 +46,6 @@ import com.highcapable.yukihookapi.hook.factory.current
 import com.highcapable.yukihookapi.hook.factory.method
 import com.highcapable.yukihookapi.hook.log.YLog
 import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.hook.rules.systemui.media.MediaHookEntry.scaleTransitionDrawableLayer
 import dev.lackluster.mihelper.utils.Prefs
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.scale
@@ -69,7 +66,7 @@ object RadialGradientStyle : YukiBaseHooker() {
     }
     private var mArtworkBoundId = 0
     private var mArtworkNextBindRequestId = 0
-    private var mPrevArtwork: Drawable? = null
+    private var mArtworkDrawable: RadialGradientDrawable? = null
     private var mIsArtworkBound = false
     private var mPrevTextPrimaryColor = Color.WHITE
     private var mCurrentTextPrimaryColor = Color.WHITE
@@ -257,6 +254,11 @@ object RadialGradientStyle : YukiBaseHooker() {
                         mPrevTextPrimaryColor = textPrimary
                     }
 
+                    if (mArtworkDrawable == null) {
+                        mArtworkDrawable = RadialGradientDrawable(artwork, bgStartColor, bgEndColor, useAnim)
+                    }
+                    mArtworkDrawable?.setBounds(0, 0, width, height)
+
                     mediaBg.post(Runnable {
                         if (reqId < mArtworkBoundId) {
                             Trace.endAsyncSection(traceName, traceCookie)
@@ -316,26 +318,8 @@ object RadialGradientStyle : YukiBaseHooker() {
                         // Bind the album view to the artwork or a transition drawable
                         mediaBg.setPadding(0, 0, 0, 0)
                         if (updateBackground || colorSchemeChanged || (!mIsArtworkBound && isArtworkBound)) {
-                            val newMediaBg = RadialGradientDrawable(artwork, bgStartColor, bgEndColor)
-                            if (mPrevArtwork == null) {
-                                mediaBg.setImageDrawable(newMediaBg)
-                            } else {
-                                // Since we throw away the last transition, this'll pop if you backgrounds
-                                // are cycled too fast (or the correct background arrives very soon after
-                                // the metadata changes).
-                                val transitionDrawable = TransitionDrawable(
-                                    arrayOf(mPrevArtwork!!, newMediaBg)
-                                )
-                                scaleTransitionDrawableLayer(transitionDrawable, 0, width, height)
-                                scaleTransitionDrawableLayer(transitionDrawable, 1, width, height)
-                                transitionDrawable.setLayerGravity(0, Gravity.CENTER)
-                                transitionDrawable.setLayerGravity(1, Gravity.CENTER)
-                                transitionDrawable.isCrossFadeEnabled = !isArtworkBound
-
-                                mediaBg.setImageDrawable(transitionDrawable)
-                                transitionDrawable.startTransition(if (isArtworkBound) 333 else 80)
-                            }
-                            mPrevArtwork = newMediaBg
+                            mediaBg.setImageDrawable(mArtworkDrawable)
+                            mArtworkDrawable?.setNewAlbum(artwork, bgStartColor, bgEndColor)
                             mIsArtworkBound = isArtworkBound
                         }
                         Trace.endAsyncSection(traceName, traceCookie)

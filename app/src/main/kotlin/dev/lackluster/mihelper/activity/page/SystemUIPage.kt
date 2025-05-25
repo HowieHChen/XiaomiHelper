@@ -144,6 +144,11 @@ fun SystemUIPage(navController: NavController, adjustPadding: PaddingValues, mod
                     summary = stringResource(R.string.systemui_notif_miuix_expand_btn_tips),
                     key = Pref.Key.SystemUI.NotifCenter.MIUIX_EXPAND_BUTTON
                 )
+                TextPreference(
+                    title = stringResource(R.string.systemui_notif_media_control_style)
+                ) {
+                    navController.navigateTo(Pages.MEDIA_CONTROL)
+                }
             }
         }
         item {

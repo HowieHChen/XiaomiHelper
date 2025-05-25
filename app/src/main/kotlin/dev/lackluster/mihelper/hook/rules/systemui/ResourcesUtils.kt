@@ -27,6 +27,9 @@ object ResourcesUtils : YukiBaseHooker() {
     var notification_element_blend_shade_colors = 0
     var notification_element_blend_colors = 0
     var notification_item_bg_radius = 0
+    var media_progress_bar = 0
+    var media_elapsed_time = 0
+    var media_total_time = 0
     // Lockscreen
     var pad_clock_xml = 0
     var keyguard_carrier_text = 0
@@ -62,6 +65,9 @@ object ResourcesUtils : YukiBaseHooker() {
                     TextAppearance_StatusBar_Clock = this.getResID("TextAppearance.StatusBar.Clock", "style", PKG_NAME)
                     status_bar_padding_extra_start = this.getResID("status_bar_padding_extra_start", "dimen", PKG_NAME)
                     status_bar_clock_margin_end = this.getResID("status_bar_clock_margin_end", "dimen", PKG_NAME)
+                    media_progress_bar = this.getResID("media_progress_bar", "id", PKG_NAME)
+                    media_elapsed_time = this.getResID("media_elapsed_time", "id", PKG_NAME)
+                    media_total_time = this.getResID("media_total_time", "id", PKG_NAME)
                     isInitialized = true
                 }
             }

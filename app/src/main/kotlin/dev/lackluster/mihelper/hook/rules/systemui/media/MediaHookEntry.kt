@@ -7,7 +7,6 @@ import android.graphics.PixelFormat
 import android.graphics.RenderEffect
 import android.graphics.RenderNode
 import android.graphics.Shader
-import android.graphics.drawable.TransitionDrawable
 import android.hardware.HardwareBuffer
 import android.media.ImageReader
 import androidx.core.graphics.get
@@ -19,12 +18,27 @@ import dev.lackluster.mihelper.utils.Prefs
 object MediaHookEntry : YukiBaseHooker() {
     // background: 0 -> Default; 1 -> Art; 2 -> Blurred cover; 3 -> AndroidNewStyle; 4 -> AndroidOldStyle
     private val backgroundStyle = Prefs.getInt(Pref.Key.SystemUI.MediaControl.BACKGROUND_STYLE, 0)
+    private val miuiMediaControlPanelClass by lazy {
+        "com.android.systemui.statusbar.notification.mediacontrol.MiuiMediaControlPanel".toClassOrNull()
+    }
 
     override fun onHook() {
         if (backgroundStyle != 0) {
-            "com.android.systemui.statusbar.notification.mediacontrol.MiuiMediaControlPanel".toClassOrNull()?.apply {
+            miuiMediaControlPanelClass?.apply {
                 method {
                     name = "setPlayerBg"
+                }.hook {
+                    intercept()
+                }
+                method {
+                    name = "setForegroundColors"
+                }.hook {
+                    intercept()
+                }
+            }
+            "com.android.systemui.media.controls.ui.controller.MediaViewController".toClassOrNull()?.apply {
+                method {
+                    name = "resetLayoutResource"
                 }.hook {
                     intercept()
                 }
@@ -39,25 +53,25 @@ object MediaHookEntry : YukiBaseHooker() {
 
     }
 
-    fun scaleTransitionDrawableLayer(
-        transitionDrawable: TransitionDrawable, layer: Int, targetWidth: Int, targetHeight: Int
-    ) {
-        val drawable = transitionDrawable.getDrawable(layer) ?: return
-
-        val width = drawable.intrinsicWidth
-        val height = drawable.intrinsicHeight
-        if (width == 0 || height == 0 || targetWidth == 0 || targetHeight == 0) {
-            return
-        }
-        val scale = if (width / height.toFloat() > targetWidth / targetHeight.toFloat()) {
-            // Drawable is wider than target view, scale to match height
-            targetHeight / height.toFloat()
-        } else {
-            // Drawable is taller than target view, scale to match width
-            targetWidth / width.toFloat()
-        }
-        transitionDrawable.setLayerSize(layer, (scale * width).toInt(), (scale * height).toInt())
-    }
+//    fun scaleTransitionDrawableLayer(
+//        transitionDrawable: TransitionDrawable, layer: Int, targetWidth: Int, targetHeight: Int
+//    ) {
+//        val drawable = transitionDrawable.getDrawable(layer) ?: return
+//
+//        val width = drawable.intrinsicWidth
+//        val height = drawable.intrinsicHeight
+//        if (width == 0 || height == 0 || targetWidth == 0 || targetHeight == 0) {
+//            return
+//        }
+//        val scale = if (width / height.toFloat() > targetWidth / targetHeight.toFloat()) {
+//            // Drawable is wider than target view, scale to match height
+//            targetHeight / height.toFloat()
+//        } else {
+//            // Drawable is taller than target view, scale to match width
+//            targetWidth / width.toFloat()
+//        }
+//        transitionDrawable.setLayerSize(layer, (scale * width).toInt(), (scale * height).toInt())
+//    }
 
     fun Bitmap.brightness(): Float {
         var totalBrightness = 0f

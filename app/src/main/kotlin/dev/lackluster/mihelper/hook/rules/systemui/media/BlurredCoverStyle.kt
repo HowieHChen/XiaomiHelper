@@ -34,10 +34,8 @@ import android.graphics.Rect
 import android.graphics.RectF
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.Icon
-import android.graphics.drawable.TransitionDrawable
 import android.os.AsyncTask
 import android.os.Trace
-import android.view.Gravity
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.SeekBar
@@ -50,12 +48,12 @@ import com.highcapable.yukihookapi.hook.factory.method
 import com.highcapable.yukihookapi.hook.log.YLog
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaHookEntry.hardwareBlur
-import dev.lackluster.mihelper.hook.rules.systemui.media.MediaHookEntry.scaleTransitionDrawableLayer
 import dev.lackluster.mihelper.utils.Prefs
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.scale
 import androidx.core.graphics.drawable.toDrawable
-import dev.lackluster.mihelper.hook.drawable.RadialGradientDrawable
+import dev.lackluster.mihelper.hook.drawable.RadialMaskedDrawable
+import dev.lackluster.mihelper.hook.drawable.TransitionDrawable
 
 
 object BlurredCoverStyle : YukiBaseHooker() {
@@ -72,7 +70,7 @@ object BlurredCoverStyle : YukiBaseHooker() {
     }
     private var mArtworkBoundId = 0
     private var mArtworkNextBindRequestId = 0
-    private var mPrevArtwork: Drawable? = null
+    private var mArtworkDrawable: TransitionDrawable? = null
     private var mIsArtworkBound = false
     private var mPrevTextPrimaryColor = Color.WHITE
     private var mCurrentTextPrimaryColor = Color.WHITE
@@ -259,7 +257,14 @@ object BlurredCoverStyle : YukiBaseHooker() {
                         colorSchemeChanged = textPrimary != mPrevTextPrimaryColor
                         mPrevTextPrimaryColor = textPrimary
                     }
-                    val blurredBitmap = RadialGradientDrawable(artwork, bgStartColor, bgEndColor).toBitmap().hardwareBlur(height.toFloat() / 100 * blurRadius)
+                    val blurredArtwork = RadialMaskedDrawable(artwork, bgStartColor, bgEndColor)
+                        .toBitmap()
+                        .hardwareBlur(height.toFloat() / 100 * blurRadius)
+                        .toDrawable(mContext.resources)
+                    if (mArtworkDrawable == null) {
+                        mArtworkDrawable = TransitionDrawable(blurredArtwork, bgStartColor, useAnim)
+                    }
+                    mArtworkDrawable?.setBounds(0, 0, width, height)
 
                     mediaBg.post(Runnable {
                         if (reqId < mArtworkBoundId) {
@@ -317,29 +322,11 @@ object BlurredCoverStyle : YukiBaseHooker() {
                             }
                         }
 
-                        val finalBackground = blurredBitmap.toDrawable(mContext.resources)
                         // Bind the album view to the artwork or a transition drawable
                         mediaBg.setPadding(0, 0, 0, 0)
                         if (updateBackground || (!mIsArtworkBound && isArtworkBound)) {
-                            if (mPrevArtwork == null) {
-                                mediaBg.setImageDrawable(finalBackground)
-                            } else {
-                                // Since we throw away the last transition, this'll pop if you backgrounds
-                                // are cycled too fast (or the correct background arrives very soon after
-                                // the metadata changes).
-                                val transitionDrawable = TransitionDrawable(
-                                    arrayOf(mPrevArtwork!!, finalBackground)
-                                )
-                                scaleTransitionDrawableLayer(transitionDrawable, 0, width, height)
-                                scaleTransitionDrawableLayer(transitionDrawable, 1, width, height)
-                                transitionDrawable.setLayerGravity(0, Gravity.CENTER)
-                                transitionDrawable.setLayerGravity(1, Gravity.CENTER)
-                                transitionDrawable.isCrossFadeEnabled = !isArtworkBound
-
-                                mediaBg.setImageDrawable(transitionDrawable)
-                                transitionDrawable.startTransition(if (isArtworkBound) 333 else 80)
-                            }
-                            mPrevArtwork = finalBackground
+                            mediaBg.setImageDrawable(mArtworkDrawable)
+                            mArtworkDrawable?.setNewAlbum(blurredArtwork, bgStartColor)
                             mIsArtworkBound = isArtworkBound
                         }
                         Trace.endAsyncSection(traceName, traceCookie)

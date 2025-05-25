@@ -26,6 +26,7 @@ package dev.lackluster.mihelper.hook.rules.systemui.media
 
 import android.app.WallpaperColors
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
@@ -40,11 +41,12 @@ import android.graphics.Rect
 import android.graphics.RectF
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.Icon
-import android.graphics.drawable.TransitionDrawable
 import android.os.AsyncTask
 import android.os.Trace
-import android.view.Gravity
+import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.SeekBar
+import android.widget.TextView
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.constructor
 import com.highcapable.yukihookapi.hook.factory.current
@@ -52,15 +54,18 @@ import com.highcapable.yukihookapi.hook.factory.method
 import com.highcapable.yukihookapi.hook.log.YLog
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaHookEntry.brightness
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaHookEntry.hardwareBlur
-import dev.lackluster.mihelper.hook.rules.systemui.media.MediaHookEntry.scaleTransitionDrawableLayer
 import dev.lackluster.mihelper.utils.factory.isSystemInDarkMode
 import kotlin.random.Random
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.scale
 import androidx.core.graphics.drawable.toDrawable
+import dev.lackluster.mihelper.data.Pref
+import dev.lackluster.mihelper.hook.drawable.TransitionDrawable
+import dev.lackluster.mihelper.utils.Prefs
 
 
 object CoverArtStyle : YukiBaseHooker() {
+    private val useAnim = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.USE_ANIM, true)
     private val miuiMediaControlPanelClass by lazy {
         "com.android.systemui.statusbar.notification.mediacontrol.MiuiMediaControlPanel".toClass()
     }
@@ -72,9 +77,11 @@ object CoverArtStyle : YukiBaseHooker() {
     }
     private var mArtworkBoundId = 0
     private var mArtworkNextBindRequestId = 0
-    private var mPrevArtwork: Drawable? = null
+    private var mArtworkDrawable: TransitionDrawable? = null
     private var mIsArtworkBound = false
     private var mPrevTextPrimaryColor = Color.WHITE
+    private var mCurrentTextPrimaryColor = Color.WHITE
+    private var animatingColorTransition: AnimatingColorTransition? = null
     private var lastWidth = 0
     private var lastHeight = 0
 
@@ -109,6 +116,22 @@ object CoverArtStyle : YukiBaseHooker() {
                 val artworkIcon = data.current().field { name = "artwork" }.any() as? Icon?
 
                 val mediaBg = mMediaViewHolder.current(true).field { name = "mediaBg" }.any() as ImageView
+                val titleText = mMediaViewHolder.current(true).field { name = "titleText" }.any() as TextView
+                val artistText = mMediaViewHolder.current(true).field { name = "artistText" }.any() as TextView
+                val seamlessIcon = mMediaViewHolder.current(true).field { name = "seamlessIcon" }.any() as ImageView
+                val action0 = mMediaViewHolder.current(true).field { name = "action0" }.any() as ImageButton
+                val action1 = mMediaViewHolder.current(true).field { name = "action1" }.any() as ImageButton
+                val action2 = mMediaViewHolder.current(true).field { name = "action2" }.any() as ImageButton
+                val action3 = mMediaViewHolder.current(true).field { name = "action3" }.any() as ImageButton
+                val action4 = mMediaViewHolder.current(true).field { name = "action4" }.any() as ImageButton
+                val actionNext = mMediaViewHolder.current(true).field { name = "actionNext" }.any() as ImageButton
+                val actionPlayPause = mMediaViewHolder.current(true).field { name = "actionPlayPause" }.any() as ImageButton
+                val actionPrev = mMediaViewHolder.current(true).field { name = "actionPrev" }.any() as ImageButton
+                val seekBar = mMediaViewHolder.current(true).field { name = "seekBar" }.any() as SeekBar
+                val elapsedTimeView = mMediaViewHolder.current(true).field { name = "elapsedTimeView" }.any() as TextView
+                val totalTimeView = mMediaViewHolder.current(true).field { name = "totalTimeView" }.any() as TextView
+                val scrubbingElapsedTimeView = mMediaViewHolder.current(true).field { name = "scrubbingElapsedTimeView" }.any() as TextView
+                val scrubbingTotalTimeView = mMediaViewHolder.current(true).field { name = "scrubbingTotalTimeView" }.any() as TextView
                 val albumView = mMediaViewHolder.current(true).field { name = "albumView" }.any() as ImageView
 
                 val artworkLayer = artworkIcon?.loadDrawable(mContext) ?: return@after
@@ -156,6 +179,25 @@ object CoverArtStyle : YukiBaseHooker() {
                 val packageName = data.current().field {
                     name = "packageName"
                 }.string()
+                val mPrevTextPrimaryColorStateList = ColorStateList.valueOf(mCurrentTextPrimaryColor)
+                titleText.setTextColor(mCurrentTextPrimaryColor)
+                artistText.setTextColor(mCurrentTextPrimaryColor)
+                seamlessIcon.imageTintList = mPrevTextPrimaryColorStateList
+                action0.imageTintList = mPrevTextPrimaryColorStateList
+                action1.imageTintList = mPrevTextPrimaryColorStateList
+                action2.imageTintList = mPrevTextPrimaryColorStateList
+                action3.imageTintList = mPrevTextPrimaryColorStateList
+                action4.imageTintList = mPrevTextPrimaryColorStateList
+                actionNext.imageTintList = mPrevTextPrimaryColorStateList
+                actionPlayPause.imageTintList = mPrevTextPrimaryColorStateList
+                actionPrev.imageTintList = mPrevTextPrimaryColorStateList
+                seekBar.thumb.setTintList(mPrevTextPrimaryColorStateList)
+                seekBar.progressTintList = mPrevTextPrimaryColorStateList
+                scrubbingElapsedTimeView.setTextColor(mCurrentTextPrimaryColor)
+                scrubbingTotalTimeView.setTextColor(mCurrentTextPrimaryColor)
+                elapsedTimeView.setTextColor(mCurrentTextPrimaryColor)
+                totalTimeView.setTextColor(mCurrentTextPrimaryColor)
+
                 AsyncTask.THREAD_POOL_EXECUTOR.execute {
                 // mBackgroundExecutor.execute {
                     // Album art
@@ -190,6 +232,7 @@ object CoverArtStyle : YukiBaseHooker() {
                             return@execute
                         }
                     }
+                    var textPrimary = Color.WHITE
                     var backgroundPrimary = Color.BLACK
                     var colorSchemeChanged = false
                     if (mutableColorScheme != null) {
@@ -198,7 +241,7 @@ object CoverArtStyle : YukiBaseHooker() {
                         }.any()!!.current().field {
                             name = "allShades"
                         }.list<Int?>()
-                        val textPrimary = accent1[2]!!
+                        textPrimary = accent1[2]!!
                         backgroundPrimary = accent1[8]!!
                         colorSchemeChanged = textPrimary != mPrevTextPrimaryColor
                         mPrevTextPrimaryColor = textPrimary
@@ -307,6 +350,10 @@ object CoverArtStyle : YukiBaseHooker() {
                     canvasE2.drawColor(backgroundColor)
 
                     val finalBackground = bigBitmap.hardwareBlur(40.0f).toDrawable(mContext.resources)
+                    if (mArtworkDrawable == null) {
+                        mArtworkDrawable = TransitionDrawable(finalBackground, backgroundPrimary, useAnim)
+                    }
+                    mArtworkDrawable?.setBounds(0, 0, width, height)
 
                     mediaBg.postDelayed(Runnable {
                     // mMainExecutor.execute(Runnable {
@@ -316,28 +363,60 @@ object CoverArtStyle : YukiBaseHooker() {
                         }
                         mArtworkBoundId = reqId
 
+                        if (colorSchemeChanged) {
+                            if (useAnim) {
+                                if (animatingColorTransition == null) {
+                                    animatingColorTransition = AnimatingColorTransition(applyColor = {
+                                        mCurrentTextPrimaryColor = it
+                                        val currentColorStateList = ColorStateList.valueOf(it)
+                                        titleText.setTextColor(it)
+                                        artistText.setTextColor(it)
+                                        seamlessIcon.imageTintList = currentColorStateList
+                                        action0.imageTintList = currentColorStateList
+                                        action1.imageTintList = currentColorStateList
+                                        action2.imageTintList = currentColorStateList
+                                        action3.imageTintList = currentColorStateList
+                                        action4.imageTintList = currentColorStateList
+                                        actionNext.imageTintList = currentColorStateList
+                                        actionPlayPause.imageTintList = currentColorStateList
+                                        actionPrev.imageTintList = currentColorStateList
+                                        seekBar.thumb.setTintList(currentColorStateList)
+                                        seekBar.progressTintList = currentColorStateList
+                                        scrubbingElapsedTimeView.setTextColor(it)
+                                        scrubbingTotalTimeView.setTextColor(it)
+                                        elapsedTimeView.setTextColor(it)
+                                        totalTimeView.setTextColor(it)
+                                    })
+                                }
+                                animatingColorTransition!!.animateToNewColor(textPrimary)
+                            } else {
+                                mCurrentTextPrimaryColor = textPrimary
+                                val textPrimaryColorStateList = ColorStateList.valueOf(textPrimary)
+                                titleText.setTextColor(textPrimary)
+                                artistText.setTextColor(textPrimary)
+                                seamlessIcon.imageTintList = textPrimaryColorStateList
+                                action0.imageTintList = textPrimaryColorStateList
+                                action1.imageTintList = textPrimaryColorStateList
+                                action2.imageTintList = textPrimaryColorStateList
+                                action3.imageTintList = textPrimaryColorStateList
+                                action4.imageTintList = textPrimaryColorStateList
+                                actionNext.imageTintList = textPrimaryColorStateList
+                                actionPlayPause.imageTintList = textPrimaryColorStateList
+                                actionPrev.imageTintList = textPrimaryColorStateList
+                                seekBar.thumb.setTintList(textPrimaryColorStateList)
+                                seekBar.progressTintList = textPrimaryColorStateList
+                                scrubbingElapsedTimeView.setTextColor(textPrimary)
+                                scrubbingTotalTimeView.setTextColor(textPrimary)
+                                elapsedTimeView.setTextColor(textPrimary)
+                                totalTimeView.setTextColor(textPrimary)
+                            }
+                        }
+
                         // Bind the album view to the artwork or a transition drawable
                         mediaBg.setPadding(0, 0, 0, 0)
                         if (updateBackground || colorSchemeChanged || (!mIsArtworkBound && isArtworkBound)) {
-                            if (mPrevArtwork == null) {
-                                mediaBg.setImageDrawable(finalBackground)
-                            } else {
-                                // Since we throw away the last transition, this'll pop if you backgrounds
-                                // are cycled too fast (or the correct background arrives very soon after
-                                // the metadata changes).
-                                val transitionDrawable = TransitionDrawable(
-                                    arrayOf(mPrevArtwork!!, finalBackground)
-                                )
-                                scaleTransitionDrawableLayer(transitionDrawable, 0, width, height)
-                                scaleTransitionDrawableLayer(transitionDrawable, 1, width, height)
-                                transitionDrawable.setLayerGravity(0, Gravity.CENTER)
-                                transitionDrawable.setLayerGravity(1, Gravity.CENTER)
-                                transitionDrawable.isCrossFadeEnabled = !isArtworkBound
-
-                                mediaBg.setImageDrawable(transitionDrawable)
-                                transitionDrawable.startTransition(if (isArtworkBound) 333 else 80)
-                            }
-                            mPrevArtwork = finalBackground
+                            mediaBg.setImageDrawable(mArtworkDrawable)
+                            mArtworkDrawable?.setNewAlbum(finalBackground, backgroundPrimary)
                             mIsArtworkBound = isArtworkBound
                         }
                         Trace.endAsyncSection(traceName, traceCookie)

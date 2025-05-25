@@ -245,7 +245,7 @@ object LinearGradientStyle : YukiBaseHooker() {
                     }
 
                     if (mArtworkDrawable == null) {
-                        mArtworkDrawable = LinearGradientDrawable(artwork, backgroundPrimary)
+                        mArtworkDrawable = LinearGradientDrawable(artwork, backgroundPrimary, useAnim)
                     }
                     mArtworkDrawable?.setBounds(0, 0, width, height)
 

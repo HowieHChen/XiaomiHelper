@@ -26,6 +26,7 @@ import dev.lackluster.mihelper.activity.page.AboutPage
 import dev.lackluster.mihelper.activity.page.CleanMasterPage
 import dev.lackluster.mihelper.activity.page.IconTurnerPage
 import dev.lackluster.mihelper.activity.page.MainPage
+import dev.lackluster.mihelper.activity.page.MediaControlPage
 import dev.lackluster.mihelper.activity.page.MenuPage
 import dev.lackluster.mihelper.activity.page.MiuiHomePage
 import dev.lackluster.mihelper.activity.page.ModuleSettingsPage
@@ -114,6 +115,7 @@ class MainActivity : HyperXActivity() {
                 composable(Pages.STATUS_BAR_CLOCK) { StatusBarClockPage(navController, adjustPadding, mode) }
                 composable(Pages.STATUS_BAR_FONT) { StatusBarFontPage(navController, adjustPadding, mode) }
                 composable(Pages.ICON_TUNER) { IconTurnerPage(navController, adjustPadding, mode) }
+                composable(Pages.MEDIA_CONTROL) { MediaControlPage(navController, adjustPadding, mode) }
 
                 composable(Pages.DIALOG_SEARCH_CUSTOM_ENGINE) { SearchCustomEngineDialog(navController, adjustPadding, mode) }
             }

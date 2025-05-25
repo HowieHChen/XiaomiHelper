@@ -543,17 +543,11 @@
     <string name="media_general_unlock_action">Exibir todos os ícones de controle</string>
     <string name="media_general_squiggly_progress">Usar progresso ondulado</string>
     <string name="media_general_hide_app_icon">Ocultar ícones de apps</string>
-    <string name="ui_title_media_style">Estilo</string>
-    <string name="media_style_custom">Estilo de fundo</string>
-    <string name="media_style_custom_default">HyperOS (Padrão)</string>
-    <string name="media_style_custom_enhance">HyperOS (Aprimorado)</string>
-    <string name="media_style_custom_texture">Texturas avançadas</string>
-    <string name="media_style_custom_blur">Capa desfocada</string>
-    <string name="media_style_custom_android_old">Android (Velho)</string>
-    <string name="media_style_custom_android_new">Android (Novo)</string>
-    <string name="media_style_android_anim">Recurso experimental. Usar animação de transição ao alterar a cor do texto.</string>
-    <string name="media_style_blur_radius">Raio de blur</string>
-    <string name="media_style_android_reverse">Cor de reversão automática</string>
+    <string name="media_bg_custom">Estilo de fundo</string>
+    <string name="media_bg_custom_blur">Capa desfocada</string>
+    <string name="media_others_color_anim_tips">Recurso experimental. Usar animação de transição ao alterar a cor do texto.</string>
+    <string name="media_bg_blur_radius">Raio de blur</string>
+    <string name="media_bg_auto_color_reverse">Cor de reversão automática</string>
     <!-- HomeRefactorPage -->
     <string name="home_refactor_blur">Efeito de blur</string>
     <string name="home_refactor_blur_radius">Raio de blur</string>

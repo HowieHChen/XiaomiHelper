@@ -346,10 +346,8 @@
     <string name="home_refactor_extra_compatibility">兼容性模式</string>
     <string name="home_refactor_extra_compatibility_tips">尝试与其它模块兼容，但无法确保兼容性。不推荐开启</string>
     <string name="systemui_notif_media_control_style">自定义媒体控件样式</string>
-    <string name="media_style_custom_android_new">新版安卓</string>
-    <string name="media_style_custom_enhance">HyperOS（增强）</string>
-    <string name="media_style_custom_default">HyperOS（默认）</string>
-    <string name="media_style_custom_blur">模糊封面</string>
+    <string name="media_bg_custom_art">封面艺术</string>
+    <string name="media_bg_custom_blur">模糊封面</string>
     <string name="home_refactor_minus_tips">用于模糊整个桌面视图，模糊会出现在处于负一屏时</string>
     <string name="home_refactor_minus_overlap_mode">负一屏重叠模式</string>
     <string name="ui_title_home_refactor_minus">负一屏背景的模糊</string>
@@ -439,14 +437,14 @@
     <string name="media_general_unlock_action">显示所有控制按键</string>
     <string name="media_general_squiggly_progress">使用波浪进度条</string>
     <string name="media_general_hide_app_icon">隐藏应用图标</string>
-    <string name="ui_title_media_style">风格</string>
-    <string name="media_style_custom">背景风格</string>
-    <string name="media_style_custom_texture">高级材质</string>
-    <string name="media_style_custom_android_old">旧版安卓</string>
-    <string name="media_style_android_anim">使用动画更新文字颜色</string>
-    <string name="media_style_blur_radius">模糊半径</string>
+    <string name="ui_title_media_bg">背景</string>
+    <string name="media_bg_custom">背景风格</string>
+    <string name="media_others_color_anim">颜色动画</string>
+    <string name="media_others_color_anim_tips">使用动画更新文字颜色</string>
+    <string name="media_bg_custom_linear_gradient">线性渐变</string>
+    <string name="media_bg_blur_radius">模糊半径</string>
     <string name="page_module">模块设置</string>
-    <string name="media_style_android_reverse">自动反色</string>
+    <string name="media_bg_auto_color_reverse">自动反色</string>
     <string name="ui_title_home_refactor_folder">文件夹背景的模糊效果</string>
     <string name="home_refactor_folder_tips">用于模糊打开文件夹时的背景</string>
     <string name="home_refactor_all_apps_bg">应用抽屉背景使用模糊效果</string>
@@ -602,4 +600,5 @@
     <string name="systemui_others_monet_overlay">自定义主题色</string>
     <string name="systemui_others_monet_overlay_tips">使用自定义的主题色，而不是从壁纸中提取出的颜色</string>
     <string name="systemui_others_monet_color">主题色</string>
+    <string name="media_bg_custom_radial_gradient">径向渐变</string>
 </resources>

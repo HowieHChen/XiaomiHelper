@@ -380,17 +380,11 @@
     <string name="media_general_unlock_action">すべてのコントロールアイコンを表示する</string>
     <string name="media_general_squiggly_progress">波状の進捗状況を使用する</string>
     <string name="media_general_hide_app_icon">アプリアイコンを非表示にする</string>
-    <string name="ui_title_media_style">スタイル</string>
-    <string name="media_style_custom">背景のスタイル</string>
-    <string name="media_style_custom_default">HyperOS (デフォルト)</string>
-    <string name="media_style_custom_enhance">HyperOS (強化)</string>
-    <string name="media_style_custom_texture">高度なテクスチャ</string>
-    <string name="media_style_custom_blur">ぼかしたカバー</string>
-    <string name="media_style_custom_android_old">Android (従来)</string>
-    <string name="media_style_custom_android_new">Android</string>
-    <string name="media_style_android_anim">テキストの色を変更時にトランジションアニメーションを使用する [試験的!]</string>
-    <string name="media_style_blur_radius">ぼかしの半径</string>
-    <string name="media_style_android_reverse">色を自動的に反転</string>
+    <string name="media_bg_custom">背景のスタイル</string>
+    <string name="media_bg_custom_blur">ぼかしたカバー</string>
+    <string name="media_others_color_anim_tips">テキストの色を変更時にトランジションアニメーションを使用する [試験的!]</string>
+    <string name="media_bg_blur_radius">ぼかしの半径</string>
+    <string name="media_bg_auto_color_reverse">色を自動的に反転</string>
     <!-- HomeRefactorPage -->
     <string name="home_refactor_blur">ぼかし効果</string>
     <string name="home_refactor_blur_radius">ぼかしの半径</string>
