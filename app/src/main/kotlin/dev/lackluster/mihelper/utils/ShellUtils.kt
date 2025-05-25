@@ -32,7 +32,7 @@ object ShellUtils {
         var stderrStream: InputStreamReader? = null
         var outputStream: DataOutputStream? = null
         try {
-            process = Runtime.getRuntime().exec(if (useRoot) "/system/bin/su" else "/system/bin/sh")
+            process = Runtime.getRuntime().exec(if (useRoot) "su" else "sh")
             stdoutStream = InputStreamReader(process.inputStream)
             stderrStream = InputStreamReader(process.errorStream)
             readerOut = BufferedReader(stdoutStream)
