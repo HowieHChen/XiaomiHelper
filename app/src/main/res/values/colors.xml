@@ -10,4 +10,6 @@
     <color name="ic_stat_sys_tint_fg_half">#C2C2C2</color>
     <color name="ic_stat_sys_tint_bg">#E6E6E6</color>
     <color name="ic_battery_tint">@color/ic_stat_sys_tint_fg</color>
+    <color name="miuix_notification_btn_bg">#14000000</color>
+    <color name="miuix_notification_btn_fg">#99000000</color>
 </resources>

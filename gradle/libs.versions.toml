@@ -16,8 +16,6 @@ yukihookapi = "1.2.1"
 dexkit = "2.0.4"
 serialization-json = "1.8.0"
 
-ezxhelper = "2.2.0"
-
 [libraries]
 xposed-api = { group = "de.robv.android.xposed", name = "api", version.ref = "xposed" }
 yukihookapi-api = { group = "com.highcapable.yukihookapi", name = "api", version.ref = "yukihookapi" }

@@ -141,13 +141,13 @@ class MainActivity : HyperXActivity() {
                         useRoot = true,
                         checkSuccess = true
                     ).successMsg.trim().contentEquals("root")
-                } catch (exception: Exception) {
+                } catch (_: Exception) {
                     false
                 }
             } else {
                 true
             }
-        } catch (exception: SecurityException) {
+        } catch (_: SecurityException) {
             moduleActive.value = false
             moduleEnabled.value = false
             blurEnabled.value = true
