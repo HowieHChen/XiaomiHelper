@@ -102,7 +102,7 @@ object HeaderList : YukiBaseHooker() {
                                     modifiers { isStatic }
                                 }.get().call(moduleIcon, headerIconPixelSize, headerIconPixelSize) as Bitmap
                                 icon.setImageBitmap(bitmap)
-                            } catch (tout: Throwable) {
+                            } catch (_: Throwable) {
                                 icon.visibility = View.INVISIBLE
                             }
                         }

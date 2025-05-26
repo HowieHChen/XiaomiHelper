@@ -11,6 +11,8 @@ import android.hardware.HardwareBuffer
 import android.media.ImageReader
 import androidx.core.graphics.get
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
+import com.highcapable.yukihookapi.hook.factory.constructor
+import com.highcapable.yukihookapi.hook.factory.field
 import com.highcapable.yukihookapi.hook.factory.method
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.Prefs
@@ -18,20 +20,81 @@ import dev.lackluster.mihelper.utils.Prefs
 object MediaHookEntry : YukiBaseHooker() {
     // background: 0 -> Default; 1 -> Art; 2 -> Blurred cover; 3 -> AndroidNewStyle; 4 -> AndroidOldStyle
     private val backgroundStyle = Prefs.getInt(Pref.Key.SystemUI.MediaControl.BACKGROUND_STYLE, 0)
-    private val miuiMediaControlPanelClass by lazy {
+    val useAnim = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.USE_ANIM, true)
+    val allowReverse = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.ALLOW_REVERSE, false)
+    val blurRadius = Prefs.getInt(Pref.Key.SystemUI.MediaControl.BLUR_RADIUS, 10).coerceIn(1, 20)
+
+    val miuiMediaControlPanelClass by lazy {
         "com.android.systemui.statusbar.notification.mediacontrol.MiuiMediaControlPanel".toClassOrNull()
+    }
+    val colorSchemeClass by lazy {
+        "com.android.systemui.monet.ColorScheme".toClass()
+    }
+    val contentStyle by lazy {
+        "com.android.systemui.monet.Style".toClass().enumConstants?.get(6)
+    }
+    val colorSchemeConstructor1 by lazy {
+        colorSchemeClass.constructor {
+            paramCount = 3
+        }.give()
+    }
+    val colorSchemeConstructor2 by lazy {
+        colorSchemeClass.constructor {
+            paramCount = 2
+        }.give()
+    }
+    val mNeutral1Field by lazy {
+        colorSchemeClass.field {
+            name = "mNeutral1"
+        }.remedys {
+            field {
+                name = "neutral1"
+            }
+        }.give()
+    }
+    val mNeutral2Field by lazy {
+        colorSchemeClass.field {
+            name = "mNeutral2"
+        }.remedys {
+            field {
+                name = "neutral2"
+            }
+        }.give()
+    }
+    val mAccent1Field by lazy {
+        colorSchemeClass.field {
+            name = "mAccent1"
+        }.remedys {
+            field {
+                name = "accent1"
+            }
+        }.give()
+    }
+    val mAccent2Field by lazy {
+        colorSchemeClass.field {
+            name = "mAccent2"
+        }.remedys {
+            field {
+                name = "accent2"
+            }
+        }.give()
     }
 
     override fun onHook() {
         if (backgroundStyle != 0) {
+            var oldVersion = false
             miuiMediaControlPanelClass?.apply {
                 method {
                     name = "setPlayerBg"
+                }.ignored().onNoSuchMethod {
+                    oldVersion = true
                 }.hook {
                     intercept()
                 }
                 method {
                     name = "setForegroundColors"
+                }.ignored().onNoSuchMethod {
+                    oldVersion = true
                 }.hook {
                     intercept()
                 }
@@ -42,6 +105,9 @@ object MediaHookEntry : YukiBaseHooker() {
                 }.hook {
                     intercept()
                 }
+            }
+            if (oldVersion) {
+
             }
         }
         when (backgroundStyle) {

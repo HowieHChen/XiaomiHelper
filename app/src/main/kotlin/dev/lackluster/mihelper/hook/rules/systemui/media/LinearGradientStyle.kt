@@ -41,32 +41,25 @@ import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.TextView
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.constructor
 import com.highcapable.yukihookapi.hook.factory.current
 import com.highcapable.yukihookapi.hook.factory.method
 import com.highcapable.yukihookapi.hook.log.YLog
-import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaHookEntry.brightness
-import dev.lackluster.mihelper.utils.Prefs
 import dev.lackluster.mihelper.utils.factory.isSystemInDarkMode
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.scale
 import androidx.core.graphics.drawable.toDrawable
 import dev.lackluster.mihelper.hook.drawable.LinearGradientDrawable
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaHookEntry.useAnim
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaHookEntry.allowReverse
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaHookEntry.miuiMediaControlPanelClass
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaHookEntry.contentStyle
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaHookEntry.colorSchemeConstructor1
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaHookEntry.colorSchemeConstructor2
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaHookEntry.mAccent1Field
 
 
 object LinearGradientStyle : YukiBaseHooker() {
-    private val useAnim = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.USE_ANIM, false)
-    private val allowReverse = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.ALLOW_REVERSE, false)
-    private val miuiMediaControlPanelClass by lazy {
-        "com.android.systemui.statusbar.notification.mediacontrol.MiuiMediaControlPanel".toClass()
-    }
-    private val colorSchemeClass by lazy {
-        "com.android.systemui.monet.ColorScheme".toClass()
-    }
-    private val contentStyle by lazy {
-        "com.android.systemui.monet.Style".toClass().enumConstants?.get(6)
-    }
     private var mArtworkBoundId = 0
     private var mArtworkNextBindRequestId = 0
     private var mArtworkDrawable: LinearGradientDrawable? = null
@@ -78,7 +71,7 @@ object LinearGradientStyle : YukiBaseHooker() {
     private var lastHeight = 0
 
     override fun onHook() {
-        miuiMediaControlPanelClass.method {
+        miuiMediaControlPanelClass!!.method {
             name = "bindPlayer"
         }.hook {
             after {
@@ -201,9 +194,9 @@ object LinearGradientStyle : YukiBaseHooker() {
                         superClass()
                     }.call(artworkIcon) as? WallpaperColors?
                     if (wallpaperColors != null) {
-                        mutableColorScheme = colorSchemeClass.constructor {
-                            paramCount = 3
-                        }.get().call(wallpaperColors, isDark, contentStyle)
+                        mutableColorScheme = colorSchemeConstructor1?.newInstance(
+                            wallpaperColors, isDark, contentStyle
+                        ) ?: colorSchemeConstructor2?.newInstance(wallpaperColors, contentStyle)
                         artwork = this.instance.current().method {
                             name = "getScaledBackground"
                             superClass()
@@ -215,9 +208,11 @@ object LinearGradientStyle : YukiBaseHooker() {
                         isArtworkBound = false
                         try {
                             val icon = mContext.packageManager.getApplicationIcon(packageName)
-                            mutableColorScheme = colorSchemeClass.constructor {
-                                paramCount = 3
-                            }.get().call(WallpaperColors.fromDrawable(icon), isDark, contentStyle) ?: throw Exception()
+                            mutableColorScheme = colorSchemeConstructor1?.newInstance(
+                                WallpaperColors.fromDrawable(icon), isDark, contentStyle
+                            ) ?: colorSchemeConstructor2?.newInstance(
+                                wallpaperColors, contentStyle
+                            ) ?: throw Exception()
                         } catch (_: Exception) {
                             YLog.warn("application not found!")
                             Trace.endAsyncSection(traceName, traceCookie)
@@ -228,9 +223,7 @@ object LinearGradientStyle : YukiBaseHooker() {
                     var backgroundPrimary = Color.BLACK
                     var colorSchemeChanged = false
                     if (mutableColorScheme != null) {
-                        val accent1 = mutableColorScheme.current().field {
-                            name = "mAccent1"
-                        }.any()!!.current().field {
+                        val accent1 = mAccent1Field!!.get(mutableColorScheme)!!.current().field {
                             name = "allShades"
                         }.list<Int?>()
                         if (allowReverse && newBitmap.brightness() >= 192) {

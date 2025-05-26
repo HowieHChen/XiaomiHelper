@@ -91,7 +91,8 @@ fun MediaControlPage(navController: NavController, adjustPadding: PaddingValues,
                     SwitchPreference(
                         title = stringResource(R.string.media_others_color_anim),
                         summary = stringResource(R.string.media_others_color_anim_tips),
-                        key = Pref.Key.SystemUI.MediaControl.USE_ANIM
+                        key = Pref.Key.SystemUI.MediaControl.USE_ANIM,
+                        defValue = true
                     )
                 }
             }

@@ -42,32 +42,28 @@ import android.widget.SeekBar
 import android.widget.TextView
 import androidx.core.graphics.drawable.toBitmap
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.constructor
 import com.highcapable.yukihookapi.hook.factory.current
 import com.highcapable.yukihookapi.hook.factory.method
 import com.highcapable.yukihookapi.hook.log.YLog
-import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaHookEntry.hardwareBlur
-import dev.lackluster.mihelper.utils.Prefs
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.scale
 import androidx.core.graphics.drawable.toDrawable
 import dev.lackluster.mihelper.hook.drawable.RadialMaskedDrawable
 import dev.lackluster.mihelper.hook.drawable.TransitionDrawable
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaHookEntry.useAnim
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaHookEntry.blurRadius
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaHookEntry.miuiMediaControlPanelClass
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaHookEntry.contentStyle
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaHookEntry.colorSchemeConstructor1
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaHookEntry.colorSchemeConstructor2
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaHookEntry.mNeutral1Field
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaHookEntry.mNeutral2Field
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaHookEntry.mAccent1Field
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaHookEntry.mAccent2Field
 
 
 object BlurredCoverStyle : YukiBaseHooker() {
-    private val useAnim = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.USE_ANIM, true)
-    private val blurRadius = Prefs.getInt(Pref.Key.SystemUI.MediaControl.BLUR_RADIUS, 10).coerceIn(1, 20)
-    private val miuiMediaControlPanelClass by lazy {
-        "com.android.systemui.statusbar.notification.mediacontrol.MiuiMediaControlPanel".toClass()
-    }
-    private val colorSchemeClass by lazy {
-        "com.android.systemui.monet.ColorScheme".toClass()
-    }
-    private val contentStyle by lazy {
-        "com.android.systemui.monet.Style".toClass().enumConstants?.get(6)
-    }
     private var mArtworkBoundId = 0
     private var mArtworkNextBindRequestId = 0
     private var mArtworkDrawable: TransitionDrawable? = null
@@ -79,7 +75,7 @@ object BlurredCoverStyle : YukiBaseHooker() {
     private var lastHeight = 0
 
     override fun onHook() {
-        miuiMediaControlPanelClass.method {
+        miuiMediaControlPanelClass!!.method {
             name = "bindPlayer"
         }.hook {
             after {
@@ -201,9 +197,9 @@ object BlurredCoverStyle : YukiBaseHooker() {
                         superClass()
                     }.call(artworkIcon) as? WallpaperColors?
                     if (wallpaperColors != null) {
-                        mutableColorScheme = colorSchemeClass.constructor {
-                            paramCount = 3
-                        }.get().call(wallpaperColors, true, contentStyle)
+                        mutableColorScheme = colorSchemeConstructor1?.newInstance(
+                            wallpaperColors, true, contentStyle
+                        ) ?: colorSchemeConstructor2?.newInstance(wallpaperColors, contentStyle)
                         artwork = this.instance.current().method {
                             name = "getScaledBackground"
                             superClass()
@@ -215,9 +211,11 @@ object BlurredCoverStyle : YukiBaseHooker() {
                         isArtworkBound = false
                         try {
                             val icon = mContext.packageManager.getApplicationIcon(packageName)
-                            mutableColorScheme = colorSchemeClass.constructor {
-                                paramCount = 3
-                            }.get().call(WallpaperColors.fromDrawable(icon), true, contentStyle)
+                            mutableColorScheme = colorSchemeConstructor1?.newInstance(
+                                WallpaperColors.fromDrawable(icon), true, contentStyle
+                            ) ?: colorSchemeConstructor2?.newInstance(
+                                wallpaperColors, contentStyle
+                            ) ?: throw Exception()
                         } catch (_: Exception) {
                             YLog.warn("application not found!")
                             Trace.endAsyncSection(traceName, traceCookie)
@@ -230,24 +228,16 @@ object BlurredCoverStyle : YukiBaseHooker() {
                     var bgEndColor = Color.BLACK
                     var colorSchemeChanged = false
                     if (mutableColorScheme != null) {
-                        val neutral1 = mutableColorScheme.current().field {
-                            name = "mNeutral1"
-                        }.any()!!.current().field {
+                        val neutral1 = mNeutral1Field!!.get(mutableColorScheme)!!.current().field {
                             name = "allShades"
                         }.list<Int?>()
-                        val neutral2 = mutableColorScheme.current().field {
-                            name = "mNeutral2"
-                        }.any()!!.current().field {
+                        val neutral2 = mNeutral2Field!!.get(mutableColorScheme)!!.current().field {
                             name = "allShades"
                         }.list<Int?>()
-                        val accent1 = mutableColorScheme.current().field {
-                            name = "mAccent1"
-                        }.any()!!.current().field {
+                        val accent1 = mAccent1Field!!.get(mutableColorScheme)!!.current().field {
                             name = "allShades"
                         }.list<Int?>()
-                        val accent2 = mutableColorScheme.current(true).field {
-                            name = "mAccent2"
-                        }.any()!!.current().field {
+                        val accent2 = mAccent2Field!!.get(mutableColorScheme)!!.current().field {
                             name = "allShades"
                         }.list<Int?>()
                         textPrimary = neutral1[1]!!
