@@ -197,9 +197,16 @@
     <string name="systemui_notif_clock_anim_tips">Permite a animação de transição do relógio em paisagem</string>
     <string name="systemui_notif_theme_blur">Permitir que Texturas avançadas sejam ativadas ao usar temas</string>
     <string name="systemui_notif_media_control_style">Personalizar estilo do controle de mídia</string>
+    <string name="systemui_notif_miuix_expand_btn">Botão de expansão estilo Miuix</string>
+    <string name="systemui_notif_miuix_expand_btn_tips">Substitui o botão de expansão das notificações do estilo Android pelo botão Miuix</string>
     <string name="ui_title_systemui_control_center">Centro de controle</string>
     <string name="systemui_control_hide_carrier_one">Ocultar nome da operadora do cartão SIM 1</string>
     <string name="systemui_control_hide_carrier_two">Ocultar nome da operadora do cartão SIM 2</string>
+    <string name="systemui_others_monet_overlay">Personalizar cores do tema</string>
+    <string name="systemui_others_monet_overlay_tips">Personalize as cores do tema em vez de retirar as cores do plano de fundo do sistema</string>
+    <string name="systemui_others_monet_color">Cor do tema</string>
+    <string name="systemui_others_monet_color_tips">Esta cor afetará todos os apps que usam esquemas de cores dinâmicos</string>
+    <string name="systemui_others_monet_color_msg">Código de cor hexadecimal começando com # \n(ex.: #FF123456, #FF00FF)</string>
     <!-- MiuiHomePage -->
     <string name="ui_title_home_exclusive">Recurso exclusivo</string>
     <string name="home_exclusive_refactor">Efeitos de blur avançados</string>
@@ -543,11 +550,16 @@
     <string name="media_general_unlock_action">Exibir todos os ícones de controle</string>
     <string name="media_general_squiggly_progress">Usar progresso ondulado</string>
     <string name="media_general_hide_app_icon">Ocultar ícones de apps</string>
+    <string name="ui_title_media_bg">Fundo</string>
     <string name="media_bg_custom">Estilo de fundo</string>
+    <string name="media_bg_custom_art">Arte da capa</string>
     <string name="media_bg_custom_blur">Capa desfocada</string>
-    <string name="media_others_color_anim_tips">Recurso experimental. Usar animação de transição ao alterar a cor do texto.</string>
+    <string name="media_bg_custom_radial_gradient">Gradiente radial</string>
+    <string name="media_bg_custom_linear_gradient">Gradiente linear</string>
     <string name="media_bg_blur_radius">Raio de blur</string>
-    <string name="media_bg_auto_color_reverse">Cor de reversão automática</string>
+    <string name="media_bg_auto_color_reverse">Reversão automática de cor</string>
+    <string name="media_others_color_anim">Animação da cor</string>
+    <string name="media_others_color_anim_tips">Recurso experimental. Use animação de transição ao alterar a cor do texto.</string>
     <!-- HomeRefactorPage -->
     <string name="home_refactor_blur">Efeito de blur</string>
     <string name="home_refactor_blur_radius">Raio de blur</string>
