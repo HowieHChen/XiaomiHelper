@@ -48,15 +48,15 @@ import androidx.core.graphics.createBitmap
 import androidx.core.graphics.scale
 import androidx.core.graphics.drawable.toDrawable
 import dev.lackluster.mihelper.hook.drawable.RadialGradientDrawable
-import dev.lackluster.mihelper.hook.rules.systemui.media.MediaHookEntry.useAnim
-import dev.lackluster.mihelper.hook.rules.systemui.media.MediaHookEntry.miuiMediaControlPanelClass
-import dev.lackluster.mihelper.hook.rules.systemui.media.MediaHookEntry.contentStyle
-import dev.lackluster.mihelper.hook.rules.systemui.media.MediaHookEntry.colorSchemeConstructor1
-import dev.lackluster.mihelper.hook.rules.systemui.media.MediaHookEntry.colorSchemeConstructor2
-import dev.lackluster.mihelper.hook.rules.systemui.media.MediaHookEntry.mNeutral1Field
-import dev.lackluster.mihelper.hook.rules.systemui.media.MediaHookEntry.mNeutral2Field
-import dev.lackluster.mihelper.hook.rules.systemui.media.MediaHookEntry.mAccent1Field
-import dev.lackluster.mihelper.hook.rules.systemui.media.MediaHookEntry.mAccent2Field
+import dev.lackluster.mihelper.hook.rules.systemui.media.CustomBackground.useAnim
+import dev.lackluster.mihelper.hook.rules.systemui.media.CustomBackground.miuiMediaControlPanelClass
+import dev.lackluster.mihelper.hook.rules.systemui.media.CustomBackground.contentStyle
+import dev.lackluster.mihelper.hook.rules.systemui.media.CustomBackground.colorSchemeConstructor1
+import dev.lackluster.mihelper.hook.rules.systemui.media.CustomBackground.colorSchemeConstructor2
+import dev.lackluster.mihelper.hook.rules.systemui.media.CustomBackground.mNeutral1Field
+import dev.lackluster.mihelper.hook.rules.systemui.media.CustomBackground.mNeutral2Field
+import dev.lackluster.mihelper.hook.rules.systemui.media.CustomBackground.mAccent1Field
+import dev.lackluster.mihelper.hook.rules.systemui.media.CustomBackground.mAccent2Field
 
 
 object RadialGradientStyle : YukiBaseHooker() {

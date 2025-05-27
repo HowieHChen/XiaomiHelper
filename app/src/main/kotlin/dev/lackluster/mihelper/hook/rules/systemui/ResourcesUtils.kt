@@ -31,6 +31,7 @@ object ResourcesUtils : YukiBaseHooker() {
     var icon = 0
     var header_title = 0
     var header_artist = 0
+    var media_seamless = 0
     var actions = 0
     var action0 = 0
     var action1 = 0
@@ -79,6 +80,7 @@ object ResourcesUtils : YukiBaseHooker() {
                     icon = this.getResID("icon", "id", PKG_NAME)
                     header_title = this.getResID("header_title", "id", PKG_NAME)
                     header_artist = this.getResID("header_artist", "id", PKG_NAME)
+                    media_seamless = this.getResID("media_seamless", "id", PKG_NAME)
                     actions = this.getResID("actions", "id", PKG_NAME)
                     action0 = this.getResID("action0", "id", PKG_NAME)
                     action1 = this.getResID("action1", "id", PKG_NAME)

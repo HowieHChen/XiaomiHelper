@@ -380,10 +380,24 @@ object Pref {
                 const val UNLOCK_ACTION = "media_unlock_action"
                 const val SQUIGGLY_PROGRESS = "media_ctrl_squiggly_progress"
                 const val HIDE_APP_ICON = "media_ctrl_hide_app"
+
                 const val BACKGROUND_STYLE = "media_ctrl_background"
                 const val USE_ANIM = "media_ctrl_anim"
                 const val BLUR_RADIUS = "media_ctrl_radius"
                 const val ALLOW_REVERSE = "media_allow_reverse"
+
+                const val LYT_ALBUM = "media_lyt_album"
+                const val LYT_LEFT_ACTIONS = "media_lyt_left_actions"
+                const val LYT_HIDE_TIME = "media_lyt_hide_time"
+                const val LYT_HIDE_SEAMLESS = "media_lyt_hide_seamless"
+
+                const val ELM_TEXT_SIZE = "media_elm_text_size"
+                const val ELM_TITLE_SIZE = "media_elm_title_size"
+                const val ELM_ARTIST_SIZE = "media_elm_artist_size"
+                const val ELM_TIME_SIZE = "media_elm_time_size"
+                const val ELM_THUMB_STYLE = "media_elm_thumb_style"
+                const val ELM_PROGRESS_STYLE = "media_elm_prog_style"
+                const val ELM_PROGRESS_WIDTH = "media_elm_prog_width"
             }
             object ControlCenter {
                 const val HIDE_CARRIER_ONE = "statusbar_hide_carrier_one"

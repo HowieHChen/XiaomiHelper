@@ -23,8 +23,8 @@ import dev.lackluster.mihelper.hook.rules.systemui.freeform.UnlockMultipleTask
 import dev.lackluster.mihelper.hook.rules.systemui.lockscreen.CarrierText
 import dev.lackluster.mihelper.hook.rules.systemui.lockscreen.DoubleTapToSleep
 import dev.lackluster.mihelper.hook.rules.systemui.media.CustomElement
-import dev.lackluster.mihelper.hook.rules.systemui.media.EntryForLayout
-import dev.lackluster.mihelper.hook.rules.systemui.media.MediaHookEntry
+import dev.lackluster.mihelper.hook.rules.systemui.media.CustomLayout
+import dev.lackluster.mihelper.hook.rules.systemui.media.CustomBackground
 import dev.lackluster.mihelper.hook.rules.systemui.media.StyleCustomHookEntry
 import dev.lackluster.mihelper.hook.rules.systemui.media.UnlockCustomAction
 import dev.lackluster.mihelper.hook.rules.systemui.notif.AdvancedTextures
@@ -63,8 +63,9 @@ object SystemUI : YukiBaseHooker() {
         loadHooker(StatusBarActions)
         loadHooker(FuckStatusBarGestures)
 
-        loadHooker(MediaHookEntry)
-        loadHooker(EntryForLayout)
+        loadHooker(CustomBackground)
+        loadHooker(CustomLayout)
+        loadHooker(CustomElement)
         return
         loadHooker(RemoveFreeformRestriction)
         loadHooker(UnlockMultipleTask)
@@ -80,7 +81,6 @@ object SystemUI : YukiBaseHooker() {
         loadHooker(AdvancedTextures)
         loadHooker(StyleCustomHookEntry)
         loadHooker(UnlockCustomAction)
-        loadHooker(CustomElement)
         loadHooker(PadClockAnim)
     }
 }
