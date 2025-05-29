@@ -439,8 +439,8 @@
     <string name="media_general_hide_app_icon">隐藏应用图标</string>
     <string name="ui_title_media_bg">背景</string>
     <string name="media_bg_custom">背景风格</string>
-    <string name="media_others_color_anim">颜色动画</string>
-    <string name="media_others_color_anim_tips">使用动画更新文字颜色</string>
+    <string name="media_bg_color_anim">颜色动画</string>
+    <string name="media_bg_color_anim_tips">使用动画更新文字颜色</string>
     <string name="media_bg_custom_linear_gradient">线性渐变</string>
     <string name="media_bg_blur_radius">模糊半径</string>
     <string name="page_module">模块设置</string>
@@ -601,4 +601,24 @@
     <string name="systemui_others_monet_overlay_tips">使用自定义的主题色，而不是从壁纸中提取出的颜色</string>
     <string name="systemui_others_monet_color">主题色</string>
     <string name="media_bg_custom_radial_gradient">径向渐变</string>
+    <string name="media_elm_prog_style_squiggly">海浪</string>
+    <string name="media_elm_prog_width">进度条厚度</string>
+    <string name="media_elm_thumb_style_gone">不可见</string>
+    <string name="media_elm_thumb_style_vbar">竖线</string>
+    <string name="media_elm_prog_style">进度条风格</string>
+    <string name="media_lyt_album_hide_app">隐藏 App 图标</string>
+    <string name="media_lyt_album_gone">不可见</string>
+    <string name="media_lyt_left_actions">动作按钮左对齐</string>
+    <string name="media_lyt_hide_time">隐藏时间</string>
+    <string name="media_lyt_hide_time_tips">隐藏进度条旁的已用时间和总时间</string>
+    <string name="media_lyt_hide_seamless">隐藏无缝按钮</string>
+    <string name="media_lyt_hide_seamless_tips">隐藏媒体控件右上角的设备切换按钮</string>
+    <string name="ui_title_media_elements">元素</string>
+    <string name="media_elm_text_size">修改字号</string>
+    <string name="media_elm_text_size_title">标题</string>
+    <string name="media_elm_text_size_artist">艺术家</string>
+    <string name="media_elm_text_size_time">时间</string>
+    <string name="media_elm_thumb_style">滑块风格</string>
+    <string name="ui_title_media_layout">布局</string>
+    <string name="media_lyt_album">封面</string>
 </resources>

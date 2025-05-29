@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -16,13 +17,12 @@ import dev.lackluster.hyperx.compose.base.BasePage
 import dev.lackluster.hyperx.compose.base.BasePageDefaults
 import dev.lackluster.hyperx.compose.preference.DropDownEntry
 import dev.lackluster.hyperx.compose.preference.DropDownPreference
-import dev.lackluster.hyperx.compose.preference.EditTextDataType
-import dev.lackluster.hyperx.compose.preference.EditTextPreference
 import dev.lackluster.hyperx.compose.preference.PreferenceGroup
 import dev.lackluster.hyperx.compose.preference.SeekBarPreference
 import dev.lackluster.hyperx.compose.preference.SwitchPreference
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.activity.MainActivity
+import dev.lackluster.mihelper.activity.component.MediaControlCard
 import dev.lackluster.mihelper.activity.component.RebootMenuItem
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.data.Scope
@@ -37,28 +37,61 @@ fun MediaControlPage(navController: NavController, adjustPadding: PaddingValues,
         DropDownEntry(stringResource(R.string.media_bg_custom_linear_gradient))
     )
     val albumStyleEntries = listOf(
-        DropDownEntry("VISIBLE"),
-        DropDownEntry("HIDE APP ICON"),
-        DropDownEntry("GONE")
+        DropDownEntry(stringResource(R.string.media_lyt_album_default)),
+        DropDownEntry(stringResource(R.string.media_lyt_album_hide_app)),
+        DropDownEntry(stringResource(R.string.media_lyt_album_gone))
     )
     val thumbStyleEntries = listOf(
-        DropDownEntry("DEFAULT"),
-        DropDownEntry("GONE"),
-        DropDownEntry("VERTICAL BAR")
+        DropDownEntry(stringResource(R.string.media_elm_thumb_style_default)),
+        DropDownEntry(stringResource(R.string.media_elm_thumb_style_gone)),
+        DropDownEntry(stringResource(R.string.media_elm_thumb_style_vbar))
     )
     val progressStyleEntries = listOf(
-        DropDownEntry("DEFAULT"),
-        DropDownEntry("CUSTOM"),
-        DropDownEntry("SQUIGGLY")
+        DropDownEntry(stringResource(R.string.media_elm_prog_style_default)),
+        DropDownEntry(stringResource(R.string.media_elm_prog_style_custom)),
+        DropDownEntry(stringResource(R.string.media_elm_prog_style_squiggly))
     )
     var backgroundStyle by remember { mutableIntStateOf(
         SafeSP.getInt(Pref.Key.SystemUI.MediaControl.BACKGROUND_STYLE, 0)
     ) }
+    var blurRadius by remember { mutableIntStateOf(
+        SafeSP.getInt(Pref.Key.SystemUI.MediaControl.BLUR_RADIUS, 10)
+    ) }
+    var allowReverse by remember { mutableStateOf(
+        SafeSP.getBoolean(Pref.Key.SystemUI.MediaControl.ALLOW_REVERSE, false)
+    ) }
+    var lytAlbum by remember { mutableIntStateOf(
+        SafeSP.getInt(Pref.Key.SystemUI.MediaControl.LYT_ALBUM, 0)
+    ) }
+    var lytLeftActions by remember { mutableStateOf(
+        SafeSP.getBoolean(Pref.Key.SystemUI.MediaControl.LYT_LEFT_ACTIONS, false)
+    ) }
+    var lytHideTime by remember { mutableStateOf(
+        SafeSP.getBoolean(Pref.Key.SystemUI.MediaControl.LYT_HIDE_TIME, false)
+    ) }
+    var lytHideSeamless by remember { mutableStateOf(
+        SafeSP.getBoolean(Pref.Key.SystemUI.MediaControl.LYT_HIDE_SEAMLESS, false)
+    ) }
     var modifyTextSize by remember { mutableStateOf(
         SafeSP.getBoolean(Pref.Key.SystemUI.MediaControl.ELM_TEXT_SIZE, false)
     ) }
+    var titleSize by remember { mutableFloatStateOf(
+        SafeSP.getFloat(Pref.Key.SystemUI.MediaControl.ELM_TITLE_SIZE, 18.0f)
+    ) }
+    var artistSize by remember { mutableFloatStateOf(
+        SafeSP.getFloat(Pref.Key.SystemUI.MediaControl.ELM_ARTIST_SIZE, 12.0f)
+    ) }
+    var timeSize by remember { mutableFloatStateOf(
+        SafeSP.getFloat(Pref.Key.SystemUI.MediaControl.ELM_TIME_SIZE, 12.0f)
+    ) }
+    var thumbStyle by remember { mutableIntStateOf(
+        SafeSP.getInt(Pref.Key.SystemUI.MediaControl.ELM_THUMB_STYLE, 0)
+    ) }
     var progressStyle by remember { mutableIntStateOf(
         SafeSP.getInt(Pref.Key.SystemUI.MediaControl.ELM_PROGRESS_STYLE, 0)
+    ) }
+    var progressWidth by remember { mutableFloatStateOf(
+        SafeSP.getFloat(Pref.Key.SystemUI.MediaControl.ELM_PROGRESS_WIDTH, 4.0f)
     ) }
 
     BasePage(
@@ -77,6 +110,24 @@ fun MediaControlPage(navController: NavController, adjustPadding: PaddingValues,
         }
     ) {
         item {
+            MediaControlCard(
+                backgroundStyle = backgroundStyle,
+                allowReverse = allowReverse,
+                blurRadius = blurRadius,
+                lytAlbum = lytAlbum,
+                lytLeftActions = lytLeftActions,
+                lytHideTime = lytHideTime,
+                lytHideSeamless = lytHideSeamless,
+                modifyTextSize = modifyTextSize,
+                titleSize = titleSize,
+                artistSize = artistSize,
+                timeSize = timeSize,
+                thumbStyle = thumbStyle,
+                progressStyle = progressStyle,
+                progressWidth = progressWidth
+            )
+        }
+        item {
             PreferenceGroup(
                 title = stringResource(R.string.ui_title_media_bg)
             ) {
@@ -88,6 +139,16 @@ fun MediaControlPage(navController: NavController, adjustPadding: PaddingValues,
                     backgroundStyle = it
                 }
                 AnimatedVisibility(
+                    backgroundStyle != 0
+                ) {
+                    SwitchPreference(
+                        title = stringResource(R.string.media_bg_color_anim),
+                        summary = stringResource(R.string.media_bg_color_anim_tips),
+                        key = Pref.Key.SystemUI.MediaControl.USE_ANIM,
+                        defValue = true
+                    )
+                }
+                AnimatedVisibility(
                     backgroundStyle == 2
                 ) {
                     SeekBarPreference(
@@ -96,7 +157,9 @@ fun MediaControlPage(navController: NavController, adjustPadding: PaddingValues,
                         defValue = 10,
                         min = 1,
                         max = 20
-                    )
+                    ) {
+                        blurRadius = it
+                    }
                 }
                 AnimatedVisibility(
                     backgroundStyle == 4
@@ -104,35 +167,47 @@ fun MediaControlPage(navController: NavController, adjustPadding: PaddingValues,
                     SwitchPreference(
                         title = stringResource(R.string.media_bg_auto_color_reverse),
                         key = Pref.Key.SystemUI.MediaControl.ALLOW_REVERSE
-                    )
+                    ) {
+                        allowReverse = it
+                    }
                 }
             }
             PreferenceGroup(
-                title = "LAYOUT"
+                title = stringResource(R.string.ui_title_media_layout)
             ) {
                 DropDownPreference(
-                    title = "LYT_ALBUM",
+                    title = stringResource(R.string.media_lyt_album),
                     entries = albumStyleEntries,
                     key = Pref.Key.SystemUI.MediaControl.LYT_ALBUM
-                )
+                ) {
+                    lytAlbum = it
+                }
                 SwitchPreference(
-                    title = "LYT_LEFT_ACTIONS",
+                    title = stringResource(R.string.media_lyt_left_actions),
                     key = Pref.Key.SystemUI.MediaControl.LYT_LEFT_ACTIONS
-                )
+                ) {
+                    lytLeftActions = it
+                }
                 SwitchPreference(
-                    title = "LYT_HIDE_TIME",
+                    title = stringResource(R.string.media_lyt_hide_time),
+                    summary = stringResource(R.string.media_lyt_hide_time_tips),
                     key = Pref.Key.SystemUI.MediaControl.LYT_HIDE_TIME
-                )
+                ) {
+                    lytHideTime = it
+                }
                 SwitchPreference(
-                    title = "LYT_HIDE_SEAMLESS",
+                    title = stringResource(R.string.media_lyt_hide_seamless),
+                    summary = stringResource(R.string.media_lyt_hide_seamless_tips),
                     key = Pref.Key.SystemUI.MediaControl.LYT_HIDE_SEAMLESS
-                )
+                ) {
+                    lytHideSeamless = it
+                }
             }
             PreferenceGroup(
-                title = "ELEMENT"
+                title = stringResource(R.string.ui_title_media_elements)
             ) {
                 SwitchPreference(
-                    title = "ELM_TEXT_SIZE",
+                    title = stringResource(R.string.media_elm_text_size),
                     key = Pref.Key.SystemUI.MediaControl.ELM_TEXT_SIZE
                 ) {
                     modifyTextSize = it
@@ -141,42 +216,44 @@ fun MediaControlPage(navController: NavController, adjustPadding: PaddingValues,
                     modifyTextSize
                 ) {
                     Column {
-                        EditTextPreference(
-                            title = "ELM_TITLE_SIZE",
+                        SeekBarPreference(
+                            title = stringResource(R.string.media_elm_text_size_title),
                             key = Pref.Key.SystemUI.MediaControl.ELM_TITLE_SIZE,
                             defValue = 18.0f,
-                            dataType = EditTextDataType.FLOAT,
-                            isValueValid = {
-                                (it as? Float ?: -1.0f) > 0.0f
-                            }
-                        )
-                        EditTextPreference(
-                            title = "ELM_ARTIST_SIZE",
+                            min = 0.5f,
+                            max = 36.0f
+                        ) {
+                            titleSize = it
+                        }
+                        SeekBarPreference(
+                            title = stringResource(R.string.media_elm_text_size_artist),
                             key = Pref.Key.SystemUI.MediaControl.ELM_ARTIST_SIZE,
                             defValue = 12.0f,
-                            dataType = EditTextDataType.FLOAT,
-                            isValueValid = {
-                                (it as? Float ?: -1.0f) > 0.0f
-                            }
-                        )
-                        EditTextPreference(
-                            title = "ELM_TIME_SIZE",
+                            min = 0.5f,
+                            max = 24.0f
+                        ) {
+                            artistSize = it
+                        }
+                        SeekBarPreference(
+                            title = stringResource(R.string.media_elm_text_size_time),
                             key = Pref.Key.SystemUI.MediaControl.ELM_TIME_SIZE,
                             defValue = 12.0f,
-                            dataType = EditTextDataType.FLOAT,
-                            isValueValid = {
-                                (it as? Float ?: -1.0f) > 0.0f
-                            }
-                        )
+                            min = 0.5f,
+                            max = 24.0f
+                        ) {
+                            timeSize = it
+                        }
                     }
                 }
                 DropDownPreference(
-                    title = "ELM_THUMB_STYLE",
+                    title = stringResource(R.string.media_elm_thumb_style),
                     entries = thumbStyleEntries,
                     key = Pref.Key.SystemUI.MediaControl.ELM_THUMB_STYLE
-                )
+                ) {
+                    thumbStyle = it
+                }
                 DropDownPreference(
-                    title = "ELM_PROGRESS_STYLE",
+                    title = stringResource(R.string.media_elm_prog_style),
                     entries = progressStyleEntries,
                     key = Pref.Key.SystemUI.MediaControl.ELM_PROGRESS_STYLE
                 ) {
@@ -185,31 +262,15 @@ fun MediaControlPage(navController: NavController, adjustPadding: PaddingValues,
                 AnimatedVisibility(
                     progressStyle == 1
                 ) {
-                    EditTextPreference(
-                        title = "ELM_PROGRESS_WIDTH",
+                    SeekBarPreference(
+                        title = stringResource(R.string.media_elm_prog_width),
                         key = Pref.Key.SystemUI.MediaControl.ELM_PROGRESS_WIDTH,
                         defValue = 4.0f,
-                        dataType = EditTextDataType.FLOAT,
-                        isValueValid = {
-                            (it as? Float ?: -1.0f).let {
-                                it > 0.0f && it <= 14.0f
-                            }
-                        }
-                    )
-                }
-            }
-            PreferenceGroup(
-                title = stringResource(R.string.ui_title_media_others)
-            ) {
-                AnimatedVisibility(
-                    backgroundStyle != 0
-                ) {
-                    SwitchPreference(
-                        title = stringResource(R.string.media_others_color_anim),
-                        summary = stringResource(R.string.media_others_color_anim_tips),
-                        key = Pref.Key.SystemUI.MediaControl.USE_ANIM,
-                        defValue = true
-                    )
+                        min = 0.5f,
+                        max = 14.0f
+                    ) {
+                        progressWidth = it
+                    }
                 }
             }
         }

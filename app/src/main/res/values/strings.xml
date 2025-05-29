@@ -676,13 +676,35 @@
     <string name="media_bg_custom_art">Cover art</string>
     <string name="media_bg_custom_blur">Blurred cover</string>
     <string name="media_bg_custom_radial_gradient">Radial gradient</string>
-    <string name="media_bg_custom_linear_gradient">Linear gradient</string>
+    <string name="media_bg_custom_linear_gradient">Linear gradient</string><string name="media_bg_color_anim">Color animation</string>
+    <string name="media_bg_color_anim_tips">Experimental feature. Use transition animation when changing text color.</string>
     <string name="media_bg_blur_radius">Blur radius</string>
     <string name="media_bg_auto_color_reverse">Auto-reverse color</string>
-
+    <string name="ui_title_media_layout">Layout</string>
+    <string name="media_lyt_album">Album</string>
+    <string name="media_lyt_album_default" translatable="false">@string/common_default</string>
+    <string name="media_lyt_album_hide_app">No app icon</string>
+    <string name="media_lyt_album_gone">Invisible</string>
+    <string name="media_lyt_left_actions">Action buttons left-aligned</string>
+    <string name="media_lyt_hide_time">Hide time</string>
+    <string name="media_lyt_hide_time_tips">Hide the elapsed time and total time next to the progress bar</string>
+    <string name="media_lyt_hide_seamless">Hide seamless button</string>
+    <string name="media_lyt_hide_seamless_tips">Hide the device switch button at the top right of the media control</string>
+    <string name="ui_title_media_elements">Elements</string>
+    <string name="media_elm_text_size">Modify text font size</string>
+    <string name="media_elm_text_size_title">Title</string>
+    <string name="media_elm_text_size_artist">Artist</string>
+    <string name="media_elm_text_size_time">Time</string>
+    <string name="media_elm_thumb_style">Thumb style</string>
+    <string name="media_elm_thumb_style_default" translatable="false">@string/common_default</string>
+    <string name="media_elm_thumb_style_gone">Invisible</string>
+    <string name="media_elm_thumb_style_vbar">Vertical bar</string>
+    <string name="media_elm_prog_style">Progress bar style</string>
+    <string name="media_elm_prog_style_default" translatable="false">@string/common_default</string>
+    <string name="media_elm_prog_style_custom" translatable="false">@string/common_custom</string>
+    <string name="media_elm_prog_style_squiggly">Squiggly</string>
+    <string name="media_elm_prog_width">Progress bar thickness</string>
     <string name="ui_title_media_others" translatable="false">@string/common_others</string>
-    <string name="media_others_color_anim">Color animation</string>
-    <string name="media_others_color_anim_tips">Experimental feature. Use transition animation when changing text color.</string>
 
 
     <!-- HomeRefactorPage -->

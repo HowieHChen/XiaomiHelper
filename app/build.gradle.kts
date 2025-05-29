@@ -77,6 +77,7 @@ dependencies {
 
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.constraintlayout.compose)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.junit)

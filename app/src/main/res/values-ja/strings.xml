@@ -382,7 +382,7 @@
     <string name="media_general_hide_app_icon">アプリアイコンを非表示にする</string>
     <string name="media_bg_custom">背景のスタイル</string>
     <string name="media_bg_custom_blur">ぼかしたカバー</string>
-    <string name="media_others_color_anim_tips">テキストの色を変更時にトランジションアニメーションを使用する [試験的!]</string>
+    <string name="media_bg_color_anim_tips">テキストの色を変更時にトランジションアニメーションを使用する [試験的!]</string>
     <string name="media_bg_blur_radius">ぼかしの半径</string>
     <string name="media_bg_auto_color_reverse">色を自動的に反転</string>
     <!-- HomeRefactorPage -->

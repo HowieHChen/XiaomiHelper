@@ -558,8 +558,8 @@
     <string name="media_bg_custom_linear_gradient">Gradiente linear</string>
     <string name="media_bg_blur_radius">Raio de blur</string>
     <string name="media_bg_auto_color_reverse">Reversão automática de cor</string>
-    <string name="media_others_color_anim">Animação da cor</string>
-    <string name="media_others_color_anim_tips">Recurso experimental. Use animação de transição ao alterar a cor do texto.</string>
+    <string name="media_bg_color_anim">Animação da cor</string>
+    <string name="media_bg_color_anim_tips">Recurso experimental. Use animação de transição ao alterar a cor do texto.</string>
     <!-- HomeRefactorPage -->
     <string name="home_refactor_blur">Efeito de blur</string>
     <string name="home_refactor_blur_radius">Raio de blur</string>

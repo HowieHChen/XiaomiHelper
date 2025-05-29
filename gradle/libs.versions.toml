@@ -5,7 +5,7 @@ android-minSdk = "34"
 android-targetSdk = "35"
 project-app-packageName = "dev.lackluster.mihelper"
 project-app-versionName = "3.0.9"
-project-app-versionCode = "241"
+project-app-versionCode = "243"
 
 androidGradlePlugin = "8.10.0"
 kotlin = "2.1.0"
@@ -24,6 +24,8 @@ drawabletoolbox = { group = "com.github.duanhong169", name = "drawabletoolbox", 
 
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version = "1.7.0" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version = "2.2.1" }
+androidx-constraintlayout-core = { group = "androidx.constraintlayout", name = "constraintlayout-core", version = "1.1.1" }
+androidx-constraintlayout-compose = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version = "1.1.1" }
 androidx-test-junit = { group = "androidx.test.ext", name = "junit", version = "1.2.1" }
 androidx-test-espresso = { group = "androidx.test.espresso", name = "espresso-core", version = "3.6.1" }
 junit = { group = "junit", name = "junit", version = "4.13.2" }

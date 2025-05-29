@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:height="40dp"
+    android:width="40dp"
+    android:viewportWidth="120.0"
+    android:viewportHeight="120.0">
+    <group android:name="_R_G">
+        <group
+            android:name="_R_G_L_1_G"
+            android:scaleX="1.12"
+            android:scaleY="1.12"
+            android:translateX="75.98"
+            android:translateY="59.999">
+            <group
+                android:name="_R_G_L_1_G_D_0_P_0_G_0_T_0"
+                android:scaleX="3.0"
+                android:scaleY="3.0"
+                android:translateX="0.0"
+                android:translateY="0.0">
+                <path
+                    android:name="_R_G_L_1_G_D_0_P_0"
+                    android:fillColor="#FFFFFFFF"
+                    android:pathData=" M-1.04 7.27 C-1.08,7.16 -1.08,7.03 -1.08,6.76 C-1.08,6.76 -1.08,-6.75 -1.08,-6.75 C-1.08,-7.03 -1.08,-7.16 -1.04,-7.27 C-0.97,-7.52 -0.77,-7.72 -0.52,-7.8 C-0.41,-7.83 -0.27,-7.83 0,-7.83 C0.27,-7.83 0.41,-7.83 0.52,-7.8 C0.77,-7.72 0.97,-7.52 1.04,-7.27 C1.08,-7.16 1.08,-7.03 1.08,-6.75 C1.08,-6.75 1.08,6.76 1.08,6.76 C1.08,7.03 1.08,7.16 1.04,7.27 C0.97,7.53 0.77,7.72 0.52,7.8 C0.41,7.83 0.27,7.83 0,7.83 C-0.27,7.83 -0.41,7.83 -0.52,7.8 C-0.77,7.72 -0.97,7.53 -1.04,7.27c "
+                    android:fillAlpha="0.4"
+                    android:fillType="nonZero" />
+            </group>
+            <group
+                android:name="_R_G_L_1_G_D_1_P_0_G_0_T_0"
+                android:scaleX="3.0"
+                android:scaleY="3.0"
+                android:translateX="0.0"
+                android:translateY="0.0">
+                <path
+                    android:name="_R_G_L_1_G_D_1_P_0"
+                    android:fillColor="#FFFFFFFF"
+                    android:pathData=" M-1.04 7.27 C-1.08,7.16 -1.08,7.03 -1.08,6.76 C-1.08,6.76 -1.08,-6.75 -1.08,-6.75 C-1.08,-7.03 -1.08,-7.16 -1.04,-7.27 C-0.97,-7.52 -0.77,-7.72 -0.52,-7.8 C-0.41,-7.83 -0.27,-7.83 0,-7.83 C0.27,-7.83 0.41,-7.83 0.52,-7.8 C0.77,-7.72 0.97,-7.52 1.04,-7.27 C1.08,-7.16 1.08,-7.03 1.08,-6.75 C1.08,-6.75 1.08,6.76 1.08,6.76 C1.08,7.03 1.08,7.16 1.04,7.27 C0.97,7.53 0.77,7.72 0.52,7.8 C0.41,7.83 0.27,7.83 0,7.83 C-0.27,7.83 -0.41,7.83 -0.52,7.8 C-0.77,7.72 -0.97,7.53 -1.04,7.27c "
+                    android:fillAlpha="1.0"
+                    android:fillType="nonZero" />
+            </group>
+        </group>
+        <group
+            android:name="_R_G_L_0_G"
+            android:scaleX="1.12"
+            android:scaleY="1.12"
+            android:translateX="57.748"
+            android:translateY="59.999">
+            <group
+                android:name="_R_G_L_0_G_D_0_P_0_G_0_T_0"
+                android:scaleX="3.0"
+                android:scaleY="3.0"
+                android:translateX="0.0"
+                android:translateY="0.0">
+                <path
+                    android:name="_R_G_L_0_G_D_0_P_0"
+                    android:fillColor="#FFFFFFFF"
+                    android:pathData=" M-4.32 -7.28 C-3.85,-7.3 -3.28,-6.91 -2.14,-6.12 C-2.14,-6.12 4.05,-1.84 4.05,-1.84 C4.95,-1.22 5.39,-0.91 5.55,-0.53 C5.69,-0.19 5.69,0.19 5.55,0.53 C5.39,0.91 4.95,1.22 4.05,1.84 C4.05,1.84 -2.14,6.12 -2.14,6.12 C-3.28,6.91 -3.85,7.3 -4.32,7.28 C-4.73,7.26 -5.11,7.06 -5.36,6.73 C-5.65,6.36 -5.65,5.66 -5.65,4.28 C-5.65,4.28 -5.65,-4.28 -5.65,-4.28 C-5.65,-5.66 -5.65,-6.36 -5.36,-6.73 C-5.11,-7.06 -4.73,-7.26 -4.32,-7.28c "
+                    android:fillAlpha="0.4"
+                    android:fillType="nonZero" />
+            </group>
+            <group
+                android:name="_R_G_L_0_G_D_1_P_0_G_0_T_0"
+                android:scaleX="3.0"
+                android:scaleY="3.0"
+                android:translateX="0.0"
+                android:translateY="0.0">
+                <path
+                    android:name="_R_G_L_0_G_D_1_P_0"
+                    android:fillColor="#FFFFFFFF"
+                    android:pathData=" M-4.32 -7.28 C-3.85,-7.3 -3.28,-6.91 -2.14,-6.12 C-2.14,-6.12 4.05,-1.84 4.05,-1.84 C4.95,-1.22 5.39,-0.91 5.55,-0.53 C5.69,-0.19 5.69,0.19 5.55,0.53 C5.39,0.91 4.95,1.22 4.05,1.84 C4.05,1.84 -2.14,6.12 -2.14,6.12 C-3.28,6.91 -3.85,7.3 -4.32,7.28 C-4.73,7.26 -5.11,7.06 -5.36,6.73 C-5.65,6.36 -5.65,5.66 -5.65,4.28 C-5.65,4.28 -5.65,-4.28 -5.65,-4.28 C-5.65,-5.66 -5.65,-6.36 -5.36,-6.73 C-5.11,-7.06 -4.73,-7.26 -4.32,-7.28c "
+                    android:fillAlpha="1.0"
+                    android:fillType="nonZero" />
+            </group>
+        </group>
+    </group>
+    <group android:name="time_group" />
+</vector>

@@ -59,6 +59,13 @@ object CustomLayout : YukiBaseHooker() {
             param(IntType, IntType, IntType)
         }.give()
     }
+    private val setGoneMargin by lazy {
+        constraintSetClass.method {
+            name = "setGoneMargin"
+            paramCount = 3
+            param(IntType, IntType, IntType)
+        }.give()
+    }
     override fun onHook() {
         if (album != 0 || actionsLeftAligned || hideTime || hideSeamless) {
             "com.android.systemui.media.controls.ui.controller.MediaViewController".toClassOrNull()?.apply {
@@ -77,27 +84,27 @@ object CustomLayout : YukiBaseHooker() {
                             setVisibility?.invoke(expandedLayout, icon, View.GONE)
                         }
                         if (album == 2) {
-                            connect?.invoke(expandedLayout,
-                                header_title, ConstraintSet.START,
-                                ConstraintSet.PARENT_ID, ConstraintSet.START
-                            )
-                            connect?.invoke(expandedLayout,
-                                header_artist, ConstraintSet.START,
-                                ConstraintSet.PARENT_ID, ConstraintSet.START
-                            )
-                            connect?.invoke(expandedLayout,
-                                actions, ConstraintSet.TOP,
-                                ConstraintSet.PARENT_ID, ConstraintSet.TOP
-                            )
-                            connect?.invoke(expandedLayout,
-                                action0, ConstraintSet.TOP,
-                                ConstraintSet.PARENT_ID, ConstraintSet.TOP
-                            )
-                            setMargin?.invoke(expandedLayout, header_title, ConstraintSet.TOP, standardMargin)
-                            setMargin?.invoke(expandedLayout, header_title, ConstraintSet.START, standardMargin)
-                            setMargin?.invoke(expandedLayout, header_artist, ConstraintSet.START, standardMargin)
-                            setMargin?.invoke(expandedLayout, actions, ConstraintSet.TOP, 68.5.dp(context))
-                            setMargin?.invoke(expandedLayout, action0, ConstraintSet.TOP, 79.5.dp(context))
+//                            connect?.invoke(expandedLayout,
+//                                header_title, ConstraintSet.START,
+//                                ConstraintSet.PARENT_ID, ConstraintSet.START
+//                            )
+//                            connect?.invoke(expandedLayout,
+//                                header_artist, ConstraintSet.START,
+//                                ConstraintSet.PARENT_ID, ConstraintSet.START
+//                            )
+//                            connect?.invoke(expandedLayout,
+//                                actions, ConstraintSet.TOP,
+//                                ConstraintSet.PARENT_ID, ConstraintSet.TOP
+//                            )
+//                            connect?.invoke(expandedLayout,
+//                                action0, ConstraintSet.TOP,
+//                                ConstraintSet.PARENT_ID, ConstraintSet.TOP
+//                            )
+                            setGoneMargin?.invoke(expandedLayout, header_title, ConstraintSet.TOP, standardMargin)
+                            setGoneMargin?.invoke(expandedLayout, header_title, ConstraintSet.START, standardMargin)
+                            setGoneMargin?.invoke(expandedLayout, header_artist, ConstraintSet.START, standardMargin)
+                            setGoneMargin?.invoke(expandedLayout, actions, ConstraintSet.TOP, 68.5.dp(context))
+                            setGoneMargin?.invoke(expandedLayout, action0, ConstraintSet.TOP, 79.5.dp(context))
                             setVisibility?.invoke(expandedLayout, album_art, View.GONE)
                         }
                         if (actionsLeftAligned) {
@@ -117,16 +124,16 @@ object CustomLayout : YukiBaseHooker() {
                         }
                         if (hideSeamless) {
                             setVisibility?.invoke(expandedLayout, media_seamless, View.GONE)
-                            connect?.invoke(expandedLayout,
-                                header_title, ConstraintSet.END,
-                                ConstraintSet.PARENT_ID, ConstraintSet.END
-                            )
-                            connect?.invoke(expandedLayout,
-                                header_artist, ConstraintSet.END,
-                                ConstraintSet.PARENT_ID, ConstraintSet.END
-                            )
-                            setMargin?.invoke(expandedLayout, header_title, ConstraintSet.END, standardMargin)
-                            setMargin?.invoke(expandedLayout, header_artist, ConstraintSet.END, standardMargin)
+//                            connect?.invoke(expandedLayout,
+//                                header_title, ConstraintSet.END,
+//                                ConstraintSet.PARENT_ID, ConstraintSet.END
+//                            )
+//                            connect?.invoke(expandedLayout,
+//                                header_artist, ConstraintSet.END,
+//                                ConstraintSet.PARENT_ID, ConstraintSet.END
+//                            )
+                            setGoneMargin?.invoke(expandedLayout, header_title, ConstraintSet.END, standardMargin)
+                            setGoneMargin?.invoke(expandedLayout, header_artist, ConstraintSet.END, standardMargin)
                         }
                     }
                 }

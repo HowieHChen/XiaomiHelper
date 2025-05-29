@@ -39,7 +39,7 @@ import dev.lackluster.mihelper.utils.Math.lerpInvSat
 import kotlin.math.abs
 import kotlin.math.cos
 
-private const val TWO_PI = (Math.PI * 2f).toFloat()
+const val TWO_PI = (Math.PI * 2f).toFloat()
 
 @VisibleForTesting
 internal const val DISABLED_ALPHA = 77
@@ -226,6 +226,7 @@ class SquigglyProgress : Drawable() {
         canvas.restore()
     }
 
+    @Deprecated("Deprecated in Java")
     override fun getOpacity(): Int {
         return PixelFormat.TRANSLUCENT
     }

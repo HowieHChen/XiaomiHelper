@@ -3,6 +3,8 @@
     <dimen name="header_icon_size">28.0dp</dimen>
     <dimen name="miuix_btn_size">26.0dp</dimen>
 
+    <dimen name="media_session_height_expanded">184.0dp</dimen>
+
     <dimen name="bezier_padding">24dp</dimen>
     <dimen name="bezier_control_line_width">2dp</dimen>
     <dimen name="bezier_path_line_width">4dp</dimen>
