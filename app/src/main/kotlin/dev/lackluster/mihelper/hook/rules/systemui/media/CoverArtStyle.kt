@@ -186,6 +186,7 @@ object CoverArtStyle : YukiBaseHooker() {
                 actionPrev.imageTintList = mPrevTextPrimaryColorStateList
                 seekBar.thumb.setTintList(mPrevTextPrimaryColorStateList)
                 seekBar.progressTintList = mPrevTextPrimaryColorStateList
+                seekBar.progressBackgroundTintList = mPrevTextPrimaryColorStateList
                 scrubbingElapsedTimeView.setTextColor(mCurrentTextPrimaryColor)
                 scrubbingTotalTimeView.setTextColor(mCurrentTextPrimaryColor)
                 elapsedTimeView.setTextColor(mCurrentTextPrimaryColor)
@@ -375,6 +376,7 @@ object CoverArtStyle : YukiBaseHooker() {
                                         actionPrev.imageTintList = currentColorStateList
                                         seekBar.thumb.setTintList(currentColorStateList)
                                         seekBar.progressTintList = currentColorStateList
+                                        seekBar.progressBackgroundTintList = currentColorStateList
                                         scrubbingElapsedTimeView.setTextColor(it)
                                         scrubbingTotalTimeView.setTextColor(it)
                                         elapsedTimeView.setTextColor(it)
@@ -398,6 +400,7 @@ object CoverArtStyle : YukiBaseHooker() {
                                 actionPrev.imageTintList = textPrimaryColorStateList
                                 seekBar.thumb.setTintList(textPrimaryColorStateList)
                                 seekBar.progressTintList = textPrimaryColorStateList
+                                seekBar.progressBackgroundTintList = textPrimaryColorStateList
                                 scrubbingElapsedTimeView.setTextColor(textPrimary)
                                 scrubbingTotalTimeView.setTextColor(textPrimary)
                                 elapsedTimeView.setTextColor(textPrimary)

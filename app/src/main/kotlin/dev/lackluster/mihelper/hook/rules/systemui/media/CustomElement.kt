@@ -27,6 +27,7 @@ import android.graphics.drawable.Drawable
 import android.util.TypedValue
 import android.widget.SeekBar
 import android.widget.TextView
+import androidx.core.view.updatePadding
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.current
 import com.highcapable.yukihookapi.hook.factory.method
@@ -47,6 +48,7 @@ object CustomElement : YukiBaseHooker() {
     private val thumbStyle = Prefs.getInt(Pref.Key.SystemUI.MediaControl.ELM_THUMB_STYLE, 0)
     private val progressStyle = Prefs.getInt(Pref.Key.SystemUI.MediaControl.ELM_PROGRESS_STYLE, 0)
     private val progressWidth = Prefs.getFloat(Pref.Key.SystemUI.MediaControl.ELM_PROGRESS_WIDTH, 4.0f)
+    private val thumbCropFix = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.FIX_THUMB_CROPPED, false)
 
     private var progress: Drawable? = null
     private var thumb1: Drawable? = null
@@ -54,7 +56,7 @@ object CustomElement : YukiBaseHooker() {
 
     @SuppressLint("UseCompatLoadingForDrawables")
     override fun onHook() {
-        if (modifyTextSize || thumbStyle != 0 ) {
+        if (modifyTextSize || thumbStyle != 0 || thumbCropFix) {
             "com.android.systemui.media.controls.ui.view.MediaViewHolder\$Companion".toClassOrNull()?.apply {
                 method {
                     name = "create"
@@ -71,8 +73,8 @@ object CustomElement : YukiBaseHooker() {
                             elapsedTimeView?.setTextSize(TypedValue.COMPLEX_UNIT_SP, timeSize)
                             totalTimeView?.setTextSize(TypedValue.COMPLEX_UNIT_SP, timeSize)
                         }
+                        val seekBar = mediaViewHolder.current().field { name = "seekBar" }.cast<SeekBar>() ?: return@after
                         if (thumbStyle != 0) {
-                            val seekBar = mediaViewHolder.current().field { name = "seekBar" }.cast<SeekBar>() ?: return@after
                             val context = seekBar.context
                             when (thumbStyle) {
                                 1 -> {
@@ -91,7 +93,9 @@ object CustomElement : YukiBaseHooker() {
                                 }
                             }
                         }
-
+                        if (thumbCropFix && thumbStyle != 1) {
+                            seekBar.updatePadding(left = seekBar.thumbOffset, right = seekBar.thumbOffset)
+                        }
                     }
                 }
             }
@@ -154,25 +158,5 @@ object CustomElement : YukiBaseHooker() {
                 }
             }
         }
-//        if(hideAppIcon || squigglyProgress) {
-//            "com.android.systemui.media.controls.models.player.MediaViewHolder\$Companion".toClass().method {
-//                name = "create"
-//                modifiers { isStatic }
-//            }.hook {
-//                after {
-//                    val mediaViewHolder = this.result ?: return@after
-//                    val a: TextView
-//                    a.setTextSize(TypedValue.COMPLEX_UNIT_SP, 1.0f)
-//                    if (hideAppIcon) {
-//                        val appIcon = mediaViewHolder.current().field { name = "appIcon" }.any() as? ImageView?
-//                        (appIcon?.parent as? ViewGroup?)?.removeView(appIcon)
-//                    }
-//                    if (squigglyProgress) {
-//                        val seekBar = mediaViewHolder.current().field { name = "seekBar" }.any() as? SeekBar?
-//                        seekBar?.progressDrawable = "com.android.systemui.media.controls.ui.SquigglyProgress".toClass().constructor().get().call() as Drawable
-//                    }
-//                }
-//            }
-//        }
     }
 }

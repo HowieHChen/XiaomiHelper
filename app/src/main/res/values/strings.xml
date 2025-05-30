@@ -33,7 +33,7 @@
     <string name="page_about">About module</string>
     <string name="page_menu">Menu</string>
 
-    <string name="page_virtual_media_control_style" translatable="false">@string/systemui_notif_media_control_style</string>
+    <string name="page_virtual_media_control_style" translatable="false">@string/systemui_notif_media_control_style_tips</string>
     <string name="page_virtual_home_refactor" translatable="false">@string/home_exclusive_refactor</string>
 
     <string name="page_module">Module settings</string>
@@ -240,7 +240,8 @@
     <string name="systemui_notif_clock_anim">Force enable the transition animation of the clock</string>
     <string name="systemui_notif_clock_anim_tips">Allow clock transition animation in landscape</string>
     <string name="systemui_notif_theme_blur">Allow Advanced textures to be enabled when using themes</string>
-    <string name="systemui_notif_media_control_style">Customize the style of the media control</string>
+    <string name="systemui_notif_media_control_style" translatable="false">@string/page_media_control_style</string>
+    <string name="systemui_notif_media_control_style_tips">Customize the style of the media control</string>
     <string name="systemui_notif_miuix_expand_btn">Miuix style expand button</string>
     <string name="systemui_notif_miuix_expand_btn_tips">Replace the expand button of Android-style notifications with Miuix button</string>
     <string name="ui_title_systemui_control_center">Control center</string>
@@ -676,8 +677,7 @@
     <string name="media_bg_custom_art">Cover art</string>
     <string name="media_bg_custom_blur">Blurred cover</string>
     <string name="media_bg_custom_radial_gradient">Radial gradient</string>
-    <string name="media_bg_custom_linear_gradient">Linear gradient</string><string name="media_bg_color_anim">Color animation</string>
-    <string name="media_bg_color_anim_tips">Experimental feature. Use transition animation when changing text color.</string>
+    <string name="media_bg_custom_linear_gradient">Linear gradient</string>
     <string name="media_bg_blur_radius">Blur radius</string>
     <string name="media_bg_auto_color_reverse">Auto-reverse color</string>
     <string name="ui_title_media_layout">Layout</string>
@@ -705,8 +705,10 @@
     <string name="media_elm_prog_style_squiggly">Squiggly</string>
     <string name="media_elm_prog_width">Progress bar thickness</string>
     <string name="ui_title_media_others" translatable="false">@string/common_others</string>
-
-
+    <string name="media_others_color_anim">Color animation</string>
+    <string name="media_others_color_anim_tips">Experimental feature. Use transition animation when changing text color.</string>
+    <string name="media_others_fix_thumb_crop">Fix thumb incorrectly cropped</string>
+    <string name="media_others_fix_thumb_crop_tips">Ensure that the thumb is fully visible when it is at either end of the progress bar</string>
     <!-- HomeRefactorPage -->
     <string name="home_refactor_blur">Blur effect</string>
     <string name="home_refactor_blur_radius">Blur radius</string>

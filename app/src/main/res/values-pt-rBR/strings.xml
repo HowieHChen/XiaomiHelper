@@ -196,7 +196,7 @@
     <string name="systemui_notif_clock_anim">Forçar ativação da animação de transição do relógio</string>
     <string name="systemui_notif_clock_anim_tips">Permite a animação de transição do relógio em paisagem</string>
     <string name="systemui_notif_theme_blur">Permitir que Texturas avançadas sejam ativadas ao usar temas</string>
-    <string name="systemui_notif_media_control_style">Personalizar estilo do controle de mídia</string>
+    <string name="systemui_notif_media_control_style_tips">Personalizar estilo do controle de mídia</string>
     <string name="systemui_notif_miuix_expand_btn">Botão de expansão estilo Miuix</string>
     <string name="systemui_notif_miuix_expand_btn_tips">Substitui o botão de expansão das notificações do estilo Android pelo botão Miuix</string>
     <string name="ui_title_systemui_control_center">Centro de controle</string>
@@ -558,8 +558,8 @@
     <string name="media_bg_custom_linear_gradient">Gradiente linear</string>
     <string name="media_bg_blur_radius">Raio de blur</string>
     <string name="media_bg_auto_color_reverse">Reversão automática de cor</string>
-    <string name="media_bg_color_anim">Animação da cor</string>
-    <string name="media_bg_color_anim_tips">Recurso experimental. Use animação de transição ao alterar a cor do texto.</string>
+    <string name="media_others_color_anim">Animação da cor</string>
+    <string name="media_others_color_anim_tips">Recurso experimental. Use animação de transição ao alterar a cor do texto.</string>
     <!-- HomeRefactorPage -->
     <string name="home_refactor_blur">Efeito de blur</string>
     <string name="home_refactor_blur_radius">Raio de blur</string>

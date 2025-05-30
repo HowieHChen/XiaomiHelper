@@ -340,12 +340,13 @@
     <string name="home_refactor_blur_radius_tips">值越大，模糊效果越明显，但也会消耗更多性能</string>
     <string name="home_refactor_extra_fix">额外修复模糊缺失</string>
     <string name="home_refactor_extra_fix_tips">强制使用动画以避免快速滑动时模糊未及时出现。只有当你发现存在此问题时才启用</string>
+    <string name="media_others_fix_thumb_crop_tips">确保滑块在进度条的两端时均能完整显示</string>
     <string name="home_refactor_blur">模糊效果</string>
     <string name="home_refactor_fix_small_window">额外修复小窗动画</string>
     <string name="home_refactor_fix_small_window_tips">强制使用动画以避免拖动应用进入小窗时闪烁，暂时不确定是否有负面影响。只有当你非常介意这个时才启用</string>
     <string name="home_refactor_extra_compatibility">兼容性模式</string>
     <string name="home_refactor_extra_compatibility_tips">尝试与其它模块兼容，但无法确保兼容性。不推荐开启</string>
-    <string name="systemui_notif_media_control_style">自定义媒体控件样式</string>
+    <string name="systemui_notif_media_control_style_tips">自定义媒体控件样式</string>
     <string name="media_bg_custom_art">封面艺术</string>
     <string name="media_bg_custom_blur">模糊封面</string>
     <string name="home_refactor_minus_tips">用于模糊整个桌面视图，模糊会出现在处于负一屏时</string>
@@ -439,8 +440,8 @@
     <string name="media_general_hide_app_icon">隐藏应用图标</string>
     <string name="ui_title_media_bg">背景</string>
     <string name="media_bg_custom">背景风格</string>
-    <string name="media_bg_color_anim">颜色动画</string>
-    <string name="media_bg_color_anim_tips">使用动画更新文字颜色</string>
+    <string name="media_others_color_anim">颜色动画</string>
+    <string name="media_others_color_anim_tips">使用动画更新文字颜色</string>
     <string name="media_bg_custom_linear_gradient">线性渐变</string>
     <string name="media_bg_blur_radius">模糊半径</string>
     <string name="page_module">模块设置</string>
@@ -621,4 +622,5 @@
     <string name="media_elm_thumb_style">滑块风格</string>
     <string name="ui_title_media_layout">布局</string>
     <string name="media_lyt_album">封面</string>
+    <string name="media_others_fix_thumb_crop">修复滑块裁剪错误</string>
 </resources>

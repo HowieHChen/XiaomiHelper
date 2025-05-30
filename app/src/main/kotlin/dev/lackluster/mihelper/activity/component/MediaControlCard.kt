@@ -474,7 +474,7 @@ private fun MediaProgressBar(
     Canvas(
         modifier = modifier
             .fillMaxWidth()
-            .height(16.dp)
+            .height(14.dp)
     ) {
         val barHeight = progressHeight.toPx()
         val barWidth = size.width
@@ -484,6 +484,8 @@ private fun MediaProgressBar(
         } else {
             (barWidth - barHeight) * 0.728f + floor(barHeight / 2)
         }
+        val progressAlpha = if (progressStyle == 0) 0.5f else 0.75f
+        val backgroundAlpha = if (progressStyle == 0) 0.1f else 0.2f
         if (progressStyle == 2) {
             var heightFraction = 1.0f
             val phaseSpeed = 8.dp.toPx()
@@ -497,14 +499,14 @@ private fun MediaProgressBar(
                 this.strokeCap = StrokeCap.Round
                 this.style = PaintingStyle.Stroke
                 this.color = color
-                this.colorFilter = ColorFilter.tint(color.copy(0.6f))
+                this.colorFilter = ColorFilter.tint(color)
             }
             val linePaint = Paint().apply {
                 this.strokeWidth = strokeWidth
                 this.strokeCap = StrokeCap.Round
                 this.style = PaintingStyle.Stroke
                 this.color = color
-                this.colorFilter = ColorFilter.tint(color.copy(0.1f))
+                this.colorFilter = ColorFilter.tint(color.copy(0.3f))
             }
             drawIntoCanvas { canvas ->
                 val progress = 0.728f
@@ -549,13 +551,13 @@ private fun MediaProgressBar(
             }
         } else {
             drawRoundRect(
-                color = color.copy(alpha = 0.1f),
+                color = color.copy(alpha = backgroundAlpha),
                 size = Size(barWidth, barHeight),
                 topLeft = Offset(0f, center.y - barHeight / 2),
                 cornerRadius = CornerRadius(barHeight / 2)
             )
             drawArc(
-                color = color.copy(alpha = 0.6f),
+                color = color.copy(alpha = progressAlpha),
                 startAngle = 90f,
                 sweepAngle = 180f,
                 useCenter = true,
@@ -564,7 +566,7 @@ private fun MediaProgressBar(
                 size = Size(floor(barHeight), barHeight)
             )
             drawRoundRect(
-                color = color.copy(alpha = 0.6f),
+                color = color.copy(alpha = progressAlpha),
                 size = Size(progWidth, barHeight),
                 topLeft = Offset(floor(barHeight / 2), center.y - barHeight / 2),
                 cornerRadius = CornerRadius.Zero
@@ -581,8 +583,8 @@ private fun MediaProgressBar(
             2 -> {
                 drawRoundRect(
                     color = color,
-                    size = Size(4.dp.toPx(), 16.dp.toPx()),
-                    topLeft = Offset(thumbOffset - 2.dp.toPx(), center.y - 8.dp.toPx()),
+                    size = Size(4.dp.toPx(), 14.dp.toPx()),
+                    topLeft = Offset(thumbOffset - 2.dp.toPx(), center.y - 7.dp.toPx()),
                     cornerRadius = CornerRadius(2.dp.toPx())
                 )
             }

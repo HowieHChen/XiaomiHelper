@@ -157,7 +157,7 @@
     <string name="systemui_notif_clock_anim">時計の遷移アニメーションを強制的に使用する</string>
     <string name="systemui_notif_clock_anim_tips">横方向の時計遷移アニメーションを許可する</string>
     <string name="systemui_notif_theme_blur">テーマを使用時に高度なテクスチャの有効化を可能にする</string>
-    <string name="systemui_notif_media_control_style">メディアコントロールのスタイル</string>
+    <string name="systemui_notif_media_control_style_tips">メディアコントロールのスタイル</string>
     <string name="ui_title_systemui_control_center">コントロールセンター</string>
     <string name="systemui_control_hide_carrier_one">SIMカード1の通信事業者名ラベルを非表示にする</string>
     <string name="systemui_control_hide_carrier_two">SIMカード2の通信事業者名ラベルを非表示にする</string>
@@ -382,7 +382,7 @@
     <string name="media_general_hide_app_icon">アプリアイコンを非表示にする</string>
     <string name="media_bg_custom">背景のスタイル</string>
     <string name="media_bg_custom_blur">ぼかしたカバー</string>
-    <string name="media_bg_color_anim_tips">テキストの色を変更時にトランジションアニメーションを使用する [試験的!]</string>
+    <string name="media_others_color_anim_tips">テキストの色を変更時にトランジションアニメーションを使用する [試験的!]</string>
     <string name="media_bg_blur_radius">ぼかしの半径</string>
     <string name="media_bg_auto_color_reverse">色を自動的に反転</string>
     <!-- HomeRefactorPage -->

@@ -1,18 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:height="16dp"
     android:width="4dp"
-    android:viewportHeight="16"
-    android:viewportWidth="4">
-    <group android:name="_R_G">
-        <group android:name="_R_G_L_0_G"
-            android:translateX="2"
-            android:translateY="8">
-            <path android:name="_R_G_L_0_G_D_0_P_0"
-                android:fillColor="#00ffffff"
-                android:fillAlpha="1"
-                android:fillType="nonZero"
-                android:pathData=" M2 -6 C2,-6 2,6 2,6 C2,7.1 1.1,8 0,8 C0,8 0,8 0,8 C-1.1,8 -2,7.1 -2,6 C-2,6 -2,-6 -2,-6 C-2,-7.1 -1.1,-8 0,-8 C0,-8 0,-8 0,-8 C1.1,-8 2,-7.1 2,-6c "/>
-        </group>
+    android:height="14dp"
+    android:viewportWidth="4"
+    android:viewportHeight="14">
+    <group>
+        <clip-path
+            android:pathData="M0,0h4v14h-4z"/>
+        <path
+            android:pathData="M2,0L2,0A2,2 0,0 1,4 2L4,12A2,2 0,0 1,2 14L2,14A2,2 0,0 1,0 12L0,2A2,2 0,0 1,2 0z"
+            android:fillColor="#00FFFFFF"/>
     </group>
 </vector>

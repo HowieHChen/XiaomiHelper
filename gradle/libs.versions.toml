@@ -7,7 +7,7 @@ project-app-packageName = "dev.lackluster.mihelper"
 project-app-versionName = "3.0.9"
 project-app-versionCode = "243"
 
-androidGradlePlugin = "8.10.0"
+androidGradlePlugin = "8.10.1"
 kotlin = "2.1.0"
 ksp = "2.1.0-1.0.29"
 tinypinyin = "2.0.3.RELEASE"

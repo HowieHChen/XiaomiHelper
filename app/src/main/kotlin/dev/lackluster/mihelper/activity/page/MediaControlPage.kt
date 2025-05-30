@@ -139,16 +139,6 @@ fun MediaControlPage(navController: NavController, adjustPadding: PaddingValues,
                     backgroundStyle = it
                 }
                 AnimatedVisibility(
-                    backgroundStyle != 0
-                ) {
-                    SwitchPreference(
-                        title = stringResource(R.string.media_bg_color_anim),
-                        summary = stringResource(R.string.media_bg_color_anim_tips),
-                        key = Pref.Key.SystemUI.MediaControl.USE_ANIM,
-                        defValue = true
-                    )
-                }
-                AnimatedVisibility(
                     backgroundStyle == 2
                 ) {
                     SeekBarPreference(
@@ -271,6 +261,27 @@ fun MediaControlPage(navController: NavController, adjustPadding: PaddingValues,
                     ) {
                         progressWidth = it
                     }
+                }
+            }
+            PreferenceGroup(
+                title = stringResource(R.string.ui_title_media_others),
+                last = true
+            ) {
+                SwitchPreference(
+                    title = stringResource(R.string.media_others_fix_thumb_crop),
+                    summary = stringResource(R.string.media_others_fix_thumb_crop_tips),
+                    key = Pref.Key.SystemUI.MediaControl.FIX_THUMB_CROPPED,
+                    defValue = true
+                )
+                AnimatedVisibility(
+                    backgroundStyle != 0
+                ) {
+                    SwitchPreference(
+                        title = stringResource(R.string.media_others_color_anim),
+                        summary = stringResource(R.string.media_others_color_anim_tips),
+                        key = Pref.Key.SystemUI.MediaControl.USE_ANIM,
+                        defValue = true
+                    )
                 }
             }
         }

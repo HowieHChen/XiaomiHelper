@@ -382,7 +382,6 @@ object Pref {
                 const val HIDE_APP_ICON = "media_ctrl_hide_app"
 
                 const val BACKGROUND_STYLE = "media_ctrl_background"
-                const val USE_ANIM = "media_ctrl_anim"
                 const val BLUR_RADIUS = "media_ctrl_radius"
                 const val ALLOW_REVERSE = "media_allow_reverse"
 
@@ -398,6 +397,9 @@ object Pref {
                 const val ELM_THUMB_STYLE = "media_elm_thumb_style"
                 const val ELM_PROGRESS_STYLE = "media_elm_prog_style"
                 const val ELM_PROGRESS_WIDTH = "media_elm_prog_width"
+
+                const val FIX_THUMB_CROPPED = "media_thumb_crop"
+                const val USE_ANIM = "media_ctrl_anim"
             }
             object ControlCenter {
                 const val HIDE_CARRIER_ONE = "statusbar_hide_carrier_one"

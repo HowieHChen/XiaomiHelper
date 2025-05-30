@@ -179,6 +179,7 @@ object LinearGradientStyle : YukiBaseHooker() {
                 actionPrev.imageTintList = mPrevTextPrimaryColorStateList
                 seekBar.thumb.setTintList(mPrevTextPrimaryColorStateList)
                 seekBar.progressTintList = mPrevTextPrimaryColorStateList
+                seekBar.progressBackgroundTintList = mPrevTextPrimaryColorStateList
                 scrubbingElapsedTimeView.setTextColor(mCurrentTextPrimaryColor)
                 scrubbingTotalTimeView.setTextColor(mCurrentTextPrimaryColor)
                 elapsedTimeView.setTextColor(mCurrentTextPrimaryColor)
@@ -269,6 +270,7 @@ object LinearGradientStyle : YukiBaseHooker() {
                                         actionPrev.imageTintList = currentColorStateList
                                         seekBar.thumb.setTintList(currentColorStateList)
                                         seekBar.progressTintList = currentColorStateList
+                                        seekBar.progressBackgroundTintList = currentColorStateList
                                         scrubbingElapsedTimeView.setTextColor(it)
                                         scrubbingTotalTimeView.setTextColor(it)
                                         elapsedTimeView.setTextColor(it)
@@ -292,6 +294,7 @@ object LinearGradientStyle : YukiBaseHooker() {
                                 actionPrev.imageTintList = currentColorStateList
                                 seekBar.thumb.setTintList(currentColorStateList)
                                 seekBar.progressTintList = currentColorStateList
+                                seekBar.progressBackgroundTintList = currentColorStateList
                                 scrubbingElapsedTimeView.setTextColor(textPrimary)
                                 scrubbingTotalTimeView.setTextColor(textPrimary)
                                 elapsedTimeView.setTextColor(textPrimary)
