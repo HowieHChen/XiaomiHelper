@@ -708,7 +708,7 @@
     <string name="media_others_color_anim">Color animation</string>
     <string name="media_others_color_anim_tips">Experimental feature. Use transition animation when changing text color.</string>
     <string name="media_others_fix_thumb_crop">Fix thumb incorrectly cropped</string>
-    <string name="media_others_fix_thumb_crop_tips">Ensure that the thumb is fully visible when it is at either end of the progress bar</string>
+    <string name="media_others_fix_thumb_crop_tips">Ensure that the thumb is fully visible when it\'s at either end of the progress bar</string>
     <!-- HomeRefactorPage -->
     <string name="home_refactor_blur">Blur effect</string>
     <string name="home_refactor_blur_radius">Blur radius</string>
