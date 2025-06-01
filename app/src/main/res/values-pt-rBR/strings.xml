@@ -253,8 +253,8 @@
     <string name="home_recent_show_real_memory">Exibir memória real</string>
     <string name="home_recent_wallpaper_darken">Parar de reduzir o brilho do plano de fundo</string>
     <string name="home_recent_wallpaper_darken_tips">Pare a redução automática do brilho do plano de fundo ao entrar nos Recentes</string>
-    <string name="home_recent_disable_fake_navbar">Desativar identificador falso da barra de navegação</string>
-    <string name="home_recent_disable_fake_navbar_tips">Desative o identificador falso da barra de navegação na tela horizontal nos Recentes e use a real</string>
+    <string name="home_others_hide_fake_navbar">Desativar identificador falso da barra de navegação</string>
+    <string name="home_others_hide_fake_navbar_tips">Desative o identificador falso da barra de navegação na tela horizontal nos Recentes e use a real</string>
     <string name="home_recent_dock_time">Tempo de espera para chamar a dock</string>
     <string name="home_recent_dock_time_tips">Valores superiores a 1000 milissegundos não são recomendados</string>
     <string name="home_recent_docke_safe_height">Limite de altura para chamar a dock</string>
@@ -266,7 +266,7 @@
     <string name="home_shortcut_freeform">Adicionar atalho para "Janela flutuante"</string>
     <string name="home_shortcut_instance">Adicionar atalho para "Múltiplas instâncias"</string>
     <string name="ui_title_home_personal_asist">Assistente</string>
-    <string name="home_minus_restore_setting">Restaurar configuração do Assistente</string>
+    <string name="home_others_show_minus_setting">Restaurar configuração do Assistente</string>
     <string name="home_minus_blur_type">Fundo do Assistente</string>
     <string name="home_minus_blur_type_sys">Fundo desfocado antigo</string>
     <string name="home_minus_blur_type_texture">Texturas avançadas</string>

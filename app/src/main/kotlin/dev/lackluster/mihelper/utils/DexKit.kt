@@ -32,7 +32,7 @@ object DexKit {
     private const val PREF_KEY_FIELD_PREFIX = "fld_"
     private const val PREF_KEY_FIELDS_PREFIX = "fls_"
     private lateinit var hostDir: String
-    private var enableCache = Prefs.getBoolean(Pref.Key.Module.DEXKIT_CACHE, true)
+    private var enableCache = Prefs.getBoolean(Pref.Key.Module.DEX_KIT_CACHE, true)
     private var sp: SharedPreferences? = null
     private var isInitialized = false
 

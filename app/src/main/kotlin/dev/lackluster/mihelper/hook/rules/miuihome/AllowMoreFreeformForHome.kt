@@ -35,22 +35,24 @@ object AllowMoreFreeformForHome : YukiBaseHooker() {
             "com.miui.home.launcher.RecentsAndFSGestureUtils".toClassOrNull()?.apply {
                 method {
                     name = "canTaskEnterMiniSmallWindow"
-                }.giveAll().hookAll {
+                }.ignored().giveAll().hookAll {
                     replaceToTrue()
                 }
                 method {
                     name = "canTaskEnterSmallWindow"
-                }.giveAll().hookAll {
+                }.ignored().giveAll().hookAll {
                     replaceToTrue()
                 }
             }
-            "com.miui.home.smallwindow.SmallWindowStateHelperUseManager".toClassOrNull()?.method {
-                name = "canEnterMiniSmallWindow"
-            }?.hook {
-                replaceAny {
-                    (this.instance.current().field {
-                        name = "mMiniSmallWindowInfoSet"
-                    }.any() as ArraySet<*>).isEmpty()
+            "com.miui.home.smallwindow.SmallWindowStateHelperUseManager".toClassOrNull()?.apply {
+                method {
+                    name = "canEnterMiniSmallWindow"
+                }.ignored().hook {
+                    replaceAny {
+                        (this.instance.current().field {
+                            name = "mMiniSmallWindowInfoSet"
+                        }.any() as ArraySet<*>).isEmpty()
+                    }
                 }
             }
         }

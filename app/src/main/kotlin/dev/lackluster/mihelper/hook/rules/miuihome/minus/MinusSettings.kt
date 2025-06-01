@@ -41,28 +41,32 @@ object MinusSettings : YukiBaseHooker() {
                 name = "IS_INTERNATIONAL_BUILD"
                 modifiers { isStatic }
             }.get()
-            "com.miui.home.launcher.DeviceConfig".toClass().method {
-                name = "isUseGoogleMinusScreen"
-            }.hook {
-                before {
-                    "com.miui.home.launcher.LauncherAssistantCompat".toClass().field {
-                        name = "CAN_SWITCH_MINUS_SCREEN"
-                        modifiers { isStatic }
-                    }.get().setTrue()
+            "com.miui.home.launcher.DeviceConfig".toClassOrNull()?.apply {
+                method {
+                    name = "isUseGoogleMinusScreen"
+                }.hook {
+                    before {
+                        "com.miui.home.launcher.LauncherAssistantCompat".toClass().field {
+                            name = "CAN_SWITCH_MINUS_SCREEN"
+                            modifiers { isStatic }
+                        }.get().setTrue()
+                    }
                 }
             }
-            "com.miui.home.launcher.LauncherAssistantCompat".toClass().method {
-                name = "newInstance"
-                param(clazzLauncher.name)
-            }.hook {
-                before {
-                    val isPersonalAssistantGoogle = clazzUtilities.method {
-                        name = "getCurrentPersonalAssistant"
-                    }.get().string() == "personal_assistant_google"
-                    isInternationalBuild.set(isPersonalAssistantGoogle)
-                }
-                after {
-                    isInternationalBuild.setFalse()
+            "com.miui.home.launcher.LauncherAssistantCompat".toClassOrNull()?.apply {
+                method {
+                    name = "newInstance"
+                    param(clazzLauncher.name)
+                }.hook {
+                    before {
+                        val isPersonalAssistantGoogle = clazzUtilities.method {
+                            name = "getCurrentPersonalAssistant"
+                        }.get().string() == "personal_assistant_google"
+                        isInternationalBuild.set(isPersonalAssistantGoogle)
+                    }
+                    after {
+                        isInternationalBuild.setFalse()
+                    }
                 }
             }
             clazzLauncher.constructor().hook {

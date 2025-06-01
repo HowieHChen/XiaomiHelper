@@ -194,8 +194,8 @@
     <string name="home_recent_wallpaper_darken">壁紙の輝度を下げるのを止める</string>
     <string name="home_recent_wallpaper_darken_tips">最近のタスクの表示時に壁紙の輝度を自動的に下げる動作を止めます</string>
     <string name="home_recent_dismiss_anim">最近のタスクを終了する際のカードのアニメーションを変更する</string>
-    <string name="home_recent_disable_fake_navbar">偽のナビゲーションバーハンドルを無効化する</string>
-    <string name="home_recent_disable_fake_navbar_tips">水平方向の「最近のタスク」画面で偽のナビゲーションバーハンドルを無効化し、本物のナビゲーションバーを使用します</string>
+    <string name="home_others_hide_fake_navbar">偽のナビゲーションバーハンドルを無効化する</string>
+    <string name="home_others_hide_fake_navbar_tips">水平方向の「最近のタスク」画面で偽のナビゲーションバーハンドルを無効化し、本物のナビゲーションバーを使用します</string>
     <string name="home_recent_dock_time">ドックを呼び出し時の待ち時間</string>
     <string name="home_recent_dock_time_tips">1000ミリ秒を越える値は推奨しません</string>
     <string name="home_recent_docke_safe_height">ドックを呼び出すための高さのしきい値</string>
@@ -207,7 +207,7 @@
     <string name="home_shortcut_freeform">｢フローティングウィンドウ｣のショートカットを追加する</string>
     <string name="home_shortcut_instance">｢複数インスタンス｣のショートカットを追加する</string>
     <string name="ui_title_home_personal_asist">パーソナルアシスタント</string>
-    <string name="home_minus_restore_setting">マイナス画面設定を復元する</string>
+    <string name="home_others_show_minus_setting">マイナス画面設定を復元する</string>
     <string name="home_minus_fold_style">Mix Foldスタイルのマイナス画面</string>
     <string name="home_minus_blur">背景のぼかしを有効化する</string>
     <string name="home_others_always_show_clock">ステータスバーに時計を常に表示する</string>

@@ -2,8 +2,6 @@ package dev.lackluster.mihelper.activity.page
 
 import android.widget.Toast.LENGTH_LONG
 import android.widget.Toast.makeText
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -40,10 +38,8 @@ import top.yukonga.miuix.kmp.basic.ListPopupDefaults
 import top.yukonga.miuix.kmp.basic.PopupPositionProvider
 import top.yukonga.miuix.kmp.extra.DropdownImpl
 import top.yukonga.miuix.kmp.icon.MiuixIcons
-import top.yukonga.miuix.kmp.icon.icons.ImmersionMore
+import top.yukonga.miuix.kmp.icon.icons.useful.ImmersionMore
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissDialog
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissPopup
 
 @Composable
 fun MainPage(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
@@ -72,6 +68,7 @@ fun MainPage(navController: NavController, adjustPadding: PaddingValues, mode: B
                     popupPositionProvider = ListPopupDefaults.ContextMenuPositionProvider,
                     alignment = PopupPositionProvider.Align.TopRight,
                     onDismissRequest = {
+                        showTopPopup.value = false
                         isTopPopupExpanded.value = false
                     }
                 ) {
@@ -102,7 +99,7 @@ fun MainPage(navController: NavController, adjustPadding: PaddingValues, mode: B
                                             }
                                         }
                                     }
-                                    dismissPopup(showTopPopup)
+                                    showTopPopup.value = false
                                     isTopPopupExpanded.value = false
                                 },
                                 index = index
@@ -115,13 +112,14 @@ fun MainPage(navController: NavController, adjustPadding: PaddingValues, mode: B
             IconButton(
                 modifier = Modifier.padding(padding).padding(end = 21.dp).size(40.dp),
                 onClick = {
-                    isTopPopupExpanded.value = true
+                    showTopPopup.value = true
                     hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                }
+                },
+                holdDownState = showTopPopup.value
             ) {
                 Icon(
                     modifier = Modifier.size(26.dp),
-                    imageVector = MiuixIcons.ImmersionMore,
+                    imageVector = MiuixIcons.Useful.ImmersionMore,
                     contentDescription = "Menu",
                     tint = MiuixTheme.colorScheme.onSurfaceSecondary
                 )
@@ -140,71 +138,41 @@ fun MainPage(navController: NavController, adjustPadding: PaddingValues, mode: B
         }
         item {
             PreferenceGroup {
-                AnimatedVisibility(
-                    visible = MainActivity.liteMode.value
+                TextPreference(
+                    icon = ImageIcon(iconRes = R.drawable.ic_header_systemui),
+                    title = stringResource(R.string.page_systemui)
                 ) {
-                    Column {
-                        TextPreference(
-                            icon = ImageIcon(iconRes = R.drawable.ic_header_systemui),
-                            title = stringResource(R.string.page_virtual_media_control_style)
-                        ) {
-                            navController.navigateWithPopup(Pages.MEDIA_CONTROL)
-                        }
-                        TextPreference(
-                            icon = ImageIcon(iconRes = R.drawable.ic_header_home),
-                            title = stringResource(R.string.page_virtual_home_refactor)
-                        ) {
-                            navController.navigateWithPopup(Pages.HOME_REFACTOR)
-                        }
-                    }
+                    navController.navigateWithPopup(Pages.SYSTEM_UI)
                 }
-                AnimatedVisibility(
-                    visible = !MainActivity.liteMode.value
+                TextPreference(
+                    icon = ImageIcon(iconRes = R.drawable.ic_header_android_green),
+                    title = stringResource(R.string.page_android)
                 ) {
-                    Column {
-                        TextPreference(
-                            icon = ImageIcon(iconRes = R.drawable.ic_header_systemui),
-                            title = stringResource(R.string.page_systemui)
-                        ) {
-                            navController.navigateWithPopup(Pages.SYSTEM_UI)
-                        }
-                        TextPreference(
-                            icon = ImageIcon(iconRes = R.drawable.ic_header_android_green),
-                            title = stringResource(R.string.page_android)
-                        ) {
-                            navController.navigateWithPopup(Pages.SYSTEM_FRAMEWORK)
-                        }
-                        TextPreference(
-                            icon = ImageIcon(iconRes = R.drawable.ic_header_home),
-                            title = stringResource(R.string.page_miui_home)
-                        ) {
-                            navController.navigateWithPopup(Pages.MIUI_HOME)
-                        }
-                        TextPreference(
-                            icon = ImageIcon(iconRes = R.drawable.ic_header_cleaner),
-                            title = stringResource(R.string.page_cleaner)
-                        ) {
-                            navController.navigateWithPopup(Pages.CLEAN_MASTER)
-                        }
-                        TextPreference(
-                            icon = ImageIcon(iconRes = R.drawable.ic_header_security_center),
-                            title = stringResource(if (Device.isPad) R.string.page_security_center_pad else R.string.page_security_center)
-                        ) {
-                            navController.navigateWithPopup(Pages.SECURITY_CENTER)
-                        }
-//                        TextPreference(
-//                            icon = ImageIcon(iconRes = R.drawable.ic_header_interconnection),
-//                            title = stringResource(R.string.page_interconnection)
-//                        ) {
-//                            navController.navigateWithPopup(Pages.INTERCONNECTION)
-//                        }
-                        TextPreference(
-                            icon = ImageIcon(iconRes = R.drawable.ic_header_others),
-                            title = stringResource(R.string.page_others)
-                        ) {
-                             navController.navigateWithPopup(Pages.OTHERS)
-                        }
-                    }
+                    navController.navigateWithPopup(Pages.SYSTEM_FRAMEWORK)
+                }
+                TextPreference(
+                    icon = ImageIcon(iconRes = R.drawable.ic_header_home),
+                    title = stringResource(R.string.page_miui_home)
+                ) {
+                    navController.navigateWithPopup(Pages.MIUI_HOME)
+                }
+                TextPreference(
+                    icon = ImageIcon(iconRes = R.drawable.ic_header_cleaner),
+                    title = stringResource(R.string.page_cleaner)
+                ) {
+                    navController.navigateWithPopup(Pages.CLEAN_MASTER)
+                }
+                TextPreference(
+                    icon = ImageIcon(iconRes = R.drawable.ic_header_security_center),
+                    title = stringResource(if (Device.isPad) R.string.page_security_center_pad else R.string.page_security_center)
+                ) {
+                    navController.navigateWithPopup(Pages.SECURITY_CENTER)
+                }
+                TextPreference(
+                    icon = ImageIcon(iconRes = R.drawable.ic_header_others),
+                    title = stringResource(R.string.page_others)
+                ) {
+                    navController.navigateWithPopup(Pages.OTHERS)
                 }
             }
         }
@@ -242,7 +210,7 @@ fun MainPage(navController: NavController, adjustPadding: PaddingValues, mode: B
         negativeText = stringResource(R.string.button_ignore),
         positiveText = stringResource(R.string.button_enable)
     ) {
-        dismissDialog(dialogDisabledVisibility)
+        dialogDisabledVisibility.value = false
         navController.navigateTo(Pages.MODULE_SETTINGS)
     }
     AlertDialog(
@@ -267,7 +235,7 @@ fun MainPage(navController: NavController, adjustPadding: PaddingValues, mode: B
                 LENGTH_LONG
             ).show()
         }
-        dismissDialog(dialogInactiveVisibility)
+        dialogInactiveVisibility.value = false
     }
     AlertDialog(
         visibility = dialogRootRequiredVisibility,

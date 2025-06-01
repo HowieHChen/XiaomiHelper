@@ -24,6 +24,8 @@ package dev.lackluster.mihelper.hook.rules.systemui.media
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.Icon
+import android.media.session.PlaybackState.CustomAction
 import android.util.TypedValue
 import android.widget.SeekBar
 import android.widget.TextView
@@ -39,6 +41,7 @@ import dev.lackluster.mihelper.utils.Prefs
 import dev.lackluster.mihelper.utils.factory.dp
 import dev.lackluster.mihelper.utils.factory.dpFloat
 import com.highcapable.yukihookapi.hook.factory.constructor
+import com.highcapable.yukihookapi.hook.log.YLog
 
 object CustomElement : YukiBaseHooker() {
     private val modifyTextSize = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.ELM_TEXT_SIZE, false)
@@ -154,6 +157,27 @@ object CustomElement : YukiBaseHooker() {
                                 drawable.transitionEnabled = !seekAvailable
                             }
                         }
+                    }
+                }
+            }
+        }
+        if (true) {
+            val customActions =
+                "com.android.systemui.media.controls.domain.pipeline.LegacyMediaDataManagerImpl\$createActionsFromState\$customActions$1".toClassOrNull()
+                ?: "com.android.systemui.media.controls.pipeline.MediaDataManager\$createActionsFromState\$customActions$1".toClassOrNull()
+            customActions?.apply {
+                method {
+                    name = "invoke"
+                }.hook {
+                    after {
+                        YLog.info("customActions")
+                        val mediaAction = this.result ?: return@after
+                        val pkgName = this.instance.current().field { name = "\$packageName" }.string()
+                        val customAction = this.args(0).cast<CustomAction>() ?: return@after
+                        val mediaDataManager = this.instance.current().field { name = "this$0" }.any() ?: return@after
+                        val context = mediaDataManager.current().field { name = "context" }.any() as Context
+                        val drawable = Icon.createWithResource(pkgName, customAction.icon).loadDrawable(context)
+                        mediaAction.current().field { name = "icon" }.set(drawable)
                     }
                 }
             }

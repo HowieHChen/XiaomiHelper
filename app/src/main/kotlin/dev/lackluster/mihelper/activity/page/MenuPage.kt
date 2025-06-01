@@ -18,7 +18,6 @@ import dev.lackluster.hyperx.compose.preference.TextPreference
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.activity.MainActivity
 import dev.lackluster.mihelper.utils.ShellUtils
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissDialog
 
 @Composable
 fun MenuPage(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
@@ -72,7 +71,7 @@ fun MenuPage(navController: NavController, adjustPadding: PaddingValues, mode: B
         negativeText = stringResource(R.string.button_cancel),
         positiveText = stringResource(R.string.button_ok)
     ) {
-        dismissDialog(dialogRebootSystem)
+        dialogRebootSystem.value = false
         try {
             ShellUtils.tryExec("/system/bin/sync;/system/bin/svc power reboot || reboot", useRoot = true, checkSuccess = true)
         } catch (tout : Throwable) {
@@ -91,7 +90,7 @@ fun MenuPage(navController: NavController, adjustPadding: PaddingValues, mode: B
         negativeText = stringResource(R.string.button_cancel),
         positiveText = stringResource(R.string.button_ok)
     ) {
-        dismissDialog(dialogRebootScope)
+        dialogRebootScope.value = false
         HyperXActivity.context.let {
             try {
                 it.resources.getStringArray(R.array.module_scope).forEach { pkg ->
@@ -125,7 +124,7 @@ fun MenuPage(navController: NavController, adjustPadding: PaddingValues, mode: B
         negativeText = stringResource(R.string.button_cancel),
         positiveText = stringResource(R.string.button_ok)
     ) {
-        dismissDialog(dialogRebootSystemUI)
+        dialogRebootSystemUI.value = false
         try {
             ShellUtils.tryExec("killall com.android.systemui", useRoot = true, checkSuccess = true)
             HyperXActivity.context.let {
@@ -153,7 +152,7 @@ fun MenuPage(navController: NavController, adjustPadding: PaddingValues, mode: B
         negativeText = stringResource(R.string.button_cancel),
         positiveText = stringResource(R.string.button_ok)
     ) {
-        dismissDialog(dialogRebootLauncher)
+        dialogRebootLauncher.value = false
         try {
             ShellUtils.tryExec("killall com.miui.home", useRoot = true, checkSuccess = true)
             HyperXActivity.context.let {

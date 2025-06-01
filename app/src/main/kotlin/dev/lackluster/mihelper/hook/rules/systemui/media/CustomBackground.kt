@@ -3,6 +3,7 @@ package dev.lackluster.mihelper.hook.rules.systemui.media
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.HardwareRenderer
+import android.graphics.Paint
 import android.graphics.PixelFormat
 import android.graphics.RenderEffect
 import android.graphics.RenderNode
@@ -12,6 +13,7 @@ import android.media.ImageReader
 import androidx.core.graphics.get
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.constructor
+import com.highcapable.yukihookapi.hook.factory.current
 import com.highcapable.yukihookapi.hook.factory.field
 import com.highcapable.yukihookapi.hook.factory.method
 import dev.lackluster.mihelper.data.Pref
@@ -107,7 +109,31 @@ object CustomBackground : YukiBaseHooker() {
                 }
             }
             if (oldVersion) {
-
+                "com.android.systemui.statusbar.notification.mediacontrol.PlayerTwoCircleView".toClassOrNull()?.apply {
+                    constructor {
+                        paramCount = 4
+                    }.ignored().hook {
+                        after {
+                            this.instance.current().field { name = "mPaint1" }.cast<Paint>()?.alpha = 0
+                            this.instance.current().field { name = "mPaint2" }.cast<Paint>()?.alpha = 0
+                            this.instance.current().field { name = "mRadius" }.set(0.0f)
+                        }
+                    }
+                    method {
+                        name = "setBackground"
+                    }.ignored().hook {
+                        before {
+                            this.result = null
+                        }
+                    }
+                    method {
+                        name = "setPaintColor"
+                    }.ignored().hook {
+                        before {
+                            this.result = null
+                        }
+                    }
+                }
             }
         }
         when (backgroundStyle) {

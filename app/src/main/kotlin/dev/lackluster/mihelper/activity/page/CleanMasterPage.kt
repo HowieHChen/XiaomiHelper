@@ -31,7 +31,7 @@ import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.Device
 import top.yukonga.miuix.kmp.basic.BasicComponent
 import top.yukonga.miuix.kmp.icon.MiuixIcons
-import top.yukonga.miuix.kmp.icon.icons.Info
+import top.yukonga.miuix.kmp.icon.icons.useful.Info
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 @Composable
@@ -104,7 +104,7 @@ fun CleanMasterPage(navController: NavController, adjustPadding: PaddingValues, 
                             modifier = Modifier
                                 .padding(end = 16.dp)
                                 .size(28.dp),
-                            imageVector = MiuixIcons.Info,
+                            imageVector = MiuixIcons.Useful.Info,
                             contentDescription = null,
                             colorFilter = ColorFilter.tint(MiuixTheme.colorScheme.onSurfaceVariantSummary)
                         )

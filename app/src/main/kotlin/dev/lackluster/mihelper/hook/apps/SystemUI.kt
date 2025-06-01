@@ -25,7 +25,6 @@ import dev.lackluster.mihelper.hook.rules.systemui.lockscreen.DoubleTapToSleep
 import dev.lackluster.mihelper.hook.rules.systemui.media.CustomElement
 import dev.lackluster.mihelper.hook.rules.systemui.media.CustomLayout
 import dev.lackluster.mihelper.hook.rules.systemui.media.CustomBackground
-import dev.lackluster.mihelper.hook.rules.systemui.media.StyleCustomHookEntry
 import dev.lackluster.mihelper.hook.rules.systemui.media.UnlockCustomAction
 import dev.lackluster.mihelper.hook.rules.systemui.notif.AdvancedTextures
 import dev.lackluster.mihelper.hook.rules.systemui.notif.MiuiXExpandButton
@@ -79,7 +78,6 @@ object SystemUI : YukiBaseHooker() {
         loadHooker(NotifSettingsRedirect)
 
         loadHooker(AdvancedTextures)
-        loadHooker(StyleCustomHookEntry)
         loadHooker(UnlockCustomAction)
         loadHooker(PadClockAnim)
     }

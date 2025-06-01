@@ -2,7 +2,6 @@ package dev.lackluster.mihelper.activity.page
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.widget.Toast.LENGTH_SHORT
 import android.widget.Toast.makeText
 import androidx.compose.foundation.Image
@@ -50,6 +49,9 @@ import dev.lackluster.mihelper.data.References
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme
+import androidx.core.net.toUri
+import dev.lackluster.hyperx.compose.navigation.navigateTo
+import dev.lackluster.mihelper.data.Pages
 
 @Composable
 fun AboutPage(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
@@ -224,7 +226,6 @@ fun AboutPage(navController: NavController, adjustPadding: PaddingValues, mode: 
                 }
             }
         }
-        /*
         item {
             PreferenceGroup(
                 title = stringResource(R.string.ui_title_about_dev_options),
@@ -237,7 +238,6 @@ fun AboutPage(navController: NavController, adjustPadding: PaddingValues, mode: 
                 }
             }
         }
-         */
     }
 }
 
@@ -247,10 +247,10 @@ fun Context.openUrl(urlResId: Int) {
 
 fun Context.openUrl(url: String) {
     try {
-        val uri = Uri.parse(url)
+        val uri = url.toUri()
         val intent = Intent(Intent.ACTION_VIEW, uri)
         this.startActivity(intent)
-    } catch (e: Exception) {
+    } catch (_: Exception) {
         makeText(this, R.string.about_jump_error_toast, LENGTH_SHORT).show()
     }
 }

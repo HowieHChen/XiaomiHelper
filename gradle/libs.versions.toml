@@ -8,43 +8,37 @@ project-app-versionName = "3.0.9"
 project-app-versionCode = "243"
 
 androidGradlePlugin = "8.10.1"
-kotlin = "2.1.0"
-ksp = "2.1.0-1.0.29"
+kotlin = "2.1.21"
+ksp = "2.1.21-2.0.1"
 tinypinyin = "2.0.3.RELEASE"
 xposed = "82"
 yukihookapi = "1.2.1"
-dexkit = "2.0.4"
-serialization-json = "1.8.0"
+dexkit = "2.0.5"
+serialization-json = "1.8.1"
 
 [libraries]
 xposed-api = { group = "de.robv.android.xposed", name = "api", version.ref = "xposed" }
 yukihookapi-api = { group = "com.highcapable.yukihookapi", name = "api", version.ref = "yukihookapi" }
 yukihookapi-ksp-xposed = { group = "com.highcapable.yukihookapi", name = "ksp-xposed", version.ref = "yukihookapi" }
-drawabletoolbox = { group = "com.github.duanhong169", name = "drawabletoolbox", version = "1.0.7" }
 
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version = "1.7.0" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version = "2.2.1" }
-androidx-constraintlayout-core = { group = "androidx.constraintlayout", name = "constraintlayout-core", version = "1.1.1" }
 androidx-constraintlayout-compose = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version = "1.1.1" }
-androidx-test-junit = { group = "androidx.test.ext", name = "junit", version = "1.2.1" }
-androidx-test-espresso = { group = "androidx.test.espresso", name = "espresso-core", version = "3.6.1" }
-junit = { group = "junit", name = "junit", version = "4.13.2" }
 
 dexkit = { module = "org.luckypray:dexkit", version.ref = "dexkit" }
 tinypinyin = { module = "io.github.biezhi:TinyPinyin", version.ref = "tinypinyin" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization-json" }
 
-androidx-ui = { group = "androidx.compose.ui", name = "ui" }
+androidx-ui = { group = "androidx.compose.ui", name = "ui", version = "1.8.2" }
 
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version = "1.16.0" }
-androidx-dynamicanimation-ktx = { group = "androidx.dynamicanimation", name = "dynamicanimation", version = "1.1.0" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
+android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
+
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-
-android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }

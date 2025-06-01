@@ -1,9 +1,9 @@
-package dev.lackluster.mihelper.application
+package dev.lackluster.mihelper
 
 import androidx.appcompat.app.AppCompatDelegate
 import com.highcapable.yukihookapi.hook.xposed.application.ModuleApplication
 
-class DefaultApplication : ModuleApplication() {
+class HelperApplication : ModuleApplication() {
 
     override fun onCreate() {
         super.onCreate()

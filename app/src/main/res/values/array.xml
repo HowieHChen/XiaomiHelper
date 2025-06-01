@@ -16,21 +16,21 @@
         <item>com.lbe.security.miui</item>
         <item>com.milink.service</item>
         <item>com.miui.contentextension</item>
-        <item>com.miui.gallery</item>
+<!--        <item>com.miui.gallery</item>-->
         <item>com.miui.guardprovider</item>
         <item>com.miui.home</item>
-        <item>com.miui.mediaeditor</item>
-        <item>com.miui.mishare.connectivity</item>
+<!--        <item>com.miui.mediaeditor</item>-->
+<!--        <item>com.miui.mishare.connectivity</item>-->
         <item>com.miui.packageinstaller</item>
         <item>com.miui.personalassistant</item>
         <item>com.miui.player</item>
         <item>com.miui.powerkeeper</item>
-        <item>com.miui.screenrecorder</item>
-        <item>com.miui.screenshot</item>
+<!--        <item>com.miui.screenrecorder</item>-->
+<!--        <item>com.miui.screenshot</item>-->
         <item>com.miui.securitycenter</item>
         <item>com.miui.voiceassist</item>
         <item>com.miui.weather2</item>
-        <item>com.xiaomi.joyose</item>
+<!--        <item>com.xiaomi.joyose</item>-->
         <item>com.xiaomi.market</item>
         <item>com.xiaomi.mirror</item>
         <item>com.xiaomi.misettings</item>

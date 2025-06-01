@@ -28,12 +28,4 @@
     public static *** throwUninitializedPropertyAccessException(...);
 }
 
--keepclassmembers class * implements androidx.viewbinding.ViewBinding {
-    *** inflate(android.view.LayoutInflater);
-}
-
--keep class * extends android.app.Activity
--keep class * implements androidx.viewbinding.ViewBinding {
-    <init>();
-    *** inflate(android.view.LayoutInflater);
-}
+-keep class dev.lackluster.mihelper.activity.MainActivity

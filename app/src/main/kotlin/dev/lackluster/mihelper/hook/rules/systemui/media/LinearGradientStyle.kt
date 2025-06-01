@@ -66,7 +66,6 @@ object LinearGradientStyle : YukiBaseHooker() {
     private var mIsArtworkBound = false
     private var mPrevTextPrimaryColor = Color.WHITE
     private var mCurrentTextPrimaryColor = Color.WHITE
-    private var animatingColorTransition: AnimatingColorTransition? = null
     private var lastWidth = 0
     private var lastHeight = 0
 
@@ -252,54 +251,26 @@ object LinearGradientStyle : YukiBaseHooker() {
                         mArtworkBoundId = reqId
 
                         if (colorSchemeChanged) {
-                            if(useAnim) {
-                                if (animatingColorTransition == null) {
-                                    animatingColorTransition = AnimatingColorTransition(applyColor = {
-                                        mCurrentTextPrimaryColor = it
-                                        val currentColorStateList = ColorStateList.valueOf(it)
-                                        titleText.setTextColor(it)
-                                        artistText.setTextColor(it)
-                                        seamlessIcon.imageTintList = currentColorStateList
-                                        action0.imageTintList = currentColorStateList
-                                        action1.imageTintList = currentColorStateList
-                                        action2.imageTintList = currentColorStateList
-                                        action3.imageTintList = currentColorStateList
-                                        action4.imageTintList = currentColorStateList
-                                        actionNext.imageTintList = currentColorStateList
-                                        actionPlayPause.imageTintList = currentColorStateList
-                                        actionPrev.imageTintList = currentColorStateList
-                                        seekBar.thumb.setTintList(currentColorStateList)
-                                        seekBar.progressTintList = currentColorStateList
-                                        seekBar.progressBackgroundTintList = currentColorStateList
-                                        scrubbingElapsedTimeView.setTextColor(it)
-                                        scrubbingTotalTimeView.setTextColor(it)
-                                        elapsedTimeView.setTextColor(it)
-                                        totalTimeView.setTextColor(it)
-                                    })
-                                }
-                                animatingColorTransition!!.animateToNewColor(textPrimary)
-                            } else {
-                                mCurrentTextPrimaryColor = textPrimary
-                                val currentColorStateList = ColorStateList.valueOf(textPrimary)
-                                titleText.setTextColor(textPrimary)
-                                artistText.setTextColor(textPrimary)
-                                seamlessIcon.imageTintList = currentColorStateList
-                                action0.imageTintList = currentColorStateList
-                                action1.imageTintList = currentColorStateList
-                                action2.imageTintList = currentColorStateList
-                                action3.imageTintList = currentColorStateList
-                                action4.imageTintList = currentColorStateList
-                                actionNext.imageTintList = currentColorStateList
-                                actionPlayPause.imageTintList = currentColorStateList
-                                actionPrev.imageTintList = currentColorStateList
-                                seekBar.thumb.setTintList(currentColorStateList)
-                                seekBar.progressTintList = currentColorStateList
-                                seekBar.progressBackgroundTintList = currentColorStateList
-                                scrubbingElapsedTimeView.setTextColor(textPrimary)
-                                scrubbingTotalTimeView.setTextColor(textPrimary)
-                                elapsedTimeView.setTextColor(textPrimary)
-                                totalTimeView.setTextColor(textPrimary)
-                            }
+                            mCurrentTextPrimaryColor = textPrimary
+                            val currentColorStateList = ColorStateList.valueOf(textPrimary)
+                            titleText.setTextColor(textPrimary)
+                            artistText.setTextColor(textPrimary)
+                            seamlessIcon.imageTintList = currentColorStateList
+                            action0.imageTintList = currentColorStateList
+                            action1.imageTintList = currentColorStateList
+                            action2.imageTintList = currentColorStateList
+                            action3.imageTintList = currentColorStateList
+                            action4.imageTintList = currentColorStateList
+                            actionNext.imageTintList = currentColorStateList
+                            actionPlayPause.imageTintList = currentColorStateList
+                            actionPrev.imageTintList = currentColorStateList
+                            seekBar.thumb.setTintList(currentColorStateList)
+                            seekBar.progressTintList = currentColorStateList
+                            seekBar.progressBackgroundTintList = currentColorStateList
+                            scrubbingElapsedTimeView.setTextColor(textPrimary)
+                            scrubbingTotalTimeView.setTextColor(textPrimary)
+                            elapsedTimeView.setTextColor(textPrimary)
+                            totalTimeView.setTextColor(textPrimary)
                         }
 
                         // Bind the album view to the artwork or a transition drawable

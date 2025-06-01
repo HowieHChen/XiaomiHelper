@@ -279,6 +279,15 @@ fun MiuiHomePage(navController: NavController, adjustPadding: PaddingValues, mod
                 title = stringResource(R.string.ui_title_home_others),
                 last = true
             ) {
+                SwitchPreference(
+                    title = stringResource(R.string.home_others_show_minus_setting),
+                    key = Pref.Key.MiuiHome.MINUS_RESTORE_SETTING
+                )
+                SwitchPreference(
+                    title = stringResource(R.string.home_others_hide_fake_navbar),
+                    summary = stringResource(R.string.home_others_hide_fake_navbar_tips),
+                    key = Pref.Key.MiuiHome.RECENT_DISABLE_FAKE_NAVBAR
+                )
                 DropDownPreference(
                     title = stringResource(R.string.home_others_force_color_scheme_element),
                     summary = stringResource(R.string.home_others_force_color_scheme_element_tips),

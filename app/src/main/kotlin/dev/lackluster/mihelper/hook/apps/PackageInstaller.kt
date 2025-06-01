@@ -22,7 +22,6 @@ object PackageInstaller : YukiBaseHooker(){
         loadHooker(BlockUploadAppInfo)
         loadHooker(CustomInstallSource)
         loadHooker(DisguiseNoNet)
-//        loadHooker(MoreInfo)
         DexKit.closeDexKit()
     }
 }

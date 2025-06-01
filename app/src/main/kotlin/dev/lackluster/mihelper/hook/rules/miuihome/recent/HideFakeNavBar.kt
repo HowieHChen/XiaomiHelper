@@ -18,20 +18,20 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.lackluster.mihelper.hook.rules.miuihome.icon
+package dev.lackluster.mihelper.hook.rules.miuihome.recent
 
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.method
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.factory.hasEnable
 
-object PerfectIcon : YukiBaseHooker() {
+object HideFakeNavBar : YukiBaseHooker() {
     override fun onHook() {
-        hasEnable(Pref.Key.MiuiHome.ICON_PERFECT) {
-            "com.miui.home.library.compat.LauncherActivityInfoCompat".toClass().method {
-                name = "getIconResource"
-            }.hook {
-                replaceTo(0)
+        hasEnable(Pref.Key.MiuiHome.RECENT_DISABLE_FAKE_NAVBAR) {
+            "com.miui.home.recents.views.RecentsContainer".toClass().method {
+                name = "showLandscapeOverviewGestureView"
+            }.ignored().hook {
+                intercept()
             }
         }
     }

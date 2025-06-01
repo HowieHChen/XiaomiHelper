@@ -1,3 +1,4 @@
+import com.android.SdkConstants
 import java.text.SimpleDateFormat
 
 plugins {
@@ -20,6 +21,9 @@ android {
         versionCode = libs.versions.project.app.versionCode.get().toInt()
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "BUILD_TIME", "\"" + SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()) + "\"")
+        ndk {
+            abiFilters.add(SdkConstants.ABI_ARM64_V8A)
+        }
     }
     buildTypes {
         release {
@@ -67,19 +71,13 @@ dependencies {
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.ui)
-    implementation(libs.androidx.dynamicanimation.ktx)
 
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.dexkit)
     implementation(libs.tinypinyin)
     implementation(project(mapOf("path" to ":hyperx-compose")))
-    implementation(libs.drawabletoolbox)
 
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.constraintlayout.compose)
-
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.test.junit)
-    androidTestImplementation(libs.androidx.test.espresso)
 }

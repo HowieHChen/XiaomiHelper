@@ -14,15 +14,14 @@ import androidx.compose.ui.unit.dp
 import dev.lackluster.hyperx.compose.activity.HyperXActivity
 import dev.lackluster.hyperx.compose.base.AlertDialog
 import dev.lackluster.hyperx.compose.base.AlertDialogMode
-import dev.lackluster.hyperx.compose.icon.Reboot
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.data.Scope
 import dev.lackluster.mihelper.utils.ShellUtils
 import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.IconButton
 import top.yukonga.miuix.kmp.icon.MiuixIcons
+import top.yukonga.miuix.kmp.icon.icons.useful.Reboot
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissDialog
 
 @Composable
 fun RebootMenuItem(
@@ -34,13 +33,14 @@ fun RebootMenuItem(
         modifier = Modifier.padding(end = 21.dp).size(40.dp),
         onClick = {
             dialogVisibility.value = true
-        }
+        },
+        holdDownState = dialogVisibility.value
     ) {
         Icon(
             modifier = Modifier.size(26.dp),
-            imageVector = MiuixIcons.Reboot,
+            imageVector = MiuixIcons.Useful.Reboot,
             contentDescription = "Reboot app",
-            tint = MiuixTheme.colorScheme.onSurfaceSecondary
+            tint = MiuixTheme.colorScheme.onSurfaceSecondary,
         )
     }
     AlertDialog(
@@ -71,7 +71,7 @@ fun RebootMenuItem(
                     ).show()
                 }
             }
-            dismissDialog(dialogVisibility)
+            dialogVisibility.value = false
         }
     )
 }

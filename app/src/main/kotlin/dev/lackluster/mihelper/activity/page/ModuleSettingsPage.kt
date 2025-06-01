@@ -36,7 +36,6 @@ import dev.lackluster.mihelper.data.Pref.Key.App
 import dev.lackluster.mihelper.data.Pref.Key.Module
 import dev.lackluster.mihelper.utils.BackupUtils
 import dev.lackluster.mihelper.utils.BackupUtils.BACKUP_FILE_PREFIX
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissDialog
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
@@ -116,16 +115,9 @@ fun ModuleSettingsPage(navController: NavController, adjustPadding: PaddingValue
                     MainActivity.moduleEnabled.value = it
                 }
                 SwitchPreference(
-                    title = stringResource(R.string.module_lite_mode),
-                    key = Module.LITE_MODE,
-                    defValue = MainActivity.liteMode.value
-                ) {
-                    MainActivity.liteMode.value = it
-                }
-                SwitchPreference(
                     title = stringResource(R.string.module_dexkit_cache),
                     summary = stringResource(R.string.module_dexkit_cache_tips),
-                    key = Module.DEXKIT_CACHE,
+                    key = Module.DEX_KIT_CACHE,
                     defValue = true
                 )
                 SwitchPreference(
@@ -277,7 +269,7 @@ fun ModuleSettingsPage(navController: NavController, adjustPadding: PaddingValue
         cancelable = false,
         mode = AlertDialogMode.NegativeAndPositive,
         onPositiveButton = {
-            dismissDialog(dialogResetVisibility)
+            dialogResetVisibility.value = false
             resetResult.value = BackupUtils.handleReset()
             dialogResetResultVisibility.value = true
         }
@@ -329,7 +321,7 @@ private fun BackAndRestoreResultDialog(
         cancelable = false,
         mode = AlertDialogMode.Positive,
         onPositiveButton = {
-            dismissDialog(visible)
+            visible.value = false
             if (requestCode == BackupUtils.READ_DOCUMENT_CODE) {
                 Thread {
                     Thread.sleep(500)
@@ -362,7 +354,7 @@ private fun ResetResultDialog(
         cancelable = false,
         mode = AlertDialogMode.Positive,
         onPositiveButton = {
-            dismissDialog(visible)
+            visible.value = false
             Thread {
                 Thread.sleep(500)
                 BackupUtils.restartApp(HyperXActivity.context)

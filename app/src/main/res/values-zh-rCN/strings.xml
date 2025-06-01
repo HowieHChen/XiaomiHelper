@@ -99,7 +99,7 @@
     <string name="home_recent_dismiss_anim">修改清除最近任务时的卡片动画</string>
     <string name="home_minus_blur">启用背景模糊</string>
     <string name="home_minus_fold_style">Fold风格的负一屏</string>
-    <string name="home_minus_restore_setting">恢复负一屏设置</string>
+    <string name="home_others_show_minus_setting">恢复负一屏设置</string>
     <string name="home_anim_unlock">优化解锁动画</string>
     <string name="home_anim_unlock_tips">优化解锁时的图标飞入动画</string>
     <string name="home_gesture_quick_switch_right">右侧增强返回手势功能</string>
@@ -121,8 +121,8 @@
     <string name="home_folder_adapt_icon_size">大文件夹内图标大小自适应</string>
     <string name="home_folder_adapt_icon_size_tips">大文件夹（3x3或2x2）内图标刚好填满（数量为9个或4个）时，最后一个图标也为大图标</string>
     <string name="cleaner_home_remove_report">移除卸载应用弹窗的“举报”按钮</string>
-    <string name="home_recent_disable_fake_navbar">禁用假的导航栏手柄</string>
-    <string name="home_recent_disable_fake_navbar_tips">禁用横向“最近任务”屏幕上的假导航栏手柄，使用真正的导航栏手柄</string>
+    <string name="home_others_hide_fake_navbar">隐藏假手势提示线</string>
+    <string name="home_others_hide_fake_navbar_tips">隐藏横向“最近任务”屏幕上的假手势提示线</string>
     <string name="scope_guard_provider">系统安全组件</string>
     <string name="scope_joyose">Joyose</string>
     <string name="others_joyose_no_cloud_control">禁用云控</string>

@@ -302,8 +302,6 @@
     <string name="home_recent_show_real_memory">Show real memory usage</string>
     <string name="home_recent_wallpaper_darken">Stop reducing the brightness of wallpaper</string>
     <string name="home_recent_wallpaper_darken_tips">Stop the automatic reduction of the wallpaper\'s brightness when entering the recent tasks view</string>
-    <string name="home_recent_disable_fake_navbar">Disable fake navigation bar handle</string>
-    <string name="home_recent_disable_fake_navbar_tips">Disable the fake navigation bar handles on the horizontal recent tasks screen and use the real one</string>
     <string name="home_recent_dock_time">Holding time for calling out the dock</string>
     <string name="home_recent_dock_time_tips">Values greater than 1000 milliseconds are not recommended</string>
     <string name="home_recent_docke_safe_height">Height threshold for calling out the dock</string>
@@ -315,7 +313,6 @@
     <string name="home_shortcut_freeform">Add "Floating window" shortcut</string>
     <string name="home_shortcut_instance">Add "Multiple instance" shortcut</string>
     <string name="ui_title_home_personal_asist">Personal assistant</string>
-    <string name="home_minus_restore_setting">Restore Personal assistant settings</string>
     <string name="home_minus_blur_type">Personal assistant background</string>
     <string name="home_minus_blur_type_def" translatable="false">@string/common_default</string>
     <string name="home_minus_blur_type_sys">Legacy blurred background</string>
@@ -327,6 +324,9 @@
     <string name="home_others_always_show_clock">Always show time in status bar</string>
     <string name="home_others_fake_premium">Disguised as a high-end model</string>
     <string name="home_others_fake_premium_tips">Remove model restrictions on some features</string>
+    <string name="home_others_show_minus_setting">Restore Personal assistant settings</string>
+    <string name="home_others_hide_fake_navbar">Hide the fake full screen indicator</string>
+    <string name="home_others_hide_fake_navbar_tips">Hide the fake full screen indicator on the horizontal recent tasks screen</string>
     <string name="home_others_force_color_scheme_element">App label color</string>
     <string name="home_others_force_color_scheme_element_tips">Specify widget and app label color (ignore wallpaper color)</string>
     <string name="home_others_force_color_scheme_statusbar">Status bar text and icon color</string>

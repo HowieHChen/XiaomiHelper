@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.add
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.captionBar
 import androidx.compose.foundation.layout.captionBarPadding
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,8 +22,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -38,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
@@ -59,7 +64,6 @@ import dev.lackluster.hyperx.compose.base.HazeScaffold
 import dev.lackluster.hyperx.compose.preference.TextPreference
 import dev.lackluster.hyperx.compose.base.IconSize
 import dev.lackluster.hyperx.compose.base.ImageIcon
-import dev.lackluster.hyperx.compose.icon.Back
 import dev.lackluster.hyperx.compose.preference.PreferenceGroup
 import dev.lackluster.hyperx.compose.preference.SeekBarPreference
 import dev.lackluster.hyperx.compose.preference.SwitchPreference
@@ -69,7 +73,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.IconButton
-import top.yukonga.miuix.kmp.basic.LazyColumn
 import top.yukonga.miuix.kmp.basic.ListPopup
 import top.yukonga.miuix.kmp.basic.ListPopupColumn
 import top.yukonga.miuix.kmp.basic.ListPopupDefaults
@@ -82,14 +85,16 @@ import top.yukonga.miuix.kmp.basic.TopAppBar
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
 import top.yukonga.miuix.kmp.extra.DropdownImpl
 import top.yukonga.miuix.kmp.icon.MiuixIcons
-import top.yukonga.miuix.kmp.icon.icons.ImmersionMore
-import top.yukonga.miuix.kmp.icon.icons.Info
-import top.yukonga.miuix.kmp.icon.icons.More
-import top.yukonga.miuix.kmp.icon.icons.NavigatorSwitch
-import top.yukonga.miuix.kmp.icon.icons.Settings
+import top.yukonga.miuix.kmp.icon.icons.useful.Back
+import top.yukonga.miuix.kmp.icon.icons.useful.ImmersionMore
+import top.yukonga.miuix.kmp.icon.icons.useful.Info
+import top.yukonga.miuix.kmp.icon.icons.useful.More
+import top.yukonga.miuix.kmp.icon.icons.useful.NavigatorSwitch
+import top.yukonga.miuix.kmp.icon.icons.useful.Settings
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.MiuixPopupUtil.Companion.dismissPopup
 import top.yukonga.miuix.kmp.utils.getWindowSize
+import top.yukonga.miuix.kmp.utils.overScrollVertical
+import top.yukonga.miuix.kmp.utils.scrollEndHaptic
 
 @Composable
 fun UITestPage(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
@@ -121,10 +126,10 @@ fun UITestPage(navController: NavController, adjustPadding: PaddingValues, mode:
     val isBottomPopupExpanded = remember { mutableStateOf(false) }
     val showBottomPopup = remember { mutableStateOf(false) }
     val items = listOf(
-        NavigationItem("HomePage", MiuixIcons.NavigatorSwitch),
-        NavigationItem("DropDown", MiuixIcons.Info),
-        NavigationItem("Settings", MiuixIcons.Settings),
-        NavigationItem("More", MiuixIcons.More)
+        NavigationItem("HomePage", MiuixIcons.Useful.NavigatorSwitch),
+        NavigationItem("DropDown", MiuixIcons.Useful.Info),
+        NavigationItem("Settings", MiuixIcons.Useful.Settings),
+        NavigationItem("More", MiuixIcons.Useful.More)
     )
 
     val dropdownEntries = listOf(
@@ -156,6 +161,9 @@ fun UITestPage(navController: NavController, adjustPadding: PaddingValues, mode:
         modifier = Modifier.fillMaxSize(),
         topBar = { contentPadding ->
             TopAppBar(
+                modifier = Modifier
+                    .windowInsetsPadding(WindowInsets.statusBars.only(WindowInsetsSides.Top))
+                    .windowInsetsPadding(WindowInsets.captionBar.only(WindowInsetsSides.Top)),
                 color = MiuixTheme.colorScheme.background.copy(
                     if (topBarBlurState) 0f else 1f
                 ),
@@ -170,7 +178,7 @@ fun UITestPage(navController: NavController, adjustPadding: PaddingValues, mode:
                     ) {
                         Icon(
                             modifier = Modifier.size(26.dp),
-                            imageVector = MiuixIcons.Back,
+                            imageVector = MiuixIcons.Useful.Back,
                             contentDescription = "Back",
                             tint = MiuixTheme.colorScheme.onSurfaceSecondary
                         )
@@ -195,7 +203,7 @@ fun UITestPage(navController: NavController, adjustPadding: PaddingValues, mode:
                                         onSelectedIndexChange = {
                                             targetPage = index
                                             Toast.makeText(HyperXActivity.context, "$it clicked", Toast.LENGTH_SHORT).show()
-                                            dismissPopup(showTopPopup)
+                                            showTopPopup.value = false
                                             isTopPopupExpanded.value = false
                                         },
                                         index = index
@@ -213,11 +221,12 @@ fun UITestPage(navController: NavController, adjustPadding: PaddingValues, mode:
                         }
                     ) {
                         Icon(
-                            imageVector = MiuixIcons.ImmersionMore,
+                            imageVector = MiuixIcons.Useful.ImmersionMore,
                             contentDescription = "Menu"
                         )
                     }
                 },
+                defaultWindowInsetsPadding = false,
                 horizontalPadding = 28.dp + contentPadding.calculateLeftPadding(LocalLayoutDirection.current)
             )
         },
@@ -233,6 +242,7 @@ fun UITestPage(navController: NavController, adjustPadding: PaddingValues, mode:
                         popupPositionProvider = ListPopupDefaults.ContextMenuPositionProvider,
                         alignment = PopupPositionProvider.Align.BottomRight,
                         onDismissRequest = {
+                            showBottomPopup.value = false
                             isBottomPopupExpanded.value = false
                         }
                     ) {
@@ -245,7 +255,7 @@ fun UITestPage(navController: NavController, adjustPadding: PaddingValues, mode:
                                     onSelectedIndexChange = {
                                         targetPage = index
                                         Toast.makeText(HyperXActivity.context, "$it clicked", Toast.LENGTH_SHORT).show()
-                                        dismissPopup(showBottomPopup)
+                                        showBottomPopup.value = false
                                         isBottomPopupExpanded.value = false
                                     },
                                     index = index
@@ -266,7 +276,7 @@ fun UITestPage(navController: NavController, adjustPadding: PaddingValues, mode:
                             targetPage = index
                             Toast.makeText(HyperXActivity.context, "Page $index clicked", Toast.LENGTH_SHORT).show()
                         } else {
-                            isBottomPopupExpanded.value = true
+                            showBottomPopup.value = true
                             hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                         }
                     }
@@ -280,11 +290,13 @@ fun UITestPage(navController: NavController, adjustPadding: PaddingValues, mode:
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier
+                .overScrollVertical()
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
+                .scrollEndHaptic()
                 .height(getWindowSize().height.dp)
                 .background(MiuixTheme.colorScheme.background),
             state = listState,
-            contentPadding = paddingValues,
-            topAppBarScrollBehavior = scrollBehavior
+            contentPadding = paddingValues
         ) {
             item {
                 PreferenceGroup(
@@ -338,7 +350,9 @@ fun UITestPage(navController: NavController, adjustPadding: PaddingValues, mode:
             }
             item {
                 val switchSummary = remember { mutableStateOf(false.toString()) }
-                PreferenceGroup("Icon") {
+                PreferenceGroup(
+                    "Icon"
+                ) {
                     TextPreference(
                         icon = ImageIcon(
                             iconRes = R.drawable.ic_launcher_background,
@@ -421,7 +435,9 @@ fun UITestPage(navController: NavController, adjustPadding: PaddingValues, mode:
             item {
                 val textValue = remember { mutableIntStateOf(0) }
                 val switchSummary = remember { mutableStateOf(false.toString()) }
-                PreferenceGroup("App") {
+                PreferenceGroup(
+                    "App"
+                ) {
                     TextPreference(
                         icon = ImageIcon(
                             iconRes = R.drawable.ic_launcher_background,
@@ -460,7 +476,7 @@ fun UITestPage(navController: NavController, adjustPadding: PaddingValues, mode:
                 val summary = remember { mutableStateOf(false.toString()) }
                 PreferenceGroup(
                     title = "Preference",
-                    last = true
+                    last = false
                 ) {
                     SwitchPreference(
                         title = "SwitchPreference",
