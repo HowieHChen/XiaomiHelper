@@ -47,6 +47,9 @@ object ResourcesUtils : YukiBaseHooker() {
     var TextAppearance_StatusBar_Clock = 0
     var status_bar_padding_extra_start = 0
     var status_bar_clock_margin_end = 0
+    var normal_control_center_carrier_view = 0
+    var normal_control_center_carrier_second_view = 0
+    var normal_control_center_carrier_vertical_separator = 0
 
     @SuppressLint("DiscouragedApi")
     override fun onHook() {
@@ -90,6 +93,9 @@ object ResourcesUtils : YukiBaseHooker() {
                     media_progress_bar = this.getResID("media_progress_bar", "id", PKG_NAME)
                     media_elapsed_time = this.getResID("media_elapsed_time", "id", PKG_NAME)
                     media_total_time = this.getResID("media_total_time", "id", PKG_NAME)
+                    normal_control_center_carrier_view = this.getResID("normal_control_center_carrier_view", "id", PKG_NAME)
+                    normal_control_center_carrier_second_view = this.getResID("normal_control_center_carrier_second_view", "id", PKG_NAME)
+                    normal_control_center_carrier_vertical_separator = this.getResID("normal_control_center_carrier_vertical_separator", "id", PKG_NAME)
                     isInitialized = true
                 }
             }
