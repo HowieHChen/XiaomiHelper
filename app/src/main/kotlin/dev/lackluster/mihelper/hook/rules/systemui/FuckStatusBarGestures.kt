@@ -4,14 +4,24 @@ import android.annotation.SuppressLint
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.constructor
 import com.highcapable.yukihookapi.hook.factory.current
+import com.highcapable.yukihookapi.hook.factory.field
+import dev.lackluster.hyperx.compose.activity.SafeSP
 import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.factory.hasEnable
 
 object FuckStatusBarGestures : YukiBaseHooker() {
+    private val centralSurfacesImplClass by lazy {
+        "com.android.systemui.statusbar.phone.CentralSurfacesImpl".toClassOrNull()
+    }
+    private val needHook by lazy {
+        centralSurfacesImplClass?.field {
+            name = "mGestureRec"
+        }?.ignored()?.give() != null
+    }
+
     @SuppressLint("SdCardPath")
     override fun onHook() {
-        hasEnable(Pref.Key.SystemUI.FUCK_GESTURES_DAT) {
-            "com.android.systemui.statusbar.phone.CentralSurfacesImpl".toClassOrNull()?.apply {
+        if (SafeSP.getBoolean(Pref.Key.SystemUI.FUCK_GESTURES_DAT) && needHook) {
+            centralSurfacesImplClass?.apply {
                 constructor().hook {
                     after {
                         val mGestureRec = this.instance.current().field {

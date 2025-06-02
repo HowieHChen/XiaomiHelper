@@ -39,6 +39,7 @@ import dev.lackluster.mihelper.ui.page.SystemUIPage
 import dev.lackluster.mihelper.ui.page.UITestPage
 import dev.lackluster.mihelper.data.Pages
 import dev.lackluster.mihelper.data.Pref
+import dev.lackluster.mihelper.ui.page.MediaActionResizePage
 import dev.lackluster.mihelper.utils.Device
 import dev.lackluster.mihelper.utils.ShellUtils
 import dev.lackluster.mihelper.utils.factory.getSP
@@ -111,13 +112,14 @@ class MainActivity : HyperXActivity() {
                 composable(Pages.ABOUT) { AboutPage(navController, adjustPadding, mode) }
 
                 composable(Pages.MENU) { MenuPage(navController, adjustPadding, mode) }
-                composable(Pages.DEV_UI_TEST) { UITestPage(navController, adjustPadding, mode) }
+//                composable(Pages.DEV_UI_TEST) { UITestPage(navController, adjustPadding, mode) }
                 composable(Pages.STATUS_BAR_CLOCK) { StatusBarClockPage(navController, adjustPadding, mode) }
                 composable(Pages.STATUS_BAR_FONT) { StatusBarFontPage(navController, adjustPadding, mode) }
                 composable(Pages.ICON_TUNER) { IconTurnerPage(navController, adjustPadding, mode) }
                 composable(Pages.MEDIA_CONTROL) { MediaControlPage(navController, adjustPadding, mode) }
 
                 composable(Pages.DIALOG_SEARCH_CUSTOM_ENGINE) { SearchCustomEngineDialog(navController, adjustPadding, mode) }
+                composable(Pages.DEV_UI_TEST) { MediaActionResizePage(navController, adjustPadding, "MediaActionResizePage", mode = mode) }
             }
         )
     }

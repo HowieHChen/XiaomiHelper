@@ -3,6 +3,7 @@ package dev.lackluster.mihelper.hook.rules.miuihome.gesture
 import android.app.Application
 import android.content.Intent
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
+import com.highcapable.yukihookapi.hook.factory.current
 import com.highcapable.yukihookapi.hook.factory.method
 import dev.lackluster.mihelper.data.Constants.ACTION_HOME
 import dev.lackluster.mihelper.data.Constants.ACTION_NOTIFICATIONS
@@ -35,26 +36,43 @@ object LineGesture : YukiBaseHooker() {
     }
 
     override fun onHook() {
-        "com.miui.home.recents.gesture.NavStubGestureEventManager".toClassOrNull()?.apply {
-            if (actionLongPress != 0) {
-                method {
-                    name = "handleLongPressEvent"
-                }.hook {
-                    before {
-                        val application = applicationGetInstanceMethod.invoke<Application>() ?: return@before
-                        doAction(application, actionLongPress)
-                        this.result = null
+        if (actionLongPress != 0 || actionDoubleTap != 0) {
+            "com.miui.home.recents.gesture.NavStubGestureEventManager".toClassOrNull()?.apply {
+                if (actionLongPress != 0) {
+                    method {
+                        name = "handleLongPressEvent"
+                    }.hook {
+                        before {
+                            val application = applicationGetInstanceMethod.invoke<Application>() ?: return@before
+                            doAction(application, actionLongPress)
+                            this.result = null
+                        }
                     }
                 }
-            }
-            if (actionDoubleTap != 0) {
-                method {
-                    name = "handleDoubleClickEvent"
-                }.hook {
-                    before {
-                        val application = applicationGetInstanceMethod.invoke<Application>() ?: return@before
-                        doAction(application, actionDoubleTap)
-                        this.result = null
+                if (actionDoubleTap != 0) {
+                    method {
+                        name = "handleDoubleClickEvent"
+                    }.hook {
+                        before {
+                            val application = applicationGetInstanceMethod.invoke<Application>() ?: return@before
+                            doAction(application, actionDoubleTap)
+                            this.result = null
+                        }
+                    }
+                    method {
+                        name = "checkDoubleClickTriggerApp"
+                    }.ignored().hook {
+                        before {
+                            this.instance.current(true).field {
+                                name = "isCanDoubleClickTriggerApp"
+                            }.set(true)
+                            this.result = null
+                        }
+                    }
+                    method {
+                        name = "updateIsCanDoubleClickTriggerApp"
+                    }.ignored().hook {
+                        intercept()
                     }
                 }
             }
@@ -76,6 +94,17 @@ object LineGesture : YukiBaseHooker() {
                 application.startForegroundService(
                     Intent("android.intent.action.ASSIST").apply {
                         setClassName("com.miui.voiceassist", "com.xiaomi.voiceassistant.VoiceService")
+                        putExtra("triggerFrom", "MiuiHome")
+                        putExtra(
+                            "voice_assist_function_key",
+                            if (action == 7) "start_screen_recognition"
+                            else "wake_up_voice_assist"
+                        )
+                        putExtra(
+                            "triggerType",
+                            if (action == 7) "NavLongPress"
+                            else "NavDoubleClick"
+                        )
                         putExtra(
                             "voice_assist_start_from_key",
                             if (action == 7) "long_press_fullscreen_gesture_line"

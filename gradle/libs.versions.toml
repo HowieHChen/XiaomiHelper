@@ -10,7 +10,6 @@ project-app-versionCode = "244"
 androidGradlePlugin = "8.10.1"
 kotlin = "2.1.21"
 ksp = "2.1.21-2.0.1"
-tinypinyin = "2.0.3.RELEASE"
 xposed = "82"
 yukihookapi = "1.2.1"
 dexkit = "2.0.5"
@@ -26,7 +25,6 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 androidx-constraintlayout-compose = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version = "1.1.1" }
 
 dexkit = { module = "org.luckypray:dexkit", version.ref = "dexkit" }
-tinypinyin = { module = "io.github.biezhi:TinyPinyin", version.ref = "tinypinyin" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization-json" }
 
 androidx-ui = { group = "androidx.compose.ui", name = "ui", version = "1.8.2" }
