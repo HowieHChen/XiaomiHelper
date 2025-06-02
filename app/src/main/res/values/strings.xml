@@ -247,6 +247,8 @@
     <string name="ui_title_systemui_control_center">Control center</string>
     <string name="systemui_control_hide_carrier_one">Hide carrier label for SIM card 1</string>
     <string name="systemui_control_hide_carrier_two">Hide carrier label for SIM card 2</string>
+    <string name="systemui_control_hide_carrier_hd">Hide HD</string>
+    <string name="systemui_control_hide_carrier_hd_tips">Hide the HD icon next to the carrier label</string>
     <string name="ui_title_systemui_others" translatable="false">@string/common_others</string>
     <string name="systemui_others_monet_overlay">Customize theme color</string>
     <string name="systemui_others_monet_overlay_tips">Customize theme colors instead of fetching colors from system wallpaper</string>

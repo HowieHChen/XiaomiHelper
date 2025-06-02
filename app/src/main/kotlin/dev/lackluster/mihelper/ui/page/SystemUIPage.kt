@@ -164,6 +164,11 @@ fun SystemUIPage(navController: NavController, adjustPadding: PaddingValues, mod
                     title = stringResource(R.string.systemui_control_hide_carrier_two),
                     key = Pref.Key.SystemUI.ControlCenter.HIDE_CARRIER_TWO
                 )
+                SwitchPreference(
+                    title = stringResource(R.string.systemui_control_hide_carrier_hd),
+                    summary = stringResource(R.string.systemui_control_hide_carrier_hd_tips),
+                    key = Pref.Key.SystemUI.ControlCenter.HIDE_CARRIER_HD
+                )
             }
         }
         item {

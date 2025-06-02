@@ -307,6 +307,7 @@ object Pref {
             object ControlCenter {
                 const val HIDE_CARRIER_ONE = "statusbar_hide_carrier_one"
                 const val HIDE_CARRIER_TWO = "statusbar_hide_carrier_two"
+                const val HIDE_CARRIER_HD = "statusbar_hide_carrier_hd"
             }
             const val FUCK_GESTURES_DAT = "systemui_fuck_gesture_dat"
         }

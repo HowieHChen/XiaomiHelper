@@ -20,6 +20,8 @@
 
 package dev.lackluster.mihelper.hook.rules.systemui.statusbar
 
+import android.view.View
+import android.widget.TextView
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.current
 import com.highcapable.yukihookapi.hook.factory.method
@@ -28,41 +30,78 @@ import dev.lackluster.mihelper.data.Pref.Key.SystemUI.ControlCenter
 import dev.lackluster.mihelper.utils.Prefs
 
 object HideCarrierLabel : YukiBaseHooker() {
-    private val hideSimOne by lazy {
-        Prefs.getBoolean(ControlCenter.HIDE_CARRIER_ONE, false)
+    private val hideSimOne = Prefs.getBoolean(ControlCenter.HIDE_CARRIER_ONE, false)
+    private val hideSimTwo = Prefs.getBoolean(ControlCenter.HIDE_CARRIER_TWO, false)
+    private val hideCarrierHD = Prefs.getBoolean(ControlCenter.HIDE_CARRIER_HD, false)
+    private val miuiCarrierTextLayoutClass by lazy {
+        "com.android.systemui.controlcenter.shade.MiuiCarrierTextLayout".toClassOrNull()
     }
-    private val hideSimTwo by lazy {
-        Prefs.getBoolean(ControlCenter.HIDE_CARRIER_TWO, false)
+    private val isNewCarrierTextLayout by lazy {
+        miuiCarrierTextLayoutClass != null
     }
 
     override fun onHook() {
-        if (hideSimOne || hideSimTwo) {
-            "com.android.systemui.statusbar.policy.MiuiCarrierTextControllerImpl".toClass().method {
-                name = "updateCarrierText"
-            }.hook {
-                before {
-                    val mCardDisable = this.instance.current().field { name = "mCardDisable" }.any() as BooleanArray
-                    val mPhoneCount = this.instance.current().field { name = "mPhoneCount" }.int()
-                    if (hideSimOne && mPhoneCount >= 1) {
-                        XposedHelpers.setAdditionalInstanceField(this.instance, "mOriCardDisable0", mCardDisable[0])
-                        mCardDisable[0] = true
-                    }
-                    if (hideSimTwo && mPhoneCount >= 2) {
-                        XposedHelpers.setAdditionalInstanceField(this.instance, "mOriCardDisable1", mCardDisable[1])
-                        mCardDisable[1] = true
+        if (hideCarrierHD && isNewCarrierTextLayout) {
+            "com.android.keyguard.CarrierText".toClass().apply {
+                method {
+                    name = "updateHDDrawable"
+                }.ignored().hook {
+                    before {
+                        this.args(0).set(0)
                     }
                 }
-                after {
-                    val mCardDisable = this.instance.current().field { name = "mCardDisable" }.any() as BooleanArray
-                    val mPhoneCount = this.instance.current().field { name = "mPhoneCount" }.int()
-                    if (hideSimOne && mPhoneCount >= 1) {
-                        (XposedHelpers.getAdditionalInstanceField(this.instance, "mOriCardDisable0") as? Boolean)?.let {
-                            mCardDisable[0] = it
+            }
+        }
+        if (hideSimOne || hideSimTwo) {
+            if (isNewCarrierTextLayout) {
+                miuiCarrierTextLayoutClass?.apply {
+                    method {
+                        name = "onMeasure"
+                    }.hook {
+                        before {
+                            val leftCarrierTextView = this.instance.current().field {
+                                name = "leftCarrierTextView"
+                            }.cast<TextView>()
+                            if (hideSimOne) {
+                                leftCarrierTextView?.visibility = View.GONE
+                            }
+                            val rightCarrierTextView = this.instance.current().field {
+                                name = "rightCarrierTextView"
+                            }.cast<TextView>()
+                            if (hideSimTwo) {
+                                rightCarrierTextView?.visibility = View.GONE
+                            }
                         }
                     }
-                    if (hideSimTwo && mPhoneCount >= 2) {
-                        (XposedHelpers.getAdditionalInstanceField(this.instance, "mOriCardDisable1") as? Boolean)?.let {
-                            mCardDisable[1] = it
+                }
+            } else {
+                "com.android.systemui.statusbar.policy.MiuiCarrierTextControllerImpl".toClass().method {
+                    name = "updateCarrierText"
+                }.hook {
+                    before {
+                        val mCardDisable = this.instance.current().field { name = "mCardDisable" }.any() as BooleanArray
+                        val mPhoneCount = this.instance.current().field { name = "mPhoneCount" }.int()
+                        if (hideSimOne && mPhoneCount >= 1) {
+                            XposedHelpers.setAdditionalInstanceField(this.instance, "mOriCardDisable0", mCardDisable[0])
+                            mCardDisable[0] = true
+                        }
+                        if (hideSimTwo && mPhoneCount >= 2) {
+                            XposedHelpers.setAdditionalInstanceField(this.instance, "mOriCardDisable1", mCardDisable[1])
+                            mCardDisable[1] = true
+                        }
+                    }
+                    after {
+                        val mCardDisable = this.instance.current().field { name = "mCardDisable" }.any() as BooleanArray
+                        val mPhoneCount = this.instance.current().field { name = "mPhoneCount" }.int()
+                        if (hideSimOne && mPhoneCount >= 1) {
+                            (XposedHelpers.getAdditionalInstanceField(this.instance, "mOriCardDisable0") as? Boolean)?.let {
+                                mCardDisable[0] = it
+                            }
+                        }
+                        if (hideSimTwo && mPhoneCount >= 2) {
+                            (XposedHelpers.getAdditionalInstanceField(this.instance, "mOriCardDisable1") as? Boolean)?.let {
+                                mCardDisable[1] = it
+                            }
                         }
                     }
                 }

@@ -74,8 +74,10 @@ object CarrierTextView : YukiBaseHooker() {
                             this.instance.current().field {
                                 name = fieldName
                             }.cast<TextView>()?.apply {
-                                setTextAppearance(TextAppearance_StatusBar_Clock)
-                                isHorizontalFadingEdgeEnabled = true
+                                if (tag == CUSTOM_VIEW_ID) {
+                                    setTextAppearance(TextAppearance_StatusBar_Clock)
+                                    isHorizontalFadingEdgeEnabled = true
+                                }
                                 typeface = Typeface.Builder(fontPath)
                                     .setFontVariationSettings("'wght' $wght")
                                     .build()
@@ -185,6 +187,7 @@ object CarrierTextView : YukiBaseHooker() {
                             miuiCarrierTextLayout.current().field {
                                 name = "carrierTextStyleResId"
                             }.set(TextAppearance_StatusBar_Clock)
+                            miuiCarrierTextLayout.tag = CUSTOM_VIEW_ID
                             parent.addView(
                                 miuiCarrierTextLayout,
                                 parent.indexOfChild(targetView),
@@ -254,6 +257,18 @@ object CarrierTextView : YukiBaseHooker() {
                             )
                             parent.removeView(targetView)
                         }
+                        this.instance.current().field {
+                            name = "mAlarmLayout"
+                        }.setNull()
+                        this.instance.current().field {
+                            name = "mAlarmLayout"
+                        }.setNull()
+                        this.instance.current().field {
+                            name = "mAlarmText"
+                        }.setNull()
+                        this.instance.current().field {
+                            name = "mAlarmIcon"
+                        }.setNull()
                     }
                 }
                 method {

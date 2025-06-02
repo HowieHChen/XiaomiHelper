@@ -633,4 +633,6 @@
     <string name="media_lyt_actions_order_custom_right">自定义按钮在右侧</string>
     <string name="media_lyt_actions_order">动作按钮顺序</string>
     <string name="home_recent_hide_status_bar">隐藏状态栏</string>
+    <string name="systemui_control_hide_carrier_hd">隐藏 HD</string>
+    <string name="systemui_control_hide_carrier_hd_tips">" 隐藏运营商标签旁的 HD 图标"</string>
 </resources>
