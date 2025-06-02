@@ -5,7 +5,7 @@ android-minSdk = "34"
 android-targetSdk = "35"
 project-app-packageName = "dev.lackluster.mihelper"
 project-app-versionName = "3.0.9"
-project-app-versionCode = "243"
+project-app-versionCode = "244"
 
 androidGradlePlugin = "8.10.1"
 kotlin = "2.1.21"

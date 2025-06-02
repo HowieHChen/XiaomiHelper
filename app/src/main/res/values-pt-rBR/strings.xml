@@ -578,10 +578,10 @@
     <string name="media_elm_prog_style">Estilo da barra de progresso</string>
     <string name="media_elm_prog_style_squiggly">Ondulado</string>
     <string name="media_elm_prog_width">Espessura da barra de progresso</string>
-    <string name="media_others_color_anim">Animação da cor</string>
-    <string name="media_others_color_anim_tips">Recurso experimental. Use animação de transição ao alterar a cor do texto.</string>
-    <string name="media_others_fix_thumb_crop">Corrigir foto cortada incorretamente</string>
-    <string name="media_others_fix_thumb_crop_tips">Certifique-se de que a foto esteja totalmente visível quando estiver em qualquer extremidade da barra de progresso</string>
+    <string name="media_bg_color_anim">Animação da cor</string>
+    <string name="media_bg_color_anim_tips">Recurso experimental. Use animação de transição ao alterar a cor do texto.</string>
+    <string name="media_elm_fix_thumb_crop">Corrigir foto cortada incorretamente</string>
+    <string name="media_elm_fix_thumb_crop_tips">Certifique-se de que a foto esteja totalmente visível quando estiver em qualquer extremidade da barra de progresso</string>
     <!-- HomeRefactorPage -->
     <string name="home_refactor_blur">Efeito de blur</string>
     <string name="home_refactor_blur_radius">Raio de blur</string>

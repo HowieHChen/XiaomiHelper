@@ -1,4 +1,4 @@
-package dev.lackluster.mihelper.activity.page
+package dev.lackluster.mihelper.ui.page
 
 import android.widget.Toast.LENGTH_LONG
 import android.widget.Toast.makeText
@@ -25,7 +25,7 @@ import dev.lackluster.hyperx.compose.navigation.navigateWithPopup
 import dev.lackluster.hyperx.compose.preference.PreferenceGroup
 import dev.lackluster.hyperx.compose.preference.TextPreference
 import dev.lackluster.mihelper.R
-import dev.lackluster.mihelper.activity.MainActivity
+import dev.lackluster.mihelper.ui.MainActivity
 import dev.lackluster.mihelper.data.Constants
 import dev.lackluster.mihelper.data.Pages
 import dev.lackluster.mihelper.utils.Device
@@ -43,7 +43,6 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 @Composable
 fun MainPage(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
-    val isTopPopupExpanded = remember { mutableStateOf(false) }
     val showTopPopup = remember { mutableStateOf(false) }
 
     val contextMenuItems = listOf(
@@ -62,52 +61,47 @@ fun MainPage(navController: NavController, adjustPadding: PaddingValues, mode: B
         navigationIcon = {},
         actions = { padding ->
             val hapticFeedback = LocalHapticFeedback.current
-            if (isTopPopupExpanded.value) {
-                ListPopup(
-                    show = showTopPopup,
-                    popupPositionProvider = ListPopupDefaults.ContextMenuPositionProvider,
-                    alignment = PopupPositionProvider.Align.TopRight,
-                    onDismissRequest = {
-                        showTopPopup.value = false
-                        isTopPopupExpanded.value = false
-                    }
-                ) {
-                    ListPopupColumn {
-                        contextMenuItems.forEachIndexed { index, string ->
-                            DropdownImpl(
-                                text = string,
-                                optionSize = contextMenuItems.size,
-                                isSelected = false,
-                                onSelectedIndexChange = {
-                                    when(it) {
-                                        0 -> {
-                                            navController.navigateWithPopup(Pages.MENU)
-                                        }
-                                        1 -> {
-                                            try {
-                                                ShellUtils.tryExec(
-                                                    Constants.CMD_LSPOSED,
-                                                    useRoot = true,
-                                                    checkSuccess = true
-                                                )
-                                            } catch (tout : Throwable) {
-                                                makeText(
-                                                    HyperXActivity.context,
-                                                    tout.message,
-                                                    LENGTH_LONG
-                                                ).show()
-                                            }
+            ListPopup(
+                show = showTopPopup,
+                popupPositionProvider = ListPopupDefaults.ContextMenuPositionProvider,
+                alignment = PopupPositionProvider.Align.TopRight,
+                onDismissRequest = {
+                    showTopPopup.value = false
+                }
+            ) {
+                ListPopupColumn {
+                    contextMenuItems.forEachIndexed { index, string ->
+                        DropdownImpl(
+                            text = string,
+                            optionSize = contextMenuItems.size,
+                            isSelected = false,
+                            onSelectedIndexChange = {
+                                when(it) {
+                                    0 -> {
+                                        navController.navigateWithPopup(Pages.MENU)
+                                    }
+                                    1 -> {
+                                        try {
+                                            ShellUtils.tryExec(
+                                                Constants.CMD_LSPOSED,
+                                                useRoot = true,
+                                                checkSuccess = true
+                                            )
+                                        } catch (tout : Throwable) {
+                                            makeText(
+                                                HyperXActivity.context,
+                                                tout.message,
+                                                LENGTH_LONG
+                                            ).show()
                                         }
                                     }
-                                    showTopPopup.value = false
-                                    isTopPopupExpanded.value = false
-                                },
-                                index = index
-                            )
-                        }
+                                }
+                                showTopPopup.value = false
+                            },
+                            index = index
+                        )
                     }
                 }
-                showTopPopup.value = true
             }
             IconButton(
                 modifier = Modifier.padding(padding).padding(end = 21.dp).size(40.dp),

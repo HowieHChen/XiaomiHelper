@@ -1,4 +1,4 @@
-package dev.lackluster.mihelper.activity.page
+package dev.lackluster.mihelper.ui.page
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,7 +17,7 @@ import dev.lackluster.hyperx.compose.preference.DropDownPreference
 import dev.lackluster.hyperx.compose.preference.PreferenceGroup
 import dev.lackluster.hyperx.compose.preference.SwitchPreference
 import dev.lackluster.mihelper.R
-import dev.lackluster.mihelper.activity.MainActivity
+import dev.lackluster.mihelper.ui.MainActivity
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.Device
 

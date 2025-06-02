@@ -1,4 +1,4 @@
-package dev.lackluster.mihelper.activity.page
+package dev.lackluster.mihelper.ui.page
 
 import android.content.ComponentName
 import android.content.pm.PackageManager
@@ -31,7 +31,7 @@ import dev.lackluster.hyperx.compose.preference.SwitchPreference
 import dev.lackluster.hyperx.compose.preference.TextPreference
 import dev.lackluster.mihelper.BuildConfig
 import dev.lackluster.mihelper.R
-import dev.lackluster.mihelper.activity.MainActivity
+import dev.lackluster.mihelper.ui.MainActivity
 import dev.lackluster.mihelper.data.Pref.Key.App
 import dev.lackluster.mihelper.data.Pref.Key.Module
 import dev.lackluster.mihelper.utils.BackupUtils

@@ -297,6 +297,8 @@
     <string name="home_recent_dismiss_anim">Modify card animation when dismissing recent tasks</string>
     <string name="home_recent_pad_show_memory">Show memory usage on tablet</string>
     <string name="home_recent_pad_hide_world">Hide Xiaomi Smart Hub button</string>
+    <string name="home_recent_hide_status_bar">Hide the status bar</string>
+    <string name="home_recent_hide_status_bar_tips">Hide the status bar when in the recent tasks screen</string>
     <string name="home_recent_hide_clear_all">Hide Clear all button</string>
     <string name="home_Recent_mem_info_clear">Long click on memory info to clear all</string>
     <string name="home_recent_show_real_memory">Show real memory usage</string>
@@ -678,6 +680,8 @@
     <string name="media_bg_custom_blur">Blurred cover</string>
     <string name="media_bg_custom_radial_gradient">Radial gradient</string>
     <string name="media_bg_custom_linear_gradient">Linear gradient</string>
+    <string name="media_bg_color_anim">Color animation</string>
+    <string name="media_bg_color_anim_tips">Experimental feature. Use transition animation when changing text color.</string>
     <string name="media_bg_blur_radius">Blur radius</string>
     <string name="media_bg_auto_color_reverse">Auto-reverse color</string>
     <string name="ui_title_media_layout">Layout</string>
@@ -686,29 +690,36 @@
     <string name="media_lyt_album_hide_app">No app icon</string>
     <string name="media_lyt_album_gone">Invisible</string>
     <string name="media_lyt_left_actions">Action buttons left-aligned</string>
+    <string name="media_lyt_actions_order">Sequence of action buttons</string>
+    <string name="media_lyt_actions_order_default" translatable="false">@string/common_default</string>
+    <string name="media_lyt_actions_order_custom_right">Custom buttons on the right side</string>
+    <string name="media_lyt_actions_order_play_left">Play button on the far left</string>
     <string name="media_lyt_hide_time">Hide time</string>
     <string name="media_lyt_hide_time_tips">Hide the elapsed time and total time next to the progress bar</string>
     <string name="media_lyt_hide_seamless">Hide seamless button</string>
     <string name="media_lyt_hide_seamless_tips">Hide the device switch button at the top right of the media control</string>
+    <string name="media_lyt_header_margin">Header margin top</string>
+    <string name="media_lyt_header_padding">Header padding</string>
     <string name="ui_title_media_elements">Elements</string>
     <string name="media_elm_text_size">Modify text font size</string>
     <string name="media_elm_text_size_title">Title</string>
     <string name="media_elm_text_size_artist">Artist</string>
     <string name="media_elm_text_size_time">Time</string>
+    <string name="media_elm_actions_resize">Prevent action buttons from being scaled</string>
+    <string name="media_elm_actions_resize_tips">The system will forcefully scale down custom action buttons, which may cause problems. However, preventing the system from scaling may cause the buttons to appear larger.</string>
     <string name="media_elm_thumb_style">Thumb style</string>
     <string name="media_elm_thumb_style_default" translatable="false">@string/common_default</string>
     <string name="media_elm_thumb_style_gone">Invisible</string>
     <string name="media_elm_thumb_style_vbar">Vertical bar</string>
+    <string name="media_elm_fix_thumb_crop">Fix thumb incorrectly cropped</string>
+    <string name="media_elm_fix_thumb_crop_tips">Ensure that the thumb is fully visible when it\'s at either end of the progress bar</string>
     <string name="media_elm_prog_style">Progress bar style</string>
     <string name="media_elm_prog_style_default" translatable="false">@string/common_default</string>
     <string name="media_elm_prog_style_custom" translatable="false">@string/common_custom</string>
     <string name="media_elm_prog_style_squiggly">Squiggly</string>
     <string name="media_elm_prog_width">Progress bar thickness</string>
     <string name="ui_title_media_others" translatable="false">@string/common_others</string>
-    <string name="media_others_color_anim">Color animation</string>
-    <string name="media_others_color_anim_tips">Experimental feature. Use transition animation when changing text color.</string>
-    <string name="media_others_fix_thumb_crop">Fix thumb incorrectly cropped</string>
-    <string name="media_others_fix_thumb_crop_tips">Ensure that the thumb is fully visible when it\'s at either end of the progress bar</string>
+    <string name="media_hint_advanced_textures">Since Advanced textures have been set as the default background for media controls, we have removed the corresponding option. If you need to modify the advanced material effects, please use the Magisk module or system theme to modify the blur parameters.</string>
     <!-- HomeRefactorPage -->
     <string name="home_refactor_blur">Blur effect</string>
     <string name="home_refactor_blur_radius">Blur radius</string>

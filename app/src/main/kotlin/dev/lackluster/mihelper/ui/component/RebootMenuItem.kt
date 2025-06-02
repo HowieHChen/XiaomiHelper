@@ -1,4 +1,4 @@
-package dev.lackluster.mihelper.activity.component
+package dev.lackluster.mihelper.ui.component
 
 import android.widget.Toast.LENGTH_LONG
 import android.widget.Toast.LENGTH_SHORT

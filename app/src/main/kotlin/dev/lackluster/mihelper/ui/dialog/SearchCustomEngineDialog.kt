@@ -1,4 +1,4 @@
-package dev.lackluster.mihelper.activity.dialog
+package dev.lackluster.mihelper.ui.dialog
 
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
@@ -30,7 +30,7 @@ import dev.lackluster.hyperx.compose.preference.EditableTextPreference
 import dev.lackluster.hyperx.compose.preference.PreferenceGroup
 import dev.lackluster.hyperx.compose.preference.SwitchPreference
 import dev.lackluster.mihelper.R
-import dev.lackluster.mihelper.activity.MainActivity
+import dev.lackluster.mihelper.ui.MainActivity
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.hook.rules.search.SearchEngineItem
 import top.yukonga.miuix.kmp.basic.Icon

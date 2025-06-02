@@ -9,6 +9,9 @@ import com.highcapable.yukihookapi.hook.factory.method
 import com.highcapable.yukihookapi.hook.type.java.IntType
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.action0
+import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.action1
+import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.action2
+import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.action3
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.action4
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.actions
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.header_artist
@@ -25,11 +28,22 @@ import dev.lackluster.mihelper.utils.factory.dp
 object CustomLayout : YukiBaseHooker() {
     private val album = Prefs.getInt(Pref.Key.SystemUI.MediaControl.LYT_ALBUM, 0)
     private val actionsLeftAligned = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.LYT_LEFT_ACTIONS, false)
+    private val actionsOrder = Prefs.getInt(Pref.Key.SystemUI.MediaControl.LYT_ACTIONS_ORDER, 0)
     private val hideTime = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.LYT_HIDE_TIME, false)
     private val hideSeamless = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.LYT_HIDE_SEAMLESS, false)
+    private val headerMargin = Prefs.getFloat(Pref.Key.SystemUI.MediaControl.LYT_HEADER_MARGIN, 21.0f)
+    private val headerPadding = Prefs.getFloat(Pref.Key.SystemUI.MediaControl.LYT_HEADER_PADDING, 2.0f)
 
+    private val mediaButtonClass by lazy {
+        "com.android.systemui.media.controls.shared.model.MediaButton".toClassOrNull()
+            ?: "com.android.systemui.media.controls.models.player.MediaButton".toClassOrNull()
+    }
     private val constraintSetClass by lazy {
         "androidx.constraintlayout.widget.ConstraintSet".toClass()
+    }
+    private val mediaViewControllerClass by lazy {
+        "com.android.systemui.media.controls.ui.controller.MediaViewController".toClassOrNull()
+            ?: "com.android.systemui.media.controls.ui.MediaViewController".toClassOrNull()
     }
     private val clear by lazy {
         constraintSetClass.method {
@@ -67,8 +81,34 @@ object CustomLayout : YukiBaseHooker() {
         }.give()
     }
     override fun onHook() {
-        if (album != 0 || actionsLeftAligned || hideTime || hideSeamless) {
-            "com.android.systemui.media.controls.ui.controller.MediaViewController".toClassOrNull()?.apply {
+        if (actionsOrder != 0) {
+            mediaButtonClass?.apply {
+                method {
+                    name = "getActionById"
+                }.hook {
+                    before {
+                        val id = this.args(0).int()
+                        when (id) {
+                            action0 -> {
+                                this.result =
+                                    if (actionsOrder == 1) this.instance.current().field { name = "prevOrCustom" }.any()
+                                    else this.instance.current().field { name = "playOrPause" }.any()
+                            }
+                            action1 -> {
+                                this.result =
+                                    if (actionsOrder == 1) this.instance.current().field { name = "playOrPause" }.any()
+                                    else this.instance.current().field { name = "prevOrCustom" }.any()
+                            }
+                            action2 -> this.result = this.instance.current().field { name = "nextOrCustom" }.any()
+                            action3 -> this.result = this.instance.current().field { name = "custom0" }.any()
+                            action4 -> this.result = this.instance.current().field { name = "custom1" }.any()
+                        }
+                    }
+                }
+            }
+        }
+        if (album != 0 || actionsLeftAligned || hideTime || hideSeamless || headerMargin != 26.0f || headerPadding != 2.0f) {
+            mediaViewControllerClass?.apply {
                 method {
                     name = "loadLayoutForType"
                 }.hook {
@@ -100,12 +140,19 @@ object CustomLayout : YukiBaseHooker() {
 //                                action0, ConstraintSet.TOP,
 //                                ConstraintSet.PARENT_ID, ConstraintSet.TOP
 //                            )
-                            setGoneMargin?.invoke(expandedLayout, header_title, ConstraintSet.TOP, standardMargin)
                             setGoneMargin?.invoke(expandedLayout, header_title, ConstraintSet.START, standardMargin)
                             setGoneMargin?.invoke(expandedLayout, header_artist, ConstraintSet.START, standardMargin)
                             setGoneMargin?.invoke(expandedLayout, actions, ConstraintSet.TOP, 68.5.dp(context))
                             setGoneMargin?.invoke(expandedLayout, action0, ConstraintSet.TOP, 79.5.dp(context))
                             setVisibility?.invoke(expandedLayout, album_art, View.GONE)
+                        }
+                        if (headerMargin != 21.0f) {
+                            val headerMarginTop = headerMargin.dp(context)
+                            setMargin?.invoke(expandedLayout, header_title, ConstraintSet.TOP, headerMarginTop)
+                            setGoneMargin?.invoke(expandedLayout, header_title, ConstraintSet.TOP, headerMarginTop)
+                        }
+                        if (headerPadding != 2.0f) {
+                            setMargin?.invoke(expandedLayout, header_artist, ConstraintSet.TOP, headerPadding.dp(context))
                         }
                         if (actionsLeftAligned) {
                             clear?.invoke(expandedLayout, action4, ConstraintSet.RIGHT)

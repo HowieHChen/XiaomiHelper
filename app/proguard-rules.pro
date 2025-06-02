@@ -28,4 +28,4 @@
     public static *** throwUninitializedPropertyAccessException(...);
 }
 
--keep class dev.lackluster.mihelper.activity.MainActivity
+-keep class dev.lackluster.mihelper.ui.MainActivity

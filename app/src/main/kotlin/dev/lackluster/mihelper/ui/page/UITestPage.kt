@@ -1,4 +1,4 @@
-package dev.lackluster.mihelper.activity.page
+package dev.lackluster.mihelper.ui.page
 
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility

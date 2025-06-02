@@ -1,4 +1,4 @@
-package dev.lackluster.mihelper.activity.page
+package dev.lackluster.mihelper.ui.page
 
 import android.content.Context
 import android.content.Intent
@@ -43,7 +43,7 @@ import dev.lackluster.mihelper.BuildConfig.BUILD_TYPE
 import dev.lackluster.mihelper.BuildConfig.VERSION_CODE
 import dev.lackluster.mihelper.BuildConfig.VERSION_NAME
 import dev.lackluster.mihelper.R
-import dev.lackluster.mihelper.activity.MainActivity
+import dev.lackluster.mihelper.ui.MainActivity
 import dev.lackluster.mihelper.data.Contributors
 import dev.lackluster.mihelper.data.References
 import top.yukonga.miuix.kmp.basic.Card

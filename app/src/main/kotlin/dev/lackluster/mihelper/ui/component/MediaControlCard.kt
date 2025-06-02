@@ -1,4 +1,4 @@
-package dev.lackluster.mihelper.activity.component
+package dev.lackluster.mihelper.ui.component
 
 import android.os.SystemClock
 import androidx.compose.foundation.Canvas
@@ -71,20 +71,23 @@ private val accent2_9 = "#43474A".toColorInt()
 
 @Composable
 fun MediaControlCard(
-    backgroundStyle: Int,
-    allowReverse: Boolean,
-    blurRadius: Int,
-    lytAlbum: Int,
-    lytLeftActions: Boolean,
-    lytHideTime: Boolean,
-    lytHideSeamless: Boolean,
-    modifyTextSize: Boolean,
-    titleSize: Float,
-    artistSize: Float,
-    timeSize: Float,
-    thumbStyle: Int,
-    progressStyle: Int,
-    progressWidth: Float
+    backgroundStyle: Int = 0,
+    allowReverse: Boolean = false,
+    blurRadius: Int = 10,
+    lytAlbum: Int = 0,
+    lytLeftActions: Boolean = false,
+    lytActionsOrder: Int = 0,
+    lytHideTime: Boolean = false,
+    lytHideSeamless: Boolean = false,
+    lytHeaderMargin: Float = 21.0f,
+    lytHeaderPadding: Float = 2.0f,
+    modifyTextSize: Boolean = false,
+    titleSize: Float = 18.0f,
+    artistSize: Float = 12.0f,
+    timeSize: Float = 12.0f,
+    thumbStyle: Int = 0,
+    progressStyle: Int = 0,
+    progressWidth: Float = 4.0f
 ) {
     Card(
         modifier = Modifier
@@ -174,7 +177,7 @@ fun MediaControlCard(
                 height = Dimension.wrapContent
                 start.linkTo(albumArt.end, 12.dp, 26.dp)
                 end.linkTo(mediaSeamless.start, 6.dp, 26.dp)
-                top.linkTo(parent.top, 21.dp)
+                top.linkTo(parent.top, lytHeaderMargin.dp)
                 horizontalBias = 0.0f
             }
             constrain(headerArtist) {
@@ -182,7 +185,7 @@ fun MediaControlCard(
                 height = Dimension.wrapContent
                 start.linkTo(albumArt.end, 12.dp, 26.dp)
                 end.linkTo(mediaSeamless.start, 6.dp, 26.dp)
-                top.linkTo(headerTitle.bottom, 2.dp)
+                top.linkTo(headerTitle.bottom, lytHeaderPadding.dp)
                 horizontalBias = 0.0f
                 alpha = 0.8f
             }
@@ -293,7 +296,11 @@ fun MediaControlCard(
                     .padding(horizontal = 10.dp, vertical = 5.dp)
                     .width(60.dp)
                     .height(50.dp),
-                painter = painterResource(R.drawable.ic_media_lyric),
+                painter = when (lytActionsOrder) {
+                    1 ->  painterResource(R.drawable.ic_media_prev)
+                    2 ->  painterResource(R.drawable.ic_media_pause)
+                    else ->  painterResource(R.drawable.ic_media_lyric)
+                },
                 colorFilter = ColorFilter.tint(textPrimaryColor),
                 contentDescription = null
             )
@@ -303,7 +310,10 @@ fun MediaControlCard(
                     .padding(horizontal = 10.dp, vertical = 5.dp)
                     .width(60.dp)
                     .height(50.dp),
-                painter = painterResource(R.drawable.ic_media_prev),
+                painter = when (lytActionsOrder) {
+                    1 ->  painterResource(R.drawable.ic_media_pause)
+                    else ->  painterResource(R.drawable.ic_media_prev)
+                },
                 colorFilter = ColorFilter.tint(textPrimaryColor),
                 contentDescription = null
             )
@@ -313,7 +323,10 @@ fun MediaControlCard(
                     .padding(horizontal = 10.dp, vertical = 5.dp)
                     .width(60.dp)
                     .height(50.dp),
-                painter = painterResource(R.drawable.ic_media_play),
+                painter = when (lytActionsOrder) {
+                    0 ->  painterResource(R.drawable.ic_media_pause)
+                    else ->  painterResource(R.drawable.ic_media_next)
+                },
                 colorFilter = ColorFilter.tint(textPrimaryColor),
                 contentDescription = null
             )
@@ -323,7 +336,10 @@ fun MediaControlCard(
                     .padding(horizontal = 10.dp, vertical = 5.dp)
                     .width(60.dp)
                     .height(50.dp),
-                painter = painterResource(R.drawable.ic_media_next),
+                painter = when (lytActionsOrder) {
+                    0 ->  painterResource(R.drawable.ic_media_next)
+                    else ->  painterResource(R.drawable.ic_media_lyric)
+                },
                 colorFilter = ColorFilter.tint(textPrimaryColor),
                 contentDescription = null
             )

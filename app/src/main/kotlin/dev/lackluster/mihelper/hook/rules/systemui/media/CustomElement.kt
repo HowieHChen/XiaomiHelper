@@ -41,9 +41,9 @@ import dev.lackluster.mihelper.utils.Prefs
 import dev.lackluster.mihelper.utils.factory.dp
 import dev.lackluster.mihelper.utils.factory.dpFloat
 import com.highcapable.yukihookapi.hook.factory.constructor
-import com.highcapable.yukihookapi.hook.log.YLog
 
 object CustomElement : YukiBaseHooker() {
+    private val actionsResize = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.ELM_ACTIONS_RESIZE, true)
     private val modifyTextSize = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.ELM_TEXT_SIZE, false)
     private val titleSize = Prefs.getFloat(Pref.Key.SystemUI.MediaControl.ELM_TITLE_SIZE, 18.0f)
     private val artistSize = Prefs.getFloat(Pref.Key.SystemUI.MediaControl.ELM_ARTIST_SIZE, 12.0f)
@@ -57,10 +57,23 @@ object CustomElement : YukiBaseHooker() {
     private var thumb1: Drawable? = null
     private var thumb2: Drawable? = null
 
+    private val mediaViewHolderClass by lazy {
+        "com.android.systemui.media.controls.ui.view.MediaViewHolder\$Companion".toClassOrNull()
+            ?: "com.android.systemui.media.controls.models.player.MediaViewHolder\$Companion".toClassOrNull()
+    }
+    private val seekBarObserverClass by lazy {
+        "com.android.systemui.media.controls.ui.binder.SeekBarObserver".toClassOrNull()
+            ?: "com.android.systemui.media.controls.models.player.SeekBarObserver".toClassOrNull()
+    }
+    private val customActionsClass by lazy {
+        "com.android.systemui.media.controls.domain.pipeline.LegacyMediaDataManagerImpl\$createActionsFromState\$customActions$1".toClassOrNull()
+            ?: "com.android.systemui.media.controls.pipeline.MediaDataManager\$createActionsFromState\$customActions$1".toClassOrNull()
+    }
+
     @SuppressLint("UseCompatLoadingForDrawables")
     override fun onHook() {
         if (modifyTextSize || thumbStyle != 0 || thumbCropFix) {
-            "com.android.systemui.media.controls.ui.view.MediaViewHolder\$Companion".toClassOrNull()?.apply {
+            mediaViewHolderClass?.apply {
                 method {
                     name = "create"
                 }.hook {
@@ -104,7 +117,7 @@ object CustomElement : YukiBaseHooker() {
             }
         }
         if (progressStyle != 0) {
-            "com.android.systemui.media.controls.ui.binder.SeekBarObserver".toClassOrNull()?.apply {
+            seekBarObserverClass?.apply {
                 constructor().hook {
                     after {
                         val mediaViewHolder = this.instance.current().field {
@@ -161,16 +174,12 @@ object CustomElement : YukiBaseHooker() {
                 }
             }
         }
-        if (true) {
-            val customActions =
-                "com.android.systemui.media.controls.domain.pipeline.LegacyMediaDataManagerImpl\$createActionsFromState\$customActions$1".toClassOrNull()
-                ?: "com.android.systemui.media.controls.pipeline.MediaDataManager\$createActionsFromState\$customActions$1".toClassOrNull()
-            customActions?.apply {
+        if (actionsResize) {
+            customActionsClass?.apply {
                 method {
                     name = "invoke"
                 }.hook {
                     after {
-                        YLog.info("customActions")
                         val mediaAction = this.result ?: return@after
                         val pkgName = this.instance.current().field { name = "\$packageName" }.string()
                         val customAction = this.args(0).cast<CustomAction>() ?: return@after
@@ -178,6 +187,10 @@ object CustomElement : YukiBaseHooker() {
                         val context = mediaDataManager.current().field { name = "context" }.any() as Context
                         val drawable = Icon.createWithResource(pkgName, customAction.icon).loadDrawable(context)
                         mediaAction.current().field { name = "icon" }.set(drawable)
+//                        mediaAction.current().field { name = "icon" }.set(
+//                            ScaleDrawable(drawable, Gravity.CENTER, 0.1f, 0.1f).apply { level = 1 }
+//                        )
+//                        YLog.info("customActions: $pkgName")
                     }
                 }
             }

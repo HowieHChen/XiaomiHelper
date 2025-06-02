@@ -28,7 +28,7 @@ import android.content.Intent
 import android.net.Uri
 import dev.lackluster.hyperx.compose.activity.SafeSP
 import dev.lackluster.mihelper.R
-import dev.lackluster.mihelper.activity.MainActivity
+import dev.lackluster.mihelper.ui.MainActivity
 import dev.lackluster.mihelper.data.Pref
 import org.json.JSONObject
 import java.io.IOException

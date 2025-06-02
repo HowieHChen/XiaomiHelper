@@ -286,13 +286,17 @@ object Pref {
 
                 const val LYT_ALBUM = "media_lyt_album"
                 const val LYT_LEFT_ACTIONS = "media_lyt_left_actions"
+                const val LYT_ACTIONS_ORDER = "media_lyt_actions_order"
                 const val LYT_HIDE_TIME = "media_lyt_hide_time"
                 const val LYT_HIDE_SEAMLESS = "media_lyt_hide_seamless"
+                const val LYT_HEADER_MARGIN = "media_lyt_header_margin"
+                const val LYT_HEADER_PADDING = "media_lyt_header_padding"
 
                 const val ELM_TEXT_SIZE = "media_elm_text_size"
                 const val ELM_TITLE_SIZE = "media_elm_title_size"
                 const val ELM_ARTIST_SIZE = "media_elm_artist_size"
                 const val ELM_TIME_SIZE = "media_elm_time_size"
+                const val ELM_ACTIONS_RESIZE = "media_elm_actions_resize"
                 const val ELM_THUMB_STYLE = "media_elm_thumb_style"
                 const val ELM_PROGRESS_STYLE = "media_elm_prog_style"
                 const val ELM_PROGRESS_WIDTH = "media_elm_prog_width"
@@ -314,6 +318,9 @@ object Pref {
         }
         object Themes {
             const val SKIP_SPLASH = "themes_skip_splash"
+        }
+        object Hints {
+            const val MEDIA_ADVANCED_TEXTURES = "hint_media_adv_textures"
         }
         object Updater {
             const val DISABLE_VALIDATION = "updater_no_validation"

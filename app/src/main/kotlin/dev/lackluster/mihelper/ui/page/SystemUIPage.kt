@@ -1,4 +1,4 @@
-package dev.lackluster.mihelper.activity.page
+package dev.lackluster.mihelper.ui.page
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.PaddingValues
@@ -22,8 +22,8 @@ import dev.lackluster.hyperx.compose.preference.SeekBarPreference
 import dev.lackluster.hyperx.compose.preference.SwitchPreference
 import dev.lackluster.hyperx.compose.preference.TextPreference
 import dev.lackluster.mihelper.R
-import dev.lackluster.mihelper.activity.MainActivity
-import dev.lackluster.mihelper.activity.component.RebootMenuItem
+import dev.lackluster.mihelper.ui.MainActivity
+import dev.lackluster.mihelper.ui.component.RebootMenuItem
 import dev.lackluster.mihelper.data.Pages
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.data.Scope

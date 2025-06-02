@@ -1,23 +1,21 @@
-package dev.lackluster.mihelper.activity.page
+package dev.lackluster.mihelper.ui.page
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import dev.lackluster.hyperx.compose.activity.SafeSP
 import dev.lackluster.hyperx.compose.base.BasePage
 import dev.lackluster.hyperx.compose.base.BasePageDefaults
+import dev.lackluster.hyperx.compose.component.Hint
 import dev.lackluster.hyperx.compose.preference.DropDownEntry
 import dev.lackluster.hyperx.compose.preference.DropDownPreference
 import dev.lackluster.hyperx.compose.preference.EditTextDataType
@@ -26,13 +24,10 @@ import dev.lackluster.hyperx.compose.preference.PreferenceGroup
 import dev.lackluster.hyperx.compose.preference.SwitchPreference
 import dev.lackluster.hyperx.compose.preference.ValuePosition
 import dev.lackluster.mihelper.R
-import dev.lackluster.mihelper.activity.MainActivity
+import dev.lackluster.mihelper.ui.MainActivity
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.Device
-import top.yukonga.miuix.kmp.basic.BasicComponent
-import top.yukonga.miuix.kmp.icon.MiuixIcons
-import top.yukonga.miuix.kmp.icon.icons.useful.Info
-import top.yukonga.miuix.kmp.theme.MiuixTheme
+import top.yukonga.miuix.kmp.basic.SmallTitle
 
 @Composable
 fun CleanMasterPage(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
@@ -94,23 +89,14 @@ fun CleanMasterPage(navController: NavController, adjustPadding: PaddingValues, 
             }
         }
         item {
-            PreferenceGroup(
-                title = stringResource(R.string.ui_title_cleaner_skip_splash)
-            ) {
-                BasicComponent(
-                    summary = stringResource(R.string.cleaner_skip_splash_tips),
-                    leftAction = {
-                        Image(
-                            modifier = Modifier
-                                .padding(end = 16.dp)
-                                .size(28.dp),
-                            imageVector = MiuixIcons.Useful.Info,
-                            contentDescription = null,
-                            colorFilter = ColorFilter.tint(MiuixTheme.colorScheme.onSurfaceVariantSummary)
-                        )
-                    }
-                )
-            }
+            SmallTitle(
+                text = stringResource(R.string.ui_title_cleaner_skip_splash),
+                modifier = Modifier.padding(top = 6.dp),
+            )
+            Hint(
+                modifier = Modifier.padding(horizontal = 12.dp).padding(bottom = 6.dp),
+                text = stringResource(R.string.cleaner_skip_splash_tips)
+            )
             PreferenceGroup {
                 SwitchPreference(
                     title = stringResource(R.string.scope_browser),
