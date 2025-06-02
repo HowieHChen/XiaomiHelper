@@ -298,7 +298,7 @@
     <string name="home_recent_pad_show_memory">Show memory usage on tablet</string>
     <string name="home_recent_pad_hide_world">Hide Xiaomi Smart Hub button</string>
     <string name="home_recent_hide_status_bar">Hide the status bar</string>
-    <string name="home_recent_hide_status_bar_tips">Hide the status bar when in the recent tasks screen</string>
+    <string name="home_recent_hide_status_bar_tips">Hide the status bar in Recents</string>
     <string name="home_recent_hide_clear_all">Hide Clear all button</string>
     <string name="home_Recent_mem_info_clear">Long click on memory info to clear all</string>
     <string name="home_recent_show_real_memory">Show real memory usage</string>
@@ -328,7 +328,7 @@
     <string name="home_others_fake_premium_tips">Remove model restrictions on some features</string>
     <string name="home_others_show_minus_setting">Restore Personal assistant settings</string>
     <string name="home_others_hide_fake_navbar">Hide the fake full screen indicator</string>
-    <string name="home_others_hide_fake_navbar_tips">Hide the fake full screen indicator on the horizontal recent tasks screen</string>
+    <string name="home_others_hide_fake_navbar_tips">Hide the fake full screen indicator on the horizontal Recents screen</string>
     <string name="home_others_force_color_scheme_element">App label color</string>
     <string name="home_others_force_color_scheme_element_tips">Specify widget and app label color (ignore wallpaper color)</string>
     <string name="home_others_force_color_scheme_statusbar">Status bar text and icon color</string>
@@ -719,7 +719,7 @@
     <string name="media_elm_prog_style_squiggly">Squiggly</string>
     <string name="media_elm_prog_width">Progress bar thickness</string>
     <string name="ui_title_media_others" translatable="false">@string/common_others</string>
-    <string name="media_hint_advanced_textures">Since Advanced textures have been set as the default background for media controls, we have removed the corresponding option. If you need to modify the advanced material effects, please use the Magisk module or system theme to modify the blur parameters.</string>
+    <string name="media_hint_advanced_textures">Since Advanced textures have been set as the default background for media controls, the corresponding option has been removed. If you need to adjust the effects of Advanced textures, use a Magisk module or the system theme to modify the blur parameters.</string>
     <!-- HomeRefactorPage -->
     <string name="home_refactor_blur">Blur effect</string>
     <string name="home_refactor_blur_radius">Blur radius</string>
