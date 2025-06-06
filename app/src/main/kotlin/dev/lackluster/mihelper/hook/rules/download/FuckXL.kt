@@ -21,17 +21,38 @@
 package dev.lackluster.mihelper.hook.rules.download
 
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
+import com.highcapable.yukihookapi.hook.factory.field
 import com.highcapable.yukihookapi.hook.factory.method
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.factory.hasEnable
 
 object FuckXL : YukiBaseHooker() {
-//    private val targetAbsPath by lazy {
-//        File(Environment.getExternalStorageDirectory(), ".xlDownload").absoluteFile
-//    }
     override fun onHook() {
         hasEnable(Pref.Key.Download.FUCK_XL) {
+            val sdcardPath = "com.android.providers.downloads.config.XLDownloadCfg".toClassOrNull()?.field {
+                name = "sdcardPath"
+            }?.get()?.string() ?: "/storage/emulated/0"
+            "com.android.providers.downloads.config.DownloadSettings\$XLSecureConfigSettings".toClassOrNull()?.apply {
+                method {
+                    name = "saveDpDebugLogPath"
+                }.hook {
+                    intercept()
+                }
+                method {
+                    name = "getDpDebugLogPath"
+                }.hook {
+                    before {
+                        this.result = this.args(0).string()
+                    }
+                }
+            }
             "com.android.providers.downloads.config.XLConfig".toClass().apply {
+                field {
+                    name = "logDir"
+                }.ignored().get().set("${sdcardPath}/MIUI/.xlDownload/dp.log")
+                field {
+                    name = "logSoDir"
+                }.ignored().get().set("${sdcardPath}/MIUI/.xlDownload/dp_so.log")
                 method {
                     name = "isDebug"
                 }.hook {
@@ -48,17 +69,6 @@ object FuckXL : YukiBaseHooker() {
                     intercept()
                 }
             }
-//            File::class.java
-//                .method {
-//                    name = "mkdirs"
-//                }
-//                .hook {
-//                    before {
-//                        if ((this.instance as File).absoluteFile.equals(targetAbsPath)) {
-//                            FileNotFoundException("blocked").throwToApp()
-//                        }
-//                    }
-//                }
         }
     }
 }
