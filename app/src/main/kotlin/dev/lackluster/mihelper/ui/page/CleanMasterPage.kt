@@ -9,6 +9,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -22,15 +23,20 @@ import dev.lackluster.hyperx.compose.preference.EditTextDataType
 import dev.lackluster.hyperx.compose.preference.EditTextPreference
 import dev.lackluster.hyperx.compose.preference.PreferenceGroup
 import dev.lackluster.hyperx.compose.preference.SwitchPreference
+import dev.lackluster.hyperx.compose.preference.TextPreference
 import dev.lackluster.hyperx.compose.preference.ValuePosition
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.ui.MainActivity
 import dev.lackluster.mihelper.data.Pref
+import dev.lackluster.mihelper.data.Scope
+import dev.lackluster.mihelper.data.Version
 import dev.lackluster.mihelper.utils.Device
+import dev.lackluster.mihelper.utils.factory.jumpToAppDetailsSettings
 import top.yukonga.miuix.kmp.basic.SmallTitle
 
 @Composable
 fun CleanMasterPage(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
+    val context = LocalContext.current
     var visibilityCustomInstallSource by remember { mutableStateOf(SafeSP.getInt(Pref.Key.PackageInstaller.INSTALL_SOURCE) == 3) }
 
     val dropdownEntriesCustomInstallSource = listOf(
@@ -50,9 +56,50 @@ fun CleanMasterPage(navController: NavController, adjustPadding: PaddingValues, 
         mode
     ) {
         item {
+            SmallTitle(
+                text = stringResource(R.string.ui_title_cleaner_compatibility),
+                modifier = Modifier.padding(top = 6.dp),
+            )
+            Hint(
+                modifier = Modifier.padding(horizontal = 12.dp).padding(bottom = 6.dp),
+                text = stringResource(R.string.cleaner_compatibility_tips)
+            )
+            PreferenceGroup {
+                TextPreference(
+                    title = stringResource(R.string.scope_browser),
+                    summary = Version.BROWSER
+                ) {
+                    context.jumpToAppDetailsSettings(Scope.BROWSER)
+                }
+                TextPreference(
+                    title = stringResource(R.string.scope_market),
+                    summary = Version.MARKET
+                ) {
+                    context.jumpToAppDetailsSettings(Scope.MARKET)
+                }
+                TextPreference(
+                    title = stringResource(R.string.scope_music),
+                    summary = Version.MUSIC
+                ) {
+                    context.jumpToAppDetailsSettings(Scope.MUSIC)
+                }
+                TextPreference(
+                    title = stringResource(R.string.scope_package_installer),
+                    summary = Version.PACKAGE_INSTALLER
+                ) {
+                    context.jumpToAppDetailsSettings(Scope.PACKAGE_INSTALLER)
+                }
+                TextPreference(
+                    title = stringResource(R.string.scope_security_center),
+                    summary = Version.SECURITY_CENTER
+                ) {
+                    context.jumpToAppDetailsSettings(Scope.SECURITY_CENTER)
+                }
+            }
+        }
+        item {
             PreferenceGroup(
-                title = stringResource(R.string.ui_title_cleaner_ad_blocker),
-                first = true
+                title = stringResource(R.string.ui_title_cleaner_ad_blocker)
             ) {
                 SwitchPreference(
                     title = stringResource(R.string.scope_market),

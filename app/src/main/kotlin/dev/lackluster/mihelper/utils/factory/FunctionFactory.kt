@@ -6,9 +6,13 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Configuration
+import android.provider.Settings
 import dev.lackluster.mihelper.utils.Prefs
+import androidx.core.net.toUri
+
 
 /**
  * System dark mode is enabled or not
@@ -74,6 +78,12 @@ fun Context.getResID(name: String, defType: String, pkg: String): Int {
     } catch (t: Throwable) {
         0
     }
+}
+
+fun Context.jumpToAppDetailsSettings(pkg: String) {
+    val packageURI = "package:${pkg}".toUri()
+    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, packageURI)
+    startActivity(intent)
 }
 
 inline fun hasEnable(

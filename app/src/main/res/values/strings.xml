@@ -338,6 +338,8 @@
     <string name="home_others_force_color_scheme_minus">Personal assistant color</string>
     <string name="home_others_force_color_scheme_minus_tips">Specify the color of the status bar text and icons for the Personal assistant (ignore wallpaper color). Requires enabling \"Disable Smart dark\" on the System UI page.</string>
     <!-- CleanMasterPage -->
+    <string name="ui_title_cleaner_compatibility">Compatibility</string>
+    <string name="cleaner_compatibility_tips">Most of the features on this page are designed for users located in mainland China.\nPlease note that the music-related features are designed for users with music membership accounts.\nIt is recommended to use the following versions of the application that have been verified for compatibility.</string>
     <string name="ui_title_cleaner_ad_blocker">Ad blocker</string>
     <string name="cleaner_ad_blocker_market" translatable="false">@string/scope_market</string>
     <string name="cleaner_ad_blocker_mms" translatable="false">@string/scope_mms</string>
