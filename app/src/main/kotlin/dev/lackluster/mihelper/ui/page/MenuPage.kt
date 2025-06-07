@@ -6,9 +6,9 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
-import dev.lackluster.hyperx.compose.activity.HyperXActivity
 import dev.lackluster.hyperx.compose.base.AlertDialog
 import dev.lackluster.hyperx.compose.base.AlertDialogMode
 import dev.lackluster.hyperx.compose.base.BasePage
@@ -21,10 +21,13 @@ import dev.lackluster.mihelper.utils.ShellUtils
 
 @Composable
 fun MenuPage(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
+    val context = LocalContext.current
+    
     val dialogRebootSystem = remember { mutableStateOf(false) }
     val dialogRebootScope = remember { mutableStateOf(false) }
     val dialogRebootSystemUI = remember { mutableStateOf(false) }
     val dialogRebootLauncher = remember { mutableStateOf(false) }
+    
     BasePage(
         navController,
         adjustPadding,
@@ -76,7 +79,7 @@ fun MenuPage(navController: NavController, adjustPadding: PaddingValues, mode: B
             ShellUtils.tryExec("/system/bin/sync;/system/bin/svc power reboot || reboot", useRoot = true, checkSuccess = true)
         } catch (tout : Throwable) {
             makeText(
-                HyperXActivity.context,
+                context,
                 tout.message,
                 LENGTH_LONG
             ).show()
@@ -91,7 +94,7 @@ fun MenuPage(navController: NavController, adjustPadding: PaddingValues, mode: B
         positiveText = stringResource(R.string.button_ok)
     ) {
         dialogRebootScope.value = false
-        HyperXActivity.context.let {
+        context.let {
             try {
                 it.resources.getStringArray(R.array.module_scope).forEach { pkg ->
                     try {
@@ -127,7 +130,7 @@ fun MenuPage(navController: NavController, adjustPadding: PaddingValues, mode: B
         dialogRebootSystemUI.value = false
         try {
             ShellUtils.tryExec("killall com.android.systemui", useRoot = true, checkSuccess = true)
-            HyperXActivity.context.let {
+            context.let {
                 makeText(
                     it,
                     it.getString(R.string.menu_reboot_done_toast),
@@ -135,7 +138,7 @@ fun MenuPage(navController: NavController, adjustPadding: PaddingValues, mode: B
                 ).show()
             }
         } catch (tout : Throwable) {
-            HyperXActivity.context.let {
+            context.let {
                 makeText(
                     it,
                     tout.message,
@@ -155,7 +158,7 @@ fun MenuPage(navController: NavController, adjustPadding: PaddingValues, mode: B
         dialogRebootLauncher.value = false
         try {
             ShellUtils.tryExec("killall com.miui.home", useRoot = true, checkSuccess = true)
-            HyperXActivity.context.let {
+            context.let {
                 makeText(
                     it,
                     it.getString(R.string.menu_reboot_done_toast),
@@ -163,7 +166,7 @@ fun MenuPage(navController: NavController, adjustPadding: PaddingValues, mode: B
                 ).show()
             }
         } catch (tout : Throwable) {
-            HyperXActivity.context.let {
+            context.let {
                 makeText(
                     it,
                     tout.message,

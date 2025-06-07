@@ -162,6 +162,8 @@ object Pref {
         object Settings {
             const val SHOE_GOOGLE = "settings_show_google"
             const val UNLOCK_TAPLUS_FOR_PAD = "taplus_unlock_pad"
+            const val QUICK_PER_OVERLAY = "settings_quick_per_overlay"
+            const val QUICK_PER_INSTALL_SOURCE = "settings_quick_per_install"
         }
         object SystemUI {
             object StatusBar {

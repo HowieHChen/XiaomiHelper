@@ -10,11 +10,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import dev.lackluster.hyperx.compose.activity.HyperXActivity
 import dev.lackluster.hyperx.compose.base.AlertDialog
 import dev.lackluster.hyperx.compose.base.AlertDialogMode
 import dev.lackluster.hyperx.compose.base.BasePage
@@ -43,6 +43,8 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 @Composable
 fun MainPage(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
+    val context = LocalContext.current
+
     val showTopPopup = remember { mutableStateOf(false) }
 
     val contextMenuItems = listOf(
@@ -89,7 +91,7 @@ fun MainPage(navController: NavController, adjustPadding: PaddingValues, mode: B
                                             )
                                         } catch (tout : Throwable) {
                                             makeText(
-                                                HyperXActivity.context,
+                                                context,
                                                 tout.message,
                                                 LENGTH_LONG
                                             ).show()
@@ -224,7 +226,7 @@ fun MainPage(navController: NavController, adjustPadding: PaddingValues, mode: B
             )
         } catch (tout : Throwable) {
             makeText(
-                HyperXActivity.context,
+                context,
                 tout.message,
                 LENGTH_LONG
             ).show()

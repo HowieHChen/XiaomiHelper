@@ -11,9 +11,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
-import dev.lackluster.hyperx.compose.activity.HyperXActivity
 import dev.lackluster.hyperx.compose.activity.SafeSP
 import dev.lackluster.hyperx.compose.base.BasePage
 import dev.lackluster.hyperx.compose.base.BasePageDefaults
@@ -34,6 +34,8 @@ import dev.lackluster.mihelper.utils.Device
 
 @Composable
 fun OthersPage(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
+    val context = LocalContext.current
+
     var spMiAiBrowserSearch by remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.MiAi.SEARCH_USE_BROWSER)) }
     var visibilityMiAiCustomEntryName by remember { mutableStateOf(SafeSP.getInt(Pref.Key.MiAi.SEARCH_ENGINE) == 5) }
     var spTaplusBrowserSearch by remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.Taplus.SEARCH_USE_BROWSER)) }
@@ -232,7 +234,7 @@ fun OthersPage(navController: NavController, adjustPadding: PaddingValues, mode:
                 TextPreference(
                     title = stringResource(R.string.others_settings_cellular_debug)
                 ) {
-                    HyperXActivity.context.let {
+                    context.let {
                         val intent = Intent().apply {
                             flags = Intent.FLAG_ACTIVITY_NEW_TASK
                             component = ComponentName("com.xiaomi.phone", "com.xiaomi.phone.settings.development.CellularNetworkActivity")
@@ -250,6 +252,16 @@ fun OthersPage(navController: NavController, adjustPadding: PaddingValues, mode:
                         key = Pref.Key.Settings.UNLOCK_TAPLUS_FOR_PAD
                     )
                 }
+                SwitchPreference(
+                    title = stringResource(R.string.others_settings_quick_per_overlay),
+                    summary = stringResource(R.string.others_settings_quick_per_tips),
+                    key = Pref.Key.Settings.QUICK_PER_OVERLAY
+                )
+                SwitchPreference(
+                    title = stringResource(R.string.others_settings_quick_per_install),
+                    summary = stringResource(R.string.others_settings_quick_per_tips),
+                    key = Pref.Key.Settings.QUICK_PER_INSTALL_SOURCE
+                )
             }
         }
         item {

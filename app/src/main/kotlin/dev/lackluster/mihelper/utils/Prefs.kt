@@ -1,10 +1,7 @@
 package dev.lackluster.mihelper.utils
 
-import android.content.Context
 import de.robv.android.xposed.XSharedPreferences
-import dev.lackluster.hyperx.compose.activity.HyperXActivity
 import dev.lackluster.mihelper.BuildConfig
-import dev.lackluster.mihelper.utils.factory.dp
 
 object Prefs {
     const val NAME = "config"
@@ -49,37 +46,6 @@ object Prefs {
             xPrefs.reload()
         }
         return xPrefs.getStringSet(key, defValue) ?: defValue
-    }
-
-    fun getPixelByStr(key: String, defStr: String = "0px", context: Context): Int {
-        if (xPrefs.hasFileChanged()) {
-            xPrefs.reload()
-        }
-        val value = getString(key, defStr) ?: defStr
-        runCatching {
-            if (value.endsWith("dp")) {
-                return value.replace("dp", "").toInt().dp(context)
-            } else {
-                return value.replace("px", "").toInt()
-            }
-        }
-        return 0
-    }
-
-    fun isPixelStrValid(value: String): Boolean {
-        var valid = false
-        runCatching {
-            valid = if (value.endsWith("dp")) {
-                value.replace("dp", "").toInt().dp(HyperXActivity.context) in 0..500
-            } else if (value.endsWith("px")) {
-                value.replace("px", "").toInt() in 0..500
-            } else {
-                value.toInt() in 0..500
-            }
-        }.onFailure {
-            valid = false
-        }
-        return valid
     }
 }
 

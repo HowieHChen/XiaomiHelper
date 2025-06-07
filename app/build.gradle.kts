@@ -44,21 +44,20 @@ android {
             "-Xno-receiver-assertions"
         )
     }
-    androidResources.additionalParameters += listOf("--allow-reserved-package-id", "--package-id", "0x60")
-    androidResources
-        buildFeatures {
-            buildConfig = true
-            viewBinding = true
-        }
+    androidResources {
+        additionalParameters += listOf("--stable-ids", "stableIds.txt")
+        additionalParameters += listOf("--allow-reserved-package-id", "--package-id", "0x60")
+    }
+    buildFeatures {
+        buildConfig = true
+        viewBinding = true
+    }
     lint { checkReleaseBuilds = false }
-    // TODO Please visit https://highcapable.github.io/YukiHookAPI/en/api/special-features/host-inject
-    // TODO 请参考 https://highcapable.github.io/YukiHookAPI/zh-cn/api/special-features/host-inject
-    // androidResources.additionalParameters += listOf("--allow-reserved-package-id", "--package-id", "0x64")
     packaging {
         applicationVariants.all {
             outputs.all {
                 (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName =
-                    "${libs.versions.project.name.get()}_${versionName}_${versionCode}_${buildType.name}.apk"
+                    "${libs.versions.project.name.get()}_${versionName}_${versionCode}_${buildType.name}_${System.currentTimeMillis()}.apk"
             }
         }
     }
@@ -79,4 +78,8 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.constraintlayout.compose)
+
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.test.junit)
+    androidTestImplementation(libs.androidx.test.espresso)
 }

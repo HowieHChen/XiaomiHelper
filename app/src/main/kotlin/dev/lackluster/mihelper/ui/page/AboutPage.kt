@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -32,7 +33,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.toColorInt
 import androidx.navigation.NavController
-import dev.lackluster.hyperx.compose.activity.HyperXActivity
 import dev.lackluster.hyperx.compose.base.BasePage
 import dev.lackluster.hyperx.compose.base.BasePageDefaults
 import dev.lackluster.hyperx.compose.base.IconSize
@@ -52,9 +52,12 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 import androidx.core.net.toUri
 import dev.lackluster.hyperx.compose.navigation.navigateTo
 import dev.lackluster.mihelper.data.Pages
+import kotlin.random.Random
 
 @Composable
 fun AboutPage(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
+    val context = LocalContext.current
+    
     BasePage(
         navController,
         adjustPadding,
@@ -71,13 +74,13 @@ fun AboutPage(navController: NavController, adjustPadding: PaddingValues, mode: 
                         modifier = Modifier.fillMaxSize().clickable {
                             when ((0..2).random()) {
                                 0 -> {
-                                    makeText(HyperXActivity.context, R.string.about_easter_egg_toast, LENGTH_SHORT).show()
+                                    makeText(context, R.string.about_easter_egg_toast, LENGTH_SHORT).show()
                                 }
                                 1 -> {
-                                    makeText(HyperXActivity.context, R.string.xposed_desc, LENGTH_SHORT).show()
+                                    makeText(context, R.string.xposed_desc, LENGTH_SHORT).show()
                                 }
                                 2 -> {
-                                    HyperXActivity.context.openUrl(R.string.about_easter_egg_url)
+                                    context.openUrl(R.string.about_easter_egg_url)
                                 }
                             }
                         }
@@ -132,7 +135,7 @@ fun AboutPage(navController: NavController, adjustPadding: PaddingValues, mode: 
                         title = stringResource(R.string.about_hyperx_compose),
                         summary = stringResource(R.string.about_hyperx_compose_tips)
                     ) {
-                        HyperXActivity.context.openUrl(R.string.about_hyperx_compose_url)
+                        context.openUrl(R.string.about_hyperx_compose_url)
                     }
                     TextPreference(
                         icon = ImageIcon(
@@ -142,7 +145,7 @@ fun AboutPage(navController: NavController, adjustPadding: PaddingValues, mode: 
                         title = stringResource(R.string.about_miuix),
                         summary = stringResource(R.string.about_miuix_tips)
                     ) {
-                        HyperXActivity.context.openUrl(R.string.about_miuix_url)
+                        context.openUrl(R.string.about_miuix_url)
                     }
                     TextPreference(
                         icon = ImageIcon(
@@ -152,7 +155,7 @@ fun AboutPage(navController: NavController, adjustPadding: PaddingValues, mode: 
                         title = stringResource(R.string.about_yuki),
                         summary = stringResource(R.string.about_yuki_tips)
                     ) {
-                        HyperXActivity.context.openUrl(R.string.about_yuki_url)
+                        context.openUrl(R.string.about_yuki_url)
                     }
                 }
             )
@@ -170,7 +173,7 @@ fun AboutPage(navController: NavController, adjustPadding: PaddingValues, mode: 
                     title = stringResource(R.string.about_author),
                     summary = stringResource(R.string.about_author_tips)
                 ) {
-                    HyperXActivity.context.openUrl("https://github.com/HowieHChen")
+                    context.openUrl("https://github.com/HowieHChen")
                 }
                 for (contributor in Contributors.list) {
                     TextPreference(
@@ -182,7 +185,7 @@ fun AboutPage(navController: NavController, adjustPadding: PaddingValues, mode: 
                         title = contributor.name,
                         summary = contributor.bio
                     ) {
-                        HyperXActivity.context.openUrl(contributor.link)
+                        context.openUrl(contributor.link)
                     }
                 }
             }
@@ -195,19 +198,19 @@ fun AboutPage(navController: NavController, adjustPadding: PaddingValues, mode: 
                     title = stringResource(R.string.about_donate),
                     summary = stringResource(R.string.about_donate_tips)
                 ) {
-                    HyperXActivity.context.openUrl(R.string.about_donate_url)
+                    context.openUrl(R.string.about_donate_url)
                 }
                 TextPreference(
                     title = stringResource(R.string.about_repository),
                     summary = stringResource(R.string.about_repository_tips)
                 ) {
-                    HyperXActivity.context.openUrl(R.string.about_repository_url)
+                    context.openUrl(R.string.about_repository_url)
                 }
                 TextPreference(
                     title = stringResource(R.string.about_telegram),
                     summary = stringResource(R.string.about_telegram_tips)
                 ) {
-                    HyperXActivity.context.openUrl(R.string.about_telegram_url)
+                    context.openUrl(R.string.about_telegram_url)
                 }
             }
         }
@@ -221,7 +224,7 @@ fun AboutPage(navController: NavController, adjustPadding: PaddingValues, mode: 
                         title = project.name,
                         summary = project.license
                     ) {
-                        HyperXActivity.context.openUrl(project.link)
+                        context.openUrl(project.link)
                     }
                 }
             }
@@ -234,7 +237,12 @@ fun AboutPage(navController: NavController, adjustPadding: PaddingValues, mode: 
                 TextPreference(
                     title = stringResource(R.string.page_dev_ui_test)
                 ) {
-                    navController.navigateTo(Pages.DEV_UI_TEST)
+                    navController.navigateTo(
+                        if (Random(System.currentTimeMillis()).nextInt(100) < 50)
+                            Pages.DEV_UI_TEST
+                        else
+                            Pages.DEV_UI_TEST2
+                    )
                 }
             }
         }

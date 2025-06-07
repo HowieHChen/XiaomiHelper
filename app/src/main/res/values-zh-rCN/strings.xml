@@ -638,4 +638,7 @@
     <string name="systemui_control_hide_carrier_hd">隐藏 HD</string>
     <string name="systemui_control_hide_carrier_hd_tips">隐藏运营商标签旁的 HD 图标</string>
     <string name="ui_title_cleaner_compatibility">兼容性</string>
+    <string name="others_settings_quick_per_overlay">快捷授予“显示在其它应用的上层”权限</string>
+    <string name="others_settings_quick_per_install">快捷授予“安装未知应用”权限</string>
+    <string name="others_settings_quick_per_tips">直接跳转到授予此权限给特定应用程序的开关，而不是与该权限关联的应用程序列表。</string>
 </resources>

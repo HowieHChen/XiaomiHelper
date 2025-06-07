@@ -1,6 +1,7 @@
 package dev.lackluster.mihelper.ui.page
 
 import android.content.ComponentName
+import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -14,9 +15,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
-import dev.lackluster.hyperx.compose.activity.HyperXActivity
 import dev.lackluster.hyperx.compose.activity.SafeSP
 import dev.lackluster.hyperx.compose.base.AlertDialog
 import dev.lackluster.hyperx.compose.base.AlertDialogMode
@@ -42,6 +43,8 @@ import kotlin.math.roundToInt
 
 @Composable
 fun ModuleSettingsPage(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
+    val context = LocalContext.current
+    
     val dropdownEntriesEntryIcon = listOf(
         DropDownEntry(iconRes = R.drawable.ic_header_hyper_helper_gray, title = stringResource(R.string.module_settings_icon_style_default)),
         DropDownEntry(iconRes = R.drawable.ic_header_android_green, title = stringResource(R.string.module_settings_icon_style_android)),
@@ -75,7 +78,8 @@ fun ModuleSettingsPage(navController: NavController, adjustPadding: PaddingValue
         BackAndRestoreResultDialog(
             dialogBackupAndRestoreVisibility,
             BackupUtils.WRITE_DOCUMENT_CODE,
-            it
+            it,
+            context
         )
     }
     val restoreUri = remember { mutableStateOf<Uri?>(null) }
@@ -88,7 +92,8 @@ fun ModuleSettingsPage(navController: NavController, adjustPadding: PaddingValue
         BackAndRestoreResultDialog(
             dialogBackupAndRestoreVisibility,
             BackupUtils.READ_DOCUMENT_CODE,
-            uri
+            uri,
+            context
         )
     }
     val resetResult = remember { mutableStateOf(false) }
@@ -129,7 +134,7 @@ fun ModuleSettingsPage(navController: NavController, adjustPadding: PaddingValue
                     title = stringResource(R.string.module_hide_icon),
                     key = Module.HIDE_ICON
                 ) {
-                    HyperXActivity.context.let { context ->
+                    context.let { context ->
                         context.packageManager.setComponentEnabledSetting(
                             ComponentName(context, "${BuildConfig.APPLICATION_ID}.launcher"),
                             if (it) {
@@ -276,7 +281,8 @@ fun ModuleSettingsPage(navController: NavController, adjustPadding: PaddingValue
     )
     ResetResultDialog(
         dialogResetResultVisibility,
-        resetResult
+        resetResult,
+        context
     )
 }
 
@@ -284,7 +290,8 @@ fun ModuleSettingsPage(navController: NavController, adjustPadding: PaddingValue
 private fun BackAndRestoreResultDialog(
     visible: MutableState<Boolean>,
     requestCode: Int,
-    uri: Uri
+    uri: Uri,
+    context: Context
 ) {
     var titleId = R.string.dialog_error
     var msgId = R.string.module_unknown_failure
@@ -292,12 +299,12 @@ private fun BackAndRestoreResultDialog(
     try {
         when (requestCode) {
             BackupUtils.WRITE_DOCUMENT_CODE -> {
-                BackupUtils.handleBackup(HyperXActivity.context, uri)
+                BackupUtils.handleBackup(context, uri)
                 titleId = R.string.dialog_done
                 msgId = R.string.module_backup_success
             }
             BackupUtils.READ_DOCUMENT_CODE -> {
-                BackupUtils.handleRestore(HyperXActivity.context, uri)
+                BackupUtils.handleRestore(context, uri)
                 titleId = R.string.dialog_done
                 msgId = R.string.module_restore_success
             }
@@ -325,7 +332,7 @@ private fun BackAndRestoreResultDialog(
             if (requestCode == BackupUtils.READ_DOCUMENT_CODE) {
                 Thread {
                     Thread.sleep(500)
-                    BackupUtils.restartApp(HyperXActivity.context)
+                    BackupUtils.restartApp(context)
                 }.start()
             }
         }
@@ -336,7 +343,8 @@ private fun BackAndRestoreResultDialog(
 @Composable
 private fun ResetResultDialog(
     visible: MutableState<Boolean>,
-    success: MutableState<Boolean>
+    success: MutableState<Boolean>,
+    context: Context
 ) {
     val title: String
     val msg: String
@@ -357,7 +365,7 @@ private fun ResetResultDialog(
             visible.value = false
             Thread {
                 Thread.sleep(500)
-                BackupUtils.restartApp(HyperXActivity.context)
+                BackupUtils.restartApp(context)
             }.start()
         }
     )

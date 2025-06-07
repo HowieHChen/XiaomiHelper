@@ -9,9 +9,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import dev.lackluster.hyperx.compose.activity.HyperXActivity
 import dev.lackluster.hyperx.compose.base.AlertDialog
 import dev.lackluster.hyperx.compose.base.AlertDialogMode
 import dev.lackluster.mihelper.R
@@ -28,6 +28,7 @@ fun RebootMenuItem(
     appName: String,
     appPkg: String
 ) {
+    val context = LocalContext.current
     val dialogVisibility = remember { mutableStateOf(false) }
     IconButton(
         modifier = Modifier.padding(end = 21.dp).size(40.dp),
@@ -55,7 +56,7 @@ fun RebootMenuItem(
                 } else {
                     ShellUtils.tryExec("killall $appPkg", useRoot = true, checkSuccess = true)
                 }
-                HyperXActivity.context.let {
+                context.let {
                     makeText(
                         it,
                         it.getString(R.string.menu_reboot_done_toast),
@@ -63,7 +64,7 @@ fun RebootMenuItem(
                     ).show()
                 }
             } catch (tout : Throwable) {
-                HyperXActivity.context.let {
+                context.let {
                     makeText(
                         it,
                         tout.message,

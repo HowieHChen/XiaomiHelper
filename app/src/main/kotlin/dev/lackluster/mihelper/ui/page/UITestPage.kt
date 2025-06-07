@@ -43,6 +43,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
@@ -51,7 +52,6 @@ import androidx.compose.ui.util.fastForEachIndexed
 import androidx.navigation.NavController
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
-import dev.lackluster.hyperx.compose.activity.HyperXActivity
 import dev.lackluster.hyperx.compose.activity.SafeSP
 import dev.lackluster.hyperx.compose.base.BasePageDefaults
 import dev.lackluster.mihelper.R
@@ -98,6 +98,8 @@ import top.yukonga.miuix.kmp.utils.scrollEndHaptic
 
 @Composable
 fun UITestPage(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
+    val context = LocalContext.current
+
     val blurTintColor = MiuixTheme.colorScheme.background
     val configBlurTopBar = remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.App.HAZE_BLUR, true)) }
     val configBlurBottomBar = remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.App.HAZE_BLUR, true)) }
@@ -202,7 +204,7 @@ fun UITestPage(navController: NavController, adjustPadding: PaddingValues, mode:
                                         isSelected = false,
                                         onSelectedIndexChange = {
                                             targetPage = index
-                                            Toast.makeText(HyperXActivity.context, "$it clicked", Toast.LENGTH_SHORT).show()
+                                            Toast.makeText(context, "$it clicked", Toast.LENGTH_SHORT).show()
                                             showTopPopup.value = false
                                             isTopPopupExpanded.value = false
                                         },
@@ -254,7 +256,7 @@ fun UITestPage(navController: NavController, adjustPadding: PaddingValues, mode:
                                     isSelected = items[index] == items[targetPage],
                                     onSelectedIndexChange = {
                                         targetPage = index
-                                        Toast.makeText(HyperXActivity.context, "$it clicked", Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(context, "$it clicked", Toast.LENGTH_SHORT).show()
                                         showBottomPopup.value = false
                                         isBottomPopupExpanded.value = false
                                     },
@@ -274,7 +276,7 @@ fun UITestPage(navController: NavController, adjustPadding: PaddingValues, mode:
                     onClick = { index ->
                         if (index in 0..2) {
                             targetPage = index
-                            Toast.makeText(HyperXActivity.context, "Page $index clicked", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Page $index clicked", Toast.LENGTH_SHORT).show()
                         } else {
                             showBottomPopup.value = true
                             hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -364,7 +366,7 @@ fun UITestPage(navController: NavController, adjustPadding: PaddingValues, mode:
 
                         value = "Value"
                     ) {
-                        Toast.makeText(HyperXActivity.context, "[HeaderPreference] Large clicked", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "[HeaderPreference] Large clicked", Toast.LENGTH_SHORT).show()
                     }
                     TextPreference(
                         icon = ImageIcon(
@@ -376,7 +378,7 @@ fun UITestPage(navController: NavController, adjustPadding: PaddingValues, mode:
                         summary = "Round",
                         value = "Value"
                     ) {
-                        Toast.makeText(HyperXActivity.context, "[HeaderPreference] Medium clicked", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "[HeaderPreference] Medium clicked", Toast.LENGTH_SHORT).show()
                     }
                     TextPreference(
                         icon = ImageIcon(
@@ -386,7 +388,7 @@ fun UITestPage(navController: NavController, adjustPadding: PaddingValues, mode:
                         summary = "Rectangle",
                         value = "Value"
                     ) {
-                        Toast.makeText(HyperXActivity.context, "[HeaderPreference] Small clicked", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "[HeaderPreference] Small clicked", Toast.LENGTH_SHORT).show()
                     }
                     TextPreference(
                         icon = ImageIcon(iconRes = R.drawable.ic_header_others),
@@ -394,7 +396,7 @@ fun UITestPage(navController: NavController, adjustPadding: PaddingValues, mode:
                         summary = "Summary",
                         value = "Value"
                     ) {
-                        Toast.makeText(HyperXActivity.context, "[HeaderPreference] Others clicked", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "[HeaderPreference] Others clicked", Toast.LENGTH_SHORT).show()
                     }
                     SwitchPreference(
                         icon = ImageIcon(iconRes = R.drawable.ic_header_about),

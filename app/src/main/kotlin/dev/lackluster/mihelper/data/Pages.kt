@@ -13,11 +13,13 @@ object Pages {
     const val ABOUT = "AboutPage"
 
     const val MENU = "MenuPage"
-    const val DEV_UI_TEST = "DevUITestPage"
     const val STATUS_BAR_CLOCK = "StatusBarClockPage"
     const val STATUS_BAR_FONT = "StatusBarFontPage"
     const val ICON_TUNER = "IconTunerPage"
     const val MEDIA_CONTROL = "MediaControlPage"
+
+    const val DEV_UI_TEST = "DevUITestPage"
+    const val DEV_UI_TEST2 = "DevUITestPage2"
 
     const val DIALOG_SEARCH_CUSTOM_ENGINE = "CustomEngineDialog"
 

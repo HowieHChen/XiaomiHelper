@@ -15,12 +15,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.content.edit
 import androidx.navigation.NavController
-import dev.lackluster.hyperx.compose.activity.HyperXActivity
 import dev.lackluster.hyperx.compose.activity.SafeSP
 import dev.lackluster.hyperx.compose.base.BasePage
 import dev.lackluster.hyperx.compose.base.BasePageDefaults
@@ -41,6 +41,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 @Composable
 fun SearchCustomEngineDialog(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
+    val context = LocalContext.current
     var customSearchEngine by remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.Search.CUSTOM_SEARCH_ENGINE)) }
     val channelNo = remember { mutableStateOf("") }
     val showIcon = remember { mutableStateOf(true) }
@@ -104,7 +105,7 @@ fun SearchCustomEngineDialog(navController: NavController, adjustPadding: Paddin
                     if (customSearchEngine) {
                         var valid = false
                         val errorMSg = StringBuilder()
-                        with(HyperXActivity.context) {
+                        with(context) {
                             errorMSg.append(getString((R.string.common_invalid_input)))
                             errorMSg.append("\n")
                             if (!searchUrl.value.contains("{searchTerms}")) {
@@ -139,7 +140,7 @@ fun SearchCustomEngineDialog(navController: NavController, adjustPadding: Paddin
                             }
                             navController.popBackStack()
                         } else {
-                            Toast.makeText(HyperXActivity.context, errorMSg.toString(), Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, errorMSg.toString(), Toast.LENGTH_SHORT).show()
                         }
                     } else {
                         navController.popBackStack()

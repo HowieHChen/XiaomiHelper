@@ -20,6 +20,13 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
+-keep class org.luckypray.dexkit.DexKitBridge {
+    native <methods>;
+}
+
+-keep class kotlin.Unit
+-keep class kotlin.jvm.functions.Function0
+
 # FreeReflection
 -keep class me.weishu.reflection.** {*;}
 
@@ -28,4 +35,11 @@
     public static *** throwUninitializedPropertyAccessException(...);
 }
 
+-keep class * extends android.app.Activity
+-keep class * implements androidx.viewbinding.ViewBinding {
+    <init>();
+    *** inflate(android.view.LayoutInflater);
+}
+
 -keep class dev.lackluster.mihelper.ui.MainActivity
+-keep class dev.lackluster.mihelper.hook.HookEntry

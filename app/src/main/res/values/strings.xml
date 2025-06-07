@@ -538,6 +538,9 @@
     <string name="others_settings_unlock_voip_assistant">Unlock VoIP Assistant</string>
     <string name="others_settings_unlock_net_mode">Unlock mobile network type settings</string>
     <string name="others_settings_unlock_taplus_for_pad">Unlock Taplus for tablet</string>
+    <string name="others_settings_quick_per_overlay">Grant the \"Display over other apps\" permission conveniently</string>
+    <string name="others_settings_quick_per_install">Grant the \"Install unknown apps\" permission conveniently</string>
+    <string name="others_settings_quick_per_tips">Go directly to the switch that grants this permission to a specific application, rather than the list of applications associated with this permission.</string>
     <string name="ui_title_others_taplus" translatable="false">@string/scope_taplus</string>
     <string name="ui_title_others_updater" translatable="false">@string/scope_updater</string>
     <string name="others_updater_disable_validation">Remove OTA validation</string>
