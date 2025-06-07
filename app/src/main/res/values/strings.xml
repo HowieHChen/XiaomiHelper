@@ -94,6 +94,7 @@
     <string name="action_recents">Overview (recent apps)</string>
     <string name="action_recognize_screen">Recognize screen</string>
     <string name="action_xiaoai">Xiaomi Hyper XiaoAi</string>
+    <string name="action_floating_window">Floating window</string>
 
     <string name="search_use_browser">Search using browser</string>
     <string name="search_engine">Search engine</string>

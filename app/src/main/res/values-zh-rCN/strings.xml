@@ -41,6 +41,7 @@
     <string name="scope_weather">天气</string>
     <string name="action_recents">最近任务</string>
     <string name="action_xiaoai">超级小爱</string>
+    <string name="action_floating_window">迷你小窗</string>
     <string name="search_use_browser">使用浏览器搜索</string>
     <string name="search_engine">搜索引擎</string>
     <string name="search_engine_default">默认</string>

@@ -77,6 +77,11 @@ fun MiuiHomePage(navController: NavController, adjustPadding: PaddingValues, mod
             iconRes = R.drawable.ic_quick_switch_xiaoai,
             iconTint = tintColor
         ),
+        DropDownEntry(
+            title = stringResource(R.string.action_floating_window),
+            iconRes = R.drawable.ic_quick_switch_floating_window,
+            iconTint = tintColor
+        ),
     )
     val dropdownEntriesLineGestureAction = listOf(
         DropDownEntry(
@@ -122,6 +127,11 @@ fun MiuiHomePage(navController: NavController, adjustPadding: PaddingValues, mod
         DropDownEntry(
             title = stringResource(R.string.action_xiaoai),
             iconRes = R.drawable.ic_quick_switch_xiaoai,
+            iconTint = tintColor
+        ),
+        DropDownEntry(
+            title = stringResource(R.string.action_floating_window),
+            iconRes = R.drawable.ic_quick_switch_floating_window,
             iconTint = tintColor
         ),
     )

@@ -2,9 +2,11 @@ package dev.lackluster.mihelper.hook.rules.miuihome.gesture
 
 import android.app.Application
 import android.content.Intent
+import android.widget.Toast
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.current
 import com.highcapable.yukihookapi.hook.factory.method
+import com.highcapable.yukihookapi.hook.type.android.ContextClass
 import dev.lackluster.mihelper.data.Constants.ACTION_HOME
 import dev.lackluster.mihelper.data.Constants.ACTION_NOTIFICATIONS
 import dev.lackluster.mihelper.data.Constants.ACTION_QUICK_SETTINGS
@@ -25,6 +27,7 @@ object LineGesture : YukiBaseHooker() {
     6 -> SYSTEM_ACTION_RECENTS;
     7 -> MI_AI_SCREEN;
     8 -> MI_AI_WAKE_UP;
+    9 -> FLOATING_WINDOW;
      */
     private val actionLongPress = Prefs.getInt(Pref.Key.MiuiHome.LINE_GESTURE_LONG_PRESS, 0)
     private val actionDoubleTap = Prefs.getInt(Pref.Key.MiuiHome.LINE_GESTURE_DOUBLE_TAP, 0)
@@ -33,6 +36,12 @@ object LineGesture : YukiBaseHooker() {
             name = "getInstance"
             modifiers { isStatic }
         }.get()
+    }
+    private val startSmallFreeformMethod by lazy {
+        "android.util.MiuiMultiWindowUtils".toClassOrNull()?.method {
+            name = "startSmallFreeformForControlCenter"
+            param(ContextClass)
+        }?.get()
     }
 
     override fun onHook() {
@@ -112,6 +121,14 @@ object LineGesture : YukiBaseHooker() {
                         )
                     }
                 )
+            }
+            9 -> {
+                val context = application.applicationContext
+                startSmallFreeformMethod?.string(context)?.let {
+                    if (it.isNotBlank()) {
+                        Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
             else -> {
                 val intent = when(action) {

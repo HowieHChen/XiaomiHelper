@@ -10,6 +10,7 @@ import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.Icon
 import android.view.View
+import android.widget.Toast
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.constructor
 import com.highcapable.yukihookapi.hook.factory.current
@@ -42,6 +43,7 @@ object QuickSwitch : YukiBaseHooker() {
     6 -> SYSTEM_ACTION_RECENTS;
     7 -> MI_AI_SCREEN;
     8 -> MI_AI_WAKE_UP;
+    9 -> FLOATING_WINDOW;
      */
     private val actionQuickSwitchLeft = Prefs.getInt(Pref.Key.MiuiHome.QUICK_SWITCH_LEFT, 0)
     private val actionQuickSwitchRight = Prefs.getInt(Pref.Key.MiuiHome.QUICK_SWITCH_RIGHT, 0)
@@ -100,17 +102,23 @@ object QuickSwitch : YukiBaseHooker() {
         }?.give()
     }
     private val readyStateRecent by lazy {
-        "com.miui.home.recents.GestureBackArrowView\$ReadyState".toClass().enumConstants[2]
+        "com.miui.home.recents.GestureBackArrowView\$ReadyState".toClass().enumConstants?.get(2)
+    }
+    private val startSmallFreeformMethod by lazy {
+        "android.util.MiuiMultiWindowUtils".toClassOrNull()?.method {
+            name = "startSmallFreeformForControlCenter"
+            param(ContextClass)
+        }?.get()
     }
 
     override fun onHook() {
         hasEnable(Pref.Key.MiuiHome.QUICK_SWITCH) {
-            "com.miui.home.recents.GestureStubView\$3".toClass().method {
+            "com.miui.home.recents.GestureStubView$3".toClass().method {
                 name = "onSwipeStop"
             }.hook {
                 before {
                     if (this.args(0).boolean()) {
-                        val mGestureStubView = XposedHelpers.getObjectField(this.instance, "this\$0")
+                        val mGestureStubView = XposedHelpers.getObjectField(this.instance, "this$0")
                         val mGestureBackArrowView = XposedHelpers.getObjectField(mGestureStubView, "mGestureBackArrowView")
                         val getCurrentState = XposedHelpers.callMethod(mGestureBackArrowView, "getCurrentState")
                         if (getCurrentState == readyStateRecent) {
@@ -173,6 +181,7 @@ object QuickSwitch : YukiBaseHooker() {
                                         6 -> R.drawable.ic_quick_switch_recents
                                         7 -> R.drawable.ic_quick_switch_recognize_screen
                                         8 -> R.drawable.ic_quick_switch_xiaoai
+                                        9 -> R.drawable.ic_quick_switch_floating_window
                                         else -> R.drawable.ic_quick_switch_empty
                                     }
                                     val moduleIcon = Icon.createWithResource(BuildConfig.APPLICATION_ID, iconResId).loadDrawable(context)
@@ -207,6 +216,13 @@ object QuickSwitch : YukiBaseHooker() {
                                                 )
                                             }
                                         )
+                                    }
+                                    9 -> {
+                                        startSmallFreeformMethod?.string(context)?.let {
+                                            if (it.isNotBlank()) {
+                                                Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                                            }
+                                        }
                                     }
                                     else -> {
                                         val intent = when(targetFunction) {
