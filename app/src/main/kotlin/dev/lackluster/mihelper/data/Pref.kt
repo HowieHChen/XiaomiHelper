@@ -208,6 +208,7 @@ object Pref {
                 const val BATTERY_PERCENTAGE_MARK_WEIGHT = "sb_font_bat_pct_mark_weight"
             }
             object IconTurner {
+                const val IGNORE_SYS_HIDE = "statusbar_ignore_sys_hide"
                 const val MOBILE = "statusbar_hide_mobile"
                 const val HIDE_SIM_ONE = "statusbar_hide_sim_one"
                 const val HIDE_SIM_TWO = "statusbar_hide_sim_two"
@@ -255,11 +256,14 @@ object Pref {
                 const val STEREO = "statusbar_hide_stereo"
                 const val TV = "statusbar_hide_tv"
                 const val WIRELESS_HEADSET = "statusbar_hide_wireless_headset"
+                const val GLASSES = "statusbar_hide_glasses"
+                const val CAMERA = "statusbar_hide_camera"
                 const val SWAP_MOBILE_WIFI = "statusbar_swap_mobile_wifi"
                 const val ALARM = "statusbar_hide_alarm"
                 const val HEADSET = "statusbar_hide_headset"
                 const val VOLUME = "statusbar_hide_volume"
                 const val ZEN = "statusbar_hide_zen"
+                const val HIDE_PRIVACY = "statusbar_hide_privacy"
             }
             object LockScreen {
                 const val DOUBLE_TAP_TO_SLEEP = "systemui_double_tap_sleep"

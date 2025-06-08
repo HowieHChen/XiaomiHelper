@@ -21,6 +21,8 @@
 package dev.lackluster.mihelper.hook.rules.browser
 
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
+import de.robv.android.xposed.XC_MethodHook
+import de.robv.android.xposed.XposedBridge
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.DexKit
 import dev.lackluster.mihelper.utils.factory.hasEnable
@@ -55,8 +57,12 @@ object DisableUpdateCheck : YukiBaseHooker() {
     override fun onHook() {
         hasEnable(Pref.Key.Browser.BLOCK_UPDATE) {
             if (appClassLoader == null) return@hasEnable
-            miMarketDoInBackground?.getMethodInstance(appClassLoader!!)?.hook {
-                replaceTo(1)
+            miMarketDoInBackground?.getMethodInstance(appClassLoader!!)?.let {
+                XposedBridge.hookMethod(it, object : XC_MethodHook() {
+                    override fun beforeHookedMethod(param: MethodHookParam?) {
+                        param?.result = 1 as Any?
+                    }
+                })
             }
             miMarketOnPostExecute?.getMethodInstance(appClassLoader!!)?.hook {
                 replaceTo(null)

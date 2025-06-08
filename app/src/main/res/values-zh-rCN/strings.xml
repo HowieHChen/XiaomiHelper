@@ -239,12 +239,14 @@
     <string name="page_status_bar_clock">时间</string>
     <string name="ui_title_icon_tuner_connectivity">连接</string>
     <string name="icon_tuner_hide_mobile_wifi_warning">强烈建议不要隐藏！</string>
+    <string name="icon_tuner_general_ignore_sys_hide_tips">忽略“图标显示自定义”的系统设置</string>
     <string name="ui_title_icon_tuner_mobile">移动网络</string>
     <string name="ui_title_icon_tuner_wifi">Wi-Fi</string>
     <string name="icon_tuner_battery_percent_size_default">（当值为0时将不会更改电池百分比文字大小）</string>
     <string name="systemui_statusbar_notif_count">自定义通知的最大显示数量</string>
     <string name="systemui_statusbar_notif_count_icon">状态栏通知图标最大数量</string>
     <string name="icon_tuner_battery_swap_battery_percent">交换电池图标和电池百分比</string>
+    <string name="icon_tuner_other_hide_privacy">隐藏隐私提示图标</string>
     <string name="icon_tuner_other_swap_mobile_wifi">交换移动网络图标和 Wi-Fi 图标</string>
     <string name="clock_general_custom_layout">自定义时间内边距</string>
     <string name="clock_general_padding_left">左内边距</string>
@@ -252,9 +254,11 @@
     <string name="icon_tuner_battery_layout_custom">自定义电池内边距</string>
     <string name="icon_tuner_battery_padding_left">左内边距</string>
     <string name="icon_tuner_battery_padding_right">右内边距</string>
+    <string name="icon_tuner_device_camera">摄像头</string>
     <string name="icon_tuner_device_car">汽车</string>
+    <string name="icon_tuner_device_glasses">眼镜</string>
     <string name="icon_tuner_device_pad">平板</string>
-    <string name="icon_tuner_device_pc">电脑</string>
+    <string name="icon_tuner_device_pc">个人电脑</string>
     <string name="icon_tuner_device_phone">手机</string>
     <string name="icon_tuner_device_sound_box">小爱音箱</string>
     <string name="icon_tuner_device_sound_box_group">小爱音箱组合</string>
@@ -641,4 +645,6 @@
     <string name="others_settings_quick_per_overlay">快捷授予“显示在其它应用的上层”权限</string>
     <string name="others_settings_quick_per_install">快捷授予“安装未知应用”权限</string>
     <string name="others_settings_quick_per_tips">直接跳转到授予此权限给特定应用程序的开关，而不是与该权限关联的应用程序列表。</string>
+    <string name="icon_tuner_hint_ignore_sys_hide">从 HyperOS 2.0.200 版本开始，用户可以在“设置”中的“自定义开关显示”页面控制状态栏图标是否允许显示。此功能与本页面上的设置存在冲突，并可能导致意外行为。强烈建议启用下方的“忽略系统设置”选项，并在本页面上管理所有状态栏图标。</string>
+    <string name="icon_tuner_general_ignore_sys_hide">忽略系统设置</string>
 </resources>

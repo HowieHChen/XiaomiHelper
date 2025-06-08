@@ -3,18 +3,22 @@ package dev.lackluster.mihelper.ui.page
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import dev.lackluster.hyperx.compose.activity.SafeSP
 import dev.lackluster.hyperx.compose.base.BasePage
 import dev.lackluster.hyperx.compose.base.BasePageDefaults
 import dev.lackluster.hyperx.compose.base.ImageIcon
+import dev.lackluster.hyperx.compose.component.Hint
 import dev.lackluster.hyperx.compose.preference.DropDownEntry
 import dev.lackluster.hyperx.compose.preference.DropDownMode
 import dev.lackluster.hyperx.compose.preference.DropDownPreference
@@ -25,6 +29,9 @@ import dev.lackluster.hyperx.compose.preference.SwitchPreference
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.ui.MainActivity
 import dev.lackluster.mihelper.data.Pref
+import dev.lackluster.mihelper.data.Scope
+import dev.lackluster.mihelper.ui.component.RebootMenuItem
+import top.yukonga.miuix.kmp.basic.SmallTitle
 
 @Composable
 fun IconTurnerPage(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
@@ -83,12 +90,34 @@ fun IconTurnerPage(navController: NavController, adjustPadding: PaddingValues, m
         MainActivity.blurEnabled,
         MainActivity.blurTintAlphaLight,
         MainActivity.blurTintAlphaDark,
-        mode
+        mode,
+        actions = {
+            RebootMenuItem(
+                appName = stringResource(R.string.scope_systemui),
+                appPkg = Scope.SYSTEM_UI
+            )
+        }
     ) {
         item {
+            SmallTitle(
+                text = stringResource(R.string.ui_title_icon_tuner_general),
+                modifier = Modifier.padding(top = 6.dp),
+            )
+            Hint(
+                modifier = Modifier.padding(horizontal = 12.dp).padding(bottom = 6.dp),
+                text = stringResource(R.string.icon_tuner_hint_ignore_sys_hide)
+            )
+            PreferenceGroup {
+                SwitchPreference(
+                    title = stringResource(R.string.icon_tuner_general_ignore_sys_hide),
+                    summary = stringResource(R.string.icon_tuner_general_ignore_sys_hide_tips),
+                    key = Pref.Key.SystemUI.IconTurner.IGNORE_SYS_HIDE
+                )
+            }
+        }
+        item {
             PreferenceGroup(
-                title = stringResource(R.string.ui_title_icon_tuner_mobile),
-                first = true
+                title = stringResource(R.string.ui_title_icon_tuner_mobile)
             ) {
                 DropDownPreference(
                     icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_mobile),
@@ -238,10 +267,22 @@ fun IconTurnerPage(navController: NavController, adjustPadding: PaddingValues, m
                 title = stringResource(R.string.ui_title_icon_tuner_device)
             ) {
                 DropDownPreference(
+                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_camera),
+                    title = stringResource(R.string.icon_tuner_device_camera),
+                    entries = dropdownEntriesAdvVisible,
+                    key = Pref.Key.SystemUI.IconTurner.CAMERA
+                )
+                DropDownPreference(
                     icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_car),
                     title = stringResource(R.string.icon_tuner_device_car),
                     entries = dropdownEntriesAdvVisible,
                     key = Pref.Key.SystemUI.IconTurner.CAR
+                )
+                DropDownPreference(
+                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_glasses),
+                    title = stringResource(R.string.icon_tuner_device_glasses),
+                    entries = dropdownEntriesAdvVisible,
+                    key = Pref.Key.SystemUI.IconTurner.GLASSES
                 )
                 DropDownPreference(
                     icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_pad),
@@ -421,6 +462,10 @@ fun IconTurnerPage(navController: NavController, adjustPadding: PaddingValues, m
                 title = stringResource(R.string.ui_title_icon_tuner_other),
                 last = true
             ) {
+                SwitchPreference(
+                    title = stringResource(R.string.icon_tuner_other_hide_privacy),
+                    key = Pref.Key.SystemUI.IconTurner.HIDE_PRIVACY
+                )
                 SwitchPreference(
                     title = stringResource(R.string.icon_tuner_other_swap_mobile_wifi),
                     key = Pref.Key.SystemUI.IconTurner.SWAP_MOBILE_WIFI

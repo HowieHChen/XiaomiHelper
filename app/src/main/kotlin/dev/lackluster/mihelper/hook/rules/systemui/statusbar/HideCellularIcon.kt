@@ -87,7 +87,7 @@ object HideCellularIcon : YukiBaseHooker() {
                             )
                         }
                         if (hideHDSmall) {
-                            this.instance.current().field {
+                            this.instance.current(true).field {
                                 name = "smallHdVisible"
                             }.set(
                                 ReadonlyStateFlow(false as Boolean?)

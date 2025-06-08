@@ -607,6 +607,10 @@
     <string name="icon_tuner_hide_selection_show_qs">Visible in Control center</string>
     <string name="icon_tuner_hide_selection_hidden">Invisible</string>
     <string name="icon_tuner_hide_mobile_wifi_warning">Strongly recommend that don\'t hide it!</string>
+    <string name="ui_title_icon_tuner_general" translatable="false">@string/common_general</string>
+    <string name="icon_tuner_hint_ignore_sys_hide">Starting with HyperOS 2.0.200, users can control whether status bar icons are allowed to be displayed on the \"Custom Switch Display\" page in Settings. This feature conflicts with the settings on this page and causes unexpected behavior. It is strongly recommended to enable the \"Ignore System Settings\" option below and managing all status bar icons on this page.</string>
+    <string name="icon_tuner_general_ignore_sys_hide">Ignore system settings</string>
+    <string name="icon_tuner_general_ignore_sys_hide_tips">Ignore the "Customize toggle display" settings</string>
     <string name="ui_title_icon_tuner_mobile">Mobile network</string>
     <string name="icon_tuner_mobile_mobile">Mobile network icon</string>
     <string name="icon_tuner_mobile_hide_sim_one">Hide the mobile network icon for SIM card 1</string>
@@ -660,9 +664,11 @@
     <string name="icon_tuner_connect_vpn">VPN icon</string>
     <string name="icon_tuner_connect_net_speed">Network speed</string>
     <string name="ui_title_icon_tuner_device">Device</string>
-    <string name="icon_tuner_device_car">Car</string>
+    <string name="icon_tuner_device_camera">Camera</string>
+    <string name="icon_tuner_device_car">Vehicle</string>
+    <string name="icon_tuner_device_glasses">Glasses</string>
     <string name="icon_tuner_device_pad">Tablet</string>
-    <string name="icon_tuner_device_pc">PC</string>
+    <string name="icon_tuner_device_pc">Computer</string>
     <string name="icon_tuner_device_phone">Phone</string>
     <string name="icon_tuner_device_sound_box">Sound box</string>
     <string name="icon_tuner_device_sound_box_group">Sound box group</string>
@@ -671,6 +677,7 @@
     <string name="icon_tuner_device_tv">TV</string>
     <string name="icon_tuner_device_wireless_headset">Wireless headset</string>
     <string name="ui_title_icon_tuner_other" translatable="false">@string/common_others</string>
+    <string name="icon_tuner_other_hide_privacy">Hide privacy notice icon</string>
     <string name="icon_tuner_other_swap_mobile_wifi">Swap mobile network icon and Wi-Fi icon</string>
     <string name="icon_tuner_other_alarm">Alarm icon</string>
     <string name="icon_tuner_other_headset">Headset icon</string>
