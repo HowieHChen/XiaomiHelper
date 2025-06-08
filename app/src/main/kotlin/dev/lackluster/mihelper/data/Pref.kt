@@ -30,6 +30,8 @@ object Pref {
             const val BLOCK_FIXED_ORIENTATION_LIST = "android_no_fixed_orientation_list"
             const val WALLPAPER_SCALE_RATIO = "android_wallpaper_scale"
             const val BLOCK_FORCE_DARK_WHITELIST = "android_dark_mode_all"
+            const val FONT_SCALE = "android_font_scale"
+            const val FONT_SCALE_VAL = "android_font_scale_val"
         }
         object Browser {
             const val DEBUG_MODE = "browser_debug_mode"

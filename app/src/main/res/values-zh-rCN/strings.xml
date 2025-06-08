@@ -423,6 +423,7 @@
     <string name="ui_title_cleaner_privacy">隐私</string>
     <string name="cleaner_privacy_block_ul_app_info">阻止安装时上传应用信息</string>
     <string name="cleaner_package_remove_element">禁用多余的功能并移除相关界面</string>
+    <string name="android_display_font_modify_val_msg">值应该大于等于 0.5 并小于 1.0</string>
     <string name="ui_title_android_freeform">小窗</string>
     <string name="android_freeform_allow_more">允许打开更多小窗</string>
     <string name="android_freeform_allow_more_tips">修改小窗数量上限为255，可同时打开更多小窗</string>
@@ -647,4 +648,12 @@
     <string name="others_settings_quick_per_tips">直接跳转到授予此权限给特定应用程序的开关，而不是与该权限关联的应用程序列表。</string>
     <string name="icon_tuner_hint_ignore_sys_hide">从 HyperOS 2.0.200 版本开始，用户可以在“设置”中的“自定义开关显示”页面控制状态栏图标是否允许显示。此功能与本页面上的设置存在冲突，并可能导致意外行为。强烈建议启用下方的“忽略系统设置”选项，并在本页面上管理所有状态栏图标。</string>
     <string name="icon_tuner_general_ignore_sys_hide">忽略系统设置</string>
+    <string name="android_display_font_modify_tips">重启后生效</string>
+    <string name="android_display_font_modify_val">最小字体缩放</string>
+    <string name="ui_title_android_display">显示</string>
+    <string name="android_display_font_scale">字体缩放</string>
+    <string name="android_display_font_scale_tips">更改后立即生效，但会在系统重启后失效</string>
+    <string name="android_display_font_scale_msg">值应该大于等于 0.5 并小于 2.0</string>
+    <string name="android_display_font_scale_fail_msg">无法获取/修改当前字体缩放的值。请确认输入的值在有效范围内，并且已授予 root 权限</string>
+    <string name="android_display_font_modify">修改最小字体缩放</string>
 </resources>

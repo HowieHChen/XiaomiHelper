@@ -418,6 +418,15 @@
     <string name="ui_title_cleaner_taplus" translatable="false">@string/scope_taplus</string>
     <string name="cleaner_taplus_hide_shop">Hide shopping button</string>
     <!-- SystemFrameworkPage -->
+    <string name="ui_title_android_display">Display</string>
+    <string name="android_display_font_scale">Font scale</string>
+    <string name="android_display_font_scale_tips">The changes take effect immediately, but will be lost after rebooting the system.</string>
+    <string name="android_display_font_scale_msg">The value should be greater than or equal to 0.5 and less than 2.0</string>
+    <string name="android_display_font_scale_fail_msg">Unable to check/modify the current font scale value. Please confirm that the entered value is within the valid range and root privileges have been granted.</string>
+    <string name="android_display_font_modify">Modify minimum font scale</string>
+    <string name="android_display_font_modify_tips">Take effect after reboot</string>
+    <string name="android_display_font_modify_val">Minimum font scale</string>
+    <string name="android_display_font_modify_val_msg">The value should be greater than or equal to 0.5 and less than 1.0</string>
     <string name="ui_title_android_freeform">Floating windows</string>
     <string name="android_freeform_restriction">Allow all apps to be in small window mode</string>
     <string name="android_freeform_restriction_tips">Ignore system blacklists and software\'s own disabling of small windows</string>
