@@ -158,7 +158,7 @@ fun SystemFrameworkPage(navController: NavController, adjustPadding: PaddingValu
         value = String.format(Locale.current.platformLocale, "%.2f", currentFontScale)
     ) {
         val newScale = it.toFloatOrNull()
-        if (newScale != null && newScale in 0.0f..<2.0f) {
+        if (newScale != null && newScale in 0.5f..<2.0f) {
             try {
                 ShellUtils.tryExec("settings put system font_scale $newScale", useRoot = true)
             } catch (tout: Throwable) {
