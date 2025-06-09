@@ -8,7 +8,7 @@ import com.highcapable.yukihookapi.hook.param.PackageParam
 object KotlinFlowHelper {
     private const val STATE_FLOW = "kotlinx.coroutines.flow.StateFlow"
     private const val STATE_FLOW_KT = "kotlinx.coroutines.flow.StateFlowKt"
-    private const val READONLY_STATE_FLOW = "kotlinx.coroutines.flow.ReadonlyStateFlow"
+    const val READONLY_STATE_FLOW = "kotlinx.coroutines.flow.ReadonlyStateFlow"
 
     fun PackageParam.MutableStateFlow(initValue: Any?): Any? {
         return STATE_FLOW_KT.toClass().method {

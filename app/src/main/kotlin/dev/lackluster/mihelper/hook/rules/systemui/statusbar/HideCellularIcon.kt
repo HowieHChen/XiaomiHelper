@@ -7,6 +7,7 @@ import com.highcapable.yukihookapi.hook.factory.current
 import com.highcapable.yukihookapi.hook.factory.method
 import com.highcapable.yukihookapi.hook.type.java.IntType
 import dev.lackluster.mihelper.data.Pref
+import dev.lackluster.mihelper.utils.KotlinFlowHelper.READONLY_STATE_FLOW
 import dev.lackluster.mihelper.utils.KotlinFlowHelper.ReadonlyStateFlow
 import dev.lackluster.mihelper.utils.Prefs
 
@@ -22,6 +23,9 @@ object HideCellularIcon : YukiBaseHooker() {
     private val hideVoWifi = Prefs.getBoolean(Pref.Key.SystemUI.IconTurner.HIDE_VOWIFI, false)
     private val miuiMobileIconInteractorImplClass by lazy {
         "com.android.systemui.statusbar.pipeline.mobile.domain.interactor.MiuiMobileIconInteractorImpl".toClassOrNull()
+    }
+    private val readonlyStateFlowClass by lazy {
+        READONLY_STATE_FLOW.toClassOrNull()
     }
 
     override fun onHook() {
@@ -87,11 +91,12 @@ object HideCellularIcon : YukiBaseHooker() {
                             )
                         }
                         if (hideHDSmall) {
-                            this.instance.current(true).field {
+                            val smallHd = this.instance.current().field {
                                 name = "smallHdVisible"
-                            }.set(
-                                ReadonlyStateFlow(false as Boolean?)
-                            )
+                            }
+                            if (readonlyStateFlowClass?.isInstance(smallHd.any()) == true) {
+                                smallHd.set(ReadonlyStateFlow(false as Boolean?))
+                            }
                         }
                         if (hideRoam) {
                             this.instance.current().field {
@@ -108,11 +113,12 @@ object HideCellularIcon : YukiBaseHooker() {
                             )
                         }
                         if (hideVoLte) {
-                            this.instance.current().field {
+                            val volteCN = this.instance.current().field {
                                 name = "volteVisibleCn"
-                            }.set(
-                                ReadonlyStateFlow(false as Boolean?)
-                            )
+                            }
+                            if (readonlyStateFlowClass?.isInstance(volteCN) == true) {
+                                volteCN.set(ReadonlyStateFlow(false as Boolean?))
+                            }
                             this.instance.current().field {
                                 name = "volteVisibleGlobal"
                             }.set(
