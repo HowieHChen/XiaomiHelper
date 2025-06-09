@@ -75,6 +75,7 @@
     <string name="action_recents">Visão geral (apps recentes)</string>
     <string name="action_recognize_screen">Reconhecer tela</string>
     <string name="action_xiaoai">Xiaomi Hyper XiaoAi</string>
+    <string name="action_floating_window">Janela flutuante</string>
     <string name="search_use_browser">Pesquisar usando o navegador</string>
     <string name="search_engine">Mecanismo de pesquisa</string>
     <string name="search_engine_default">Padrão</string>
@@ -285,6 +286,8 @@
     <string name="home_others_force_color_scheme_statusbar_tips">Especifique a cor do texto e dos ícones da barra de status (ignore a cor do plano de fundo). Requer a ativação de \"Desativar Escuro inteligente\" na página UI do Sistema.</string>
     <string name="home_others_force_color_scheme_minus">Cor do Assistente</string>
     <string name="home_others_force_color_scheme_minus_tips">Especifique a cor do texto da barra de status e dos ícones do Assistente (ignore a cor do plano de fundo). Requer a ativação de \"Desativar Escuro inteligente\" na página UI do Sistema.</string>
+    <string name="ui_title_cleaner_compatibility">Compatibilidade</string>
+    <string name="cleaner_compatibility_tips">A maior parte dos recursos desta página foi desenvolvida para usuários localizados no Continente Chinês.\nObserve que os recursos relacionados à música são exclusivos para usuários com contas de assinatura de serviços de música.\nRecomendamos o uso das versões do app abaixo, que foram testadas e verificadas quanto à compatibilidade.</string>
     <!-- CleanMasterPage -->
     <string name="ui_title_cleaner_ad_blocker">Bloqueador de anúncios</string>
     <string name="ui_title_cleaner_skip_splash">Desativar Tela inicial</string>
@@ -342,6 +345,15 @@
     <string name="cleaner_systemui_fuck_gesture">Bloquear criação do arquivo statusbar_gestures.dat</string>
     <string name="cleaner_taplus_hide_shop">Ocultar botão de compras</string>
     <!-- SystemFrameworkPage -->
+    <string name="ui_title_android_display">Tela</string>
+    <string name="android_display_font_scale">Tamanho da fonte</string>
+    <string name="android_display_font_scale_tips">As alterações entram em vigor imediatamente, mas serão perdidas após a reinicialização do sistema.</string>
+    <string name="android_display_font_scale_msg">O valor deve ser maior ou igual a 0.5 e menor que 2.0</string>
+    <string name="android_display_font_scale_fail_msg">Não foi possível verificar/modificar o valor atual do tamanho da fonte. Certifique-se de que o valor inserido esteja dentro do intervalo válido e que os privilégios root tenham sido concedidos.</string>
+    <string name="android_display_font_modify">Modificar tamanho mínimo da fonte</string>
+    <string name="android_display_font_modify_tips">Entra em vigor após a reinicialização</string>
+    <string name="android_display_font_modify_val">Tamanho mínimo da fonte</string>
+    <string name="android_display_font_modify_val_msg">O valor deve ser maior ou igual a 0.5 e menor que 1.0</string>
     <string name="ui_title_android_freeform">Janelas flutuantes</string>
     <string name="android_freeform_restriction">Permitir todos os apps no modo janela flutuante pequena</string>
     <string name="android_freeform_restriction_tips">Ignore a lista negra do sistema e a desativação da janela flutuante pequena pelo próprio software</string>
@@ -434,6 +446,9 @@
     <string name="others_settings_unlock_voip_assistant">Desbloquear Assistente VoIP</string>
     <string name="others_settings_unlock_net_mode">Mostrar configurações do tipo de rede móvel</string>
     <string name="others_settings_unlock_taplus_for_pad">Forçar ativação em tablet</string>
+    <string name="others_settings_quick_per_overlay">Conceder a permissão \"Exibir sobre outros apps\"</string>
+    <string name="others_settings_quick_per_install">Conceder a permissão \"Instalar apps desconhecidos\"</string>
+    <string name="others_settings_quick_per_tips">Vá diretamente para o interruptor que concede essa permissão a um app específico, em vez da lista de apps associados a essa permissão.</string>
     <string name="others_updater_disable_validation">Remover verificação OTA</string>
     <string name="others_updater_disable_validation_tips">Apenas dispositivos VAB são suportados. Por favor, não ative outros dispositivos não-VAB!</string>
     <string name="weather_card_color">Cor de fundo do cartão</string>
@@ -488,6 +503,9 @@
     <string name="icon_tuner_hide_selection_show_qs">Visível no centro de controle</string>
     <string name="icon_tuner_hide_selection_hidden">Invisível</string>
     <string name="icon_tuner_hide_mobile_wifi_warning">Recomendo fortemente que não oculte isso!</string>
+    <string name="icon_tuner_hint_ignore_sys_hide">A partir do HyperOS 2.0.200, os usuários podem controlar a exibição dos ícones da barra de status na página \"Personalização de exibição de ícones\" nas Configurações. No entanto, esse recurso entra em conflito com as configurações desta página, resultando em comportamentos inesperados. Por isso, é altamente recomendável ativar a opção \"Ignorar configurações do sistema\" abaixo e gerenciar todos os ícones da barra de status diretamente nesta página.</string>
+    <string name="icon_tuner_general_ignore_sys_hide">Ignorar configurações do sistema</string>
+    <string name="icon_tuner_general_ignore_sys_hide_tips">Ignore a configuração do sistema para \"Personalização de exibição de ícones\"</string>
     <string name="ui_title_icon_tuner_mobile">Rede móvel</string>
     <string name="icon_tuner_mobile_mobile">Ícone de rede móvel</string>
     <string name="icon_tuner_mobile_hide_sim_one">Ocultar ícone da rede móvel do cartão SIM 1</string>
@@ -535,9 +553,11 @@
     <string name="icon_tuner_connect_vpn">Ícone VPN</string>
     <string name="icon_tuner_connect_net_speed">Velocidade da rede</string>
     <string name="ui_title_icon_tuner_device">Dispositivo</string>
-    <string name="icon_tuner_device_car">Carro</string>
+    <string name="icon_tuner_device_camera">Câmera</string>
+    <string name="icon_tuner_device_car">Veículo</string>
+    <string name="icon_tuner_device_glasses">Óculos</string>
     <string name="icon_tuner_device_pad">Tablet</string>
-    <string name="icon_tuner_device_pc">PC</string>
+    <string name="icon_tuner_device_pc">Computador</string>
     <string name="icon_tuner_device_phone">Telefone</string>
     <string name="icon_tuner_device_sound_box">Caixa de som</string>
     <string name="icon_tuner_device_sound_box_group">Grupo de caixa de som</string>
@@ -545,6 +565,7 @@
     <string name="icon_tuner_device_stereo">Grupo de caixa de som estéreo</string>
     <string name="icon_tuner_device_tv">TV</string>
     <string name="icon_tuner_device_wireless_headset">Fone de ouvido sem fio</string>
+    <string name="icon_tuner_other_hide_privacy">Ocultar ícone de aviso de privacidade</string>
     <string name="icon_tuner_other_swap_mobile_wifi">Trocar ícone da rede móvel e o ícone Wi-Fi</string>
     <string name="icon_tuner_other_alarm">Ícone de alarme</string>
     <string name="icon_tuner_other_headset">Ícone do fone de ouvido</string>
