@@ -340,7 +340,7 @@
     <string name="home_others_force_color_scheme_minus_tips">Specify the color of the status bar text and icons for the Personal assistant (ignore wallpaper color). Requires enabling \"Disable Smart dark\" on the System UI page.</string>
     <!-- CleanMasterPage -->
     <string name="ui_title_cleaner_compatibility">Compatibility</string>
-    <string name="cleaner_compatibility_tips">Most of the features on this page are designed for users located in Chinese mainland.\nPlease note that the music-related features are designed for users with music membership accounts.\nIt is recommended to use the following versions of the application that have been verified for compatibility.</string>
+    <string name="cleaner_compatibility_tips">Most of the features on this page are designed for users located in Chinese mainland.\nPlease note that music-related features are exclusive to users with music membership accounts.\nWe recommend using the app versions below, which have been tested and verified for compatibility.</string>
     <string name="ui_title_cleaner_ad_blocker">Ad blocker</string>
     <string name="cleaner_ad_blocker_market" translatable="false">@string/scope_market</string>
     <string name="cleaner_ad_blocker_mms" translatable="false">@string/scope_mms</string>
@@ -422,7 +422,7 @@
     <string name="android_display_font_scale">Font scale</string>
     <string name="android_display_font_scale_tips">The changes take effect immediately, but will be lost after rebooting the system.</string>
     <string name="android_display_font_scale_msg">The value should be greater than or equal to 0.5 and less than 2.0</string>
-    <string name="android_display_font_scale_fail_msg">Unable to check/modify the current font scale value. Please confirm that the entered value is within the valid range and root privileges have been granted.</string>
+    <string name="android_display_font_scale_fail_msg">Unable to check/modify the current font scale value. Please ensure that the entered value is within the valid range and that root privileges have been granted.</string>
     <string name="android_display_font_modify">Modify minimum font scale</string>
     <string name="android_display_font_modify_tips">Take effect after reboot</string>
     <string name="android_display_font_modify_val">Minimum font scale</string>
@@ -547,9 +547,9 @@
     <string name="others_settings_unlock_voip_assistant">Unlock VoIP Assistant</string>
     <string name="others_settings_unlock_net_mode">Unlock mobile network type settings</string>
     <string name="others_settings_unlock_taplus_for_pad">Unlock Taplus for tablet</string>
-    <string name="others_settings_quick_per_overlay">Grant the \"Display over other apps\" permission conveniently</string>
-    <string name="others_settings_quick_per_install">Grant the \"Install unknown apps\" permission conveniently</string>
-    <string name="others_settings_quick_per_tips">Go directly to the switch that grants this permission to a specific application, rather than the list of applications associated with this permission.</string>
+    <string name="others_settings_quick_per_overlay">Grant the \"Display over other apps\" permission</string>
+    <string name="others_settings_quick_per_install">Grant the \"Install unknown apps\" permission</string>
+    <string name="others_settings_quick_per_tips">Go directly to the switch that grants this permission to a specific app, instead of the list of apps associated with this permission.</string>
     <string name="ui_title_others_taplus" translatable="false">@string/scope_taplus</string>
     <string name="ui_title_others_updater" translatable="false">@string/scope_updater</string>
     <string name="others_updater_disable_validation">Remove OTA validation</string>
@@ -617,9 +617,9 @@
     <string name="icon_tuner_hide_selection_hidden">Invisible</string>
     <string name="icon_tuner_hide_mobile_wifi_warning">Strongly recommend that don\'t hide it!</string>
     <string name="ui_title_icon_tuner_general" translatable="false">@string/common_general</string>
-    <string name="icon_tuner_hint_ignore_sys_hide">Starting with HyperOS 2.0.200, users can control whether status bar icons are allowed to be displayed on the \"Custom Switch Display\" page in Settings. This feature conflicts with the settings on this page and causes unexpected behavior. It is strongly recommended to enable the \"Ignore System Settings\" option below and managing all status bar icons on this page.</string>
+    <string name="icon_tuner_hint_ignore_sys_hide">Starting from HyperOS 2.0.200, users can control the display of status bar icons on the \"Icon display customization\" page in Settings. However, this feature conflicts with the settings on this page, causing unexpected behavior. Therefore, it\'s strongly recommended to enable the \"Ignore system settings\" option below and manage all status bar icons directly on this page.</string>
     <string name="icon_tuner_general_ignore_sys_hide">Ignore system settings</string>
-    <string name="icon_tuner_general_ignore_sys_hide_tips">Ignore the "Customize toggle display" settings</string>
+    <string name="icon_tuner_general_ignore_sys_hide_tips">Ignore the system setting for \"Icon display customization\"</string>
     <string name="ui_title_icon_tuner_mobile">Mobile network</string>
     <string name="icon_tuner_mobile_mobile">Mobile network icon</string>
     <string name="icon_tuner_mobile_hide_sim_one">Hide the mobile network icon for SIM card 1</string>
