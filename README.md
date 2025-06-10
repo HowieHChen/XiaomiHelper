@@ -3,6 +3,7 @@
 <img src="img/header.png" width="100%" alt="Hyper Helper"/>  
 
 <br>  
+<br>  
 
 [![GitHub License](https://img.shields.io/github/license/HowieHChen/XiaomiHelper?style=flat-square&labelColor=%23444444&color=%231F83FE)](https://github.com/HowieHChen/XiaomiHelper/blob/master/LICENSE)
 [![GitHub Repo stars](https://img.shields.io/github/stars/HowieHChen/XiaomiHelper?style=flat-square&labelColor=%23444444&color=%231F83FE)](https://github.com/HowieHChen/XiaomiHelper/stargazers)
