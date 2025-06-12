@@ -1,20 +1,19 @@
 <div align="center">
 
-<img src="img/header.png" width="100%" alt="Hyper Helper"/>  
+<img src="img/header.png" width="100%" alt="Hyper Helper"/>
 
-<br>  
-<br>  
+<br>
+<br>
 
 [![GitHub License](https://img.shields.io/github/license/HowieHChen/XiaomiHelper?style=flat-square&labelColor=%23444444&color=%231F83FE)](https://github.com/HowieHChen/XiaomiHelper/blob/master/LICENSE)
-[![GitHub Repo stars](https://img.shields.io/github/stars/HowieHChen/XiaomiHelper?style=flat-square&labelColor=%23444444&color=%231F83FE)](https://github.com/HowieHChen/XiaomiHelper/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/HowieHChen/XiaomiHelper?style=flat-square&labelColor=%23444444&color=%231F83FE)](https://github.com/HowieHChen/XiaomiHelper/forks)  
+[![GitHub Repo Stars](https://img.shields.io/github/stars/HowieHChen/XiaomiHelper?style=flat-square&labelColor=%23444444&color=%231F83FE)](https://github.com/HowieHChen/XiaomiHelper/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/HowieHChen/XiaomiHelper?style=flat-square&labelColor=%23444444&color=%231F83FE)](https://github.com/HowieHChen/XiaomiHelper/forks)
 
 [![GitHub Release](https://img.shields.io/github/v/release/HowieHChen/XiaomiHelper?include_prereleases&display_name=tag&style=flat-square&labelColor=%23444444)](https://github.com/HowieHChen/XiaomiHelper/releases/latest)
 [![GitHub Release Date](https://img.shields.io/github/release-date/HowieHChen/XiaomiHelper?display_date=published_at&style=flat-square&labelColor=%23444444)](https://github.com/HowieHChen/XiaomiHelper/releases/latest)
-[![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/HowieHChen/XiaomiHelper/total?style=flat-square&labelColor=%23444444)](https://github.com/HowieHChen/XiaomiHelper/releases/latest)  
+[![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/HowieHChen/XiaomiHelper/total?style=flat-square&labelColor=%23444444)](https://github.com/HowieHChen/XiaomiHelper/releases/latest)
 
-
-**简体中文** | [日本語](README_JP.md) | [English](README_EN-US.md) | [Português (Brasil)](README_PT-BR.md)  
+**简体中文** | [日本語](README_JP.md) | [English](README_EN-US.md) | [Português (Brasil)](README_PT-BR.md)
 
 </div>
 
