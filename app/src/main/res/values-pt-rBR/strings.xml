@@ -299,6 +299,8 @@
     <string name="cleaner_browser_remove_app_rec_tips">Remove as recomendações de apps das sugestões da caixa de pesquisa</string>
     <string name="cleaner_browser_hide_homepage_topbar">Ocultar barra superior da página inicial</string>
     <string name="cleaner_browser_hide_homepage_topbar_tips">Oculte a barra superior da página inicial simplificada, que inclui configurações e botões de alternância de modo.</string>
+    <string name="cleaner_browser_hide_ai_search_entry">Ocultar entrada da pesquisa de IA</string>
+    <string name="cleaner_browser_hide_ai_search_entry_tips">Oculte a entrada da pesquisa de IA acima do teclado na página de pesquisa</string>
     <string name="cleaner_downloadui_hide_xl">Ocultar ícones e texto da Xunlei</string>
     <string name="cleaner_download_fuck_xl">Bloquear a criação da pasta .xlDownload</string>
     <string name="cleaner_home_remove_report">Remover botão \"Denunciar\" da janela pop-up de desinstalação do app</string>
@@ -503,9 +505,9 @@
     <string name="icon_tuner_hide_selection_show_qs">Visível no centro de controle</string>
     <string name="icon_tuner_hide_selection_hidden">Invisível</string>
     <string name="icon_tuner_hide_mobile_wifi_warning">Recomendo fortemente que não oculte isso!</string>
-    <string name="icon_tuner_hint_ignore_sys_hide">A partir do HyperOS 2.0.200, os usuários podem controlar a exibição dos ícones da barra de status na página \"Personalização de exibição de ícones\" nas Configurações. No entanto, esse recurso entra em conflito com as configurações desta página, resultando em comportamentos inesperados. Por isso, é altamente recomendável ativar a opção \"Ignorar configurações do sistema\" abaixo e gerenciar todos os ícones da barra de status diretamente nesta página.</string>
+    <string name="icon_tuner_hint_ignore_sys_hide">A partir do HyperOS 2.0.200, os usuários podem controlar a exibição dos ícones da barra de status na página \"Personalizar barra de status\" nas Configurações. No entanto, esse recurso entra em conflito com as configurações desta página, resultando em comportamentos inesperados. Por isso, é altamente recomendável ativar a opção \"Ignorar configurações do sistema\" abaixo e gerenciar todos os ícones da barra de status diretamente nesta página.</string>
     <string name="icon_tuner_general_ignore_sys_hide">Ignorar configurações do sistema</string>
-    <string name="icon_tuner_general_ignore_sys_hide_tips">Ignore a configuração do sistema para \"Personalização de exibição de ícones\"</string>
+    <string name="icon_tuner_general_ignore_sys_hide_tips">Ignore a configuração do sistema para \"Personalizar barra de status\"</string>
     <string name="ui_title_icon_tuner_mobile">Rede móvel</string>
     <string name="icon_tuner_mobile_mobile">Ícone de rede móvel</string>
     <string name="icon_tuner_mobile_hide_sim_one">Ocultar ícone da rede móvel do cartão SIM 1</string>
