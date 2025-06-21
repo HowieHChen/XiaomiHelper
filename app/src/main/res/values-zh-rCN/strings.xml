@@ -656,4 +656,6 @@
     <string name="android_display_font_scale_msg">值应该大于等于 0.5 并小于 2.0</string>
     <string name="android_display_font_scale_fail_msg">无法获取/修改当前字体缩放的值。请确认输入的值在有效范围内，并且已授予 root 权限</string>
     <string name="android_display_font_modify">修改最小字体缩放</string>
+    <string name="cleaner_browser_hide_ai_search_entry">隐藏 AI 搜索入口</string>
+    <string name="cleaner_browser_hide_ai_search_entry_tips">隐藏搜索页面键盘上方的 AI 搜索入口</string>
 </resources>

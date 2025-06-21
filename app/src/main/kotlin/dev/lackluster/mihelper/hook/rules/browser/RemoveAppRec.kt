@@ -37,6 +37,23 @@ object RemoveAppRec : YukiBaseHooker() {
             }
         }
     }
+    private val getWidgetDialogShowedMethod by lazy {
+        DexKit.findMethodWithCache("get_widget_dialog_count") {
+            matcher {
+                addUsingString("widget_dialog_showed_count", StringMatchType.Equals)
+                paramCount = 0
+                returnType = "int"
+            }
+        }
+    }
+    private val setWidgetDialogShowedMethod by lazy {
+        DexKit.findMethodWithCache("set_widget_dialog_count") {
+            matcher {
+                addUsingString("widget_dialog_showed_count", StringMatchType.Equals)
+                paramTypes("int")
+            }
+        }
+    }
 
     override fun onHook() {
         hasEnable(Pref.Key.Browser.REMOVE_APP_REC) {
@@ -63,6 +80,14 @@ object RemoveAppRec : YukiBaseHooker() {
             }
             getSugCardExperimentMethod?.getMethodInstance(appClassLoader!!)?.hook {
                 replaceTo("1")
+            }
+            getWidgetDialogShowedMethod?.getMethodInstance(appClassLoader!!)?.hook {
+                replaceTo(10000)
+            }
+            setWidgetDialogShowedMethod?.getMethodInstance(appClassLoader!!)?.hook {
+                before {
+                    this.args(0).set(10000)
+                }
             }
 //            "com.android.browser.hybrid.HybridActionDispatcher".toClass().apply {
 //                method {

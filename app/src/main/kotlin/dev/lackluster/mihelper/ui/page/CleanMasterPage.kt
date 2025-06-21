@@ -181,6 +181,11 @@ fun CleanMasterPage(navController: NavController, adjustPadding: PaddingValues, 
                     summary = stringResource(R.string.cleaner_browser_hide_homepage_topbar_tips),
                     key = Pref.Key.Browser.HIDE_HOMEPAGE_TOP_BAR
                 )
+                SwitchPreference(
+                    title = stringResource(R.string.cleaner_browser_hide_ai_search_entry),
+                    summary = stringResource(R.string.cleaner_browser_hide_ai_search_entry_tips),
+                    key = Pref.Key.Browser.HIDE_AI_SEARCH_ENTRY
+                )
             }
         }
         item {
