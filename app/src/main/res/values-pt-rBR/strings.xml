@@ -299,6 +299,8 @@
     <string name="cleaner_browser_remove_app_rec_tips">Remove as recomendações de apps das sugestões da caixa de pesquisa</string>
     <string name="cleaner_browser_hide_homepage_topbar">Ocultar barra superior da página inicial</string>
     <string name="cleaner_browser_hide_homepage_topbar_tips">Oculte a barra superior da página inicial simplificada, que inclui configurações e botões de alternância de modo.</string>
+    <string name="cleaner_browser_hide_ai_search_entry">Ocultar entrada da pesquisa de IA</string>
+    <string name="cleaner_browser_hide_ai_search_entry_tips">Oculte a entrada da pesquisa de IA acima do teclado na página de pesquisa</string>
     <string name="cleaner_downloadui_hide_xl">Ocultar ícones e texto da Xunlei</string>
     <string name="cleaner_download_fuck_xl">Bloquear a criação da pasta .xlDownload</string>
     <string name="cleaner_home_remove_report">Remover botão \"Denunciar\" da janela pop-up de desinstalação do app</string>
