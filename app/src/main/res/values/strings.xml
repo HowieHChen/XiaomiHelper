@@ -358,7 +358,7 @@
     <string name="cleaner_browser_remove_app_rec_tips">Remove app recommendations from search box suggestions</string>
     <string name="cleaner_browser_hide_homepage_topbar">Hide the top bar of the start page</string>
     <string name="cleaner_browser_hide_homepage_topbar_tips">Hide the top bar of the simplified start page, which includes settings and mode toggle buttons.</string>
-    <string name="cleaner_browser_hide_ai_search_entry">Hide Ai search entry</string>
+    <string name="cleaner_browser_hide_ai_search_entry">Hide AI search entry</string>
     <string name="cleaner_browser_hide_ai_search_entry_tips">Hide the AI search entry above the keyboard on the search page</string>
     <string name="ui_title_cleaner_download" translatable="false">@string/scope_download</string>
     <string name="cleaner_downloadui_hide_xl">Hide Xunlei icons and text</string>
@@ -619,9 +619,9 @@
     <string name="icon_tuner_hide_selection_hidden">Invisible</string>
     <string name="icon_tuner_hide_mobile_wifi_warning">Strongly recommend that don\'t hide it!</string>
     <string name="ui_title_icon_tuner_general" translatable="false">@string/common_general</string>
-    <string name="icon_tuner_hint_ignore_sys_hide">Starting from HyperOS 2.0.200, users can control the display of status bar icons on the \"Icon display customization\" page in Settings. However, this feature conflicts with the settings on this page, causing unexpected behavior. Therefore, it\'s strongly recommended to enable the \"Ignore system settings\" option below and manage all status bar icons directly on this page.</string>
+    <string name="icon_tuner_hint_ignore_sys_hide">Starting from HyperOS 2.0.200, users can control the display of status bar icons on the \"Customize toggle display\" page in Settings. However, this feature conflicts with the settings on this page, causing unexpected behavior. Therefore, it\'s strongly recommended to enable the \"Ignore system settings\" option below and manage all status bar icons directly on this page.</string>
     <string name="icon_tuner_general_ignore_sys_hide">Ignore system settings</string>
-    <string name="icon_tuner_general_ignore_sys_hide_tips">Ignore the system setting for \"Icon display customization\"</string>
+    <string name="icon_tuner_general_ignore_sys_hide_tips">Ignore the system setting for \"Customize toggle display\"</string>
     <string name="ui_title_icon_tuner_mobile">Mobile network</string>
     <string name="icon_tuner_mobile_mobile">Mobile network icon</string>
     <string name="icon_tuner_mobile_hide_sim_one">Hide the mobile network icon for SIM card 1</string>
