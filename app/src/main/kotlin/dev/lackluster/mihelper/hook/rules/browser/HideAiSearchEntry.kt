@@ -7,7 +7,7 @@ import dev.lackluster.mihelper.utils.factory.hasEnable
 
 object HideAiSearchEntry : YukiBaseHooker() {
     private val getAiSearchEntryMethod by lazy {
-        DexKit.findMethodWithCache("ai_search_keyboard") {
+        DexKit.findMethodWithCache("ai_search_keyboard_get") {
             matcher {
                 addUsingString("key_ai_search_keyboard_entry")
                 returnType = "boolean"
@@ -16,7 +16,7 @@ object HideAiSearchEntry : YukiBaseHooker() {
         }
     }
     private val setAiSearchEntryMethod by lazy {
-        DexKit.findMethodWithCache("ai_search_keyboard") {
+        DexKit.findMethodWithCache("ai_search_keyboard_set") {
             matcher {
                 addUsingString("key_ai_search_keyboard_entry")
                 paramTypes("boolean")
