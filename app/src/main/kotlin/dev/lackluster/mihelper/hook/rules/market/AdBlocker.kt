@@ -30,6 +30,18 @@ import dev.lackluster.mihelper.utils.factory.hasEnable
 object AdBlocker : YukiBaseHooker() {
     override fun onHook() {
         hasEnable(Pref.Key.Market.AD_BLOCKER) {
+            "com.xiaomi.market.business_ui.main.MarketTabActivity".toClassOrNull()?.apply {
+                method {
+                    name = "tryShowRecommend"
+                }.ignored().hook {
+                    intercept()
+                }
+                method {
+                    name = "tryShowRecallReCommend"
+                }.ignored().hook {
+                    intercept()
+                }
+            }
             val appDetailV3Cls = "com.xiaomi.market.common.network.retrofit.response.bean.AppDetailV3".toClassOrNull()
             runCatching {
                 for (method in setOf(
