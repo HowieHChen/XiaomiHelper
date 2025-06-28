@@ -23,11 +23,17 @@
 package dev.lackluster.mihelper.hook.rules.market
 
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
+import com.highcapable.yukihookapi.hook.factory.constructor
+import com.highcapable.yukihookapi.hook.factory.field
 import com.highcapable.yukihookapi.hook.factory.method
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.factory.hasEnable
 
 object AdBlocker : YukiBaseHooker() {
+    private val pagerTabsInfoClass by lazy {
+        "com.xiaomi.market.ui.PagerTabsInfo".toClassOrNull()
+    }
+
     override fun onHook() {
         hasEnable(Pref.Key.Market.AD_BLOCKER) {
             "com.xiaomi.market.business_ui.main.MarketTabActivity".toClassOrNull()?.apply {
@@ -41,23 +47,58 @@ object AdBlocker : YukiBaseHooker() {
                 }.ignored().hook {
                     intercept()
                 }
+                method {
+                    name = "fetchSearchHotList"
+                }.ignored().hook {
+                    intercept()
+                }
             }
-            val appDetailV3Cls = "com.xiaomi.market.common.network.retrofit.response.bean.AppDetailV3".toClassOrNull()
-            runCatching {
-                for (method in setOf(
+            "com.xiaomi.market.ui.PagerTabsInfo".toClassOrNull()?.apply {
+                constructor().hookAll {
+                    after {
+                        filterTabs(this.instance)
+                    }
+                }
+                method {
+                    name = "fromJSON"
+                }.ignored().hook {
+                    after {
+                        this.result?.let { filterTabs(it) }
+                    }
+                }
+                method {
+                    name = "fromTabInfo"
+                }.ignored().hook {
+                    after {
+                        this.result?.let { filterTabs(it) }
+                    }
+                }
+                method {
+                    name = "fromNativeTabs"
+                }.ignored().hook {
+                    after {
+                        this.result?.let { filterTabs(it) }
+                    }
+                }
+                method {
+                    name = "setAbNormals"
+                }.ignored().hook {
+                    intercept()
+                }
+            }
+            "com.xiaomi.market.common.network.retrofit.response.bean.AppDetailV3".toClassOrNull()?.apply {
+                for (methodName in setOf(
                     "isBrowserMarketAdOff",
                     "isBrowserSourceFileAdOff",
                     "supportShowCompat64bitAlert",
                 )) {
-                    appDetailV3Cls?.method {
-                        name = method
-                    }?.ignored()?.hook {
+                    method {
+                        name = methodName
+                    }.ignored().hook {
                         replaceToTrue()
                     }
                 }
-            }
-            runCatching {
-                for (method in setOf(
+                for (methodName in setOf(
                     "isInternalAd",
                     "needShowAds",
                     "needShowAdsWithSourceFile",
@@ -78,13 +119,46 @@ object AdBlocker : YukiBaseHooker() {
                     "supportShowCompatAlert",
                     "supportShowCompatChildForbidDownloadAlert",
                 )) {
-                    appDetailV3Cls?.method {
-                        name = method
-                    }?.ignored()?.hook {
+                    method {
+                        name = methodName
+                    }.ignored().hook {
                         replaceToFalse()
                     }
                 }
             }
+        }
+    }
+
+    private fun filterTabs(pagerTabsInfo: Any) {
+        pagerTabsInfoClass?.let {
+            val urlsField = it.field { name = "urls" }.get(pagerTabsInfo)
+            val titlesField = it.field { name = "titles" }.get(pagerTabsInfo)
+            val tagsField = it.field { name = "tags" }.get(pagerTabsInfo)
+            val abNormalsField = it.field { name = "abNormals" }.get(pagerTabsInfo)
+            val urls = urlsField.list<String>().toMutableList()
+            val titles = titlesField.list<Map<String, String>>().toMutableList()
+            val tags = tagsField.list<String>().toMutableList()
+            val abNormals = abNormalsField.list<Boolean>().toMutableList()
+            val removeIndex = arrayListOf<Int>()
+            if (urls.isNotEmpty() && urls.size == titles.size && urls.size == tags.size && urls.size == abNormals.size) {
+                titles.forEachIndexed { index, map ->
+                    if (map.getOrDefault("cn", "cn") == map.getOrDefault("en", "en")) {
+                        removeIndex.add(index)
+                    }
+                }
+                removeIndex.sortDescending()
+                removeIndex.forEach {
+                    urls.removeAt(it)
+                    titles.removeAt(it)
+                    tags.removeAt(it)
+                    abNormals.removeAt(it)
+                }
+            }
+            abNormals.replaceAll { false }
+            urlsField.set(urls)
+            titlesField.set(titles)
+            tagsField.set(tags)
+            abNormalsField.set(abNormals)
         }
     }
 }
