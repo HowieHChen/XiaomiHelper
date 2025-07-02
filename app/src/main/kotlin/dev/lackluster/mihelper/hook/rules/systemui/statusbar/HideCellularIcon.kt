@@ -57,7 +57,17 @@ object HideCellularIcon : YukiBaseHooker() {
                                 type = IntType
                             }?.int()?.let {
                                 val slotIndex = SubscriptionManager.getSlotIndex(it)
-                                if ((slotIndex == 0 && hideSimOne) || (slotIndex == 1 && hideSimTwo)) {
+                                var hide = false
+                                if (slotIndex == -1) {
+                                    if ((it == 1 && hideSimOne) || (it == 2 && hideSimTwo)) {
+                                        hide = true
+                                    }
+                                } else {
+                                    if ((slotIndex == 0 && hideSimOne) || (slotIndex == 1 && hideSimTwo)) {
+                                        hide = true
+                                    }
+                                }
+                                if (hide) {
                                     this.instance.current().field {
                                         name = "isVisible"
                                     }.set(
