@@ -24,15 +24,44 @@ import android.view.View
 import android.widget.TextView
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.current
+import com.highcapable.yukihookapi.hook.factory.field
 import com.highcapable.yukihookapi.hook.factory.method
+import com.highcapable.yukihookapi.hook.type.java.IntType
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.factory.hasEnable
 
 object AdBlocker : YukiBaseHooker() {
+    private val shelfClass by lazy {
+        "com.tencent.qqmusiclite.model.shelfcard.Shelf".toClassOrNull()
+    }
+    private val shelfIdField by lazy {
+        shelfClass?.field {
+            name = "id"
+            type = IntType
+        }?.give()
+    }
+
     override fun onHook() {
         hasEnable(Pref.Key.Music.AD_BLOCKER) {
+            "com.tencent.qqmusiclite.fragment.home.adapter.HomeAdapter".toClassOrNull()?.apply {
+                method {
+                    name = "update"
+                }.hook {
+                    before {
+                        val list = this.args(0).list<Any>().toMutableList()
+                        if (list.isNotEmpty() && shelfClass?.isInstance(list[0]) == true) {
+                            list.firstOrNull {
+                                shelfIdField?.get(it) == 10001
+                            }?.let {
+                                list.remove(it)
+                            }
+                            this.args(0).set(list)
+                        }
+                    }
+                }
+            }
             "com.tencent.qqmusiclite.fragment.my.MyViewModel".toClassOrNull()?.apply {
                 method {
                     name = "loadAd"
@@ -54,7 +83,10 @@ object AdBlocker : YukiBaseHooker() {
                     replaceToFalse()
                 }
             }
-            "com.tencent.qqmusiclite.ui.MyAssetsView\$LoginLayoutViewHolder".toClassOrNull()?.apply {
+            val loginLayoutClass =
+                "com.tencent.qqmusiclite.ui.LoginLayoutViewHolder".toClassOrNull()
+                    ?: "com.tencent.qqmusiclite.ui.MyAssetsView\$LoginLayoutViewHolder".toClassOrNull()
+            loginLayoutClass?.apply {
                 method {
                     name = "setAutoPlayFlag"
                 }.hook {
@@ -91,6 +123,25 @@ object AdBlocker : YukiBaseHooker() {
                             name = "getVipBuyLabel"
                         }.invoke<TextView>()?.visibility = View.GONE
                         this.result = null
+                    }
+                }
+                method {
+                    name = "startShakeAndShimmerAnimation"
+                }.ignored().hook {
+                    intercept()
+                }
+                method {
+                    name = "startVipUpgradeAnimation"
+                }.ignored().hook {
+                    intercept()
+                }
+            }
+            "com.tencent.qqmusiclite.ui.VipLabelView".toClassOrNull()?.apply {
+                method {
+                    name = "setSuffixText"
+                }.hook {
+                    before {
+                        this.args(0).set("")
                     }
                 }
             }
