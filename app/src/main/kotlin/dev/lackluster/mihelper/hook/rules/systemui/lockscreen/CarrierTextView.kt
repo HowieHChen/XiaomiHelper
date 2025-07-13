@@ -57,6 +57,12 @@ object CarrierTextView : YukiBaseHooker() {
     private val miuiClockClass by lazy {
         "com.android.systemui.statusbar.views.MiuiClock".toClass()
     }
+    private val keyguardStatusBarControllerClass by lazy {
+        "com.android.systemui.statusbar.phone.KeyguardStatusBarViewControllerInject".toClassOrNull()
+    }
+    private val miuiKeyguardStatusBarViewClass by lazy {
+        "com.android.systemui.statusbar.phone.MiuiKeyguardStatusBarView".toClass()
+    }
     private val isNewCarrierTextLayout by lazy {
         miuiCarrierTextLayoutClass != null
     }
@@ -88,73 +94,84 @@ object CarrierTextView : YukiBaseHooker() {
             }
         }
         if (carrierTextType != 0) {
-            "com.android.systemui.statusbar.phone.MiuiKeyguardStatusBarView".toClass().apply {
-                method {
-                    name = "animateFullAod"
-                }.ignored().hook {
-                    after {
-                        val viewGroup = this.instance<ViewGroup>()
-                        val toLock = this.args(0).boolean()
-                        val spring = SpringInterpolator(0.95f, 0.35f)
-                        val isDark = this.instance.current().field {
-                            name = "mIsDark"
-                            superClass()
-                        }.boolean()
-                        val animFlag: Boolean
-                        if (!toLock && isDark) {
-                            XposedHelpers.setAdditionalInstanceField(viewGroup, KEY_ANIM_TO_AOD, true)
-                            animFlag = false
-                            // doAnimateColor(false)
-                        } else if (toLock && XposedHelpers.getAdditionalInstanceField(viewGroup, KEY_ANIM_TO_AOD) == true) {
-                            animFlag = true
-                            // doAnimateColor(true)
-                            XposedHelpers.setAdditionalInstanceField(viewGroup, KEY_ANIM_TO_AOD, false)
-                        } else {
-                            return@after
-                        }
-                        (XposedHelpers.getAdditionalInstanceField(viewGroup, KEY_ANIMATOR) as? ValueAnimator)?.cancel()
-                        val animator =
-                            if (animFlag) ValueAnimator.ofFloat(0.0f, 1.0f)
-                            else ValueAnimator.ofFloat(1.0f, 0.0f)
-                        animator.apply {
-                            interpolator = spring
-                            duration = spring.duration
-                            addUpdateListener(object : ValueAnimator.AnimatorUpdateListener {
-                                private var mLastV = -1.0f
-                                override fun onAnimationUpdate(animation: ValueAnimator) {
-                                    val value = (animation.animatedValue as? Float ?: return).coerceIn(0.0f, 1.0f)
-                                    if (value == mLastV) return
-                                    if (value != 0.0f && value != 1.0f) {
-                                        val f = (XposedHelpers.getAdditionalInstanceField(viewGroup, KEY_DARK_INTENSITY) as? Float ?: 0.0f) - value
-                                        if (f <= 0.01f && f >= -0.01f) {
-                                            return
-                                        }
-                                    }
-                                    val mLightColor = XposedHelpers.getAdditionalInstanceField(viewGroup, KEY_LIGHT_COLOR) as? Int ?: Color.WHITE
-                                    val mDarkColor = XposedHelpers.getAdditionalInstanceField(viewGroup, KEY_DARK_COLOR) as? Int ?: Color.BLACK
-                                    val mTintColor = ArgbEvaluator().evaluate(
-                                        value,
-                                        mLightColor,
-                                        if (isDark) mDarkColor else mLightColor
-                                    ) as Int
-                                    val tintColorStateList = ColorStateList.valueOf(mTintColor)
-                                    for (viewId in listOf(
-                                        CUSTOM_VIEW_ID, normal_control_center_carrier_view, normal_control_center_carrier_second_view
-                                    )) {
-                                        viewGroup.findViewById<TextView>(viewId)?.let {
-                                            TextViewCompat.setCompoundDrawableTintList(it, tintColorStateList)
-                                            it.setTextColor(mTintColor)
-                                        }
-                                    }
-                                    viewGroup.findViewById<ImageView>(normal_control_center_carrier_vertical_separator)?.setColorFilter(mTintColor)
-                                    XposedHelpers.setAdditionalInstanceField(viewGroup, KEY_DARK_INTENSITY, value)
-                                }
-                            })
-                        }
-                        XposedHelpers.setAdditionalInstanceField(viewGroup, KEY_ANIMATOR, animator)
-                        animator.start()
+            var inViewClass = true
+            val animateFullAodMethod = miuiKeyguardStatusBarViewClass.method {
+                name = "animateFullAod"
+            }.give() ?: keyguardStatusBarControllerClass?.method {
+                name = "animateFullAod"
+                inViewClass = false
+            }?.give()
+            animateFullAodMethod?.hook {
+                after {
+                    val viewGroup = if (inViewClass) {
+                        this.instance<ViewGroup>()
+                    } else {
+                        this.instance.current().field {
+                            name = "keyguardStatusBarView"
+                        }.cast<ViewGroup>()
+                    } ?: return@after
+                    val toLock = this.args(0).boolean()
+                    val spring = SpringInterpolator(0.95f, 0.35f)
+                    val isDark = viewGroup.current().field {
+                        name = "mIsDark"
+                        superClass()
+                    }.boolean()
+                    val animFlag: Boolean
+                    if (!toLock && isDark) {
+                        XposedHelpers.setAdditionalInstanceField(viewGroup, KEY_ANIM_TO_AOD, true)
+                        animFlag = false
+                        // doAnimateColor(false)
+                    } else if (toLock && XposedHelpers.getAdditionalInstanceField(viewGroup, KEY_ANIM_TO_AOD) == true) {
+                        animFlag = true
+                        // doAnimateColor(true)
+                        XposedHelpers.setAdditionalInstanceField(viewGroup, KEY_ANIM_TO_AOD, false)
+                    } else {
+                        return@after
                     }
+                    (XposedHelpers.getAdditionalInstanceField(viewGroup, KEY_ANIMATOR) as? ValueAnimator)?.cancel()
+                    val animator =
+                        if (animFlag) ValueAnimator.ofFloat(0.0f, 1.0f)
+                        else ValueAnimator.ofFloat(1.0f, 0.0f)
+                    animator.apply {
+                        interpolator = spring
+                        duration = spring.duration
+                        addUpdateListener(object : ValueAnimator.AnimatorUpdateListener {
+                            private var mLastV = -1.0f
+                            override fun onAnimationUpdate(animation: ValueAnimator) {
+                                val value = (animation.animatedValue as? Float ?: return).coerceIn(0.0f, 1.0f)
+                                if (value == mLastV) return
+                                if (value != 0.0f && value != 1.0f) {
+                                    val f = (XposedHelpers.getAdditionalInstanceField(viewGroup, KEY_DARK_INTENSITY) as? Float ?: 0.0f) - value
+                                    if (f <= 0.01f && f >= -0.01f) {
+                                        return
+                                    }
+                                }
+                                val mLightColor = XposedHelpers.getAdditionalInstanceField(viewGroup, KEY_LIGHT_COLOR) as? Int ?: Color.WHITE
+                                val mDarkColor = XposedHelpers.getAdditionalInstanceField(viewGroup, KEY_DARK_COLOR) as? Int ?: Color.BLACK
+                                val mTintColor = ArgbEvaluator().evaluate(
+                                    value,
+                                    mLightColor,
+                                    if (isDark) mDarkColor else mLightColor
+                                ) as Int
+                                val tintColorStateList = ColorStateList.valueOf(mTintColor)
+                                for (viewId in listOf(
+                                    CUSTOM_VIEW_ID, normal_control_center_carrier_view, normal_control_center_carrier_second_view
+                                )) {
+                                    viewGroup.findViewById<TextView>(viewId)?.let {
+                                        TextViewCompat.setCompoundDrawableTintList(it, tintColorStateList)
+                                        it.setTextColor(mTintColor)
+                                    }
+                                }
+                                viewGroup.findViewById<ImageView>(normal_control_center_carrier_vertical_separator)?.setColorFilter(mTintColor)
+                                XposedHelpers.setAdditionalInstanceField(viewGroup, KEY_DARK_INTENSITY, value)
+                            }
+                        })
+                    }
+                    XposedHelpers.setAdditionalInstanceField(viewGroup, KEY_ANIMATOR, animator)
+                    animator.start()
                 }
+            }
+            miuiKeyguardStatusBarViewClass.apply {
                 method {
                     name = "onFinishInflate"
                 }.hook {
@@ -257,16 +274,13 @@ object CarrierTextView : YukiBaseHooker() {
                             )
                             parent.removeView(targetView)
                         }
-                        this.instance.current().field {
+                        this.instance.current(true).field {
                             name = "mAlarmLayout"
                         }.setNull()
-                        this.instance.current().field {
-                            name = "mAlarmLayout"
-                        }.setNull()
-                        this.instance.current().field {
+                        this.instance.current(true).field {
                             name = "mAlarmText"
                         }.setNull()
-                        this.instance.current().field {
+                        this.instance.current(true).field {
                             name = "mAlarmIcon"
                         }.setNull()
                     }

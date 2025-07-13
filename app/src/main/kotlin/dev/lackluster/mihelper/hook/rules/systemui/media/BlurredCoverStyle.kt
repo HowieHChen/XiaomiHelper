@@ -43,7 +43,6 @@ import android.widget.TextView
 import androidx.core.graphics.drawable.toBitmap
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.current
-import com.highcapable.yukihookapi.hook.factory.method
 import com.highcapable.yukihookapi.hook.log.YLog
 import dev.lackluster.mihelper.hook.rules.systemui.media.CustomBackground.hardwareBlur
 import androidx.core.graphics.createBitmap
@@ -51,12 +50,17 @@ import androidx.core.graphics.scale
 import androidx.core.graphics.drawable.toDrawable
 import dev.lackluster.mihelper.hook.drawable.RadialMaskedDrawable
 import dev.lackluster.mihelper.hook.drawable.TransitionDrawable
+import dev.lackluster.mihelper.hook.rules.systemui.media.CustomBackground.bindContextField
+import dev.lackluster.mihelper.hook.rules.systemui.media.CustomBackground.bindIsArtworkUpdateField
+import dev.lackluster.mihelper.hook.rules.systemui.media.CustomBackground.bindMediaViewHolderField
+import dev.lackluster.mihelper.hook.rules.systemui.media.CustomBackground.bindMethod
 import dev.lackluster.mihelper.hook.rules.systemui.media.CustomBackground.useAnim
 import dev.lackluster.mihelper.hook.rules.systemui.media.CustomBackground.blurRadius
-import dev.lackluster.mihelper.hook.rules.systemui.media.CustomBackground.miuiMediaControlPanelClass
 import dev.lackluster.mihelper.hook.rules.systemui.media.CustomBackground.contentStyle
 import dev.lackluster.mihelper.hook.rules.systemui.media.CustomBackground.colorSchemeConstructor1
 import dev.lackluster.mihelper.hook.rules.systemui.media.CustomBackground.colorSchemeConstructor2
+import dev.lackluster.mihelper.hook.rules.systemui.media.CustomBackground.getScaledBackground
+import dev.lackluster.mihelper.hook.rules.systemui.media.CustomBackground.getWallpaperColor
 import dev.lackluster.mihelper.hook.rules.systemui.media.CustomBackground.mNeutral1Field
 import dev.lackluster.mihelper.hook.rules.systemui.media.CustomBackground.mNeutral2Field
 import dev.lackluster.mihelper.hook.rules.systemui.media.CustomBackground.mAccent1Field
@@ -74,24 +78,14 @@ object BlurredCoverStyle : YukiBaseHooker() {
     private var lastHeight = 0
 
     override fun onHook() {
-        miuiMediaControlPanelClass!!.method {
-            name = "bindPlayer"
-        }.hook {
+        bindMethod?.hook {
             after {
-                val data = this.args(0).any() ?: return@after
-                val key = this.args(1).string()
-                val updateBackground = this.instance.current().field {
-                    name = "mIsArtworkUpdate"
-                    superClass()
-                }.boolean()
-                val mMediaViewHolder = this.instance.current().field {
-                    name = "mMediaViewHolder"
-                    superClass()
-                }.any() ?: return@after
-                val mContext = this.instance.current().field {
-                    name = "mContext"
-                    superClass()
-                }.any() as? Context ?: return@after
+                val args = this.args
+                val data = this.args[0] ?: return@after
+                val key = if (args.size > 1) this.args(1).string() else "miui${System.currentTimeMillis()}"
+                val updateBackground = bindIsArtworkUpdateField?.get(this.instance) == true
+                val mMediaViewHolder = bindMediaViewHolderField?.get(this.instance) ?: return@after
+                val mContext = bindContextField?.get(this.instance) as? Context ?: return@after
 
                 val traceCookie = data.hashCode()
                 val traceName = "MediaControlPanel#bindArtworkAndColors<$key>"
@@ -192,18 +186,12 @@ object BlurredCoverStyle : YukiBaseHooker() {
                     val mutableColorScheme: Any?
                     val artwork: Drawable?
                     val isArtworkBound: Boolean
-                    val wallpaperColors = this.instance.current().method {
-                        name = "getWallpaperColor"
-                        superClass()
-                    }.call(artworkIcon) as? WallpaperColors?
+                    val wallpaperColors = mContext.getWallpaperColor(artworkIcon)
                     if (wallpaperColors != null) {
                         mutableColorScheme = colorSchemeConstructor1?.newInstance(
                             wallpaperColors, true, contentStyle
                         ) ?: colorSchemeConstructor2?.newInstance(wallpaperColors, contentStyle)
-                        artwork = this.instance.current().method {
-                            name = "getScaledBackground"
-                            superClass()
-                        }.call(artworkIcon, height, height) as Drawable? ?: Color.TRANSPARENT.toDrawable()
+                        artwork = mContext.getScaledBackground(artworkIcon, height, height) ?: Color.TRANSPARENT.toDrawable()
                         isArtworkBound = true
                     } else {
                         // If there's no artwork, use colors from the app icon

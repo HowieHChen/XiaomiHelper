@@ -40,6 +40,17 @@ object NotifFreeform : YukiBaseHooker() {
                     }
                 }
             }
+            "com.android.systemui.statusbar.notification.row.ExpandableNotificationRowInjector".toClassOrNull()?.apply {
+                method {
+                    name = "updateMiniWindowBar"
+                }.hook {
+                    after {
+                        this.instance.current().field {
+                            name = "canSlide"
+                        }.setTrue()
+                    }
+                }
+            }
         }
     }
 }

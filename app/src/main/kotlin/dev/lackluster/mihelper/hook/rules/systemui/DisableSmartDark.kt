@@ -10,7 +10,7 @@ import dev.lackluster.mihelper.utils.factory.hasEnable
 object DisableSmartDark : YukiBaseHooker() {
     override fun onHook() {
         hasEnable(Pref.Key.SystemUI.StatusBar.DISABLE_SMART_DARK) {
-            "com.android.systemui.statusbar.policy.SmartDarkObserver".toClass().apply {
+            "com.android.systemui.statusbar.policy.SmartDarkObserver".toClassOrNull()?.apply {
                 constructor().hook {
                     after {
                         this.instance.current().field {
@@ -19,14 +19,16 @@ object DisableSmartDark : YukiBaseHooker() {
                     }
                 }
             }
-            "com.android.systemui.statusbar.policy.SmartDarkObserver\$1".toClass().method {
-                name = "onConfigChanged"
-            }.remedys {
+            "com.android.systemui.statusbar.policy.SmartDarkObserver$1".toClassOrNull()?.apply {
                 method {
-                    name = "onChange"
+                    name = "onConfigChanged"
+                }.remedys {
+                    method {
+                        name = "onChange"
+                    }
+                }.hook {
+                    intercept()
                 }
-            }.hook {
-                intercept()
             }
         }
     }

@@ -47,7 +47,7 @@ object StatusBarClock : YukiBaseHooker() {
         "com.android.systemui.statusbar.views.MiuiClock".toClass()
     }
     private val miuiStatusBarClockClass by lazy {
-        "com.android.systemui.statusbar.views.MiuiStatusBarClock".toClass()
+        "com.android.systemui.statusbar.views.MiuiStatusBarClock".toClassOrNull()
     }
     private val clockGeekMode = Prefs.getBoolean(Pref.Key.SystemUI.StatusBar.CLOCK_GEEK, false)
     private val clockGeekPattern = Prefs.getString(Pref.Key.SystemUI.StatusBar.CLOCK_GEEK_FORMAT, Pref.DefValue.SystemUI.CLOCK_GEEK_FORMAT)
@@ -141,9 +141,9 @@ object StatusBarClock : YukiBaseHooker() {
                     handleUpdateGeek(this)
                 }
             }
-            miuiStatusBarClockClass.method {
+            miuiStatusBarClockClass?.method {
                 name = "updateTime"
-            }.hook {
+            }?.hook {
                 before {
                     handleUpdateGeek(this)
                 }
@@ -156,9 +156,9 @@ object StatusBarClock : YukiBaseHooker() {
                     handleUpdateTime(this)
                 }
             }
-            miuiStatusBarClockClass.method {
+            miuiStatusBarClockClass?.method {
                 name = "updateTime"
-            }.hook {
+            }?.hook {
                 before {
                     handleUpdateTime(this)
                 }

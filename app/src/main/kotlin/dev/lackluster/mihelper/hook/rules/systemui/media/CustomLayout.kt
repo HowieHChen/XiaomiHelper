@@ -2,8 +2,10 @@ package dev.lackluster.mihelper.hook.rules.systemui.media
 
 import android.content.Context
 import android.view.View
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintSet
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
+import com.highcapable.yukihookapi.hook.factory.constructor
 import com.highcapable.yukihookapi.hook.factory.current
 import com.highcapable.yukihookapi.hook.factory.method
 import com.highcapable.yukihookapi.hook.type.java.IntType
@@ -108,9 +110,40 @@ object CustomLayout : YukiBaseHooker() {
             }
         }
         if (album != 0 || actionsLeftAligned || hideTime || hideSeamless || headerMargin != 26.0f || headerPadding != 2.0f) {
+            "com.android.systemui.statusbar.notification.mediacontrol.MiuiMediaNotificationControllerImpl".toClassOrNull()?.apply {
+                constructor().hook {
+                    after {
+                        val context = this.instance.current().field {
+                            name = "context"
+                        }.cast<Context>() ?: return@after
+                        val normalLayout = this.instance.current().field {
+                            name = "normalLayout"
+                        }.any() ?: return@after
+                        updateConstraintSet(context, normalLayout)
+                    }
+                }
+            }
+            if (hideTime) {
+                "com.android.systemui.statusbar.notification.mediacontrol.MiuiMediaViewControllerImpl".toClassOrNull()?.apply {
+                    method {
+                        name = "onFullAodStateChanged"
+                    }.hook {
+                        after {
+                            val holder = this.instance.current().field {
+                                name = "holder"
+                            }.any() ?: return@after
+                            holder.current().field { name = "elapsedTimeView" }.cast<TextView>()?.visibility = View.GONE
+                            holder.current().field { name = "totalTimeView" }.cast<TextView>()?.visibility = View.GONE
+                        }
+                    }
+                }
+            }
             mediaViewControllerClass?.apply {
+                var newMediaPanel = false
                 method {
                     name = "loadLayoutForType"
+                }.ignored().onNoSuchMethod {
+                    newMediaPanel = true
                 }.hook {
                     after {
                         val context = this.instance.current().field {
@@ -119,11 +152,32 @@ object CustomLayout : YukiBaseHooker() {
                         val expandedLayout = this.instance.current().field {
                             name = "expandedLayout"
                         }.any() ?: return@after
-                        val standardMargin = 26.dp(context)
-                        if (album != 0) {
-                            setVisibility?.invoke(expandedLayout, icon, View.GONE)
+                        updateConstraintSet(context, expandedLayout)
+                    }
+                }
+                if (hideTime && !newMediaPanel) {
+                    method {
+                        name = "refreshState"
+                    }.hook {
+                        before {
+                            val expandedLayout = this.instance.current().field {
+                                name = "expandedLayout"
+                            }.any() ?: return@before
+                            setVisibility?.invoke(expandedLayout, media_elapsed_time, View.GONE)
+                            setVisibility?.invoke(expandedLayout, media_total_time, View.GONE)
                         }
-                        if (album == 2) {
+                    }
+                }
+            }
+        }
+    }
+
+    private fun updateConstraintSet(context: Context, constraintSet: Any) {
+        val standardMargin = 26.dp(context)
+        if (album != 0) {
+            setVisibility?.invoke(constraintSet, icon, View.GONE)
+        }
+        if (album == 2) {
 //                            connect?.invoke(expandedLayout,
 //                                header_title, ConstraintSet.START,
 //                                ConstraintSet.PARENT_ID, ConstraintSet.START
@@ -140,37 +194,37 @@ object CustomLayout : YukiBaseHooker() {
 //                                action0, ConstraintSet.TOP,
 //                                ConstraintSet.PARENT_ID, ConstraintSet.TOP
 //                            )
-                            setGoneMargin?.invoke(expandedLayout, header_title, ConstraintSet.START, standardMargin)
-                            setGoneMargin?.invoke(expandedLayout, header_artist, ConstraintSet.START, standardMargin)
-                            setGoneMargin?.invoke(expandedLayout, actions, ConstraintSet.TOP, 68.5.dp(context))
-                            setGoneMargin?.invoke(expandedLayout, action0, ConstraintSet.TOP, 79.5.dp(context))
-                            setVisibility?.invoke(expandedLayout, album_art, View.GONE)
-                        }
-                        if (headerMargin != 21.0f) {
-                            val headerMarginTop = headerMargin.dp(context)
-                            setMargin?.invoke(expandedLayout, header_title, ConstraintSet.TOP, headerMarginTop)
-                            setGoneMargin?.invoke(expandedLayout, header_title, ConstraintSet.TOP, headerMarginTop)
-                        }
-                        if (headerPadding != 2.0f) {
-                            setMargin?.invoke(expandedLayout, header_artist, ConstraintSet.TOP, headerPadding.dp(context))
-                        }
-                        if (actionsLeftAligned) {
-                            clear?.invoke(expandedLayout, action4, ConstraintSet.RIGHT)
-                        }
-                        if (hideTime) {
-                            connect?.invoke(expandedLayout,
-                                media_progress_bar, ConstraintSet.LEFT,
-                                ConstraintSet.PARENT_ID, ConstraintSet.LEFT
-                            )
-                            connect?.invoke(expandedLayout,
-                                media_progress_bar, ConstraintSet.RIGHT,
-                                ConstraintSet.PARENT_ID, ConstraintSet.RIGHT
-                            )
-                            setMargin?.invoke(expandedLayout, media_progress_bar, ConstraintSet.LEFT, standardMargin)
-                            setMargin?.invoke(expandedLayout, media_progress_bar, ConstraintSet.RIGHT, standardMargin)
-                        }
-                        if (hideSeamless) {
-                            setVisibility?.invoke(expandedLayout, media_seamless, View.GONE)
+            setGoneMargin?.invoke(constraintSet, header_title, ConstraintSet.START, standardMargin)
+            setGoneMargin?.invoke(constraintSet, header_artist, ConstraintSet.START, standardMargin)
+            setGoneMargin?.invoke(constraintSet, actions, ConstraintSet.TOP, 68.5.dp(context))
+            setGoneMargin?.invoke(constraintSet, action0, ConstraintSet.TOP, 79.5.dp(context))
+            setVisibility?.invoke(constraintSet, album_art, View.GONE)
+        }
+        if (headerMargin != 21.0f) {
+            val headerMarginTop = headerMargin.dp(context)
+            setMargin?.invoke(constraintSet, header_title, ConstraintSet.TOP, headerMarginTop)
+            setGoneMargin?.invoke(constraintSet, header_title, ConstraintSet.TOP, headerMarginTop)
+        }
+        if (headerPadding != 2.0f) {
+            setMargin?.invoke(constraintSet, header_artist, ConstraintSet.TOP, headerPadding.dp(context))
+        }
+        if (actionsLeftAligned) {
+            clear?.invoke(constraintSet, action4, ConstraintSet.RIGHT)
+        }
+        if (hideTime) {
+            connect?.invoke(constraintSet,
+                media_progress_bar, ConstraintSet.LEFT,
+                ConstraintSet.PARENT_ID, ConstraintSet.LEFT
+            )
+            connect?.invoke(constraintSet,
+                media_progress_bar, ConstraintSet.RIGHT,
+                ConstraintSet.PARENT_ID, ConstraintSet.RIGHT
+            )
+            setMargin?.invoke(constraintSet, media_progress_bar, ConstraintSet.LEFT, standardMargin)
+            setMargin?.invoke(constraintSet, media_progress_bar, ConstraintSet.RIGHT, standardMargin)
+        }
+        if (hideSeamless) {
+            setVisibility?.invoke(constraintSet, media_seamless, View.GONE)
 //                            connect?.invoke(expandedLayout,
 //                                header_title, ConstraintSet.END,
 //                                ConstraintSet.PARENT_ID, ConstraintSet.END
@@ -179,25 +233,12 @@ object CustomLayout : YukiBaseHooker() {
 //                                header_artist, ConstraintSet.END,
 //                                ConstraintSet.PARENT_ID, ConstraintSet.END
 //                            )
-                            setGoneMargin?.invoke(expandedLayout, header_title, ConstraintSet.END, standardMargin)
-                            setGoneMargin?.invoke(expandedLayout, header_artist, ConstraintSet.END, standardMargin)
-                        }
-                    }
-                }
-                if (hideTime) {
-                    method {
-                        name = "refreshState"
-                    }.hook {
-                        before {
-                            val expandedLayout = this.instance.current().field {
-                                name = "expandedLayout"
-                            }.any() ?: return@before
-                            setVisibility?.invoke(expandedLayout, media_elapsed_time, View.GONE)
-                            setVisibility?.invoke(expandedLayout, media_total_time, View.GONE)
-                        }
-                    }
-                }
-            }
+            setGoneMargin?.invoke(constraintSet, header_title, ConstraintSet.END, standardMargin)
+            setGoneMargin?.invoke(constraintSet, header_artist, ConstraintSet.END, standardMargin)
+        }
+        if (hideTime) {
+            setVisibility?.invoke(constraintSet, media_elapsed_time, View.GONE)
+            setVisibility?.invoke(constraintSet, media_total_time, View.GONE)
         }
     }
 }

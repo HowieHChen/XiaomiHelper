@@ -58,11 +58,13 @@ object CustomElement : YukiBaseHooker() {
     private var thumb2: Drawable? = null
 
     private val mediaViewHolderClass by lazy {
-        "com.android.systemui.media.controls.ui.view.MediaViewHolder\$Companion".toClassOrNull()
-            ?: "com.android.systemui.media.controls.models.player.MediaViewHolder\$Companion".toClassOrNull()
+        "com.android.systemui.media.controls.ui.view.MediaViewHolder".toClassOrNull()
+            ?: "com.android.systemui.statusbar.notification.mediacontrol.MiuiMediaViewHolder".toClassOrNull()
+            ?: "com.android.systemui.media.controls.models.player.MediaViewHolder".toClassOrNull()
     }
     private val seekBarObserverClass by lazy {
         "com.android.systemui.media.controls.ui.binder.SeekBarObserver".toClassOrNull()
+            ?: "com.android.systemui.statusbar.notification.mediacontrol.MiuiMediaViewControllerImpl\$seekBarObserver$1".toClassOrNull()
             ?: "com.android.systemui.media.controls.models.player.SeekBarObserver".toClassOrNull()
     }
     private val customActionsClass by lazy {
@@ -73,10 +75,25 @@ object CustomElement : YukiBaseHooker() {
     @SuppressLint("UseCompatLoadingForDrawables")
     override fun onHook() {
         if (modifyTextSize || thumbStyle != 0 || thumbCropFix) {
-            mediaViewHolderClass?.apply {
+            "com.android.systemui.statusbar.notification.mediacontrol.MiuiMediaNotificationControllerImpl".toClassOrNull()?.apply {
                 method {
-                    name = "create"
+                    name = "updateLayout$6"
                 }.hook {
+                    after {
+                        val mediaViewHolder = this.instance.current().field {
+                            name = "mediaViewHolder"
+                        }.any() ?: return@after
+                        if (modifyTextSize) {
+                            val titleText = mediaViewHolder.current().field { name = "titleText" }.cast<TextView>()
+                            val artistText = mediaViewHolder.current().field { name = "artistText" }.cast<TextView>()
+                            titleText?.setTextSize(TypedValue.COMPLEX_UNIT_SP, titleSize)
+                            artistText?.setTextSize(TypedValue.COMPLEX_UNIT_SP, artistSize)
+                        }
+                    }
+                }
+            }
+            mediaViewHolderClass?.apply {
+                constructor().hook {
                     after {
                         val mediaViewHolder = this.result ?: return@after
                         if (modifyTextSize) {
@@ -120,14 +137,18 @@ object CustomElement : YukiBaseHooker() {
             seekBarObserverClass?.apply {
                 constructor().hook {
                     after {
-                        val mediaViewHolder = this.instance.current().field {
+                        val mediaViewHolder = this.instance.current(true).field {
                             name = "holder"
-                        }.any() ?: return@after
+                        }.any() ?: this.instance.current(true).field {
+                            name = "this$0"
+                        }.any()?.current()?.field {
+                            name = "holder"
+                        }?.any() ?: return@after
                         val seekBar = mediaViewHolder.current().field { name = "seekBar" }.cast<SeekBar>() ?: return@after
                         val context = seekBar.context
                         if (progressStyle == 1) {
                             val width = progressWidth.dp(context)
-                            this.instance.current().field {
+                            this.instance.current(true).field {
                                 name = "seekBarEnabledMaxHeight"
                             }.set(width)
                             seekBar.minHeight = width
@@ -152,9 +173,13 @@ object CustomElement : YukiBaseHooker() {
                         name = "onChanged"
                     }.hook {
                         after {
-                            val mediaViewHolder = this.instance.current().field {
+                            val mediaViewHolder = this.instance.current(true).field {
                                 name = "holder"
-                            }.any() ?: return@after
+                            }.any() ?: this.instance.current(true).field {
+                                name = "this$0"
+                            }.any()?.current()?.field {
+                                name = "holder"
+                            }?.any() ?: return@after
                             val seekBar = mediaViewHolder.current().field { name = "seekBar" }.cast<SeekBar>()
                             val drawable = seekBar?.progressDrawable
                             if (drawable !is SquigglyProgress) return@after

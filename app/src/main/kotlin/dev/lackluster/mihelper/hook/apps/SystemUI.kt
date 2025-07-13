@@ -7,14 +7,11 @@ import dev.lackluster.mihelper.hook.rules.systemui.FuckStatusBarGestures
 import dev.lackluster.mihelper.hook.rules.systemui.MonetOverlay
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils
 import dev.lackluster.mihelper.hook.rules.systemui.StatusBarActions
-import dev.lackluster.mihelper.hook.rules.systemui.lockscreen.BlockEditor
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.HideCarrierLabel
 import dev.lackluster.mihelper.hook.rules.systemui.lockscreen.HideDisturbNotification
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.HideStatusBarIcon
-import dev.lackluster.mihelper.hook.rules.systemui.lockscreen.HideUnlockTip
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.IconPosition
 import dev.lackluster.mihelper.hook.rules.systemui.notif.NotifFreeform
-import dev.lackluster.mihelper.hook.rules.systemui.notif.NotifSettingsRedirect
 import dev.lackluster.mihelper.hook.rules.systemui.notif.NotifWhitelist
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.NotificationMaxNumber
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.StatusBarClock
@@ -26,7 +23,6 @@ import dev.lackluster.mihelper.hook.rules.systemui.media.CustomElement
 import dev.lackluster.mihelper.hook.rules.systemui.media.CustomLayout
 import dev.lackluster.mihelper.hook.rules.systemui.media.CustomBackground
 import dev.lackluster.mihelper.hook.rules.systemui.media.UnlockCustomAction
-import dev.lackluster.mihelper.hook.rules.systemui.notif.AdvancedTextures
 import dev.lackluster.mihelper.hook.rules.systemui.notif.MiuiXExpandButton
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.BatteryIndicator
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.ElementsFontWeight
@@ -73,13 +69,6 @@ object SystemUI : YukiBaseHooker() {
         loadHooker(HideTopBar)
 
 
-        loadHooker(BlockEditor)
-
-        loadHooker(HideUnlockTip)
-
-        loadHooker(NotifSettingsRedirect)
-
-        loadHooker(AdvancedTextures)
         loadHooker(UnlockCustomAction)
         loadHooker(PadClockAnim)
     }

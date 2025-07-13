@@ -42,7 +42,16 @@ object HideCarrierLabel : YukiBaseHooker() {
 
     override fun onHook() {
         if (hideCarrierHD && isNewCarrierTextLayout) {
-            "com.android.keyguard.CarrierText".toClass().apply {
+            "com.android.keyguard.CarrierText".toClassOrNull()?.apply {
+                method {
+                    name = "updateHDDrawable"
+                }.ignored().hook {
+                    before {
+                        this.args(0).set(0)
+                    }
+                }
+            }
+            "com.android.systemui.statusbar.ui.viewmodel.CarrierTextInjector".toClassOrNull()?.apply {
                 method {
                     name = "updateHDDrawable"
                 }.ignored().hook {
@@ -75,9 +84,9 @@ object HideCarrierLabel : YukiBaseHooker() {
                     }
                 }
             } else {
-                "com.android.systemui.statusbar.policy.MiuiCarrierTextControllerImpl".toClass().method {
+                "com.android.systemui.statusbar.policy.MiuiCarrierTextControllerImpl".toClassOrNull()?.method {
                     name = "updateCarrierText"
-                }.hook {
+                }?.hook {
                     before {
                         val mCardDisable = this.instance.current().field { name = "mCardDisable" }.any() as BooleanArray
                         val mPhoneCount = this.instance.current().field { name = "mPhoneCount" }.int()

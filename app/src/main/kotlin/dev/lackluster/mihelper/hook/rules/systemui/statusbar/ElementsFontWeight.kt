@@ -38,6 +38,10 @@ object ElementsFontWeight : YukiBaseHooker() {
     private val focusedTextClass by lazy {
         "com.android.systemui.statusbar.widget.FocusedTextView".toClassOrNull()
     }
+    private val mobileTypeDrawableClass by lazy {
+        "com.android.systemui.statusbar.views.MobileTypeDrawable".toClassOrNull()
+            ?: "com.miui.systemui.statusbar.views.MobileTypeDrawable".toClassOrNull()
+    }
 
     override fun onHook() {
         if (clockFont || focusNotifFont) {
@@ -62,7 +66,7 @@ object ElementsFontWeight : YukiBaseHooker() {
             }
         }
         if (mobileTypeFont) {
-            "com.android.systemui.statusbar.views.MobileTypeDrawable".toClassOrNull()?.apply {
+            mobileTypeDrawableClass?.apply {
                 field {
                     name = "sMiproTypeface"
                     modifiers { isStatic }

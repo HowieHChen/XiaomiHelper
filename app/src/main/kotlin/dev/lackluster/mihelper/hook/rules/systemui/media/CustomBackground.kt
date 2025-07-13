@@ -1,13 +1,18 @@
 package dev.lackluster.mihelper.hook.rules.systemui.media
 
+import android.app.WallpaperColors
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.HardwareRenderer
 import android.graphics.Paint
 import android.graphics.PixelFormat
+import android.graphics.Rect
 import android.graphics.RenderEffect
 import android.graphics.RenderNode
 import android.graphics.Shader
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.Icon
 import android.hardware.HardwareBuffer
 import android.media.ImageReader
 import androidx.core.graphics.get
@@ -28,6 +33,40 @@ object CustomBackground : YukiBaseHooker() {
 
     val miuiMediaControlPanelClass by lazy {
         "com.android.systemui.statusbar.notification.mediacontrol.MiuiMediaControlPanel".toClassOrNull()
+    }
+    val miuiMediaViewControllerImplClass by lazy {
+        "com.android.systemui.statusbar.notification.mediacontrol.MiuiMediaViewControllerImpl".toClassOrNull()
+    }
+    val bindMethod by lazy {
+        miuiMediaControlPanelClass?.method {
+            name = "bindPlayer"
+        }?.give() ?: miuiMediaViewControllerImplClass?.method {
+            name = "bindMediaData"
+        }?.give()
+    }
+    val bindIsArtworkUpdateField by lazy {
+        miuiMediaControlPanelClass?.field {
+            name = "mIsArtworkUpdate"
+            superClass()
+        }?.give() ?: miuiMediaViewControllerImplClass?.field {
+            name = "isArtWorkUpdate"
+        }?.give()
+    }
+    val bindMediaViewHolderField by lazy {
+        miuiMediaControlPanelClass?.field {
+            name = "mMediaViewHolder"
+            superClass()
+        }?.give() ?: miuiMediaViewControllerImplClass?.field {
+            name = "holder"
+        }?.give()
+    }
+    val bindContextField by lazy {
+        miuiMediaControlPanelClass?.field {
+            name = "mContext"
+            superClass()
+        }?.give() ?: miuiMediaViewControllerImplClass?.field {
+            name = "context"
+        }?.give()
     }
     val colorSchemeClass by lazy {
         "com.android.systemui.monet.ColorScheme".toClass()
@@ -101,10 +140,22 @@ object CustomBackground : YukiBaseHooker() {
                     intercept()
                 }
             }
+            miuiMediaViewControllerImplClass?.apply {
+                method {
+                    name = "updateForegroundColors"
+                }.hook {
+                    intercept()
+                }
+                method {
+                    name = "updateMediaBackground"
+                }.hook {
+                    intercept()
+                }
+            }
             "com.android.systemui.media.controls.ui.controller.MediaViewController".toClassOrNull()?.apply {
                 method {
                     name = "resetLayoutResource"
-                }.hook {
+                }.ignored().hook {
                     intercept()
                 }
             }
@@ -164,6 +215,36 @@ object CustomBackground : YukiBaseHooker() {
 //        }
 //        transitionDrawable.setLayerSize(layer, (scale * width).toInt(), (scale * height).toInt())
 //    }
+
+    fun Context.getWallpaperColor(icon: Icon?): WallpaperColors? {
+        val iconType = icon?.type ?: return null
+        if (iconType != Icon.TYPE_BITMAP && iconType != Icon.TYPE_ADAPTIVE_BITMAP) {
+            val drawable = icon.loadDrawable(this) ?: return null
+            return WallpaperColors.fromDrawable(drawable)
+        } else {
+            val bitmap = icon.current().method {
+                name = "getBitmap"
+            }.invoke<Bitmap>()
+            return if (bitmap?.isRecycled == false) {
+                WallpaperColors.fromBitmap(bitmap)
+            } else {
+                null
+            }
+        }
+    }
+
+    fun Context.getScaledBackground(icon: Icon?, width: Int, height: Int): Drawable? {
+        val loadDrawable = icon?.loadDrawable(this) ?: return null
+        val rect = Rect(0, 0, width, height)
+        if (rect.width() > width || rect.height() > height) {
+            rect.offset(
+                ((width - rect.width()) / 2.0f).toInt(),
+                ((height - rect.height()) / 2.0f).toInt()
+            )
+        }
+        loadDrawable.bounds = rect
+        return loadDrawable
+    }
 
     fun Bitmap.brightness(): Float {
         var totalBrightness = 0f

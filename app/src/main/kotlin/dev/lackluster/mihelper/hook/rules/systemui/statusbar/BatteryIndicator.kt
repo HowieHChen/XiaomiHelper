@@ -37,7 +37,7 @@ import kotlin.math.roundToInt
 
 object BatteryIndicator : YukiBaseHooker() {
     private val miuiBatteryMeterViewClz by lazy {
-        "com.android.systemui.statusbar.views.MiuiBatteryMeterView".toClass()
+        "com.android.systemui.statusbar.views.MiuiBatteryMeterView".toClassOrNull()
     }
     // 0 -> Default; 1 -> Icon & Percentage; 2 -> Icon only; 3 -> Percentage only; 4 -> Hidden
     private val batteryStyle by lazy {
@@ -79,9 +79,9 @@ object BatteryIndicator : YukiBaseHooker() {
     private val batteryPercentMarkFontWeight = Prefs.getInt(FontWeight.BATTERY_PERCENTAGE_MARK_WEIGHT, 430)
 
     override fun onHook() {
-        miuiBatteryMeterViewClz.apply {
+        miuiBatteryMeterViewClz?.apply {
             method {
-                name = "updateAll\$1"
+                name = "updateAll$1"
             }.remedys {
                 method {
                     name = "updateAll"
@@ -90,17 +90,17 @@ object BatteryIndicator : YukiBaseHooker() {
                 after {
                     val mBatteryIconView = this.instance.current().field {
                         name = "mBatteryIconView"
-                    }.any() as? ImageView ?: return@after
+                    }.cast<ImageView>() ?: return@after
                     // mBatteryStyle: 0 -> Graphical; 1 -> Percentage (in the icon); 2 -> Top bar; 3 -> Percentage (next to the icon)
 //                    val mBatteryStyle = this.instance.current().field {
 //                        name = "mBatteryStyle"
 //                    }.int()
                     val mBatteryPercentView = this.instance.current().field {
                         name = "mBatteryPercentView"
-                    }.any() as? TextView ?: return@after // mBatteryStyle == 3
+                    }.cast<TextView>() ?: return@after // mBatteryStyle == 3
                     val mBatteryPercentMarkView = this.instance.current().field {
                         name = "mBatteryPercentMarkView"
-                    }.any() as? TextView ?: return@after // mBatteryStyle == 3
+                    }.cast<TextView>() ?: return@after // mBatteryStyle == 3
                     // Battery icon container
 //                    val mBatteryDigitalView = this.instance.current().field {
 //                        name = "mBatteryDigitalView"
@@ -170,21 +170,21 @@ object BatteryIndicator : YukiBaseHooker() {
                 after {
                     if (hideChargeIcon) {
                         // mBatteryStyle == 0 || mBatteryStyle == 3
-                        (this.instance.current().field {
+                        this.instance.current().field {
                             name = "mBatteryChargingInView"
-                        }.any() as? ImageView)?.visibility = View.GONE
+                        }.cast<ImageView>()?.visibility = View.GONE
                         // mBatteryStyle == 1 || mBatteryStyle == 2
-                        (this.instance.current().field {
+                        this.instance.current().field {
                             name = "mBatteryChargingView"
-                        }.any() as? ImageView)?.visibility = View.GONE
+                        }.cast<ImageView>()?.visibility = View.GONE
                     }
                     if (batteryStyle != 0) {
                         val mBatteryPercentView = this.instance.current().field {
                             name = "mBatteryPercentView"
-                        }.any() as? TextView ?: return@after // mBatteryStyle == 3
+                        }.cast<TextView>() ?: return@after // mBatteryStyle == 3
                         val mBatteryPercentMarkView = this.instance.current().field {
                             name = "mBatteryPercentMarkView"
-                        }.any() as? TextView ?: return@after // mBatteryStyle == 3
+                        }.cast<TextView>() ?: return@after // mBatteryStyle == 3
                         // Visibility of battery percentage
                         if (batteryStyle == 1 || batteryStyle == 3) {
                             mBatteryPercentView.visibility = View.VISIBLE
