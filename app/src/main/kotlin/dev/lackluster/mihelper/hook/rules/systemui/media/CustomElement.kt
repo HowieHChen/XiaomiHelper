@@ -95,7 +95,7 @@ object CustomElement : YukiBaseHooker() {
             mediaViewHolderClass?.apply {
                 constructor().hook {
                     after {
-                        val mediaViewHolder = this.result ?: return@after
+                        val mediaViewHolder = this.instance
                         if (modifyTextSize) {
                             val titleText = mediaViewHolder.current().field { name = "titleText" }.cast<TextView>()
                             val artistText = mediaViewHolder.current().field { name = "artistText" }.cast<TextView>()
