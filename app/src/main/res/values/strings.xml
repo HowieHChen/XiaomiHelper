@@ -370,12 +370,14 @@
     <string name="ui_title_cleaner_market" translatable="false">@string/scope_market</string>
     <string name="cleaner_market_block_update_dailog">Block update push dialog</string>
     <string name="cleaner_market_block_update_dailog_tips">Block the dialog that prompts you to turn on update push, when update push is turned off and the update button is clicked.</string>
-    <string name="cleaner_market_hide_game">Hide Game</string>
-    <string name="cleaner_market_hide_game_tips">Remove the Game from the bottom tab</string>
-    <string name="cleaner_market_hide_rank">Hide Rank</string>
-    <string name="cleaner_market_hide_rank_tips">Remove the Rank from the bottom tab</string>
-    <string name="cleaner_market_hide_video">Hide App Assemble/Video</string>
-    <string name="cleaner_market_hide_video_tips">Remove the App Assemble/Video from the bottom tab</string>
+    <string name="cleaner_market_hide_game">Hide Games</string>
+    <string name="cleaner_market_hide_game_tips">Remove the Games from the bottom tab</string>
+    <string name="cleaner_market_hide_rank">Hide Popular</string>
+    <string name="cleaner_market_hide_rank_tips">Remove the Popular from the bottom tab</string>
+    <string name="cleaner_market_hide_agent">Hide Agent</string>
+    <string name="cleaner_market_hide_agent_tips">Remove the Agent from the bottom tab</string>
+    <string name="cleaner_market_hide_video">Hide App feed/Video</string>
+    <string name="cleaner_market_hide_video_tips">Remove the App feed/Video from the bottom tab</string>
     <string name="cleaner_market_hide_app_security">Hide app security</string>
     <string name="cleaner_market_hide_app_security_tips">Hide the app security card on my page</string>
     <string name="ui_title_cleaner_milink" translatable="false">@string/scope_mi_link</string>

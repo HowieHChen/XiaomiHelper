@@ -514,6 +514,7 @@
     <string name="cleaner_market_hide_game_tips">从底部应用栏中移除游戏选项</string>
     <string name="cleaner_market_hide_rank">隐藏榜单</string>
     <string name="cleaner_market_hide_rank_tips">从底部应用栏中移除榜单选项</string>
+    <string name="cleaner_market_hide_agent_tips">从底部应用栏中移除智能体选项</string>
     <string name="cleaner_market_hide_video">隐藏应用号和视频</string>
     <string name="cleaner_market_hide_video_tips">从底部应用栏中移除应用号和视频选项</string>
     <string name="cleaner_music_hide_karaoke_tips">从首页的顶部应用栏中移除K歌选项</string>
@@ -658,4 +659,5 @@
     <string name="android_display_font_modify">修改最小字体缩放</string>
     <string name="cleaner_browser_hide_ai_search_entry">隐藏 AI 搜索入口</string>
     <string name="cleaner_browser_hide_ai_search_entry_tips">隐藏搜索页面键盘上方的 AI 搜索入口</string>
+    <string name="cleaner_market_hide_agent">隐藏智能体</string>
 </resources>

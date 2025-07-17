@@ -242,6 +242,11 @@ fun CleanMasterPage(navController: NavController, adjustPadding: PaddingValues, 
                     key = Pref.Key.Market.HIDE_TAB_RANK
                 )
                 SwitchPreference(
+                    title = stringResource(R.string.cleaner_market_hide_agent),
+                    summary = stringResource(R.string.cleaner_market_hide_agent_tips),
+                    key = Pref.Key.Market.HIDE_TAB_AGENT
+                )
+                SwitchPreference(
                     title = stringResource(R.string.cleaner_market_hide_video),
                     summary = stringResource(R.string.cleaner_market_hide_video_tips),
                     key = Pref.Key.Market.HIDE_TAB_APP_ASSEMBLE

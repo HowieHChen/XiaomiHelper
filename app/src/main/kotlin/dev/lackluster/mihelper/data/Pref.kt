@@ -64,6 +64,7 @@ object Pref {
             const val SKIP_SPLASH = "market_skip_splash"
             const val HIDE_TAB_GAME = "market_hide_tab_game"
             const val HIDE_TAB_RANK = "market_hide_tab_rank"
+            const val HIDE_TAB_AGENT = "market_hide_tab_agent"
             const val HIDE_TAB_APP_ASSEMBLE = "market_hide_tab_assemble"
             const val BLOCK_UPDATE_DIALOG = "market_block_up_dialog"
             const val HIDE_APP_SECURITY = "market_hide_app_security"
