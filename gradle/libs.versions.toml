@@ -7,13 +7,13 @@ project-app-packageName = "dev.lackluster.mihelper"
 project-app-versionName = "3.1.0"
 project-app-versionCode = "310"
 
-androidGradlePlugin = "8.10.1"
-kotlin = "2.1.21"
-ksp = "2.1.21-2.0.1"
+androidGradlePlugin = "8.11.1"
+kotlin = "2.2.0"
+ksp = "2.2.0-2.0.2"
 xposed = "82"
 yukihookapi = "1.2.1"
-dexkit = "2.0.5"
-serialization-json = "1.8.1"
+dexkit = "2.0.6"
+serialization-json = "1.9.0"
 
 [libraries]
 xposed-api = { group = "de.robv.android.xposed", name = "api", version.ref = "xposed" }
@@ -27,7 +27,7 @@ androidx-constraintlayout-compose = { group = "androidx.constraintlayout", name 
 dexkit = { module = "org.luckypray:dexkit", version.ref = "dexkit" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization-json" }
 
-androidx-ui = { group = "androidx.compose.ui", name = "ui", version = "1.8.2" }
+androidx-ui = { group = "androidx.compose.ui", name = "ui", version = "1.8.3" }
 
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version = "1.16.0" }
 
