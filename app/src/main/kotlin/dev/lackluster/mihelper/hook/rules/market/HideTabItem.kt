@@ -22,7 +22,10 @@ package dev.lackluster.mihelper.hook.rules.market
 
 import android.app.Activity
 import android.view.View
+import android.view.ViewGroup
+import android.widget.LinearLayout
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
+import com.highcapable.yukihookapi.hook.factory.current
 import com.highcapable.yukihookapi.hook.factory.field
 import com.highcapable.yukihookapi.hook.factory.method
 import com.highcapable.yukihookapi.hook.type.java.StringClass
@@ -67,6 +70,70 @@ object HideTabItem : YukiBaseHooker() {
                     name = "isEnableMiuixBlur"
                 }.hook {
                     replaceToTrue()
+                }
+            }
+        }
+        if (tabBlur) {
+            "com.xiaomi.market.widget.TabView$1".toClassOrNull()?.apply {
+                method {
+                    name = "onGlobalLayout"
+                }.hook {
+                    after {
+                        this.instance.current().field {
+                            name = "this$0"
+                        }.cast<View>()?.let {
+                            it.layoutParams = it.layoutParams.apply { this as LinearLayout.LayoutParams
+                                width = 0
+                                weight = 1.0f
+                            }
+                        }
+                    }
+                }
+            }
+            "com.xiaomi.market.widget.TabView".toClassOrNull()?.apply {
+                method {
+                    name = "setTab"
+                }.hook {
+                    after {
+                        this.instance<View>().let {
+                            it.layoutParams = it.layoutParams.apply { this as LinearLayout.LayoutParams
+                                width = 0
+                                weight = 1.0f
+                            }
+                        }
+                    }
+                }
+            }
+            "com.xiaomi.market.widget.BottomTabLayout".toClassOrNull()?.apply {
+                method {
+                    name = "addDividerView"
+                }.hook {
+                    before {
+                        this.instance.current().field {
+                            name = "tabViewsLayout"
+                        }.cast<LinearLayout>()?.let {
+                            it.addView(
+                                View(it.context),
+                                LinearLayout.LayoutParams(0, 0)
+                            )
+                        }
+                        this.result = null
+                    }
+                }
+            }
+            "com.xiaomi.market.ui.DoubleTabProxyActivityWrapper".toClassOrNull()?.apply {
+                method {
+                    name = "onBottomTabBlurSwitch"
+                }.hook {
+                    after {
+                        this.instance.current().field {
+                            name = "bottomTabLayout"
+                        }.cast<View>()?.let { v ->
+                            v.layoutParams = v.layoutParams.apply { this as ViewGroup.MarginLayoutParams
+                                bottomMargin = 0
+                            }
+                        }
+                    }
                 }
             }
         }
