@@ -48,7 +48,7 @@ object HideTabItem : YukiBaseHooker() {
     }
 
     override fun onHook() {
-        val tabContainerVisible: Boolean
+        val hideTabContainer: Boolean
         if (hideTab && ignoreRestrict) {
             var visibleTab = 0
             if (showTabHome) visibleTab++
@@ -57,11 +57,11 @@ object HideTabItem : YukiBaseHooker() {
             if (showTabAgent) visibleTab++
             if (showTabAppAssemble) visibleTab++
             if (showTabMine) visibleTab++
-            tabContainerVisible = visibleTab > 1
+            hideTabContainer = (visibleTab == 1)
         } else {
-            tabContainerVisible = true
+            hideTabContainer = false
         }
-        if (!tabContainerVisible || tabBlur) {
+        if (hideTabContainer || tabBlur) {
             "com.xiaomi.market.common.analytics.onetrack.ExperimentManager\$Companion".toClassOrNull()?.apply {
                 method {
                     name = "isEnableMiuixBlur"
@@ -71,7 +71,7 @@ object HideTabItem : YukiBaseHooker() {
             }
         }
         if (hideTab) {
-            if (!tabContainerVisible) {
+            if (hideTabContainer) {
                 "com.xiaomi.market.ui.DoubleTabProxyActivityWrapper".toClassOrNull()?.apply {
                     method {
                         name = "setTabContainer"
