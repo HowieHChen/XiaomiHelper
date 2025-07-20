@@ -64,10 +64,10 @@ object BackGestureHaptic : YukiBaseHooker() {
                     }
                 }
                 method {
-                    name = "lambda\$performGestureReadyBack\$11"
+                    name = "lambda\$performGestureReadyBack$11"
                 }.remedys {
                     method {
-                        name = "lambda\$performGestureReadyBack\$11\$HapticFeedbackCompatV2"
+                        name = "lambda\$performGestureReadyBack$11\$HapticFeedbackCompatV2"
                     }
                 }.hook {
                     replaceUnit {
@@ -78,10 +78,10 @@ object BackGestureHaptic : YukiBaseHooker() {
                     }
                 }
                 method {
-                    name = "lambda\$performGestureBackHandUp\$12"
+                    name = "lambda\$performGestureBackHandUp$12"
                 }.remedys {
                     method {
-                        name = "lambda\$performGestureBackHandUp\$12\$HapticFeedbackCompatV2"
+                        name = "lambda\$performGestureBackHandUp$12\$HapticFeedbackCompatV2"
                     }
                 }.hook {
                     replaceUnit {
@@ -92,12 +92,22 @@ object BackGestureHaptic : YukiBaseHooker() {
                     }
                 }
             }
-            gestureStubViewClass.method {
-                name = "injectKeyEvent"
-                param(IntType, BooleanType)
-            }.hook {
-                before {
-                    this.args(1).setTrue()
+            gestureStubViewClass.apply {
+                method {
+                    name = "injectKeyEvent"
+                    param(IntType, BooleanType)
+                }.ignored().hook {
+                    before {
+                        this.args(1).setTrue()
+                    }
+                }
+                method {
+                    name = "injectBackKeyEvent"
+                    param(BooleanType)
+                }.ignored().hook {
+                    before {
+                        this.args(0).setTrue()
+                    }
                 }
             }
         }
