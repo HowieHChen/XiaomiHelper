@@ -51,7 +51,7 @@ jobs:
         path: app/build/outputs/apk/release
       
     - name: Post to Telegram ci channel
-      if: ${{ success() && github.event_name != 'pull_request' && github.ref == 'refs/heads/master' && github.ref_type != 'tag' }}
+      if: ${{ success() && github.event_name != 'pull_request' && github.ref_type == 'tag' }}
       env:
         CHANNEL_ID: ${{ secrets.CHANNEL_ID }}
         BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
