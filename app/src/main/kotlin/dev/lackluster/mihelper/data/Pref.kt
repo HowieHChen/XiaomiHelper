@@ -62,10 +62,15 @@ object Pref {
         object Market {
             const val AD_BLOCKER = "market_ad_block"
             const val SKIP_SPLASH = "market_skip_splash"
+            const val FILTER_TAB = "market_filter_tab"
+            const val FILTER_TAB_IGNORE_RESTRICT = "market_tab_ignore_restrict"
+            const val HIDE_TAB_HOME = "market_hide_tab_home"
             const val HIDE_TAB_GAME = "market_hide_tab_game"
             const val HIDE_TAB_RANK = "market_hide_tab_rank"
             const val HIDE_TAB_AGENT = "market_hide_tab_agent"
             const val HIDE_TAB_APP_ASSEMBLE = "market_hide_tab_assemble"
+            const val HIDE_TAB_MINE = "market_hide_tab_mine"
+            const val HIDE_TAB_OTHERS = "market_hide_tab_others"
             const val BLOCK_UPDATE_DIALOG = "market_block_up_dialog"
             const val HIDE_APP_SECURITY = "market_hide_app_security"
         }
@@ -271,17 +276,12 @@ object Pref {
             }
             object LockScreen {
                 const val DOUBLE_TAP_TO_SLEEP = "systemui_double_tap_sleep"
-                const val HIDE_UNLOCK_TIP = "systemui_lockscreen_hide_tip"
                 const val HIDE_DISTURB = "systemui_lockscreen_hide_disturb"
-                const val BLOCK_EDITOR = "systemui_lockscreen_block_editor"
                 const val CARRIER_TEXT = "systemui_lockscreen_carrier_text"
             }
             object NotifCenter {
-                const val NOTIF_CHANNEL_SETTINGS = "systemui_notif_channel_setting"
-                const val NOTIF_CHANNEL_DIALOG = "systemui_notif_channel_dialog"
                 const val NOTIF_NO_WHITELIST = "systemui_notif_no_whitelist"
                 const val NOTIF_FREEFORM = "systemui_notif_freeform"
-                const val ADVANCED_TEXTURE = "systemui_notif_adv_texture"
                 const val CLOCK_PAD_ANIM = "statusbar_clock_pad_anim"
                 const val MIUIX_EXPAND_BUTTON = "systemui_notif_miuix_expand"
                 const val MONET_OVERLAY = "systemui_notif_monet_overlay"

@@ -307,12 +307,9 @@
     <string name="cleaner_incallui_hide_crbt">Ocultar tom de toque colorido personalizado</string>
     <string name="cleaner_market_block_update_dailog">Bloquear caixa de diálogo push de atualização</string>
     <string name="cleaner_market_block_update_dailog_tips">Bloqueie a caixa de diálogo que solicita que você ative o push de atualização, quando o push de atualização estiver desativado e o botão de atualização for clicado.</string>
-    <string name="cleaner_market_hide_game">Ocultar jogo</string>
-    <string name="cleaner_market_hide_game_tips">Remove o Jogo da guia inferior</string>
-    <string name="cleaner_market_hide_rank">Ocultar classificação</string>
-    <string name="cleaner_market_hide_rank_tips">Remove a Classificação da guia inferior</string>
-    <string name="cleaner_market_hide_video">Ocultar Montagem/vídeo do app</string>
-    <string name="cleaner_market_hide_video_tips">Remove o Montagem/vídeo do app da guia inferior</string>
+    <string name="cleaner_market_tab_game">Ocultar jogo</string>
+    <string name="cleaner_market_tab_rank">Ocultar classificação</string>
+    <string name="cleaner_market_tab_app_assemble">Ocultar Montagem/vídeo do app</string>
     <string name="cleaner_market_hide_app_security">Ocultar segurança do app</string>
     <string name="cleaner_market_hide_app_security_tips">Oculte o cartão de segurança do app na minha página</string>
     <string name="cleaner_milink_fuck_hpplay">Bloquear a criação de pastas hpplay</string>

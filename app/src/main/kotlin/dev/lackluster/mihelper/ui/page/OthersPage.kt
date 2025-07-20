@@ -171,9 +171,9 @@ fun OthersPage(navController: NavController, adjustPadding: PaddingValues, mode:
                             title = stringResource(R.string.others_search_custom_search_engine),
                             value = stringResource(
                                 if (SafeSP.getBoolean(Pref.Key.Search.CUSTOM_SEARCH_ENGINE)) {
-                                    R.string.common_enabled
+                                    R.string.common_on
                                 } else {
-                                    R.string.common_disabled
+                                    R.string.common_off
                                 }
                             )
                         ) {

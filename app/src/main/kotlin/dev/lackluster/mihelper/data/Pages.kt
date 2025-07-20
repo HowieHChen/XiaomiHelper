@@ -21,6 +21,7 @@ object Pages {
     const val DEV_UI_TEST = "DevUITestPage"
     const val DEV_UI_TEST2 = "DevUITestPage2"
 
+    const val DIALOG_MARKET_FILTER_TAB = "MarketFilterTabDialog"
     const val DIALOG_SEARCH_CUSTOM_ENGINE = "CustomEngineDialog"
 
     @Deprecated("")

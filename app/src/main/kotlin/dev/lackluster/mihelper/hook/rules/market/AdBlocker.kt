@@ -2,9 +2,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  *
  * This file is part of XiaomiHelper project
-
- * This file references StarVoyager <https://github.com/hosizoraru/StarVoyager/blob/star/app/src/main/kotlin/star/sky/voyager/hook/hooks/market/RemoveAd.kt>
- * Copyright (C) 2023 hosizoraru
+ * Copyright (C) 2025 HowieHChen, howie.dev@outlook.com
 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,8 +22,10 @@ package dev.lackluster.mihelper.hook.rules.market
 
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.constructor
+import com.highcapable.yukihookapi.hook.factory.current
 import com.highcapable.yukihookapi.hook.factory.field
 import com.highcapable.yukihookapi.hook.factory.method
+import com.highcapable.yukihookapi.hook.type.java.StringClass
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.factory.hasEnable
 
@@ -33,9 +33,39 @@ object AdBlocker : YukiBaseHooker() {
     private val pagerTabsInfoClass by lazy {
         "com.xiaomi.market.ui.PagerTabsInfo".toClassOrNull()
     }
+    private val valueOfDetailType by lazy {
+        "com.xiaomi.market.business_ui.detail.DetailType".toClassOrNull()?.method {
+            name = "valueOf"
+            param(StringClass)
+            modifiers { isStatic }
+        }?.get()
+    }
+    private val detailTypeV3 by lazy {
+        valueOfDetailType?.call("V3")
+    }
+    private val detailTypeV4 by lazy {
+        valueOfDetailType?.call("V4")
+    }
 
     override fun onHook() {
         hasEnable(Pref.Key.Market.AD_BLOCKER) {
+            // 更新页
+            "com.xiaomi.market.ui.UpdateListRvAdapter".toClassOrNull()?.apply {
+                method {
+                    name = "generateRecommendGroupItems"
+                }.ignored().hook {
+                    intercept()
+                }
+            }
+            // 下载页
+            "com.xiaomi.market.ui.DownloadListFragment".toClassOrNull()?.apply {
+                method {
+                    name = "parseRecommendGroupResult"
+                }.ignored().hook {
+                    replaceTo(null)
+                }
+            }
+            // 首页启动弹窗
             "com.xiaomi.market.business_ui.main.MarketTabActivity".toClassOrNull()?.apply {
                 method {
                     name = "tryShowRecommend"
@@ -53,6 +83,7 @@ object AdBlocker : YukiBaseHooker() {
                     intercept()
                 }
             }
+            // 过滤子标签页
             "com.xiaomi.market.ui.PagerTabsInfo".toClassOrNull()?.apply {
                 constructor().hookAll {
                     after {
@@ -86,43 +117,54 @@ object AdBlocker : YukiBaseHooker() {
                     intercept()
                 }
             }
+            // 应用详情页
+            "com.xiaomi.market.ui.detail.BaseDetailActivity".toClassOrNull()?.apply {
+                method {
+                    name = "initParams"
+                }.hook {
+                    after {
+                        val detailType = this.instance.current().field {
+                            name = "detailType"
+                            superClass()
+                        }.any()
+                        if (detailType == detailTypeV3) {
+                            this.instance.current().field {
+                                name = "detailType"
+                                superClass()
+                            }.set(detailTypeV4)
+                        }
+                    }
+                }
+            }
             "com.xiaomi.market.common.network.retrofit.response.bean.AppDetailV3".toClassOrNull()?.apply {
-                for (methodName in setOf(
-                    "isBrowserMarketAdOff",
-                    "isBrowserSourceFileAdOff",
-                    "supportShowCompat64bitAlert",
-                )) {
-                    method {
-                        name = methodName
-                    }.ignored().hook {
-                        replaceToTrue()
+                constructors.filter {
+                    it.parameterCount > 0
+                }.minByOrNull {
+                    it.parameterCount
+                }?.hook {
+                    after {
+                        this.instance.current().field { name = "showOpenScreenAd" }.setFalse()
+                        this.instance.current().field { name = "showAssemble" }.setFalse()
                     }
                 }
                 for (methodName in setOf(
-                    "isInternalAd",
-                    "needShowAds",
-                    "needShowAdsWithSourceFile",
-                    "showComment",
                     "showRecommend",
                     "showTopBanner",
                     "showTopVideo",
-                    "equals",
-                    "getShowOpenScreenAd",
-                    "hasGoldLabel",
-                    "isBottomButtonLayoutType",
-                    "isPersonalization",
-                    "isTopButtonLayoutType",
-                    "isTopSingleTabMultiButtonType",
-                    "needShowGrayBtn",
-                    "needShowPISafeModeStyle",
-                    "supportAutoLoadDeepLink",
-                    "supportShowCompatAlert",
-                    "supportShowCompatChildForbidDownloadAlert",
                 )) {
                     method {
                         name = methodName
                     }.ignored().hook {
                         replaceToFalse()
+                    }
+                }
+                method {
+                    name = "getLayoutType"
+                }.hook {
+                    after {
+                        if (this.result == "bottomMultiButton") {
+                            this.result = "bottomSingleButton"
+                        }
                     }
                 }
             }
@@ -147,11 +189,11 @@ object AdBlocker : YukiBaseHooker() {
                     }
                 }
                 removeIndex.sortDescending()
-                removeIndex.forEach {
-                    urls.removeAt(it)
-                    titles.removeAt(it)
-                    tags.removeAt(it)
-                    abNormals.removeAt(it)
+                removeIndex.forEach { index ->
+                    urls.removeAt(index)
+                    titles.removeAt(index)
+                    tags.removeAt(index)
+                    abNormals.removeAt(index)
                 }
             }
             abNormals.replaceAll { false }

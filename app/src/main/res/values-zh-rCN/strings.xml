@@ -510,13 +510,10 @@
     <string name="cleaner_systemui_fuck_gesture">阻止创建“statusbar_gestures.dat”文件</string>
     <string name="cleaner_market_block_update_dailog">屏蔽更新推送弹窗</string>
     <string name="cleaner_market_block_update_dailog_tips">屏蔽提示您打开更新推送的对话框（会在关闭更新推送并点击更新按钮时出现）</string>
-    <string name="cleaner_market_hide_game">隐藏游戏</string>
-    <string name="cleaner_market_hide_game_tips">从底部应用栏中移除游戏选项</string>
-    <string name="cleaner_market_hide_rank">隐藏榜单</string>
-    <string name="cleaner_market_hide_rank_tips">从底部应用栏中移除榜单选项</string>
-    <string name="cleaner_market_hide_agent_tips">从底部应用栏中移除智能体选项</string>
-    <string name="cleaner_market_hide_video">隐藏应用号和视频</string>
-    <string name="cleaner_market_hide_video_tips">从底部应用栏中移除应用号和视频选项</string>
+    <string name="cleaner_market_tab_home">首页</string>
+    <string name="cleaner_market_tab_game">游戏</string>
+    <string name="cleaner_market_tab_rank">榜单</string>
+    <string name="cleaner_market_tab_app_assemble">应用号</string>
     <string name="cleaner_music_hide_karaoke_tips">从首页的顶部应用栏中移除K歌选项</string>
     <string name="cleaner_music_hide_long_audio">隐藏有声</string>
     <string name="cleaner_music_hide_long_audio_tips">从首页的顶部应用栏中移除有声选项</string>
@@ -659,5 +656,13 @@
     <string name="android_display_font_modify">修改最小字体缩放</string>
     <string name="cleaner_browser_hide_ai_search_entry">隐藏 AI 搜索入口</string>
     <string name="cleaner_browser_hide_ai_search_entry_tips">隐藏搜索页面键盘上方的 AI 搜索入口</string>
-    <string name="cleaner_market_hide_agent">隐藏智能体</string>
+    <string name="cleaner_market_tab_agent">智能体</string>
+    <string name="cleaner_market_ignore_restrict">忽略建议限制</string>
+    <string name="cleaner_market_filter_unknown_tabs">过滤掉未知标签页</string>
+    <string name="cleaner_market_filter_unknown_tabs_tips">过滤掉所有未在下方显示的标签页</string>
+    <string name="cleaner_market_filter_tab">过滤底部标签页</string>
+    <string name="cleaner_market_filter_tab_tips">隐藏标签页（及对应页面）</string>
+    <string name="cleaner_market_visible_tabs">可见标签页</string>
+    <string name="cleaner_market_tab_mine">我的</string>
+    <string name="cleaner_market_filter_tab_warning">警告！当前可见的标签页数量少于两个，这可能导致用户界面异常！</string>
 </resources>

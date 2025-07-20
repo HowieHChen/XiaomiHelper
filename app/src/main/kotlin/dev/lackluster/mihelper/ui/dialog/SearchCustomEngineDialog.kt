@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -22,10 +21,8 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.edit
 import androidx.navigation.NavController
 import dev.lackluster.hyperx.compose.activity.SafeSP
-import dev.lackluster.hyperx.compose.base.BasePage
 import dev.lackluster.hyperx.compose.base.BasePageDefaults
-import dev.lackluster.hyperx.compose.icon.ImmersionClose
-import dev.lackluster.hyperx.compose.icon.ImmersionConfirm
+import dev.lackluster.hyperx.compose.component.FullScreenDialog
 import dev.lackluster.hyperx.compose.preference.EditableTextPreference
 import dev.lackluster.hyperx.compose.preference.PreferenceGroup
 import dev.lackluster.hyperx.compose.preference.SwitchPreference
@@ -33,10 +30,7 @@ import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.ui.MainActivity
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.hook.rules.search.SearchEngineItem
-import top.yukonga.miuix.kmp.basic.Icon
-import top.yukonga.miuix.kmp.basic.IconButton
 import top.yukonga.miuix.kmp.basic.Text
-import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 @Composable
@@ -69,7 +63,7 @@ fun SearchCustomEngineDialog(navController: NavController, adjustPadding: Paddin
         titleLugCN.value = it.titleLugCN
     }
 
-    BasePage(
+    FullScreenDialog(
         navController,
         adjustPadding,
         stringResource(R.string.others_search_custom_search_engine),
@@ -77,82 +71,49 @@ fun SearchCustomEngineDialog(navController: NavController, adjustPadding: Paddin
         MainActivity.blurTintAlphaLight,
         MainActivity.blurTintAlphaDark,
         mode,
-        navigationIcon = { padding ->
-            IconButton(
-                modifier = Modifier
-                    .padding(padding)
-                    .padding(start = 21.dp)
-                    .size(40.dp),
-                onClick = {
-                    navController.popBackStack()
-                }
-            ) {
-                Icon(
-                    modifier = Modifier.size(26.dp),
-                    imageVector = MiuixIcons.ImmersionClose,
-                    contentDescription = "Close",
-                    tint = MiuixTheme.colorScheme.onSurfaceSecondary
-                )
-            }
-        },
-        actions = { padding ->
-            IconButton(
-                modifier = Modifier
-                    .padding(padding)
-                    .padding(end = 21.dp)
-                    .size(40.dp),
-                onClick = {
-                    if (customSearchEngine) {
-                        var valid = false
-                        val errorMSg = StringBuilder()
-                        with(context) {
-                            errorMSg.append(getString((R.string.common_invalid_input)))
-                            errorMSg.append("\n")
-                            if (!searchUrl.value.contains("{searchTerms}")) {
-                                errorMSg.append(getString(R.string.others_search_custom_search_url))
-                            } else if (showIcon.value && iconUrl.value.isEmpty()) {
-                                errorMSg.append(getString(R.string.others_search_custom_icon_url))
-                            } else if (
-                                titleLzhCN.value.isEmpty() && titleLzhTW.value.isEmpty() &&
-                                titleLenUS.value.isEmpty() && titleLboCN.value.isEmpty() && titleLugCN.value.isEmpty()
-                            ) {
-                                errorMSg.append(getString(R.string.others_search_custom_title))
-                            } else {
-                                valid = true
-                            }
-                        }
-                        if (valid) {
-                            SearchEngineItem(
-                                "custom",
-                                channelNo.value,
-                                showIcon.value,
-                                searchUrl.value,
-                                iconUrl.value,
-                                titleLzhCN.value,
-                                titleLzhTW.value,
-                                titleLenUS.value,
-                                titleLboCN.value,
-                                titleLugCN.value,
-                            ).let {
-                                SearchEngineItem.encodeToString(it)
-                            }.let {
-                                SafeSP.putAny(Pref.Key.Search.CUSTOM_SEARCH_ENGINE_ENTITY, it)
-                            }
-                            navController.popBackStack()
-                        } else {
-                            Toast.makeText(context, errorMSg.toString(), Toast.LENGTH_SHORT).show()
-                        }
+        onPositiveButton = {
+            if (customSearchEngine) {
+                var valid = false
+                val errorMSg = StringBuilder()
+                with(context) {
+                    errorMSg.append(getString((R.string.common_invalid_input)))
+                    errorMSg.append("\n")
+                    if (!searchUrl.value.contains("{searchTerms}")) {
+                        errorMSg.append(getString(R.string.others_search_custom_search_url))
+                    } else if (showIcon.value && iconUrl.value.isEmpty()) {
+                        errorMSg.append(getString(R.string.others_search_custom_icon_url))
+                    } else if (
+                        titleLzhCN.value.isEmpty() && titleLzhTW.value.isEmpty() &&
+                        titleLenUS.value.isEmpty() && titleLboCN.value.isEmpty() && titleLugCN.value.isEmpty()
+                    ) {
+                        errorMSg.append(getString(R.string.others_search_custom_title))
                     } else {
-                        navController.popBackStack()
+                        valid = true
                     }
                 }
-            ) {
-                Icon(
-                    modifier = Modifier.size(26.dp),
-                    imageVector = MiuixIcons.ImmersionConfirm,
-                    contentDescription = "Confirm",
-                    tint = MiuixTheme.colorScheme.onSurfaceSecondary
-                )
+                if (valid) {
+                    SearchEngineItem(
+                        "custom",
+                        channelNo.value,
+                        showIcon.value,
+                        searchUrl.value,
+                        iconUrl.value,
+                        titleLzhCN.value,
+                        titleLzhTW.value,
+                        titleLenUS.value,
+                        titleLboCN.value,
+                        titleLugCN.value,
+                    ).let {
+                        SearchEngineItem.encodeToString(it)
+                    }.let {
+                        SafeSP.putAny(Pref.Key.Search.CUSTOM_SEARCH_ENGINE_ENTITY, it)
+                    }
+                    navController.popBackStack()
+                } else {
+                    Toast.makeText(context, errorMSg.toString(), Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                navController.popBackStack()
             }
         }
     ) {

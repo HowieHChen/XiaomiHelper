@@ -17,6 +17,7 @@ import dev.lackluster.hyperx.compose.activity.SafeSP
 import dev.lackluster.hyperx.compose.base.BasePage
 import dev.lackluster.hyperx.compose.base.BasePageDefaults
 import dev.lackluster.hyperx.compose.component.Hint
+import dev.lackluster.hyperx.compose.navigation.navigateTo
 import dev.lackluster.hyperx.compose.preference.DropDownEntry
 import dev.lackluster.hyperx.compose.preference.DropDownPreference
 import dev.lackluster.hyperx.compose.preference.EditTextDataType
@@ -26,6 +27,7 @@ import dev.lackluster.hyperx.compose.preference.SwitchPreference
 import dev.lackluster.hyperx.compose.preference.TextPreference
 import dev.lackluster.hyperx.compose.preference.ValuePosition
 import dev.lackluster.mihelper.R
+import dev.lackluster.mihelper.data.Pages
 import dev.lackluster.mihelper.ui.MainActivity
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.data.Scope
@@ -232,30 +234,23 @@ fun CleanMasterPage(navController: NavController, adjustPadding: PaddingValues, 
                     key = Pref.Key.Market.BLOCK_UPDATE_DIALOG
                 )
                 SwitchPreference(
-                    title = stringResource(R.string.cleaner_market_hide_game),
-                    summary = stringResource(R.string.cleaner_market_hide_game_tips),
-                    key = Pref.Key.Market.HIDE_TAB_GAME
-                )
-                SwitchPreference(
-                    title = stringResource(R.string.cleaner_market_hide_rank),
-                    summary = stringResource(R.string.cleaner_market_hide_rank_tips),
-                    key = Pref.Key.Market.HIDE_TAB_RANK
-                )
-                SwitchPreference(
-                    title = stringResource(R.string.cleaner_market_hide_agent),
-                    summary = stringResource(R.string.cleaner_market_hide_agent_tips),
-                    key = Pref.Key.Market.HIDE_TAB_AGENT
-                )
-                SwitchPreference(
-                    title = stringResource(R.string.cleaner_market_hide_video),
-                    summary = stringResource(R.string.cleaner_market_hide_video_tips),
-                    key = Pref.Key.Market.HIDE_TAB_APP_ASSEMBLE
-                )
-                SwitchPreference(
                     title = stringResource(R.string.cleaner_market_hide_app_security),
                     summary = stringResource(R.string.cleaner_market_hide_app_security_tips),
                     key = Pref.Key.Market.HIDE_APP_SECURITY
                 )
+                TextPreference(
+                    title = stringResource(R.string.cleaner_market_filter_tab),
+                    summary = stringResource(R.string.cleaner_market_filter_tab_tips),
+                    value = stringResource(
+                        if (SafeSP.getBoolean(Pref.Key.Market.FILTER_TAB)) {
+                            R.string.common_on
+                        } else {
+                            R.string.common_off
+                        }
+                    )
+                ) {
+                    navController.navigateTo(Pages.DIALOG_MARKET_FILTER_TAB)
+                }
             }
         }
         item {

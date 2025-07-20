@@ -39,6 +39,7 @@ import dev.lackluster.mihelper.ui.page.SystemUIPage
 import dev.lackluster.mihelper.ui.page.UITestPage
 import dev.lackluster.mihelper.data.Pages
 import dev.lackluster.mihelper.data.Pref
+import dev.lackluster.mihelper.ui.dialog.MarketFilterTabDialog
 import dev.lackluster.mihelper.ui.page.MediaActionResizePage
 import dev.lackluster.mihelper.utils.Device
 import dev.lackluster.mihelper.utils.ShellUtils
@@ -118,6 +119,7 @@ class MainActivity : HyperXActivity() {
                 composable(Pages.ICON_TUNER) { IconTurnerPage(navController, adjustPadding, mode) }
                 composable(Pages.MEDIA_CONTROL) { MediaControlPage(navController, adjustPadding, mode) }
 
+                composable(Pages.DIALOG_MARKET_FILTER_TAB) { MarketFilterTabDialog(navController, adjustPadding, mode) }
                 composable(Pages.DIALOG_SEARCH_CUSTOM_ENGINE) { SearchCustomEngineDialog(navController, adjustPadding, mode) }
                 composable(Pages.DEV_UI_TEST2) { MediaActionResizePage(navController, adjustPadding, "MediaActionResizePage", mode = mode) }
             }
