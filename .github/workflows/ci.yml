@@ -4,7 +4,7 @@ on:
   push:
     branches: [ "master" ]
     tags:
-      - v*
+      - v**
     paths-ignore:
       - 'README**.md'
 jobs:
@@ -60,7 +60,7 @@ jobs:
           New CI from HowieHChen/XiaomiHelper
 
           ```
-          ${{ github.event.head_commit.message }}
+          ${{ github.ref }}
           ```
       run: |
         if [ ! -z "${{ secrets.BOT_TOKEN }}" ]; then
