@@ -20,8 +20,10 @@
 
 package dev.lackluster.mihelper.hook.rules.securitycenter
 
+import android.app.Activity
 import android.os.Message
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
+import com.highcapable.yukihookapi.hook.factory.current
 import com.highcapable.yukihookapi.hook.factory.method
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.DexKit
@@ -112,6 +114,24 @@ object LockScore : YukiBaseHooker() {
             searchClasses = scoreManagerClass?.let { listOf(it) }
         }
     }
+    private val onExitDialogMethod by lazy {
+        DexKit.findMethodWithCache("lock_score_exit_dialog") {
+            matcher {
+                returnType = "void"
+                paramCount = 0
+                modifiers = Modifier.PUBLIC
+                addUsingNumber(1)
+                addUsingNumber(2)
+                addUsingNumber(3)
+                addUsingNumber(4)
+                addUsingNumber(5)
+                addInvoke {
+                    name = "removeCallbacksAndMessages"
+                }
+            }
+            searchClasses = mainFragment?.let { listOf(it) }
+        }
+    }
 
     override fun onHook() {
         hasEnable(Pref.Key.SecurityCenter.LOCK_SCORE) {
@@ -155,6 +175,15 @@ object LockScore : YukiBaseHooker() {
             }.forEach {
                 it.getMethodInstance(appClassLoader!!).hook {
                     intercept()
+                }
+            }
+            onExitDialogMethod?.getMethodInstance(appClassLoader!!)?.hook {
+                before {
+                    this.instance.current().method {
+                        name = "getActivity"
+                        superClass()
+                    }.invoke<Activity>()?.finish()
+                    this.result = null
                 }
             }
         }

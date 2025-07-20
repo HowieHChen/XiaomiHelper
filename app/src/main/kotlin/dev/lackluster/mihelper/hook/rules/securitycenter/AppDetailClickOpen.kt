@@ -97,11 +97,11 @@ object AppDetailClickOpen : YukiBaseHooker() {
                         name = "initView"
                     }.hook {
                         after {
-                            val activity = this.instance as Activity
+                            val activity = this.instance<Activity>()
                             val appDetailTitle = activity.findViewById<View?>(
                                 activity.resources.getIdentifier("am_detail_title", "id", activity.packageName)
-                            )
-                            val appIcon =appDetailTitle.findViewById<ImageView>(
+                            ) ?: return@after
+                            val appIcon = appDetailTitle.findViewById<ImageView>(
                                 activity.resources.getIdentifier("app_manager_details_appicon", "id", activity.packageName)
                             )
                             appIcon.setOnClickListener {
