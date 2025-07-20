@@ -52,6 +52,18 @@ object LockScore : YukiBaseHooker() {
     private val mainFragment by lazy {
         DexKit.dexKitBridge.getClassData("com.miui.securityscan.MainFragment")
     }
+    private val onRestartSetTextMethod by lazy {
+        DexKit.findMethodsWithCache("lock_score_restart") {
+            matcher {
+                returnType = "void"
+                modifiers = Modifier.PRIVATE
+                addInvoke {
+                    name = "setActionButtonText"
+                }
+            }
+            searchClasses = mainFragment?.let { listOf(it) }
+        }
+    }
     private val redundantScanMethod1 by lazy {
         DexKit.findMethodWithCache("lock_score_redundant1") {
             matcher {
@@ -137,6 +149,13 @@ object LockScore : YukiBaseHooker() {
             }
             getMinusScoreMethod?.getMethodInstance(appClassLoader!!)?.hook {
                 replaceTo(0)
+            }
+            onRestartSetTextMethod.filter {
+                it != redundantScanMethod1
+            }.forEach {
+                it.getMethodInstance(appClassLoader!!).hook {
+                    intercept()
+                }
             }
         }
     }
