@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout
+    - name: Checkout repository
       uses: actions/checkout@v4
       with:
           fetch-depth: 0
@@ -29,7 +29,7 @@ jobs:
         distribution: 'temurin'
         cache: gradle
 
-    - name: Setup Gradle
+    - name: Set up Gradle
       uses: gradle/actions/setup-gradle@v4
 
     - name: Decode android signing key
