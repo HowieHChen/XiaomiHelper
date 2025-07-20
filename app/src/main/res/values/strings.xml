@@ -372,6 +372,8 @@
     <string name="cleaner_market_block_update_dailog_tips">Block the dialog that prompts you to turn on update push, when update push is turned off and the update button is clicked.</string>
     <string name="cleaner_market_hide_app_security">Hide app security</string>
     <string name="cleaner_market_hide_app_security_tips">Hide the app security card on my page</string>
+    <string name="cleaner_market_bottom_tab_blur">Blur effect</string>
+    <string name="cleaner_market_bottom_tab_blur_tips">Force enable blur effect on bottom tab bar</string>
     <string name="cleaner_market_filter_tab">Filter bottom tabs</string>
     <string name="cleaner_market_filter_tab_tips">Hide useless tabs (and corresponding pages)</string>
     <string name="cleaner_market_ignore_restrict">Ignore suggested limits</string>

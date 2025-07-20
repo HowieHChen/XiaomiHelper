@@ -238,6 +238,11 @@ fun CleanMasterPage(navController: NavController, adjustPadding: PaddingValues, 
                     summary = stringResource(R.string.cleaner_market_hide_app_security_tips),
                     key = Pref.Key.Market.HIDE_APP_SECURITY
                 )
+                SwitchPreference(
+                    title = stringResource(R.string.cleaner_market_bottom_tab_blur),
+                    summary = stringResource(R.string.cleaner_market_bottom_tab_blur_tips),
+                    key = Pref.Key.Market.TAB_BLUR
+                )
                 TextPreference(
                     title = stringResource(R.string.cleaner_market_filter_tab),
                     summary = stringResource(R.string.cleaner_market_filter_tab_tips),

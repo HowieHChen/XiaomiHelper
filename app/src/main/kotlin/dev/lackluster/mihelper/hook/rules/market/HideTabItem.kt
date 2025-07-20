@@ -20,14 +20,19 @@
 
 package dev.lackluster.mihelper.hook.rules.market
 
+import android.app.Activity
+import android.view.View
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.field
 import com.highcapable.yukihookapi.hook.factory.method
 import com.highcapable.yukihookapi.hook.type.java.StringClass
 import dev.lackluster.mihelper.data.Pref
+import dev.lackluster.mihelper.data.Scope
 import dev.lackluster.mihelper.utils.Prefs
+import dev.lackluster.mihelper.utils.factory.getResID
 
 object HideTabItem : YukiBaseHooker() {
+    private val tabBlur = Prefs.getBoolean(Pref.Key.Market.TAB_BLUR, false)
     private val hideTab = Prefs.getBoolean(Pref.Key.Market.FILTER_TAB, false)
     private val ignoreRestrict = Prefs.getBoolean(Pref.Key.Market.FILTER_TAB_IGNORE_RESTRICT, false)
     private val showTabHome = !Prefs.getBoolean(Pref.Key.Market.HIDE_TAB_HOME, false)
@@ -43,7 +48,43 @@ object HideTabItem : YukiBaseHooker() {
     }
 
     override fun onHook() {
+        val tabContainerVisible: Boolean
+        if (hideTab && ignoreRestrict) {
+            var visibleTab = 0
+            if (showTabHome) visibleTab++
+            if (showTabGame) visibleTab++
+            if (showTabRank) visibleTab++
+            if (showTabAgent) visibleTab++
+            if (showTabAppAssemble) visibleTab++
+            if (showTabMine) visibleTab++
+            tabContainerVisible = visibleTab > 1
+        } else {
+            tabContainerVisible = true
+        }
+        if (!tabContainerVisible || tabBlur) {
+            "com.xiaomi.market.common.analytics.onetrack.ExperimentManager\$Companion".toClassOrNull()?.apply {
+                method {
+                    name = "isEnableMiuixBlur"
+                }.hook {
+                    replaceToTrue()
+                }
+            }
+        }
         if (hideTab) {
+            if (!tabContainerVisible) {
+                "com.xiaomi.market.ui.DoubleTabProxyActivityWrapper".toClassOrNull()?.apply {
+                    method {
+                        name = "setTabContainer"
+                    }.hook {
+                        after {
+                            this.instance<Activity>().let {
+                                val tabContainerId = it.getResID("tab_container_layout", "id", Scope.MARKET)
+                                it.findViewById<View>(tabContainerId)?.visibility = View.GONE
+                            }
+                        }
+                    }
+                }
+            }
             val tabTagField = tabInfoClass?.field {
                 name = "tag"
                 type = StringClass

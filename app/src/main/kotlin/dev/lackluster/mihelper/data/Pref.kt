@@ -62,6 +62,7 @@ object Pref {
         object Market {
             const val AD_BLOCKER = "market_ad_block"
             const val SKIP_SPLASH = "market_skip_splash"
+            const val TAB_BLUR = "market_tab_blur"
             const val FILTER_TAB = "market_filter_tab"
             const val FILTER_TAB_IGNORE_RESTRICT = "market_tab_ignore_restrict"
             const val HIDE_TAB_HOME = "market_hide_tab_home"
