@@ -79,7 +79,7 @@ android {
         applicationVariants.all {
             outputs.all {
                 (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName =
-                    "${libs.versions.project.name.get()}_${versionName}_${versionCode}_${buildType.name}_${System.currentTimeMillis()}.apk"
+                    "${libs.versions.project.name.get()}_${versionName}_${versionCode}_${buildType.name}_${System.currentTimeMillis() / 1000}.apk"
             }
         }
     }
