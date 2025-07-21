@@ -49,7 +49,16 @@ jobs:
       with:
         name: XiaomiHelper-arm64-v8a-${{ env.SHA7 }}
         path: app/build/outputs/apk/release
-      
+
+    - name: Get tags
+      id: tag
+      uses: JinoArch/get-latest-tag@latest
+
+    - name: Generate changelog
+      id: changelog
+      run: |
+        echo "changelog=$(git log --oneline "${{ steps.tag.outputs.previousTag }}..${{ steps.tag.outputs.latestTag }}")" >> $GITHUB_OUTPUT
+
     - name: Post to Telegram ci channel
       if: ${{ success() && github.event_name != 'pull_request' && github.ref_type == 'tag' }}
       env:
@@ -59,7 +68,7 @@ jobs:
           New CI from HowieHChen/XiaomiHelper
 
           ```
-          ${{ github.ref }}
+          ${{ steps.tag.outputs.changelog }}
           ```
       run: |
         if [ ! -z "${{ secrets.BOT_TOKEN }}" ]; then
