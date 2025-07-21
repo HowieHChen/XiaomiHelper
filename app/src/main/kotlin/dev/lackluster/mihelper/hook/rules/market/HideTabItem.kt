@@ -24,6 +24,7 @@ import android.app.Activity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.core.view.updatePadding
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.current
 import com.highcapable.yukihookapi.hook.factory.field
@@ -32,9 +33,12 @@ import com.highcapable.yukihookapi.hook.type.java.StringClass
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.data.Scope
 import dev.lackluster.mihelper.utils.Prefs
+import dev.lackluster.mihelper.utils.factory.dp
 import dev.lackluster.mihelper.utils.factory.getResID
 
 object HideTabItem : YukiBaseHooker() {
+    private const val DIMEN_BOTTOM_TABVIEW_HEIGHT = 59.63998f
+    private const val DIMEN_TAB_ICON_BOTTOM_PADDING = 11.639984f
     private val tabBlur = Prefs.getBoolean(Pref.Key.Market.TAB_BLUR, false)
     private val hideTab = Prefs.getBoolean(Pref.Key.Market.FILTER_TAB, false)
     private val ignoreRestrict = Prefs.getBoolean(Pref.Key.Market.FILTER_TAB_IGNORE_RESTRICT, false)
@@ -48,6 +52,12 @@ object HideTabItem : YukiBaseHooker() {
 
     private val tabInfoClass by lazy {
         "com.xiaomi.market.model.TabInfo".toClassOrNull()
+    }
+    private val getNavigationBarHeightMethod by lazy {
+        "com.xiaomi.market.util.DeviceUtils".toClassOrNull()?.method {
+            name = "getNavigationBarHeight"
+            modifiers { isStatic }
+        }?.get()
     }
 
     override fun onHook() {
@@ -74,32 +84,21 @@ object HideTabItem : YukiBaseHooker() {
             }
         }
         if (tabBlur) {
-            "com.xiaomi.market.widget.TabView$1".toClassOrNull()?.apply {
-                method {
-                    name = "onGlobalLayout"
-                }.hook {
-                    after {
-                        this.instance.current().field {
-                            name = "this$0"
-                        }.cast<View>()?.let {
-                            it.layoutParams = it.layoutParams.apply { this as LinearLayout.LayoutParams
-                                width = 0
-                                weight = 1.0f
-                            }
-                        }
-                    }
-                }
-            }
             "com.xiaomi.market.widget.TabView".toClassOrNull()?.apply {
                 method {
                     name = "setTab"
                 }.hook {
                     after {
+                        val navBarHeight = getNavigationBarHeightMethod?.int() ?: 0
                         this.instance<View>().let {
                             it.layoutParams = it.layoutParams.apply { this as LinearLayout.LayoutParams
                                 width = 0
+                                height = DIMEN_BOTTOM_TABVIEW_HEIGHT.dp(it.context) + navBarHeight
                                 weight = 1.0f
                             }
+                            it.updatePadding(
+                                bottom = DIMEN_TAB_ICON_BOTTOM_PADDING.dp(it.context) + navBarHeight
+                            )
                         }
                     }
                 }
@@ -138,9 +137,12 @@ object HideTabItem : YukiBaseHooker() {
                     after {
                         this.instance.current().field {
                             name = "bottomTabLayout"
+                            superClass()
                         }.cast<View>()?.let { v ->
+                            val navBarHeight = getNavigationBarHeightMethod?.int() ?: 0
                             v.layoutParams = v.layoutParams.apply { this as ViewGroup.MarginLayoutParams
                                 bottomMargin = 0
+                                height = DIMEN_BOTTOM_TABVIEW_HEIGHT.dp(v.context) + navBarHeight
                             }
                         }
                     }
