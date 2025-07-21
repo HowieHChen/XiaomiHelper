@@ -57,7 +57,11 @@ jobs:
     - name: Generate changelog
       id: changelog
       run: |
-        echo "changelog=\"$(git log --oneline ${{ steps.tag.outputs.previousTag }}..${{ steps.tag.outputs.latestTag }})\"" >> $GITHUB_OUTPUT
+        {
+          echo 'CHANGELOG<<EOF'
+          git log --oneline ${{ steps.tag.outputs.previousTag }}..${{ steps.tag.outputs.latestTag }}
+          echo EOF
+        } >> "$GITHUB_ENV"
 
     - name: Post to Telegram ci channel
       if: ${{ success() && github.event_name != 'pull_request' && github.ref_type == 'tag' }}
@@ -68,7 +72,7 @@ jobs:
           New CI from HowieHChen/XiaomiHelper
 
           ```
-          ${{ steps.tag.outputs.changelog }}
+          ${{ env.CHANGELOG }}
           ```
       run: |
         if [ ! -z "${{ secrets.BOT_TOKEN }}" ]; then
