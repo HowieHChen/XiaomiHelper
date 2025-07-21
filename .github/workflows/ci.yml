@@ -57,7 +57,7 @@ jobs:
     - name: Generate changelog
       id: changelog
       run: |
-        echo "changelog=$(git log --oneline "${{ steps.tag.outputs.previousTag }}..${{ steps.tag.outputs.latestTag }}")" >> $GITHUB_OUTPUT
+        echo "changelog='$(git log --oneline "${{ steps.tag.outputs.previousTag }}..${{ steps.tag.outputs.latestTag }}'")" >> $GITHUB_OUTPUT
 
     - name: Post to Telegram ci channel
       if: ${{ success() && github.event_name != 'pull_request' && github.ref_type == 'tag' }}
