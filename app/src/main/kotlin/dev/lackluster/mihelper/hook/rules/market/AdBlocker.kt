@@ -83,6 +83,14 @@ object AdBlocker : YukiBaseHooker() {
                     intercept()
                 }
             }
+            // 首页二楼
+            "com.xiaomi.market.business_ui.secondfloor.SecondFloorController".toClassOrNull()?.apply {
+                method {
+                    name = "create"
+                }.hook {
+                    intercept()
+                }
+            }
             // 过滤子标签页
             "com.xiaomi.market.ui.PagerTabsInfo".toClassOrNull()?.apply {
                 constructor().hookAll {

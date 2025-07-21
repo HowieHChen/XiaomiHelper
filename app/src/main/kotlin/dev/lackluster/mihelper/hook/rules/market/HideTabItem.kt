@@ -103,6 +103,16 @@ object HideTabItem : YukiBaseHooker() {
                         }
                     }
                 }
+                method {
+                    name = "setNumber"
+                }.hook {
+                    intercept()
+                }
+                method {
+                    name = "showNewMessageTag"
+                }.hook {
+                    intercept()
+                }
             }
             "com.xiaomi.market.widget.BottomTabLayout".toClassOrNull()?.apply {
                 method {
