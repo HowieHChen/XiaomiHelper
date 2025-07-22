@@ -386,7 +386,7 @@
     <string name="cleaner_market_tab_agent">Agent</string>
     <string name="cleaner_market_tab_app_assemble">App feed/Video</string>
     <string name="cleaner_market_tab_mine">Account</string>
-    <string name="cleaner_market_filter_tab_warning">Warning! There are currently fewer than two visible tabs, which may cause UI abnormalities!</string>
+    <string name="cleaner_market_filter_tab_warning">Warning: there are currently fewer than two visible tabs, which may cause UI abnormalities!</string>
     <string name="ui_title_cleaner_milink" translatable="false">@string/scope_mi_link</string>
     <string name="cleaner_milink_fuck_hpplay">Block creation of hpplay folders</string>
     <string name="ui_title_cleaner_music" translatable="false">@string/scope_music</string>
