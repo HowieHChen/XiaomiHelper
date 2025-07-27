@@ -286,9 +286,9 @@
     <string name="home_others_force_color_scheme_statusbar_tips">Especifique a cor do texto e dos ícones da barra de status (ignore a cor do plano de fundo). Requer a ativação de \"Desativar Escuro inteligente\" na página UI do Sistema.</string>
     <string name="home_others_force_color_scheme_minus">Cor do Assistente</string>
     <string name="home_others_force_color_scheme_minus_tips">Especifique a cor do texto da barra de status e dos ícones do Assistente (ignore a cor do plano de fundo). Requer a ativação de \"Desativar Escuro inteligente\" na página UI do Sistema.</string>
+    <!-- CleanMasterPage -->
     <string name="ui_title_cleaner_compatibility">Compatibilidade</string>
     <string name="cleaner_compatibility_tips">A maior parte dos recursos desta página foi desenvolvida para usuários localizados no Continente Chinês.\nObserve que os recursos relacionados à música são exclusivos para usuários com contas de assinatura de serviços de música.\nRecomendamos o uso das versões do app abaixo, que foram testadas e verificadas quanto à compatibilidade.</string>
-    <!-- CleanMasterPage -->
     <string name="ui_title_cleaner_ad_blocker">Bloqueador de anúncios</string>
     <string name="ui_title_cleaner_skip_splash">Desativar Tela inicial</string>
     <string name="cleaner_skip_splash_tips">Também deve desativar os anúncios na Tela inicial (sem garantias)</string>
@@ -303,15 +303,27 @@
     <string name="cleaner_browser_hide_ai_search_entry_tips">Oculte a entrada da pesquisa de IA acima do teclado na página de pesquisa</string>
     <string name="cleaner_downloadui_hide_xl">Ocultar ícones e texto da Xunlei</string>
     <string name="cleaner_download_fuck_xl">Bloquear a criação da pasta .xlDownload</string>
-    <string name="cleaner_home_remove_report">Remover botão \"Denunciar\" da janela pop-up de desinstalação do app</string>
     <string name="cleaner_incallui_hide_crbt">Ocultar tom de toque colorido personalizado</string>
+    <string name="cleaner_home_remove_report">Remover botão \"Denunciar\" da janela pop-up de desinstalação do app</string>
     <string name="cleaner_market_block_update_dailog">Bloquear caixa de diálogo push de atualização</string>
     <string name="cleaner_market_block_update_dailog_tips">Bloqueie a caixa de diálogo que solicita que você ative o push de atualização, quando o push de atualização estiver desativado e o botão de atualização for clicado.</string>
-    <string name="cleaner_market_tab_game">Ocultar jogo</string>
-    <string name="cleaner_market_tab_rank">Ocultar classificação</string>
-    <string name="cleaner_market_tab_app_assemble">Ocultar Montagem/vídeo do app</string>
     <string name="cleaner_market_hide_app_security">Ocultar segurança do app</string>
     <string name="cleaner_market_hide_app_security_tips">Oculte o cartão de segurança do app na minha página</string>
+    <string name="cleaner_market_bottom_tab_blur">Efeito de blur</string>
+    <string name="cleaner_market_bottom_tab_blur_tips">Force a ativação do efeito de blur na barra de guias inferior</string>
+    <string name="cleaner_market_filter_tab">Filtrar guias inferiores</string>
+    <string name="cleaner_market_filter_tab_tips">Ocultar guias inúteis (e páginas correspondentes)</string>
+    <string name="cleaner_market_ignore_restrict">Ignorar limites sugeridos</string>
+    <string name="cleaner_market_filter_unknown_tabs">Filtrar guias desconhecidas</string>
+    <string name="cleaner_market_filter_unknown_tabs_tips">Filtre todas as guias não mostradas abaixo</string>
+    <string name="cleaner_market_visible_tabs">Guias visíveis</string>
+    <string name="cleaner_market_tab_home">Início</string>
+    <string name="cleaner_market_tab_game">Jogos</string>
+    <string name="cleaner_market_tab_rank">Popular</string>
+    <string name="cleaner_market_tab_agent">Agente</string>
+    <string name="cleaner_market_tab_app_assemble">Feed/Vídeo do app</string>
+    <string name="cleaner_market_tab_mine">Conta</string>
+    <string name="cleaner_market_filter_tab_warning">Aviso: atualmente, há menos de duas guias visíveis, o que pode causar anormalidades na interface do usuário!</string>
     <string name="cleaner_milink_fuck_hpplay">Bloquear a criação de pastas hpplay</string>
     <string name="cleaner_music_hide_karaoke">Ocultar karaokê</string>
     <string name="cleaner_music_hide_karaoke_tips">Remove o karaokê da aba superior da página inicial</string>
