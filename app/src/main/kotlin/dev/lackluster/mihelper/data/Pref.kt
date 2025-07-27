@@ -116,6 +116,7 @@ object Pref {
             const val FORCE_COLOR_STATUS_BAR = "home_force_color_status_bar"
             const val FORCE_COLOR_TEXT_ICON = "home_force_color_text_icon"
             const val FORCE_COLOR_MINUS = "home_force_color_minus"
+            const val DOCK_REMOVE_NUM_LIMIT = "home_dock_remove_num_limit"
         }
         object MMS {
             const val AD_BLOCKER = "mms_ad_block"

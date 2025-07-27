@@ -88,13 +88,14 @@
     <string name="home_icon_corner4large_tips">胶囊形图标将变成圆角矩形图标</string>
     <string name="home_icon_perfect_icon">强制启用完美图标</string>
     <string name="home_icon_perfect_icon_tips">会降低使用应用自己的图标的优先级</string>
+    <string name="home_others_dock_remove_num_limit">移除 Dock 的图标数量限制</string>
     <string name="home_others_always_show_clock">始终在状态栏中显示时间</string>
     <string name="common_tap_sleep">双击空白处锁屏</string>
     <string name="ui_title_home_recent">最近任务</string>
     <string name="home_recent_show_real_memory">显示真实内存占用</string>
     <string name="home_recent_pad_hide_world">隐藏“融合设备中心”按钮</string>
     <string name="home_recent_pad_show_memory">在平板上显示内存占用</string>
-    <string name="home_Recent_mem_info_clear">长按内存信息清除全部</string>
+    <string name="home_recent_mem_info_clear">长按内存信息清除全部</string>
     <string name="home_recent_wallpaper_darken">阻止壁纸变暗</string>
     <string name="home_recent_wallpaper_darken_tips">阻止在进入最近任务界面时自动降低壁纸亮度</string>
     <string name="home_recent_dismiss_anim">修改清除最近任务时的卡片动画</string>

@@ -5,6 +5,7 @@ import dev.lackluster.mihelper.hook.rules.miuihome.AllowMoreFreeformForHome
 import dev.lackluster.mihelper.hook.rules.miuihome.recent.HideFakeNavBar
 import dev.lackluster.mihelper.hook.rules.miuihome.gesture.DoubleTapToSleep
 import dev.lackluster.mihelper.hook.rules.miuihome.ForceColorScheme
+import dev.lackluster.mihelper.hook.rules.miuihome.RemoveHotSeatNumLimit
 import dev.lackluster.mihelper.hook.rules.miuihome.folder.FolderAdaptIconSize
 import dev.lackluster.mihelper.hook.rules.miuihome.minus.MinusSettings
 import dev.lackluster.mihelper.hook.rules.miuihome.recent.PadShowMemory
@@ -37,6 +38,7 @@ object MiuiHome : YukiBaseHooker() {
         loadHooker(AllowMoreFreeformForHome)
         loadHooker(MinusSettings)
         loadHooker(HideFakeNavBar)
+        loadHooker(RemoveHotSeatNumLimit)
         if (Device.isPad) {
             loadHooker(PadShowMemory)
             loadHooker(PadHideWorldView)

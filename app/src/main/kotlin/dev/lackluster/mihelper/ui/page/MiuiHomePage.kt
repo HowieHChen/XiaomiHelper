@@ -270,7 +270,7 @@ fun MiuiHomePage(navController: NavController, adjustPadding: PaddingValues, mod
                     spValueHideClearButton && (!Device.isPad || spValuePadShowMemory)
                 ) {
                     SwitchPreference(
-                        title = stringResource(R.string.home_Recent_mem_info_clear),
+                        title = stringResource(R.string.home_recent_mem_info_clear),
                         key = Pref.Key.MiuiHome.RECENT_MEM_INFO_CLEAR
                     )
                 }
@@ -289,6 +289,10 @@ fun MiuiHomePage(navController: NavController, adjustPadding: PaddingValues, mod
                 title = stringResource(R.string.ui_title_home_others),
                 last = true
             ) {
+                SwitchPreference(
+                    title = stringResource(R.string.home_others_dock_remove_num_limit),
+                    key = Pref.Key.MiuiHome.DOCK_REMOVE_NUM_LIMIT
+                )
                 SwitchPreference(
                     title = stringResource(R.string.home_others_show_minus_setting),
                     key = Pref.Key.MiuiHome.MINUS_RESTORE_SETTING

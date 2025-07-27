@@ -307,7 +307,7 @@
     <string name="home_recent_hide_status_bar">Hide the status bar</string>
     <string name="home_recent_hide_status_bar_tips">Hide the status bar in Recents</string>
     <string name="home_recent_hide_clear_all">Hide Clear all button</string>
-    <string name="home_Recent_mem_info_clear">Long click on memory info to clear all</string>
+    <string name="home_recent_mem_info_clear">Long click on memory info to clear all</string>
     <string name="home_recent_show_real_memory">Show real memory usage</string>
     <string name="home_recent_wallpaper_darken">Stop reducing the brightness of wallpaper</string>
     <string name="home_recent_wallpaper_darken_tips">Stop the automatic reduction of the wallpaper\'s brightness when entering the recent tasks view</string>
@@ -330,6 +330,7 @@
     <string name="home_minus_page_minus_blur" translatable="false">@string/page_minus_blur</string>
     <string name="home_minus_blur">Enable blur for background</string>
     <string name="ui_title_home_others" translatable="false">@string/common_others</string>
+    <string name="home_others_dock_remove_num_limit">Remove the icon limit from the Dock</string>
     <string name="home_others_always_show_clock">Always show time in status bar</string>
     <string name="home_others_fake_premium">Disguised as a high-end model</string>
     <string name="home_others_fake_premium_tips">Remove model restrictions on some features</string>
