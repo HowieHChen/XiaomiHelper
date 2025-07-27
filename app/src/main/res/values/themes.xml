@@ -1,4 +1,6 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="Theme.AppDefault" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.AppDefault" parent="android:Theme.Material.Light.NoActionBar" >
+        <item name="android:windowBackground">#FFF7F7F7</item>
+    </style>
 </resources>
