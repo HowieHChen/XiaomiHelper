@@ -205,6 +205,10 @@
     <string name="systemui_control_hide_carrier_two">Ocultar nome da operadora do cartão SIM 2</string>
     <string name="systemui_control_hide_carrier_hd">Ocultar HD</string>
     <string name="systemui_control_hide_carrier_hd_tips">Oculte o ícone HD ao lado do rótulo da operadora</string>
+    <string name="systemui_control_battery_percent">Sempre mostrar a porcentagem da bateria</string>
+    <string name="systemui_control_battery_percent_tips">Exibe sempre a porcentagem da bateria no centro de controle, independentemente da preferência de estilo do indicador de bateria.</string>
+    <string name="systemui_control_battery_percent_anim">Corrigir efeito de transição de elemento compartilhado</string>
+    <string name="systemui_control_battery_percent_anim_tips">Ativar a opção \"Sempre mostrar a porcentagem da bateria\" pode afetar sutilmente a transição visual dos elementos compartilhados ao abrir o centro de controle. Embora esse efeito geralmente seja difícil de notar, você pode ativar essa opção se ela te incomodar.</string>
     <string name="systemui_others_monet_overlay">Personalizar cores do tema</string>
     <string name="systemui_others_monet_overlay_tips">Personalize as cores do tema em vez de retirar as cores do plano de fundo do sistema</string>
     <string name="systemui_others_monet_color">Cor do tema</string>
@@ -274,6 +278,7 @@
     <string name="home_minus_blur_type_texture">Texturas avançadas</string>
     <string name="home_minus_fold_style">Modo sobreposto</string>
     <string name="home_minus_blur">Ativar blur de fundo</string>
+    <string name="home_others_dock_remove_num_limit">Remover limite de ícones da dock</string>
     <string name="home_others_always_show_clock">Mostrar sempre a hora na barra de status</string>
     <string name="home_others_fake_premium">Disfarçar modelo como high-end</string>
     <string name="home_others_fake_premium_tips">Remove as restrições do modelo em alguns recursos</string>
