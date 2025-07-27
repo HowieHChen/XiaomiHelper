@@ -16,10 +16,10 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.navigation.compose.composable
 import dev.lackluster.hyperx.compose.activity.HyperXActivity
 import dev.lackluster.hyperx.compose.activity.SafeSP
 import dev.lackluster.hyperx.compose.base.HyperXApp
+import dev.lackluster.hyperx.compose.navigation.miuixComposable
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.ui.dialog.SearchCustomEngineDialog
 import dev.lackluster.mihelper.ui.page.AboutPage
@@ -103,25 +103,25 @@ class MainActivity : HyperXActivity() {
                 }
             },
             otherPageBuilder = { navController, adjustPadding, mode ->
-                composable(Pages.MODULE_SETTINGS) { ModuleSettingsPage(navController, adjustPadding, mode) }
-                composable(Pages.SYSTEM_UI) { SystemUIPage(navController, adjustPadding, mode)}
-                composable(Pages.SYSTEM_FRAMEWORK) { SystemFrameworkPage(navController, adjustPadding, mode) }
-                composable(Pages.MIUI_HOME) { MiuiHomePage(navController, adjustPadding, mode) }
-                composable(Pages.CLEAN_MASTER) { CleanMasterPage(navController, adjustPadding, mode) }
-                composable(Pages.SECURITY_CENTER) { SecurityCenterPage(navController, adjustPadding, mode) }
-                composable(Pages.OTHERS) { OthersPage(navController, adjustPadding, mode) }
-                composable(Pages.ABOUT) { AboutPage(navController, adjustPadding, mode) }
+                miuixComposable(Pages.MODULE_SETTINGS) { ModuleSettingsPage(navController, adjustPadding, mode) }
+                miuixComposable(Pages.SYSTEM_UI) { SystemUIPage(navController, adjustPadding, mode)}
+                miuixComposable(Pages.SYSTEM_FRAMEWORK) { SystemFrameworkPage(navController, adjustPadding, mode) }
+                miuixComposable(Pages.MIUI_HOME) { MiuiHomePage(navController, adjustPadding, mode) }
+                miuixComposable(Pages.CLEAN_MASTER) { CleanMasterPage(navController, adjustPadding, mode) }
+                miuixComposable(Pages.SECURITY_CENTER) { SecurityCenterPage(navController, adjustPadding, mode) }
+                miuixComposable(Pages.OTHERS) { OthersPage(navController, adjustPadding, mode) }
+                miuixComposable(Pages.ABOUT) { AboutPage(navController, adjustPadding, mode) }
 
-                composable(Pages.MENU) { MenuPage(navController, adjustPadding, mode) }
-                composable(Pages.DEV_UI_TEST) { UITestPage(navController, adjustPadding, mode) }
-                composable(Pages.STATUS_BAR_CLOCK) { StatusBarClockPage(navController, adjustPadding, mode) }
-                composable(Pages.STATUS_BAR_FONT) { StatusBarFontPage(navController, adjustPadding, mode) }
-                composable(Pages.ICON_TUNER) { IconTurnerPage(navController, adjustPadding, mode) }
-                composable(Pages.MEDIA_CONTROL) { MediaControlPage(navController, adjustPadding, mode) }
+                miuixComposable(Pages.MENU) { MenuPage(navController, adjustPadding, mode) }
+                miuixComposable(Pages.DEV_UI_TEST) { UITestPage(navController, adjustPadding, mode) }
+                miuixComposable(Pages.STATUS_BAR_CLOCK) { StatusBarClockPage(navController, adjustPadding, mode) }
+                miuixComposable(Pages.STATUS_BAR_FONT) { StatusBarFontPage(navController, adjustPadding, mode) }
+                miuixComposable(Pages.ICON_TUNER) { IconTurnerPage(navController, adjustPadding, mode) }
+                miuixComposable(Pages.MEDIA_CONTROL) { MediaControlPage(navController, adjustPadding, mode) }
 
-                composable(Pages.DIALOG_MARKET_FILTER_TAB) { MarketFilterTabDialog(navController, adjustPadding, mode) }
-                composable(Pages.DIALOG_SEARCH_CUSTOM_ENGINE) { SearchCustomEngineDialog(navController, adjustPadding, mode) }
-                composable(Pages.DEV_UI_TEST2) { MediaActionResizePage(navController, adjustPadding, "MediaActionResizePage", mode = mode) }
+                miuixComposable(Pages.DIALOG_MARKET_FILTER_TAB) { MarketFilterTabDialog(navController, adjustPadding, mode) }
+                miuixComposable(Pages.DIALOG_SEARCH_CUSTOM_ENGINE) { SearchCustomEngineDialog(navController, adjustPadding, mode) }
+                miuixComposable(Pages.DEV_UI_TEST2) { MediaActionResizePage(navController, adjustPadding, "MediaActionResizePage", mode = mode) }
             }
         )
     }
