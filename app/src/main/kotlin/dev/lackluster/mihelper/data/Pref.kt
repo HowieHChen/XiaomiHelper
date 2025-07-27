@@ -319,6 +319,8 @@ object Pref {
                 const val HIDE_CARRIER_ONE = "statusbar_hide_carrier_one"
                 const val HIDE_CARRIER_TWO = "statusbar_hide_carrier_two"
                 const val HIDE_CARRIER_HD = "statusbar_hide_carrier_hd"
+                const val BATTERY_PERCENTAGE = "statusbar_cc_battery_percent"
+                const val BATTERY_PERCENTAGE_ANIM = "statusbar_cc_battery_percent_anim"
             }
             const val FUCK_GESTURES_DAT = "systemui_fuck_gesture_dat"
         }

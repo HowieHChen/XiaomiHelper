@@ -25,6 +25,7 @@ import dev.lackluster.mihelper.hook.rules.systemui.media.CustomBackground
 import dev.lackluster.mihelper.hook.rules.systemui.media.UnlockCustomAction
 import dev.lackluster.mihelper.hook.rules.systemui.notif.MiuiXExpandButton
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.BatteryIndicator
+import dev.lackluster.mihelper.hook.rules.systemui.statusbar.ControlCenterBattery
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.ElementsFontWeight
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.HideCellularIcon
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.HideWiFiIcon
@@ -46,6 +47,7 @@ object SystemUI : YukiBaseHooker() {
 
         loadHooker(IgnoreSysHideIcon)
         loadHooker(BatteryIndicator)
+        loadHooker(ControlCenterBattery)
         loadHooker(HideCarrierLabel)
         loadHooker(HideCellularIcon)
         loadHooker(HideStatusBarIcon)

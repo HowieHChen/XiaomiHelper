@@ -250,6 +250,10 @@
     <string name="systemui_control_hide_carrier_two">Hide carrier label for SIM card 2</string>
     <string name="systemui_control_hide_carrier_hd">Hide HD</string>
     <string name="systemui_control_hide_carrier_hd_tips">Hide the HD icon next to the carrier label</string>
+    <string name="systemui_control_battery_percent">Always show battery percentage</string>
+    <string name="systemui_control_battery_percent_tips">Always show the battery percentage in the control center, ignoring battery indicator style preference.</string>
+    <string name="systemui_control_battery_percent_anim">Fix shared element transition effect</string>
+    <string name="systemui_control_battery_percent_anim_tips">Enabling \"Always show battery percentage\" may disrupt the transition of shared elements when pulling down the control center. If you find this uncomfortable, even though it is difficult to notice, please enable this option.</string>
     <string name="ui_title_systemui_others" translatable="false">@string/common_others</string>
     <string name="systemui_others_monet_overlay">Customize theme color</string>
     <string name="systemui_others_monet_overlay_tips">Customize theme colors instead of fetching colors from system wallpaper</string>

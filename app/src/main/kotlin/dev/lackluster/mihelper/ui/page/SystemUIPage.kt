@@ -39,6 +39,9 @@ fun SystemUIPage(navController: NavController, adjustPadding: PaddingValues, mod
     var visibilityCustomNotifCount by remember { mutableStateOf(
         SafeSP.getBoolean(Pref.Key.SystemUI.StatusBar.NOTIFICATION_COUNT)
     ) }
+    var visibilityCCBatteryPercent by remember { mutableStateOf(
+        SafeSP.getBoolean(Pref.Key.SystemUI.ControlCenter.BATTERY_PERCENTAGE)
+    ) }
     var visibilityMonetColor by remember { mutableStateOf(
         SafeSP.getBoolean(Pref.Key.SystemUI.NotifCenter.MONET_OVERLAY)
     ) }
@@ -169,6 +172,22 @@ fun SystemUIPage(navController: NavController, adjustPadding: PaddingValues, mod
                     summary = stringResource(R.string.systemui_control_hide_carrier_hd_tips),
                     key = Pref.Key.SystemUI.ControlCenter.HIDE_CARRIER_HD
                 )
+                SwitchPreference(
+                    title = stringResource(R.string.systemui_control_battery_percent),
+                    summary = stringResource(R.string.systemui_control_battery_percent_tips),
+                    key = Pref.Key.SystemUI.ControlCenter.BATTERY_PERCENTAGE
+                ) {
+                    visibilityCCBatteryPercent = it
+                }
+                AnimatedVisibility(
+                    visibilityCCBatteryPercent
+                ) {
+                    SwitchPreference(
+                        title = stringResource(R.string.systemui_control_battery_percent_anim),
+                        summary = stringResource(R.string.systemui_control_battery_percent_anim_tips),
+                        key = Pref.Key.SystemUI.ControlCenter.BATTERY_PERCENTAGE_ANIM
+                    )
+                }
             }
         }
         item {
