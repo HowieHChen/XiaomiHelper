@@ -251,9 +251,9 @@
     <string name="systemui_control_hide_carrier_hd">Hide HD</string>
     <string name="systemui_control_hide_carrier_hd_tips">Hide the HD icon next to the carrier label</string>
     <string name="systemui_control_battery_percent">Always show battery percentage</string>
-    <string name="systemui_control_battery_percent_tips">Always show the battery percentage in the control center, ignoring battery indicator style preference.</string>
+    <string name="systemui_control_battery_percent_tips">Always display the battery percentage in the control center, regardless of the battery indicator style preference.</string>
     <string name="systemui_control_battery_percent_anim">Fix shared element transition effect</string>
-    <string name="systemui_control_battery_percent_anim_tips">Enabling \"Always show battery percentage\" may disrupt the transition of shared elements when pulling down the control center. If you find this uncomfortable, even though it is difficult to notice, please enable this option.</string>
+    <string name="systemui_control_battery_percent_anim_tips">Enabling \"Always show battery percentage\" might subtly affect the visual transition of shared elements when you open the control center. While this effect is often hard to notice, you can enable this option if it bothers you.</string>
     <string name="ui_title_systemui_others" translatable="false">@string/common_others</string>
     <string name="systemui_others_monet_overlay">Customize theme color</string>
     <string name="systemui_others_monet_overlay_tips">Customize theme colors instead of fetching colors from system wallpaper</string>
@@ -330,7 +330,7 @@
     <string name="home_minus_page_minus_blur" translatable="false">@string/page_minus_blur</string>
     <string name="home_minus_blur">Enable blur for background</string>
     <string name="ui_title_home_others" translatable="false">@string/common_others</string>
-    <string name="home_others_dock_remove_num_limit">Remove the icon limit from the Dock</string>
+    <string name="home_others_dock_remove_num_limit">Remove the icon limit from the dock</string>
     <string name="home_others_always_show_clock">Always show time in status bar</string>
     <string name="home_others_fake_premium">Disguised as a high-end model</string>
     <string name="home_others_fake_premium_tips">Remove model restrictions on some features</string>
