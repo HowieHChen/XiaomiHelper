@@ -1,37 +1,20 @@
 package dev.lackluster.mihelper.hook.drawable
 
-import android.animation.ArgbEvaluator
 import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.ColorFilter
 import android.graphics.Rect
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import dev.lackluster.mihelper.hook.rules.systemui.media.bg.MediaViewColorConfig
 import dev.lackluster.mihelper.utils.Math
 import kotlin.math.abs
 
 class TransitionDrawable(
-    private var artwork: Drawable,
-    color: Int = Color.BLACK,
-    private val useAnim: Boolean = true
-) : Drawable() {
-    private var background: ColorDrawable = ColorDrawable()
-    private val argbEvaluator = ArgbEvaluator()
-    private var nextArtwork: Drawable? = null
-
-    private var albumState: AnimationState = AnimationState.DONE
-    private var albumStartTimeMillis: Long = 0
-    private val albumDuration = 333L
-    private var sourceColor: Int = color
-    private var currentColor: Int = color
-    private var targetColor: Int = color
-
-    private var resizeState: AnimationState = AnimationState.DONE
-    private var resizeStartTimeMillis: Long = 0
-    private val resizeDuration = 234L
-    private var sourceSize: Int = 0
-    private var currentSize: Int = 0
-    private var targetSize: Int = 0
+    artwork: Drawable,
+    colorConfig: MediaViewColorConfig,
+    useAnim: Boolean = true
+) : MediaControlBgDrawable(artwork, colorConfig, useAnim) {
+    private var sourceColor: Int = colorConfig.bgStartColor
+    private var currentColor: Int = colorConfig.bgStartColor
+    private var targetColor: Int = colorConfig.bgStartColor
 
     override fun onBoundsChange(bounds: Rect) {
         super.onBoundsChange(bounds)
@@ -109,26 +92,15 @@ class TransitionDrawable(
         }
     }
 
-    override fun setAlpha(p0: Int) {
-        artwork.alpha = p0
-        background.alpha = p0
-        invalidateSelf()
-    }
-
-    override fun setColorFilter(p0: ColorFilter?) {
-        invalidateSelf()
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun getOpacity(): Int {
-        return background.opacity
-    }
-
-    fun setNewAlbum(artwork: Drawable, color: Int) {
+    override fun updateAlbumCover(
+        artwork: Drawable,
+        colorConfig: MediaViewColorConfig
+    ) {
         nextArtwork = artwork
         sourceColor = currentColor
-        targetColor = color
+        targetColor = colorConfig.bgStartColor
         albumState = AnimationState.STARTING
+        this.colorConfig = colorConfig
         invalidateSelf()
     }
 }

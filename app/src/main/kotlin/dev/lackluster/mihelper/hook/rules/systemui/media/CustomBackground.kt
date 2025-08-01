@@ -1,305 +1,399 @@
+@file:Suppress("DEPRECATION")
+
 package dev.lackluster.mihelper.hook.rules.systemui.media
 
+import android.annotation.SuppressLint
 import android.app.WallpaperColors
 import android.content.Context
-import android.graphics.Bitmap
+import android.content.res.ColorStateList
 import android.graphics.Color
-import android.graphics.HardwareRenderer
 import android.graphics.Paint
-import android.graphics.PixelFormat
-import android.graphics.Rect
-import android.graphics.RenderEffect
-import android.graphics.RenderNode
-import android.graphics.Shader
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.Icon
-import android.hardware.HardwareBuffer
-import android.media.ImageReader
-import androidx.core.graphics.get
+import android.os.AsyncTask
+import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.SeekBar
+import android.widget.TextView
+import androidx.core.graphics.drawable.toDrawable
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.constructor
 import com.highcapable.yukihookapi.hook.factory.current
-import com.highcapable.yukihookapi.hook.factory.field
 import com.highcapable.yukihookapi.hook.factory.method
+import com.highcapable.yukihookapi.hook.log.YLog
 import dev.lackluster.mihelper.data.Pref
+import dev.lackluster.mihelper.hook.drawable.MediaControlBgDrawable
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.MiuiMediaControlPanelClass
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.MiuiMediaViewControllerImplClass
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.PlayerTwoCircleViewClass
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.conColorScheme2
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.conColorScheme3
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.defaultColorConfig
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.enumStyleContent
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.fldColorSchemeNeutral1
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.fldColorSchemeNeutral2
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.fldColorSchemeAccent1
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.fldColorSchemeAccent2
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.fldTonalPaletteAllShades
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.getScaledBackground
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.getWallpaperColor
+import dev.lackluster.mihelper.hook.rules.systemui.media.bg.BgProcessor
+import dev.lackluster.mihelper.hook.rules.systemui.media.bg.BlurredCoverProcessor
+import dev.lackluster.mihelper.hook.rules.systemui.media.bg.CoverArtProcessor
+import dev.lackluster.mihelper.hook.rules.systemui.media.bg.RadialGradientProcessor
+import dev.lackluster.mihelper.hook.rules.systemui.media.bg.LinearGradientProcessor
+import dev.lackluster.mihelper.hook.rules.systemui.media.bg.MediaViewColorConfig
 import dev.lackluster.mihelper.utils.Prefs
+
 
 object CustomBackground : YukiBaseHooker() {
     // background: 0 -> Default; 1 -> Art; 2 -> Blurred cover; 3 -> AndroidNewStyle; 4 -> AndroidOldStyle
     private val backgroundStyle = Prefs.getInt(Pref.Key.SystemUI.MediaControl.BACKGROUND_STYLE, 0)
-    val useAnim = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.USE_ANIM, true)
-    val allowReverse = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.ALLOW_REVERSE, false)
-    val blurRadius = Prefs.getInt(Pref.Key.SystemUI.MediaControl.BLUR_RADIUS, 10).coerceIn(1, 20)
+    private lateinit var processor: BgProcessor
+    @SuppressLint("StaticFieldLeak")
+    private var mediaViewHolder: MiuiMediaViewHolder? = null
 
-    val miuiMediaControlPanelClass by lazy {
-        "com.android.systemui.statusbar.notification.mediacontrol.MiuiMediaControlPanel".toClassOrNull()
-    }
-    val miuiMediaViewControllerImplClass by lazy {
-        "com.android.systemui.statusbar.notification.mediacontrol.MiuiMediaViewControllerImpl".toClassOrNull()
-    }
-    val bindMethod by lazy {
-        miuiMediaControlPanelClass?.method {
-            name = "bindPlayer"
-        }?.give() ?: miuiMediaViewControllerImplClass?.method {
-            name = "bindMediaData"
-        }?.give()
-    }
-    val bindIsArtworkUpdateField by lazy {
-        miuiMediaControlPanelClass?.field {
-            name = "mIsArtworkUpdate"
-            superClass()
-        }?.give() ?: miuiMediaViewControllerImplClass?.field {
-            name = "isArtWorkUpdate"
-        }?.give()
-    }
-    val bindMediaViewHolderField by lazy {
-        miuiMediaControlPanelClass?.field {
-            name = "mMediaViewHolder"
-            superClass()
-        }?.give() ?: miuiMediaViewControllerImplClass?.field {
-            name = "holder"
-        }?.give()
-    }
-    val bindContextField by lazy {
-        miuiMediaControlPanelClass?.field {
-            name = "mContext"
-            superClass()
-        }?.give() ?: miuiMediaViewControllerImplClass?.field {
-            name = "context"
-        }?.give()
-    }
-    val colorSchemeClass by lazy {
-        "com.android.systemui.monet.ColorScheme".toClass()
-    }
-    val contentStyle by lazy {
-        "com.android.systemui.monet.Style".toClass().enumConstants?.get(6)
-    }
-    val colorSchemeConstructor1 by lazy {
-        colorSchemeClass.constructor {
-            paramCount = 3
-        }.give()
-    }
-    val colorSchemeConstructor2 by lazy {
-        colorSchemeClass.constructor {
-            paramCount = 2
-        }.give()
-    }
-    val mNeutral1Field by lazy {
-        colorSchemeClass.field {
-            name = "mNeutral1"
-        }.remedys {
-            field {
-                name = "neutral1"
-            }
-        }.give()
-    }
-    val mNeutral2Field by lazy {
-        colorSchemeClass.field {
-            name = "mNeutral2"
-        }.remedys {
-            field {
-                name = "neutral2"
-            }
-        }.give()
-    }
-    val mAccent1Field by lazy {
-        colorSchemeClass.field {
-            name = "mAccent1"
-        }.remedys {
-            field {
-                name = "accent1"
-            }
-        }.give()
-    }
-    val mAccent2Field by lazy {
-        colorSchemeClass.field {
-            name = "mAccent2"
-        }.remedys {
-            field {
-                name = "accent2"
-            }
-        }.give()
-    }
+    private var mArtworkBoundId = 0
+    private var mArtworkNextBindRequestId = 0
+    private var mArtworkDrawable: MediaControlBgDrawable? = null
+    private var mIsArtworkBound = false
+
+    private var mPrevColorConfig = defaultColorConfig
+    private var mCurrColorConfig = defaultColorConfig
+
+    private var lastWidth = 0
+    private var lastHeight = 0
 
     override fun onHook() {
-        if (backgroundStyle != 0) {
-            var oldVersion = false
-            miuiMediaControlPanelClass?.apply {
-                method {
-                    name = "setPlayerBg"
-                }.ignored().onNoSuchMethod {
-                    oldVersion = true
-                }.hook {
-                    intercept()
-                }
-                method {
-                    name = "setForegroundColors"
-                }.ignored().onNoSuchMethod {
-                    oldVersion = true
-                }.hook {
-                    intercept()
+        processor = when (backgroundStyle) {
+            1 -> CoverArtProcessor()
+            2 -> BlurredCoverProcessor()
+            3 -> RadialGradientProcessor()
+            4 -> LinearGradientProcessor()
+            else -> return
+        }
+        loadHooker(MediaControlBgFactory)
+        "com.android.systemui.media.controls.ui.controller.MediaViewController".toClassOrNull()?.apply {
+            method {
+                name = "resetLayoutResource"
+            }.ignored().hook {
+                intercept()
+            }
+        }
+        PlayerTwoCircleViewClass?.apply {
+            constructor {
+                paramCount = 4
+            }.ignored().hook {
+                after {
+                    this.instance.current().field { name = "mPaint1" }.cast<Paint>()?.alpha = 0
+                    this.instance.current().field { name = "mPaint2" }.cast<Paint>()?.alpha = 0
+                    this.instance.current().field { name = "mRadius" }.set(0.0f)
                 }
             }
-            miuiMediaViewControllerImplClass?.apply {
-                method {
-                    name = "updateForegroundColors"
-                }.hook {
-                    intercept()
-                }
-                method {
-                    name = "updateMediaBackground"
-                }.hook {
-                    intercept()
+            method {
+                name = "setBackground"
+            }.ignored().hook {
+                before {
+                    this.result = null
                 }
             }
-            "com.android.systemui.media.controls.ui.controller.MediaViewController".toClassOrNull()?.apply {
-                method {
-                    name = "resetLayoutResource"
-                }.ignored().hook {
-                    intercept()
-                }
-            }
-            if (oldVersion) {
-                "com.android.systemui.statusbar.notification.mediacontrol.PlayerTwoCircleView".toClassOrNull()?.apply {
-                    constructor {
-                        paramCount = 4
-                    }.ignored().hook {
-                        after {
-                            this.instance.current().field { name = "mPaint1" }.cast<Paint>()?.alpha = 0
-                            this.instance.current().field { name = "mPaint2" }.cast<Paint>()?.alpha = 0
-                            this.instance.current().field { name = "mRadius" }.set(0.0f)
-                        }
-                    }
-                    method {
-                        name = "setBackground"
-                    }.ignored().hook {
-                        before {
-                            this.result = null
-                        }
-                    }
-                    method {
-                        name = "setPaintColor"
-                    }.ignored().hook {
-                        before {
-                            this.result = null
-                        }
-                    }
+            method {
+                name = "setPaintColor"
+            }.ignored().hook {
+                before {
+                    this.result = null
                 }
             }
         }
-        when (backgroundStyle) {
-            1 -> loadHooker(CoverArtStyle)
-            2 -> loadHooker(BlurredCoverStyle)
-            3 -> loadHooker(RadialGradientStyle)
-            4 -> loadHooker(LinearGradientStyle)
+        MiuiMediaControlPanelClass?.apply {
+            method {
+                name = "attachPlayer"
+                superClass()
+            }.hook {
+                after {
+                    val mMediaViewHolder = this.instance.current().field {
+                        name = "mMediaViewHolder"
+                        superClass()
+                    }.any() ?: return@after
+                    initMediaViewHolder(mMediaViewHolder)
+                }
+            }
+            method {
+                name = "onDestroy"
+                superClass()
+            }.hook {
+                after {
+                    finiMediaViewHolder()
+                }
+            }
+            method {
+                name = "setPlayerBg"
+            }.ignored().hook {
+                intercept()
+            }
+            method {
+                name = "setForegroundColors"
+            }.ignored().hook {
+                intercept()
+            }
+            method {
+                name = "bindPlayer"
+            }.hook {
+                after {
+                    val context = this.instance.current().field {
+                        name = "mContext"
+                        superClass()
+                    }.cast<Context>() ?: return@after
+                    val isArtWorkUpdate = this.instance.current().field {
+                        name = "mIsArtworkUpdate"
+                    }.boolean()
+                    val mediaData = this.args(0).any() ?: return@after
+                    val artwork = mediaData.current().field {
+                        name = "artwork"
+                    }.cast<Icon>()
+                    val packageName = mediaData.current().field {
+                        name = "packageName"
+                    }.string()
+                    updateBackground(context, isArtWorkUpdate, artwork, packageName)
+                }
+            }
         }
-
+        MiuiMediaViewControllerImplClass?.apply {
+            method {
+                name = "updateMediaBackground"
+            }.hook {
+                before {
+                    val mMediaViewHolder = this.instance.current().field {
+                        name = "holder"
+                        superClass()
+                    }.any() ?: return@before
+                    initMediaViewHolder(mMediaViewHolder)
+                    this.result = null
+                }
+            }
+            method {
+                name = "updateForegroundColors"
+            }.hook {
+                intercept()
+            }
+            method {
+                name = "bindMediaData"
+            }.hook {
+                after {
+                    val context = this.instance.current().field {
+                        name = "context"
+                    }.cast<Context>() ?: return@after
+                    val isArtWorkUpdate = this.instance.current().field {
+                        name = "isArtWorkUpdate"
+                    }.boolean()
+                    val mediaData = this.args(0).any() ?: return@after
+                    val artwork = mediaData.current().field {
+                        name = "artwork"
+                    }.cast<Icon>()
+                    val packageName = mediaData.current().field {
+                        name = "packageName"
+                    }.string()
+                    updateBackground(context, isArtWorkUpdate, artwork, packageName)
+                }
+            }
+        }
+    }
+    
+    private fun initMediaViewHolder(mMediaViewHolder: Any) {
+        if (mediaViewHolder?.innerHashCode == mMediaViewHolder.hashCode()) {
+            return
+        }
+        val mediaBg = mMediaViewHolder.current(true).field { name = "mediaBg" }.cast<ImageView>() ?: return
+        val titleText = mMediaViewHolder.current(true).field { name = "titleText" }.cast<TextView>() ?: return
+        val artistText = mMediaViewHolder.current(true).field { name = "artistText" }.cast<TextView>() ?: return
+        val seamlessIcon = mMediaViewHolder.current(true).field { name = "seamlessIcon" }.cast<ImageView>() ?: return
+        val action0 = mMediaViewHolder.current(true).field { name = "action0" }.cast<ImageButton>() ?: return
+        val action1 = mMediaViewHolder.current(true).field { name = "action1" }.cast<ImageButton>() ?: return
+        val action2 = mMediaViewHolder.current(true).field { name = "action2" }.cast<ImageButton>() ?: return
+        val action3 = mMediaViewHolder.current(true).field { name = "action3" }.cast<ImageButton>() ?: return
+        val action4 = mMediaViewHolder.current(true).field { name = "action4" }.cast<ImageButton>() ?: return
+        val seekBar = mMediaViewHolder.current(true).field { name = "seekBar" }.cast<SeekBar>() ?: return
+        val elapsedTimeView = mMediaViewHolder.current(true).field { name = "elapsedTimeView" }.cast<TextView>() ?: return
+        val totalTimeView = mMediaViewHolder.current(true).field { name = "totalTimeView" }.cast<TextView>() ?: return
+        val albumView = mMediaViewHolder.current(true).field { name = "albumView" }.cast<ImageView>() ?: return
+        mediaViewHolder = MiuiMediaViewHolder(
+            mMediaViewHolder.hashCode(),
+            titleText,
+            artistText,
+            albumView,
+            mediaBg,
+            seamlessIcon,
+            action0,
+            action1,
+            action2,
+            action3,
+            action4,
+            elapsedTimeView,
+            totalTimeView,
+            seekBar,
+        )
     }
 
-//    fun scaleTransitionDrawableLayer(
-//        transitionDrawable: TransitionDrawable, layer: Int, targetWidth: Int, targetHeight: Int
-//    ) {
-//        val drawable = transitionDrawable.getDrawable(layer) ?: return
-//
-//        val width = drawable.intrinsicWidth
-//        val height = drawable.intrinsicHeight
-//        if (width == 0 || height == 0 || targetWidth == 0 || targetHeight == 0) {
-//            return
-//        }
-//        val scale = if (width / height.toFloat() > targetWidth / targetHeight.toFloat()) {
-//            // Drawable is wider than target view, scale to match height
-//            targetHeight / height.toFloat()
-//        } else {
-//            // Drawable is taller than target view, scale to match width
-//            targetWidth / width.toFloat()
-//        }
-//        transitionDrawable.setLayerSize(layer, (scale * width).toInt(), (scale * height).toInt())
-//    }
+    private fun finiMediaViewHolder() {
+        mediaViewHolder = null
+        mArtworkDrawable = null
+    }
 
-    fun Context.getWallpaperColor(icon: Icon?): WallpaperColors? {
-        val iconType = icon?.type ?: return null
-        if (iconType != Icon.TYPE_BITMAP && iconType != Icon.TYPE_ADAPTIVE_BITMAP) {
-            val drawable = icon.loadDrawable(this) ?: return null
-            return WallpaperColors.fromDrawable(drawable)
-        } else {
-            val bitmap = icon.current().method {
-                name = "getBitmap"
-            }.invoke<Bitmap>()
-            return if (bitmap?.isRecycled == false) {
-                WallpaperColors.fromBitmap(bitmap)
+    private fun updateForegroundColors(colorConfig: MediaViewColorConfig) {
+        val holder = mediaViewHolder ?: return
+        val primaryColorStateList = ColorStateList.valueOf(colorConfig.textPrimary)
+        holder.titleText.setTextColor(colorConfig.textPrimary)
+        holder.artistText.setTextColor(colorConfig.textSecondary)
+        holder.seamlessIcon.imageTintList = primaryColorStateList
+        holder.action0.imageTintList = primaryColorStateList
+        holder.action1.imageTintList = primaryColorStateList
+        holder.action2.imageTintList = primaryColorStateList
+        holder.action3.imageTintList = primaryColorStateList
+        holder.action4.imageTintList = primaryColorStateList
+        holder.seekBar.thumb.setTintList(primaryColorStateList)
+        holder.seekBar.progressTintList = primaryColorStateList
+        holder.seekBar.progressBackgroundTintList = primaryColorStateList
+        holder.elapsedTimeView.setTextColor(colorConfig.textPrimary)
+        holder.totalTimeView.setTextColor(colorConfig.textPrimary)
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    fun updateBackground(context: Context, isArtWorkUpdate: Boolean, artwork: Icon?, pkgName: String) {
+        val holder = mediaViewHolder ?: return
+        val artworkLayer = artwork?.loadDrawable(context) ?: return
+        val reqId = mArtworkNextBindRequestId++
+        if (isArtWorkUpdate) {
+            mIsArtworkBound = false
+        }
+        // Clip album cover image
+//        if (clipAlbumCover) {
+//            val artworkBitmap = createBitmap(artworkLayer.intrinsicWidth, artworkLayer.intrinsicHeight)
+//            val canvas = Canvas(artworkBitmap)
+//            artworkLayer.setBounds(0, 0, artworkLayer.intrinsicWidth, artworkLayer.intrinsicHeight)
+//            artworkLayer.draw(canvas)
+//            val resizedBitmap = artworkBitmap.scale(300, 300)
+//            val radius = 45f
+//            val newBitmap = createBitmap(resizedBitmap.width, resizedBitmap.height)
+//            val canvas1 = Canvas(newBitmap)
+//            val paint = Paint()
+//            val rect = Rect(0, 0, resizedBitmap.width, resizedBitmap.height)
+//            val rectF = RectF(rect)
+//            paint.isAntiAlias = true
+//            canvas1.drawARGB(0, 0, 0, 0)
+//            paint.color = Color.BLACK
+//            canvas1.drawRoundRect(rectF, radius, radius, paint)
+//            paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
+//            canvas1.drawBitmap(resizedBitmap, rect, rect, paint)
+//            holder.albumView.setImageDrawable(newBitmap.toDrawable(context.resources))
+//        }
+        // Capture width & height from views in foreground for artwork scaling in background
+        val width: Int
+        val height: Int
+        if (holder.mediaBg.measuredWidth == 0 || holder.mediaBg.measuredHeight == 0) {
+            if (lastWidth == 0 || lastHeight == 0) {
+                width = artworkLayer.intrinsicWidth
+                height = artworkLayer.intrinsicHeight
             } else {
-                null
+                width = lastWidth
+                height = lastHeight
             }
+        } else {
+            width = holder.mediaBg.measuredWidth
+            height = holder.mediaBg.measuredHeight
+            lastWidth = width
+            lastHeight = height
         }
-    }
+        // Override colors set by the original method
+        updateForegroundColors(mCurrColorConfig)
 
-    fun Context.getScaledBackground(icon: Icon?, width: Int, height: Int): Drawable? {
-        val loadDrawable = icon?.loadDrawable(this) ?: return null
-        val rect = Rect(0, 0, width, height)
-        if (rect.width() > width || rect.height() > height) {
-            rect.offset(
-                ((width - rect.width()) / 2.0f).toInt(),
-                ((height - rect.height()) / 2.0f).toInt()
-            )
-        }
-        loadDrawable.bounds = rect
-        return loadDrawable
-    }
-
-    fun Bitmap.brightness(): Float {
-        var totalBrightness = 0f
-        val totalPixels = this.width * this.height / 25
-
-        for (x in 0 until this.width / 5) {
-            for (y in 0 until this.height step 5) {
-                val pixel = this[x, y]
-                val red = Color.red(pixel)
-                val green = Color.green(pixel)
-                val blue = Color.blue(pixel)
-                val brightness =
-                    0.299f * red + 0.587f * green + 0.114f * blue
-                totalBrightness += brightness
+        AsyncTask.THREAD_POOL_EXECUTOR.execute {
+            // Album art
+            val mutableColorScheme: Any?
+            val artworkDrawable: Drawable
+            val isArtworkBound: Boolean
+            val wallpaperColors = context.getWallpaperColor(artwork)
+            if (wallpaperColors != null) {
+                mutableColorScheme =
+                    conColorScheme3?.newInstance(wallpaperColors, true, enumStyleContent)
+                        ?: conColorScheme2?.newInstance(wallpaperColors, enumStyleContent)
+                artworkDrawable = context.getScaledBackground(artwork, height, height) ?: Color.TRANSPARENT.toDrawable()
+                isArtworkBound = true
+            } else {
+                // If there's no artwork, use colors from the app icon
+                artworkDrawable = Color.TRANSPARENT.toDrawable()
+                isArtworkBound = false
+                try {
+                    val icon = context.packageManager.getApplicationIcon(pkgName)
+                    mutableColorScheme =
+                        conColorScheme3?.newInstance(WallpaperColors.fromDrawable(icon), true, enumStyleContent)
+                            ?: conColorScheme2?.newInstance(wallpaperColors, enumStyleContent)
+                                    ?: throw Exception()
+                } catch (_: Exception) {
+                    YLog.warn("application not found!")
+                    return@execute
+                }
             }
+            var colorConfig = defaultColorConfig
+            var colorSchemeChanged = false
+            if (mutableColorScheme != null) {
+                val neutral1 = fldTonalPaletteAllShades?.get(fldColorSchemeNeutral1!!.get(mutableColorScheme)) as? List<Int>
+                val neutral2 = fldTonalPaletteAllShades?.get(fldColorSchemeNeutral2!!.get(mutableColorScheme)) as? List<Int>
+                val accent1 = fldTonalPaletteAllShades?.get(fldColorSchemeAccent1!!.get(mutableColorScheme)) as? List<Int>
+                val accent2 = fldTonalPaletteAllShades?.get(fldColorSchemeAccent2!!.get(mutableColorScheme)) as? List<Int>
+                if (neutral1 != null && neutral2 != null && accent1 != null && accent2 != null) {
+                    colorConfig = processor.convertToColorConfig(artworkDrawable, neutral1, neutral2, accent1, accent2)
+                    colorSchemeChanged = colorConfig != mPrevColorConfig
+                    mPrevColorConfig = colorConfig
+                }
+            }
+            val processedArtwork =
+                processor.processAlbumCover(
+                    artworkDrawable,
+                    colorConfig,
+                    context,
+                    width,
+                    height
+                )
+            if (mArtworkDrawable == null) {
+                mArtworkDrawable = processor.createBackground(processedArtwork, colorConfig)
+            }
+            mArtworkDrawable?.setBounds(0, 0, width, height)
+
+            holder.mediaBg.post(Runnable {
+                if (reqId < mArtworkBoundId) {
+                    return@Runnable
+                }
+                mArtworkBoundId = reqId
+                if (colorSchemeChanged) {
+                    updateForegroundColors(colorConfig)
+                    mCurrColorConfig = colorConfig
+                }
+
+                // Bind the album view to the artwork or a transition drawable
+                holder.mediaBg.setPadding(0, 0, 0, 0)
+                if (isArtWorkUpdate || (!mIsArtworkBound && isArtworkBound)) {
+                    holder.mediaBg.setImageDrawable(mArtworkDrawable)
+                    mArtworkDrawable?.updateAlbumCover(processedArtwork, colorConfig)
+                    mIsArtworkBound = isArtworkBound
+                }
+            })
         }
-
-        return totalBrightness / totalPixels
     }
 
-    fun Bitmap.hardwareBlur(radius: Float): Bitmap {
-        val imageReader = ImageReader.newInstance(
-            this.width, this.height,
-            PixelFormat.RGBA_8888, 1,
-            HardwareBuffer.USAGE_GPU_SAMPLED_IMAGE or HardwareBuffer.USAGE_GPU_COLOR_OUTPUT
-        )
-        val renderNode = RenderNode("BlurEffect")
-        val hardwareRenderer = HardwareRenderer()
-
-        hardwareRenderer.setSurface(imageReader.surface)
-        hardwareRenderer.setContentRoot(renderNode)
-        renderNode.setPosition(0, 0, imageReader.width, imageReader.height)
-        val blurRenderEffect = RenderEffect.createBlurEffect(
-            radius, radius,
-            Shader.TileMode.MIRROR
-        )
-        renderNode.setRenderEffect(blurRenderEffect)
-
-        val renderCanvas = renderNode.beginRecording()
-        renderCanvas.drawBitmap(this, 0f, 0f, null)
-        renderNode.endRecording()
-        hardwareRenderer.createRenderRequest()
-            .setWaitForPresent(true)
-            .syncAndDraw()
-
-        val image = imageReader.acquireNextImage() ?: throw RuntimeException("No Image")
-        val hardwareBuffer = image.hardwareBuffer ?: throw RuntimeException("No HardwareBuffer")
-        val bitmap = Bitmap.wrapHardwareBuffer(hardwareBuffer, null)
-            ?: throw RuntimeException("Create Bitmap Failed")
-
-        hardwareBuffer.close()
-        image.close()
-        imageReader.close()
-        renderNode.discardDisplayList()
-        hardwareRenderer.destroy()
-        return bitmap.copy(Bitmap.Config.ARGB_8888, false)
-    }
+    data class MiuiMediaViewHolder(
+        var innerHashCode: Int,
+        var titleText: TextView,
+        var artistText: TextView,
+        var albumView: ImageView,
+        var mediaBg: ImageView,
+        var seamlessIcon: ImageView,
+        var action0: ImageButton,
+        var action1: ImageButton,
+        var action2: ImageButton,
+        var action3: ImageButton,
+        var action4: ImageButton,
+        var elapsedTimeView: TextView,
+        var totalTimeView: TextView,
+        var seekBar: SeekBar
+    )
 }

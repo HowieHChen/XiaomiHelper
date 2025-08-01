@@ -1,44 +1,27 @@
 package dev.lackluster.mihelper.hook.drawable
 
-import android.animation.ArgbEvaluator
 import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.ColorFilter
 import android.graphics.Rect
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
+import dev.lackluster.mihelper.hook.rules.systemui.media.bg.MediaViewColorConfig
 import dev.lackluster.mihelper.utils.Math
 import kotlin.math.abs
 import kotlin.math.max
 
 class RadialGradientDrawable(
-    private var artwork: Drawable,
-    startColor: Int = Color.BLACK,
-    endColor: Int = Color.BLACK,
-    private val useAnim: Boolean = true
-) : Drawable() {
+    artwork: Drawable,
+    colorConfig: MediaViewColorConfig,
+    useAnim: Boolean = true
+) : MediaControlBgDrawable(artwork, colorConfig, useAnim) {
     private var gradient: GradientDrawable = GradientDrawable()
-    private var background: ColorDrawable = ColorDrawable()
-    private val argbEvaluator = ArgbEvaluator()
-    private var nextArtwork: Drawable? = null
 
-    private var albumState: AnimationState = AnimationState.DONE
-    private var albumStartTimeMillis: Long = 0
-    private val albumDuration = 333L
-    private var sourceStartColor: Int = startColor
-    private var currentStartColor: Int = startColor
-    private var targetStartColor: Int = startColor
-    private var sourceEndColor: Int = endColor
-    private var currentEndColor: Int = endColor
-    private var targetEndColor: Int = endColor
-
-    private var resizeState: AnimationState = AnimationState.DONE
-    private var resizeStartTimeMillis: Long = 0
-    private val resizeDuration = 234L
-    private var sourceSize: Int = 0
-    private var currentSize: Int = 0
-    private var targetSize: Int = 0
+    private var sourceStartColor: Int = colorConfig.bgStartColor
+    private var currentStartColor: Int = colorConfig.bgStartColor
+    private var targetStartColor: Int = colorConfig.bgStartColor
+    private var sourceEndColor: Int = colorConfig.bgEndColor
+    private var currentEndColor: Int = colorConfig.bgEndColor
+    private var targetEndColor: Int = colorConfig.bgEndColor
 
     init {
         gradient.gradientType = GradientDrawable.RADIAL_GRADIENT
@@ -130,29 +113,17 @@ class RadialGradientDrawable(
         }
     }
 
-    override fun setAlpha(p0: Int) {
-        artwork.alpha = p0
-        background.alpha = p0
-        gradient.alpha = p0
-        invalidateSelf()
-    }
-
-    override fun setColorFilter(p0: ColorFilter?) {
-        invalidateSelf()
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun getOpacity(): Int {
-        return background.opacity
-    }
-
-    fun setNewAlbum(artwork: Drawable, startColor: Int, endColor: Int) {
+    override fun updateAlbumCover(
+        artwork: Drawable,
+        colorConfig: MediaViewColorConfig
+    ) {
         nextArtwork = artwork
         sourceStartColor = currentStartColor
-        targetStartColor = startColor
+        targetStartColor = colorConfig.bgStartColor
         sourceEndColor = currentEndColor
-        targetEndColor = endColor
+        targetEndColor = colorConfig.bgEndColor
         albumState = AnimationState.STARTING
+        this.colorConfig = colorConfig
         invalidateSelf()
     }
 }
