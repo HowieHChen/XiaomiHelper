@@ -39,6 +39,9 @@ object AdBlocker : YukiBaseHooker() {
     private val listAppComponentClass by lazy {
         "com.xiaomi.market.common.component.componentbeans.ListAppComponent".toClassOrNull()
     }
+    private val aladdinDownloadBottomLowComponentClass by lazy {
+        "com.xiaomi.market.common.component.componentbeans.AladdinDownloadBottomLowComponent".toClassOrNull()
+    }
     private val valueOfDetailType by lazy {
         "com.xiaomi.market.business_ui.detail.DetailType".toClassOrNull()?.method {
             name = "valueOf"
@@ -82,7 +85,8 @@ object AdBlocker : YukiBaseHooker() {
                     after {
                         val parsedComponents = this.result<List<Any>>()?.toMutableList() ?: return@after
                         parsedComponents.retainAll {
-                            listAppComponentClass?.isInstance(it) == true
+                            listAppComponentClass?.isInstance(it) == true ||
+                                    aladdinDownloadBottomLowComponentClass?.isInstance(it) == true
                         }
                         this.result = parsedComponents
                     }
