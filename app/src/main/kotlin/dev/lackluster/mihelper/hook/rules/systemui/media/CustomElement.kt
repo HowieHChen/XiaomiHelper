@@ -41,6 +41,8 @@ import dev.lackluster.mihelper.utils.Prefs
 import dev.lackluster.mihelper.utils.factory.dp
 import dev.lackluster.mihelper.utils.factory.dpFloat
 import com.highcapable.yukihookapi.hook.factory.constructor
+import com.highcapable.yukihookapi.hook.type.android.ContextClass
+import com.highcapable.yukihookapi.hook.type.java.StringClass
 
 object CustomElement : YukiBaseHooker() {
     private val actionsResize = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.ELM_ACTIONS_RESIZE, true)
@@ -58,13 +60,13 @@ object CustomElement : YukiBaseHooker() {
     private var thumb2: Drawable? = null
 
     private val mediaViewHolderClass by lazy {
-        "com.android.systemui.media.controls.ui.view.MediaViewHolder".toClassOrNull()
-            ?: "com.android.systemui.statusbar.notification.mediacontrol.MiuiMediaViewHolder".toClassOrNull()
+        "com.android.systemui.statusbar.notification.mediacontrol.MiuiMediaViewHolder".toClassOrNull()
+            ?: "com.android.systemui.media.controls.ui.view.MediaViewHolder".toClassOrNull()
             ?: "com.android.systemui.media.controls.models.player.MediaViewHolder".toClassOrNull()
     }
     private val seekBarObserverClass by lazy {
-        "com.android.systemui.media.controls.ui.binder.SeekBarObserver".toClassOrNull()
-            ?: "com.android.systemui.statusbar.notification.mediacontrol.MiuiMediaViewControllerImpl\$seekBarObserver$1".toClassOrNull()
+        "com.android.systemui.statusbar.notification.mediacontrol.MiuiMediaViewControllerImpl\$seekBarObserver$1".toClassOrNull()
+            ?: "com.android.systemui.media.controls.ui.binder.SeekBarObserver".toClassOrNull()
             ?: "com.android.systemui.media.controls.models.player.SeekBarObserver".toClassOrNull()
     }
     private val customActionsClass by lazy {
@@ -209,13 +211,27 @@ object CustomElement : YukiBaseHooker() {
                         val pkgName = this.instance.current().field { name = "\$packageName" }.string()
                         val customAction = this.args(0).cast<CustomAction>() ?: return@after
                         val mediaDataManager = this.instance.current().field { name = "this$0" }.any() ?: return@after
-                        val context = mediaDataManager.current().field { name = "context" }.any() as Context
+                        val context = mediaDataManager.current().field { name = "context" }.cast<Context>()
                         val drawable = Icon.createWithResource(pkgName, customAction.icon).loadDrawable(context)
                         mediaAction.current().field { name = "icon" }.set(drawable)
 //                        mediaAction.current().field { name = "icon" }.set(
 //                            ScaleDrawable(drawable, Gravity.CENTER, 0.1f, 0.1f).apply { level = 1 }
 //                        )
 //                        YLog.info("customActions: $pkgName")
+                    }
+                }
+            }
+            "com.android.systemui.media.controls.domain.pipeline.MediaActionsKt$\$ExternalSyntheticLambda0".toClassOrNull()?.apply {
+                method {
+                    name = "invoke"
+                }.hook {
+                    after {
+                        val mediaAction = this.result ?: return@after
+                        val pkgName = this.instance.current().field {type = StringClass }.string()
+                        val customAction = this.args(0).cast<CustomAction>() ?: return@after
+                        val context = this.instance.current().field { type = ContextClass }.cast<Context>()
+                        val drawable = Icon.createWithResource(pkgName, customAction.icon).loadDrawable(context)
+                        mediaAction.current().field { name = "icon" }.set(drawable)
                     }
                 }
             }
