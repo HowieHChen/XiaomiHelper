@@ -54,6 +54,7 @@ object CustomBackground : YukiBaseHooker() {
     private var mArtworkNextBindRequestId = 0
     private var mArtworkDrawable: MediaControlBgDrawable? = null
     private var mIsArtworkBound = false
+    private var mCurrentPkgName = ""
 
     private var mPrevColorConfig = defaultColorConfig
     private var mCurrColorConfig = defaultColorConfig
@@ -129,9 +130,6 @@ object CustomBackground : YukiBaseHooker() {
                         name = "mContext"
                         superClass()
                     }.cast<Context>() ?: return@after
-                    val isArtWorkUpdate = this.instance.current().field {
-                        name = "mIsArtworkUpdate"
-                    }.boolean()
                     val mediaData = this.args(0).any() ?: return@after
                     val artwork = mediaData.current().field {
                         name = "artwork"
@@ -139,6 +137,9 @@ object CustomBackground : YukiBaseHooker() {
                     val packageName = mediaData.current().field {
                         name = "packageName"
                     }.string()
+                    val isArtWorkUpdate = this.instance.current().field {
+                        name = "mIsArtworkUpdate"
+                    }.boolean() || mCurrentPkgName != packageName
                     val mMediaViewHolder = this.instance.current().field {
                         name = "mMediaViewHolder"
                         superClass()
@@ -173,9 +174,6 @@ object CustomBackground : YukiBaseHooker() {
                     val context = this.instance.current().field {
                         name = "context"
                     }.cast<Context>() ?: return@after
-                    val isArtWorkUpdate = this.instance.current().field {
-                        name = "isArtWorkUpdate"
-                    }.boolean()
                     val mediaData = this.args(0).any() ?: return@after
                     val artwork = mediaData.current().field {
                         name = "artwork"
@@ -183,6 +181,9 @@ object CustomBackground : YukiBaseHooker() {
                     val packageName = mediaData.current().field {
                         name = "packageName"
                     }.string()
+                    val isArtWorkUpdate = this.instance.current().field {
+                        name = "isArtWorkUpdate"
+                    }.boolean() || mCurrentPkgName != packageName
                     val mMediaViewHolder = this.instance.current().field {
                         name = "holder"
                         superClass()
@@ -228,6 +229,8 @@ object CustomBackground : YukiBaseHooker() {
 
     private fun finiMediaViewHolder() {
         mArtworkDrawable = null
+        mIsArtworkBound = false
+        mCurrentPkgName = ""
     }
 
     private fun updateForegroundColors(holder: MiuiMediaViewHolder, colorConfig: MediaViewColorConfig) {
@@ -347,6 +350,7 @@ object CustomBackground : YukiBaseHooker() {
                 mArtworkDrawable = processor.createBackground(processedArtwork, colorConfig)
             }
             mArtworkDrawable?.setBounds(0, 0, width, height)
+            mCurrentPkgName = pkgName
 
             holder.mediaBg.post(Runnable {
                 if (reqId < mArtworkBoundId) {
