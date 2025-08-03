@@ -2,7 +2,6 @@
 
 package dev.lackluster.mihelper.hook.rules.systemui.media
 
-import android.annotation.SuppressLint
 import android.app.WallpaperColors
 import android.content.Context
 import android.content.res.ColorStateList
@@ -50,8 +49,6 @@ object CustomBackground : YukiBaseHooker() {
     // background: 0 -> Default; 1 -> Art; 2 -> Blurred cover; 3 -> AndroidNewStyle; 4 -> AndroidOldStyle
     private val backgroundStyle = Prefs.getInt(Pref.Key.SystemUI.MediaControl.BACKGROUND_STYLE, 0)
     private lateinit var processor: BgProcessor
-    @SuppressLint("StaticFieldLeak")
-    private var mediaViewHolder: MiuiMediaViewHolder? = null
 
     private var mArtworkBoundId = 0
     private var mArtworkNextBindRequestId = 0
@@ -107,18 +104,6 @@ object CustomBackground : YukiBaseHooker() {
         }
         MiuiMediaControlPanelClass?.apply {
             method {
-                name = "attachPlayer"
-                superClass()
-            }.hook {
-                after {
-                    val mMediaViewHolder = this.instance.current().field {
-                        name = "mMediaViewHolder"
-                        superClass()
-                    }.any() ?: return@after
-                    initMediaViewHolder(mMediaViewHolder)
-                }
-            }
-            method {
                 name = "onDestroy"
                 superClass()
             }.hook {
@@ -154,7 +139,12 @@ object CustomBackground : YukiBaseHooker() {
                     val packageName = mediaData.current().field {
                         name = "packageName"
                     }.string()
-                    updateBackground(context, isArtWorkUpdate, artwork, packageName)
+                    val mMediaViewHolder = this.instance.current().field {
+                        name = "mMediaViewHolder"
+                        superClass()
+                    }.any() ?: return@after
+                    val holder = initMediaViewHolder(mMediaViewHolder) ?: return@after
+                    updateBackground(context, isArtWorkUpdate, artwork, packageName, holder)
                 }
             }
         }
@@ -162,14 +152,7 @@ object CustomBackground : YukiBaseHooker() {
             method {
                 name = "updateMediaBackground"
             }.hook {
-                before {
-                    val mMediaViewHolder = this.instance.current().field {
-                        name = "holder"
-                        superClass()
-                    }.any() ?: return@before
-                    initMediaViewHolder(mMediaViewHolder)
-                    this.result = null
-                }
+                intercept()
             }
             method {
                 name = "detach"
@@ -200,30 +183,32 @@ object CustomBackground : YukiBaseHooker() {
                     val packageName = mediaData.current().field {
                         name = "packageName"
                     }.string()
-                    updateBackground(context, isArtWorkUpdate, artwork, packageName)
+                    val mMediaViewHolder = this.instance.current().field {
+                        name = "holder"
+                        superClass()
+                    }.any() ?: return@after
+                    val holder = initMediaViewHolder(mMediaViewHolder) ?: return@after
+                    updateBackground(context, isArtWorkUpdate, artwork, packageName, holder)
                 }
             }
         }
     }
-    
-    private fun initMediaViewHolder(mMediaViewHolder: Any) {
-        if (mediaViewHolder?.innerHashCode == mMediaViewHolder.hashCode()) {
-            return
-        }
-        val mediaBg = mMediaViewHolder.current(true).field { name = "mediaBg" }.cast<ImageView>() ?: return
-        val titleText = mMediaViewHolder.current(true).field { name = "titleText" }.cast<TextView>() ?: return
-        val artistText = mMediaViewHolder.current(true).field { name = "artistText" }.cast<TextView>() ?: return
-        val seamlessIcon = mMediaViewHolder.current(true).field { name = "seamlessIcon" }.cast<ImageView>() ?: return
-        val action0 = mMediaViewHolder.current(true).field { name = "action0" }.cast<ImageButton>() ?: return
-        val action1 = mMediaViewHolder.current(true).field { name = "action1" }.cast<ImageButton>() ?: return
-        val action2 = mMediaViewHolder.current(true).field { name = "action2" }.cast<ImageButton>() ?: return
-        val action3 = mMediaViewHolder.current(true).field { name = "action3" }.cast<ImageButton>() ?: return
-        val action4 = mMediaViewHolder.current(true).field { name = "action4" }.cast<ImageButton>() ?: return
-        val seekBar = mMediaViewHolder.current(true).field { name = "seekBar" }.cast<SeekBar>() ?: return
-        val elapsedTimeView = mMediaViewHolder.current(true).field { name = "elapsedTimeView" }.cast<TextView>() ?: return
-        val totalTimeView = mMediaViewHolder.current(true).field { name = "totalTimeView" }.cast<TextView>() ?: return
-        val albumView = mMediaViewHolder.current(true).field { name = "albumView" }.cast<ImageView>() ?: return
-        mediaViewHolder = MiuiMediaViewHolder(
+
+    private fun initMediaViewHolder(mMediaViewHolder: Any): MiuiMediaViewHolder? {
+        val mediaBg = mMediaViewHolder.current(true).field { name = "mediaBg" }.cast<ImageView>() ?: return null
+        val titleText = mMediaViewHolder.current(true).field { name = "titleText" }.cast<TextView>() ?: return null
+        val artistText = mMediaViewHolder.current(true).field { name = "artistText" }.cast<TextView>() ?: return null
+        val seamlessIcon = mMediaViewHolder.current(true).field { name = "seamlessIcon" }.cast<ImageView>() ?: return null
+        val action0 = mMediaViewHolder.current(true).field { name = "action0" }.cast<ImageButton>() ?: return null
+        val action1 = mMediaViewHolder.current(true).field { name = "action1" }.cast<ImageButton>() ?: return null
+        val action2 = mMediaViewHolder.current(true).field { name = "action2" }.cast<ImageButton>() ?: return null
+        val action3 = mMediaViewHolder.current(true).field { name = "action3" }.cast<ImageButton>() ?: return null
+        val action4 = mMediaViewHolder.current(true).field { name = "action4" }.cast<ImageButton>() ?: return null
+        val seekBar = mMediaViewHolder.current(true).field { name = "seekBar" }.cast<SeekBar>() ?: return null
+        val elapsedTimeView = mMediaViewHolder.current(true).field { name = "elapsedTimeView" }.cast<TextView>() ?: return null
+        val totalTimeView = mMediaViewHolder.current(true).field { name = "totalTimeView" }.cast<TextView>() ?: return null
+        val albumView = mMediaViewHolder.current(true).field { name = "albumView" }.cast<ImageView>() ?: return null
+        return MiuiMediaViewHolder(
             mMediaViewHolder.hashCode(),
             titleText,
             artistText,
@@ -242,12 +227,10 @@ object CustomBackground : YukiBaseHooker() {
     }
 
     private fun finiMediaViewHolder() {
-        mediaViewHolder = null
         mArtworkDrawable = null
     }
 
-    private fun updateForegroundColors(colorConfig: MediaViewColorConfig) {
-        val holder = mediaViewHolder ?: return
+    private fun updateForegroundColors(holder: MiuiMediaViewHolder, colorConfig: MediaViewColorConfig) {
         val primaryColorStateList = ColorStateList.valueOf(colorConfig.textPrimary)
         holder.titleText.setTextColor(colorConfig.textPrimary)
         holder.artistText.setTextColor(colorConfig.textSecondary)
@@ -265,8 +248,7 @@ object CustomBackground : YukiBaseHooker() {
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun updateBackground(context: Context, isArtWorkUpdate: Boolean, artwork: Icon?, pkgName: String) {
-        val holder = mediaViewHolder ?: return
+    fun updateBackground(context: Context, isArtWorkUpdate: Boolean, artwork: Icon?, pkgName: String, holder: MiuiMediaViewHolder) {
         val artworkLayer = artwork?.loadDrawable(context) ?: return
         val reqId = mArtworkNextBindRequestId++
         if (isArtWorkUpdate) {
@@ -311,7 +293,7 @@ object CustomBackground : YukiBaseHooker() {
             lastHeight = height
         }
         // Override colors set by the original method
-        updateForegroundColors(mCurrColorConfig)
+        updateForegroundColors(holder, mCurrColorConfig)
 
         AsyncTask.THREAD_POOL_EXECUTOR.execute {
             // Album art
@@ -372,7 +354,7 @@ object CustomBackground : YukiBaseHooker() {
                 }
                 mArtworkBoundId = reqId
                 if (colorSchemeChanged) {
-                    updateForegroundColors(colorConfig)
+                    updateForegroundColors(holder, colorConfig)
                     mCurrColorConfig = colorConfig
                 }
 
