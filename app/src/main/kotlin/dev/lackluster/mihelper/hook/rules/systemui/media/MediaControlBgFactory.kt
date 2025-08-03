@@ -2,7 +2,9 @@ package dev.lackluster.mihelper.hook.rules.systemui.media
 
 import android.app.WallpaperColors
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.HardwareRenderer
 import android.graphics.PixelFormat
@@ -14,6 +16,8 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.Icon
 import android.hardware.HardwareBuffer
 import android.media.ImageReader
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.drawable.toDrawable
 import androidx.core.graphics.get
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.constructor
@@ -22,6 +26,8 @@ import com.highcapable.yukihookapi.hook.factory.method
 import com.highcapable.yukihookapi.hook.type.android.IconClass
 import com.highcapable.yukihookapi.hook.type.java.StringClass
 import dev.lackluster.mihelper.hook.rules.systemui.media.bg.MediaViewColorConfig
+import kotlin.math.max
+import kotlin.math.min
 
 object MediaControlBgFactory : YukiBaseHooker() {
     val defaultColorConfig = MediaViewColorConfig(
@@ -207,5 +213,23 @@ object MediaControlBgFactory : YukiBaseHooker() {
         renderNode.discardDisplayList()
         hardwareRenderer.destroy()
         return bitmap.copy(Bitmap.Config.ARGB_8888, false)
+    }
+
+    fun Drawable.toSquare(resources: Resources, fill: Boolean, backgroundColor: Int): Drawable {
+        if (intrinsicWidth == intrinsicHeight || intrinsicWidth <= 0 || intrinsicHeight <= 0) {
+             return this
+        } else {
+            val finalSize =
+                if (fill) min(intrinsicWidth, intrinsicHeight)
+                else max(intrinsicWidth, intrinsicHeight)
+            val bitmap = createBitmap(finalSize, finalSize)
+            val canvas = Canvas(bitmap)
+            canvas.drawColor(backgroundColor)
+            val deltaW = (intrinsicWidth - finalSize) / 2
+            val deltaH = (intrinsicHeight - finalSize) / 2
+            this.setBounds(-deltaW, -deltaH, finalSize + deltaW, finalSize + deltaH)
+            this.draw(canvas)
+            return bitmap.toDrawable(resources)
+        }
     }
 }

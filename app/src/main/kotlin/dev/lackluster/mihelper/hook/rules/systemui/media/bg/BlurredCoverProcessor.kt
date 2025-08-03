@@ -1,7 +1,10 @@
 package dev.lackluster.mihelper.hook.rules.systemui.media.bg
 
 import android.content.Context
+import android.graphics.Canvas
+import android.graphics.Paint
 import android.graphics.drawable.Drawable
+import androidx.core.graphics.createBitmap
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.drawable.toDrawable
 import dev.lackluster.mihelper.data.Pref
@@ -10,6 +13,7 @@ import dev.lackluster.mihelper.hook.drawable.RadialMaskedDrawable
 import dev.lackluster.mihelper.hook.drawable.TransitionDrawable
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.hardwareBlur
 import dev.lackluster.mihelper.utils.Prefs
+import kotlin.math.max
 
 class BlurredCoverProcessor : BgProcessor {
     private val blurRadius = Prefs.getInt(Pref.Key.SystemUI.MediaControl.BLUR_RADIUS, 10).coerceIn(1, 20)
@@ -37,10 +41,19 @@ class BlurredCoverProcessor : BgProcessor {
         width: Int,
         height: Int
     ): Drawable {
-        return RadialMaskedDrawable(artwork, colorConfig.bgStartColor, colorConfig.bgEndColor)
+        val bitmap = RadialMaskedDrawable(artwork, colorConfig.bgStartColor, colorConfig.bgEndColor)
             .toBitmap()
             .hardwareBlur(height.toFloat() / 100 * blurRadius)
-            .toDrawable(context.resources)
+        val finalSize = max(bitmap.width, bitmap.height)
+        val newBitmap = createBitmap(finalSize, finalSize)
+        val canvas = Canvas(newBitmap)
+        val deltaW = (bitmap.width - finalSize) / 2f
+        val deltaH = (bitmap.height - finalSize) / 2f
+        canvas.drawBitmap(bitmap, -deltaW, -deltaH, Paint())
+        if (!bitmap.isRecycled) {
+            bitmap.recycle()
+        }
+        return newBitmap.toDrawable(context.resources)
     }
 
     override fun createBackground(

@@ -172,6 +172,13 @@ object CustomBackground : YukiBaseHooker() {
                 }
             }
             method {
+                name = "detach"
+            }.hook {
+                after {
+                    finiMediaViewHolder()
+                }
+            }
+            method {
                 name = "updateForegroundColors"
             }.hook {
                 intercept()

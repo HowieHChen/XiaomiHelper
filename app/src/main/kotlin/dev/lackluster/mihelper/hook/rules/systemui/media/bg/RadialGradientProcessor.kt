@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.hook.drawable.MediaControlBgDrawable
 import dev.lackluster.mihelper.hook.drawable.RadialGradientDrawable
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.toSquare
 import dev.lackluster.mihelper.utils.Prefs
 
 class RadialGradientProcessor : BgProcessor {
@@ -32,7 +33,7 @@ class RadialGradientProcessor : BgProcessor {
         width: Int,
         height: Int
     ): Drawable {
-        return artwork
+        return artwork.toSquare(context.resources, false, colorConfig.bgEndColor)
     }
 
     override fun createBackground(

@@ -9,6 +9,7 @@ import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.hook.drawable.LinearGradientDrawable
 import dev.lackluster.mihelper.hook.drawable.MediaControlBgDrawable
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.brightness
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.toSquare
 import dev.lackluster.mihelper.utils.Prefs
 
 class LinearGradientProcessor : BgProcessor {
@@ -55,7 +56,7 @@ class LinearGradientProcessor : BgProcessor {
         width: Int,
         height: Int
     ): Drawable {
-        return artwork
+        return artwork.toSquare(context.resources, true, colorConfig.bgStartColor)
     }
 
     override fun createBackground(
