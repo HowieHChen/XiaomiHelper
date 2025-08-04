@@ -258,26 +258,30 @@ object CustomBackground : YukiBaseHooker() {
             mIsArtworkBound = false
         }
         // Clip album cover image
-//        if (clipAlbumCover) {
-//            val artworkBitmap = createBitmap(artworkLayer.intrinsicWidth, artworkLayer.intrinsicHeight)
-//            val canvas = Canvas(artworkBitmap)
-//            artworkLayer.setBounds(0, 0, artworkLayer.intrinsicWidth, artworkLayer.intrinsicHeight)
-//            artworkLayer.draw(canvas)
-//            val resizedBitmap = artworkBitmap.scale(300, 300)
-//            val radius = 45f
-//            val newBitmap = createBitmap(resizedBitmap.width, resizedBitmap.height)
-//            val canvas1 = Canvas(newBitmap)
-//            val paint = Paint()
-//            val rect = Rect(0, 0, resizedBitmap.width, resizedBitmap.height)
-//            val rectF = RectF(rect)
-//            paint.isAntiAlias = true
-//            canvas1.drawARGB(0, 0, 0, 0)
-//            paint.color = Color.BLACK
-//            canvas1.drawRoundRect(rectF, radius, radius, paint)
-//            paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
-//            canvas1.drawBitmap(resizedBitmap, rect, rect, paint)
-//            holder.albumView.setImageDrawable(newBitmap.toDrawable(context.resources))
+//        val finalSize = min(artworkLayer.intrinsicWidth, artworkLayer.intrinsicHeight)
+//        val bitmap = createBitmap(finalSize, finalSize)
+//        val canvas = Canvas(bitmap)
+//        val deltaW = (artworkLayer.intrinsicWidth - finalSize) / 2
+//        val deltaH = (artworkLayer.intrinsicHeight - finalSize) / 2
+//        artworkLayer.setBounds(-deltaW, -deltaH, finalSize + deltaW, finalSize + deltaH)
+//        artworkLayer.draw(canvas)
+//        val radius = 9.0f * context.resources.displayMetrics.density
+//        val newBitmap = createBitmap(finalSize, finalSize)
+//        val canvas1 = Canvas(newBitmap)
+//        val paint = Paint()
+//        val rect = Rect(0, 0, finalSize, finalSize)
+//        val rectF = RectF(rect)
+//        paint.isAntiAlias = true
+//        canvas1.drawARGB(0, 0, 0, 0)
+//        paint.color = Color.BLACK
+//        canvas1.drawRoundRect(rectF, radius, radius, paint)
+//        paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
+//        canvas1.drawBitmap(bitmap, rect, rect, paint)
+//        if (!bitmap.isRecycled) {
+//            bitmap.recycle()
 //        }
+        // Update album cover image
+        holder.albumView.setImageDrawable(artworkLayer)
         // Capture width & height from views in foreground for artwork scaling in background
         val width: Int
         val height: Int
