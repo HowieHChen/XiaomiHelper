@@ -11,9 +11,6 @@ import com.highcapable.yukihookapi.hook.factory.method
 import com.highcapable.yukihookapi.hook.type.java.IntType
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.action0
-import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.action1
-import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.action2
-import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.action3
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.action4
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.actions
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.header_artist
@@ -85,28 +82,55 @@ object CustomLayout : YukiBaseHooker() {
     override fun onHook() {
         if (actionsOrder != 0) {
             mediaButtonClass?.apply {
-                method {
-                    name = "getActionById"
+                constructor {
+                    paramCount = 7
                 }.hook {
-                    before {
-                        val id = this.args(0).int()
-                        when (id) {
-                            action0 -> {
-                                this.result =
-                                    if (actionsOrder == 1) this.instance.current().field { name = "prevOrCustom" }.any()
-                                    else this.instance.current().field { name = "playOrPause" }.any()
+                    after {
+                        val custom0 = this.instance.current().field { name = "custom0" }.any()
+                        val prevOrCustom = this.instance.current().field { name = "prevOrCustom" }.any()
+                        val playOrPause = this.instance.current().field { name = "playOrPause" }.any()
+                        val nextOrCustom = this.instance.current().field { name = "nextOrCustom" }.any()
+                        val custom1 = this.instance.current().field { name = "custom1" }.any()
+                        when (actionsOrder) {
+                            1 -> {
+                                this.instance.current().field { name = "custom0" }.set(prevOrCustom)
+                                this.instance.current().field { name = "prevOrCustom" }.set(playOrPause)
+                                this.instance.current().field { name = "playOrPause" }.set(nextOrCustom)
+                                this.instance.current().field { name = "nextOrCustom" }.set(custom0)
+                                this.instance.current().field { name = "custom1" }.set(custom1)
                             }
-                            action1 -> {
-                                this.result =
-                                    if (actionsOrder == 1) this.instance.current().field { name = "playOrPause" }.any()
-                                    else this.instance.current().field { name = "prevOrCustom" }.any()
+                            2 -> {
+                                this.instance.current().field { name = "custom0" }.set(playOrPause)
+                                this.instance.current().field { name = "prevOrCustom" }.set(prevOrCustom)
+                                this.instance.current().field { name = "playOrPause" }.set(nextOrCustom)
+                                this.instance.current().field { name = "nextOrCustom" }.set(custom0)
+                                this.instance.current().field { name = "custom1" }.set(custom1)
                             }
-                            action2 -> this.result = this.instance.current().field { name = "nextOrCustom" }.any()
-                            action3 -> this.result = this.instance.current().field { name = "custom0" }.any()
-                            action4 -> this.result = this.instance.current().field { name = "custom1" }.any()
                         }
                     }
                 }
+//                method {
+//                    name = "getActionById"
+//                }.hook {
+//                    before {
+//                        val id = this.args(0).int()
+//                        when (id) {
+//                            action0 -> {
+//                                this.result =
+//                                    if (actionsOrder == 1) this.instance.current().field { name = "prevOrCustom" }.any()
+//                                    else this.instance.current().field { name = "playOrPause" }.any()
+//                            }
+//                            action1 -> {
+//                                this.result =
+//                                    if (actionsOrder == 1) this.instance.current().field { name = "playOrPause" }.any()
+//                                    else this.instance.current().field { name = "prevOrCustom" }.any()
+//                            }
+//                            action2 -> this.result = this.instance.current().field { name = "nextOrCustom" }.any()
+//                            action3 -> this.result = this.instance.current().field { name = "custom0" }.any()
+//                            action4 -> this.result = this.instance.current().field { name = "custom1" }.any()
+//                        }
+//                    }
+//                }
             }
         }
         if (album != 0 || actionsLeftAligned || hideTime || hideSeamless || headerMargin != 26.0f || headerPadding != 2.0f) {
