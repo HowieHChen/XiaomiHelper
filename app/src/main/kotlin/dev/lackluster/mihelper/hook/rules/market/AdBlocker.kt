@@ -159,11 +159,11 @@ object AdBlocker : YukiBaseHooker() {
                 }
             }
             // 首页二楼
-            "com.xiaomi.market.business_ui.secondfloor.SecondFloorController".toClassOrNull()?.apply {
+            "com.xiaomi.market.common.component.quick_item.QuickSecondHelper".toClassOrNull()?.apply {
                 method {
-                    name = "create"
+                    name = "isEnableQuickSecond"
                 }.hook {
-                    intercept()
+                    replaceToFalse()
                 }
             }
             // 过滤子标签页
