@@ -21,7 +21,7 @@ object RemoveElement : YukiBaseHooker() {
     private val menuCreateClass1 by lazy {
         DexKit.dexKitBridge.findClass {
             matcher {
-                addUsingString("resolved FullSafeStrategyType to: ", StringMatchType.Equals)
+                addUsingString("FullSafeStrategyType", StringMatchType.Contains)
             }
         }
     }
@@ -37,7 +37,7 @@ object RemoveElement : YukiBaseHooker() {
     private val menuCreateClass2 by lazy {
         DexKit.dexKitBridge.findClass {
             matcher {
-                addUsingString("root.findViewById(R.id.main_content)", StringMatchType.Equals)
+                addUsingString("R.id.main_content", StringMatchType.Contains)
                 addUsingString("dark_loading.json", StringMatchType.Equals)
             }
         }

@@ -56,6 +56,7 @@ object AdBlocker : YukiBaseHooker() {
         DexKit.findMethodWithCache("app_store_recommend") {
             matcher {
                 addUsingString("app_store_recommend", StringMatchType.Equals)
+                returnType = "boolean"
             }
         }
     }
