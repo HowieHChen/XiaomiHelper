@@ -266,8 +266,8 @@ object AdBlocker : YukiBaseHooker() {
             val abNormals = abNormalsField.list<Boolean>().toMutableList()
             val removeIndex = arrayListOf<Int>()
             if (urls.isNotEmpty() && urls.size == titles.size && urls.size == tags.size && urls.size == abNormals.size) {
-                titles.forEachIndexed { index, map ->
-                    if (map.getOrDefault("cn", "cn") == map.getOrDefault("en", "en")) {
+                urls.forEachIndexed { index, url ->
+                    if (url.startsWith("http")) {
                         removeIndex.add(index)
                     }
                 }

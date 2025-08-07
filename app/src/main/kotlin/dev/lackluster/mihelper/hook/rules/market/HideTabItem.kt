@@ -78,7 +78,14 @@ object HideTabItem : YukiBaseHooker() {
             "com.xiaomi.market.common.analytics.onetrack.ExperimentManager\$Companion".toClassOrNull()?.apply {
                 method {
                     name = "isEnableMiuixBlur"
-                }.hook {
+                }.ignored().hook {
+                    replaceToTrue()
+                }
+            }
+            "com.xiaomi.market.util.Client".toClassOrNull()?.apply {
+                method {
+                    name = "isSupportBlur"
+                }.ignored().hook {
                     replaceToTrue()
                 }
             }
@@ -156,7 +163,11 @@ object HideTabItem : YukiBaseHooker() {
                         name = "setTabContainer"
                     }.hook {
                         after {
-                            this.instance<Activity>().let {
+                            val mActivity = this.instance.current().field {
+                                name = "mActivity"
+                                superClass()
+                            }.cast<Activity>()
+                            mActivity?.let {
                                 val tabContainerId = it.getResID("tab_container_layout", "id", Scope.MARKET)
                                 it.findViewById<View>(tabContainerId)?.visibility = View.GONE
                             }
