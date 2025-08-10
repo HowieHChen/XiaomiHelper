@@ -122,6 +122,11 @@ fun SystemUIPage(navController: NavController, adjustPadding: PaddingValues, mod
                     title = stringResource(R.string.systemui_lock_double_tap),
                     key = Pref.Key.SystemUI.LockScreen.DOUBLE_TAP_TO_SLEEP
                 )
+                SwitchPreference(
+                    title = stringResource(R.string.systemui_lock_flashlight_on),
+                    summary = stringResource(R.string.systemui_lock_flashlight_on_tips),
+                    key = Pref.Key.SystemUI.Plugin.AUTO_FLASH_ON
+                )
                 DropDownPreference(
                     title = stringResource(R.string.systemui_lock_carrier_text),
                     entries = lockscreenCarrierLabelEntries,

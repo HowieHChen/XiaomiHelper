@@ -222,6 +222,8 @@
     <string name="systemui_lock_double_tap" translatable="false">@string/common_tap_sleep</string>
     <string name="systemui_lock_block_editor">Disable long press to access Lock screen editor</string>
     <string name="systemui_lock_block_editor_tips">You can edit the Lock screen in Settings > Personalization</string>
+    <string name="systemui_lock_flashlight_on">Turn on the flashlight automatically</string>
+    <string name="systemui_lock_flashlight_on_tips">Automatically turn on the flashlight when opening the flashlight adjustment interface from the lock screen shortcut.</string>
     <string name="systemui_lock_carrier_text">Status bar carrier label</string>
     <string name="systemui_lock_carrier_text_default">Default (invisible)</string>
     <string name="systemui_lock_carrier_text_carrier">Carrier label</string>

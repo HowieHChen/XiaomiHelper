@@ -35,5 +35,6 @@
         <item>com.xiaomi.mirror</item>
         <item>com.xiaomi.misettings</item>
         <item>com.xiaomi.trustservice</item>
+        <item>miui.systemui.plugin</item>
     </string-array>
 </resources>

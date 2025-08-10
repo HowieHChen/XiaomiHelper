@@ -323,6 +323,9 @@ object Pref {
                 const val BATTERY_PERCENTAGE = "statusbar_cc_battery_percent"
                 const val BATTERY_PERCENTAGE_ANIM = "statusbar_cc_battery_percent_anim"
             }
+            object Plugin {
+                const val AUTO_FLASH_ON = "sys_plugin_flash_on"
+            }
             const val FUCK_GESTURES_DAT = "systemui_fuck_gesture_dat"
         }
         object Taplus {

@@ -477,6 +477,7 @@
     <string name="module_reset_failure">重置失败</string>
     <string name="module_reset_warning">重置所有设置是不可逆的操作，请确保已经做好备份。\n是否继续？</string>
     <string name="module_restore_failure_spversion">备份文件版本不匹配（过高）</string>
+    <string name="systemui_lock_flashlight_on_tips">从锁屏快捷方式打开手电筒调整界面时自动打开闪光灯</string>
     <string name="systemui_lock_carrier_text">状态栏运营商标签</string>
     <string name="systemui_lock_carrier_text_carrier">运营商标签</string>
     <string name="systemui_lock_carrier_text_clock">时间</string>
@@ -672,4 +673,5 @@
     <string name="systemui_control_battery_percent_anim">修复共享元素过渡动画</string>
     <string name="systemui_control_battery_percent_anim_tips">启用“始终显示电池百分比”可能会破坏下拉控制中心时的过渡动画。尽管它很难被注意到，但如果你对此感到不适，请打开本选项。</string>
     <string name="systemui_control_battery_percent_tips">在控制中心中始终显示电池百分比，忽略电池指示器样式设置。</string>
+    <string name="systemui_lock_flashlight_on">自动打开手电筒</string>
 </resources>

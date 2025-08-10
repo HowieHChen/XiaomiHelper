@@ -25,6 +25,7 @@ object Scope {
     const val SECURITY_CENTER = "com.miui.securitycenter"
     const val SETTINGS = "com.android.settings"
     const val SYSTEM_UI = "com.android.systemui"
+    const val SYSTEM_UI_PLUGIN = "miui.systemui.plugin"
     const val TAPLUS = "com.miui.contentextension"
     const val THEMES = "com.android.thememanager"
     const val UPDATER = "com.android.updater"
