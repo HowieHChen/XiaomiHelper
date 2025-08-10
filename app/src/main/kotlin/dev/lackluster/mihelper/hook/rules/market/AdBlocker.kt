@@ -161,8 +161,15 @@ object AdBlocker : YukiBaseHooker() {
             // 首页二楼
             "com.xiaomi.market.common.component.quick_item.QuickSecondHelper".toClassOrNull()?.apply {
                 method {
+                    name = "shouldHideSecond"
+                }.ignored().hook {
+                    replaceToTrue()
+                }
+            }
+            "com.xiaomi.market.common.analytics.onetrack.ExperimentManager\$Companion".toClassOrNull()?.apply {
+                method {
                     name = "isEnableQuickSecond"
-                }.hook {
+                }.ignored().hook {
                     replaceToFalse()
                 }
             }
