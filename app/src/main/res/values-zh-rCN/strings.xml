@@ -666,6 +666,7 @@
     <string name="cleaner_market_filter_tab">过滤底部标签页</string>
     <string name="cleaner_market_filter_tab_tips">隐藏标签页（及对应页面）</string>
     <string name="cleaner_market_visible_tabs">可见标签页</string>
+    <string name="cleaner_market_tab_mini_game">小游戏</string>
     <string name="cleaner_market_tab_mine">我的</string>
     <string name="cleaner_market_filter_tab_warning">警告！当前可见的标签页数量少于两个，这可能导致用户界面异常！</string>
     <string name="cleaner_market_bottom_tab_blur">模糊效果</string>

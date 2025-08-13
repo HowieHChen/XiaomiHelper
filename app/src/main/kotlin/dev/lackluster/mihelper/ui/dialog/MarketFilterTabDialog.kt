@@ -32,6 +32,7 @@ fun MarketFilterTabDialog(navController: NavController, adjustPadding: PaddingVa
     var showTabRank by remember { mutableStateOf(!SafeSP.getBoolean(Pref.Key.Market.HIDE_TAB_RANK, false)) }
     var showTabAgent by remember { mutableStateOf(!SafeSP.getBoolean(Pref.Key.Market.HIDE_TAB_AGENT, false)) }
     var showTabAppAssemble by remember { mutableStateOf(!SafeSP.getBoolean(Pref.Key.Market.HIDE_TAB_APP_ASSEMBLE, false)) }
+    var showTabMiniGame by remember { mutableStateOf(!SafeSP.getBoolean(Pref.Key.Market.HIDE_TAB_MINI_GAME, false)) }
     var showTabMine by remember { mutableStateOf(!SafeSP.getBoolean(Pref.Key.Market.HIDE_TAB_MINE, false)) }
 
     FullScreenDialog(
@@ -51,6 +52,7 @@ fun MarketFilterTabDialog(navController: NavController, adjustPadding: PaddingVa
             SafeSP.putAny(Pref.Key.Market.HIDE_TAB_RANK, !showTabRank)
             SafeSP.putAny(Pref.Key.Market.HIDE_TAB_AGENT, !showTabAgent)
             SafeSP.putAny(Pref.Key.Market.HIDE_TAB_APP_ASSEMBLE, !showTabAppAssemble)
+            SafeSP.putAny(Pref.Key.Market.HIDE_TAB_MINI_GAME, !showTabMiniGame)
             SafeSP.putAny(Pref.Key.Market.HIDE_TAB_MINE, spValueIgnoreRestrict && !showTabMine)
             if (spValueIgnoreRestrict) {
                 var visibleTabs = 0
@@ -59,6 +61,7 @@ fun MarketFilterTabDialog(navController: NavController, adjustPadding: PaddingVa
                 if (showTabRank) visibleTabs++
                 if (showTabAgent) visibleTabs++
                 if (showTabAppAssemble) visibleTabs++
+                if (showTabMiniGame) visibleTabs++
                 if (showTabMine) visibleTabs++
                 if (visibleTabs < 2) {
                     Toast.makeText(context, context.getString(R.string.cleaner_market_filter_tab_warning), Toast.LENGTH_SHORT).show()
@@ -129,6 +132,12 @@ fun MarketFilterTabDialog(navController: NavController, adjustPadding: PaddingVa
                     defValue = showTabAppAssemble
                 ) {
                     showTabAppAssemble = it
+                }
+                CheckboxPreference(
+                    title = stringResource(R.string.cleaner_market_tab_mini_game),
+                    defValue = showTabMiniGame
+                ) {
+                    showTabMiniGame = it
                 }
                 CheckboxPreference(
                     title = stringResource(R.string.cleaner_market_tab_mine),

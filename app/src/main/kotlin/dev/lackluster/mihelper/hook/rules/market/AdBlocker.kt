@@ -271,15 +271,19 @@ object AdBlocker : YukiBaseHooker() {
             val titles = titlesField.list<Map<String, String>>().toMutableList()
             val tags = tagsField.list<String>().toMutableList()
             val abNormals = abNormalsField.list<Boolean>().toMutableList()
-            val removeIndex = arrayListOf<Int>()
+            val removeIndex = mutableSetOf<Int>()
             if (urls.isNotEmpty() && urls.size == titles.size && urls.size == tags.size && urls.size == abNormals.size) {
                 urls.forEachIndexed { index, url ->
                     if (url.startsWith("http")) {
                         removeIndex.add(index)
                     }
                 }
-                removeIndex.sortDescending()
-                removeIndex.forEach { index ->
+                tags.forEachIndexed { index, tag ->
+                    if (tag.startsWith("native_app_assemble_home")) {
+                        removeIndex.add(index)
+                    }
+                }
+                removeIndex.sortedDescending().forEach { index ->
                     urls.removeAt(index)
                     titles.removeAt(index)
                     tags.removeAt(index)

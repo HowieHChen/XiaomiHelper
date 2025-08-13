@@ -47,6 +47,7 @@ object HideTabItem : YukiBaseHooker() {
     private val showTabRank = !Prefs.getBoolean(Pref.Key.Market.HIDE_TAB_RANK, false)
     private val showTabAgent = !Prefs.getBoolean(Pref.Key.Market.HIDE_TAB_AGENT, false)
     private val showTabAppAssemble = !Prefs.getBoolean(Pref.Key.Market.HIDE_TAB_APP_ASSEMBLE, false)
+    private val showTabMiniGame = !Prefs.getBoolean(Pref.Key.Market.HIDE_TAB_MINI_GAME, false)
     private val showTabMine = !Prefs.getBoolean(Pref.Key.Market.HIDE_TAB_MINE, false)
     private val showTabOthers = !Prefs.getBoolean(Pref.Key.Market.HIDE_TAB_OTHERS, false)
 
@@ -69,6 +70,7 @@ object HideTabItem : YukiBaseHooker() {
             if (showTabRank) visibleTab++
             if (showTabAgent) visibleTab++
             if (showTabAppAssemble) visibleTab++
+            if (showTabMiniGame) visibleTab++
             if (showTabMine) visibleTab++
             hideTabContainer = (visibleTab == 1)
         } else {
@@ -195,6 +197,7 @@ object HideTabItem : YukiBaseHooker() {
                             else if (
                                 tag.startsWith("native_app_assemble") || tag.startsWith("native_market_video")
                             ) showTabAppAssemble
+                            else if (tag.startsWith("native_market_quick_game")) showTabMiniGame
                             else if (tag.startsWith("native_market_mine")) !ignoreRestrict || showTabMine
                             else showTabOthers
                         }.toList()
