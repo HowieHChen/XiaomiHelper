@@ -27,6 +27,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -111,6 +112,7 @@ fun MediaActionResizePage(
     val actionsPadding = PaddingValues.Absolute(
         right = if (mode != BasePageDefaults.Mode.SPLIT_LEFT) systemBarInsets.calculateRightPadding(layoutDirection) else 0.dp
     )
+    var isRefreshing by remember { mutableStateOf(false) }
     val pullToRefreshState = rememberPullToRefreshState()
 
     LaunchedEffect(key1 = navController) {
@@ -121,9 +123,7 @@ fun MediaActionResizePage(
     }
 
     LaunchedEffect(viewModel.isRefreshing) {
-        if (pullToRefreshState.isRefreshing && !viewModel.isRefreshing) {
-            pullToRefreshState.completeRefreshing {}
-        }
+        isRefreshing = viewModel.isRefreshing
     }
 
     LaunchedEffect(viewModel.search) {
@@ -160,6 +160,7 @@ fun MediaActionResizePage(
         adjustPadding = adjustPadding,
     ) { paddingValues ->
         PullToRefresh(
+            isRefreshing = isRefreshing,
             pullToRefreshState = pullToRefreshState,
             onRefresh = {
                 scope.launch { viewModel.fetchAppList(context) }

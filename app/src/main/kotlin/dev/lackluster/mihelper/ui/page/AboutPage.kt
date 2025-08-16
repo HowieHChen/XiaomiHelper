@@ -46,10 +46,11 @@ import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.ui.MainActivity
 import dev.lackluster.mihelper.data.Contributors
 import dev.lackluster.mihelper.data.References
-import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import androidx.core.net.toUri
+import dev.lackluster.hyperx.compose.base.Card
+import dev.lackluster.hyperx.compose.base.CardDefaults
 import dev.lackluster.hyperx.compose.navigation.navigateTo
 import dev.lackluster.mihelper.data.Pages
 import kotlin.random.Random
@@ -271,7 +272,7 @@ private fun AdaptiveHeaderCard(
     Layout(
         content = {
             Card(
-                color = Color("#1F83FE".toColorInt())
+                colors = CardDefaults.cardColors(Color("#1F83FE".toColorInt()))
             ) {
                 colorCardContent()
             }
