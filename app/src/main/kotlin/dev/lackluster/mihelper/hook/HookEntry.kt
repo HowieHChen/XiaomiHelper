@@ -45,7 +45,6 @@ class HookEntry : IYukiHookXposedInit {
             tag = "MiHelper"
         }
         isDebug = false
-        isEnableHookSharedPreferences = true
     }
 
     override fun onHook() = encase {

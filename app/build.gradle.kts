@@ -63,8 +63,6 @@ android {
             storePassword = ksPWD
             keyAlias =kAlias
             keyPassword = kPWD
-            enableV3Signing = true
-            enableV4Signing = true
         }
     }
     buildTypes {
