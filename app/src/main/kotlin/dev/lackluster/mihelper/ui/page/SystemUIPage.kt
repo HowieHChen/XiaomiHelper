@@ -119,6 +119,11 @@ fun SystemUIPage(navController: NavController, adjustPadding: PaddingValues, mod
                     key = Pref.Key.SystemUI.LockScreen.HIDE_DISTURB
                 )
                 SwitchPreference(
+                    title = stringResource(R.string.systemui_lock_keep_notif),
+                    summary = stringResource(R.string.systemui_lock_keep_notif_tips),
+                    key = Pref.Key.SystemUI.LockScreen.KEEP_NOTIFICATION
+                )
+                SwitchPreference(
                     title = stringResource(R.string.systemui_lock_double_tap),
                     key = Pref.Key.SystemUI.LockScreen.DOUBLE_TAP_TO_SLEEP
                 )

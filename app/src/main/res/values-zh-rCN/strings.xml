@@ -675,4 +675,6 @@
     <string name="systemui_control_battery_percent_anim_tips">启用“始终显示电池百分比”可能会破坏下拉控制中心时的过渡动画。尽管它很难被注意到，但如果你对此感到不适，请打开本选项。</string>
     <string name="systemui_control_battery_percent_tips">在控制中心中始终显示电池百分比，忽略电池指示器样式设置。</string>
     <string name="systemui_lock_flashlight_on">自动打开手电筒</string>
+    <string name="systemui_lock_keep_notif">解锁后保留通知</string>
+    <string name="systemui_lock_keep_notif_tips">通知会始终展示在锁屏界面上，直到被手动清除</string>
 </resources>

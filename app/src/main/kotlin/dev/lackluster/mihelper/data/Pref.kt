@@ -281,6 +281,7 @@ object Pref {
                 const val DOUBLE_TAP_TO_SLEEP = "systemui_double_tap_sleep"
                 const val HIDE_DISTURB = "systemui_lockscreen_hide_disturb"
                 const val CARRIER_TEXT = "systemui_lockscreen_carrier_text"
+                const val KEEP_NOTIFICATION = "systemui_lockscreen_keep_notif"
             }
             object NotifCenter {
                 const val NOTIF_NO_WHITELIST = "systemui_notif_no_whitelist"

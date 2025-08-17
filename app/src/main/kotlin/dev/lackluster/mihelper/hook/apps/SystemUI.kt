@@ -19,6 +19,7 @@ import dev.lackluster.mihelper.hook.rules.systemui.freeform.HideTopBar
 import dev.lackluster.mihelper.hook.rules.systemui.freeform.UnlockMultipleTask
 import dev.lackluster.mihelper.hook.rules.systemui.lockscreen.CarrierTextView
 import dev.lackluster.mihelper.hook.rules.systemui.lockscreen.DoubleTapToSleep
+import dev.lackluster.mihelper.hook.rules.systemui.lockscreen.KeepNotification
 import dev.lackluster.mihelper.hook.rules.systemui.media.CustomElement
 import dev.lackluster.mihelper.hook.rules.systemui.media.CustomLayout
 import dev.lackluster.mihelper.hook.rules.systemui.media.CustomBackground
@@ -36,13 +37,20 @@ import dev.lackluster.mihelper.hook.rules.systemui.statusbar.StatusBarDoubleTapT
 object SystemUI : YukiBaseHooker() {
     override fun onHook() {
         loadHooker(ResourcesUtils)
+
         loadHooker(CarrierTextView)
         loadHooker(DoubleTapToSleep)
         loadHooker(HideDisturbNotification)
+        loadHooker(KeepNotification)
 
+        loadHooker(CustomBackground)
+        loadHooker(CustomLayout)
+        loadHooker(CustomElement)
+
+        loadHooker(MiuiXExpandButton)
         loadHooker(NotifFreeform)
         loadHooker(NotifWhitelist)
-        loadHooker(MiuiXExpandButton)
+
         loadHooker(MonetOverlay)
 
         loadHooker(IgnoreSysHideIcon)
@@ -62,9 +70,6 @@ object SystemUI : YukiBaseHooker() {
         loadHooker(StatusBarActions)
         loadHooker(FuckStatusBarGestures)
 
-        loadHooker(CustomBackground)
-        loadHooker(CustomLayout)
-        loadHooker(CustomElement)
         return
         loadHooker(RemoveFreeformRestriction)
         loadHooker(UnlockMultipleTask)

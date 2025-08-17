@@ -219,6 +219,8 @@
     <string name="ui_title_systemui_lock_screen">Lock screen</string>
     <string name="systemui_lock_hide_unlock_tip">Hide unlock request at the bottom of the screen</string>
     <string name="systemui_lock_hide_disturb">Hide Do Not Disturb mode resident notifications</string>
+    <string name="systemui_lock_keep_notif">Keep notifications after unlocking</string>
+    <string name="systemui_lock_keep_notif_tips">Notifications will always be displayed on the lock screen until they are manually dismissed.</string>
     <string name="systemui_lock_double_tap" translatable="false">@string/common_tap_sleep</string>
     <string name="systemui_lock_block_editor">Disable long press to access Lock screen editor</string>
     <string name="systemui_lock_block_editor_tips">You can edit the Lock screen in Settings > Personalization</string>
