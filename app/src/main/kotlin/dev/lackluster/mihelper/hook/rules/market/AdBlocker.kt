@@ -20,6 +20,7 @@
 
 package dev.lackluster.mihelper.hook.rules.market
 
+import android.app.Activity
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.constructor
 import com.highcapable.yukihookapi.hook.factory.current
@@ -156,6 +157,15 @@ object AdBlocker : YukiBaseHooker() {
                     name = "fetchSearchHotList"
                 }.ignored().hook {
                     intercept()
+                }
+            }
+            "com.xiaomi.market.ui.FloatWebActivity".toClassOrNull()?.apply {
+                method {
+                    name = "onCreate"
+                }.hook {
+                    after {
+                        this.instance<Activity>().finish()
+                    }
                 }
             }
             // 首页二楼
