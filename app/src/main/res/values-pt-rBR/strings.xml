@@ -176,8 +176,12 @@
     <string name="ui_title_systemui_lock_screen">Tela de bloqueio</string>
     <string name="systemui_lock_hide_unlock_tip">Ocultar solicitação de desbloqueio na parte inferior da tela</string>
     <string name="systemui_lock_hide_disturb">Ocultar notificações de residentes do Não perturbe</string>
+    <string name="systemui_lock_keep_notif">Manter notificações após desbloquear</string>
+    <string name="systemui_lock_keep_notif_tips">As notificações serão sempre exibidas na Tela de bloqueio até que sejam descartadas manualmente.</string>
     <string name="systemui_lock_block_editor">Desativar toque longo para editar a Tela de bloqueio</string>
     <string name="systemui_lock_block_editor_tips">Você pode editar a Tela de bloqueio em Configurações > Personalização</string>
+    <string name="systemui_lock_flashlight_on">Ligar a lanterna automaticamente</string>
+    <string name="systemui_lock_flashlight_on_tips">Ligue a lanterna automaticamente ao abrir a interface de ajuste da lanterna a partir do atalho da Tela de bloqueio.</string>
     <string name="systemui_lock_carrier_text">Nome da operadora na barra de status</string>
     <string name="systemui_lock_carrier_text_default">Padrão (invisível)</string>
     <string name="systemui_lock_carrier_text_carrier">Nome da operadora</string>
@@ -327,6 +331,7 @@
     <string name="cleaner_market_tab_rank">Popular</string>
     <string name="cleaner_market_tab_agent">Agente</string>
     <string name="cleaner_market_tab_app_assemble">Feed/Vídeo do app</string>
+    <string name="cleaner_market_tab_mini_game">Mini game</string>
     <string name="cleaner_market_tab_mine">Conta</string>
     <string name="cleaner_market_filter_tab_warning">Aviso: atualmente, há menos de duas guias visíveis, o que pode causar anormalidades na interface do usuário!</string>
     <string name="cleaner_milink_fuck_hpplay">Bloquear a criação de pastas hpplay</string>
