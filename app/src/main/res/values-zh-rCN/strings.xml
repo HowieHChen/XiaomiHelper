@@ -177,6 +177,7 @@
     <string name="systemui_statusbar_disable_smart_dark_tips">智能深色特性会使状态栏在深色模式下忽略应用程序指定的颜色并启用区域采样自动改变颜色。禁用此特性以还原 Android 默认行为。</string>
     <string name="ui_title_systemui_lock_screen">锁屏</string>
     <string name="ui_title_systemui_notification_center">通知中心</string>
+    <string name="systemui_notif_expand_notif_ungrouped_tips">始终展开所有未分组的通知</string>
     <string name="systemui_notif_miuix_expand_btn">Miuix 样式的展开按钮</string>
     <string name="systemui_notif_miuix_expand_btn_tips">使用 Miuix 按钮替换 Android 样式通知的展开按钮</string>
     <string name="systemui_others_monet_color_tips">此颜色将影响所有使用动态配色方案的应用程序</string>
@@ -677,4 +678,10 @@
     <string name="systemui_lock_flashlight_on">自动打开手电筒</string>
     <string name="systemui_lock_keep_notif">解锁后保留通知</string>
     <string name="systemui_lock_keep_notif_tips">通知会始终展示在锁屏界面上，直到被手动清除</string>
+    <string name="systemui_notif_expand_notif">展开通知</string>
+    <string name="systemui_notif_expand_notif_def_tips">不展开通知</string>
+    <string name="systemui_notif_expand_notif_first">首条</string>
+    <string name="systemui_notif_expand_notif_first_tips">自动展开第一个通知（如果它未被分组）</string>
+    <string name="systemui_notif_expand_notif_ungrouped">未分组</string>
+    <string name="systemui_notif_expand_notif_tips">强烈建议使用叠加层（RRO）来修改通知扩展行为</string>
 </resources>

@@ -24,6 +24,7 @@ import dev.lackluster.mihelper.hook.rules.systemui.media.CustomElement
 import dev.lackluster.mihelper.hook.rules.systemui.media.CustomLayout
 import dev.lackluster.mihelper.hook.rules.systemui.media.CustomBackground
 import dev.lackluster.mihelper.hook.rules.systemui.media.UnlockCustomAction
+import dev.lackluster.mihelper.hook.rules.systemui.notif.ExpandNotification
 import dev.lackluster.mihelper.hook.rules.systemui.notif.MiuiXExpandButton
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.BatteryIndicator
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.ControlCenterBattery
@@ -50,6 +51,7 @@ object SystemUI : YukiBaseHooker() {
         loadHooker(MiuiXExpandButton)
         loadHooker(NotifFreeform)
         loadHooker(NotifWhitelist)
+        loadHooker(ExpandNotification)
 
         loadHooker(MonetOverlay)
 

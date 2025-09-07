@@ -35,6 +35,20 @@ fun SystemUIPage(navController: NavController, adjustPadding: PaddingValues, mod
         DropDownEntry(stringResource(R.string.systemui_lock_carrier_text_carrier)),
         DropDownEntry(stringResource(R.string.systemui_lock_carrier_text_clock))
     )
+    val expandNotificationsEntries = listOf(
+        DropDownEntry(
+            title = stringResource(R.string.systemui_notif_expand_notif_def),
+            summary = stringResource(R.string.systemui_notif_expand_notif_def_tips)
+        ),
+        DropDownEntry(
+            title = stringResource(R.string.systemui_notif_expand_notif_first),
+            summary = stringResource(R.string.systemui_notif_expand_notif_first_tips)
+        ),
+        DropDownEntry(
+            title = stringResource(R.string.systemui_notif_expand_notif_ungrouped),
+            summary = stringResource(R.string.systemui_notif_expand_notif_ungrouped_tips)
+        ),
+    )
 
     var visibilityCustomNotifCount by remember { mutableStateOf(
         SafeSP.getBoolean(Pref.Key.SystemUI.StatusBar.NOTIFICATION_COUNT)
@@ -151,6 +165,12 @@ fun SystemUIPage(navController: NavController, adjustPadding: PaddingValues, mod
                 SwitchPreference(
                     title = stringResource(R.string.systemui_notif_disable_whitelist),
                     key = Pref.Key.SystemUI.NotifCenter.NOTIF_NO_WHITELIST
+                )
+                DropDownPreference(
+                    title = stringResource(R.string.systemui_notif_expand_notif),
+                    summary = stringResource(R.string.systemui_notif_expand_notif_tips),
+                    entries = expandNotificationsEntries,
+                    key = Pref.Key.SystemUI.NotifCenter.EXPAND_NOTIFICATION
                 )
                 SwitchPreference(
                     title = stringResource(R.string.systemui_notif_miuix_expand_btn),

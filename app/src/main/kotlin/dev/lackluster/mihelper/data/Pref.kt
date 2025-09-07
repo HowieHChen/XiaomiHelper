@@ -290,6 +290,7 @@ object Pref {
                 const val MIUIX_EXPAND_BUTTON = "systemui_notif_miuix_expand"
                 const val MONET_OVERLAY = "systemui_notif_monet_overlay"
                 const val MONET_OVERLAY_COLOR = "systemui_notif_monet_color"
+                const val EXPAND_NOTIFICATION = "systemui_notif_expand_notifs"
             }
             object MediaControl {
                 const val UNLOCK_ACTION = "media_unlock_action"

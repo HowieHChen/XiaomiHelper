@@ -247,6 +247,14 @@
     <string name="systemui_notif_theme_blur">Allow Advanced textures to be enabled when using themes</string>
     <string name="systemui_notif_media_control_style" translatable="false">@string/page_media_control_style</string>
     <string name="systemui_notif_media_control_style_tips">Customize the style of the media control</string>
+    <string name="systemui_notif_expand_notif">Expand notifications</string>
+    <string name="systemui_notif_expand_notif_tips">It is highly recommended to use an Overlay (RRO) to modify notification expansion behavior</string>
+    <string name="systemui_notif_expand_notif_def" translatable="false">@string/common_default</string>
+    <string name="systemui_notif_expand_notif_def_tips">Don\'t expand notifications</string>
+    <string name="systemui_notif_expand_notif_first">First</string>
+    <string name="systemui_notif_expand_notif_first_tips">Auto-expand the first notification if it is ungrouped</string>
+    <string name="systemui_notif_expand_notif_ungrouped">Ungrouped</string>
+    <string name="systemui_notif_expand_notif_ungrouped_tips">Always expand ungrouped notifications</string>
     <string name="systemui_notif_miuix_expand_btn">Miuix style expand button</string>
     <string name="systemui_notif_miuix_expand_btn_tips">Replace the expand button of Android-style notifications with Miuix button</string>
     <string name="ui_title_systemui_control_center">Control center</string>
