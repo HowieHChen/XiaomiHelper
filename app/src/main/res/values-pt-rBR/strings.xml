@@ -202,6 +202,13 @@
     <string name="systemui_notif_clock_anim_tips">Permite a animação de transição do relógio em paisagem</string>
     <string name="systemui_notif_theme_blur">Permitir que Texturas avançadas sejam ativadas ao usar temas</string>
     <string name="systemui_notif_media_control_style_tips">Personalizar estilo do controle de mídia</string>
+    <string name="systemui_notif_expand_notif">Expandir notificações</string>
+    <string name="systemui_notif_expand_notif_tips">É altamente recomendável usar uma overlay (RRO) para modificar o comportamento de expansão da notificação</string>
+    <string name="systemui_notif_expand_notif_def_tips">Não expandir notificações</string>
+    <string name="systemui_notif_expand_notif_first">Primeiro</string>
+    <string name="systemui_notif_expand_notif_first_tips">Expande automaticamente a primeira notificação se ela não estiver agrupada</string>
+    <string name="systemui_notif_expand_notif_ungrouped">Desagrupada</string>
+    <string name="systemui_notif_expand_notif_ungrouped_tips">Sempre expandir notificações desagrupadas</string>
     <string name="systemui_notif_miuix_expand_btn">Botão de expansão estilo Miuix</string>
     <string name="systemui_notif_miuix_expand_btn_tips">Substitui o botão de expansão das notificações do estilo Android pelo botão Miuix</string>
     <string name="ui_title_systemui_control_center">Centro de controle</string>

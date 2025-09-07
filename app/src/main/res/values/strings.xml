@@ -15,27 +15,21 @@
     <string name="common_enabled">Enabled</string>
     <string name="common_on">On</string>
     <string name="common_off">Off</string>
-
     <string name="button_cancel">Cancel</string>
     <string name="button_ok">OK</string>
     <string name="button_clear">Clear</string>
     <string name="button_enable">Enable</string>
     <string name="button_disable">Disable</string>
     <string name="button_ignore">Ignore</string>
-
     <string name="dialog_done">Done</string>
     <string name="dialog_warning">Warning</string>
     <string name="dialog_error">Error</string>
-
     <string name="page_main" translatable="false">@string/app_name</string>
     <string name="page_dev_ui_test">UI element test</string>
-    
     <string name="page_about">About module</string>
     <string name="page_menu">Menu</string>
-
     <string name="page_virtual_media_control_style" translatable="false">@string/systemui_notif_media_control_style_tips</string>
     <string name="page_virtual_home_refactor" translatable="false">@string/home_exclusive_refactor</string>
-
     <string name="page_module">Module settings</string>
     <string name="page_systemui" translatable="false">@string/scope_systemui</string>
     <string name="page_android">Android Framework</string>
@@ -45,7 +39,6 @@
     <string name="page_security_center_pad" translatable="false">@string/scope_security_center_pad</string>
     <string name="page_interconnection">Interconnectivity</string>
     <string name="page_others" translatable="false">@string/common_others</string>
-
     <string name="page_disable_fixed_orientation" translatable="false">@string/android_rotation_disable_fixed_orientation_scope</string>
     <string name="page_status_bar_clock">Clock</string>
     <string name="page_status_bar_icon_tuner">Icon tuner</string>
@@ -53,7 +46,6 @@
     <string name="page_media_control_style">Media control style</string>
     <string name="page_home_refactor" translatable="false">@string/home_exclusive_refactor</string>
     <string name="page_minus_blur">Blur effect of Personal assistant</string>
-
     <string name="scope_android">System</string>
     <string name="scope_browser">Mi Browser</string>
     <string name="scope_download">Download</string>
@@ -85,7 +77,6 @@
     <string name="scope_themes">Themes</string>
     <string name="scope_updater">Updater</string>
     <string name="scope_weather">Weather</string>
-
     <string name="action_notifications">Notification shade</string>
     <string name="action_quick_settings">Quick settings panel</string>
     <string name="action_lock_screen">Turn off screen</string>
@@ -95,7 +86,6 @@
     <string name="action_recognize_screen">Recognize screen</string>
     <string name="action_xiaoai">Xiaomi Hyper XiaoAi</string>
     <string name="action_floating_window">Floating window</string>
-
     <string name="search_use_browser">Search using browser</string>
     <string name="search_engine">Search engine</string>
     <string name="search_engine_default">Default</string>
@@ -106,7 +96,6 @@
     <string name="search_engine_custom" translatable="false">@string/common_custom</string>
     <string name="search_engine_custom_url">Custom search engine</string>
     <string name="search_engine_custom_url_toast">The URL must contain \"%s\"</string>
-
     <string name="share_center">Xiaomi Smart Hub</string>
     <string name="floating_window">Freeform</string>
     <string name="new_task">New task</string>
@@ -248,11 +237,11 @@
     <string name="systemui_notif_media_control_style" translatable="false">@string/page_media_control_style</string>
     <string name="systemui_notif_media_control_style_tips">Customize the style of the media control</string>
     <string name="systemui_notif_expand_notif">Expand notifications</string>
-    <string name="systemui_notif_expand_notif_tips">It is highly recommended to use an Overlay (RRO) to modify notification expansion behavior</string>
+    <string name="systemui_notif_expand_notif_tips">It\'s highly recommended to use an Overlay (RRO) to modify the notification expansion behavior</string>
     <string name="systemui_notif_expand_notif_def" translatable="false">@string/common_default</string>
     <string name="systemui_notif_expand_notif_def_tips">Don\'t expand notifications</string>
     <string name="systemui_notif_expand_notif_first">First</string>
-    <string name="systemui_notif_expand_notif_first_tips">Auto-expand the first notification if it is ungrouped</string>
+    <string name="systemui_notif_expand_notif_first_tips">Auto-expand the first notification if it\'s ungrouped</string>
     <string name="systemui_notif_expand_notif_ungrouped">Ungrouped</string>
     <string name="systemui_notif_expand_notif_ungrouped_tips">Always expand ungrouped notifications</string>
     <string name="systemui_notif_miuix_expand_btn">Miuix style expand button</string>
@@ -829,5 +818,4 @@
     <string name="home_refactor_minus_overlap_mode">Personal assistant overlap mode</string>
     <string name="home_refactor_minus_overlap_mode_tips">Make the Personal assistant hover above the launcher</string>
     <string name="home_refactor_launch_show_minus_tips">Don\'t hide the launcher view when going to the Personal assistant</string>
-    <!-- MinusBlurPage -->
 </resources>
