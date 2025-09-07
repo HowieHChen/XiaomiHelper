@@ -57,7 +57,7 @@ import androidx.core.graphics.toColorInt
 import dev.lackluster.mihelper.R
 import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.Text
-import top.yukonga.miuix.kmp.utils.SmoothRoundedCornerShape
+import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
 import kotlin.math.floor
 import kotlin.math.min
 
@@ -269,7 +269,7 @@ fun MediaControlCard(
                     .size(52.5.dp)
                     .graphicsLayer(
                         clip = true,
-                        shape = SmoothRoundedCornerShape(8.dp),
+                        shape = G2RoundedCornerShape(8.dp),
                         shadowElevation = 32f
                     ),
                 painter = painterResource(R.drawable.media_bg_ori),
