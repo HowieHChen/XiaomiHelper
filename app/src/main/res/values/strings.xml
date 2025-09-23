@@ -405,7 +405,8 @@
     <string name="cleaner_music_hide_discover_tips">Remove the discover from the top tab on the home page</string>
     <string name="cleaner_music_hide_my_banner">Hide the banner on my page</string>
     <string name="cleaner_music_hide_my_rec_playlist">Hide recommended songs on my page</string>
-    <string name="cleaner_music_block_try_excellent">Block the \"Try Excellent quality\" dialog</string>
+    <string name="cleaner_music_hide_fav_num">Hide song favorite count</string>
+    <string name="cleaner_music_hide_fav_num_tips">Hide favorite counts shown on favorite icons. May affect performance.</string>
     <string name="ui_title_cleaner_package" translatable="false">@string/scope_package_installer</string>
     <string name="cleaner_package_remove_element">Disable redundant features</string>
     <string name="cleaner_package_skip_risk_check">Disable the monitoring of risks</string>

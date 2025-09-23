@@ -605,7 +605,6 @@
     <string name="about_telegram_tips">加入 Telegram 频道以反馈问题并获取内部更新</string>
     <string name="cleaner_music_hide_karaoke">隐藏K歌</string>
     <string name="cleaner_music_hide_discover">隐藏发现</string>
-    <string name="cleaner_music_block_try_excellent">屏蔽“臻品母带”弹窗</string>
     <string name="cleaner_browser_hide_homepage_topbar">隐藏主页顶栏</string>
     <string name="cleaner_browser_hide_homepage_topbar_tips">隐藏简洁版主页的顶栏（包含探索版主页入口和主页设置按钮）</string>
     <string name="systemui_others_monet_overlay">自定义主题色</string>
@@ -684,4 +683,6 @@
     <string name="systemui_notif_expand_notif_first_tips">自动展开第一个通知（如果它未被分组）</string>
     <string name="systemui_notif_expand_notif_ungrouped">未分组</string>
     <string name="systemui_notif_expand_notif_tips">强烈建议使用叠加层（RRO）来修改通知扩展行为</string>
+    <string name="cleaner_music_hide_fav_num">隐藏歌曲的被收藏次数</string>
+    <string name="cleaner_music_hide_fav_num_tips">隐藏收藏图标上的收藏次数。可能影响性能。</string>
 </resources>

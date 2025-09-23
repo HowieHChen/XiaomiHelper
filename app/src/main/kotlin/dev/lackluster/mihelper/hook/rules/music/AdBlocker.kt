@@ -119,10 +119,16 @@ object AdBlocker : YukiBaseHooker() {
     }
 
     private fun simplifyPlayerPage() {
-        // 播放页封面悬浮标签推广
         "com.tencent.qqmusiclite.activity.player.song.PlayerSongFragment".toClassOrNull()?.apply {
+            // 播放页封面悬浮标签推广
             method {
                 name = "refreshPlayTipsImpl"
+            }.hook {
+                intercept()
+            }
+            // 点击收藏后推荐
+            method {
+                name = "buildingBlocks"
             }.hook {
                 intercept()
             }

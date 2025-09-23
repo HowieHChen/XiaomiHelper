@@ -350,7 +350,6 @@
     <string name="cleaner_music_hide_discover_tips">Remove o discover da guia superior na página inicial</string>
     <string name="cleaner_music_hide_my_banner">Ocultar banner na minha página</string>
     <string name="cleaner_music_hide_my_rec_playlist">Ocultar músicas recomendadas na minha página</string>
-    <string name="cleaner_music_block_try_excellent">Bloquear caixa de diálogo \"Experimentar qualidade excelente\"</string>
     <string name="cleaner_package_remove_element">Desativar recursos redundantes</string>
     <string name="cleaner_package_skip_risk_check">Desativar verificação de risco</string>
     <string name="cleaner_package_no_network">Disfarçar como nenhuma rede</string>
