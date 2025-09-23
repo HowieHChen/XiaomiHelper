@@ -161,7 +161,6 @@
     <string name="ui_title_systemui_control_center">コントロールセンター</string>
     <string name="systemui_control_hide_carrier_one">SIMカード1の通信事業者名ラベルを非表示にする</string>
     <string name="systemui_control_hide_carrier_two">SIMカード2の通信事業者名ラベルを非表示にする</string>
-    <!--    <string name="ui_title_systemui_others" translatable="false">@string/common_others</string>-->
     <!-- MiuiHomePage -->
     <string name="ui_title_home_exclusive">独占機能</string>
     <string name="home_exclusive_refactor">高度なぼかし効果</string>
