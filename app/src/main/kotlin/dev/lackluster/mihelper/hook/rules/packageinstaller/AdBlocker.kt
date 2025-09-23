@@ -25,8 +25,6 @@ import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.factory.constructor
 import com.highcapable.yukihookapi.hook.factory.current
 import com.highcapable.yukihookapi.hook.factory.method
-import com.highcapable.yukihookapi.hook.type.java.BooleanType
-import com.highcapable.yukihookapi.hook.type.java.IntType
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.DexKit
 import dev.lackluster.mihelper.utils.factory.hasEnable
@@ -39,7 +37,6 @@ object AdBlocker : YukiBaseHooker() {
     private val cloudParamsMethod by lazy {
         DexKit.findMethodWithCache("cloud_params") {
             matcher {
-                addUsingString("callingPackage.callingPackage", StringMatchType.Equals)
                 addUsingString("apkSignature3Sha256", StringMatchType.Equals)
             }
         }
@@ -104,27 +101,21 @@ object AdBlocker : YukiBaseHooker() {
                     after {
                         this.instance.current().field {
                             name = "installNotAllow"
-                            type = BooleanType
                         }.setFalse()
                         this.instance.current().field {
                             name = "showSafeModeTip"
-                            type = BooleanType
                         }.setFalse()
                         this.instance.current().field {
                             name = "showAdsBefore"
-                            type = BooleanType
                         }.setFalse()
                         this.instance.current().field {
                             name = "showAdsAfter"
-                            type = BooleanType
                         }.setFalse()
                         this.instance.current().field {
                             name = "useSystemAppRules"
-                            type = BooleanType
                         }.setTrue()
                         this.instance.current().field {
                             name = "registrationStatus"
-                            type = IntType
                         }.set(2)
                     }
                 }

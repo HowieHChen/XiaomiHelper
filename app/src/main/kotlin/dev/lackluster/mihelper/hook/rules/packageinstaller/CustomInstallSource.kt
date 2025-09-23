@@ -59,6 +59,18 @@ object CustomInstallSource : YukiBaseHooker() {
             searchClasses = appInfoViewHolderClass
         }
     }
+    private val getCallingPackageMethod by lazy {
+        DexKit.findMethodWithCache("calling_pkg") {
+            matcher {
+                paramCount = 1
+                paramTypes("com.miui.packageInstaller.InstallStart")
+                returnType = "java.lang.String"
+                addCaller("Lcom/miui/packageInstaller/InstallStart;->onCreate(Landroid/os/Bundle;)V")
+            }
+            searchPackages("com.miui.packageInstaller")
+        }
+    }
+
     private val customInstallSource = Prefs.getInt(Pref.Key.PackageInstaller.INSTALL_SOURCE, 0)
     private val sourcePackageName = when (customInstallSource) {
         1 -> "com.android.fileexplorer"
@@ -76,10 +88,10 @@ object CustomInstallSource : YukiBaseHooker() {
             installStartClass?.apply {
                 method {
                     name = "getCallingPackage"
-                }.hook {
+                }.ignored().hook {
                     after {
-                        val realPackageName = this.result.toString()
-                        val activity = this.instance as Activity
+                        val realPackageName = this.result<String>() ?: return@after
+                        val activity = this.instance<Activity>()
                         val realAppLabel = activity.packageManager.let {
                             it.getApplicationInfo(realPackageName, 0).loadLabel(it)
                         }.toString()
@@ -89,6 +101,20 @@ object CustomInstallSource : YukiBaseHooker() {
                         appLabel = "$realAppLabel ($fakeAppLabel)"
                         this.result = sourcePackageName
                     }
+                }
+            }
+            getCallingPackageMethod?.getMethodInstance(appClassLoader!!)?.hook {
+                after {
+                    val realPackageName = this.result<String>() ?: return@after
+                    val activity = this.args(0).cast<Activity>() ?: return@after
+                    val realAppLabel = activity.packageManager.let {
+                        it.getApplicationInfo(realPackageName, 0).loadLabel(it)
+                    }.toString()
+                    val fakeAppLabel = activity.packageManager.let {
+                        it.getApplicationInfo(sourcePackageName, 0).loadLabel(it)
+                    }
+                    appLabel = "$realAppLabel ($fakeAppLabel)"
+                    this.result = sourcePackageName
                 }
             }
             appInfoMethod.map {
