@@ -7,7 +7,7 @@ project-app-packageName = "dev.lackluster.mihelper"
 project-app-versionName = "3.1.2"
 project-app-versionCode = "312"
 
-androidGradlePlugin = "8.12.2"
+androidGradlePlugin = "8.12.3"
 kotlin = "2.2.10"
 ksp = "2.2.10-2.0.2"
 xposed = "82"
