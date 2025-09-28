@@ -34,6 +34,7 @@ object Pref {
             const val FONT_SCALE_VAL = "android_font_scale_val"
         }
         object Browser {
+            const val AD_BLOCKER = "browser_ad_block"
             const val DEBUG_MODE = "browser_debug_mode"
             const val SWITCH_ENV = "browser_switch_env"
             const val BLOCK_UPDATE = "browser_no_update"

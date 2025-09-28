@@ -104,6 +104,10 @@ fun CleanMasterPage(navController: NavController, adjustPadding: PaddingValues, 
                 title = stringResource(R.string.ui_title_cleaner_ad_blocker)
             ) {
                 SwitchPreference(
+                    title = stringResource(R.string.scope_browser),
+                    key = Pref.Key.Browser.AD_BLOCKER
+                )
+                SwitchPreference(
                     title = stringResource(R.string.scope_market),
                     key = Pref.Key.Market.AD_BLOCKER
                 )

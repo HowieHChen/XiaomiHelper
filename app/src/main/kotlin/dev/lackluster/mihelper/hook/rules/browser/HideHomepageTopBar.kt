@@ -24,7 +24,7 @@ object HideHomepageTopBar : YukiBaseHooker() {
             matcher {
                 declaredClass(clzData!!.name, StringMatchType.Equals)
                 type = "android.widget.RelativeLayout"
-                modifiers(Modifier.PUBLIC or Modifier.FINAL)
+                modifiers(Modifier.FINAL)
             }
             searchClasses = listOf(clzData!!)
         }
@@ -37,7 +37,7 @@ object HideHomepageTopBar : YukiBaseHooker() {
                 declaredClass(clzData!!.name, StringMatchType.Equals)
                 paramCount = 0
                 returnType = "boolean"
-                modifiers(Modifier.PUBLIC or Modifier.FINAL)
+                modifiers(Modifier.FINAL)
                 addCaller(clzData.methods.single { it.isConstructor }.descriptor)
             }
             searchClasses = listOf(clzData!!)

@@ -41,6 +41,7 @@ object DisableUpdateCheck : YukiBaseHooker() {
         DexKit.findMethodWithCache("disable_update_1") {
             matcher {
                 name = "doInBackground"
+                returnType = "java.lang.Object"
             }
             searchClasses = miMarketUpdateClass
         }
@@ -49,6 +50,7 @@ object DisableUpdateCheck : YukiBaseHooker() {
         DexKit.findMethodWithCache("disable_update_2") {
             matcher {
                 name = "onPostExecute"
+                paramTypes("java.lang.Object")
             }
             searchClasses = miMarketUpdateClass
         }
