@@ -72,7 +72,10 @@ object AdBlocker : YukiBaseHooker() {
 
 
     private fun simplifyHomePage() {
-        // 隐藏首页 VIP 信息
+        val blacklist = setOf(
+            10001, // VIP 信息
+            10002, // 顶部推广位
+        )
         "com.tencent.qqmusiclite.fragment.home.adapter.HomeAdapter".toClassOrNull()?.apply {
             method {
                 name = "update"
@@ -80,10 +83,8 @@ object AdBlocker : YukiBaseHooker() {
                 before {
                     val list = this.args(0).list<Any>().toMutableList()
                     if (list.isNotEmpty() && shelfClass?.isInstance(list[0]) == true) {
-                        list.firstOrNull {
-                            shelfIdField?.get(it) == 10001
-                        }?.let {
-                            list.remove(it)
+                        list.removeAll {
+                            shelfIdField?.get(it) in blacklist
                         }
                         this.args(0).set(list)
                     }
