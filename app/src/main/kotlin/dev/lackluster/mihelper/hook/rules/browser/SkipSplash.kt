@@ -23,9 +23,8 @@ object SkipSplash : YukiBaseHooker() {
             matcher {
                 returnType = "void"
                 addUsingString("SplashActiveAdManager", StringMatchType.Equals)
-                addUsingString("appLaunchWay ", StringMatchType.Equals)
                 addUsingString("requestAd", StringMatchType.Equals)
-                addUsingString("点击icon", StringMatchType.Equals)
+                addUsingString("msa_request", StringMatchType.Equals)
             }
         }
     }
