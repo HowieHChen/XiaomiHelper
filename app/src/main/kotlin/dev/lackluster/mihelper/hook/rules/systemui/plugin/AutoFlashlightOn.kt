@@ -1,6 +1,7 @@
 package dev.lackluster.mihelper.hook.rules.systemui.plugin
 
 import android.app.Activity
+import android.content.Intent
 import android.view.View
 import androidx.core.view.postDelayed
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
@@ -15,11 +16,11 @@ object AutoFlashlightOn : YukiBaseHooker() {
         "miui.systemui.flashlight.MiFlashlightManager".toClassOrNull()?.method {
             name = "operate"
             param(BooleanType)
-        }?.give()
+        }?.ignored()?.give()
     }
 
     override fun onHook() {
-        hasEnable(Pref.Key.SystemUI.Plugin.AUTO_FLASH_ON, extraCondition = { operateFlashlight != null}) {
+        hasEnable(Pref.Key.SystemUI.Plugin.AUTO_FLASH_ON) {
             "miui.systemui.flashlight.MiFlashlightActivity".toClassOrNull()?.apply {
                 method {
                     name = "onResume"
@@ -36,7 +37,19 @@ object AutoFlashlightOn : YukiBaseHooker() {
                                 name = "getFlashlightLayout"
                             }.invoke<View>() ?: return@after
                             miFlashlightLayout.postDelayed(700) {
-                                operateFlashlight?.invoke(flashlightManager, true)
+                                if (operateFlashlight != null) {
+                                    operateFlashlight?.invoke(flashlightManager, true)
+                                } else {
+                                    Intent("miui.systemui.action.ACTION_TOGGLE_FLASHLIGHT").apply {
+                                        setPackage("miui.systemui.plugin")
+                                        putExtra("flashlight_is_open_or_close", true)
+                                        putExtra("notification_operation", 1)
+                                    }.let {
+                                        miFlashlightLayout.context.sendBroadcast(it)
+//                                        miFlashlightLayout.context.sendBroadcastAsUser(it,
+//                                            UserHandle.getUserHandleForUid())
+                                    }
+                                }
                             }
                         }
                     }

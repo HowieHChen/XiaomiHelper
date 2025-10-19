@@ -2,17 +2,17 @@
 project-name = "XiaomiHelper"
 android-compileSdk = "36"
 android-minSdk = "34"
-android-targetSdk = "35"
+android-targetSdk = "36"
 project-app-packageName = "dev.lackluster.mihelper"
 project-app-versionName = "3.1.2"
 project-app-versionCode = "312"
 
 androidGradlePlugin = "8.12.3"
-kotlin = "2.2.10"
-ksp = "2.2.10-2.0.2"
+kotlin = "2.2.20"
+ksp = "2.2.20-2.0.3"
 xposed = "82"
 yukihookapi = "1.2.1"
-dexkit = "2.0.6"
+dexkit = "2.0.7"
 serialization-json = "1.9.0"
 
 [libraries]
@@ -27,7 +27,7 @@ androidx-constraintlayout-compose = { group = "androidx.constraintlayout", name 
 dexkit = { module = "org.luckypray:dexkit", version.ref = "dexkit" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization-json" }
 
-androidx-ui = { group = "androidx.compose.ui", name = "ui", version = "1.9.0" }
+androidx-ui = { group = "androidx.compose.ui", name = "ui", version = "1.9.3" }
 
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version = "1.17.0" }
 
