@@ -1,7 +1,6 @@
 package dev.lackluster.mihelper.hook.apps
 
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.hook.rules.shared.RemoveFreeformRestriction
 import dev.lackluster.mihelper.hook.rules.systemui.DisableSmartDark
 import dev.lackluster.mihelper.hook.rules.systemui.FuckStatusBarGestures
 import dev.lackluster.mihelper.hook.rules.systemui.MonetOverlay
@@ -73,7 +72,6 @@ object SystemUI : YukiBaseHooker() {
         loadHooker(FuckStatusBarGestures)
 
         return
-        loadHooker(RemoveFreeformRestriction)
         loadHooker(UnlockMultipleTask)
         loadHooker(HideTopBar)
 

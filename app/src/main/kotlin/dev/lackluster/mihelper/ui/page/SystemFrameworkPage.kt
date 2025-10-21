@@ -1,7 +1,6 @@
 package dev.lackluster.mihelper.ui.page
 
 import android.widget.Toast
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -18,13 +17,13 @@ import dev.lackluster.hyperx.compose.activity.SafeSP
 import dev.lackluster.hyperx.compose.base.AlertDialog
 import dev.lackluster.hyperx.compose.base.BasePage
 import dev.lackluster.hyperx.compose.base.BasePageDefaults
-import dev.lackluster.hyperx.compose.preference.EditTextDataType
+import dev.lackluster.hyperx.compose.navigation.navigateTo
 import dev.lackluster.hyperx.compose.preference.EditTextDialog
-import dev.lackluster.hyperx.compose.preference.EditTextPreference
 import dev.lackluster.hyperx.compose.preference.PreferenceGroup
 import dev.lackluster.hyperx.compose.preference.SwitchPreference
 import dev.lackluster.hyperx.compose.preference.TextPreference
 import dev.lackluster.mihelper.R
+import dev.lackluster.mihelper.data.Pages
 import dev.lackluster.mihelper.ui.MainActivity
 import dev.lackluster.mihelper.ui.component.RebootMenuItem
 import dev.lackluster.mihelper.data.Pref
@@ -39,9 +38,6 @@ fun SystemFrameworkPage(navController: NavController, adjustPadding: PaddingValu
     var currentFontScale by remember { mutableFloatStateOf(0.0f) }
     val dialogFontScaleFailedVisibility = remember { mutableStateOf(false) }
     val dialogFontScaleVisibility = remember { mutableStateOf(false) }
-    var visibilityFontScaleValue by remember { mutableStateOf(
-        SafeSP.getBoolean(Pref.Key.Android.FONT_SCALE)
-    ) }
 
     LaunchedEffect(checkFontScale) {
         try {
@@ -88,32 +84,24 @@ fun SystemFrameworkPage(navController: NavController, adjustPadding: PaddingValu
                 first = true
             ) {
                 TextPreference(
-                    title = stringResource(R.string.android_display_font_scale),
-                    summary = stringResource(R.string.android_display_font_scale_tips),
+                    title = stringResource(R.string.android_display_temp_font_scale),
+                    summary = stringResource(R.string.android_display_temp_font_scale_tips),
                     value = String.format(Locale.current.platformLocale, "%.2f", currentFontScale)
                 ) {
                     dialogFontScaleVisibility.value = true
                 }
-                SwitchPreference(
-                    title = stringResource(R.string.android_display_font_modify),
-                    summary = stringResource(R.string.android_display_font_modify_tips),
-                    key = Pref.Key.Android.FONT_SCALE
-                ) {
-                    visibilityFontScaleValue = true
-                }
-                AnimatedVisibility(
-                    visibilityFontScaleValue
-                ) {
-                    EditTextPreference(
-                        title = stringResource(R.string.android_display_font_modify_val),
-                        key = Pref.Key.Android.FONT_SCALE_VAL,
-                        defValue = 0.9f,
-                        dataType = EditTextDataType.FLOAT,
-                        dialogMessage = stringResource(R.string.android_display_font_modify_val_msg),
-                        isValueValid = {
-                            (it as? Float ?: 0.0f) in 0.5f..<1.0f
+                TextPreference(
+                    title = stringResource(R.string.android_display_font_scale),
+                    summary = stringResource(R.string.android_display_font_scale_tips),
+                    value = stringResource(
+                        if (SafeSP.getBoolean(Pref.Key.Android.FONT_SCALE)) {
+                            R.string.common_on
+                        } else {
+                            R.string.common_off
                         }
                     )
+                ) {
+                    navController.navigateTo(Pages.DIALOG_FONT_SCALE)
                 }
             }
         }
@@ -149,16 +137,16 @@ fun SystemFrameworkPage(navController: NavController, adjustPadding: PaddingValu
     AlertDialog(
         visibility = dialogFontScaleFailedVisibility,
         title = stringResource(R.string.dialog_error),
-        message = stringResource(R.string.android_display_font_scale_fail_msg)
+        message = stringResource(R.string.android_display_temp_font_scale_fail_msg)
     )
     EditTextDialog(
         visibility = dialogFontScaleVisibility,
-        title = stringResource(R.string.android_display_font_scale),
-        message = stringResource(R.string.android_display_font_scale_msg),
+        title = stringResource(R.string.android_display_temp_font_scale),
+        message = stringResource(R.string.android_display_temp_font_scale_msg),
         value = String.format(Locale.current.platformLocale, "%.2f", currentFontScale)
     ) {
         val newScale = it.toFloatOrNull()
-        if (newScale != null && newScale in 0.5f..<2.0f) {
+        if (newScale != null && newScale in 0.5f..<2.5f) {
             try {
                 ShellUtils.tryExec("settings put system font_scale $newScale", useRoot = true)
             } catch (tout: Throwable) {

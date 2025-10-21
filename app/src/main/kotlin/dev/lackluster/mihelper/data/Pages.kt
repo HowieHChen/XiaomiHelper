@@ -23,6 +23,7 @@ object Pages {
 
     const val DIALOG_MARKET_FILTER_TAB = "MarketFilterTabDialog"
     const val DIALOG_SEARCH_CUSTOM_ENGINE = "CustomEngineDialog"
+    const val DIALOG_FONT_SCALE = "FontScaleDialog"
 
     @Deprecated("")
     const val INTERCONNECTION = "page_interconnection"

@@ -43,3 +43,5 @@
 
 -keep class dev.lackluster.mihelper.ui.MainActivity
 -keep class dev.lackluster.mihelper.hook.HookEntry
+
+-dontwarn java.lang.reflect.AnnotatedType

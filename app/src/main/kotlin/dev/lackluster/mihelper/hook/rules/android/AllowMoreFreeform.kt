@@ -22,8 +22,8 @@
 
 package dev.lackluster.mihelper.hook.rules.android
 
+import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.method
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.factory.hasEnable
 
@@ -31,28 +31,13 @@ object AllowMoreFreeform : YukiBaseHooker() {
     override fun onHook() {
         hasEnable(Pref.Key.Android.ALLOW_MORE_FREEFORM) {
             "com.android.server.wm.MiuiFreeFormStackDisplayStrategy".toClassOrNull()?.apply {
-                method {
-                    name = "getMaxMiuiFreeFormStackCount"
-                }.ignored().hook {
-                    replaceTo(255)
-                }
-                method {
-                    name = "getMaxMiuiFreeFormStackCountForFlashBack"
-                }.ignored().hook {
-                    replaceTo(255)
-                }
-                method {
-                    name = "shouldStopStartFreeform"
-                }.ignored().hook {
-                    replaceToFalse()
-                }
-            }
-            "miui.app.MiuiFreeFormManager".toClassOrNull()?.apply {
-                method {
-                    name = "getMaxMiuiFreeFormStackCountForFlashBack"
-                }.ignored().hook {
-                    replaceTo(255)
-                }
+                resolve()
+                    .firstMethodOrNull {
+                        name = "getMaxMiuiFreeFormStackCount"
+                    }
+                    ?.hook {
+                        replaceTo(255)
+                    }
             }
         }
     }

@@ -39,6 +39,7 @@ import dev.lackluster.mihelper.ui.page.SystemUIPage
 import dev.lackluster.mihelper.ui.page.UITestPage
 import dev.lackluster.mihelper.data.Pages
 import dev.lackluster.mihelper.data.Pref
+import dev.lackluster.mihelper.ui.dialog.FontScaleDialog
 import dev.lackluster.mihelper.ui.dialog.MarketFilterTabDialog
 import dev.lackluster.mihelper.ui.page.MediaActionResizePage
 import dev.lackluster.mihelper.utils.Device
@@ -121,6 +122,7 @@ class MainActivity : HyperXActivity() {
 
                 miuixComposable(Pages.DIALOG_MARKET_FILTER_TAB) { MarketFilterTabDialog(navController, adjustPadding, mode) }
                 miuixComposable(Pages.DIALOG_SEARCH_CUSTOM_ENGINE) { SearchCustomEngineDialog(navController, adjustPadding, mode) }
+                miuixComposable(Pages.DIALOG_FONT_SCALE) { FontScaleDialog(navController, adjustPadding, mode) }
                 miuixComposable(Pages.DEV_UI_TEST2) { MediaActionResizePage(navController, adjustPadding, "MediaActionResizePage", mode = mode) }
             }
         )

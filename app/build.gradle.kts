@@ -87,6 +87,8 @@ dependencies {
     compileOnly(libs.xposed.api)
     implementation(libs.yukihookapi.api)
     ksp(libs.yukihookapi.ksp.xposed)
+    implementation(libs.kavaref.core)
+    implementation(libs.kavaref.extension)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.ui)

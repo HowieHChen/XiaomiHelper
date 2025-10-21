@@ -7,11 +7,13 @@ project-app-packageName = "dev.lackluster.mihelper"
 project-app-versionName = "3.1.8"
 project-app-versionCode = "318"
 
-androidGradlePlugin = "8.12.3"
+androidGradlePlugin = "8.13.0"
 kotlin = "2.2.20"
 ksp = "2.2.20-2.0.3"
 xposed = "82"
-yukihookapi = "1.2.1"
+yukihookapi = "1.3.1"
+kavaref-core = "1.0.2"
+kavaref-extension = "1.0.1"
 dexkit = "2.0.7"
 serialization-json = "1.9.0"
 
@@ -19,6 +21,8 @@ serialization-json = "1.9.0"
 xposed-api = { group = "de.robv.android.xposed", name = "api", version.ref = "xposed" }
 yukihookapi-api = { group = "com.highcapable.yukihookapi", name = "api", version.ref = "yukihookapi" }
 yukihookapi-ksp-xposed = { group = "com.highcapable.yukihookapi", name = "ksp-xposed", version.ref = "yukihookapi" }
+kavaref-core = { module = "com.highcapable.kavaref:kavaref-core", version.ref = "kavaref-core" }
+kavaref-extension = { module = "com.highcapable.kavaref:kavaref-extension", version.ref = "kavaref-extension" }
 
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version = "1.7.1" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version = "2.2.1" }

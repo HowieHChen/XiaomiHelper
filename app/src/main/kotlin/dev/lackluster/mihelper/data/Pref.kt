@@ -31,7 +31,13 @@ object Pref {
             const val WALLPAPER_SCALE_RATIO = "android_wallpaper_scale"
             const val BLOCK_FORCE_DARK_WHITELIST = "android_dark_mode_all"
             const val FONT_SCALE = "android_font_scale"
-            const val FONT_SCALE_VAL = "android_font_scale_val"
+            const val FONT_SCALE_SMALL = "android_font_scale_small"
+            const val FONT_SCALE_MEDIUM = "android_font_scale_medium"
+            const val FONT_SCALE_LARGE = "android_font_scale_large"
+            const val FONT_SCALE_HUGE = "android_font_scale_huge"
+            const val FONT_SCALE_GODZILLA = "android_font_scale_godzilla"
+            const val FONT_SCALE_170 = "android_font_scale_170"
+            const val FONT_SCALE_200 = "android_font_scale_200"
         }
         object Browser {
             const val AD_BLOCKER = "browser_ad_block"
