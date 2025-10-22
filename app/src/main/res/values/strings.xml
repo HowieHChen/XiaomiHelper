@@ -448,9 +448,9 @@
     <string name="android_display_font_settings">Font settings</string>
     <string name="android_display_font_settings_tips">System settings</string>
     <string name="android_display_font_scale_value">Font scale</string>
-    <string name="android_display_font_scale_hint">Modify appropriate font size option based on their range and your intended value, then select the corresponding option in system settings. \n\nEnsure all options have unique values in ascending order. \n\nOptions like \"170\", \"200\", or those with values above 1.55 may be recognized by the system as large font sizes and could affect layout.</string>
+    <string name="android_display_font_scale_hint">Modify appropriate font size option based on their range and your intended value, then select the corresponding option in Settings. \n\nEnsure all options have unique values in ascending order. \n\nOptions like \"170\", \"200\", or those with values above 1.55 may be recognized by the system as large font sizes and could affect layout.</string>
     <string name="android_display_font_scale_warn_same">Duplicate values exist</string>
-    <string name="android_display_font_scale_warn_disorder">The values are not in ascending order</string>
+    <string name="android_display_font_scale_warn_disorder">The values aren\'t in ascending order</string>
     <string name="android_display_font_scale_msg">The value should be greater than or equal to %1$.2f and less than %2$.2f</string>
     <string name="android_display_font_scale_small">Small (90%)</string>
     <string name="android_display_font_scale_medium">Medium (100%)</string>
