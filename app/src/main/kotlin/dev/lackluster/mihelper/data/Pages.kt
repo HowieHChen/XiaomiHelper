@@ -16,6 +16,7 @@ object Pages {
     const val STATUS_BAR_CLOCK = "StatusBarClockPage"
     const val STATUS_BAR_FONT = "StatusBarFontPage"
     const val ICON_TUNER = "IconTunerPage"
+    const val ICON_DETAIL = "IconDetailPage"
     const val MEDIA_CONTROL = "MediaControlPage"
 
     const val DEV_UI_TEST = "DevUITestPage"
@@ -24,6 +25,7 @@ object Pages {
     const val DIALOG_MARKET_FILTER_TAB = "MarketFilterTabDialog"
     const val DIALOG_SEARCH_CUSTOM_ENGINE = "CustomEngineDialog"
     const val DIALOG_FONT_SCALE = "FontScaleDialog"
+    const val DIALOG_STATUS_BAR_ICON_POSITION = "StatusBarIconPositionDialog"
 
     @Deprecated("")
     const val INTERCONNECTION = "page_interconnection"

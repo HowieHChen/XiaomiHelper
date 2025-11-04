@@ -1,80 +1,84 @@
 package dev.lackluster.mihelper.hook.apps
 
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.hook.rules.systemui.DisableSmartDark
+import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils
 import dev.lackluster.mihelper.hook.rules.systemui.FuckStatusBarGestures
 import dev.lackluster.mihelper.hook.rules.systemui.MonetOverlay
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils
 import dev.lackluster.mihelper.hook.rules.systemui.StatusBarActions
-import dev.lackluster.mihelper.hook.rules.systemui.statusbar.HideCarrierLabel
-import dev.lackluster.mihelper.hook.rules.systemui.lockscreen.HideDisturbNotification
-import dev.lackluster.mihelper.hook.rules.systemui.statusbar.HideStatusBarIcon
-import dev.lackluster.mihelper.hook.rules.systemui.statusbar.IconPosition
-import dev.lackluster.mihelper.hook.rules.systemui.notif.NotifFreeform
-import dev.lackluster.mihelper.hook.rules.systemui.notif.NotifWhitelist
-import dev.lackluster.mihelper.hook.rules.systemui.statusbar.NotificationMaxNumber
-import dev.lackluster.mihelper.hook.rules.systemui.statusbar.StatusBarClock
 import dev.lackluster.mihelper.hook.rules.systemui.freeform.HideTopBar
 import dev.lackluster.mihelper.hook.rules.systemui.freeform.UnlockMultipleTask
-import dev.lackluster.mihelper.hook.rules.systemui.lockscreen.CarrierTextView
-import dev.lackluster.mihelper.hook.rules.systemui.lockscreen.DoubleTapToSleep
+import dev.lackluster.mihelper.hook.rules.systemui.lockscreen.HideDisturbNotification
+import dev.lackluster.mihelper.hook.rules.systemui.lockscreen.HideNextAlarm
 import dev.lackluster.mihelper.hook.rules.systemui.lockscreen.KeepNotification
-import dev.lackluster.mihelper.hook.rules.systemui.media.CustomElement
-import dev.lackluster.mihelper.hook.rules.systemui.media.CustomLayout
-import dev.lackluster.mihelper.hook.rules.systemui.media.CustomBackground
+import dev.lackluster.mihelper.hook.rules.systemui.lockscreen.LockscreenDoubleTapToSleep
+import dev.lackluster.mihelper.hook.rules.systemui.lockscreen.StatusBarClockContainer
 import dev.lackluster.mihelper.hook.rules.systemui.media.UnlockCustomAction
 import dev.lackluster.mihelper.hook.rules.systemui.notif.ExpandNotification
+import dev.lackluster.mihelper.hook.rules.systemui.notif.LayoutAndRankOpt
 import dev.lackluster.mihelper.hook.rules.systemui.notif.MiuiXExpandButton
+import dev.lackluster.mihelper.hook.rules.systemui.notif.NotifFreeform
+import dev.lackluster.mihelper.hook.rules.systemui.notif.NotifWhitelist
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.BatteryIndicator
-import dev.lackluster.mihelper.hook.rules.systemui.statusbar.ControlCenterBattery
-import dev.lackluster.mihelper.hook.rules.systemui.statusbar.ElementsFontWeight
+import dev.lackluster.mihelper.hook.rules.systemui.statusbar.CellularIcon
+import dev.lackluster.mihelper.hook.rules.systemui.statusbar.BatteryIndicatorStyle
+import dev.lackluster.mihelper.hook.rules.systemui.statusbar.CellularTypeIcon
+import dev.lackluster.mihelper.hook.rules.systemui.statusbar.HideCarrierLabel
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.HideCellularIcon
-import dev.lackluster.mihelper.hook.rules.systemui.statusbar.HideWiFiIcon
-import dev.lackluster.mihelper.hook.rules.systemui.statusbar.IgnoreSysHideIcon
+import dev.lackluster.mihelper.hook.rules.systemui.statusbar.IconManager
+import dev.lackluster.mihelper.hook.rules.systemui.statusbar.IconPosition
+import dev.lackluster.mihelper.hook.rules.systemui.statusbar.IgnoreSysIconSettings
+import dev.lackluster.mihelper.hook.rules.systemui.statusbar.NetworkSpeed
+import dev.lackluster.mihelper.hook.rules.systemui.statusbar.WifiIcon
+import dev.lackluster.mihelper.hook.rules.systemui.statusbar.NotificationMaxNumber
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.PadClockAnim
+import dev.lackluster.mihelper.hook.rules.systemui.statusbar.RegionSampling
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.StatusBarDoubleTapToSleep
 
 object SystemUI : YukiBaseHooker() {
     override fun onHook() {
         loadHooker(ResourcesUtils)
+        loadHooker(CommonClassUtils)
+        loadHooker(StatusBarActions)
 
-        loadHooker(CarrierTextView)
-        loadHooker(DoubleTapToSleep)
+        loadHooker(LockscreenDoubleTapToSleep)
         loadHooker(HideDisturbNotification)
+        loadHooker(HideNextAlarm)
         loadHooker(KeepNotification)
-
-        loadHooker(CustomBackground)
-        loadHooker(CustomLayout)
-        loadHooker(CustomElement)
+        loadHooker(StatusBarClockContainer)
+//
+//        loadHooker(CustomBackground)
+//        loadHooker(CustomLayout)
+//        loadHooker(CustomElement)
 
         loadHooker(MiuiXExpandButton)
         loadHooker(NotifFreeform)
         loadHooker(NotifWhitelist)
         loadHooker(ExpandNotification)
-
+        loadHooker(LayoutAndRankOpt)
         loadHooker(MonetOverlay)
 
-        loadHooker(IgnoreSysHideIcon)
+        loadHooker(IgnoreSysIconSettings)
         loadHooker(BatteryIndicator)
-        loadHooker(ControlCenterBattery)
+        loadHooker(BatteryIndicatorStyle)
         loadHooker(HideCarrierLabel)
         loadHooker(HideCellularIcon)
-        loadHooker(HideStatusBarIcon)
-        loadHooker(HideWiFiIcon)
+        loadHooker(CellularIcon)
+        loadHooker(CellularTypeIcon)
+        loadHooker(WifiIcon)
+        loadHooker(NetworkSpeed)
+        loadHooker(IconManager)
         loadHooker(IconPosition)
         loadHooker(NotificationMaxNumber)
-        loadHooker(ElementsFontWeight)
-        loadHooker(StatusBarClock)
+        loadHooker(RegionSampling)
+//        loadHooker(ElementsFontWeight)
+//        loadHooker(StatusBarClock)
         loadHooker(StatusBarDoubleTapToSleep)
-
-        loadHooker(DisableSmartDark)
-        loadHooker(StatusBarActions)
-        loadHooker(FuckStatusBarGestures)
-
         return
         loadHooker(UnlockMultipleTask)
         loadHooker(HideTopBar)
 
+        loadHooker(FuckStatusBarGestures)
 
         loadHooker(UnlockCustomAction)
         loadHooker(PadClockAnim)

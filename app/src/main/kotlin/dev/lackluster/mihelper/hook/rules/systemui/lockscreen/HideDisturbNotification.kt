@@ -20,26 +20,24 @@
 
 package dev.lackluster.mihelper.hook.rules.systemui.lockscreen
 
+import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.current
-import com.highcapable.yukihookapi.hook.factory.method
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.factory.hasEnable
 
 object HideDisturbNotification : YukiBaseHooker() {
     override fun onHook() {
         hasEnable(Pref.Key.SystemUI.LockScreen.HIDE_DISTURB) {
-            "com.android.systemui.statusbar.notification.zen.ZenModeViewController".toClass().method {
-                name = "updateVisibility$1"
-            }.remedys {
-                method {
-                    name = "updateVisibility"
+            "com.android.systemui.statusbar.notification.zen.ZenModeViewController".toClass().apply {
+                val manuallyDismissed = resolve().firstFieldOrNull {
+                    name = "manuallyDismissed"
                 }
-            }.hook {
-                before {
-                    this.instance.current().field {
-                        name = "manuallyDismissed"
-                    }.setTrue()
+                resolve().firstMethodOrNull {
+                    name = "updateVisibility"
+                }?.hook {
+                    before {
+                        manuallyDismissed?.copy()?.of(this.instance)?.set(true)
+                    }
                 }
             }
         }

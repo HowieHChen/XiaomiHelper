@@ -21,18 +21,19 @@
 package dev.lackluster.mihelper.hook.rules.packageinstaller
 
 import android.annotation.SuppressLint
+import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.constructor
-import com.highcapable.yukihookapi.hook.factory.current
-import com.highcapable.yukihookapi.hook.factory.method
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.DexKit
 import dev.lackluster.mihelper.utils.factory.hasEnable
 import org.luckypray.dexkit.query.enums.StringMatchType
 
 object AdBlocker : YukiBaseHooker() {
-    private val cloudParamsClass by lazy {
+    private val clzCloudParams by lazy {
         "com.miui.packageInstaller.model.CloudParams".toClassOrNull()
+    }
+    private val ctorCloudParams by lazy {
+        clzCloudParams?.resolve()?.firstConstructor()
     }
     private val cloudParamsMethod by lazy {
         DexKit.findMethodWithCache("cloud_params") {
@@ -40,6 +41,12 @@ object AdBlocker : YukiBaseHooker() {
                 addUsingString("apkSignature3Sha256", StringMatchType.Equals)
             }
         }
+    }
+    private val ctorCloudResultSuccess by lazy {
+        "com.miui.packageInstaller.model.CloudResult\$Success".toClassOrNull()
+            ?.resolve()?.firstConstructorOrNull {
+                parameters("com.miui.packageInstaller.model.CloudParams")
+            }
     }
     private val adsEnableMethod by lazy {
         DexKit.findMethodWithCache("ads_enable") {
@@ -92,61 +99,72 @@ object AdBlocker : YukiBaseHooker() {
             }
             cloudParamsMethod?.getMethodInstance(appClassLoader!!)?.hook {
                 before {
-                    val cloudParams = cloudParamsClass?.constructor()?.get()?.call() ?: return@before
-                    this.result = cloudParams
-                }
-            }
-            cloudParamsClass?.apply {
-                constructor().hook {
-                    after {
-                        this.instance.current().field {
-                            name = "installNotAllow"
-                        }.setFalse()
-                        this.instance.current().field {
-                            name = "showSafeModeTip"
-                        }.setFalse()
-                        this.instance.current().field {
-                            name = "showAdsBefore"
-                        }.setFalse()
-                        this.instance.current().field {
-                            name = "showAdsAfter"
-                        }.setFalse()
-                        this.instance.current().field {
-                            name = "useSystemAppRules"
-                        }.setTrue()
-                        this.instance.current().field {
-                            name = "registrationStatus"
-                        }.set(2)
+                    val cloudParams = ctorCloudParams?.copy()?.create() ?: return@before
+                    val cloudResult = ctorCloudResultSuccess?.copy()?.create(cloudParams)
+                    if (cloudResult != null) {
+                        this.result = cloudResult
+                    } else {
+                        this.result = cloudParams
                     }
                 }
-                method {
+            }
+            clzCloudParams?.apply {
+                val installNotAllow = resolve().firstFieldOrNull {
+                    name = "installNotAllow"
+                }
+                val showSafeModeTip = resolve().firstFieldOrNull {
+                    name = "showSafeModeTip"
+                }
+                val showAdsBefore = resolve().firstFieldOrNull {
+                    name = "showAdsBefore"
+                }
+                val showAdsAfter = resolve().firstFieldOrNull {
+                    name = "showAdsAfter"
+                }
+                val useSystemAppRules = resolve().firstFieldOrNull {
+                    name = "useSystemAppRules"
+                }
+                val registrationStatus = resolve().firstFieldOrNull {
+                    name = "registrationStatus"
+                }
+                ctorCloudParams?.copy()?.hook {
+                    after {
+                        installNotAllow?.copy()?.of(this.instance)?.set(false)
+                        showSafeModeTip?.copy()?.of(this.instance)?.set(false)
+                        showAdsBefore?.copy()?.of(this.instance)?.set(false)
+                        showAdsAfter?.copy()?.of(this.instance)?.set(false)
+                        useSystemAppRules?.copy()?.of(this.instance)?.set(true)
+                        registrationStatus?.copy()?.of(this.instance)?.set(2)
+                    }
+                }
+                resolve().firstMethodOrNull {
                     name = "getAppRegisterScene"
-                }.hook {
+                }?.hook {
                     replaceTo("registered")
                 }
-                method {
+                resolve().firstMethodOrNull {
                     name = "isMarketApp"
-                }.hook {
+                }?.hook {
                     replaceToFalse()
                 }
-                method {
+                resolve().firstMethodOrNull {
                     name = "isMarketApp64NotInstallAllow"
-                }.hook {
+                }?.hook {
                     replaceToFalse()
                 }
-                method {
+                resolve().firstMethodOrNull {
                     name = "isProhibitInstalling"
-                }.hook {
+                }?.hook {
                     replaceToFalse()
                 }
-                method {
+                resolve().firstMethodOrNull {
                     name = "isNewUnregistered"
-                }.hook {
+                }?.hook {
                     replaceToFalse()
                 }
-                method {
+                resolve().firstMethodOrNull {
                     name = "isUnrecorded"
-                }.hook {
+                }?.hook {
                     replaceToFalse()
                 }
             }

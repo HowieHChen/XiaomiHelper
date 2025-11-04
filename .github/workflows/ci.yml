@@ -69,7 +69,7 @@ jobs:
         CHANNEL_ID: ${{ secrets.CHANNEL_ID }}
         BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
         COMMIT_MESSAGE: |+
-          New CI from HowieHChen/XiaomiHelper
+          Hyper Helper Insider Preview
 
           ```
           ${{ env.CHANGELOG }}

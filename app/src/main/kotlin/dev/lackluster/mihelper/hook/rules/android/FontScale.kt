@@ -26,25 +26,23 @@ object FontScale : YukiBaseHooker() {
     override fun onHook() {
         hasEnable(Pref.Key.Android.FONT_SCALE) {
             "android.content.res.MiuiConfiguration".toClass().apply {
-                resolve()
-                    .firstMethodOrNull {
-                        name = "getFontScale"
-                    }
-                    ?.hook {
-                        before {
-                            this.result = when (this.args(0).int()) {
-                                UI_MODE_TYPE_SCALE_EXTRAL_SMALL -> fontScaleSmall
-                                UI_MODE_TYPE_SCALE_SMALL -> fontScaleSmall
-                                UI_MODE_TYPE_SCALE_MEDIUM -> fontScaleMedium
-                                UI_MODE_TYPE_SCALE_LARGE -> fontScaleLarge
-                                UI_MODE_TYPE_SCALE_HUGE -> fontScaleHuge
-                                UI_MODE_TYPE_SCALE_GODZILLA -> fontScaleGodzilla
-                                UI_MODE_TYPE_SCALE_170 -> fontScale170
-                                UI_MODE_TYPE_SCALE_200 -> fontScale200
-                                else -> fontScaleMedium
-                            }
+                resolve().firstMethodOrNull {
+                    name = "getFontScale"
+                }?.hook {
+                    before {
+                        this.result = when (this.args(0).int()) {
+                            UI_MODE_TYPE_SCALE_EXTRAL_SMALL -> fontScaleSmall
+                            UI_MODE_TYPE_SCALE_SMALL -> fontScaleSmall
+                            UI_MODE_TYPE_SCALE_MEDIUM -> fontScaleMedium
+                            UI_MODE_TYPE_SCALE_LARGE -> fontScaleLarge
+                            UI_MODE_TYPE_SCALE_HUGE -> fontScaleHuge
+                            UI_MODE_TYPE_SCALE_GODZILLA -> fontScaleGodzilla
+                            UI_MODE_TYPE_SCALE_170 -> fontScale170
+                            UI_MODE_TYPE_SCALE_200 -> fontScale200
+                            else -> fontScaleMedium
                         }
                     }
+                }
             }
         }
     }

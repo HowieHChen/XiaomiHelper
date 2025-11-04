@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  *
  * This file is part of XiaomiHelper project
- * Copyright (C) 2024 HowieHChen, howie.dev@outlook.com
+ * Copyright (C) 2025 HowieHChen, howie.dev@outlook.com
 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,178 +20,171 @@
 
 package dev.lackluster.mihelper.hook.rules.systemui.statusbar
 
+import android.graphics.Paint
 import android.graphics.Typeface
 import android.util.TypedValue
 import android.view.View
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.view.updatePaddingRelative
+import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.current
-import com.highcapable.yukihookapi.hook.factory.method
+import dev.lackluster.mihelper.data.Constants.BatteryIndicator.PERCENT_MARK_STYLE_DEFAULT
+import dev.lackluster.mihelper.data.Constants.BatteryIndicator.PERCENT_MARK_STYLE_DIGITAL
+import dev.lackluster.mihelper.data.Constants.BatteryIndicator.PERCENT_MARK_STYLE_HIDDEN
 import dev.lackluster.mihelper.data.Pref.Key.SystemUI.FontWeight
-import dev.lackluster.mihelper.data.Pref.Key.SystemUI.IconTurner
-import dev.lackluster.mihelper.hook.rules.systemui.statusbar.ElementsFontWeight.fontPath
+import dev.lackluster.mihelper.data.Pref.Key.SystemUI.IconTuner
+import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.TextAppearance_StatusBar_Battery_Percent
+import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzMiuiBatteryMeterView
+import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.fontPath
 import dev.lackluster.mihelper.utils.Prefs
-import kotlin.math.roundToInt
+import dev.lackluster.mihelper.utils.factory.dp
+import dev.lackluster.mihelper.utils.factory.dpFloat
 
 object BatteryIndicator : YukiBaseHooker() {
-    private val miuiBatteryMeterViewClz by lazy {
-        "com.android.systemui.statusbar.views.MiuiBatteryMeterView".toClassOrNull()
+    private val hideChargeOut = Prefs.getBoolean(IconTuner.HIDE_BATTERY_CHARGE_OUT, false)
+    private val percentMarkStyle = Prefs.getInt(IconTuner.BATTERY_PERCENT_MARK_STYLE, 0)
+    // Padding
+    private val valuePaddingStart = Prefs.getFloat(IconTuner.BATTERY_PADDING_START_VAL, 0.0f)
+    private val valuePaddingEnd = Prefs.getFloat(IconTuner.BATTERY_PADDING_END_VAL, 0.0f)
+    private val modifyPadding =
+        Prefs.getBoolean(IconTuner.BATTERY_PADDING_HORIZON, false)
+    // Percentage Text Size
+    private val valuePercentInSize = Prefs.getFloat(IconTuner.BATTERY_PERCENT_IN_SIZE_VAL, 9.599976f)
+    private val valuePercentOutSize = Prefs.getFloat(IconTuner.BATTERY_PERCENT_OUT_SIZE_VAL, 12.5f)
+    private val modifyPercentInSize =
+        Prefs.getBoolean(IconTuner.BATTERY_PERCENT_IN_SIZE, false) && valuePercentInSize > 0
+    private val modifyPercentOutSize =
+        Prefs.getBoolean(IconTuner.BATTERY_PERCENT_OUT_SIZE, false) && valuePercentOutSize > 0
+    // Font Weight
+    private val valuePercentInFW = Prefs.getInt(FontWeight.BATTERY_PERCENTAGE_IN_VAL, 620)
+    private val valuePercentOutFW = Prefs.getInt(FontWeight.BATTERY_PERCENTAGE_OUT_VAL, 500)
+    private val valuePercentMarkFW = Prefs.getInt(FontWeight.BATTERY_PERCENTAGE_MARK_VAL, 600)
+    private val modifyPercentInFW =
+        Prefs.getBoolean(FontWeight.BATTERY_PERCENTAGE_IN, false) && valuePercentInFW in 1..1000
+    private val modifyPercentOutFW =
+        Prefs.getBoolean(FontWeight.BATTERY_PERCENTAGE_OUT, false) && valuePercentOutFW in 1..1000
+    private val modifyPercentMarkFW =
+        Prefs.getBoolean(FontWeight.BATTERY_PERCENTAGE_MARK, false) && valuePercentMarkFW in 1..1000
+    private val typefacePercentInFW by lazy {
+        Typeface.Builder(fontPath).setFontVariationSettings("'wght' $valuePercentInFW").build()
     }
-    // 0 -> Default; 1 -> Icon & Percentage; 2 -> Icon only; 3 -> Percentage only; 4 -> Hidden
-    private val batteryStyle by lazy {
-        Prefs.getInt(IconTurner.BATTERY_STYLE, 0)
+    private val typefacePercentOutFW by lazy {
+        Typeface.Builder(fontPath).setFontVariationSettings("'wght' $valuePercentOutFW").build()
     }
-    // 0 -> Default; 1 -> Percentage number style; 2 -> Hidden
-    private val percentageSymbolStyle by lazy {
-        Prefs.getInt(IconTurner.BATTERY_PERCENTAGE_SYMBOL_STYLE, 0)
+    private val typefacePercentMarkFW by lazy {
+        Typeface.Builder(fontPath).setFontVariationSettings("'wght' $valuePercentMarkFW").build()
     }
-    private val hideChargeIcon by lazy {
-        Prefs.getBoolean(IconTurner.HIDE_CHARGE, false)
+
+    private val mBatteryPercentMarkView by lazy {
+        clzMiuiBatteryMeterView?.resolve()?.firstFieldOrNull {
+            name = "mBatteryPercentMarkView"
+        }
     }
-    private val modifyPercentageTextSize by lazy {
-        Prefs.getBoolean(IconTurner.BATTERY_MODIFY_PERCENTAGE_TEXT_SIZE, false)
+    private val mBatteryPercentView by lazy {
+        clzMiuiBatteryMeterView?.resolve()?.firstFieldOrNull {
+            name = "mBatteryPercentView"
+        }
     }
-    private val batteryPercentTextSize by lazy {
-        Prefs.getFloat(IconTurner.BATTERY_PERCENTAGE_TEXT_SIZE, 13.454498f)
+    private val mBatteryChargingView by lazy {
+        clzMiuiBatteryMeterView?.resolve()?.firstFieldOrNull {
+            name = "mBatteryChargingView"
+        }
     }
-    private val batteryPercentTNum by lazy {
-        Prefs.getBoolean(IconTurner.BATTERY_PERCENTAGE_TNUM, false)
-    }
-    private val swapIconAndPercentage by lazy {
-        Prefs.getBoolean(IconTurner.SWAP_BATTERY_PERCENT, false)
-    }
-    private val modifyIndicatorPadding by lazy {
-        Prefs.getBoolean(IconTurner.BATTERY_MODIFY_PADDING, false)
-    }
-    private val batteryPaddingLeft by lazy {
-        Prefs.getFloat(IconTurner.BATTERY_PADDING_LEFT, 0.0f)
-    }
-    private val batteryPaddingRight by lazy {
-        Prefs.getFloat(IconTurner.BATTERY_PADDING_RIGHT, 0.0f)
-    }
-    private val batteryPercentInFont = Prefs.getBoolean(FontWeight.BATTERY_PERCENTAGE_IN, false)
-    private val batteryPercentInFontWeight = Prefs.getInt(FontWeight.BATTERY_PERCENTAGE_IN_WEIGHT, 430)
-    private val batteryPercentOutFont = Prefs.getBoolean(FontWeight.BATTERY_PERCENTAGE_OUT, false)
-    private val batteryPercentOutFontWeight = Prefs.getInt(FontWeight.BATTERY_PERCENTAGE_OUT_WEIGHT, 430)
-    private val batteryPercentMarkFont = Prefs.getBoolean(FontWeight.BATTERY_PERCENTAGE_MARK, false)
-    private val batteryPercentMarkFontWeight = Prefs.getInt(FontWeight.BATTERY_PERCENTAGE_MARK_WEIGHT, 430)
 
     override fun onHook() {
-        miuiBatteryMeterViewClz?.apply {
-            method {
-                name = "updateAll$1"
-            }.remedys {
-                method {
-                    name = "updateAll"
-                }
-            }.hook {
+        if (percentMarkStyle != PERCENT_MARK_STYLE_DEFAULT || modifyPercentOutFW || modifyPercentMarkFW || modifyPercentOutSize) {
+            clzMiuiBatteryMeterView?.resolve()?.firstMethodOrNull {
+                name = "updateAll"
+            }?.hook {
                 after {
-                    val mBatteryIconView = this.instance.current().field {
-                        name = "mBatteryIconView"
-                    }.cast<ImageView>() ?: return@after
-                    // mBatteryStyle: 0 -> Graphical; 1 -> Percentage (in the icon); 2 -> Top bar; 3 -> Percentage (next to the icon)
-//                    val mBatteryStyle = this.instance.current().field {
-//                        name = "mBatteryStyle"
-//                    }.int()
-                    val mBatteryPercentView = this.instance.current().field {
-                        name = "mBatteryPercentView"
-                    }.cast<TextView>() ?: return@after // mBatteryStyle == 3
-                    val mBatteryPercentMarkView = this.instance.current().field {
-                        name = "mBatteryPercentMarkView"
-                    }.cast<TextView>() ?: return@after // mBatteryStyle == 3
-                    // Battery icon container
-//                    val mBatteryDigitalView = this.instance.current().field {
-//                        name = "mBatteryDigitalView"
-//                    }.any() as? FrameLayout ?: return@after
-                    // Visibility of battery icon
-                    if (batteryStyle == 1 || batteryStyle == 2) {
-                        mBatteryIconView.visibility = View.VISIBLE
-                    } else if (batteryStyle == 3 || batteryStyle == 4) {
-                        mBatteryIconView.visibility = View.GONE
-                    }
-                    // Battery percentage
-                    if (batteryStyle in setOf(0, 1, 3)) {
-                        if (modifyPercentageTextSize) {
-                            mBatteryPercentView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, batteryPercentTextSize)
+                    val batteryPercentView = mBatteryPercentView?.copy()?.of(this.instance)?.get<TextView>() ?: return@after
+                    val batteryPercentMarkView = mBatteryPercentMarkView?.copy()?.of(this.instance)?.get<TextView>() ?: return@after
+                    if (percentMarkStyle == PERCENT_MARK_STYLE_DIGITAL) {
+                        batteryPercentMarkView.let {
+                            it.setPadding(0,0,0,0)
+                            it.setTextAppearance(TextAppearance_StatusBar_Battery_Percent)
                         }
-                        if (batteryPercentTNum) {
-                            mBatteryPercentView.fontFeatureSettings = "tnum"
+                    } else if (percentMarkStyle == PERCENT_MARK_STYLE_HIDDEN) {
+                        batteryPercentMarkView.visibility = View.GONE
+                    }
+                    if (modifyPercentOutFW) {
+                        batteryPercentView.typeface = typefacePercentOutFW
+                    }
+                    if (modifyPercentMarkFW) {
+                        batteryPercentMarkView.typeface = typefacePercentMarkFW
+                    }
+                    if (modifyPercentOutSize) {
+                        batteryPercentView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, valuePercentOutSize)
+                        if (percentMarkStyle == PERCENT_MARK_STYLE_DIGITAL) {
+                            batteryPercentMarkView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, valuePercentOutSize)
                         }
-                        when (percentageSymbolStyle) {
-                            1 -> {
-                                mBatteryPercentMarkView.layoutParams = mBatteryPercentView.layoutParams
-                                mBatteryPercentMarkView.typeface = mBatteryPercentView.typeface
-                                mBatteryPercentMarkView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mBatteryPercentView.textSize)
-                                mBatteryPercentMarkView.setPadding(0,0,0,0)
-                            }
-                            2 -> {
-                                mBatteryPercentMarkView.textSize = 0.0f
-                            }
-                        }
-                    }
-                    if (batteryStyle == 4) {
-                        return@after
-                    }
-                    val miuiBatteryMeterView = this.instance as LinearLayout
-                    if (swapIconAndPercentage && (batteryStyle == 0 || batteryStyle == 1)) {
-                        miuiBatteryMeterView.removeView(mBatteryPercentView)
-                        miuiBatteryMeterView.removeView(mBatteryPercentMarkView)
-                        miuiBatteryMeterView.addView(mBatteryPercentMarkView, 0)
-                        miuiBatteryMeterView.addView(mBatteryPercentView, 0)
-                    }
-                    if (modifyIndicatorPadding) {
-                        val density = miuiBatteryMeterView.context.resources.displayMetrics.density
-                        miuiBatteryMeterView.setPadding(
-                            (batteryPaddingLeft * density).roundToInt(),//batteryView.paddingLeft,
-                            miuiBatteryMeterView.paddingTop,
-                            (batteryPaddingRight * density).roundToInt(),//batteryView.paddingRight,
-                            miuiBatteryMeterView.paddingBottom
-                        )
-                    }
-                    if (batteryPercentInFont) {
-                        val mBatteryTextDigitView = this.instance.current().field {
-                            name = "mBatteryTextDigitView"
-                        }.any() as? TextView
-                        mBatteryTextDigitView?.typeface = Typeface.Builder(fontPath).setFontVariationSettings("'wght' $batteryPercentInFontWeight").build()
-                    }
-                    if (batteryPercentOutFont) {
-                        mBatteryPercentView.typeface = Typeface.Builder(fontPath).setFontVariationSettings("'wght' $batteryPercentOutFontWeight").build()
-                    }
-                    if (batteryPercentMarkFont) {
-                        mBatteryPercentMarkView.typeface = Typeface.Builder(fontPath).setFontVariationSettings("'wght' $batteryPercentMarkFontWeight").build()
                     }
                 }
             }
-            method {
-                name = "updateChargeAndText"
-            }.hook {
+        }
+        if (percentMarkStyle == PERCENT_MARK_STYLE_DIGITAL || modifyPercentOutFW || modifyPercentMarkFW) {
+            clzMiuiBatteryMeterView?.resolve()?.firstMethodOrNull {
+                name = "onChanged"
+            }?.hook {
                 after {
-                    if (hideChargeIcon) {
-                        // mBatteryStyle == 0 || mBatteryStyle == 3
-                        this.instance.current().field {
-                            name = "mBatteryChargingInView"
-                        }.cast<ImageView>()?.visibility = View.GONE
-                        // mBatteryStyle == 1 || mBatteryStyle == 2
-                        this.instance.current().field {
-                            name = "mBatteryChargingView"
-                        }.cast<ImageView>()?.visibility = View.GONE
+                    val batteryPercentView = mBatteryPercentView?.copy()?.of(this.instance)?.get<TextView>() ?: return@after
+                    val batteryPercentMarkView = mBatteryPercentMarkView?.copy()?.of(this.instance)?.get<TextView>() ?: return@after
+                    if (percentMarkStyle == PERCENT_MARK_STYLE_DIGITAL) {
+                        batteryPercentMarkView.typeface = batteryPercentView.typeface
                     }
-                    if (batteryStyle != 0) {
-                        val mBatteryPercentView = this.instance.current().field {
-                            name = "mBatteryPercentView"
-                        }.cast<TextView>() ?: return@after // mBatteryStyle == 3
-                        val mBatteryPercentMarkView = this.instance.current().field {
-                            name = "mBatteryPercentMarkView"
-                        }.cast<TextView>() ?: return@after // mBatteryStyle == 3
-                        // Visibility of battery percentage
-                        if (batteryStyle == 1 || batteryStyle == 3) {
-                            mBatteryPercentView.visibility = View.VISIBLE
-                            mBatteryPercentMarkView.visibility = if (percentageSymbolStyle == 2) View.GONE else View.VISIBLE
-                        } else if (batteryStyle == 2 || batteryStyle == 4) {
-                            mBatteryPercentView.visibility = View.GONE
-                            mBatteryPercentMarkView.visibility = View.GONE
+                    if (modifyPercentOutFW) {
+                        batteryPercentView.typeface = typefacePercentOutFW
+                    }
+                    if (modifyPercentMarkFW) {
+                        batteryPercentMarkView.typeface = typefacePercentMarkFW
+                    }
+                }
+            }
+        }
+        if (modifyPercentInFW || modifyPercentInSize) {
+            "com.android.systemui.statusbar.views.MiuiHollowBatteryMeterIconView".toClassOrNull()?.apply {
+                val textPaint = resolve().firstFieldOrNull {
+                    name = "textPaint"
+                }
+                val hollowTextPaint = resolve().firstFieldOrNull {
+                    name = "hollowTextPaint"
+                }
+                resolve().firstMethodOrNull {
+                    name = "updateResources"
+                }?.hook {
+                    after {
+                        val context = this.instance<View>().context ?: return@after
+                        val paintText = textPaint?.copy()?.of(this.instance)?.get<Paint>() ?: return@after
+                        val paintHollowText = hollowTextPaint?.copy()?.of(this.instance)?.get<Paint>() ?: return@after
+                        if (modifyPercentInFW) {
+                            paintText.typeface = typefacePercentInFW
+                            paintHollowText.typeface = typefacePercentInFW
+                        }
+                        if (modifyPercentInSize) {
+                            paintText.textSize = valuePercentInSize.dpFloat(context)
+                            paintHollowText.textSize = valuePercentInSize.dpFloat(context)
+                        }
+                    }
+                }
+            }
+        }
+        if (modifyPadding || hideChargeOut) {
+            clzMiuiBatteryMeterView?.resolve()?.firstConstructor {
+                parameterCount = 3
+            }?.hook {
+                after {
+                    if (modifyPadding) {
+                        this.instance<View>().apply {
+                            updatePaddingRelative(
+                                start = valuePaddingStart.dp(context),
+                                end = valuePaddingEnd.dp(context),
+                            )
+                        }
+                    }
+                    if (hideChargeOut) {
+                        mBatteryChargingView?.copy()?.of(this.instance)?.get<View>()?.apply {
+                            layoutParams = LinearLayout.LayoutParams(0, 0)
                         }
                     }
                 }

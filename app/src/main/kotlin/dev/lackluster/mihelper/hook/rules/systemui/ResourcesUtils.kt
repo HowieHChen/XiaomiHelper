@@ -1,3 +1,23 @@
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
+ * This file is part of XiaomiHelper project
+ * Copyright (C) 2025 HowieHChen, howie.dev@outlook.com
+
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package dev.lackluster.mihelper.hook.rules.systemui
 
 import android.annotation.SuppressLint
@@ -23,6 +43,11 @@ object ResourcesUtils : YukiBaseHooker() {
     var fmt_time_24hour_minute = 0
     var status_bar_clock_date_time_format = 0
     var status_bar_clock_date_time_format_12 = 0
+    // Status bar
+    var mobile_type_single = 0
+    var mobile_signal_container = 0
+    var TextAppearance_StatusBar_Battery_Percent = 0
+    var TextAppearance_StatusBar_NetWorkSpeedNumber = 0
     // Media control panel
     var notification_element_blend_shade_colors = 0
     var notification_element_blend_colors = 0
@@ -50,6 +75,7 @@ object ResourcesUtils : YukiBaseHooker() {
     var normal_control_center_carrier_view = 0
     var normal_control_center_carrier_second_view = 0
     var normal_control_center_carrier_vertical_separator = 0
+    var lock_screen_carrier_airplane_mode_on = 0
 
     @SuppressLint("DiscouragedApi")
     override fun onHook() {
@@ -71,6 +97,10 @@ object ResourcesUtils : YukiBaseHooker() {
                     fmt_time_24hour_minute = this.getResID("fmt_time_24hour_minute", "string", PKG_NAME)
                     status_bar_clock_date_time_format = this.getResID("status_bar_clock_date_time_format", "string", PKG_NAME)
                     status_bar_clock_date_time_format_12 = this.getResID("status_bar_clock_date_time_format_12", "string", PKG_NAME)
+                    mobile_type_single = this.getResID("mobile_type_single", "id", PKG_NAME)
+                    mobile_signal_container = this.getResID("mobile_signal_container", "id", PKG_NAME)
+                    TextAppearance_StatusBar_Battery_Percent = this.getResID("TextAppearance.StatusBar.Battery.Percent", "style", PKG_NAME)
+                    TextAppearance_StatusBar_NetWorkSpeedNumber = this.getResID("TextAppearance.StatusBar.NetWorkSpeedNumber", "style", PKG_NAME)
                     notification_element_blend_shade_colors = this.getResID("notification_element_blend_shade_colors", "array", PKG_NAME)
                     notification_element_blend_colors = this.getResID("notification_element_blend_colors", "array", PKG_NAME)
                     notification_item_bg_radius = this.getResID("notification_item_bg_radius", "dimen", PKG_NAME)
@@ -96,6 +126,7 @@ object ResourcesUtils : YukiBaseHooker() {
                     normal_control_center_carrier_view = this.getResID("normal_control_center_carrier_view", "id", PKG_NAME)
                     normal_control_center_carrier_second_view = this.getResID("normal_control_center_carrier_second_view", "id", PKG_NAME)
                     normal_control_center_carrier_vertical_separator = this.getResID("normal_control_center_carrier_vertical_separator", "id", PKG_NAME)
+                    lock_screen_carrier_airplane_mode_on = this.getResID("lock_screen_carrier_airplane_mode_on", "string", PKG_NAME)
                     isInitialized = true
                 }
             }

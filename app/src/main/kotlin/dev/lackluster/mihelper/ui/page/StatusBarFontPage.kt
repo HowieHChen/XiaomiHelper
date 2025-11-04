@@ -30,10 +30,6 @@ fun StatusBarFontPage(navController: NavController, adjustPadding: PaddingValues
     var spValueFocusNotifFont by remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.SystemUI.FontWeight.FOCUS_NOTIFICATION)) }
     var spValueNetSpeedNumFont by remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.SystemUI.FontWeight.NET_SPEED_NUMBER)) }
     var spValueNetSpeedUnitFont by remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.SystemUI.FontWeight.NET_SPEED_UNIT)) }
-    var spValueMobileTypeFont by remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.SystemUI.FontWeight.MOBILE_TYPE)) }
-    var spValueBatPctInFont by remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.SystemUI.FontWeight.BATTERY_PERCENTAGE_IN)) }
-    var spValueBatPctOutFont by remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.SystemUI.FontWeight.BATTERY_PERCENTAGE_OUT)) }
-    var spValueBatPctMarkFont by remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.SystemUI.FontWeight.BATTERY_PERCENTAGE_MARK)) }
     var spValueCarrierFont by remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.SystemUI.FontWeight.CARRIER)) }
 
     BasePage(
@@ -104,63 +100,12 @@ fun StatusBarFontPage(navController: NavController, adjustPadding: PaddingValues
                         max = 1000
                     )
                 }
-                SwitchPreference(
-                    title = stringResource(R.string.font_sb_bat_pct_out),
-                    key = Pref.Key.SystemUI.FontWeight.BATTERY_PERCENTAGE_OUT
-                ) {
-                    spValueBatPctOutFont = it
-                }
-                AnimatedVisibility(
-                    spValueBatPctOutFont
-                ) {
-                    SeekBarPreference(
-                        title = stringResource(R.string.font_sb_bat_pct_out_weight),
-                        key = Pref.Key.SystemUI.FontWeight.BATTERY_PERCENTAGE_OUT_WEIGHT,
-                        defValue = 430,
-                        min = 1,
-                        max = 1000
-                    )
-                }
-                SwitchPreference(
-                    title = stringResource(R.string.font_sb_bat_pct_mark),
-                    key = Pref.Key.SystemUI.FontWeight.BATTERY_PERCENTAGE_MARK
-                ) {
-                    spValueBatPctMarkFont = it
-                }
-                AnimatedVisibility(
-                    spValueBatPctMarkFont
-                ) {
-                    SeekBarPreference(
-                        title = stringResource(R.string.font_sb_bat_pct_mark_weight),
-                        key = Pref.Key.SystemUI.FontWeight.BATTERY_PERCENTAGE_MARK_WEIGHT,
-                        defValue = 430,
-                        min = 1,
-                        max = 1000
-                    )
-                }
             }
         }
         item {
             PreferenceGroup(
                 title = stringResource(R.string.ui_title_font_icon)
             ) {
-                SwitchPreference(
-                    title = stringResource(R.string.font_icon_bat_pct_in),
-                    key = Pref.Key.SystemUI.FontWeight.BATTERY_PERCENTAGE_IN
-                ) {
-                    spValueBatPctInFont = it
-                }
-                AnimatedVisibility(
-                    spValueBatPctInFont
-                ) {
-                    SeekBarPreference(
-                        title = stringResource(R.string.font_icon_bat_pct_in_weight),
-                        key = Pref.Key.SystemUI.FontWeight.BATTERY_PERCENTAGE_IN_WEIGHT,
-                        defValue = 430,
-                        min = 1,
-                        max = 1000
-                    )
-                }
                 SwitchPreference(
                     title = stringResource(R.string.font_icon_net_speed_num),
                     key = Pref.Key.SystemUI.FontWeight.NET_SPEED_NUMBER
@@ -172,7 +117,7 @@ fun StatusBarFontPage(navController: NavController, adjustPadding: PaddingValues
                 ) {
                     SeekBarPreference(
                         title = stringResource(R.string.font_icon_net_speed_num_weight),
-                        key = Pref.Key.SystemUI.FontWeight.NET_SPEED_NUMBER_WEIGHT,
+                        key = Pref.Key.SystemUI.FontWeight.NET_SPEED_NUMBER_VAL,
                         defValue = 700,
                         min = 1,
                         max = 1000
@@ -189,25 +134,8 @@ fun StatusBarFontPage(navController: NavController, adjustPadding: PaddingValues
                 ) {
                     SeekBarPreference(
                         title = stringResource(R.string.font_icon_net_speed_unit_weight),
-                        key = Pref.Key.SystemUI.FontWeight.NET_SPEED_UNIT_WEIGHT,
+                        key = Pref.Key.SystemUI.FontWeight.NET_SPEED_UNIT_VAL,
                         defValue = 700,
-                        min = 1,
-                        max = 1000
-                    )
-                }
-                SwitchPreference(
-                    title = stringResource(R.string.font_icon_mobile_type),
-                    key = Pref.Key.SystemUI.FontWeight.MOBILE_TYPE
-                ) {
-                    spValueMobileTypeFont = it
-                }
-                AnimatedVisibility(
-                    spValueMobileTypeFont
-                ) {
-                    SeekBarPreference(
-                        title = stringResource(R.string.font_icon_mobile_type_weight),
-                        key = Pref.Key.SystemUI.FontWeight.MOBILE_TYPE_WEIGHT,
-                        defValue = 620,
                         min = 1,
                         max = 1000
                     )

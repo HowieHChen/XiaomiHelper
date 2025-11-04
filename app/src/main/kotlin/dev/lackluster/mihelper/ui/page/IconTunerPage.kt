@@ -1,12 +1,10 @@
 package dev.lackluster.mihelper.ui.page
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -19,14 +17,14 @@ import dev.lackluster.hyperx.compose.base.BasePage
 import dev.lackluster.hyperx.compose.base.BasePageDefaults
 import dev.lackluster.hyperx.compose.base.ImageIcon
 import dev.lackluster.hyperx.compose.component.Hint
+import dev.lackluster.hyperx.compose.navigation.navigateTo
 import dev.lackluster.hyperx.compose.preference.DropDownEntry
-import dev.lackluster.hyperx.compose.preference.DropDownMode
 import dev.lackluster.hyperx.compose.preference.DropDownPreference
-import dev.lackluster.hyperx.compose.preference.EditTextDataType
-import dev.lackluster.hyperx.compose.preference.EditTextPreference
 import dev.lackluster.hyperx.compose.preference.PreferenceGroup
 import dev.lackluster.hyperx.compose.preference.SwitchPreference
+import dev.lackluster.hyperx.compose.preference.TextPreference
 import dev.lackluster.mihelper.R
+import dev.lackluster.mihelper.data.Pages
 import dev.lackluster.mihelper.ui.MainActivity
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.data.Scope
@@ -34,11 +32,7 @@ import dev.lackluster.mihelper.ui.component.RebootMenuItem
 import top.yukonga.miuix.kmp.basic.SmallTitle
 
 @Composable
-fun IconTurnerPage(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
-    var spValueBatteryStyle by remember { mutableIntStateOf(SafeSP.getInt(Pref.Key.SystemUI.IconTurner.BATTERY_STYLE)) }
-    var spValueModifyBatteryPercentageSize by remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.SystemUI.IconTurner.BATTERY_MODIFY_PERCENTAGE_TEXT_SIZE)) }
-    var spValueModifyBatteryPadding by remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.SystemUI.IconTurner.BATTERY_MODIFY_PADDING)) }
-
+fun IconTunerPage(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
     val dropdownEntriesAdvVisible = listOf(
         DropDownEntry(stringResource(R.string.icon_tuner_hide_selection_default)),
         DropDownEntry(stringResource(R.string.icon_tuner_hide_selection_show_all)),
@@ -46,42 +40,15 @@ fun IconTurnerPage(navController: NavController, adjustPadding: PaddingValues, m
         DropDownEntry(stringResource(R.string.icon_tuner_hide_selection_show_qs)),
         DropDownEntry(stringResource(R.string.icon_tuner_hide_selection_hidden)),
     )
-    val dropdownEntriesBatteryStyle = listOf(
-        DropDownEntry(
-            title = stringResource(R.string.icon_tuner_battery_style_default),
-            iconRes = R.drawable.ic_battery_style_default
-        ),
-        DropDownEntry(
-            title = stringResource(R.string.icon_tuner_battery_style_both),
-            iconRes = R.drawable.ic_battery_style_both
-        ),
-        DropDownEntry(
-            title = stringResource(R.string.icon_tuner_battery_style_icon),
-            iconRes = R.drawable.ic_battery_style_icon
-        ),
-        DropDownEntry(
-            title = stringResource(R.string.icon_tuner_battery_style_percentage),
-            iconRes = R.drawable.ic_battery_style_digit
-        ),
-        DropDownEntry(
-            title = stringResource(R.string.icon_tuner_battery_style_hidden),
-            iconRes = R.drawable.ic_battery_style_hidden
-        ),
+    val dropDownEntriesIconPosition = listOf(
+        DropDownEntry(stringResource(R.string.icon_tuner_general_order_default)),
+        DropDownEntry(stringResource(R.string.icon_tuner_general_order_swap)),
+        DropDownEntry(stringResource(R.string.icon_tuner_general_order_custom)),
     )
-    val dropdownEntriesBatteryPercentage = listOf(
-        DropDownEntry(
-            title = stringResource(R.string.icon_tuner_battery_percentage_symbol_style_default),
-            iconRes = R.drawable.ic_battery_percentage_style_default
-        ),
-        DropDownEntry(
-            title = stringResource(R.string.icon_tuner_battery_percentage_symbol_style_uni),
-            iconRes = R.drawable.ic_battery_percentage_style_digit
-        ),
-        DropDownEntry(
-            title = stringResource(R.string.icon_tuner_battery_percentage_symbol_style_hidden),
-            iconRes = R.drawable.ic_battery_percentage_style_hidden
-        ),
-    )
+
+    var visibilityIconOrder by remember { mutableStateOf(
+        SafeSP.getInt(Pref.Key.SystemUI.IconTuner.ICON_POSITION, 0) == 2
+    ) }
 
     BasePage(
         navController,
@@ -111,106 +78,79 @@ fun IconTurnerPage(navController: NavController, adjustPadding: PaddingValues, m
                 SwitchPreference(
                     title = stringResource(R.string.icon_tuner_general_ignore_sys_hide),
                     summary = stringResource(R.string.icon_tuner_general_ignore_sys_hide_tips),
-                    key = Pref.Key.SystemUI.IconTurner.IGNORE_SYS_HIDE
+                    key = Pref.Key.SystemUI.IconTuner.IGNORE_SYS_SETTINGS
                 )
+                TextPreference(
+                    title = stringResource(R.string.icon_tuner_general_detail)
+                ) {
+                    navController.navigateTo(Pages.ICON_DETAIL)
+                }
+                DropDownPreference(
+                    title = stringResource(R.string.icon_tuner_general_order),
+                    summary = stringResource(R.string.icon_tuner_general_order_tips),
+                    entries = dropDownEntriesIconPosition,
+                    key = Pref.Key.SystemUI.IconTuner.ICON_POSITION
+                ) {
+                    visibilityIconOrder = it == 2
+                }
+                AnimatedVisibility(
+                    visibilityIconOrder
+                ) {
+                    TextPreference(
+                        title = stringResource(R.string.icon_tuner_general_order_custom_entry)
+                    ) {
+                        navController.navigateTo(Pages.DIALOG_STATUS_BAR_ICON_POSITION)
+                    }
+                }
             }
         }
         item {
             PreferenceGroup(
-                title = stringResource(R.string.ui_title_icon_tuner_mobile)
+                title = stringResource(R.string.ui_title_icon_tuner_network)
             ) {
                 DropDownPreference(
                     icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_mobile),
-                    title = stringResource(R.string.icon_tuner_mobile_mobile),
+                    title = stringResource(R.string.icon_tuner_network_mobile),
                     summary = stringResource(R.string.icon_tuner_hide_mobile_wifi_warning),
                     entries = dropdownEntriesAdvVisible,
-                    key = Pref.Key.SystemUI.IconTurner.MOBILE
-                )
-                SwitchPreference(
-                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_mobile_1),
-                    title = stringResource(R.string.icon_tuner_mobile_hide_sim_one),
-                    key = Pref.Key.SystemUI.IconTurner.HIDE_SIM_ONE
-                )
-                SwitchPreference(
-                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_mobile_2),
-                    title = stringResource(R.string.icon_tuner_mobile_hide_sim_two),
-                    key = Pref.Key.SystemUI.IconTurner.HIDE_SIM_TWO
-                )
-                SwitchPreference(
-                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_mobile_activity),
-                    title = stringResource(R.string.icon_tuner_mobile_hide_mobile_activity),
-                    key = Pref.Key.SystemUI.IconTurner.HIDE_MOBILE_ACTIVITY
-                )
-                SwitchPreference(
-                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_mobile_type),
-                    title = stringResource(R.string.icon_tuner_mobile_hide_mobile_type),
-                    key = Pref.Key.SystemUI.IconTurner.HIDE_MOBILE_TYPE
+                    key = Pref.Key.SystemUI.IconTuner.MOBILE
                 )
                 DropDownPreference(
                     icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_no_sim),
-                    title = stringResource(R.string.icon_tuner_mobile_no_sim),
+                    title = stringResource(R.string.icon_tuner_network_no_sim),
                     entries = dropdownEntriesAdvVisible,
-                    key = Pref.Key.SystemUI.IconTurner.NO_SIM
+                    key = Pref.Key.SystemUI.IconTuner.NO_SIM
                 )
                 DropDownPreference(
-                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_hd),
-                    title = stringResource(R.string.icon_tuner_mobile_hd_new),
+                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_airplane),
+                    title = stringResource(R.string.icon_tuner_network_airplane),
                     entries = dropdownEntriesAdvVisible,
-                    key = Pref.Key.SystemUI.IconTurner.HD_NEW
+                    key = Pref.Key.SystemUI.IconTuner.AIRPLANE
                 )
-                SwitchPreference(
-                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_hd_small),
-                    title = stringResource(R.string.icon_tuner_mobile_hide_hd_small),
-                    key = Pref.Key.SystemUI.IconTurner.HIDE_HD_SMALL
-                )
-                SwitchPreference(
-                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_roam),
-                    title = stringResource(R.string.icon_tuner_mobile_hide_roam),
-                    key = Pref.Key.SystemUI.IconTurner.HIDE_ROAM
-                )
-                SwitchPreference(
-                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_roam_small),
-                    title = stringResource(R.string.icon_tuner_mobile_hide_roam_small),
-                    key = Pref.Key.SystemUI.IconTurner.HIDE_ROAM_SMALL
-                )
-                SwitchPreference(
-                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_volte),
-                    title = stringResource(R.string.icon_tuner_mobile_hide_volte),
-                    key = Pref.Key.SystemUI.IconTurner.HIDE_VOLTE
-                )
-                SwitchPreference(
-                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_vowifi),
-                    title = stringResource(R.string.icon_tuner_mobile_hide_vowifi),
-                    key = Pref.Key.SystemUI.IconTurner.HIDE_VOWIFI
-                )
-            }
-        }
-        item {
-            PreferenceGroup(
-                title = stringResource(R.string.ui_title_icon_tuner_wifi)
-            ) {
                 DropDownPreference(
                     icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_wifi),
-                    title = stringResource(R.string.icon_tuner_wifi_wifi),
+                    title = stringResource(R.string.icon_tuner_network_wifi),
                     summary = stringResource(R.string.icon_tuner_hide_mobile_wifi_warning),
                     entries = dropdownEntriesAdvVisible,
-                    key = Pref.Key.SystemUI.IconTurner.WIFI
-                )
-                SwitchPreference(
-                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_wifi_activity),
-                    title = stringResource(R.string.icon_tuner_wifi_hide_wifi_activity),
-                    key = Pref.Key.SystemUI.IconTurner.HIDE_WIFI_ACTIVITY
-                )
-                SwitchPreference(
-                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_wifi_standard),
-                    title = stringResource(R.string.icon_tuner_wifi_hide_wifi_type),
-                    key = Pref.Key.SystemUI.IconTurner.HIDE_WIFI_STANDARD
+                    key = Pref.Key.SystemUI.IconTuner.WIFI
                 )
                 DropDownPreference(
                     icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_hotspot),
-                    title = stringResource(R.string.icon_tuner_wifi_hotspot),
+                    title = stringResource(R.string.icon_tuner_network_hotspot),
                     entries = dropdownEntriesAdvVisible,
-                    key = Pref.Key.SystemUI.IconTurner.HOTSPOT
+                    key = Pref.Key.SystemUI.IconTuner.HOTSPOT
+                )
+                DropDownPreference(
+                        icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_vpn),
+                title = stringResource(R.string.icon_tuner_network_vpn),
+                entries = dropdownEntriesAdvVisible,
+                key = Pref.Key.SystemUI.IconTuner.VPN
+                )
+                DropDownPreference(
+                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_net_speed),
+                    title = stringResource(R.string.icon_tuner_network_net_speed),
+                    entries = dropdownEntriesAdvVisible,
+                    key = Pref.Key.SystemUI.IconTuner.NET_SPEED
                 )
             }
         }
@@ -219,46 +159,34 @@ fun IconTurnerPage(navController: NavController, adjustPadding: PaddingValues, m
                 title = stringResource(R.string.ui_title_icon_tuner_connectivity)
             ) {
                 DropDownPreference(
-                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_airplane),
-                    title = stringResource(R.string.icon_tuner_connect_flight_mode),
-                    entries = dropdownEntriesAdvVisible,
-                    key = Pref.Key.SystemUI.IconTurner.FLIGHT_MODE
-                )
-                DropDownPreference(
-                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_location),
-                    title = stringResource(R.string.icon_tuner_connect_gps),
-                    entries = dropdownEntriesAdvVisible,
-                    key = Pref.Key.SystemUI.IconTurner.GPS
-                )
-                DropDownPreference(
                     icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_bluetooth),
                     title = stringResource(R.string.icon_tuner_connect_bluetooth),
                     entries = dropdownEntriesAdvVisible,
-                    key = Pref.Key.SystemUI.IconTurner.BLUETOOTH
+                    key = Pref.Key.SystemUI.IconTuner.BLUETOOTH
                 )
                 DropDownPreference(
                     icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_bluetooth_handsfree_battery),
                     title = stringResource(R.string.icon_tuner_connect_bluetooth_battery),
                     entries = dropdownEntriesAdvVisible,
-                    key = Pref.Key.SystemUI.IconTurner.BLUETOOTH_BATTERY
+                    key = Pref.Key.SystemUI.IconTuner.BLUETOOTH_BATTERY
+                )
+                DropDownPreference(
+                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_handle_battery),
+                    title = stringResource(R.string.icon_tuner_connect_handle_battery),
+                    entries = dropdownEntriesAdvVisible,
+                    key = Pref.Key.SystemUI.IconTuner.HANDLE_BATTERY
                 )
                 DropDownPreference(
                     icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_nfc),
                     title = stringResource(R.string.icon_tuner_connect_nfc),
                     entries = dropdownEntriesAdvVisible,
-                    key = Pref.Key.SystemUI.IconTurner.NFC
+                    key = Pref.Key.SystemUI.IconTuner.NFC
                 )
                 DropDownPreference(
-                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_vpn),
-                    title = stringResource(R.string.icon_tuner_connect_vpn),
+                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_location),
+                    title = stringResource(R.string.icon_tuner_connect_location),
                     entries = dropdownEntriesAdvVisible,
-                    key = Pref.Key.SystemUI.IconTurner.VPN
-                )
-                DropDownPreference(
-                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_network_speed),
-                    title = stringResource(R.string.icon_tuner_connect_net_speed),
-                    entries = dropdownEntriesAdvVisible,
-                    key = Pref.Key.SystemUI.IconTurner.NET_SPEED
+                    key = Pref.Key.SystemUI.IconTuner.LOCATION
                 )
             }
         }
@@ -267,76 +195,82 @@ fun IconTurnerPage(navController: NavController, adjustPadding: PaddingValues, m
                 title = stringResource(R.string.ui_title_icon_tuner_device)
             ) {
                 DropDownPreference(
-                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_camera),
-                    title = stringResource(R.string.icon_tuner_device_camera),
+                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_wireless_headset),
+                    title = stringResource(R.string.icon_tuner_device_wireless_headset),
                     entries = dropdownEntriesAdvVisible,
-                    key = Pref.Key.SystemUI.IconTurner.CAMERA
-                )
-                DropDownPreference(
-                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_car),
-                    title = stringResource(R.string.icon_tuner_device_car),
-                    entries = dropdownEntriesAdvVisible,
-                    key = Pref.Key.SystemUI.IconTurner.CAR
-                )
-                DropDownPreference(
-                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_glasses),
-                    title = stringResource(R.string.icon_tuner_device_glasses),
-                    entries = dropdownEntriesAdvVisible,
-                    key = Pref.Key.SystemUI.IconTurner.GLASSES
-                )
-                DropDownPreference(
-                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_pad),
-                    title = stringResource(R.string.icon_tuner_device_pad),
-                    entries = dropdownEntriesAdvVisible,
-                    key = Pref.Key.SystemUI.IconTurner.PAD
-                )
-                DropDownPreference(
-                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_pc),
-                    title = stringResource(R.string.icon_tuner_device_pc),
-                    entries = dropdownEntriesAdvVisible,
-                    key = Pref.Key.SystemUI.IconTurner.PC
+                    key = Pref.Key.SystemUI.IconTuner.WIRELESS_HEADSET
                 )
                 DropDownPreference(
                     icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_phone),
                     title = stringResource(R.string.icon_tuner_device_phone),
                     entries = dropdownEntriesAdvVisible,
-                    key = Pref.Key.SystemUI.IconTurner.PHONE
+                    key = Pref.Key.SystemUI.IconTuner.PHONE
                 )
                 DropDownPreference(
-                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_sound_box),
-                    title = stringResource(R.string.icon_tuner_device_sound_box),
+                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_pad),
+                    title = stringResource(R.string.icon_tuner_device_pad),
                     entries = dropdownEntriesAdvVisible,
-                    key = Pref.Key.SystemUI.IconTurner.SOUND_BOX
+                    key = Pref.Key.SystemUI.IconTuner.PAD
+                )
+                DropDownPreference(
+                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_pc),
+                    title = stringResource(R.string.icon_tuner_device_pc),
+                    entries = dropdownEntriesAdvVisible,
+                    key = Pref.Key.SystemUI.IconTuner.PC
                 )
                 DropDownPreference(
                     icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_sound_box_group),
                     title = stringResource(R.string.icon_tuner_device_sound_box_group),
                     entries = dropdownEntriesAdvVisible,
-                    key = Pref.Key.SystemUI.IconTurner.SOUND_BOX_GROUP
-                )
-                DropDownPreference(
-                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_sound_box_screen),
-                    title = stringResource(R.string.icon_tuner_device_sound_box_screen),
-                    entries = dropdownEntriesAdvVisible,
-                    key = Pref.Key.SystemUI.IconTurner.SOUND_BOX_SCREEN
+                    key = Pref.Key.SystemUI.IconTuner.SOUND_BOX_GROUP
                 )
                 DropDownPreference(
                     icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_stereo),
                     title = stringResource(R.string.icon_tuner_device_stereo),
                     entries = dropdownEntriesAdvVisible,
-                    key = Pref.Key.SystemUI.IconTurner.STEREO
+                    key = Pref.Key.SystemUI.IconTuner.STEREO
+                )
+                DropDownPreference(
+                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_sound_box_screen),
+                    title = stringResource(R.string.icon_tuner_device_sound_box_screen),
+                    entries = dropdownEntriesAdvVisible,
+                    key = Pref.Key.SystemUI.IconTuner.SOUND_BOX_SCREEN
+                )
+                DropDownPreference(
+                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_sound_box),
+                    title = stringResource(R.string.icon_tuner_device_sound_box),
+                    entries = dropdownEntriesAdvVisible,
+                    key = Pref.Key.SystemUI.IconTuner.SOUND_BOX
                 )
                 DropDownPreference(
                     icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_tv),
                     title = stringResource(R.string.icon_tuner_device_tv),
                     entries = dropdownEntriesAdvVisible,
-                    key = Pref.Key.SystemUI.IconTurner.TV
+                    key = Pref.Key.SystemUI.IconTuner.TV
                 )
                 DropDownPreference(
-                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_wireless_headset),
-                    title = stringResource(R.string.icon_tuner_device_wireless_headset),
+                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_glasses),
+                    title = stringResource(R.string.icon_tuner_device_glasses),
                     entries = dropdownEntriesAdvVisible,
-                    key = Pref.Key.SystemUI.IconTurner.WIRELESS_HEADSET
+                    key = Pref.Key.SystemUI.IconTuner.GLASSES
+                )
+                DropDownPreference(
+                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_car),
+                    title = stringResource(R.string.icon_tuner_device_car),
+                    entries = dropdownEntriesAdvVisible,
+                    key = Pref.Key.SystemUI.IconTuner.CAR
+                )
+                DropDownPreference(
+                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_camera),
+                    title = stringResource(R.string.icon_tuner_device_camera),
+                    entries = dropdownEntriesAdvVisible,
+                    key = Pref.Key.SystemUI.IconTuner.CAMERA
+                )
+                DropDownPreference(
+                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_dist_compute),
+                    title = stringResource(R.string.icon_tuner_device_dist_compute),
+                    entries = dropdownEntriesAdvVisible,
+                    key = Pref.Key.SystemUI.IconTuner.DIST_COMPUTE
                 )
             }
         }
@@ -345,130 +279,39 @@ fun IconTurnerPage(navController: NavController, adjustPadding: PaddingValues, m
                 title = stringResource(R.string.ui_title_icon_tuner_other)
             ) {
                 DropDownPreference(
-                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_alarm_clock),
-                    title = stringResource(R.string.icon_tuner_other_alarm),
-                    entries = dropdownEntriesAdvVisible,
-                    key = Pref.Key.SystemUI.IconTurner.ALARM
-                )
-                DropDownPreference(
                     icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_headset),
                     title = stringResource(R.string.icon_tuner_other_headset),
                     entries = dropdownEntriesAdvVisible,
-                    key = Pref.Key.SystemUI.IconTurner.HEADSET
+                    key = Pref.Key.SystemUI.IconTuner.HEADSET
                 )
                 DropDownPreference(
-                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_volume),
-                    title = stringResource(R.string.icon_tuner_other_volume),
+                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_alarm_clock),
+                    title = stringResource(R.string.icon_tuner_other_alarm),
                     entries = dropdownEntriesAdvVisible,
-                    key = Pref.Key.SystemUI.IconTurner.VOLUME
+                    key = Pref.Key.SystemUI.IconTuner.ALARM_CLOCK
                 )
                 DropDownPreference(
                     icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_zen),
                     title = stringResource(R.string.icon_tuner_other_zen),
                     entries = dropdownEntriesAdvVisible,
-                    key = Pref.Key.SystemUI.IconTurner.ZEN
+                    key = Pref.Key.SystemUI.IconTuner.ZEN
                 )
-            }
-        }
-        item {
-            PreferenceGroup(
-                title = stringResource(R.string.ui_title_icon_tuner_battery)
-            ) {
                 DropDownPreference(
-                    title = stringResource(R.string.icon_tuner_battery_style),
-                    entries = dropdownEntriesBatteryStyle,
-                    key = Pref.Key.SystemUI.IconTurner.BATTERY_STYLE,
-                    mode = DropDownMode.Dialog
-                ) {
-                    spValueBatteryStyle = it
-                }
-                AnimatedVisibility(
-                    spValueBatteryStyle in listOf(0, 1, 3)
-                ) {
-                    Column {
-                        DropDownPreference(
-                            title = stringResource(R.string.icon_tuner_battery_percentage_symbol_style),
-                            entries = dropdownEntriesBatteryPercentage,
-                            key = Pref.Key.SystemUI.IconTurner.BATTERY_PERCENTAGE_SYMBOL_STYLE,
-                            mode = DropDownMode.Dialog
-                        )
-                        SwitchPreference(
-                            title = stringResource(R.string.icon_tuner_battery_battery_percent_size),
-                            key = Pref.Key.SystemUI.IconTurner.BATTERY_MODIFY_PERCENTAGE_TEXT_SIZE
-                        ) {
-                            spValueModifyBatteryPercentageSize = it
-                        }
-                        SwitchPreference(
-                            title = stringResource(R.string.icon_tuner_battery_percent_font_tnum),
-                            summary = stringResource(R.string.icon_tuner_battery_percent_font_tnum_tips),
-                            key = Pref.Key.SystemUI.IconTurner.BATTERY_PERCENTAGE_TNUM
-                        )
-                        AnimatedVisibility(
-                            spValueModifyBatteryPercentageSize
-                        ) {
-                            EditTextPreference(
-                                title = stringResource(R.string.icon_tuner_battery_percent_size),
-                                key = Pref.Key.SystemUI.IconTurner.BATTERY_PERCENTAGE_TEXT_SIZE,
-                                defValue = 13.454498f,
-                                dataType = EditTextDataType.FLOAT,
-                                isValueValid = {
-                                    (it as? Float ?: -1.0f) >= 0.0f
-                                }
-                            )
-                        }
-
-                    }
-                }
-                AnimatedVisibility(
-                    spValueBatteryStyle in listOf(0, 1)
-                ) {
-                    SwitchPreference(
-                        title = stringResource(R.string.icon_tuner_battery_swap_battery_percent),
-                        key = Pref.Key.SystemUI.IconTurner.SWAP_BATTERY_PERCENT
-                    )
-                }
-                SwitchPreference(
-                    title = stringResource(R.string.icon_tuner_battery_hide_charge),
-                    key = Pref.Key.SystemUI.IconTurner.HIDE_CHARGE
+                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_volume),
+                    title = stringResource(R.string.icon_tuner_other_volume),
+                    entries = dropdownEntriesAdvVisible,
+                    key = Pref.Key.SystemUI.IconTuner.VOLUME
+                )
+                DropDownPreference(
+                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_second_space),
+                    title = stringResource(R.string.icon_tuner_other_second_space),
+                    entries = dropdownEntriesAdvVisible,
+                    key = Pref.Key.SystemUI.IconTuner.SECOND_SPACE
                 )
                 SwitchPreference(
-                    title = stringResource(R.string.icon_tuner_battery_layout_custom),
-                    key = Pref.Key.SystemUI.IconTurner.BATTERY_MODIFY_PADDING
-                ) {
-                    spValueModifyBatteryPadding = it
-                }
-                AnimatedVisibility(
-                    spValueModifyBatteryPadding
-                ) {
-                    Column {
-                        EditTextPreference(
-                            title = stringResource(R.string.icon_tuner_battery_padding_left),
-                            key = Pref.Key.SystemUI.IconTurner.BATTERY_PADDING_LEFT,
-                            defValue = 0.0f,
-                            dataType = EditTextDataType.FLOAT
-                        )
-                        EditTextPreference(
-                            title = stringResource(R.string.icon_tuner_battery_padding_right),
-                            key = Pref.Key.SystemUI.IconTurner.BATTERY_PADDING_RIGHT,
-                            defValue = 0.0f,
-                            dataType = EditTextDataType.FLOAT
-                        )
-                    }
-                }
-            }
-        }
-        item {
-            PreferenceGroup(
-                title = stringResource(R.string.ui_title_icon_tuner_other),
-                last = true
-            ) {
-                SwitchPreference(
+                    icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_privacy_notice),
                     title = stringResource(R.string.icon_tuner_other_hide_privacy),
-                    key = Pref.Key.SystemUI.IconTurner.HIDE_PRIVACY
-                )
-                SwitchPreference(
-                    title = stringResource(R.string.icon_tuner_other_swap_mobile_wifi),
-                    key = Pref.Key.SystemUI.IconTurner.SWAP_MOBILE_WIFI
+                    key = Pref.Key.SystemUI.IconTuner.HIDE_PRIVACY
                 )
             }
         }

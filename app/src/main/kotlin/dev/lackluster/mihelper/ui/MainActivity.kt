@@ -24,7 +24,7 @@ import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.ui.dialog.SearchCustomEngineDialog
 import dev.lackluster.mihelper.ui.page.AboutPage
 import dev.lackluster.mihelper.ui.page.CleanMasterPage
-import dev.lackluster.mihelper.ui.page.IconTurnerPage
+import dev.lackluster.mihelper.ui.page.IconTunerPage
 import dev.lackluster.mihelper.ui.page.MainPage
 import dev.lackluster.mihelper.ui.page.MediaControlPage
 import dev.lackluster.mihelper.ui.page.MenuPage
@@ -41,7 +41,9 @@ import dev.lackluster.mihelper.data.Pages
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.ui.dialog.FontScaleDialog
 import dev.lackluster.mihelper.ui.dialog.MarketFilterTabDialog
+import dev.lackluster.mihelper.ui.dialog.StatusBarIconPositionDialog
 import dev.lackluster.mihelper.ui.page.MediaActionResizePage
+import dev.lackluster.mihelper.ui.page.IconDetailPage
 import dev.lackluster.mihelper.utils.Device
 import dev.lackluster.mihelper.utils.ShellUtils
 import dev.lackluster.mihelper.utils.factory.getSP
@@ -117,12 +119,14 @@ class MainActivity : HyperXActivity() {
                 miuixComposable(Pages.DEV_UI_TEST) { UITestPage(navController, adjustPadding, mode) }
                 miuixComposable(Pages.STATUS_BAR_CLOCK) { StatusBarClockPage(navController, adjustPadding, mode) }
                 miuixComposable(Pages.STATUS_BAR_FONT) { StatusBarFontPage(navController, adjustPadding, mode) }
-                miuixComposable(Pages.ICON_TUNER) { IconTurnerPage(navController, adjustPadding, mode) }
+                miuixComposable(Pages.ICON_TUNER) { IconTunerPage(navController, adjustPadding, mode) }
+                miuixComposable(Pages.ICON_DETAIL) { IconDetailPage(navController, adjustPadding, mode) }
                 miuixComposable(Pages.MEDIA_CONTROL) { MediaControlPage(navController, adjustPadding, mode) }
 
                 miuixComposable(Pages.DIALOG_MARKET_FILTER_TAB) { MarketFilterTabDialog(navController, adjustPadding, mode) }
                 miuixComposable(Pages.DIALOG_SEARCH_CUSTOM_ENGINE) { SearchCustomEngineDialog(navController, adjustPadding, mode) }
                 miuixComposable(Pages.DIALOG_FONT_SCALE) { FontScaleDialog(navController, adjustPadding, mode) }
+                miuixComposable(Pages.DIALOG_STATUS_BAR_ICON_POSITION) { StatusBarIconPositionDialog(navController, adjustPadding, mode) }
                 miuixComposable(Pages.DEV_UI_TEST2) { MediaActionResizePage(navController, adjustPadding, "MediaActionResizePage", mode = mode) }
             }
         )
@@ -166,26 +170,26 @@ class MainActivity : HyperXActivity() {
     private fun versionCompatible() {
         val spVersion = SafeSP.getInt(Pref.Key.Module.SP_VERSION, 0)
         if (spVersion < 2) {
-            if (SafeSP.getFloat(Pref.Key.SystemUI.IconTurner.BATTERY_PADDING_LEFT, -1f) == -1f) {
+            if (SafeSP.getFloat(Pref.Key.SystemUI.IconTuner.BATTERY_PADDING_START_VAL, -1f) == -1f) {
                 val oldValue = SafeSP.getInt(Pref.OldKey.SystemUI.IconTurner.BATTERY_PADDING_LEFT, -1)
                 if (oldValue != -1) {
-                    SafeSP.putAny(Pref.Key.SystemUI.IconTurner.BATTERY_PADDING_LEFT, oldValue.toFloat())
+                    SafeSP.putAny(Pref.Key.SystemUI.IconTuner.BATTERY_PADDING_START_VAL, oldValue.toFloat())
                 }
             }
-            if (SafeSP.getFloat(Pref.Key.SystemUI.IconTurner.BATTERY_PADDING_RIGHT, -1f) == -1f) {
+            if (SafeSP.getFloat(Pref.Key.SystemUI.IconTuner.BATTERY_PADDING_END_VAL, -1f) == -1f) {
                 val oldValue = SafeSP.getInt(Pref.OldKey.SystemUI.IconTurner.BATTERY_PADDING_RIGHT, -1)
                 if (oldValue != -1) {
-                    SafeSP.putAny(Pref.Key.SystemUI.IconTurner.BATTERY_PADDING_RIGHT, oldValue.toFloat())
+                    SafeSP.putAny(Pref.Key.SystemUI.IconTuner.BATTERY_PADDING_END_VAL, oldValue.toFloat())
                 }
             }
-            if (SafeSP.getInt(Pref.Key.SystemUI.IconTurner.BATTERY_PERCENTAGE_SYMBOL_STYLE, -1) == -1) {
+            if (SafeSP.getInt(Pref.Key.SystemUI.IconTuner.BATTERY_PERCENT_MARK_STYLE, -1) == -1) {
                 val hidePercentageSymbol = SafeSP.getBoolean(Pref.OldKey.SystemUI.IconTurner.HIDE_BATTERY_PERCENT_SYMBOL, false)
                 val uniPercentageSymbolSize = SafeSP.getBoolean(Pref.OldKey.SystemUI.IconTurner.CHANGE_BATTERY_PERCENT_SYMBOL, false)
                 val newValue =
                     if (hidePercentageSymbol)  2
                     else if (uniPercentageSymbolSize) 1
                     else 0
-                SafeSP.putAny(Pref.Key.SystemUI.IconTurner.BATTERY_PERCENTAGE_SYMBOL_STYLE, newValue)
+                SafeSP.putAny(Pref.Key.SystemUI.IconTuner.BATTERY_PERCENT_MARK_STYLE, newValue)
             }
         }
         if (spVersion < 4) {

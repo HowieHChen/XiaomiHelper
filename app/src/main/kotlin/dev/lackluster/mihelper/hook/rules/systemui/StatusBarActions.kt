@@ -1,12 +1,32 @@
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
+ * This file is part of XiaomiHelper project
+ * Copyright (C) 2025 HowieHChen, howie.dev@outlook.com
+
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package dev.lackluster.mihelper.hook.rules.systemui
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import com.highcapable.kavaref.KavaRef.Companion.asResolver
+import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.current
-import com.highcapable.yukihookapi.hook.factory.method
 import dev.lackluster.mihelper.data.Constants.ACTION_HOME
 import dev.lackluster.mihelper.data.Constants.ACTION_NOTIFICATIONS
 import dev.lackluster.mihelper.data.Constants.ACTION_QUICK_SETTINGS
@@ -42,21 +62,28 @@ object StatusBarActions : YukiBaseHooker() {
             Prefs.getInt(Pref.Key.MiuiHome.LINE_GESTURE_LONG_PRESS, 0) != 0 ||
             Prefs.getInt(Pref.Key.MiuiHome.LINE_GESTURE_DOUBLE_TAP, 0) != 0
         ) {
-            "com.android.systemui.accessibility.SystemActions".toClass().method {
-                name = "start"
-            }.hook {
-                after {
-                    val mContext = this.instance.current().field {
-                        name = "mContext"
-                    }.cast<Context>() ?: return@after
-                    val intentFilter = IntentFilter()
-                    intentFilter.addAction(ACTION_NOTIFICATIONS)
-                    intentFilter.addAction(ACTION_QUICK_SETTINGS)
-                    intentFilter.addAction(ACTION_HOME)
-                    intentFilter.addAction(ACTION_RECENTS)
-                    mContext.registerReceiver(actionReceiver, intentFilter, PER_MIUI_INTERNAL_API, null, Context.RECEIVER_EXPORTED)
+            "com.android.systemui.accessibility.SystemActions".toClass()
+                .resolve().firstMethodOrNull {
+                    name = "start"
+                }?.hook {
+                    after {
+                        val mContext = this.instance.asResolver().firstFieldOrNull {
+                            name = "mContext"
+                        }?.get<Context>() ?: return@after
+                        val intentFilter = IntentFilter()
+                        intentFilter.addAction(ACTION_NOTIFICATIONS)
+                        intentFilter.addAction(ACTION_QUICK_SETTINGS)
+                        intentFilter.addAction(ACTION_HOME)
+                        intentFilter.addAction(ACTION_RECENTS)
+                        mContext.registerReceiver(
+                            actionReceiver,
+                            intentFilter,
+                            PER_MIUI_INTERNAL_API,
+                            null,
+                            Context.RECEIVER_EXPORTED
+                        )
+                    }
                 }
-            }
         }
     }
 }

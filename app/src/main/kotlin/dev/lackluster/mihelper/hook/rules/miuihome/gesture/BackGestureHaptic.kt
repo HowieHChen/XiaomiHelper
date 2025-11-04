@@ -1,110 +1,117 @@
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
+ * This file is part of XiaomiHelper project
+ * Copyright (C) 2025 HowieHChen, howie.dev@outlook.com
+
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package dev.lackluster.mihelper.hook.rules.miuihome.gesture
 
+import com.highcapable.kavaref.KavaRef.Companion.resolve
+import com.highcapable.kavaref.condition.type.Modifiers
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.current
-import com.highcapable.yukihookapi.hook.factory.method
-import com.highcapable.yukihookapi.hook.type.java.BooleanType
-import com.highcapable.yukihookapi.hook.type.java.IntType
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.factory.hasEnable
 
 object BackGestureHaptic : YukiBaseHooker() {
     private const val TIME_OUT_BLOCKER_KEY = "BLOCKER_ID_FOR_HAPTIC_GESTURE_BACK"
-    private val hapticFeedbackV2Class by lazy {
-        "com.miui.home.launcher.common.HapticFeedbackCompatV2".toClassOrNull()
+    private val clzHapticFeedbackCompatV2 by lazy {
+        "com.miui.home.common.hapticfeedback.HapticFeedbackCompatV2".toClassOrNull()
     }
-    private val gestureStubViewClass by lazy {
-        "com.miui.home.recents.GestureStubView".toClass()
+    private val clzTimeOutBlocker by lazy {
+        "com.miui.home.common.utils.TimeOutBlocker".toClass()
     }
-    private val getHandlerMethod by lazy {
-        "com.miui.home.launcher.common.BackgroundThread".toClass().method {
+    private val metGetHandler by lazy {
+        "com.miui.home.common.multithread.BackgroundThread".toClass().resolve().firstMethod {
             name = "getHandler"
-            modifiers { isStatic }
-        }.get()
+            modifiers(Modifiers.STATIC)
+        }
     }
-    private val startCountDownMethod by lazy {
-        "com.miui.home.recents.util.TimeOutBlocker".toClass().method {
+    private val metStartCountDown by lazy {
+        clzTimeOutBlocker.resolve().firstMethod {
             name = "startCountDown"
-            modifiers { isStatic }
-        }.get()
+            modifiers(Modifiers.STATIC)
+        }
     }
-    private val isBlockedMethod by lazy {
-        "com.miui.home.recents.util.TimeOutBlocker".toClass().method {
+    private val metIsBlocked by lazy {
+        clzTimeOutBlocker.resolve().firstMethod {
             name = "isBlocked"
-            modifiers { isStatic }
-        }.get()
+            modifiers(Modifiers.STATIC)
+        }
     }
-    private val performExtHapticFeedbackMethod by lazy {
-        "miuix.util.HapticFeedbackCompat".toClass().method {
+    private val metPerformExtHapticFeedback by lazy {
+        "miuix.util.HapticFeedbackCompat".toClass().resolve().firstMethod {
             name = "performExtHapticFeedback"
-            param(IntType)
-        }.give()
+            parameters(Int::class)
+        }
     }
 
     override fun onHook() {
         hasEnable(Pref.Key.MiuiHome.BACK_HAPTIC) {
-            if (hapticFeedbackV2Class == null) return@hasEnable
-            hapticFeedbackV2Class?.apply {
-                method {
+            if (clzHapticFeedbackCompatV2 == null) return@hasEnable
+            clzHapticFeedbackCompatV2?.apply {
+                val mHapticHelper = resolve().firstFieldOrNull {
+                    name = "mHapticHelper"
+                }
+                resolve().firstMethodOrNull {
                     name = "performGestureReadyBack"
-                }.hook {
+                }?.hook {
                     after {
-                        val handler = getHandlerMethod.call()
-                        startCountDownMethod.call(handler, 140L, TIME_OUT_BLOCKER_KEY)
+                        val handler = metGetHandler.copy().invoke()
+                        metStartCountDown.copy().invoke(handler, 140L, TIME_OUT_BLOCKER_KEY)
                     }
                 }
-                method {
+                resolve().firstMethodOrNull {
                     name = "performGestureBackHandUp"
-                }.hook {
+                }?.hook {
                     before {
-                        val isBlocked = isBlockedMethod.call(TIME_OUT_BLOCKER_KEY) as? Boolean
+                        val isBlocked = metIsBlocked.invoke<Boolean>(TIME_OUT_BLOCKER_KEY)
                         if (isBlocked == true) {
                             this.result = null
                         }
                     }
                 }
-                method {
-                    name = "lambda\$performGestureReadyBack$11"
-                }.remedys {
-                    method {
-                        name = "lambda\$performGestureReadyBack$11\$HapticFeedbackCompatV2"
+                resolve().firstMethodOrNull {
+                    name {
+                        it.startsWith("lambda") && it.contains("performGestureReadyBack")
                     }
-                }.hook {
+                }?.hook {
                     replaceUnit {
-                        val mHapticHelper = this.instance.current().field {
-                            name = "mHapticHelper"
-                        }.any()
-                        performExtHapticFeedbackMethod?.invoke(mHapticHelper, 0)
+                        mHapticHelper?.copy()?.of(this.instance)?.get()?.let {
+                            metPerformExtHapticFeedback.copy().of(it).invoke(0)
+                        }
                     }
                 }
-                method {
-                    name = "lambda\$performGestureBackHandUp$12"
-                }.remedys {
-                    method {
-                        name = "lambda\$performGestureBackHandUp$12\$HapticFeedbackCompatV2"
+                resolve().firstMethodOrNull {
+                    name {
+                        it.startsWith("lambda") && it.contains("performGestureBackHandUp")
                     }
-                }.hook {
+                }?.hook {
                     replaceUnit {
-                        val mHapticHelper = this.instance.current().field {
-                            name = "mHapticHelper"
-                        }.any()
-                        performExtHapticFeedbackMethod?.invoke(mHapticHelper, 1)
+                        mHapticHelper?.copy()?.of(this.instance)?.get()?.let {
+                            metPerformExtHapticFeedback.copy().of(it).invoke(1)
+                        }
                     }
                 }
             }
-            gestureStubViewClass.apply {
-                method {
-                    name = "injectKeyEvent"
-                    param(IntType, BooleanType)
-                }.ignored().hook {
-                    before {
-                        this.args(1).setTrue()
-                    }
-                }
-                method {
+            "com.miui.home.recents.GestureStubView".toClass().apply {
+                resolve().firstMethodOrNull {
                     name = "injectBackKeyEvent"
-                    param(BooleanType)
-                }.ignored().hook {
+                    parameters(Boolean::class)
+                }?.hook {
                     before {
                         this.args(0).setTrue()
                     }

@@ -26,6 +26,7 @@ import com.highcapable.yukihookapi.hook.factory.constructor
 import com.highcapable.yukihookapi.hook.factory.current
 import com.highcapable.yukihookapi.hook.factory.field
 import com.highcapable.yukihookapi.hook.factory.method
+import com.highcapable.yukihookapi.hook.log.YLog
 import com.highcapable.yukihookapi.hook.type.java.StringClass
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.factory.hasEnable
@@ -42,6 +43,9 @@ object AdBlocker : YukiBaseHooker() {
     }
     private val aladdinDownloadBottomLowComponentClass by lazy {
         "com.xiaomi.market.common.component.componentbeans.AladdinDownloadBottomLowComponent".toClassOrNull()
+    }
+    private val clzRecommendCollectionComponent by lazy {
+        "com.xiaomi.market.common.component.componentbeans.RecommendCollectionComponent".toClassOrNull()
     }
     private val valueOfDetailType by lazy {
         "com.xiaomi.market.business_ui.detail.DetailType".toClassOrNull()?.method {
@@ -87,7 +91,8 @@ object AdBlocker : YukiBaseHooker() {
                         val parsedComponents = this.result<List<Any>>()?.toMutableList() ?: return@after
                         parsedComponents.retainAll {
                             listAppComponentClass?.isInstance(it) == true ||
-                                    aladdinDownloadBottomLowComponentClass?.isInstance(it) == true
+                                    aladdinDownloadBottomLowComponentClass?.isInstance(it) == true ||
+                                    clzRecommendCollectionComponent?.isInstance(it) == true
                         }
                         this.result = parsedComponents
                     }

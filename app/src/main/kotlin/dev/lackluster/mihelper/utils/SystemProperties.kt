@@ -25,7 +25,7 @@ object SystemProperties {
     init {
         classSystemProperties = try {
             Class.forName("android.os.SystemProperties")
-        } catch (unused: Exception) {
+        } catch (_: Exception) {
             null
         }
         val cls = classSystemProperties
@@ -51,7 +51,7 @@ object SystemProperties {
             isSupportGetBoolean = try {
                 mGetBoolean = cls.getMethod("getBoolean", String::class.java, java.lang.Boolean::class.java)
                 mGetBoolean != null
-            } catch (unused5: Exception) {
+            } catch (_: Exception) {
                 false
             }
             isSupportSet = try {

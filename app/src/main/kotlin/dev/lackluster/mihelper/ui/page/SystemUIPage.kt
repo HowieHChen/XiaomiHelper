@@ -1,6 +1,7 @@
 package dev.lackluster.mihelper.ui.page
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,11 +31,6 @@ import dev.lackluster.mihelper.data.Scope
 
 @Composable
 fun SystemUIPage(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
-    val lockscreenCarrierLabelEntries = listOf(
-        DropDownEntry(stringResource(R.string.systemui_lock_carrier_text_default)),
-        DropDownEntry(stringResource(R.string.systemui_lock_carrier_text_carrier)),
-        DropDownEntry(stringResource(R.string.systemui_lock_carrier_text_clock))
-    )
     val expandNotificationsEntries = listOf(
         DropDownEntry(
             title = stringResource(R.string.systemui_notif_expand_notif_def),
@@ -49,12 +45,29 @@ fun SystemUIPage(navController: NavController, adjustPadding: PaddingValues, mod
             summary = stringResource(R.string.systemui_notif_expand_notif_ungrouped_tips)
         ),
     )
+    val regionSamplingEntries = listOf(
+        DropDownEntry(
+            title = stringResource(R.string.systemui_statusbar_region_sampling_def),
+            summary = stringResource(R.string.systemui_statusbar_region_sampling_def_tips),
+        ),
+        DropDownEntry(
+            title = stringResource(R.string.systemui_statusbar_region_sampling_enable),
+            summary = stringResource(R.string.systemui_statusbar_region_sampling_enable_tips),
+        ),
+        DropDownEntry(
+            title = stringResource(R.string.systemui_statusbar_region_sampling_disable),
+            summary = stringResource(R.string.systemui_statusbar_region_sampling_disable_tips),
+        ),
+    )
 
     var visibilityCustomNotifCount by remember { mutableStateOf(
         SafeSP.getBoolean(Pref.Key.SystemUI.StatusBar.NOTIFICATION_COUNT)
     ) }
-    var visibilityCCBatteryPercent by remember { mutableStateOf(
-        SafeSP.getBoolean(Pref.Key.SystemUI.ControlCenter.BATTERY_PERCENTAGE)
+    var visibilityExpandIgnoreFocus by remember { mutableStateOf(
+        SafeSP.getInt(Pref.Key.SystemUI.NotifCenter.EXPAND_NOTIFICATION, 0) == 1
+    ) }
+    var visibilityNotifOpt by remember { mutableStateOf(
+        SafeSP.getBoolean(Pref.Key.SystemUI.NotifCenter.LAYOUT_RANK_OPT)
     ) }
     var visibilityMonetColor by remember { mutableStateOf(
         SafeSP.getBoolean(Pref.Key.SystemUI.NotifCenter.MONET_OVERLAY)
@@ -117,10 +130,11 @@ fun SystemUIPage(navController: NavController, adjustPadding: PaddingValues, mod
                     title = stringResource(R.string.systemui_statusbar_tap_to_sleep),
                     key = Pref.Key.SystemUI.StatusBar.DOUBLE_TAP_TO_SLEEP
                 )
-                SwitchPreference(
-                    title = stringResource(R.string.systemui_statusbar_disable_smart_dark),
-                    summary = stringResource(R.string.systemui_statusbar_disable_smart_dark_tips),
-                    key = Pref.Key.SystemUI.StatusBar.DISABLE_SMART_DARK
+                DropDownPreference(
+                    title = stringResource(R.string.systemui_statusbar_region_sampling),
+                    summary = stringResource(R.string.systemui_statusbar_region_sampling_tips),
+                    entries = regionSamplingEntries,
+                    key = Pref.Key.SystemUI.StatusBar.REGION_SAMPLING,
                 )
             }
         }
@@ -146,10 +160,23 @@ fun SystemUIPage(navController: NavController, adjustPadding: PaddingValues, mod
                     summary = stringResource(R.string.systemui_lock_flashlight_on_tips),
                     key = Pref.Key.SystemUI.Plugin.AUTO_FLASH_ON
                 )
-                DropDownPreference(
-                    title = stringResource(R.string.systemui_lock_carrier_text),
-                    entries = lockscreenCarrierLabelEntries,
-                    key = Pref.Key.SystemUI.LockScreen.CARRIER_TEXT
+                SwitchPreference(
+                    title = stringResource(R.string.systemui_lock_keep_clock_container),
+                    summary = stringResource(R.string.systemui_lock_keep_clock_container_tips),
+                    key = Pref.Key.SystemUI.LockScreen.KEEP_CLOCK_CONTAINER
+                )
+                SwitchPreference(
+                    title = stringResource(R.string.systemui_lock_hide_next_alarm),
+                    summary = stringResource(R.string.systemui_lock_hide_next_alarm_tips),
+                    key = Pref.Key.SystemUI.LockScreen.HIDE_NEXT_ALARM
+                )
+                SwitchPreference(
+                    title = stringResource(R.string.systemui_lock_hide_carrier_one),
+                    key = Pref.Key.SystemUI.LockScreen.HIDE_CARRIER_ONE
+                )
+                SwitchPreference(
+                    title = stringResource(R.string.systemui_lock_hide_carrier_two),
+                    key = Pref.Key.SystemUI.LockScreen.HIDE_CARRIER_TWO
                 )
             }
         }
@@ -164,19 +191,62 @@ fun SystemUIPage(navController: NavController, adjustPadding: PaddingValues, mod
                 )
                 SwitchPreference(
                     title = stringResource(R.string.systemui_notif_disable_whitelist),
+                    summary = stringResource(R.string.systemui_notif_disable_whitelist_tips),
                     key = Pref.Key.SystemUI.NotifCenter.NOTIF_NO_WHITELIST
-                )
-                DropDownPreference(
-                    title = stringResource(R.string.systemui_notif_expand_notif),
-                    summary = stringResource(R.string.systemui_notif_expand_notif_tips),
-                    entries = expandNotificationsEntries,
-                    key = Pref.Key.SystemUI.NotifCenter.EXPAND_NOTIFICATION
                 )
                 SwitchPreference(
                     title = stringResource(R.string.systemui_notif_miuix_expand_btn),
                     summary = stringResource(R.string.systemui_notif_miuix_expand_btn_tips),
                     key = Pref.Key.SystemUI.NotifCenter.MIUIX_EXPAND_BUTTON
                 )
+                DropDownPreference(
+                    title = stringResource(R.string.systemui_notif_expand_notif),
+                    summary = stringResource(R.string.systemui_notif_expand_notif_tips),
+                    entries = expandNotificationsEntries,
+                    key = Pref.Key.SystemUI.NotifCenter.EXPAND_NOTIFICATION
+                ) {
+                    visibilityExpandIgnoreFocus = (it == 1)
+                }
+                AnimatedVisibility(
+                    visibilityExpandIgnoreFocus
+                ) {
+                    SwitchPreference(
+                        title = stringResource(R.string.systemui_notif_expand_ignore_focus),
+                        summary = stringResource(R.string.systemui_notif_expand_ignore_focus_tips),
+                        key = Pref.Key.SystemUI.NotifCenter.EXPAND_IGNORE_FOCUS
+                    )
+                }
+                SwitchPreference(
+                    title = stringResource(R.string.systemui_notif_lr_opt),
+                    summary = stringResource(R.string.systemui_notif_lr_opt_tips),
+                    key = Pref.Key.SystemUI.NotifCenter.LAYOUT_RANK_OPT
+                ) {
+                    visibilityNotifOpt = it
+                }
+                AnimatedVisibility(
+                    visibilityNotifOpt
+                ) {
+                    Column {
+                        SwitchPreference(
+                            title = stringResource(R.string.systemui_notif_lr_hide_section_header),
+                            summary = stringResource(R.string.systemui_notif_lr_hide_section_header_tips),
+                            key = Pref.Key.SystemUI.NotifCenter.LR_OPT_HIDE_SECTION_HEADER,
+                            defValue = true
+                        )
+                        SwitchPreference(
+                            title = stringResource(R.string.systemui_notif_lr_hide_section_gap),
+                            summary = stringResource(R.string.systemui_notif_lr_hide_section_gap_tips),
+                            key = Pref.Key.SystemUI.NotifCenter.LR_OPT_HIDE_SECTION_GAP,
+                            defValue = true
+                        )
+                        SwitchPreference(
+                            title = stringResource(R.string.systemui_notif_lr_rerank),
+                            summary = stringResource(R.string.systemui_notif_lr_rerank_tips),
+                            key = Pref.Key.SystemUI.NotifCenter.LR_OPT_RERANK,
+                            defValue = true
+                        )
+                    }
+                }
                 TextPreference(
                     title = stringResource(R.string.systemui_notif_media_control_style),
                     summary = stringResource(R.string.systemui_notif_media_control_style_tips)
@@ -202,22 +272,6 @@ fun SystemUIPage(navController: NavController, adjustPadding: PaddingValues, mod
                     summary = stringResource(R.string.systemui_control_hide_carrier_hd_tips),
                     key = Pref.Key.SystemUI.ControlCenter.HIDE_CARRIER_HD
                 )
-                SwitchPreference(
-                    title = stringResource(R.string.systemui_control_battery_percent),
-                    summary = stringResource(R.string.systemui_control_battery_percent_tips),
-                    key = Pref.Key.SystemUI.ControlCenter.BATTERY_PERCENTAGE
-                ) {
-                    visibilityCCBatteryPercent = it
-                }
-                AnimatedVisibility(
-                    visibilityCCBatteryPercent
-                ) {
-                    SwitchPreference(
-                        title = stringResource(R.string.systemui_control_battery_percent_anim),
-                        summary = stringResource(R.string.systemui_control_battery_percent_anim_tips),
-                        key = Pref.Key.SystemUI.ControlCenter.BATTERY_PERCENTAGE_ANIM
-                    )
-                }
             }
         }
         item {

@@ -26,11 +26,11 @@ object ElementsFontWeight : YukiBaseHooker() {
     private val focusNotifFont = Prefs.getBoolean(FontWeight.FOCUS_NOTIFICATION, false)
     private val focusNotifFontWeight = Prefs.getInt(FontWeight.FOCUS_NOTIFICATION_WEIGHT, 430)
     private val netSpeedNumFont = Prefs.getBoolean(FontWeight.NET_SPEED_NUMBER, false)
-    private val netSpeedNumFontWeight = Prefs.getInt(FontWeight.NET_SPEED_NUMBER_WEIGHT, 700)
+    private val netSpeedNumFontWeight = Prefs.getInt(FontWeight.NET_SPEED_NUMBER_VAL, 700)
     private val netSpeedUnitFont = Prefs.getBoolean(FontWeight.NET_SPEED_UNIT, false)
-    private val netSpeedUnitFontWeight = Prefs.getInt(FontWeight.NET_SPEED_UNIT_WEIGHT, 700)
-    private val mobileTypeFont = Prefs.getBoolean(FontWeight.MOBILE_TYPE, false)
-    private val mobileTypeFontWeight = Prefs.getInt(FontWeight.MOBILE_TYPE_WEIGHT, 620)
+    private val netSpeedUnitFontWeight = Prefs.getInt(FontWeight.NET_SPEED_UNIT_VAL, 700)
+    private val mobileTypeFont = Prefs.getBoolean(FontWeight.CELLULAR_TYPE, false)
+    private val mobileTypeFontWeight = Prefs.getInt(FontWeight.CELLULAR_TYPE_VAL, 620)
 
     private val miuiClockClass by lazy {
         "com.android.systemui.statusbar.views.MiuiClock".toClassOrNull()

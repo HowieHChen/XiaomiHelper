@@ -20,34 +20,23 @@
 
 package dev.lackluster.mihelper.hook.rules.systemui.notif
 
+import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.current
-import com.highcapable.yukihookapi.hook.factory.method
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.factory.hasEnable
 
 object NotifFreeform : YukiBaseHooker() {
     override fun onHook() {
         hasEnable(Pref.Key.SystemUI.NotifCenter.NOTIF_FREEFORM) {
-            "com.android.systemui.statusbar.notification.row.MiuiExpandableNotificationRow".toClassOrNull()?.apply {
-                method {
-                    name = "updateMiniWindowBar"
-                }.hook {
-                    after {
-                        this.instance.current().field {
-                            name = "mCanSlide"
-                        }.setTrue()
-                    }
-                }
-            }
             "com.android.systemui.statusbar.notification.row.ExpandableNotificationRowInjector".toClassOrNull()?.apply {
-                method {
+                val canSlide = resolve().firstFieldOrNull {
+                    name = "canSlide"
+                }
+                resolve().firstMethodOrNull {
                     name = "updateMiniWindowBar"
-                }.hook {
+                }?.hook {
                     after {
-                        this.instance.current().field {
-                            name = "canSlide"
-                        }.setTrue()
+                        canSlide?.copy()?.of(this.instance)?.set(true)
                     }
                 }
             }

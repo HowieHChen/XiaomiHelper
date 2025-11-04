@@ -25,6 +25,7 @@ import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.DexKit
 import dev.lackluster.mihelper.utils.factory.hasEnable
 import org.luckypray.dexkit.query.enums.StringMatchType
+import java.util.ArrayList
 
 object DisableRiskAppNotification : YukiBaseHooker() {
     private val pkg by lazy {
@@ -36,12 +37,56 @@ object DisableRiskAppNotification : YukiBaseHooker() {
             }
         }
     }
+    private val actionAntiFraudAutoScanApps by lazy {
+        DexKit.findMethodWithCache("action_anti_fraud_auto_scan_apps") {
+            matcher {
+                addUsingString("action_anti_fraud_auto_scan_apps", StringMatchType.Equals)
+                paramTypes("android.content.Context")
+            }
+        }
+    }
+    private val actionAntiFraudAutoScanSingleApp by lazy {
+        DexKit.findMethodWithCache("action_anti_fraud_auto_scan_single_app") {
+            matcher {
+                addUsingString("action_anti_fraud_auto_scan_single_app", StringMatchType.Equals)
+                paramTypes("android.content.Context", "java.lang.String")
+            }
+        }
+    }
+    private val getAntiFraudPackages by lazy {
+        DexKit.findMethodWithCache("get_anti_fraud_packages") {
+            matcher {
+                addUsingString("anti_fraud_packages", StringMatchType.Equals)
+                paramCount = 0
+            }
+        }
+    }
+    private val setAntiFraudPackages by lazy {
+        DexKit.findMethodWithCache("set_anti_fraud_packages") {
+            matcher {
+                addUsingString("anti_fraud_packages", StringMatchType.Equals)
+                paramCount = 1
+            }
+        }
+    }
 
     override fun onHook() {
         hasEnable(Pref.Key.SecurityCenter.DISABLE_RISK_APP_NOTIF) {
             if (appClassLoader == null) return@hasEnable
             val pkgInstance = pkg.map { it.getMethodInstance(appClassLoader!!) }.toList()
             pkgInstance.hookAll {
+                intercept()
+            }
+            getAntiFraudPackages?.getMethodInstance(appClassLoader!!)?.hook {
+                replaceTo(ArrayList<String>())
+            }
+            setAntiFraudPackages?.getMethodInstance(appClassLoader!!)?.hook {
+                intercept()
+            }
+            actionAntiFraudAutoScanApps?.getMethodInstance(appClassLoader!!)?.hook {
+                intercept()
+            }
+            actionAntiFraudAutoScanSingleApp?.getMethodInstance(appClassLoader!!)?.hook {
                 intercept()
             }
         }

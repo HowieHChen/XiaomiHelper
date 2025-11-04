@@ -32,50 +32,36 @@ object RemoveFreeformRestriction : YukiBaseHooker() {
     override fun onHook() {
         hasEnable(Pref.Key.Android.DISABLE_FREEFORM_RESTRICT) {
             "android.app.ActivityTaskManager".toClassOrNull()?.apply {
-                resolve()
-                    .optional()
-                    .firstMethodOrNull {
-                        name = "supportsSplitScreen"
-                    }
-                    ?.hook {
-                        replaceToTrue()
-                    }
+                resolve().optional().firstMethodOrNull {
+                    name = "supportsSplitScreen"
+                }?.hook {
+                    replaceToTrue()
+                }
             }
             "com.android.server.wm.Task".toClassOrNull()?.apply {
-                resolve()
-                    .optional()
-                    .method {
-                        name = "isResizeable"
-                    }
-                    .hookAll {
-                        replaceToTrue()
-                    }
+                resolve().optional().method {
+                    name = "isResizeable"
+                }.hookAll {
+                    replaceToTrue()
+                }
             }
             "com.android.server.wm.ActivityTaskManagerService".toClassOrNull()?.apply {
-                resolve()
-                    .optional()
-                    .firstMethodOrNull {
-                        name = "retrieveSettings"
+                resolve().optional().firstMethodOrNull {
+                    name = "retrieveSettings"
+                }?.hook {
+                    after {
+                        this.instance.asResolver().firstFieldOrNull {
+                            name = "mDevEnableNonResizableMultiWindow"
+                        }?.set(true)
                     }
-                    ?.hook {
-                        after {
-                            this.instance.asResolver()
-                                .firstFieldOrNull {
-                                    name = "mDevEnableNonResizableMultiWindow"
-                                }
-                                ?.set(true)
-                        }
-                    }
+                }
             }
             "com.android.server.wm.WindowManagerService\$SettingsObserver".toClassOrNull()?.apply {
-                resolve()
-                    .optional()
-                    .firstMethodOrNull {
-                        name = "updateDevEnableNonResizableMultiWindow"
-                    }
-                    ?.hook {
-                        intercept()
-                    }
+                resolve().optional().firstMethodOrNull {
+                    name = "updateDevEnableNonResizableMultiWindow"
+                }?.hook {
+                    intercept()
+                }
             }
             "android.util.MiuiMultiWindowAdapter".toClassOrNull()?.apply {
                 for (fieldName in setOf(
@@ -84,13 +70,10 @@ object RemoveFreeformRestriction : YukiBaseHooker() {
                     "START_FROM_FREEFORM_BLACK_LIST_ACTIVITY",
                     "FOREGROUND_PIN_APP_BLACK_LIST",
                 )) {
-                    resolve()
-                        .optional()
-                        .firstFieldOrNull {
-                            name = fieldName
-                            modifiers(Modifiers.STATIC)
-                        }
-                        ?.set(mutableListOf<String>())
+                    resolve().optional().firstFieldOrNull {
+                        name = fieldName
+                        modifiers(Modifiers.STATIC)
+                    }?.set(mutableListOf<String>())
                 }
                 for (methodName in setOf(
                     "getFreeformBlackList",
@@ -102,14 +85,11 @@ object RemoveFreeformRestriction : YukiBaseHooker() {
                     "getForegroundPinAppBlackList",
                     "getForegroundPinAppBlackListFromCloud",
                 )) {
-                    resolve()
-                        .optional()
-                        .firstMethodOrNull {
-                            name = methodName
-                        }
-                        ?.hook {
-                            replaceTo(mutableListOf<String>())
-                        }
+                    resolve().optional().firstMethodOrNull {
+                        name = methodName
+                    }?.hook {
+                        replaceTo(mutableListOf<String>())
+                    }
                 }
             }
             "android.util.MiuiMultiWindowUtils".toClassOrNull()?.apply {
@@ -117,14 +97,11 @@ object RemoveFreeformRestriction : YukiBaseHooker() {
                     "isForceResizeable",
                     "supportFreeform"
                 )) {
-                    resolve()
-                        .optional()
-                        .firstMethodOrNull {
-                            name = methodName
-                        }
-                        ?.hook {
-                            replaceToTrue()
-                        }
+                    resolve().optional().firstMethodOrNull {
+                        name = methodName
+                    }?.hook {
+                        replaceToTrue()
+                    }
                 }
             }
         }

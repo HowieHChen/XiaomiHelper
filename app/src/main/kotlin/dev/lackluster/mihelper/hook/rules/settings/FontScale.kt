@@ -29,99 +29,87 @@ object FontScale : YukiBaseHooker() {
     override fun onHook() {
         hasEnable(Pref.Key.Android.FONT_SCALE) {
             "com.android.settings.display.LargeFontUtils".toClass().apply {
-                resolve()
-                    .firstFieldOrNull {
-                        name = "FONT_SCALE"
-                        modifiers(Modifiers.STATIC)
-                    }
-                    ?.set(
-                        floatArrayOf(
-                            fontScaleSmall,
-                            fontScaleMedium,
-                            fontScaleLarge,
-                            fontScaleHuge,
-                            fontScaleGodzilla,
-                            fontScale170,
-                            fontScale200
-                        )
+                resolve().firstFieldOrNull {
+                    name = "FONT_SCALE"
+                    modifiers(Modifiers.STATIC)
+                }?.set(
+                    floatArrayOf(
+                        fontScaleSmall,
+                        fontScaleMedium,
+                        fontScaleLarge,
+                        fontScaleHuge,
+                        fontScaleGodzilla,
+                        fontScale170,
+                        fontScale200
                     )
-                resolve()
-                    .firstFieldOrNull {
-                        name = "UI_MODE_FONT_SCALE_MAPPING"
-                        modifiers(Modifiers.STATIC)
-                    }
-                    ?.set(
-                        mutableMapOf(
-                            UI_MODE_TYPE_SCALE_EXTRAL_SMALL to fontScaleSmall,
-                            UI_MODE_TYPE_SCALE_SMALL to fontScaleSmall,
-                            UI_MODE_TYPE_SCALE_MEDIUM to fontScaleMedium,
-                            UI_MODE_TYPE_SCALE_LARGE to fontScaleLarge,
-                            UI_MODE_TYPE_SCALE_HUGE to fontScaleHuge,
-                            UI_MODE_TYPE_SCALE_GODZILLA to fontScaleGodzilla,
-                            UI_MODE_TYPE_SCALE_170 to fontScale170,
-                            UI_MODE_TYPE_SCALE_200 to fontScale200,
-                        )
+                )
+                resolve().firstFieldOrNull {
+                    name = "UI_MODE_FONT_SCALE_MAPPING"
+                    modifiers(Modifiers.STATIC)
+                }?.set(
+                    mutableMapOf(
+                        UI_MODE_TYPE_SCALE_EXTRAL_SMALL to fontScaleSmall,
+                        UI_MODE_TYPE_SCALE_SMALL to fontScaleSmall,
+                        UI_MODE_TYPE_SCALE_MEDIUM to fontScaleMedium,
+                        UI_MODE_TYPE_SCALE_LARGE to fontScaleLarge,
+                        UI_MODE_TYPE_SCALE_HUGE to fontScaleHuge,
+                        UI_MODE_TYPE_SCALE_GODZILLA to fontScaleGodzilla,
+                        UI_MODE_TYPE_SCALE_170 to fontScale170,
+                        UI_MODE_TYPE_SCALE_200 to fontScale200,
                     )
-                resolve()
-                    .firstFieldOrNull {
-                        name = "sUI_MODE_MAPPING"
-                        modifiers(Modifiers.STATIC)
-                    }
-                    ?.set(
-                        mutableMapOf(
-                            fontScaleSmall to UI_MODE_TYPE_SCALE_SMALL,
-                            fontScaleMedium to UI_MODE_TYPE_SCALE_MEDIUM,
-                            fontScaleLarge to UI_MODE_TYPE_SCALE_LARGE,
-                            fontScaleHuge to UI_MODE_TYPE_SCALE_HUGE,
-                            fontScaleGodzilla to UI_MODE_TYPE_SCALE_GODZILLA,
-                            fontScale170 to UI_MODE_TYPE_SCALE_170,
-                            fontScale200 to UI_MODE_TYPE_SCALE_200,
-                        )
+                )
+                resolve().firstFieldOrNull {
+                    name = "sUI_MODE_MAPPING"
+                    modifiers(Modifiers.STATIC)
+                }?.set(
+                    mutableMapOf(
+                        fontScaleSmall to UI_MODE_TYPE_SCALE_SMALL,
+                        fontScaleMedium to UI_MODE_TYPE_SCALE_MEDIUM,
+                        fontScaleLarge to UI_MODE_TYPE_SCALE_LARGE,
+                        fontScaleHuge to UI_MODE_TYPE_SCALE_HUGE,
+                        fontScaleGodzilla to UI_MODE_TYPE_SCALE_GODZILLA,
+                        fontScale170 to UI_MODE_TYPE_SCALE_170,
+                        fontScale200 to UI_MODE_TYPE_SCALE_200,
                     )
+                )
             }
             "com.android.settings.display.PageLayoutFragment".toClass().apply {
-                resolve()
-                    .firstFieldOrNull {
-                        name = "PAGE_LAYOUT_MAPPING"
-                        modifiers(Modifiers.STATIC)
-                    }
-                    ?.set(
-                        mutableMapOf(
-                            0 to fontScaleSmall,
-                            1 to fontScaleMedium,
-                            2 to fontScaleLarge,
-                            3 to fontScaleHuge,
-                            4 to fontScaleGodzilla,
-                            5 to fontScale170,
-                            6 to fontScale200,
-                        )
+                resolve().firstFieldOrNull {
+                    name = "PAGE_LAYOUT_MAPPING"
+                    modifiers(Modifiers.STATIC)
+                }?.set(
+                    mutableMapOf(
+                        0 to fontScaleSmall,
+                        1 to fontScaleMedium,
+                        2 to fontScaleLarge,
+                        3 to fontScaleHuge,
+                        4 to fontScaleGodzilla,
+                        5 to fontScale170,
+                        6 to fontScale200,
                     )
-                resolve()
-                    .firstMethodOrNull {
-                        name = "getProgress"
-                    }
-                    ?.hook {
-                        before {
-                            val mCurrentFontScale = this.instance.asResolver()
-                                .firstFieldOrNull {
-                                    name = "mCurrentFontScale"
-                                }
-                                ?.get<Float>() ?: return@before
-                            val index = when (mCurrentFontScale) {
-                                fontScaleSmall -> 0
-                                fontScaleMedium -> 1
-                                fontScaleLarge -> 2
-                                fontScaleHuge -> 3
-                                fontScaleGodzilla -> 4
-                                fontScale170 -> 5
-                                fontScale200 -> 6
-                                else -> -1
-                            }
-                            if (index != -1) {
-                                this.result = index
-                            }
+                )
+                resolve().firstMethodOrNull {
+                    name = "getProgress"
+                }?.hook {
+                    before {
+                        val mCurrentFontScale = this.instance.asResolver().firstFieldOrNull {
+                            name = "mCurrentFontScale"
+                        }?.get<Float>() ?: return@before
+                        val index = when (mCurrentFontScale) {
+                            fontScaleSmall -> 0
+                            fontScaleMedium -> 1
+                            fontScaleLarge -> 2
+                            fontScaleHuge -> 3
+                            fontScaleGodzilla -> 4
+                            fontScale170 -> 5
+                            fontScale200 -> 6
+                            else -> -1
+                        }
+                        if (index != -1) {
+                            this.result = index
                         }
                     }
+                }
             }
         }
     }

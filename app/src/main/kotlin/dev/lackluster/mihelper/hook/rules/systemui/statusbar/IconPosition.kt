@@ -20,44 +20,41 @@
 
 package dev.lackluster.mihelper.hook.rules.systemui.statusbar
 
+import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.constructor
-import dev.lackluster.mihelper.data.Pref.Key.SystemUI.IconTurner
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import com.highcapable.yukihookapi.hook.log.YLog
+import dev.lackluster.mihelper.data.Constants
+import dev.lackluster.mihelper.data.Pref.Key.SystemUI.IconTuner
+import dev.lackluster.mihelper.utils.Prefs
 
 object IconPosition : YukiBaseHooker() {
+    private val mode = Prefs.getInt(IconTuner.ICON_POSITION, 0)
+    private val slotsCustom by lazy {
+        (Prefs.getStringSet(IconTuner.ICON_POSITION_VAL, mutableSetOf()).mapNotNull { str ->
+            str.split(":").takeIf { it.size == 2 }
+        }.sortedBy {
+            it[0].toInt()
+        }.map { it[1] }.takeIf {
+            it.isNotEmpty()
+        } ?: Constants.STATUS_BAR_ICONS_DEFAULT).toTypedArray()
+    }
+
     override fun onHook() {
-        hasEnable(IconTurner.SWAP_MOBILE_WIFI) {
-            val reorderedSlots = mutableListOf(
-                "wifi",
-                "demo_wifi",
-                "airplane",
-                "hd",
-                "mobile",
-                "demo_mobile",
-                "no_sim"
-            )
-            val targetClass = "com.android.systemui.statusbar.phone.ui.StatusBarIconList".toClassOrNull() ?:
-            "com.android.systemui.statusbar.phone.StatusBarIconList".toClassOrNull()
-            targetClass?.apply {
-                constructor {
-                    paramCount = 1
-                }.hook {
-                    before {
-                        val isRightController = "StatusBarIconList" == this.instance.javaClass.simpleName
-                        if (isRightController) {
-                            val allStatusIcons = this.args(0).array<String>().toMutableList()
-                            var startIndex = allStatusIcons.indexOf("airplane")
-                            val endIndex = allStatusIcons.indexOf("demo_wifi") + 1
-                            allStatusIcons.removeAll(allStatusIcons.subList(startIndex, endIndex))
-                            startIndex = allStatusIcons.indexOf("phone") + 1
-                            allStatusIcons.addAll(startIndex, reorderedSlots)
-                            this.args(0).set(allStatusIcons.toTypedArray<String>())
-                        }
+        if (mode == 0) return
+        "com.android.systemui.statusbar.phone.ui.StatusBarIconList".toClassOrNull()?.apply {
+            resolve().firstConstructorOrNull {
+                parameters(Array<String>::class)
+            }?.hook {
+                before {
+                    val slots = this.args(0).array<String>()
+                    YLog.info(slots.joinToString())
+                    if (mode == 1) {
+                        this.args(0).set(Constants.STATUS_BAR_ICONS_SWAP.toTypedArray())
+                    } else if (mode == 2) {
+                        this.args(0).set(slotsCustom)
                     }
                 }
             }
         }
-
     }
 }

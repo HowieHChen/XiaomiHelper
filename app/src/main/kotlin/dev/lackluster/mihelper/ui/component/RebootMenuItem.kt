@@ -51,10 +51,13 @@ fun RebootMenuItem(
         mode = AlertDialogMode.NegativeAndPositive,
         onPositiveButton = {
             try {
-                if (appPkg == Scope.ANDROID) {
-                    ShellUtils.tryExec("/system/bin/sync;/system/bin/svc power reboot || reboot", useRoot = true, checkSuccess = true)
-                } else {
-                    ShellUtils.tryExec("killall $appPkg", useRoot = true, checkSuccess = true)
+                when (appPkg) {
+                    Scope.ANDROID -> {
+                        ShellUtils.tryExec("/system/bin/sync;/system/bin/svc power reboot || reboot", useRoot = true, checkSuccess = true)
+                    }
+                    else -> {
+                        ShellUtils.tryExec("killall $appPkg", useRoot = true, checkSuccess = true)
+                    }
                 }
                 context.let {
                     makeText(

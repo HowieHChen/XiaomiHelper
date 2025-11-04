@@ -31,13 +31,11 @@ object AllowMoreFreeform : YukiBaseHooker() {
     override fun onHook() {
         hasEnable(Pref.Key.Android.ALLOW_MORE_FREEFORM) {
             "com.android.server.wm.MiuiFreeFormStackDisplayStrategy".toClassOrNull()?.apply {
-                resolve()
-                    .firstMethodOrNull {
-                        name = "getMaxMiuiFreeFormStackCount"
-                    }
-                    ?.hook {
-                        replaceTo(255)
-                    }
+                resolve().firstMethodOrNull {
+                    name = "getMaxMiuiFreeFormStackCount"
+                }?.hook {
+                    replaceTo(255)
+                }
             }
         }
     }

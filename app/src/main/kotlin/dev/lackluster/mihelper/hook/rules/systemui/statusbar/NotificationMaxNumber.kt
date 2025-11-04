@@ -20,46 +20,28 @@
 
 package dev.lackluster.mihelper.hook.rules.systemui.statusbar
 
+import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.constructor
-import com.highcapable.yukihookapi.hook.factory.field
-import com.highcapable.yukihookapi.hook.factory.method
 import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.KotlinFlowHelper.MutableStateFlow
+import dev.lackluster.mihelper.hook.rules.systemui.compat.MutableStateFlowCompat
 import dev.lackluster.mihelper.utils.Prefs
 import dev.lackluster.mihelper.utils.factory.hasEnable
 
 
 object NotificationMaxNumber : YukiBaseHooker() {
-    private val maxIcon by lazy {
-        Prefs.getInt(Pref.Key.SystemUI.StatusBar.NOTIFICATION_COUNT_ICON, 3)
-    }
-    private val notificationIconObserverClass by lazy {
-        "com.android.systemui.statusbar.policy.NotificationIconObserver".toClass()
-    }
+    private val maxIcon = Prefs.getInt(Pref.Key.SystemUI.StatusBar.NOTIFICATION_COUNT_ICON, 3)
 
     override fun onHook() {
         hasEnable(Pref.Key.SystemUI.StatusBar.NOTIFICATION_COUNT) {
-            val mMaxFiled = notificationIconObserverClass.field {
-                name = "mMax"
-                type = "kotlinx.coroutines.flow.StateFlowImpl"
-            }.remedys {
-                field {
+            "com.android.systemui.statusbar.policy.NotificationIconObserver".toClassOrNull()?.apply {
+                val maxIconFlow = resolve().firstFieldOrNull {
                     name = "maxIconFlow"
-                    type = "kotlinx.coroutines.flow.Flow"
                 }
-            }.give()
-            if (mMaxFiled != null) {
-                notificationIconObserverClass.constructor().hookAll {
+                resolve().firstConstructorOrNull()?.hook {
                     after {
-                        mMaxFiled.set(this.instance, MutableStateFlow(maxIcon as Int?))
-                    }
-                }
-                "com.android.systemui.statusbar.policy.NotificationIconObserver\$notificationIconObserver$1".toClassOrNull()?.apply {
-                    method {
-                        name = "onChange"
-                    }.hook {
-                        intercept()
+                        maxIconFlow?.copy()?.of(this.instance)?.set(
+                            MutableStateFlowCompat(maxIcon).toReadonlyStateFlow()
+                        )
                     }
                 }
             }

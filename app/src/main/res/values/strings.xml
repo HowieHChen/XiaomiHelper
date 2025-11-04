@@ -42,6 +42,8 @@
     <string name="page_disable_fixed_orientation" translatable="false">@string/android_rotation_disable_fixed_orientation_scope</string>
     <string name="page_status_bar_clock">Clock</string>
     <string name="page_status_bar_icon_tuner">Icon tuner</string>
+    <string name="page_status_bar_icon_detail">Icon customizer</string>
+    <string name="page_status_bar_icon_order">Customize icon order</string>
     <string name="page_status_bar_font">Font</string>
     <string name="page_media_control_style">Media control style</string>
     <string name="page_home_refactor" translatable="false">@string/home_exclusive_refactor</string>
@@ -203,8 +205,14 @@
     <string name="systemui_statusbar_icon" translatable="false">@string/page_status_bar_icon_tuner</string>
     <string name="systemui_statusbar_font" translatable="false">@string/page_status_bar_font</string>
     <string name="systemui_statusbar_tap_to_sleep" translatable="false">@string/common_tap_sleep</string>
-    <string name="systemui_statusbar_disable_smart_dark">Disable Smart dark</string>
-    <string name="systemui_statusbar_disable_smart_dark_tips">The Smart dark feature makes the status bar ignore the colors specified by the app and allows the sampling of the area to change color automatically when in Dark mode. Disable this feature to restore the default behavior of Android.</string>
+    <string name="systemui_statusbar_region_sampling">Region sampling</string>
+    <string name="systemui_statusbar_region_sampling_tips">Samples the status bar area and adjusts light/dark mode based on background color</string>
+    <string name="systemui_statusbar_region_sampling_def" translatable="false">@string/common_default</string>
+    <string name="systemui_statusbar_region_sampling_def_tips">Enabled in dark mode only</string>
+    <string name="systemui_statusbar_region_sampling_enable">Force enable</string>
+    <string name="systemui_statusbar_region_sampling_enable_tips">Always enabled; may cause frequent status bar flickering.</string>
+    <string name="systemui_statusbar_region_sampling_disable">Force disable</string>
+    <string name="systemui_statusbar_region_sampling_disable_tips">Always disabled; may cause incorrect status bar contrast in apps with forced dark mode.</string>
     <string name="ui_title_systemui_lock_screen">Lock screen</string>
     <string name="systemui_lock_hide_unlock_tip">Hide unlock request at the bottom of the screen</string>
     <string name="systemui_lock_hide_disturb">Hide Do Not Disturb mode resident notifications</string>
@@ -215,10 +223,12 @@
     <string name="systemui_lock_block_editor_tips">You can edit the Lock screen in Settings > Personalization</string>
     <string name="systemui_lock_flashlight_on">Turn on the flashlight automatically</string>
     <string name="systemui_lock_flashlight_on_tips">Automatically turn on the flashlight when opening the flashlight adjustment interface from the Lock screen shortcut.</string>
-    <string name="systemui_lock_carrier_text">Status bar carrier label</string>
-    <string name="systemui_lock_carrier_text_default">Default (invisible)</string>
-    <string name="systemui_lock_carrier_text_carrier">Carrier label</string>
-    <string name="systemui_lock_carrier_text_clock">Clock</string>
+    <string name="systemui_lock_keep_clock_container">Always show the start of the status bar</string>
+    <string name="systemui_lock_keep_clock_container_tips">Always show the left side of the status bar (or right side in RTL), usually the carrier label. This view is hidden by default during AOD.</string>
+    <string name="systemui_lock_hide_next_alarm">Hide next alarm</string>
+    <string name="systemui_lock_hide_next_alarm_tips">Hide the next alarm time indicator at the start of the status bar</string>
+    <string name="systemui_lock_hide_carrier_one" translatable="false">@string/systemui_control_hide_carrier_one</string>
+    <string name="systemui_lock_hide_carrier_two" translatable="false">@string/systemui_control_hide_carrier_two</string>
     <string name="ui_title_systemui_notification_center">Notification shade</string>
     <string name="systemui_notif_redirect_settings">Redirect notification settings</string>
     <string name="systemui_notif_redirect_settings_tips">When you open the notification settings, it navigates to the corresponding notification channel settings instead of the app notification settings.</string>
@@ -227,6 +237,7 @@
     <string name="systemui_notif_redirect_dialog_negative_default">App settings</string>
     <string name="systemui_notif_redirect_dialog_positive_default">Channel settings</string>
     <string name="systemui_notif_disable_whitelist">Disable notification whitelist</string>
+    <string name="systemui_notif_disable_whitelist_tips">Too many notifications may cause lag on the lock screen</string>
     <string name="systemui_notif_freeform">Allow most notifications to open in a small window</string>
     <string name="systemui_notif_freeform_tips">Pull down notifications to open small windows. Some notifications pushed via Mi Push may not be supported.</string>
     <string name="systemui_notif_clock_color_fix">Fix clock color anomaly in animation</string>
@@ -244,6 +255,16 @@
     <string name="systemui_notif_expand_notif_first_tips">Auto-expand the first notification if it\'s ungrouped</string>
     <string name="systemui_notif_expand_notif_ungrouped">Ungrouped</string>
     <string name="systemui_notif_expand_notif_ungrouped_tips">Always expand ungrouped notifications</string>
+    <string name="systemui_notif_expand_ignore_focus">Ignore Spotlight notification</string>
+    <string name="systemui_notif_expand_ignore_focus_tips">Ignore Spotlight notification when expanding the first notification</string>
+    <string name="systemui_notif_lr_opt">Optimize layout and ranking</string>
+    <string name="systemui_notif_lr_opt_tips">Modify the layout of the notification list and the ranking rules for notifications. Recommended when using Android-style notifications.</string>
+    <string name="systemui_notif_lr_hide_section_header">Hide section header</string>
+    <string name="systemui_notif_lr_hide_section_header_tips">When there is a MessageStyle notification, it is usually pinned to the top, and a small dot (section header) appears below it.</string>
+    <string name="systemui_notif_lr_hide_section_gap">Hide section spacing</string>
+    <string name="systemui_notif_lr_hide_section_gap_tips">The spacing between the media control panel and the next notification differs from the spacing between other notifications because the media panel and other notifications belong to separate sections, and the system adds extra section spacing.</string>
+    <string name="systemui_notif_lr_rerank">Re-rank notifications</string>
+    <string name="systemui_notif_lr_rerank_tips">Re-rank notifications and reorder them in the following sequence: media control panel, system alerts, Spotlight notifications, MessageStyle notifications, and other notifications.</string>
     <string name="systemui_notif_miuix_expand_btn">Miuix style expand button</string>
     <string name="systemui_notif_miuix_expand_btn_tips">Replace the expand button of Android-style notifications with Miuix button</string>
     <string name="ui_title_systemui_control_center">Control center</string>
@@ -251,10 +272,6 @@
     <string name="systemui_control_hide_carrier_two">Hide carrier label for SIM card 2</string>
     <string name="systemui_control_hide_carrier_hd">Hide HD</string>
     <string name="systemui_control_hide_carrier_hd_tips">Hide the HD icon next to the carrier label</string>
-    <string name="systemui_control_battery_percent">Always show battery percentage</string>
-    <string name="systemui_control_battery_percent_tips">Always display the battery percentage in the control center, regardless of the battery indicator style preference.</string>
-    <string name="systemui_control_battery_percent_anim">Fix shared element transition effect</string>
-    <string name="systemui_control_battery_percent_anim_tips">Enabling \"Always show battery percentage\" might subtly affect the visual transition of shared elements when you open the control center. While this effect is often hard to notice, you can enable this option if it bothers you.</string>
     <string name="ui_title_systemui_others" translatable="false">@string/common_others</string>
     <string name="systemui_others_monet_overlay">Customize theme color</string>
     <string name="systemui_others_monet_overlay_tips">Customize theme colors instead of fetching colors from system wallpaper</string>
@@ -622,24 +639,19 @@
     <string name="font_sb_clock_weight">Font weight of clock</string>
     <string name="font_sb_focus">Focus notification</string>
     <string name="font_sb_focus_weight">Font weight of focus notification</string>
-    <string name="font_sb_bat_pct_out">Battery percentage (outside)</string>
-    <string name="font_sb_bat_pct_out_weight">Font weight of battery percentage (outside)</string>
-    <string name="font_sb_bat_pct_mark">Battery percentage symbol</string>
-    <string name="font_sb_bat_pct_mark_weight">Font weight of battery percentage symbol</string>
+
     <string name="ui_title_font_icon" translatable="false">@string/systemui_statusbar_icon</string>
-    <string name="font_icon_bat_pct_in">Battery percentage (inside)</string>
-    <string name="font_icon_bat_pct_in_weight">Font weight of battery percentage (inside)</string>
+
     <string name="font_icon_net_speed_num">Numbers of network speed</string>
     <string name="font_icon_net_speed_num_weight">Font weight of network speed (numbers)</string>
     <string name="font_icon_net_speed_unit">Unit text of network speed</string>
     <string name="font_icon_net_speed_unit_weight">Font weight of network speed (unit)</string>
-    <string name="font_icon_mobile_type">Mobile network type</string>
-    <string name="font_icon_mobile_type_weight">Font weight of mobile network type</string>
+
     <string name="ui_title_font_notification" translatable="false">@string/ui_title_systemui_notification_center</string>
     <string name="font_notif_clock">Clock (notification shade)</string>
     <string name="font_notif_clock_weight">Font weight of clock (notification shade)</string>
     <string name="ui_title_font_lockscreen" translatable="false">@string/ui_title_systemui_lock_screen</string>
-    <string name="font_lockscreen_carrier" translatable="false">@string/systemui_lock_carrier_text_carrier</string>
+    <string name="font_lockscreen_carrier" translatable="false">systemui_lock_carrier_text_carrier</string>
     <string name="font_lockscreen_carrier_weight">Font weight of carrier label</string>
     <!-- IconTunerPage -->
     <string name="icon_tuner_hide_selection_default">Default</string>
@@ -649,81 +661,144 @@
     <string name="icon_tuner_hide_selection_hidden">Invisible</string>
     <string name="icon_tuner_hide_mobile_wifi_warning">Strongly recommend that don\'t hide it!</string>
     <string name="ui_title_icon_tuner_general" translatable="false">@string/common_general</string>
-    <string name="icon_tuner_hint_ignore_sys_hide">Starting from HyperOS 2.0.200, users can control the display of status bar icons on the \"Customize toggle display\" page in Settings. However, this feature conflicts with the settings on this page, causing unexpected behavior. Therefore, it\'s strongly recommended to enable the \"Ignore system settings\" option below and manage all status bar icons directly on this page.</string>
+    <string name="icon_tuner_hint_ignore_sys_hide">Starting from HyperOS 2.0.200, users can control the display of status bar icons on the \"Customize icon display\" page in Settings. However, this feature conflicts with the settings on this page, causing unexpected behavior. Therefore, it\'s strongly recommended to enable the \"Ignore system settings\" option below and manage all status bar icons directly on this page.</string>
     <string name="icon_tuner_general_ignore_sys_hide">Ignore system settings</string>
-    <string name="icon_tuner_general_ignore_sys_hide_tips">Ignore the system setting for \"Customize toggle display\"</string>
-    <string name="ui_title_icon_tuner_mobile">Mobile network</string>
-    <string name="icon_tuner_mobile_mobile">Mobile network icon</string>
-    <string name="icon_tuner_mobile_hide_sim_one">Hide the mobile network icon for SIM card 1</string>
-    <string name="icon_tuner_mobile_hide_sim_two">Hide the mobile network icon for SIM card 2</string>
-    <string name="icon_tuner_mobile_no_sim">No SIM card icon</string>
-    <string name="icon_tuner_mobile_hide_mobile_activity">Hide mobile network activity icon</string>
-    <string name="icon_tuner_mobile_hide_mobile_type">Hide mobile network type icon</string>
-    <string name="icon_tuner_mobile_hd_new">New HD call icon</string>
-    <string name="icon_tuner_mobile_hide_hd_small">Hide the small HD call icon</string>
-    <string name="icon_tuner_mobile_hide_roam">Hide Roaming icon</string>
-    <string name="icon_tuner_mobile_hide_roam_small">Hide the small Roaming icon</string>
-    <string name="icon_tuner_mobile_hide_volte">Hide VoLTE icon</string>
-    <string name="icon_tuner_mobile_hide_vowifi">Hide VoWiFi icon</string>
-    <string name="icon_tuner_mobile_hide_hd_large">Hide the large HD call icon</string>
-    <string name="icon_tuner_mobile_hide_hd_no_service">Hide HD call no service icon</string>
-    <string name="ui_title_icon_tuner_wifi">Wi-Fi</string>
-    <string name="icon_tuner_wifi_wifi">Wi-Fi icon</string>
-    <string name="icon_tuner_wifi_hide_wifi_activity">Hide Wi-Fi activity icon</string>
-    <string name="icon_tuner_wifi_hide_wifi_type">Hide Wi-Fi standard icon</string>
-    <string name="icon_tuner_wifi_hotspot">Hotspot icon</string>
-    <string name="ui_title_icon_tuner_battery">Battery</string>
-    <string name="icon_tuner_battery_style">Battery indicator</string>
-    <string name="icon_tuner_battery_style_default" translatable="false">@string/icon_tuner_hide_selection_default</string>
-    <string name="icon_tuner_battery_style_both">Icon &amp; percentage</string>
-    <string name="icon_tuner_battery_style_icon">Icon only</string>
-    <string name="icon_tuner_battery_style_percentage">Percentage only</string>
-    <string name="icon_tuner_battery_style_hidden" translatable="false">@string/icon_tuner_hide_selection_hidden</string>
-    <string name="icon_tuner_battery_percentage_symbol_style">Battery percentage symbol</string>
-    <string name="icon_tuner_battery_percentage_symbol_style_default" translatable="false">@string/icon_tuner_hide_selection_default</string>
-    <string name="icon_tuner_battery_percentage_symbol_style_uni">Number style</string>
-    <string name="icon_tuner_battery_percentage_symbol_style_hidden" translatable="false">@string/icon_tuner_hide_selection_hidden</string>
-    <string name="icon_tuner_battery_hide_battery">Hide battery icon</string>
-    <string name="icon_tuner_battery_hide_battery_mark">Hide battery percentage symbol</string>
-    <string name="icon_tuner_battery_hide_charge">Hide charging icon</string>
-    <string name="icon_tuner_battery_swap_battery_percent">Swap the battery icon and battery percentage</string>
-    <string name="icon_tuner_battery_layout_custom">Customize the padding of the battery icon</string>
-    <string name="icon_tuner_battery_padding_left">Left padding</string>
-    <string name="icon_tuner_battery_padding_right">Right padding</string>
-    <string name="icon_tuner_battery_uni_battery_mark">Make the battery percentage symbol the same text size as the number</string>
-    <string name="icon_tuner_battery_battery_percent_size">Customize battery percentage text size</string>
-    <string name="icon_tuner_battery_percent_size">Battery percentage text font size</string>
-    <string name="icon_tuner_battery_percent_size_default">(When the value is 0 it will not change the battery percentage text size)</string>
-    <string name="icon_tuner_battery_percent_font_tnum" translatable="false">@string/clock_font_tnum</string>
-    <string name="icon_tuner_battery_percent_font_tnum_tips" translatable="false">@string/clock_font_tnum_tips</string>
+    <string name="icon_tuner_general_ignore_sys_hide_tips">Ignore the system setting for \"Customize icon display\"</string>
+    <string name="icon_tuner_general_detail" translatable="false">@string/page_status_bar_icon_detail</string>
+    <string name="icon_tuner_general_order">Icon order</string>
+    <string name="icon_tuner_general_order_tips">Modify icon positions by reordering their index in the display list</string>
+    <string name="icon_tuner_general_order_default" translatable="false">@string/common_default</string>
+    <string name="icon_tuner_general_order_swap">Swap mobile network and WLAN</string>
+    <string name="icon_tuner_general_order_custom" translatable="false">@string/common_custom</string>
+    <string name="icon_tuner_general_order_custom_entry" translatable="false">@string/page_status_bar_icon_order</string>
+    <string name="ui_title_icon_tuner_network">Network</string>
+    <string name="icon_tuner_network_mobile">Mobile network</string>
+    <string name="icon_tuner_network_no_sim">No SIM card</string>
+    <string name="icon_tuner_network_airplane">Airplane mode</string>
+    <string name="icon_tuner_network_wifi">WLAN</string>
+    <string name="icon_tuner_network_hotspot">Hotspot</string>
+    <string name="icon_tuner_network_vpn">VPN</string>
+    <string name="icon_tuner_network_net_speed">Connection speed</string>
     <string name="ui_title_icon_tuner_connectivity">Connectivity</string>
-    <string name="icon_tuner_connect_flight_mode">Airplane mode icon</string>
-    <string name="icon_tuner_connect_gps">Location icon</string>
-    <string name="icon_tuner_connect_bluetooth">Bluetooth icon</string>
-    <string name="icon_tuner_connect_bluetooth_battery">Bluetooth device battery capacity</string>
-    <string name="icon_tuner_connect_nfc">NFC icon</string>
-    <string name="icon_tuner_connect_vpn">VPN icon</string>
-    <string name="icon_tuner_connect_net_speed">Network speed</string>
+    <string name="icon_tuner_connect_bluetooth">Bluetooth</string>
+    <string name="icon_tuner_connect_bluetooth_battery">Bluetooth device battery</string>
+    <string name="icon_tuner_connect_handle_battery">Camera grip battery</string>
+    <string name="icon_tuner_connect_nfc">NFC</string>
+    <string name="icon_tuner_connect_location">Location services</string>
     <string name="ui_title_icon_tuner_device">Device</string>
-    <string name="icon_tuner_device_camera">Camera</string>
-    <string name="icon_tuner_device_car">Vehicle</string>
-    <string name="icon_tuner_device_glasses">Glasses</string>
+    <string name="icon_tuner_device_wireless_headset">Earphones</string>
+    <string name="icon_tuner_device_phone">Phone</string>
     <string name="icon_tuner_device_pad">Tablet</string>
     <string name="icon_tuner_device_pc">Computer</string>
-    <string name="icon_tuner_device_phone">Phone</string>
-    <string name="icon_tuner_device_sound_box">Sound box</string>
-    <string name="icon_tuner_device_sound_box_group">Sound box group</string>
-    <string name="icon_tuner_device_sound_box_screen">Sound box with screen</string>
-    <string name="icon_tuner_device_stereo">Sound box group stereo</string>
+    <string name="icon_tuner_device_sound_box_group">Whole-house playback</string>
+    <string name="icon_tuner_device_stereo">Stereo</string>
+    <string name="icon_tuner_device_sound_box_screen">Speaker with screen</string>
+    <string name="icon_tuner_device_sound_box">Speaker</string>
     <string name="icon_tuner_device_tv">TV</string>
-    <string name="icon_tuner_device_wireless_headset">Wireless headset</string>
+    <string name="icon_tuner_device_glasses">Glasses</string>
+    <string name="icon_tuner_device_car">Vehicle</string>
+    <string name="icon_tuner_device_camera">Camera</string>
+    <string name="icon_tuner_device_dist_compute">Computing support</string>
     <string name="ui_title_icon_tuner_other" translatable="false">@string/common_others</string>
-    <string name="icon_tuner_other_hide_privacy">Hide privacy notice icon</string>
-    <string name="icon_tuner_other_swap_mobile_wifi">Swap mobile network icon and Wi-Fi icon</string>
-    <string name="icon_tuner_other_alarm">Alarm icon</string>
-    <string name="icon_tuner_other_headset">Headset icon</string>
-    <string name="icon_tuner_other_volume">Volume icon</string>
-    <string name="icon_tuner_other_zen">Do Not Disturb mode icon</string>
+    <string name="icon_tuner_other_headset">Headset</string>
+    <string name="icon_tuner_other_alarm">Alarm</string>
+    <string name="icon_tuner_other_zen">DND</string>
+    <string name="icon_tuner_other_volume">Silent</string>
+    <string name="icon_tuner_other_second_space">Second space</string>
+    <string name="icon_tuner_other_hide_privacy">Hide privacy notice</string>
+    <string name="icon_tuner_position_reset_default">Reset to default</string>
+    <string name="ui_title_icon_tuner_order" translatable="false">@string/page_status_bar_icon_order</string>
+    <string name="icon_tuner_position_demo_mobile">Mobile network in demo mode</string>
+    <string name="icon_tuner_position_demo_wifi">WLAN in demo mode</string>
+    <!-- IconDetailPage -->
+    <string name="ui_title_icon_detail_cellular">Cellular</string>
+    <string name="ui_title_icon_detail_wifi">WLAN</string>
+    <string name="ui_title_icon_detail_battery">Battery</string>
+    <string name="ui_title_icon_detail_net_speed">Speed</string>
+    <string name="ui_title_icon_detail_font_weight">Font weight</string>
+    <string name="ui_title_icon_detail_other" translatable="false">@string/common_others</string>
+    <!-- IconDetailPage - Mobile network -->
+    <string name="icon_detail_cellular_hide_sim_auto">Smart signal icon hiding</string>
+    <string name="icon_detail_cellular_hide_sim_auto_tips">Follows the \"Data SIM\" setting and only shows the signal icon for the data SIM</string>
+    <string name="icon_detail_cellular_hide_sim_one">Hide SIM 1 signal icon</string>
+    <string name="icon_detail_cellular_hide_sim_two">Hide SIM 2 signal icon</string>
+    <string name="icon_detail_cellular_hide_activity">Hide mobile network activity</string>
+    <string name="icon_detail_cellular_hide_type">Hide mobile network type</string>
+    <string name="icon_detail_cellular_hide_roam_global">Disable roaming info display</string>
+    <string name="icon_detail_cellular_hide_roam_global_tips">Suppresses roaming status icon to appear non-roaming</string>
+    <string name="icon_detail_cellular_hide_roam">Hide roaming icon</string>
+    <string name="icon_detail_cellular_hide_roam_small">Hide small roaming icon</string>
+    <string name="ui_title_icon_detail_cellular_type">Mobile network type</string>
+    <string name="icon_detail_cellular_single">Use separate network type icon</string>
+    <string name="icon_detail_cellular_single_swap">Align separate network type icon to the right</string>
+    <string name="icon_detail_cellular_single_swap_tips">Swap positions of separate network type icon and signal icon</string>
+    <string name="icon_detail_cellular_single_size">Customize font size (separate network type icon)</string>
+    <string name="icon_detail_cellular_single_size_value">Font size (separate network type icon)</string>
+    <string name="icon_detail_cellular_type_map">Customize network type text</string>
+    <string name="icon_detail_cellular_type_map_value">Network type text</string>
+    <string name="icon_detail_cellular_type_map_msg">Use commas to separate values. \nEnter 1 item to apply the same text to all network types, or 15 items to customize each type individually. \n\nRefer to the default system mapping below for reference:\n\n,G,E,3G,H,H+,4G,4G+,,LTE,5G,5G,5G+,5GA,5G</string>
+    <string name="icon_detail_cellular_fw_type">Customize font weight (mobile network type)</string>
+    <string name="icon_detail_cellular_fw_type_weight">Font weight (mobile network type)</string>
+    <string name="icon_detail_cellular_fw_type_single">Customize font weight (separate network type icon)</string>
+    <string name="icon_detail_cellular_fw_type_single_weight">Font weight (separate network type icon)</string>
+    <string name="icon_detail_cellular_hide_vowifi">Hide VoWiFi icon</string>
+    <string name="icon_detail_cellular_hide_volte">Hide VoLTE icon</string>
+    <string name="icon_detail_cellular_hide_volte_no_service">Hide VoLTE no-service icon</string>
+    <string name="icon_detail_cellular_hide_speech_hd">Hide Speech HD icon</string>
+    <!-- IconDetailPage - WLAN -->
+    <string name="icon_detail_wifi_hide_standard">Hide WLAN standard</string>
+    <string name="icon_detail_wifi_hide_activity">Hide WLAN activity</string>
+    <string name="icon_detail_wifi_right_activity">Align WLAN activity to the right</string>
+    <!-- IconDetailPage - Battery -->
+    <string name="icon_detail_battery_bar_style">Battery indicator (Status bar)</string>
+    <string name="icon_detail_battery_cc_style">Battery indicator (Control center)</string>
+    <string name="icon_detail_battery_style_default" translatable="false">@string/icon_tuner_hide_selection_default</string>
+    <string name="icon_detail_battery_style_default_tips">Follow system settings</string>
+    <string name="icon_detail_battery_style_icon_only">Icon only</string>
+    <string name="icon_detail_battery_style_icon_only_tips">Graphical</string>
+    <string name="icon_detail_battery_style_text_in">Percentage inside</string>
+    <string name="icon_detail_battery_style_text_in_tips">Percentage (in the icon)</string>
+    <string name="icon_detail_battery_style_line">Top bar</string>
+    <string name="icon_detail_battery_style_line_tips">Fallback to icon only if unsupported</string>
+    <string name="icon_detail_battery_style_text_out">Percentage outside</string>
+    <string name="icon_detail_battery_style_text_out_tips">Percentage (next to the icon)</string>
+    <string name="icon_detail_battery_style_text_only">Percentage only</string>
+    <string name="icon_detail_battery_style_text_only_tips">Percentage (text only)</string>
+    <string name="icon_detail_battery_style_hidden" translatable="false">@string/icon_tuner_hide_selection_hidden</string>
+    <string name="icon_detail_battery_style_hidden_tips">Fully hidden (including charging icon)</string>
+    <string name="icon_detail_battery_layout_custom">Customize icon horizontal padding</string>
+    <string name="icon_detail_battery_padding_start">Start padding</string>
+    <string name="icon_detail_battery_padding_end">End padding</string>
+    <string name="icon_detail_battery_hide_charge">Hide charging icon</string>
+    <string name="icon_detail_battery_hide_charge_tips">Only applies to Percentage (in the icon) and Percentage (text only) styles</string>
+    <string name="ui_title_icon_detail_batter_percentage">Percentage</string>
+    <string name="icon_detail_battery_percent_mark_style">Percentage symbol style</string>
+    <string name="icon_detail_battery_percent_mark_style_default" translatable="false">@string/icon_tuner_hide_selection_default</string>
+    <string name="icon_detail_battery_percent_mark_style_uni">Match number size</string>
+    <string name="icon_detail_battery_percent_mark_style_hidden" translatable="false">@string/icon_tuner_hide_selection_hidden</string>
+    <string name="icon_detail_battery_percent_out_size">Customize font size (Percentage outside)</string>
+    <string name="icon_detail_battery_percent_out_size_value">Font size (Percentage outside)</string>
+    <string name="icon_detail_battery_percent_in_size">Customize font size (Percentage inside)</string>
+    <string name="icon_detail_battery_percent_in_size_value">Font size (Percentage inside)</string>
+    <string name="icon_detail_battery_fw_percent_out">Customize font weight (Percentage outside)</string>
+    <string name="icon_detail_battery_fw_percent_out_weight">Font weight (Percentage outside)</string>
+    <string name="icon_detail_battery_fw_percent_mark">Customize font weight (Percentage symbol)</string>
+    <string name="icon_detail_battery_fw_percent_mark_weight">Font weight (Percentage symbol)</string>
+    <string name="icon_detail_battery_fw_percent_in">Customize font weight (Percentage inside)</string>
+    <string name="icon_detail_battery_fw_percent_in_weight">Font weight (Percentage inside)</string>
+    <!-- IconDetailPage - Network Speed -->
+    <string name="icon_detail_net_speed_style">Connection speed style</string>
+    <string name="icon_detail_net_speed_style_default" translatable="false">@string/icon_tuner_hide_selection_default</string>
+    <string name="icon_detail_net_speed_style_separate">Split (plain text)</string>
+    <string name="icon_detail_net_speed_style_separate_arrow">Split (arrow)</string>
+    <string name="icon_detail_net_speed_style_separate_tri_filled">Split (filled triangle)</string>
+    <string name="icon_detail_net_speed_style_separate_tri_outline">Split (adaptive triangle)</string>
+    <string name="icon_detail_net_speed_fw_num">Customize font weight (Numeric)</string>
+    <string name="icon_detail_net_speed_fw_num_weight">Font weight (Numeric)</string>
+    <string name="icon_detail_net_speed_fw_unit">Customize font weight (Unit)</string>
+    <string name="icon_detail_net_speed_fw_unit_weight">Font weight (Unit)</string>
+    <string name="icon_detail_net_speed_fw_separate">Customize font weight</string>
+    <string name="icon_detail_net_speed_fw_separate_weight">Font weight</string>
     <!-- MediaControlStylePage -->
     <string name="ui_title_media_general" translatable="false">@string/common_general</string>
     <string name="media_general_unlock_action">Display all control icons</string>
@@ -824,7 +899,7 @@
     <string name="home_refactor_launch_show_tips">Don\'t hide the launcher view when in the recent tasks view</string>
     <string name="home_refactor_launch_scale">Launcher view zoom ratio</string>
     <string name="home_refactor_launch_scale_tips">Affects launcher view scaling in recent tasks view</string>
-    <string name="home_refactor_launch_minus_mode_def" translatable="false">@string/systemui_lock_carrier_text_default</string>
+    <string name="home_refactor_launch_minus_mode_def" translatable="false">systemui_lock_carrier_text_default</string>
     <string name="home_refactor_launch_minus_mode_visible" translatable="false">@string/icon_tuner_hide_selection_show_all</string>
     <string name="home_refactor_launch_minus_mode_overlap">Overlapping</string>
     <string name="ui_title_home_refactor_minus">Blur effect of Personal assistant background</string>

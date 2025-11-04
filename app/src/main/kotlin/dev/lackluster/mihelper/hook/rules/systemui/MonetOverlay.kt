@@ -23,12 +23,11 @@
 package dev.lackluster.mihelper.hook.rules.systemui
 
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.method
-import com.highcapable.yukihookapi.hook.type.java.IntType
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.Prefs
 import dev.lackluster.mihelper.utils.factory.hasEnable
 import androidx.core.graphics.toColorInt
+import com.highcapable.kavaref.KavaRef.Companion.resolve
 
 object MonetOverlay : YukiBaseHooker() {
     private val overlayColor by lazy {
@@ -42,10 +41,10 @@ object MonetOverlay : YukiBaseHooker() {
     override fun onHook() {
         hasEnable(Pref.Key.SystemUI.NotifCenter.MONET_OVERLAY) {
             "com.android.systemui.theme.ThemeOverlayController".toClassOrNull()?.apply {
-                method {
+                resolve().firstMethodOrNull {
                     name = "createOverlays"
-                    param(IntType)
-                }.hook {
+                    parameters(Int::class)
+                }?.hook {
                     before {
                         this.args(0).set(overlayColor)
                     }

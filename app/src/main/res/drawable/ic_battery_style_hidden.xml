@@ -3,7 +3,8 @@
     android:height="28dp"
     android:viewportWidth="74"
     android:viewportHeight="28">
-  <path
-      android:pathData="M0,0h74v28h-74z"
-      android:fillColor="@color/trans"/>
+  <group>
+    <clip-path
+        android:pathData="M0,0h74v28h-74z"/>
+  </group>
 </vector>

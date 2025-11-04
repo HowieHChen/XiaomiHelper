@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="foreground_dual_tone_full">#FFFFFFFF</color>
-    <color name="foreground_dual_tone_half">#4DFFFFFF</color>
-    <color name="ic_stat_sys_tint_fg">#FFFFFF</color>
-    <color name="ic_stat_sys_tint_fg_half">#666666</color>
+    <color name="foreground_dual_tone_full">#E6FFFFFF</color>
+    <color name="foreground_dual_tone_half">#5CFFFFFF</color>
+    <color name="ic_stat_sys_tint_fg">#EDEDED</color>
+    <color name="ic_stat_sys_tint_fg_half">#A1A1A1</color>
     <color name="ic_stat_sys_tint_bg">#474747</color>
     <color name="miuix_notification_btn_bg">#1AFFFFFF</color>
     <color name="miuix_notification_btn_fg">#B3FFFFFF</color>

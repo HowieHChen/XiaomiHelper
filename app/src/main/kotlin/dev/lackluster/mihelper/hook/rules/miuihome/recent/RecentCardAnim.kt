@@ -23,54 +23,51 @@ package dev.lackluster.mihelper.hook.rules.miuihome.recent
 import android.animation.ObjectAnimator
 import android.view.View
 import android.view.animation.Interpolator
+import com.highcapable.kavaref.KavaRef.Companion.resolve
+import com.highcapable.kavaref.condition.type.Modifiers
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.constructor
-import com.highcapable.yukihookapi.hook.factory.current
-import com.highcapable.yukihookapi.hook.factory.method
-import com.highcapable.yukihookapi.hook.type.android.ViewClass
-import com.highcapable.yukihookapi.hook.type.java.FloatType
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.factory.hasEnable
 import kotlin.math.abs
 
 object RecentCardAnim : YukiBaseHooker() {
+    private val metGetScreenHeight by lazy {
+        "com.miui.home.common.device.DeviceConfigs".toClass().resolve().firstMethod {
+            name = "getScreenHeight"
+            modifiers(Modifiers.STATIC)
+        }
+    }
+    private val ctorPhysicBasedInterpolator by lazy {
+        "com.miui.home.launcher.anim.PhysicBasedInterpolator".toClass().resolve().firstConstructor {
+            parameterCount = 2
+        }
+    }
+
     override fun onHook() {
         hasEnable(Pref.Key.MiuiHome.RECENT_CARD_ANIM) {
-            val swipeHelperForRecentsCls = "com.miui.home.recents.views.SwipeHelperForRecents".toClass()
-            val taskStackViewLayoutStyleHorizontalCls = "com.miui.home.recents.TaskStackViewLayoutStyleHorizontal".toClass()
-            val verticalSwipeCls = "com.miui.home.recents.views.VerticalSwipe".toClass()
-            val physicBasedInterpolatorClass = "com.miui.home.launcher.anim.PhysicBasedInterpolator".toClass().constructor {
-                paramCount = 2
-            }.get()
-            val getScreenHeightMethod = "com.miui.home.launcher.DeviceConfig".toClass().method {
-                name = "getScreenHeight"
-                modifiers { isStatic }
-            }.get()
-
-            swipeHelperForRecentsCls.apply {
-                method {
+            "com.miui.home.recents.views.SwipeHelperForRecents".toClassOrNull()?.apply {
+                val mCurrView = resolve().firstFieldOrNull {
+                    name = "mCurrView"
+                }
+                resolve().firstMethodOrNull {
                     name = "isScaleSmallEnoughForDismiss"
-                }.hook {
+                }?.hook {
                     replaceAny {
-                        val mCurrView = this.instance.current().field {
-                            name = "mCurrView"
-                            superClass()
-                        }.cast<View>()
-                        mCurrView?.let {
+                        mCurrView?.copy()?.of(this.instance)?.get<View>()?.let {
                             abs(it.translationY) > (it.measuredHeight * 0.8f)
                         } ?: false
                     }
                 }
             }
-            taskStackViewLayoutStyleHorizontalCls.apply {
-                method {
+            "com.miui.home.recents.TaskStackViewLayoutStyleHorizontal".toClassOrNull()?.apply {
+                resolve().firstMethodOrNull {
                     name = "createScaleDismissAnimation"
-                    param(ViewClass, FloatType)
-                }.hook {
+                    parameters(View::class, Float::class)
+                }?.hook {
                     replaceAny {
                         val view = this.args(0).any() as View
-                        val getScreenHeight = getScreenHeightMethod.int().toFloat()
-                        val physicBasedInterpolator = physicBasedInterpolatorClass.newInstance<Interpolator>(0.72f, 0.72f)
+                        val getScreenHeight = metGetScreenHeight.copy().invoke<Int>()?.toFloat() ?: 0.0f
+                        val physicBasedInterpolator = ctorPhysicBasedInterpolator.copy().createAsType<Interpolator>(0.72f, 0.72f)
                         ObjectAnimator.ofFloat(
                             view,
                             View.TRANSLATION_Y,
@@ -83,35 +80,39 @@ object RecentCardAnim : YukiBaseHooker() {
                     }
                 }
             }
-            verticalSwipeCls.apply {
-                constructor().hook {
+            "com.miui.home.recents.views.VerticalSwipe".toClassOrNull()?.apply {
+                val mCanLockTaskView = resolve().firstFieldOrNull {
+                    name = "mCanLockTaskView"
+                }
+                val mCurAlpha = resolve().firstFieldOrNull {
+                    name = "mCurAlpha"
+                }
+                val mCurScale = resolve().firstFieldOrNull {
+                    name = "mCurScale"
+                }
+                val mCurTransY = resolve().firstFieldOrNull {
+                    name = "mCurTransY"
+                }
+                resolve().firstConstructor().hook {
                     after {
-                        this.instance.current().field {
-                            name = "mCurAlpha"
-                        }.set(1.0f)
-                        this.instance.current().field {
-                            name = "mCurScale"
-                        }.set(1.0f)
+                        mCurAlpha?.copy()?.of(this.instance)?.set(1.0f)
+                        mCurScale?.copy()?.of(this.instance)?.set(1.0f)
                     }
                 }
-                method {
+                resolve().firstMethodOrNull {
                     name = "calculate"
-                    param(FloatType)
-                }.hook {
+                    parameters(Float::class)
+                }?.hook {
                     replaceUnit {
                         val f = this.args(0).float()
                         val transY: Float
                         if (f <= 0.0f) {
                             transY = f
                         } else {
-                            val mCanLockTaskView = this.instance.current().field {
-                                name = "mCanLockTaskView"
-                            }.boolean()
-                            transY = f / if (mCanLockTaskView) 3.0f else 6.0f
+                            val canLockTaskView = mCanLockTaskView?.copy()?.of(this.instance)?.get<Boolean>() == true
+                            transY = f / if (canLockTaskView) 3.0f else 6.0f
                         }
-                        this.instance.current().field {
-                            name = "mCurTransY"
-                        }.set(transY)
+                        mCurTransY?.copy()?.of(this.instance)?.set(transY)
                     }
                 }
             }

@@ -1,3 +1,23 @@
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
+ * This file is part of XiaomiHelper project
+ * Copyright (C) 2025 HowieHChen, howie.dev@outlook.com
+
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package dev.lackluster.mihelper.hook.rules.systemui.notif
 
 import android.annotation.SuppressLint
@@ -7,9 +27,8 @@ import android.graphics.drawable.Drawable
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.graphics.drawable.toDrawable
+import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.current
-import com.highcapable.yukihookapi.hook.factory.method
 import dev.lackluster.mihelper.BuildConfig
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.data.Pref
@@ -24,44 +43,45 @@ object MiuiXExpandButton : YukiBaseHooker() {
     override fun onHook() {
         hasEnable(Pref.Key.SystemUI.NotifCenter.MIUIX_EXPAND_BUTTON) {
             "com.android.internal.widget.NotificationExpandButton".toClassOrNull()?.apply {
-                method {
+                val mIconView = resolve().firstFieldOrNull {
+                    name = "mIconView"
+                }
+                val mPillDrawable = resolve().firstFieldOrNull {
+                    name = "mPillDrawable"
+                }
+                val mExpanded = resolve().firstFieldOrNull {
+                    name = "mExpanded"
+                }
+                resolve().firstMethodOrNull {
                     name = "onFinishInflate"
-                }.hook {
+                }?.hook {
                     after {
-                        val mIconView = this.instance.current().field {
-                            name = "mIconView"
-                        }.cast<ImageView>() ?: return@after
-                        this.instance.current().field {
-                            name = "mPillDrawable"
-                        }.set(Color.TRANSPARENT.toDrawable())
-                        (mIconView.parent as? ViewGroup)?.background = null
-                        mIconView.setPadding(0, 0, 0, 0)
+                        val iconView = mIconView?.copy()?.of(this.instance)?.get<ImageView>() ?: return@after
+                        mPillDrawable?.copy()?.of(this.instance)?.set(Color.TRANSPARENT.toDrawable())
+                        (iconView.parent as? ViewGroup)?.background = null
+                        iconView.setPadding(0, 0, 0, 0)
                         if (expandButtonSize == null || expand == null || shrink == null) {
-                            val context = mIconView.context.createPackageContext(BuildConfig.APPLICATION_ID, Context.CONTEXT_IGNORE_SECURITY)
+                            val context = iconView.context.createPackageContext(BuildConfig.APPLICATION_ID, Context.CONTEXT_IGNORE_SECURITY)
                             expand = context.getDrawable(R.drawable.miuix_notification_btn_expand)
                             shrink = context.getDrawable(R.drawable.miuix_notification_btn_shrink)
                             expandButtonSize = context.resources.getDimensionPixelSize(R.dimen.miuix_btn_size)
                         }
                         expandButtonSize?.let {
-                            mIconView.layoutParams = mIconView.layoutParams.apply {
+                            iconView.layoutParams = iconView.layoutParams.apply {
                                 width = it
                                 height = it
                             }
                         }
                     }
                 }
-                method {
+                resolve().firstMethodOrNull {
                     name = "updateExpandedState"
-                }.hook {
+                }?.hook {
                     before {
-                        val mExpanded = this.instance.current().field {
-                            name = "mExpanded"
-                        }.boolean()
-                        val mIconView = this.instance.current().field {
-                            name = "mIconView"
-                        }.cast<ImageView>()
-                        if (mIconView == null || shrink == null || expand == null) return@before
-                        mIconView.setImageDrawable(if (mExpanded) shrink else expand)
+                        val expanded = mExpanded?.copy()?.of(this.instance)?.get<Boolean>()
+                        val iconView = mIconView?.copy()?.of(this.instance)?.get<ImageView>()
+                        if (expanded == null || iconView == null || shrink == null || expand == null) return@before
+                        iconView.setImageDrawable(if (expanded) shrink else expand)
                         this.result = null
                     }
                 }

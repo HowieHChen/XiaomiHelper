@@ -23,10 +23,12 @@ import dev.lackluster.mihelper.utils.Device
 
 object MiuiHome : YukiBaseHooker() {
     override fun onHook() {
+        loadHooker(RecentCardAnim)
+        loadHooker(BackGestureHaptic)
+        return
         loadHooker(ResourcesUtils)
         loadHooker(DisableIconAnim)
         loadHooker(FolderAdaptIconSize)
-        loadHooker(BackGestureHaptic)
         loadHooker(DoubleTapToSleep)
         loadHooker(QuickSwitch)
         loadHooker(LineGesture)

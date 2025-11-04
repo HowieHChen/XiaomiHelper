@@ -80,6 +80,9 @@ fun Context.getResID(name: String, defType: String, pkg: String): Int {
     }
 }
 
+fun Number.dp2sp(context: Context) =
+    toFloat() * context.resources.displayMetrics.density / context.resources.displayMetrics.scaledDensity
+
 fun Context.jumpToAppDetailsSettings(pkg: String) {
     val packageURI = "package:${pkg}".toUri()
     val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, packageURI)

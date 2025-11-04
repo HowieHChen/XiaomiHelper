@@ -24,8 +24,8 @@ import android.content.Context
 import android.os.SystemClock
 import android.view.MotionEvent
 import android.view.ViewGroup
+import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.method
 import de.robv.android.xposed.XposedHelpers
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.factory.hasEnable
@@ -34,48 +34,49 @@ import kotlin.math.abs
 object StatusBarDoubleTapToSleep : YukiBaseHooker() {
     override fun onHook() {
         hasEnable(Pref.Key.SystemUI.StatusBar.DOUBLE_TAP_TO_SLEEP) {
-            "com.android.systemui.statusbar.phone.MiuiPhoneStatusBarView".toClass().method {
-                name = "onFinishInflate"
-            }.hook {
-                before {
-                    val view = this.instance as ViewGroup
-                    XposedHelpers.setAdditionalInstanceField(view, "currentTouchTime", 0L)
-                    XposedHelpers.setAdditionalInstanceField(view, "currentTouchX", 0f)
-                    XposedHelpers.setAdditionalInstanceField(view, "currentTouchY", 0f)
-                    view.setOnTouchListener { v, motionEvent ->
-                        if (motionEvent.action != MotionEvent.ACTION_DOWN) return@setOnTouchListener false
-                        var currentTouchTime = XposedHelpers.getAdditionalInstanceField(v, "currentTouchTime") as? Long ?: 0L
-                        var currentTouchX = XposedHelpers.getAdditionalInstanceField(v, "currentTouchX") as? Float ?: 0f
-                        var currentTouchY = XposedHelpers.getAdditionalInstanceField(v, "currentTouchY") as? Float ?: 0f
-                        val lastTouchTime = currentTouchTime
-                        val lastTouchX = currentTouchX
-                        val lastTouchY = currentTouchY
+            "com.android.systemui.statusbar.phone.MiuiPhoneStatusBarView".toClass()
+                .resolve().firstMethodOrNull {
+                    name = "onFinishInflate"
+                }?.hook {
+                    before {
+                        val view = this.instance<ViewGroup>()
+                        XposedHelpers.setAdditionalInstanceField(view, "currentTouchTime", 0L)
+                        XposedHelpers.setAdditionalInstanceField(view, "currentTouchX", 0f)
+                        XposedHelpers.setAdditionalInstanceField(view, "currentTouchY", 0f)
+                        view.setOnTouchListener { v, motionEvent ->
+                            if (motionEvent.action != MotionEvent.ACTION_DOWN) return@setOnTouchListener false
+                            var currentTouchTime = XposedHelpers.getAdditionalInstanceField(v, "currentTouchTime") as? Long ?: 0L
+                            var currentTouchX = XposedHelpers.getAdditionalInstanceField(v, "currentTouchX") as? Float ?: 0f
+                            var currentTouchY = XposedHelpers.getAdditionalInstanceField(v, "currentTouchY") as? Float ?: 0f
+                            val lastTouchTime = currentTouchTime
+                            val lastTouchX = currentTouchX
+                            val lastTouchY = currentTouchY
 
-                        currentTouchTime = System.currentTimeMillis()
-                        currentTouchX = motionEvent.x
-                        currentTouchY = motionEvent.y
+                            currentTouchTime = System.currentTimeMillis()
+                            currentTouchX = motionEvent.x
+                            currentTouchY = motionEvent.y
 
-                        if (currentTouchTime - lastTouchTime < 250L
-                            && abs(currentTouchX - lastTouchX) < 100f
-                            && abs(currentTouchY - lastTouchY) < 100f
-                        ) {
-                            XposedHelpers.callMethod(
-                                v.context.getSystemService(Context.POWER_SERVICE),
-                                "goToSleep",
-                                SystemClock.uptimeMillis()
-                            )
-                            currentTouchTime = 0L
-                            currentTouchX = 0f
-                            currentTouchY = 0f
+                            if (currentTouchTime - lastTouchTime < 250L
+                                && abs(currentTouchX - lastTouchX) < 100f
+                                && abs(currentTouchY - lastTouchY) < 100f
+                            ) {
+                                XposedHelpers.callMethod(
+                                    v.context.getSystemService(Context.POWER_SERVICE),
+                                    "goToSleep",
+                                    SystemClock.uptimeMillis()
+                                )
+                                currentTouchTime = 0L
+                                currentTouchX = 0f
+                                currentTouchY = 0f
+                            }
+                            XposedHelpers.setAdditionalInstanceField(v, "currentTouchTime", currentTouchTime)
+                            XposedHelpers.setAdditionalInstanceField(v, "currentTouchX", currentTouchX)
+                            XposedHelpers.setAdditionalInstanceField(v, "currentTouchY", currentTouchY)
+                            v.performClick()
+                            return@setOnTouchListener false
                         }
-                        XposedHelpers.setAdditionalInstanceField(v, "currentTouchTime", currentTouchTime)
-                        XposedHelpers.setAdditionalInstanceField(v, "currentTouchX", currentTouchX)
-                        XposedHelpers.setAdditionalInstanceField(v, "currentTouchY", currentTouchY)
-                        v.performClick()
-                        return@setOnTouchListener false
                     }
                 }
-            }
         }
     }
 }

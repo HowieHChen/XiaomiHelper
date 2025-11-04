@@ -40,36 +40,28 @@ object DarkModeForAll : YukiBaseHooker() {
     override fun onHook() {
         hasEnable(Pref.Key.Android.BLOCK_FORCE_DARK_WHITELIST, extraCondition = { !Device.isInternationalBuild }) {
             "com.android.server.ForceDarkAppListManager".toClass().apply {
-                resolve()
-                    .optional()
-                    .firstMethodOrNull {
-                        name = "getDarkModeAppList"
+                resolve().optional().firstMethodOrNull {
+                    name = "getDarkModeAppList"
+                }?.hook {
+                    before {
+                        i18nFiled.set(true)
                     }
-                    ?.hook {
-                        before {
-                            i18nFiled.set(true)
-                        }
-                        after {
-                            i18nFiled.set(Device.isInternationalBuild)
-                        }
+                    after {
+                        i18nFiled.set(Device.isInternationalBuild)
                     }
-                resolve()
-                    .optional()
-                    .firstMethodOrNull {
-                        name = "shouldShowInSettings"
+                }
+                resolve().optional().firstMethodOrNull {
+                    name = "shouldShowInSettings"
+                }?.hook {
+                    before {
+                        val info = this.args(0).cast<ApplicationInfo>()
+                        val isSystemApp = info?.asResolver()?.firstMethodOrNull {
+                            name = "isSystemApp"
+                            returnType = Boolean::class
+                        }?.invoke<Boolean>() ?: false
+                        this.result = !(info == null || isSystemApp || info.uid < 10000)
                     }
-                    ?.hook {
-                        before {
-                            val info = this.args(0).cast<ApplicationInfo>()
-                            val isSystemApp = info?.asResolver()
-                                ?.firstMethodOrNull {
-                                    name = "isSystemApp"
-                                    returnType = Boolean::class
-                                }
-                                ?.invoke<Boolean>() ?: false
-                            this.result = !(info == null || isSystemApp || info.uid < 10000)
-                        }
-                    }
+                }
             }
         }
     }
