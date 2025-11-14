@@ -6,6 +6,12 @@
     <color name="trans">#00000000</color>
     <color name="foreground_dual_tone_full">#BF000000</color>
     <color name="foreground_dual_tone_half">#4C000000</color>
+    <color name="ic_settings_color_blue">#FF3482FF</color>
+    <color name="ic_settings_color_gray">#FF8C9DB0</color>
+    <color name="ic_settings_color_green">#FF1DCD3A</color>
+    <color name="ic_settings_color_purple">#FF7767F9</color>
+    <color name="ic_settings_color_red">#FFFA382E</color>
+    <color name="ic_settings_color_yellow">#FFFFBB0F</color>
     <color name="ic_stat_sys_tint_fg">#393939</color>
     <color name="ic_stat_sys_tint_fg_half">#A1A1A1</color>
     <color name="ic_stat_sys_tint_bg">#E6E6E6</color>
