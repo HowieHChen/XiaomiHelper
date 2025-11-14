@@ -21,6 +21,9 @@ object Constants {
     const val UI_MODE_TYPE_SCALE_170 = 8 // 1.7f
     const val UI_MODE_TYPE_SCALE_200 = 9 // 2.0f
 
+    const val VARIABLE_FONT_REAL_FILE_NAME = "hyper_helper_vf_real.ttf"
+    const val VARIABLE_FONT_DEFAULT_PATH = "/system/fonts/MiSansVF.ttf"
+
     object BatteryIndicator {
         const val STYLE_DEFAULT = 0
         const val STYLE_ICON_ONLY = 1

@@ -2,16 +2,22 @@ package dev.lackluster.mihelper.ui.page
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.highcapable.yukihookapi.hook.log.YLog
 import dev.lackluster.hyperx.compose.activity.SafeSP
 import dev.lackluster.hyperx.compose.base.BasePage
 import dev.lackluster.hyperx.compose.base.BasePageDefaults
+import dev.lackluster.hyperx.compose.component.Hint
 import dev.lackluster.hyperx.compose.preference.EditTextDataType
 import dev.lackluster.hyperx.compose.preference.EditTextPreference
 import dev.lackluster.hyperx.compose.preference.PreferenceGroup
@@ -19,18 +25,20 @@ import dev.lackluster.hyperx.compose.preference.SeekBarPreference
 import dev.lackluster.hyperx.compose.preference.SwitchPreference
 import dev.lackluster.hyperx.compose.preference.ValuePosition
 import dev.lackluster.mihelper.R
+import dev.lackluster.mihelper.data.Constants.VARIABLE_FONT_DEFAULT_PATH
+import dev.lackluster.mihelper.data.Constants.VARIABLE_FONT_REAL_FILE_NAME
 import dev.lackluster.mihelper.ui.MainActivity
 import dev.lackluster.mihelper.data.Pref
+import dev.lackluster.mihelper.ui.component.FontFamilyCache
+import dev.lackluster.mihelper.utils.ShellUtils
+import top.yukonga.miuix.kmp.basic.SmallTitle
 import java.io.File
 
 @Composable
 fun StatusBarFontPage(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
-    var spValueClockFont by remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.SystemUI.FontWeight.CLOCK)) }
-    var spValueClockNotifFont by remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.SystemUI.FontWeight.CLOCK_NOTIFICATION)) }
-    var spValueFocusNotifFont by remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.SystemUI.FontWeight.FOCUS_NOTIFICATION)) }
-    var spValueNetSpeedNumFont by remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.SystemUI.FontWeight.NET_SPEED_NUMBER)) }
-    var spValueNetSpeedUnitFont by remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.SystemUI.FontWeight.NET_SPEED_UNIT)) }
-    var spValueCarrierFont by remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.SystemUI.FontWeight.CARRIER)) }
+    val context = LocalContext.current
+
+    var spValueCarrierFont by remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.SystemUI.FontWeight.LOCK_SCREEN_CARRIER)) }
 
     BasePage(
         navController,
@@ -42,14 +50,23 @@ fun StatusBarFontPage(navController: NavController, adjustPadding: PaddingValues
         mode
     ) {
         item {
+            SmallTitle(
+                text = stringResource(R.string.ui_title_font_general),
+                modifier = Modifier.padding(top = 6.dp),
+            )
+            Hint(
+                modifier = Modifier
+                    .padding(horizontal = 12.dp)
+                    .padding(bottom = 6.dp),
+                text = stringResource(R.string.font_hint_path)
+            )
             PreferenceGroup(
-                title = stringResource(R.string.ui_title_font_general),
                 first = true
             ) {
                 EditTextPreference(
                     title = stringResource(R.string.font_general_path),
-                    key = Pref.Key.SystemUI.FontWeight.FONT_PATH,
-                    defValue = "/system/fonts/MiSansVF.ttf",
+                    key = Pref.Key.SystemUI.FontWeight.FONT_PATH_REAL,
+                    defValue = VARIABLE_FONT_DEFAULT_PATH,
                     dataType = EditTextDataType.STRING,
                     dialogMessage = stringResource(R.string.font_general_path_tips),
                     isValueValid = { path ->
@@ -58,121 +75,63 @@ fun StatusBarFontPage(navController: NavController, adjustPadding: PaddingValues
                             file.exists() && file.isFile
                         } ?: false
                     },
-                    valuePosition = ValuePosition.SUMMARY_VIEW
+                    valuePosition = ValuePosition.SUMMARY_VIEW,
+                    onValueChange = { path, _ ->
+                        try {
+                            val file = File(context.filesDir, VARIABLE_FONT_REAL_FILE_NAME)
+                            if (file.exists() && file.isFile) {
+                                file.delete()
+                            }
+                        } catch (_: Throwable) { }
+                        if (path == VARIABLE_FONT_DEFAULT_PATH) {
+                            SafeSP.putAny(Pref.Key.SystemUI.FontWeight.FONT_PATH_REAL, VARIABLE_FONT_DEFAULT_PATH)
+                            SafeSP.putAny(Pref.Key.SystemUI.FontWeight.FONT_PATH_APP, VARIABLE_FONT_DEFAULT_PATH)
+                        } else {
+                            try {
+                                val oriFile = File(path)
+                                val newFile = File(context.filesDir, VARIABLE_FONT_REAL_FILE_NAME)
+                                if (newFile.exists()) {
+                                    newFile.delete()
+                                }
+                                val owner = ShellUtils.tryExec(
+                                    "ls -ld /data/data/dev.lackluster.mihelper/files | awk '{print $3}'",
+                                    useRoot = true,
+                                    checkSuccess = true
+                                ).successMsg
+                                val group = ShellUtils.tryExec(
+                                    "ls -ld /data/data/dev.lackluster.mihelper/files | awk '{print $4}'",
+                                    useRoot = true,
+                                    checkSuccess = true
+                                ).successMsg
+                                ShellUtils.tryExec(
+                                    "cp ${oriFile.absolutePath} ${newFile.absolutePath}",
+                                    useRoot = true,
+                                    checkSuccess = true
+                                )
+                                ShellUtils.tryExec(
+                                    "chown ${owner}:${group} ${newFile.absolutePath} && chmod 644 ${newFile.absolutePath}",
+                                    useRoot = true,
+                                    checkSuccess = true
+                                )
+                                SafeSP.putAny(Pref.Key.SystemUI.FontWeight.FONT_PATH_APP, newFile.absolutePath)
+                                FontFamilyCache.updateVfCustomPath()
+                            } catch (t: Throwable) {
+                                YLog.error("error", t)
+                                SafeSP.putAny(Pref.Key.SystemUI.FontWeight.FONT_PATH_APP, VARIABLE_FONT_DEFAULT_PATH)
+                            }
+                        }
+                    }
                 )
             }
         }
         item {
             PreferenceGroup(
-                title = stringResource(R.string.ui_title_font_sb)
-            ) {
-                SwitchPreference(
-                    title = stringResource(R.string.font_sb_clock),
-                    key = Pref.Key.SystemUI.FontWeight.CLOCK
-                ) {
-                    spValueClockFont = it
-                }
-                AnimatedVisibility(
-                    spValueClockFont
-                ) {
-                    SeekBarPreference(
-                        title = stringResource(R.string.font_sb_clock_weight),
-                        key = Pref.Key.SystemUI.FontWeight.CLOCK_WEIGHT,
-                        defValue = 430,
-                        min = 1,
-                        max = 1000
-                    )
-                }
-                SwitchPreference(
-                    title = stringResource(R.string.font_sb_focus),
-                    key = Pref.Key.SystemUI.FontWeight.FOCUS_NOTIFICATION
-                ) {
-                    spValueFocusNotifFont = it
-                }
-                AnimatedVisibility(
-                    spValueFocusNotifFont
-                ) {
-                    SeekBarPreference(
-                        title = stringResource(R.string.font_sb_focus_weight),
-                        key = Pref.Key.SystemUI.FontWeight.FOCUS_NOTIFICATION_WEIGHT,
-                        defValue = 430,
-                        min = 1,
-                        max = 1000
-                    )
-                }
-            }
-        }
-        item {
-            PreferenceGroup(
-                title = stringResource(R.string.ui_title_font_icon)
-            ) {
-                SwitchPreference(
-                    title = stringResource(R.string.font_icon_net_speed_num),
-                    key = Pref.Key.SystemUI.FontWeight.NET_SPEED_NUMBER
-                ) {
-                    spValueNetSpeedNumFont = it
-                }
-                AnimatedVisibility(
-                    spValueNetSpeedNumFont
-                ) {
-                    SeekBarPreference(
-                        title = stringResource(R.string.font_icon_net_speed_num_weight),
-                        key = Pref.Key.SystemUI.FontWeight.NET_SPEED_NUMBER_VAL,
-                        defValue = 700,
-                        min = 1,
-                        max = 1000
-                    )
-                }
-                SwitchPreference(
-                    title = stringResource(R.string.font_icon_net_speed_unit),
-                    key = Pref.Key.SystemUI.FontWeight.NET_SPEED_UNIT
-                ) {
-                    spValueNetSpeedUnitFont = it
-                }
-                AnimatedVisibility(
-                    spValueNetSpeedUnitFont
-                ) {
-                    SeekBarPreference(
-                        title = stringResource(R.string.font_icon_net_speed_unit_weight),
-                        key = Pref.Key.SystemUI.FontWeight.NET_SPEED_UNIT_VAL,
-                        defValue = 700,
-                        min = 1,
-                        max = 1000
-                    )
-                }
-            }
-        }
-        item {
-            PreferenceGroup(
-                title = stringResource(R.string.ui_title_font_notification)
-            ) {
-                SwitchPreference(
-                    title = stringResource(R.string.font_notif_clock),
-                    key = Pref.Key.SystemUI.FontWeight.CLOCK_NOTIFICATION
-                ) {
-                    spValueClockNotifFont = it
-                }
-                AnimatedVisibility(
-                    spValueClockNotifFont
-                ) {
-                    SeekBarPreference(
-                        title = stringResource(R.string.font_notif_clock_weight),
-                        key = Pref.Key.SystemUI.FontWeight.CLOCK_NOTIFICATION_WEIGHT,
-                        defValue = 305,
-                        min = 1,
-                        max = 1000
-                    )
-                }
-            }
-        }
-        item {
-            PreferenceGroup(
-                title = stringResource(R.string.ui_title_font_lockscreen),
+                title = stringResource(R.string.ui_title_font_weight),
                 last = true
             ) {
                 SwitchPreference(
-                    title = stringResource(R.string.font_lockscreen_carrier),
-                    key = Pref.Key.SystemUI.FontWeight.CARRIER
+                    title = stringResource(R.string.font_weight_lockscreen_carrier),
+                    key = Pref.Key.SystemUI.FontWeight.LOCK_SCREEN_CARRIER
                 ) {
                     spValueCarrierFont = it
                 }
@@ -180,8 +139,8 @@ fun StatusBarFontPage(navController: NavController, adjustPadding: PaddingValues
                     spValueCarrierFont
                 ) {
                     SeekBarPreference(
-                        title = stringResource(R.string.font_lockscreen_carrier_weight),
-                        key = Pref.Key.SystemUI.FontWeight.CARRIER_WEIGHT,
+                        title = stringResource(R.string.font_weight_lockscreen_carrier_weight),
+                        key = Pref.Key.SystemUI.FontWeight.LOCK_SCREEN_CARRIER_WEIGHT,
                         defValue = 430,
                         min = 1,
                         max = 1000

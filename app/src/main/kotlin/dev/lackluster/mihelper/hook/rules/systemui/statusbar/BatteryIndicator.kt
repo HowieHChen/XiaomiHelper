@@ -21,7 +21,6 @@
 package dev.lackluster.mihelper.hook.rules.systemui.statusbar
 
 import android.graphics.Paint
-import android.graphics.Typeface
 import android.util.TypedValue
 import android.view.View
 import android.widget.LinearLayout
@@ -36,7 +35,7 @@ import dev.lackluster.mihelper.data.Pref.Key.SystemUI.FontWeight
 import dev.lackluster.mihelper.data.Pref.Key.SystemUI.IconTuner
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.TextAppearance_StatusBar_Battery_Percent
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzMiuiBatteryMeterView
-import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.fontPath
+import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.getTypeface
 import dev.lackluster.mihelper.utils.Prefs
 import dev.lackluster.mihelper.utils.factory.dp
 import dev.lackluster.mihelper.utils.factory.dpFloat
@@ -67,13 +66,13 @@ object BatteryIndicator : YukiBaseHooker() {
     private val modifyPercentMarkFW =
         Prefs.getBoolean(FontWeight.BATTERY_PERCENTAGE_MARK, false) && valuePercentMarkFW in 1..1000
     private val typefacePercentInFW by lazy {
-        Typeface.Builder(fontPath).setFontVariationSettings("'wght' $valuePercentInFW").build()
+        getTypeface(valuePercentInFW)
     }
     private val typefacePercentOutFW by lazy {
-        Typeface.Builder(fontPath).setFontVariationSettings("'wght' $valuePercentOutFW").build()
+        getTypeface(valuePercentOutFW)
     }
     private val typefacePercentMarkFW by lazy {
-        Typeface.Builder(fontPath).setFontVariationSettings("'wght' $valuePercentMarkFW").build()
+        getTypeface(valuePercentMarkFW)
     }
 
     private val mBatteryPercentMarkView by lazy {

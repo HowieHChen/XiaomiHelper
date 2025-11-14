@@ -22,7 +22,6 @@ package dev.lackluster.mihelper.hook.rules.systemui.statusbar
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.log.YLog
 import dev.lackluster.mihelper.data.Constants
 import dev.lackluster.mihelper.data.Pref.Key.SystemUI.IconTuner
 import dev.lackluster.mihelper.utils.Prefs
@@ -46,8 +45,6 @@ object IconPosition : YukiBaseHooker() {
                 parameters(Array<String>::class)
             }?.hook {
                 before {
-                    val slots = this.args(0).array<String>()
-                    YLog.info(slots.joinToString())
                     if (mode == 1) {
                         this.args(0).set(Constants.STATUS_BAR_ICONS_SWAP.toTypedArray())
                     } else if (mode == 2) {

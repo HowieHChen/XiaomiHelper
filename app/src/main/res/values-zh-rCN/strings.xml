@@ -229,7 +229,8 @@
     <string name="systemui_control_hide_carrier_two">隐藏 SIM 卡 2 的运营商标签</string>
     <string name="icon_tuner_network_net_speed">实时网速</string>
     <string name="clock_easy_fixed_width_tips">固定 TextView 的宽度，使时钟显示秒数时通知图标的位置不会不断变化。</string>
-    <string name="font_lockscreen_carrier_weight">运营商标签的字重</string>
+    <string name="font_weight_lockscreen_carrier">自定义锁屏运营商标签字重</string>
+    <string name="font_weight_lockscreen_carrier_weight">锁屏运营商标签字重</string>
     <string name="icon_tuner_hide_selection_default">默认</string>
     <string name="icon_tuner_hide_selection_show_all">可见</string>
     <string name="icon_tuner_hide_selection_show_statusbar">状态栏可见</string>
@@ -245,9 +246,9 @@
     <string name="systemui_statusbar_notif_count_icon">状态栏通知图标最大数量</string>
     <string name="icon_tuner_other_second_space">手机分身</string>
     <string name="icon_tuner_other_hide_privacy">隐藏隐私提示</string>
-    <string name="clock_general_custom_layout">自定义时间内边距</string>
-    <string name="clock_general_padding_left">左内边距</string>
-    <string name="clock_general_padding_right">右内边距</string>
+    <string name="clock_general_custom_layout">自定义状态栏时间横向内边距</string>
+    <string name="clock_general_padding_left">开始内边距</string>
+    <string name="clock_general_padding_right">结束内边距</string>
     <string name="icon_detail_battery_style_hidden_tips">完全隐藏（包括充电图标）</string>
     <string name="icon_detail_battery_layout_custom">自定义图标横向内边距</string>
     <string name="icon_detail_battery_padding_start">开始内边距</string>
@@ -438,9 +439,11 @@
     <string name="clock_general_geek">极客模式</string>
     <string name="clock_font_tnum_tips">启用表格数字显示。使数字等宽，易于像表格那样对齐。</string>
     <string name="ui_title_clock_geek_mode">极客模式</string>
-    <string name="clock_geek_time_format_pattern">状态栏时间格式</string>
-    <string name="clock_geek_time_format_pattern_pad">状态栏日期格式</string>
-    <string name="clock_geek_time_format_pattern_horizon">通知中心日期格式</string>
+    <string name="clock_geek_time_format_pattern_clock">状态栏时间格式</string>
+    <string name="clock_geek_time_format_pattern_pad_clock">状态栏日期格式</string>
+    <string name="clock_geek_time_format_pattern_date_time">通知中心日期格式</string>
+    <string name="clock_geek_time_format_pattern_cc_date">控制中心日期格式</string>
+    <string name="clock_geek_time_format_pattern_horizon">通知中心横屏日期时间格式</string>
     <string name="ui_title_clock_easy">快速设置</string>
     <string name="media_general_unlock_action">显示所有控制按键</string>
     <string name="media_general_squiggly_progress">使用波浪进度条</string>
@@ -574,8 +577,9 @@
     <string name="clock_easy_fixed_width">固定文本宽度</string>
     <string name="action_recognize_screen">超级小爱识屏</string>
     <string name="clock_font_tnum">表格数字</string>
+    <string name="font_hint_path">所有自定义字重功能（不仅限于下方的选项）都会加载此路径所指定的可变字体文件。除非你清楚自己在做什么并且了解可能的后果，否则请勿修改。 \n\n如果你希望修改字体但不修改字重，请启用对应的自定义字重首选项，并保持字重为默认值。</string>
     <string name="font_general_path">字体文件路径</string>
-    <string name="font_general_path_tips">请使用可变字体。只对下方启用的目标生效。</string>
+    <string name="font_general_path_tips">除非你清楚自己在做什么并且了解可能的后果，否则请勿修改。\n\n请使用可变字体。</string>
     <string name="font_sb_clock_weight">时间的字重</string>
     <string name="font_sb_focus">焦点通知</string>
     <string name="font_sb_focus_weight">焦点通知的字重</string>
@@ -757,4 +761,17 @@
     <string name="icon_detail_net_speed_style_separate">分离（纯文本）</string>
     <string name="icon_detail_net_speed_style_separate_arrow">分离（箭头）</string>
     <string name="icon_detail_net_speed_style_separate_tri_filled">分离（填充三角）</string>
+    <string name="clock_geek_time_format_pattern_big_time">通知中心时间格式</string>
+    <string name="clock_fw_pad_clock_weight">状态栏日期字重</string>
+    <string name="clock_fw_big_time">自定义通知中心时间字重</string>
+    <string name="clock_fw_big_time_weight">通知中心时间字重</string>
+    <string name="clock_fw_date_time_weight">通知中心日期字重</string>
+    <string name="clock_fw_cc_date">自定义控制中心日期字重</string>
+    <string name="clock_fw_cc_date_weight">控制中心日期字重</string>
+    <string name="clock_fw_clock">自定义状态栏时间字重</string>
+    <string name="clock_fw_clock_weight">状态栏时间字重</string>
+    <string name="clock_fw_pad_clock">自定义状态栏日期字重</string>
+    <string name="clock_fw_date_time">自定义通知中心日期字重</string>
+    <string name="clock_fw_horizontal_time">自定义通知中心横屏日期时间字重</string>
+    <string name="clock_fw_horizontal_time_weight">通知中心横屏日期时间字重</string>
 </resources>

@@ -30,7 +30,6 @@ import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.normal_control
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.normal_control_center_carrier_view
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.status_bar_clock_margin_end
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.status_bar_padding_extra_start
-import dev.lackluster.mihelper.hook.rules.systemui.statusbar.ElementsFontWeight.fontPath
 import dev.lackluster.mihelper.hook.view.SpringInterpolator
 import dev.lackluster.mihelper.utils.Device
 import dev.lackluster.mihelper.utils.Prefs
@@ -45,8 +44,8 @@ object CarrierTextView : YukiBaseHooker() {
     private const val KEY_DARK_COLOR = "mDarkColor"
 
     private val carrierTextType = Prefs.getInt(Pref.Key.SystemUI.LockScreen.CARRIER_TEXT, 0)
-    private val carrierFont = Prefs.getBoolean(Pref.Key.SystemUI.FontWeight.CARRIER, false)
-    private val carrierFontWeight = Prefs.getInt(Pref.Key.SystemUI.FontWeight.CARRIER_WEIGHT, 430)
+    private val carrierFont = Prefs.getBoolean(Pref.Key.SystemUI.FontWeight.LOCK_SCREEN_CARRIER, false)
+    private val carrierFontWeight = Prefs.getInt(Pref.Key.SystemUI.FontWeight.LOCK_SCREEN_CARRIER_WEIGHT, 430)
 
     private val miuiCarrierTextLayoutClass by lazy {
         "com.android.systemui.controlcenter.shade.MiuiCarrierTextLayout".toClassOrNull()
@@ -84,9 +83,9 @@ object CarrierTextView : YukiBaseHooker() {
                                     setTextAppearance(TextAppearance_StatusBar_Clock)
                                     isHorizontalFadingEdgeEnabled = true
                                 }
-                                typeface = Typeface.Builder(fontPath)
-                                    .setFontVariationSettings("'wght' $wght")
-                                    .build()
+//                                typeface = Typeface.Builder(fontPath)
+//                                    .setFontVariationSettings("'wght' $wght")
+//                                    .build()
                             }
                         }
                     }
@@ -196,9 +195,9 @@ object CarrierTextView : YukiBaseHooker() {
                                 }.cast<TextView>()?.apply {
                                     setTextAppearance(TextAppearance_StatusBar_Clock)
                                     isHorizontalFadingEdgeEnabled = true
-                                    typeface = Typeface.Builder(fontPath)
-                                        .setFontVariationSettings("'wght' $wght")
-                                        .build()
+//                                    typeface = Typeface.Builder(fontPath)
+//                                        .setFontVariationSettings("'wght' $wght")
+//                                        .build()
                                 }
                             }
                             miuiCarrierTextLayout.current().field {

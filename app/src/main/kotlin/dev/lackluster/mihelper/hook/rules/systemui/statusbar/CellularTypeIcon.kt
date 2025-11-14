@@ -21,7 +21,6 @@
 package dev.lackluster.mihelper.hook.rules.systemui.statusbar
 
 import android.graphics.Paint
-import android.graphics.Typeface
 import android.util.TypedValue
 import android.view.ViewGroup
 import android.widget.TextView
@@ -31,7 +30,7 @@ import com.highcapable.yukihookapi.hook.log.YLog
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.mobile_signal_container
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.mobile_type_single
-import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.fontPath
+import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.getTypeface
 import dev.lackluster.mihelper.utils.Prefs
 
 object CellularTypeIcon : YukiBaseHooker() {
@@ -54,15 +53,15 @@ object CellularTypeIcon : YukiBaseHooker() {
         "com.android.systemui.statusbar.pipeline.mobile.ui.binder.MiuiMobileIconBinder".toClassOrNull()
     }
     private val typefaceTypeFW by lazy {
-        Typeface.Builder(fontPath).setFontVariationSettings("'wght' $valueTypeFW").build()
+        getTypeface(valueTypeFW)
     }
     private val typefaceTypeSingleFW by lazy {
-        Typeface.Builder(fontPath).setFontVariationSettings("'wght' $valueTypeSingleFW").build()
+        getTypeface(valueTypeSingleFW)
     }
 
     override fun onHook() {
         if (typeSingle || typeCustom) {
-            "com.miui.interfaces.IOperatorCustomizedPolicy\$OperatorConfig".toClassOrNull()?.apply {
+            $$"com.miui.interfaces.IOperatorCustomizedPolicy$OperatorConfig".toClassOrNull()?.apply {
                 val showMobileDataTypeSingle = resolve().firstFieldOrNull {
                     name = "showMobileDataTypeSingle"
                 }
@@ -99,7 +98,6 @@ object CellularTypeIcon : YukiBaseHooker() {
                 }
                 resolve().firstConstructor().hook {
                     after {
-                        YLog.info("MobileTypeDrawable Constructor")
                         mMobileTypeTextPaint?.copy()?.of(this.instance)?.get<Paint>()?.typeface = typefaceTypeFW
                         mMobileTypePlusPaint?.copy()?.of(this.instance)?.get<Paint>()?.typeface = typefaceTypeFW
                     }
@@ -108,7 +106,6 @@ object CellularTypeIcon : YukiBaseHooker() {
                     name = "setMiuiStatusBarTypeface"
                 }?.hook {
                     before {
-                        YLog.info("MobileTypeDrawable setMiuiStatusBarTypeface")
                         val paints = this.args(0).array<Paint>()
                         for (paint in paints) {
                             paint.typeface = typefaceTypeFW
@@ -157,7 +154,6 @@ object CellularTypeIcon : YukiBaseHooker() {
                 }
             }?.hook {
                 after {
-                    YLog.info("MiuiMobileIconBinder#updateMobileLayoutParams")
                     val mobileTypeSingle = this.args(0).cast<TextView>() ?: return@after
                     if (modifyTypeSingleSize) {
                         mobileTypeSingle.setTextSize(TypedValue.COMPLEX_UNIT_DIP, valueTypeSingleSize)

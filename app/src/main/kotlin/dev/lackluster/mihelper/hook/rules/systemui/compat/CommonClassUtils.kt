@@ -20,13 +20,19 @@
 
 package dev.lackluster.mihelper.hook.rules.systemui.compat
 
+import android.graphics.Typeface
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
+import dev.lackluster.mihelper.data.Constants.VARIABLE_FONT_DEFAULT_PATH
 import dev.lackluster.mihelper.data.Pref.Key.SystemUI.FontWeight
 import dev.lackluster.mihelper.utils.Prefs
 import dev.lackluster.mihelper.utils.SystemProperties
 import java.io.File
+import java.util.concurrent.ConcurrentHashMap
 
 object CommonClassUtils : YukiBaseHooker() {
+    val clzMiuiClock by lazy {
+        "com.android.systemui.statusbar.views.MiuiClock".toClassOrNull()
+    }
     val clzMiuiKeyguardStatusBarView by lazy {
         "com.android.systemui.statusbar.phone.MiuiKeyguardStatusBarView".toClassOrNull()
     }
@@ -73,13 +79,18 @@ object CommonClassUtils : YukiBaseHooker() {
     }
 
     val fontPath by lazy {
-        val defaultPath = SystemProperties.get("ro.miui.ui.font.mi_font_path", "/system/fonts/MiSansVF.ttf")
-        val prefPath = Prefs.getString(FontWeight.FONT_PATH, defaultPath) ?: defaultPath
+        val defaultPath = SystemProperties.get("ro.miui.ui.font.mi_font_path", VARIABLE_FONT_DEFAULT_PATH)
+        val prefPath = Prefs.getString(FontWeight.FONT_PATH_REAL, defaultPath) ?: defaultPath
         val fontFile = File(prefPath)
-        if (fontFile.exists() && fontFile.isFile) prefPath else defaultPath
+        if (fontFile.exists() && fontFile.isFile && fontFile.canRead()) prefPath else defaultPath
+    }
+
+    val typefaceCache by lazy {
+        ConcurrentHashMap<Int, Typeface>()
     }
 
     override fun onHook() {
+        clzMiuiClock
         clzMiuiKeyguardStatusBarView
         clzMiuiBatteryMeterView
         clzReadonlyStateFlow
@@ -91,5 +102,11 @@ object CommonClassUtils : YukiBaseHooker() {
         clzMainDispatcherLoader
         clzPair
         clzJob
+    }
+
+    fun getTypeface(weight: Int): Typeface {
+        return typefaceCache.getOrPut(weight) {
+            Typeface.Builder(fontPath).setFontVariationSettings("'wght' $weight").build()
+        }
     }
 }

@@ -20,7 +20,6 @@
 
 package dev.lackluster.mihelper.hook.rules.systemui.statusbar
 
-import android.graphics.Typeface
 import android.net.TrafficStats
 import android.os.Handler
 import android.os.Message
@@ -36,7 +35,7 @@ import de.robv.android.xposed.XposedHelpers
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.data.Pref.Key.SystemUI.FontWeight
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.TextAppearance_StatusBar_NetWorkSpeedNumber
-import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.fontPath
+import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.getTypeface
 import dev.lackluster.mihelper.utils.Prefs
 import dev.lackluster.mihelper.utils.factory.dpFloat
 
@@ -64,13 +63,13 @@ object NetworkSpeed : YukiBaseHooker() {
     private val modifyNetSpeedSeparateFW =
         mode != 0 && Prefs.getBoolean(FontWeight.NET_SPEED_SEPARATE, false) && valueNetSeparateFW in 1..1000
     private val typefaceNetSpeedNumberFW by lazy {
-        Typeface.Builder(fontPath).setFontVariationSettings("'wght' $valueNetSpeedFW").build()
+        getTypeface(valueNetSpeedFW)
     }
     private val typefaceNetSpeedUnitFW by lazy {
-        Typeface.Builder(fontPath).setFontVariationSettings("'wght' $valueNetUnitFW").build()
+        getTypeface(valueNetUnitFW)
     }
     private val typefaceNetSpeedSeparateFW by lazy {
-        Typeface.Builder(fontPath).setFontVariationSettings("'wght' $valueNetSeparateFW").build()
+        getTypeface(valueNetSeparateFW)
     }
 
     override fun onHook() {
@@ -145,7 +144,7 @@ object NetworkSpeed : YukiBaseHooker() {
                         networkSpeedUnitText?.paint?.let {
                             finalWidth = maxOf(finalWidth, it.measureText(measureText).toInt())
                         }
-                        finalWidth = finalWidth + view.paddingStart + view.paddingEnd
+                        finalWidth += view.paddingStart + view.paddingEnd
                         mEmptyWidth?.copy()?.of(this.instance)?.set(finalWidth)
                         this.result = finalWidth
                     }

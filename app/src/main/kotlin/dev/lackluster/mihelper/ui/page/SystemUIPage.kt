@@ -94,6 +94,11 @@ fun SystemUIPage(navController: NavController, adjustPadding: PaddingValues, mod
                 first = true
             ) {
                 TextPreference(
+                    title = stringResource(R.string.systemui_statusbar_font)
+                ) {
+                    navController.navigateTo(Pages.STATUS_BAR_FONT)
+                }
+                TextPreference(
                     title = stringResource(R.string.systemui_statusbar_clock)
                 ) {
                     navController.navigateTo(Pages.STATUS_BAR_CLOCK)
@@ -115,11 +120,6 @@ fun SystemUIPage(navController: NavController, adjustPadding: PaddingValues, mod
                         min = 0,
                         max = 15
                     )
-                }
-                TextPreference(
-                    title = stringResource(R.string.systemui_statusbar_font)
-                ) {
-                    navController.navigateTo(Pages.STATUS_BAR_FONT)
                 }
                 TextPreference(
                     title = stringResource(R.string.systemui_statusbar_icon)

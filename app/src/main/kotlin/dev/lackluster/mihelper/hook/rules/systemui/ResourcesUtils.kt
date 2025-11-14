@@ -29,11 +29,13 @@ object ResourcesUtils : YukiBaseHooker() {
     private const val PKG_NAME = Scope.SYSTEM_UI
     private var isInitialized = false
     // Status bar clock
-    var clock = 0
-    var pad_clock = 0
-    var big_time = 0
-    var horizontal_time = 0
-    var date_time = 0
+    var clock = 0 // Time (status bar)
+    var pad_clock = 0 // Date (status bar, pad)
+    var big_time = 0 // Time (notification shade)
+    var date_time = 0 // Date (notification shade)
+    var normal_control_center_date_view = 0 // Date (control center)
+    var horizontal_time = 0 // Time and date (notification shade, landscape)
+    var horizontal_date_time = 0 // ?
     var miui_notification_menu_more_setting = 0
     var fmt_time_12hour_minute_second_pm = 0
     var fmt_time_12hour_minute_second = 0
@@ -86,8 +88,10 @@ object ResourcesUtils : YukiBaseHooker() {
                     clock = this.getResID("clock", "id", PKG_NAME)
                     pad_clock = this.getResID("pad_clock", "id", PKG_NAME)
                     big_time = this.getResID("big_time", "id", PKG_NAME)
-                    horizontal_time = this.getResID("horizontal_time", "id", PKG_NAME)
                     date_time = this.getResID("date_time", "id", PKG_NAME)
+                    normal_control_center_date_view = this.getResID("normal_control_center_date_view", "id", PKG_NAME)
+                    horizontal_time = this.getResID("horizontal_time", "id", PKG_NAME)
+                    horizontal_date_time = this.getResID("horizontal_date_time", "id", PKG_NAME)
                     miui_notification_menu_more_setting = this.getResID("miui_notification_menu_more_setting", "string", PKG_NAME)
                     fmt_time_12hour_minute_second_pm = this.getResID("fmt_time_12hour_minute_second_pm", "string", PKG_NAME)
                     fmt_time_12hour_minute_second = this.getResID("fmt_time_12hour_minute_second", "string", PKG_NAME)

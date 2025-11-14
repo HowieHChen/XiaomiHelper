@@ -495,8 +495,8 @@
     <string name="clock_font_tnum">Numerais tabulares</string>
     <string name="clock_font_tnum_tips">Ativando o conjunto de figuras onde os números são todos do mesmo tamanho, permitindo que sejam facilmente alinhados como nas tabelas.</string>
     <string name="ui_title_clock_geek_mode">Modo geek</string>
-    <string name="clock_geek_time_format_pattern">Padrão de formato de hora (barra de status)</string>
-    <string name="clock_geek_time_format_pattern_pad">Padrão de formato de data (barra de status)</string>
+    <string name="clock_geek_time_format_pattern_clock">Padrão de formato de hora (barra de status)</string>
+    <string name="clock_geek_time_format_pattern_pad_clock">Padrão de formato de data (barra de status)</string>
     <string name="clock_geek_time_format_pattern_horizon">Padrão de formato de data (área de notificações)</string>
     <string name="ui_title_clock_easy">Configuração fácil</string>
     <string name="clock_easy_show_ampm">Mostrar AM/PM</string>
@@ -527,7 +527,7 @@
     <string name="icon_detail_cellular_fw_type_weight">Peso da fonte do tipo de rede móvel</string>
     <string name="font_notif_clock">Relógio (área de notificações)</string>
     <string name="font_notif_clock_weight">Peso da fonte do relógio (área de notificações)</string>
-    <string name="font_lockscreen_carrier_weight">Peso da fonte do rótulo da operadora</string>
+    <string name="font_weight_lockscreen_carrier_weight">Peso da fonte do rótulo da operadora</string>
     <!-- IconTunerPage -->
     <string name="icon_tuner_hide_selection_default">Padrão</string>
     <string name="icon_tuner_hide_selection_show_all">Visível</string>

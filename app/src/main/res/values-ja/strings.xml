@@ -298,8 +298,8 @@
     <string name="clock_general_padding_right">右のパディング</string>
     <string name="clock_general_geek">ギークモード</string>
     <string name="ui_title_clock_geek_mode">ギークモード</string>
-    <string name="clock_geek_time_format_pattern">時刻形式のパターン (ステータスバー)</string>
-    <string name="clock_geek_time_format_pattern_pad">日付形式のパターン (ステータスバー)</string>
+    <string name="clock_geek_time_format_pattern_clock">時刻形式のパターン (ステータスバー)</string>
+    <string name="clock_geek_time_format_pattern_pad_clock">日付形式のパターン (ステータスバー)</string>
     <string name="clock_geek_time_format_pattern_horizon">日付形式のパターン (通知センター)</string>
     <string name="ui_title_clock_easy">簡単なセットアップ</string>
     <string name="clock_easy_show_ampm">午前/午後を表示する</string>

@@ -611,16 +611,21 @@
     <string name="weather_card_color_dark">Force dark</string>
     <!-- StatusBarClockPage -->
     <string name="ui_title_clock_general" translatable="false">@string/common_general</string>
-    <string name="clock_general_custom_layout">Customized time padding</string>
-    <string name="clock_general_padding_left">Left padding</string>
-    <string name="clock_general_padding_right">Right padding</string>
+    <string name="clock_general_custom_layout">Customize status bar time horizontal padding</string>
+    <string name="clock_general_padding_left">Start padding</string>
+    <string name="clock_general_padding_right">End padding</string>
     <string name="clock_general_geek">Geek mode</string>
     <string name="clock_font_tnum">Tabular numerals</string>
     <string name="clock_font_tnum_tips">Activating the set of figures where numbers are all of the same size, allowing them to be easily aligned like in tables.</string>
+    <string name="clock_easy_fixed_width">Fixed TextView width</string>
+    <string name="clock_easy_fixed_width_tips">Fixed the width of TextView so that the notification icons don\'t keep changing position when the clock displays seconds.</string>
     <string name="ui_title_clock_geek_mode">Geek mode</string>
-    <string name="clock_geek_time_format_pattern">Time format pattern (status bar)</string>
-    <string name="clock_geek_time_format_pattern_pad">Date format pattern (status bar)</string>
-    <string name="clock_geek_time_format_pattern_horizon">Date format pattern (notification shade)</string>
+    <string name="clock_geek_time_format_pattern_clock">Time format pattern (status bar)</string>
+    <string name="clock_geek_time_format_pattern_pad_clock">Date format pattern (status bar)</string>
+    <string name="clock_geek_time_format_pattern_big_time">Time format pattern (notification shade)</string>
+    <string name="clock_geek_time_format_pattern_date_time">Date format pattern (notification shade)</string>
+    <string name="clock_geek_time_format_pattern_cc_date">Date format pattern (control center)</string>
+    <string name="clock_geek_time_format_pattern_horizon">Date and time format pattern (notification shade, landscape)</string>
     <string name="ui_title_clock_easy">Easy setup</string>
     <string name="clock_easy_show_ampm">Display AM/PM</string>
     <string name="clock_easy_show_ampm_tips">Valid only when using the 12-hour clock format</string>
@@ -628,31 +633,27 @@
     <string name="clock_easy_show_leading_zero_tips">Recommended to be turned on when using the 24-hour clock format</string>
     <string name="clock_easy_show_seconds">Display seconds</string>
     <string name="clock_easy_show_seconds_tips">It will also enable the status bar to refresh every second</string>
-    <string name="clock_easy_fixed_width">Fixed TextView width</string>
-    <string name="clock_easy_fixed_width_tips">Fixed the width of TextView so that the notification icons don\'t keep changing position when the clock displays seconds.</string>
+    <string name="ui_title_clock_font_weight" translatable="false">@string/ui_title_icon_detail_font_weight</string>
+    <string name="clock_fw_clock">Customize font weight (Status bar clock)</string>
+    <string name="clock_fw_clock_weight">Font weight (Status bar clock)</string>
+    <string name="clock_fw_pad_clock">Customize font weight (Status bar date)</string>
+    <string name="clock_fw_pad_clock_weight">Font weight (Status bar date)</string>
+    <string name="clock_fw_big_time">Customize font weight (Notification shade clock)</string>
+    <string name="clock_fw_big_time_weight">Font weight (Notification shade clock)</string>
+    <string name="clock_fw_date_time">Customize font weight (Notification shade date)</string>
+    <string name="clock_fw_date_time_weight">Font weight (Notification shade date)</string>
+    <string name="clock_fw_cc_date">Customize font weight (Control center date)</string>
+    <string name="clock_fw_cc_date_weight">Font weight (Control center date)</string>
+    <string name="clock_fw_horizontal_time">Customize font weight (Notification shade landscape clock &amp; date)</string>
+    <string name="clock_fw_horizontal_time_weight">Font weight (Notification shade landscape clock &amp; date)</string>
     <!-- StatusBarFontPage -->
     <string name="ui_title_font_general" translatable="false">@string/common_general</string>
+    <string name="font_hint_path">All custom font weight features (not limited to the options below) will load the variable font file specified by this path. Unless you know what you are doing and understand the possible consequences, do not modify it. \n\nIf you want to change the font without altering the weight, enable the corresponding custom font weight preference but keep the weight set to Default.</string>
     <string name="font_general_path">Font file path</string>
-    <string name="font_general_path_tips">Please use variable fonts. Only works for the targets enabled below.</string>
-    <string name="ui_title_font_sb" translatable="false">@string/ui_title_systemui_status_bar</string>
-    <string name="font_sb_clock" translatable="false">@string/systemui_statusbar_clock</string>
-    <string name="font_sb_clock_weight">Font weight of clock</string>
-    <string name="font_sb_focus">Focus notification</string>
-    <string name="font_sb_focus_weight">Font weight of focus notification</string>
-
-    <string name="ui_title_font_icon" translatable="false">@string/systemui_statusbar_icon</string>
-
-    <string name="font_icon_net_speed_num">Numbers of network speed</string>
-    <string name="font_icon_net_speed_num_weight">Font weight of network speed (numbers)</string>
-    <string name="font_icon_net_speed_unit">Unit text of network speed</string>
-    <string name="font_icon_net_speed_unit_weight">Font weight of network speed (unit)</string>
-
-    <string name="ui_title_font_notification" translatable="false">@string/ui_title_systemui_notification_center</string>
-    <string name="font_notif_clock">Clock (notification shade)</string>
-    <string name="font_notif_clock_weight">Font weight of clock (notification shade)</string>
-    <string name="ui_title_font_lockscreen" translatable="false">@string/ui_title_systemui_lock_screen</string>
-    <string name="font_lockscreen_carrier" translatable="false">systemui_lock_carrier_text_carrier</string>
-    <string name="font_lockscreen_carrier_weight">Font weight of carrier label</string>
+    <string name="font_general_path_tips">Unless you know what you are doing and understand the possible consequences, do not modify it.\n\nPlease use variable fonts.</string>
+    <string name="ui_title_font_weight" translatable="false">@string/ui_title_icon_detail_font_weight</string>
+    <string name="font_weight_lockscreen_carrier">Customize font weight (Lock screen carrier label)</string>
+    <string name="font_weight_lockscreen_carrier_weight">Font weight (Lock screen carrier name)</string>
     <!-- IconTunerPage -->
     <string name="icon_tuner_hide_selection_default">Default</string>
     <string name="icon_tuner_hide_selection_show_all">Visible</string>

@@ -8,6 +8,7 @@ import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils
 import dev.lackluster.mihelper.hook.rules.systemui.StatusBarActions
 import dev.lackluster.mihelper.hook.rules.systemui.freeform.HideTopBar
 import dev.lackluster.mihelper.hook.rules.systemui.freeform.UnlockMultipleTask
+import dev.lackluster.mihelper.hook.rules.systemui.lockscreen.CarrierLabelFontWeight
 import dev.lackluster.mihelper.hook.rules.systemui.lockscreen.HideDisturbNotification
 import dev.lackluster.mihelper.hook.rules.systemui.lockscreen.HideNextAlarm
 import dev.lackluster.mihelper.hook.rules.systemui.lockscreen.KeepNotification
@@ -28,6 +29,8 @@ import dev.lackluster.mihelper.hook.rules.systemui.statusbar.HideCellularIcon
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.IconManager
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.IconPosition
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.IgnoreSysIconSettings
+import dev.lackluster.mihelper.hook.rules.systemui.statusbar.MiuiClock
+import dev.lackluster.mihelper.hook.rules.systemui.statusbar.MiuiClockFontWeight
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.NetworkSpeed
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.WifiIcon
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.NotificationMaxNumber
@@ -46,6 +49,7 @@ object SystemUI : YukiBaseHooker() {
         loadHooker(HideNextAlarm)
         loadHooker(KeepNotification)
         loadHooker(StatusBarClockContainer)
+        loadHooker(CarrierLabelFontWeight)
 //
 //        loadHooker(CustomBackground)
 //        loadHooker(CustomLayout)
@@ -71,8 +75,8 @@ object SystemUI : YukiBaseHooker() {
         loadHooker(IconPosition)
         loadHooker(NotificationMaxNumber)
         loadHooker(RegionSampling)
-//        loadHooker(ElementsFontWeight)
-//        loadHooker(StatusBarClock)
+        loadHooker(MiuiClock)
+        loadHooker(MiuiClockFontWeight)
         loadHooker(StatusBarDoubleTapToSleep)
         return
         loadHooker(UnlockMultipleTask)

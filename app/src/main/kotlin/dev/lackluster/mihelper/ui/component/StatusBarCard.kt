@@ -31,6 +31,7 @@ import dev.lackluster.mihelper.data.Constants.BatteryIndicator.STYLE_LINE
 import dev.lackluster.mihelper.data.Constants.BatteryIndicator.STYLE_TEXT_IN
 import dev.lackluster.mihelper.data.Constants.BatteryIndicator.STYLE_TEXT_ONLY
 import dev.lackluster.mihelper.data.Constants.BatteryIndicator.STYLE_TEXT_OUT
+import dev.lackluster.mihelper.data.Constants.VARIABLE_FONT_DEFAULT_PATH
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.SystemProperties
 import dev.lackluster.mihelper.utils.factory.dp2sp
@@ -64,10 +65,12 @@ fun MobileIcons(
         TextUnitType.Sp
     )
     val fontFamilyMobileType = FontFamilyCache.getFontFamilyForWeight(
-        ((if (cellularTypeFW) cellularTypeFWVal else 660) * DP_SCALE).toInt().coerceIn(1..1000)
+        ((if (cellularTypeFW) cellularTypeFWVal else 660) * DP_SCALE).toInt().coerceIn(1..1000),
+        cellularTypeFW
     )
     val fontFamilyMobileTypeSingle = FontFamilyCache.getFontFamilyForWeight(
-        ((if (cellularTypeSingleFW) cellularTypeSingleFWVal else 400) * DP_SCALE).toInt().coerceIn(1..1000)
+        ((if (cellularTypeSingleFW) cellularTypeSingleFWVal else 400) * DP_SCALE).toInt().coerceIn(1..1000),
+        cellularTypeSingleFW
     )
     val constraints = ConstraintSet {
         val parent = createRefFor("parent")
@@ -347,13 +350,16 @@ fun BatteryIcon(
         if (batteryPercentMarkStyle == 1) fontSizePercentOut
         else TextUnit((10.0f * DP_SCALE).dp2sp(context), TextUnitType.Sp)
     val fontFamilyPercentIn = FontFamilyCache.getFontFamilyForWeight(
-        ((if (batteryPercentInFW) batteryPercentInFWVal else 620) * DP_SCALE).toInt().coerceIn(1..1000)
+        ((if (batteryPercentInFW) batteryPercentInFWVal else 620) * DP_SCALE).toInt().coerceIn(1..1000),
+        batteryPercentInFW
     )
     val fontFamilyPercentOut = FontFamilyCache.getFontFamilyForWeight(
-        ((if (batteryPercentOutFW) batteryPercentOutFWVal else 500) * DP_SCALE).toInt().coerceIn(1..1000)
+        ((if (batteryPercentOutFW) batteryPercentOutFWVal else 500) * DP_SCALE).toInt().coerceIn(1..1000),
+        batteryPercentOutFW
     )
     val fontFamilyPercentMark = FontFamilyCache.getFontFamilyForWeight(
-        ((if (batteryPercentMarkFW) batteryPercentMarkFWVal else 600) * DP_SCALE).toInt().coerceIn(1..1000)
+        ((if (batteryPercentMarkFW) batteryPercentMarkFWVal else 600) * DP_SCALE).toInt().coerceIn(1..1000),
+        batteryPercentMarkFW
     )
     val paddingStart = if (batteryPadding) batteryPaddingStartVal else 0
     val paddingEnd = if (batteryPadding) batteryPaddingEndVal else 0
@@ -503,13 +509,16 @@ fun NetworkSpeed(
         TextUnitType.Sp
     )
     val fontFamilyNum = FontFamilyCache.getFontFamilyForWeight(
-        ((if (netSpeedNumFW) netSpeedNumFWVal else 630) * DP_SCALE).toInt().coerceIn(1..1000)
+        ((if (netSpeedNumFW) netSpeedNumFWVal else 630) * DP_SCALE).toInt().coerceIn(1..1000),
+        netSpeedNumFW
     )
     val fontFamilyUnit = FontFamilyCache.getFontFamilyForWeight(
-        ((if (netSpeedUnitFW) netSpeedUnitFWVal else 630) * DP_SCALE).toInt().coerceIn(1..1000)
+        ((if (netSpeedUnitFW) netSpeedUnitFWVal else 630) * DP_SCALE).toInt().coerceIn(1..1000),
+        netSpeedUnitFW
     )
     val fontFamilySeparate = FontFamilyCache.getFontFamilyForWeight(
-        ((if (netSpeedSeparateFW) netSpeedSeparateFWVal else 630) * DP_SCALE).toInt().coerceIn(1..1000)
+        ((if (netSpeedSeparateFW) netSpeedSeparateFWVal else 630) * DP_SCALE).toInt().coerceIn(1..1000),
+        netSpeedSeparateFW
     )
     val textLine1: String
     val textLine2: String
@@ -589,22 +598,42 @@ fun NetworkSpeed(
 inline val Number.scaleDp: Dp
     get() = Dp(this.toFloat() * DP_SCALE)
 
-private val vfPath by lazy {
-    val defaultPath = SystemProperties.get("ro.miui.ui.font.mi_font_path", "/system/fonts/MiSansVF.ttf")
-    val prefPath = SafeSP.getString(Pref.Key.SystemUI.FontWeight.FONT_PATH, defaultPath)
-    val fontFile = File(prefPath)
-    if (fontFile.exists() && fontFile.isFile) prefPath else defaultPath
-}
-
 @Stable
 object FontFamilyCache {
-    private val weightCache = mutableMapOf<Int, FontFamily>()
+    private val defaultWeightCache = mutableMapOf<Int, FontFamily>()
+    private val customWeightCache = mutableMapOf<Int, FontFamily>()
 
-    fun getFontFamilyForWeight(weight: Int): FontFamily {
-        return weightCache.getOrPut(weight) {
-            FontFamily(
-                Typeface.Builder(vfPath).setFontVariationSettings("'wght' $weight").build()
-            )
+    private val vfDefaultPath by lazy {
+        SystemProperties.get("ro.miui.ui.font.mi_font_path", VARIABLE_FONT_DEFAULT_PATH)
+    }
+
+    private var vfCustomPath: String = VARIABLE_FONT_DEFAULT_PATH
+
+    init {
+        updateVfCustomPath()
+    }
+
+    fun getFontFamilyForWeight(weight: Int, custom: Boolean): FontFamily {
+        return if (custom && vfCustomPath != vfDefaultPath) {
+            customWeightCache.getOrPut(weight) {
+                FontFamily(
+                    Typeface.Builder(vfCustomPath).setFontVariationSettings("'wght' $weight").build() ?:
+                    Typeface.Builder(vfDefaultPath).setFontVariationSettings("'wght' $weight").build()
+                )
+            }
+        } else {
+            defaultWeightCache.getOrPut(weight) {
+                FontFamily(
+                    Typeface.Builder(vfDefaultPath).setFontVariationSettings("'wght' $weight").build()
+                )
+            }
         }
+    }
+
+    fun updateVfCustomPath() {
+        val prefPath = SafeSP.getString(Pref.Key.SystemUI.FontWeight.FONT_PATH_APP, vfDefaultPath)
+        val fontFile = File(prefPath)
+        vfCustomPath = if (fontFile.exists() && fontFile.isFile) prefPath else vfDefaultPath
+        customWeightCache.clear()
     }
 }
