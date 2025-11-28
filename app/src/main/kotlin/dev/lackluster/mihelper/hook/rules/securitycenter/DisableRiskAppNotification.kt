@@ -20,6 +20,8 @@
 
 package dev.lackluster.mihelper.hook.rules.securitycenter
 
+import android.content.Context
+import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.DexKit
@@ -28,6 +30,15 @@ import org.luckypray.dexkit.query.enums.StringMatchType
 import java.util.ArrayList
 
 object DisableRiskAppNotification : YukiBaseHooker() {
+    private val riskClz by lazy {
+        DexKit.findClassWithCache("risk_app_notification") {
+            matcher {
+                addUsingString("riskPkgList", StringMatchType.Equals)
+                addUsingString("key_virus_pkg_list", StringMatchType.Equals)
+                addUsingString("show_virus_notification", StringMatchType.Equals)
+            }
+        }
+    }
     private val pkg by lazy {
         DexKit.findMethodsWithCache("block_risk_app_notification") {
             matcher {
@@ -56,7 +67,7 @@ object DisableRiskAppNotification : YukiBaseHooker() {
     private val getAntiFraudPackages by lazy {
         DexKit.findMethodWithCache("get_anti_fraud_packages") {
             matcher {
-                addUsingString("anti_fraud_packages", StringMatchType.Equals)
+                addUsingString("anti_fraud_packages", StringMatchType.EndsWith)
                 paramCount = 0
             }
         }
@@ -64,7 +75,7 @@ object DisableRiskAppNotification : YukiBaseHooker() {
     private val setAntiFraudPackages by lazy {
         DexKit.findMethodWithCache("set_anti_fraud_packages") {
             matcher {
-                addUsingString("anti_fraud_packages", StringMatchType.Equals)
+                addUsingString("anti_fraud_packages", StringMatchType.EndsWith)
                 paramCount = 1
             }
         }
@@ -76,6 +87,19 @@ object DisableRiskAppNotification : YukiBaseHooker() {
             val pkgInstance = pkg.map { it.getMethodInstance(appClassLoader!!) }.toList()
             pkgInstance.hookAll {
                 intercept()
+            }
+            riskClz?.getInstance(appClassLoader!!)?.apply {
+                resolve().method {
+                    returnType(Void.TYPE)
+                    parameterCount = 2
+                    parameters(Context::class, ArrayList::class)
+                }.forEach {
+                    if (!pkgInstance.contains(it.self)) {
+                        it.hook {
+                            intercept()
+                        }
+                    }
+                }
             }
             getAntiFraudPackages?.getMethodInstance(appClassLoader!!)?.hook {
                 replaceTo(ArrayList<String>())

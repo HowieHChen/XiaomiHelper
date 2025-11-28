@@ -22,9 +22,8 @@ package dev.lackluster.mihelper.hook.rules.securitycenter
 
 import android.app.Activity
 import android.os.Message
+import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.current
-import com.highcapable.yukihookapi.hook.factory.method
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.DexKit
 import dev.lackluster.mihelper.utils.factory.hasEnable
@@ -39,7 +38,7 @@ object LockScore : YukiBaseHooker() {
         DexKit.findClassWithCache("lock_score_queue") {
             matcher {
                 className("com.miui.securityscan.MainFragment", StringMatchType.StartsWith)
-                addInterface("android.os.MessageQueue\$IdleHandler", StringMatchType.Equals)
+                addInterface($$"android.os.MessageQueue$IdleHandler", StringMatchType.Equals)
             }
         }
     }
@@ -132,21 +131,37 @@ object LockScore : YukiBaseHooker() {
             searchClasses = mainFragment?.let { listOf(it) }
         }
     }
+    private val getScoreInSecurity by lazy {
+        DexKit.findMethodWithCache("lock_score_in_memory_get") {
+            matcher {
+                addUsingString("key_score_in_security", StringMatchType.Equals)
+                returnType = "int"
+            }
+        }
+    }
+    private val setScoreInSecurity by lazy {
+        DexKit.findMethodWithCache("lock_score_in_memory_set") {
+            matcher {
+                addUsingString("key_score_in_security", StringMatchType.Equals)
+                returnType = "void"
+            }
+        }
+    }
 
     override fun onHook() {
         hasEnable(Pref.Key.SecurityCenter.LOCK_SCORE) {
             if (appClassLoader == null) return@hasEnable
             scanJobServiceClass?.apply {
-                method {
+                resolve().firstMethodOrNull {
                     name = "onStartJob"
-                }.hook {
+                }?.hook {
                     replaceToFalse()
                 }
             }
             queueIdleClass?.getInstance(appClassLoader!!)?.apply {
-                method {
+                resolve().firstMethodOrNull {
                     name = "queueIdle"
-                }.hook {
+                }?.hook {
                     intercept()
                 }
             }
@@ -177,14 +192,23 @@ object LockScore : YukiBaseHooker() {
                     intercept()
                 }
             }
-            onExitDialogMethod?.getMethodInstance(appClassLoader!!)?.hook {
-                before {
-                    this.instance.current().method {
-                        name = "getActivity"
-                        superClass()
-                    }.invoke<Activity>()?.finish()
-                    this.result = null
+            onExitDialogMethod?.getMethodInstance(appClassLoader!!)?.apply {
+                val getActivity = this.declaringClass.resolve().firstMethodOrNull {
+                    name = "getActivity"
+                    superclass()
+                }?.self
+                hook {
+                    before {
+                        (getActivity?.invoke(this.instance) as? Activity)?.finish()
+                        this.result = null
+                    }
                 }
+            }
+            getScoreInSecurity?.getMethodInstance(appClassLoader!!)?.hook {
+                replaceTo(100)
+            }
+            setScoreInSecurity?.getMethodInstance(appClassLoader!!)?.hook {
+                intercept()
             }
         }
     }
