@@ -1,7 +1,7 @@
 package dev.lackluster.mihelper.hook.rules.music
 
+import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.method
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.factory.hasEnable
 
@@ -12,29 +12,29 @@ object SkipSplash : YukiBaseHooker() {
             val disableVIP = if (enableClass?.isEnum == true) enableClass.enumConstants?.get(4) else null
             if (disableVIP != null) {
                 "com.tencent.qqmusiclite.business.splashad.ams.AmsGlobal".toClassOrNull()?.apply {
-                    method {
+                    resolve().firstMethodOrNull {
                         name = "isNeedAd"
-                    }.hook {
+                    }?.hook {
                         replaceTo(disableVIP)
                     }
-                    method {
-                        name = "isNeedSplashAd"
-                    }.hook {
+                    resolve().firstMethodOrNull {
+                    name = "isNeedSplashAd"
+                    }?.hook {
                         replaceTo(disableVIP)
                     }
                 }
             } else {
                 "com.tencent.qqmusiclite.activity.MainActivity".toClassOrNull()?.apply {
-                    method {
+                    resolve().firstMethodOrNull {
                         name = "checkColdSplash"
-                    }.hook {
+                    }?.hook {
                         intercept()
                     }
                 }
                 "com.tencent.qqmusiclite.business.splashad.ams.AmsGlobal".toClassOrNull()?.apply {
-                    method {
+                    resolve().firstMethodOrNull {
                         name = "checkHotSplash"
-                    }.hook {
+                    }?.hook {
                         intercept()
                     }
                 }

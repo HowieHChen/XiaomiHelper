@@ -222,7 +222,6 @@
     <string name="cleaner_security_remove_report">アプリ情報のページから「報告」ボタンを削除する</string>
     <string name="cleaner_incallui_hide_crbt">CRBTを非表示にする (カラーリングバックトーン)</string>
     <string name="cleaner_home_remove_report">アプリのアンインストールのポップアップウィンドウから「報告」ボタンを削除する</string>
-    <string name="cleaner_taplus_hide_shop">ショッピングボタンを非表示にする</string>
     <!-- SystemFrameworkPage -->
     <string name="ui_title_android_freeform">フローティングウィンドウ</string>
     <string name="android_freeform_restriction">すべてのアプリをスモールウィンドウモードにする</string>

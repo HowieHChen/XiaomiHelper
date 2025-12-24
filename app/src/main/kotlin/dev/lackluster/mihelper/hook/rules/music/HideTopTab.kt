@@ -1,10 +1,7 @@
 package dev.lackluster.mihelper.hook.rules.music
 
+import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.current
-import com.highcapable.yukihookapi.hook.factory.field
-import com.highcapable.yukihookapi.hook.factory.method
-import com.highcapable.yukihookapi.hook.type.java.IntClass
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.Prefs
 
@@ -16,35 +13,39 @@ object HideTopTab : YukiBaseHooker() {
     private val hideKaraoke = Prefs.getBoolean(Pref.Key.Music.HIDE_KARAOKE, false)
     private val hideLongAudio = Prefs.getBoolean(Pref.Key.Music.HIDE_LONG_AUDIO, false)
     private val hideDiscover = Prefs.getBoolean(Pref.Key.Music.HIDE_DISCOVER, false)
-    private val topTabClass by lazy {
+    private val clzTopTab by lazy {
         "com.tencent.qqmusiclite.data.dto.shelfcard2.TopTab".toClassOrNull()
+    }
+    private val fldTabId by lazy {
+        clzTopTab?.resolve()?.firstFieldOrNull {
+            name = "id"
+        }?.self?.apply {
+            isAccessible = true
+        }
     }
 
     override fun onHook() {
         if (hideKaraoke || hideLongAudio || hideDiscover) {
-            val tabIdField = topTabClass?.field {
-                name = "id"
-                type = IntClass
-            }
             "com.tencent.qqmusiclite.fragment.home.BaseHomeFragment".toClassOrNull()?.apply {
                 if (hideLongAudio) {
-                    method {
+                    val mIsLongAudioEnable = resolve().firstFieldOrNull {
+                        name = "mIsLongAudioEnable"
+                    }
+                    resolve().firstMethodOrNull {
                         name = "setupViewPager"
-                    }.hook {
+                    }?.hook {
                         before {
-                            this.instance.current(true).field {
-                                name = "mIsLongAudioEnable"
-                            }.setFalse()
+                            mIsLongAudioEnable?.copy()?.of(this.instance)?.set(false)
                         }
                     }
                 }
-                method {
+                resolve().firstMethodOrNull {
                     name = "getTabs"
-                }.hook {
+                }?.hook {
                     after {
                         val list = (this.result as List<*>).toMutableList()
                         this.result = list.filter {
-                            val id = tabIdField?.get(it)?.int() ?: return@filter true
+                            val id = (fldTabId?.get(it) as? Int) ?: return@filter true
                             when (id) {
                                 TOP_TAB_HOME_ID -> true
                                 TOP_TAB_KEGE_ID -> !hideKaraoke

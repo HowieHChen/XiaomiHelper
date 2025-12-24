@@ -43,7 +43,7 @@ object AdBlocker : YukiBaseHooker() {
         }
     }
     private val ctorCloudResultSuccess by lazy {
-        "com.miui.packageInstaller.model.CloudResult\$Success".toClassOrNull()
+        $$"com.miui.packageInstaller.model.CloudResult$Success".toClassOrNull()
             ?.resolve()?.firstConstructorOrNull {
                 parameters("com.miui.packageInstaller.model.CloudParams")
             }
@@ -67,7 +67,7 @@ object AdBlocker : YukiBaseHooker() {
     private val isPersonalizedAdEnabledMethod by lazy {
         DexKit.findMethodWithCache("personalized_ad_enable") {
             matcher {
-                addUsingString("android.provider.MiuiSettings\$Ad", StringMatchType.Equals)
+                addUsingString($$"android.provider.MiuiSettings$Ad", StringMatchType.Equals)
                 returnType = "boolean"
             }
         }

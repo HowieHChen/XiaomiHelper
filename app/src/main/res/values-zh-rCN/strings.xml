@@ -51,7 +51,6 @@
     <string name="search_engine_google">谷歌</string>
     <string name="common_custom">自定义</string>
     <string name="search_engine_custom_url">自定义搜索引擎（URL）</string>
-    <string name="cleaner_taplus_hide_shop">隐藏购物按钮</string>
     <string name="others_settings_unlock_taplus_for_pad">解锁传送门</string>
     <string name="scope_settings">设置</string>
     <string name="security_security_skip_open_no_restriction">禁用链式启动管理</string>
@@ -418,7 +417,7 @@
     <string name="home_others_force_color_scheme_statusbar_tips">指定状态栏文本和图标的颜色（忽略壁纸颜色）。需要在“系统界面”页面启用“禁用智能深色”。</string>
     <string name="home_others_force_color_scheme_minus">负一屏颜色</string>
     <string name="home_others_force_color_scheme_minus_tips">指定负一屏状态栏文本和图标的颜色（忽略壁纸颜色）。需要在“系统界面”页面启用“禁用智能深色”。</string>
-    <string name="cleaner_compatibility_tips">本页面上的大部分功能仅适用于中国大陆地区的用户\n与音乐相关的功能专为拥有音乐会员账户的用户设计\n建议使用以下经过兼容性验证的指定版本应用程序</string>
+    <string name="cleaner_compatibility_tips">本页面上的大部分功能仅适用于中国大陆地区的用户 与音乐相关的功能专为拥有音乐会员账户的用户设计 建议使用以下经过兼容性验证的指定版本应用程序</string>
     <string name="ui_title_cleaner_ad_blocker">屏蔽广告</string>
     <string name="ui_title_cleaner_privacy">隐私</string>
     <string name="cleaner_privacy_block_ul_app_info">阻止安装时上传应用信息</string>
@@ -500,13 +499,10 @@
     <string name="about_hyperx_compose_tips">HyperX Compose 是一个基于 Miuix 的 Compose 组件库，专为 Android 平台打造。</string>
     <string name="ui_title_cleaner_skip_splash">禁用启动屏幕</string>
     <string name="cleaner_skip_splash_tips">理论上还会禁用启动屏幕上的广告（无法保证）</string>
-    <string name="cleaner_browser_remove_app_rec">移除应用推荐</string>
-    <string name="cleaner_browser_remove_app_rec_tips">移除搜索框建议中的应用程序推荐</string>
     <string name="cleaner_package_install_source">自定义安装源</string>
     <string name="cleaner_package_install_source_tips">通过将安装源伪装成系统应用程序，绕过系统应用程序安装限制。</string>
     <string name="cleaner_package_install_source_file">文件管理</string>
     <string name="cleaner_package_custom_install_source">安装源包名</string>
-    <string name="cleaner_systemui_fuck_gesture">阻止创建“statusbar_gestures.dat”文件</string>
     <string name="cleaner_market_block_update_dailog">屏蔽更新推送弹窗</string>
     <string name="cleaner_market_block_update_dailog_tips">屏蔽提示您打开更新推送的对话框（会在关闭更新推送并点击更新按钮时出现）</string>
     <string name="cleaner_market_tab_home">首页</string>
@@ -604,6 +600,7 @@
     <string name="about_telegram_tips">加入 Telegram 频道以反馈问题并获取内部更新</string>
     <string name="cleaner_music_hide_karaoke">隐藏K歌</string>
     <string name="cleaner_music_hide_discover">隐藏发现</string>
+    <string name="cleaner_browser_show_sug_switch_tips">显示搜素设置中被隐藏的搜索精选开关，关闭后即可禁用搜索页面的应用、视频、小说等额外推荐</string>
     <string name="cleaner_browser_hide_homepage_topbar">隐藏主页顶栏</string>
     <string name="cleaner_browser_hide_homepage_topbar_tips">隐藏简洁版主页的顶栏（包含探索版主页入口和主页设置按钮）</string>
     <string name="systemui_others_monet_overlay">自定义主题色</string>
@@ -653,8 +650,6 @@
     <string name="android_display_temp_font_scale_tips">更改后立即生效，但会在系统重启后失效</string>
     <string name="android_display_temp_font_scale_msg">值应该大于等于 0.5 并小于 2.5</string>
     <string name="android_display_temp_font_scale_fail_msg">无法获取/修改当前字体缩放的值。请确认输入的值在有效范围内，并且已授予 root 权限</string>
-    <string name="cleaner_browser_hide_ai_search_entry">隐藏 AI 搜索入口</string>
-    <string name="cleaner_browser_hide_ai_search_entry_tips">隐藏搜索页面键盘上方的 AI 搜索入口</string>
     <string name="cleaner_market_tab_agent">智能体</string>
     <string name="cleaner_market_ignore_restrict">忽略建议限制</string>
     <string name="cleaner_market_filter_unknown_tabs">过滤掉未知标签页</string>
@@ -774,4 +769,9 @@
     <string name="clock_fw_date_time">自定义通知中心日期字重</string>
     <string name="clock_fw_horizontal_time">自定义通知中心横屏日期时间字重</string>
     <string name="clock_fw_horizontal_time_weight">通知中心横屏日期时间字重</string>
+    <string name="cleaner_browser_block_dialog">屏蔽营销弹窗</string>
+    <string name="cleaner_browser_block_dialog_tips">阻止各种推广弹窗弹出，如小组件推荐对话框</string>
+    <string name="cleaner_browser_show_sug_switch">恢复搜素精选设置</string>
+    <string name="cleaner_music_hide_listen_count">隐藏歌曲的播放次数</string>
+    <string name="cleaner_music_hide_listen_count_tips">隐藏播放页的歌曲播放次数标签</string>
 </resources>

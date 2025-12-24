@@ -178,9 +178,9 @@ fun CleanMasterPage(navController: NavController, adjustPadding: PaddingValues, 
                 title = stringResource(R.string.ui_title_cleaner_browser)
             ) {
                 SwitchPreference(
-                    title = stringResource(R.string.cleaner_browser_remove_app_rec),
-                    summary = stringResource(R.string.cleaner_browser_remove_app_rec_tips),
-                    key = Pref.Key.Browser.REMOVE_APP_REC
+                    title = stringResource(R.string.cleaner_browser_show_sug_switch),
+                    summary = stringResource(R.string.cleaner_browser_show_sug_switch_tips),
+                    key = Pref.Key.Browser.SHOW_SUG_SWITCH_VIEW
                 )
                 SwitchPreference(
                     title = stringResource(R.string.cleaner_browser_hide_homepage_topbar),
@@ -188,9 +188,9 @@ fun CleanMasterPage(navController: NavController, adjustPadding: PaddingValues, 
                     key = Pref.Key.Browser.HIDE_HOMEPAGE_TOP_BAR
                 )
                 SwitchPreference(
-                    title = stringResource(R.string.cleaner_browser_hide_ai_search_entry),
-                    summary = stringResource(R.string.cleaner_browser_hide_ai_search_entry_tips),
-                    key = Pref.Key.Browser.HIDE_AI_SEARCH_ENTRY
+                    title = stringResource(R.string.cleaner_browser_block_dialog),
+                    summary = stringResource(R.string.cleaner_browser_block_dialog_tips),
+                    key = Pref.Key.Browser.BLOCK_DIALOG
                 )
             }
         }
@@ -304,6 +304,11 @@ fun CleanMasterPage(navController: NavController, adjustPadding: PaddingValues, 
                     summary = stringResource(R.string.cleaner_music_hide_fav_num_tips),
                     key = Pref.Key.Music.HIDE_FAV_NUM
                 )
+                SwitchPreference(
+                    title = stringResource(R.string.cleaner_music_hide_listen_count),
+                    summary = stringResource(R.string.cleaner_music_hide_listen_count_tips),
+                    key = Pref.Key.Music.HIDE_LISTEN_COUNT
+                )
             }
         }
         item {
@@ -388,27 +393,6 @@ fun CleanMasterPage(navController: NavController, adjustPadding: PaddingValues, 
                 SwitchPreference(
                     title = stringResource(R.string.cleaner_security_remove_report),
                     key = Pref.Key.SecurityCenter.REMOVE_REPORT
-                )
-            }
-        }
-        item {
-            PreferenceGroup(
-                title = stringResource(R.string.ui_title_cleaner_systemui)
-            ) {
-                SwitchPreference(
-                    title = stringResource(R.string.cleaner_systemui_fuck_gesture),
-                    key = Pref.Key.SystemUI.FUCK_GESTURES_DAT
-                )
-            }
-        }
-        item {
-            PreferenceGroup(
-                title = stringResource(R.string.ui_title_cleaner_taplus),
-                last = true
-            ) {
-                SwitchPreference(
-                    title = stringResource(R.string.cleaner_taplus_hide_shop),
-                    key = Pref.Key.Taplus.HIDE_SHOP
                 )
             }
         }

@@ -301,12 +301,8 @@
     <string name="ui_title_cleaner_privacy">Privacidade</string>
     <string name="cleaner_privacy_block_upload_app">Impedir upload automático da lista de apps instalados</string>
     <string name="cleaner_privacy_block_ul_app_info">Impedir upload de informações sobre o app quando ele estiver instalado</string>
-    <string name="cleaner_browser_remove_app_rec">Remover recomendações de apps</string>
-    <string name="cleaner_browser_remove_app_rec_tips">Remove as recomendações de apps das sugestões da caixa de pesquisa</string>
     <string name="cleaner_browser_hide_homepage_topbar">Ocultar barra superior da página inicial</string>
     <string name="cleaner_browser_hide_homepage_topbar_tips">Oculte a barra superior da página inicial simplificada, que inclui configurações e botões de alternância de modo.</string>
-    <string name="cleaner_browser_hide_ai_search_entry">Ocultar entrada da pesquisa de IA</string>
-    <string name="cleaner_browser_hide_ai_search_entry_tips">Oculte a entrada da pesquisa de IA acima do teclado na página de pesquisa</string>
     <string name="cleaner_downloadui_hide_xl">Ocultar ícones e texto da Xunlei</string>
     <string name="cleaner_download_fuck_xl">Bloquear a criação da pasta .xlDownload</string>
     <string name="cleaner_incallui_hide_crbt">Ocultar tom de toque colorido personalizado</string>
@@ -361,8 +357,6 @@
     <string name="cleaner_security_hide_home_popular_tips">Oculte as recomendações de funções populares na parte inferior da página</string>
     <string name="cleaner_security_disable_risk_app_notif">Desativar notificações de \"App malicioso encontrado\"</string>
     <string name="cleaner_security_remove_report">Remover botão \"Denunciar\" da página de informações do app</string>
-    <string name="cleaner_systemui_fuck_gesture">Bloquear criação do arquivo statusbar_gestures.dat</string>
-    <string name="cleaner_taplus_hide_shop">Ocultar botão de compras</string>
     <!-- SystemFrameworkPage -->
     <string name="ui_title_android_display">Tela</string>
     <string name="android_display_temp_font_scale">Tamanho da fonte temporária</string>

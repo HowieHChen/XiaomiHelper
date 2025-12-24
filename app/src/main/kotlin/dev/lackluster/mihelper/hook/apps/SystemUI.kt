@@ -2,7 +2,6 @@ package dev.lackluster.mihelper.hook.apps
 
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils
-import dev.lackluster.mihelper.hook.rules.systemui.FuckStatusBarGestures
 import dev.lackluster.mihelper.hook.rules.systemui.MonetOverlay
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils
 import dev.lackluster.mihelper.hook.rules.systemui.StatusBarActions
@@ -82,7 +81,6 @@ object SystemUI : YukiBaseHooker() {
         loadHooker(UnlockMultipleTask)
         loadHooker(HideTopBar)
 
-        loadHooker(FuckStatusBarGestures)
 
         loadHooker(UnlockCustomAction)
         loadHooker(PadClockAnim)

@@ -41,13 +41,13 @@ object Pref {
         }
         object Browser {
             const val AD_BLOCKER = "browser_ad_block"
+            const val SHOW_SUG_SWITCH_VIEW = "browser_show_sug_switch_view"
+            const val BLOCK_DIALOG = "browser_block_dialog"
             const val DEBUG_MODE = "browser_debug_mode"
             const val SWITCH_ENV = "browser_switch_env"
             const val BLOCK_UPDATE = "browser_no_update"
             const val SKIP_SPLASH = "browser_skip_splash"
-            const val REMOVE_APP_REC = "browser_remove_app_rec"
             const val HIDE_HOMEPAGE_TOP_BAR = "browser_hide_home_top_bar"
-            const val HIDE_AI_SEARCH_ENTRY = "browser_hide_ai_search"
         }
         object Download {
             const val FUCK_XL = "download_remove_xl"
@@ -138,6 +138,7 @@ object Pref {
             const val MY_HIDE_BANNER = "music_my_hide_banner"
             const val MY_HIDE_REC_PLAYLIST = "music_my_hide_rec"
             const val HIDE_FAV_NUM = "music_hide_fav_num"
+            const val HIDE_LISTEN_COUNT = "music_hide_listen_count"
         }
         object PackageInstaller {
             const val BLOCK_UPLOAD_INFO = "package_block_upload"
@@ -372,10 +373,8 @@ object Pref {
             object Plugin {
                 const val AUTO_FLASH_ON = "sys_plugin_flash_on"
             }
-            const val FUCK_GESTURES_DAT = "systemui_fuck_gesture_dat"
         }
         object Taplus {
-            const val HIDE_SHOP = "taplus_hide_shop"
             const val SEARCH_USE_BROWSER = "taplus_use_browser"
             const val SEARCH_ENGINE = "taplus_search_engine"
             const val SEARCH_URL = "taplus_search_url"

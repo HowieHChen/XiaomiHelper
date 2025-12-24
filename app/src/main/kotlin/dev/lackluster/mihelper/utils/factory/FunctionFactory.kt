@@ -86,6 +86,7 @@ fun Number.dp2sp(context: Context) =
 fun Context.jumpToAppDetailsSettings(pkg: String) {
     val packageURI = "package:${pkg}".toUri()
     val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, packageURI)
+    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     startActivity(intent)
 }
 

@@ -1,5 +1,6 @@
 package dev.lackluster.mihelper.hook.rules.browser
 
+import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.DexKit
@@ -51,29 +52,18 @@ object SkipSplash : YukiBaseHooker() {
             supportPassive?.getMethodInstance(appClassLoader!!)?.hook {
                 replaceToFalse()
             }
+            "com.android.browser.splash.SplashAdManager".toClassOrNull()?.apply {
+                resolve().firstMethodOrNull {
+                    name = "inWhiteList"
+                }?.hook {
+                    replaceToTrue()
+                }
+            }
 //            "com.android.browser.xiangkan.AppDownloadHelper".toClass().apply {
 //                method {
 //                    name = "onLoadData"
 //                }.hook {
 //                    intercept()
-//                }
-//            }
-//            ActivityClass.apply {
-//                method {
-//                    name = "startActivity"
-//                    paramCount = 1
-//                    param(IntentClass)
-//                }.hook {
-//                    before {
-//                        val intent = this.args(0).cast<Intent?>() ?: return@before
-//                        if (intent.dataString?.contains("mimarket://details") == true) {
-//                            val argMaps = intent.dataString?.split('&') ?: return@before
-//                            val sourceFileName = argMaps.filter { it.startsWith("sourceFileName") }.firstOrNull()?.replace("sourceFileName=", "")
-//                            val sourceFileUrl = argMaps.filter { it.startsWith("sourceFileUrl") }.firstOrNull()?.replace("sourceFileUrl=", "")
-//                            YLog.info("sourceFileName: $sourceFileName sourceFileUrl: $sourceFileUrl" )
-//                            // this.result = null
-//                        }
-//                    }
 //                }
 //            }
         }

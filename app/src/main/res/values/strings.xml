@@ -377,12 +377,12 @@
     <string name="cleaner_privacy_block_ul_app_info">Block uploading of information about the app when it\'s installed</string>
     <string name="cleaner_privacy_block_ul_app_info_tips" translatable="false">@string/scope_package_installer</string>
     <string name="ui_title_cleaner_browser" translatable="false">@string/scope_browser</string>
-    <string name="cleaner_browser_remove_app_rec">Remove app recommendations</string>
-    <string name="cleaner_browser_remove_app_rec_tips">Remove app recommendations from search box suggestions</string>
+    <string name="cleaner_browser_show_sug_switch">Restore Search Highlights setting</string>
+    <string name="cleaner_browser_show_sug_switch_tips">Displays the hidden Search Highlights toggle in search settings. Turning it off disables extra recommendations such as apps, videos, and novels on the search page.</string>
     <string name="cleaner_browser_hide_homepage_topbar">Hide the top bar of the start page</string>
     <string name="cleaner_browser_hide_homepage_topbar_tips">Hide the top bar of the simplified start page, which includes settings and mode toggle buttons.</string>
-    <string name="cleaner_browser_hide_ai_search_entry">Hide AI search entry</string>
-    <string name="cleaner_browser_hide_ai_search_entry_tips">Hide the AI search entry above the keyboard on the search page</string>
+    <string name="cleaner_browser_block_dialog">Block promotional dialogs</string>
+    <string name="cleaner_browser_block_dialog_tips">Block promotional dialogs such as widget recommendation dialogs</string>
     <string name="ui_title_cleaner_download" translatable="false">@string/scope_download</string>
     <string name="cleaner_downloadui_hide_xl">Hide Xunlei icons and text</string>
     <string name="cleaner_download_fuck_xl">Block creation of .xlDownload folder</string>
@@ -424,6 +424,8 @@
     <string name="cleaner_music_hide_my_rec_playlist">Hide recommended songs on my page</string>
     <string name="cleaner_music_hide_fav_num">Hide song favorite count</string>
     <string name="cleaner_music_hide_fav_num_tips">Hide favorite counts shown on favorite icons. May affect performance.</string>
+    <string name="cleaner_music_hide_listen_count">Hide song play count</string>
+    <string name="cleaner_music_hide_listen_count_tips">Hide the song play count on the player page</string>
     <string name="ui_title_cleaner_package" translatable="false">@string/scope_package_installer</string>
     <string name="cleaner_package_remove_element">Disable redundant features</string>
     <string name="cleaner_package_skip_risk_check">Disable the monitoring of risks</string>
@@ -449,10 +451,6 @@
     <string name="cleaner_security_hide_home_popular_tips">Hide popular function recommendations at the bottom of the page</string>
     <string name="cleaner_security_disable_risk_app_notif">Disable \"Malicious app found\" notifications</string>
     <string name="cleaner_security_remove_report">Remove the \"Report\" button from the app info page</string>
-    <string name="ui_title_cleaner_systemui" translatable="false">@string/scope_systemui</string>
-    <string name="cleaner_systemui_fuck_gesture">Block creation of statusbar_gestures.dat file</string>
-    <string name="ui_title_cleaner_taplus" translatable="false">@string/scope_taplus</string>
-    <string name="cleaner_taplus_hide_shop">Hide shopping button</string>
     <!-- SystemFrameworkPage -->
     <string name="ui_title_android_display">Display</string>
     <string name="android_display_temp_font_scale">Temporary font scale</string>
