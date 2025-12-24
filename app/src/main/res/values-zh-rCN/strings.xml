@@ -576,9 +576,6 @@
     <string name="font_hint_path">所有自定义字重功能（不仅限于下方的选项）都会加载此路径所指定的可变字体文件。除非你清楚自己在做什么并且了解可能的后果，否则请勿修改。 \n\n如果你希望修改字体但不修改字重，请启用对应的自定义字重首选项，并保持字重为默认值。</string>
     <string name="font_general_path">字体文件路径</string>
     <string name="font_general_path_tips">除非你清楚自己在做什么并且了解可能的后果，否则请勿修改。\n\n请使用可变字体。</string>
-    <string name="font_sb_clock_weight">时间的字重</string>
-    <string name="font_sb_focus">焦点通知</string>
-    <string name="font_sb_focus_weight">焦点通知的字重</string>
     <string name="icon_detail_battery_percent_in_size_value">内部百分比字号</string>
     <string name="icon_detail_battery_fw_percent_out">自定义外部百分比字重</string>
     <string name="icon_detail_battery_fw_percent_out_weight">外部百分比字重</string>
@@ -586,15 +583,9 @@
     <string name="icon_detail_battery_fw_percent_mark_weight">百分比符号字重</string>
     <string name="icon_detail_battery_fw_percent_in">自定义内部百分比字重</string>
     <string name="icon_detail_battery_fw_percent_in_weight">内部百分比字重</string>
-    <string name="font_icon_net_speed_num">网络速度数字</string>
-    <string name="font_icon_net_speed_num_weight">网络速度数字的字重</string>
-    <string name="font_icon_net_speed_unit">网络速度单位</string>
-    <string name="font_icon_net_speed_unit_weight">网络速度单位的字重</string>
     <string name="icon_detail_cellular_type_map_msg">使用逗号分隔值\n输入 1 项以将相同文本应用于所有网络类型，或输入 15 项以单独自定义每种类型\n\n请参考以下默认系统映射：\n\n,G,E,3G,H,H+,4G,4G+,,LTE,5G,5G,5G+,5GA,5G</string>
     <string name="icon_detail_cellular_fw_type">自定义移动网络类型字重</string>
     <string name="icon_detail_cellular_fw_type_weight">移动网络类型字重</string>
-    <string name="font_notif_clock">时间（通知中心）</string>
-    <string name="font_notif_clock_weight">时间（通知中心）的字重</string>
     <string name="menu_reboot_common_title">重启%s</string>
     <string name="about_telegram">Telegram 频道</string>
     <string name="about_telegram_tips">加入 Telegram 频道以反馈问题并获取内部更新</string>

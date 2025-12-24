@@ -504,23 +504,14 @@
     <!-- StatusBarFontPage -->
     <string name="font_general_path">Caminho do arquivo de fonte</string>
     <string name="font_general_path_tips">Por favor, use fontes variáveis. Funciona apenas para os alvos ativados abaixo.</string>
-    <string name="font_sb_clock_weight">Peso da fonte do relógio</string>
-    <string name="font_sb_focus">Notificação de foco</string>
-    <string name="font_sb_focus_weight">Peso da fonte da notificação de foco</string>
     <string name="icon_detail_battery_fw_percent_out">Porcentagem da bateria (externa)</string>
     <string name="icon_detail_battery_fw_percent_out_weight">Peso da fonte da porcentagem da bateria (externa)</string>
     <string name="icon_detail_battery_fw_percent_mark">Símbolo de porcentagem da bateria</string>
     <string name="icon_detail_battery_fw_percent_mark_weight">Peso da fonte do símbolo de porcentagem da bateria</string>
     <string name="icon_detail_battery_fw_percent_in">Porcentagem da bateria (interna)</string>
     <string name="icon_detail_battery_fw_percent_in_weight">Peso da fonte da porcentagem da bateria (interna)</string>
-    <string name="font_icon_net_speed_num">Números da velocidade da rede</string>
-    <string name="font_icon_net_speed_num_weight">Peso da fonte da velocidade da rede (números)</string>
-    <string name="font_icon_net_speed_unit">Texto unitário da velocidade da rede</string>
-    <string name="font_icon_net_speed_unit_weight">Peso da fonte da velocidade da rede (unidade)</string>
     <string name="icon_detail_cellular_fw_type">Tipo de rede móvel</string>
     <string name="icon_detail_cellular_fw_type_weight">Peso da fonte do tipo de rede móvel</string>
-    <string name="font_notif_clock">Relógio (área de notificações)</string>
-    <string name="font_notif_clock_weight">Peso da fonte do relógio (área de notificações)</string>
     <string name="font_weight_lockscreen_carrier_weight">Peso da fonte do rótulo da operadora</string>
     <!-- IconTunerPage -->
     <string name="icon_tuner_hide_selection_default">Padrão</string>
