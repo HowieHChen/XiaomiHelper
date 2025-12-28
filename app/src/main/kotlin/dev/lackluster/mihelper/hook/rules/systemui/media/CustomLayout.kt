@@ -2,15 +2,16 @@ package dev.lackluster.mihelper.hook.rules.systemui.media
 
 import android.content.Context
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintSet
+import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.constructor
-import com.highcapable.yukihookapi.hook.factory.current
-import com.highcapable.yukihookapi.hook.factory.method
-import com.highcapable.yukihookapi.hook.type.java.IntType
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.action0
+import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.action1
+import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.action2
+import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.action3
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.action4
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.actions
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.header_artist
@@ -21,207 +22,173 @@ import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.media_elapsed_
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.media_progress_bar
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.media_seamless
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.media_total_time
+import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzMiuiIslandMediaViewBinderImpl
+import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzMiuiIslandMediaViewHolder
+import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzMiuiMediaNotificationControllerImpl
+import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzMiuiMediaViewControllerImpl
+import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzMiuiMediaViewHolder
+import dev.lackluster.mihelper.hook.rules.systemui.compat.ConstraintSetCompat.applyTo
+import dev.lackluster.mihelper.hook.rules.systemui.compat.ConstraintSetCompat.clear
+import dev.lackluster.mihelper.hook.rules.systemui.compat.ConstraintSetCompat.connect
+import dev.lackluster.mihelper.hook.rules.systemui.compat.ConstraintSetCompat.setGoneMargin
+import dev.lackluster.mihelper.hook.rules.systemui.compat.ConstraintSetCompat.setMargin
+import dev.lackluster.mihelper.hook.rules.systemui.compat.ConstraintSetCompat.setVisibility
 import dev.lackluster.mihelper.utils.Prefs
 import dev.lackluster.mihelper.utils.factory.dp
 
 object CustomLayout : YukiBaseHooker() {
-    private val album = Prefs.getInt(Pref.Key.SystemUI.MediaControl.LYT_ALBUM, 0)
-    private val actionsLeftAligned = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.LYT_LEFT_ACTIONS, false)
-    private val actionsOrder = Prefs.getInt(Pref.Key.SystemUI.MediaControl.LYT_ACTIONS_ORDER, 0)
-    private val hideTime = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.LYT_HIDE_TIME, false)
-    private val hideSeamless = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.LYT_HIDE_SEAMLESS, false)
-    private val headerMargin = Prefs.getFloat(Pref.Key.SystemUI.MediaControl.LYT_HEADER_MARGIN, 21.0f)
-    private val headerPadding = Prefs.getFloat(Pref.Key.SystemUI.MediaControl.LYT_HEADER_PADDING, 2.0f)
+    private val ncAlbum = Prefs.getInt(Pref.Key.SystemUI.MediaControl.LYT_ALBUM, 0)
+    private val ncActionsLeftAligned = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.LYT_LEFT_ACTIONS, false)
+    private val ncActionsOrder = Prefs.getInt(Pref.Key.SystemUI.MediaControl.LYT_ACTIONS_ORDER, 0)
+    private val ncHideTime = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.LYT_HIDE_TIME, false)
+    private val ncHideSeamless = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.LYT_HIDE_SEAMLESS, false)
+    private val ncHeaderMargin = Prefs.getFloat(Pref.Key.SystemUI.MediaControl.LYT_HEADER_MARGIN, 21.0f)
+    private val ncHeaderPadding = Prefs.getFloat(Pref.Key.SystemUI.MediaControl.LYT_HEADER_PADDING, 4.0f)
 
-    private val mediaButtonClass by lazy {
-        "com.android.systemui.media.controls.shared.model.MediaButton".toClassOrNull()
-            ?: "com.android.systemui.media.controls.models.player.MediaButton".toClassOrNull()
-    }
-    private val constraintSetClass by lazy {
-        "androidx.constraintlayout.widget.ConstraintSet".toClass()
-    }
-    private val mediaViewControllerClass by lazy {
-        "com.android.systemui.media.controls.ui.controller.MediaViewController".toClassOrNull()
-            ?: "com.android.systemui.media.controls.ui.MediaViewController".toClassOrNull()
-    }
-    private val clear by lazy {
-        constraintSetClass.method {
-            name = "clear"
-            paramCount = 2
-            param(IntType, IntType)
-        }.give()
-    }
-    private val setVisibility by lazy {
-        constraintSetClass.method {
-            name = "setVisibility"
-            paramCount = 2
-            param(IntType, IntType)
-        }.give()
-    }
-    private val connect by lazy {
-        constraintSetClass.method {
-            name = "connect"
-            paramCount = 4
-            param(IntType, IntType, IntType, IntType)
-        }.give()
-    }
-    private val setMargin by lazy {
-        constraintSetClass.method {
-            name = "setMargin"
-            paramCount = 3
-            param(IntType, IntType, IntType)
-        }.give()
-    }
-    private val setGoneMargin by lazy {
-        constraintSetClass.method {
-            name = "setGoneMargin"
-            paramCount = 3
-            param(IntType, IntType, IntType)
-        }.give()
-    }
+    private val diAlbum = Prefs.getInt(Pref.Key.DynamicIsland.MediaControl.LYT_ALBUM, 0)
+    private val diActionsLeftAligned = Prefs.getBoolean(Pref.Key.DynamicIsland.MediaControl.LYT_LEFT_ACTIONS, false)
+    private val diActionsOrder = Prefs.getInt(Pref.Key.DynamicIsland.MediaControl.LYT_ACTIONS_ORDER, 0)
+    private val diHideTime = Prefs.getBoolean(Pref.Key.DynamicIsland.MediaControl.LYT_HIDE_TIME, false)
+    private val diHideSeamless = Prefs.getBoolean(Pref.Key.DynamicIsland.MediaControl.LYT_HIDE_SEAMLESS, false)
+    private val diHeaderMargin = Prefs.getFloat(Pref.Key.DynamicIsland.MediaControl.LYT_HEADER_MARGIN, 21.0f)
+    private val diHeaderPadding = Prefs.getFloat(Pref.Key.DynamicIsland.MediaControl.LYT_HEADER_PADDING, 4.0f)
+
     override fun onHook() {
-        if (actionsOrder != 0) {
-            mediaButtonClass?.apply {
-                constructor {
-                    paramCount = 7
-                }.hook {
+        if (ncAlbum != 0 || ncActionsLeftAligned || ncHideTime || ncHideSeamless || ncHeaderMargin != 21.0f || ncHeaderPadding != 4.0f) {
+            clzMiuiMediaNotificationControllerImpl?.apply {
+                val fldContext = resolve().firstFieldOrNull {
+                    name = "context"
+                }
+                val fldNormalLayout = resolve().firstFieldOrNull {
+                    name = "normalLayout"
+                }
+                val fldNormalAlbumLayout = resolve().firstFieldOrNull {
+                    name = "normalAlbumLayout"
+                }
+                resolve().firstMethodOrNull {
+                    name {
+                        it.startsWith("loadLayout")
+                    }
+                }?.hook {
                     after {
-                        val custom0 = this.instance.current().field { name = "custom0" }.any()
-                        val prevOrCustom = this.instance.current().field { name = "prevOrCustom" }.any()
-                        val playOrPause = this.instance.current().field { name = "playOrPause" }.any()
-                        val nextOrCustom = this.instance.current().field { name = "nextOrCustom" }.any()
-                        val custom1 = this.instance.current().field { name = "custom1" }.any()
-                        when (actionsOrder) {
-                            1 -> {
-                                this.instance.current().field { name = "custom0" }.set(prevOrCustom)
-                                this.instance.current().field { name = "prevOrCustom" }.set(playOrPause)
-                                this.instance.current().field { name = "playOrPause" }.set(nextOrCustom)
-                                this.instance.current().field { name = "nextOrCustom" }.set(custom0)
-                                this.instance.current().field { name = "custom1" }.set(custom1)
-                            }
-                            2 -> {
-                                this.instance.current().field { name = "custom0" }.set(playOrPause)
-                                this.instance.current().field { name = "prevOrCustom" }.set(prevOrCustom)
-                                this.instance.current().field { name = "playOrPause" }.set(nextOrCustom)
-                                this.instance.current().field { name = "nextOrCustom" }.set(custom0)
-                                this.instance.current().field { name = "custom1" }.set(custom1)
-                            }
+                        val context = fldContext?.copy()?.of(this.instance)?.get<Context>() ?: return@after
+                        val normalLayout = fldNormalLayout?.copy()?.of(this.instance)?.get() ?: return@after
+                        val normalAlbumLayout = fldNormalAlbumLayout?.copy()?.of(this.instance)?.get() ?: return@after
+                        updateLayoutConstraintSet(context, normalLayout, false)
+                        if (ncAlbum != 0) {
+                            setVisibility?.invoke(normalAlbumLayout, icon, View.GONE)
                         }
                     }
                 }
-//                method {
-//                    name = "getActionById"
-//                }.hook {
-//                    before {
-//                        val id = this.args(0).int()
-//                        when (id) {
-//                            action0 -> {
-//                                this.result =
-//                                    if (actionsOrder == 1) this.instance.current().field { name = "prevOrCustom" }.any()
-//                                    else this.instance.current().field { name = "playOrPause" }.any()
-//                            }
-//                            action1 -> {
-//                                this.result =
-//                                    if (actionsOrder == 1) this.instance.current().field { name = "playOrPause" }.any()
-//                                    else this.instance.current().field { name = "prevOrCustom" }.any()
-//                            }
-//                            action2 -> this.result = this.instance.current().field { name = "nextOrCustom" }.any()
-//                            action3 -> this.result = this.instance.current().field { name = "custom0" }.any()
-//                            action4 -> this.result = this.instance.current().field { name = "custom1" }.any()
-//                        }
-//                    }
-//                }
+            }
+            if (ncHideTime) {
+                clzMiuiMediaViewControllerImpl?.apply {
+                    val holder = resolve().firstFieldOrNull {
+                        name = "holder"
+                    }?.self
+                    val fldElapsedTimeView = clzMiuiMediaViewHolder?.resolve()?.firstFieldOrNull {
+                        name = "elapsedTimeView"
+                    }?.self
+                    val fldTotalTimeView = clzMiuiMediaViewHolder?.resolve()?.firstFieldOrNull {
+                        name = "totalTimeView"
+                    }?.self
+                    resolve().firstMethodOrNull {
+                        name = "onFullAodStateChanged"
+                    }?.hook {
+                        after {
+                            val vh = holder?.get(this.instance) ?: return@after
+                            (fldElapsedTimeView?.get(vh) as? TextView)?.visibility = View.GONE
+                            (fldTotalTimeView?.get(vh) as? TextView)?.visibility = View.GONE
+                        }
+                    }
+                }
             }
         }
-        if (album != 0 || actionsLeftAligned || hideTime || hideSeamless || headerMargin != 26.0f || headerPadding != 2.0f) {
-            "com.android.systemui.statusbar.notification.mediacontrol.MiuiMediaNotificationControllerImpl".toClassOrNull()?.apply {
-                constructor().hook {
-                    after {
-                        val context = this.instance.current().field {
-                            name = "context"
-                        }.cast<Context>() ?: return@after
-                        val normalLayout = this.instance.current().field {
-                            name = "normalLayout"
-                        }.any() ?: return@after
-                        updateConstraintSet(context, normalLayout)
-                    }
-                }
+        if (ncHideSeamless) {
+            clzMiuiMediaViewControllerImpl?.resolve()?.firstMethodOrNull {
+                name = "setSeamless"
+            }?.hook {
+                intercept()
             }
-            if (hideTime) {
-                "com.android.systemui.statusbar.notification.mediacontrol.MiuiMediaViewControllerImpl".toClassOrNull()?.apply {
-                    method {
-                        name = "onFullAodStateChanged"
-                    }.hook {
-                        after {
-                            val holder = this.instance.current().field {
-                                name = "holder"
-                            }.any() ?: return@after
-                            holder.current().field { name = "elapsedTimeView" }.cast<TextView>()?.visibility = View.GONE
-                            holder.current().field { name = "totalTimeView" }.cast<TextView>()?.visibility = View.GONE
+        }
+        if (diAlbum != 0 || diActionsLeftAligned || diHideTime || diHideSeamless || diHeaderMargin != 21.0f || diHeaderPadding != 4.0f) {
+            "com.android.systemui.statusbar.notification.mediaisland.MiuiIslandMediaControllerImpl".toClassOrNull()?.apply {
+                val fldContext = resolve().firstFieldOrNull {
+                    name = "context"
+                }
+                val fldNormalLayoutIsland = resolve().firstFieldOrNull {
+                    name = "normalLayoutIsland"
+                }
+                val fldMiuiPlayerHolder = resolve().firstFieldOrNull {
+                    name = "miuiPlayerHolder"
+                }?.self
+                val fldMiuiDummyPlayerHolder = resolve().firstFieldOrNull {
+                    name = "miuiDummyPlayerHolder"
+                }?.self
+                val fldAppIcon = clzMiuiIslandMediaViewHolder?.resolve()?.firstFieldOrNull {
+                    name = "appIcon"
+                }?.self
+                val fldPlayer = clzMiuiIslandMediaViewHolder?.resolve()?.firstFieldOrNull {
+                    name = "player"
+                }?.self
+                resolve().firstMethodOrNull {
+                    name {
+                        it.startsWith("reInflateView")
+                    }
+                }?.hook {
+                    after {
+                        val context = fldContext?.copy()?.of(this.instance)?.get<Context>() ?: return@after
+                        val normalLayoutIsland = fldNormalLayoutIsland?.copy()?.of(this.instance)?.get() ?: return@after
+                        updateLayoutConstraintSet(context, normalLayoutIsland, true)
+                        val miuiPlayerHolder = fldMiuiPlayerHolder?.get(this.instance)
+                        val miuiDummyPlayerHolder = fldMiuiDummyPlayerHolder?.get(this.instance)
+                        miuiPlayerHolder?.let { it1 -> applyTo?.invoke(normalLayoutIsland, fldPlayer?.get(it1)) }
+                        miuiDummyPlayerHolder?.let { it1 -> applyTo?.invoke(normalLayoutIsland, fldPlayer?.get(it1)) }
+                        if (diAlbum != 0) {
+                            miuiPlayerHolder?.let { it1 -> (fldAppIcon?.get(it1) as? ImageView)?.visibility = View.GONE }
+                            miuiDummyPlayerHolder?.let { it1 -> (fldAppIcon?.get(it1) as? ImageView)?.visibility = View.GONE }
                         }
                     }
                 }
             }
-            mediaViewControllerClass?.apply {
-                var newMediaPanel = false
-                method {
-                    name = "loadLayoutForType"
-                }.ignored().onNoSuchMethod {
-                    newMediaPanel = true
+            "com.android.systemui.statusbar.notification.mediaisland.PlayerIslandConstraintLayout".toClassOrNull()?.apply {
+                val fldNormalLayoutIsland = resolve().firstFieldOrNull {
+                    name = "normalLayoutIsland"
+                }
+                resolve().firstConstructor {
+                    parameterCount = 3
                 }.hook {
                     after {
-                        val context = this.instance.current().field {
-                            name = "context"
-                        }.cast<Context>() ?: return@after
-                        val expandedLayout = this.instance.current().field {
-                            name = "expandedLayout"
-                        }.any() ?: return@after
-                        updateConstraintSet(context, expandedLayout)
+                        val context = this.args(0).cast<Context>() ?: return@after
+                        val normalLayoutIsland = fldNormalLayoutIsland?.copy()?.of(this.instance)?.get() ?: return@after
+                        updateLayoutConstraintSet(context, normalLayoutIsland, true)
                     }
                 }
-                if (hideTime && !newMediaPanel) {
-                    method {
-                        name = "refreshState"
-                    }.hook {
-                        before {
-                            val expandedLayout = this.instance.current().field {
-                                name = "expandedLayout"
-                            }.any() ?: return@before
-                            setVisibility?.invoke(expandedLayout, media_elapsed_time, View.GONE)
-                            setVisibility?.invoke(expandedLayout, media_total_time, View.GONE)
-                        }
-                    }
-                }
+            }
+        }
+        if (diHideSeamless) {
+            clzMiuiIslandMediaViewBinderImpl?.resolve()?.firstMethodOrNull {
+                name = "setSeamless"
+            }?.hook {
+                intercept()
             }
         }
     }
 
-    private fun updateConstraintSet(context: Context, constraintSet: Any) {
+    private fun updateLayoutConstraintSet(context: Context, constraintSet: Any, dynamicIsland: Boolean) {
         val standardMargin = 26.dp(context)
-        if (album != 0) {
-            setVisibility?.invoke(constraintSet, icon, View.GONE)
-        }
+        val album = if (dynamicIsland) diAlbum else ncAlbum
+        val actionsLeftAligned = if (dynamicIsland) diActionsLeftAligned else ncActionsLeftAligned
+        val actionsOrder = if (dynamicIsland) diActionsOrder else ncActionsOrder
+        val hideTime = if (dynamicIsland) diHideTime else ncHideTime
+        val hideSeamless = if (dynamicIsland) diHideSeamless else ncHideSeamless
+        val headerMargin = if (dynamicIsland) diHeaderMargin else ncHeaderMargin
+        val headerPadding = if (dynamicIsland) diHeaderPadding else ncHeaderPadding
         if (album == 2) {
-//                            connect?.invoke(expandedLayout,
-//                                header_title, ConstraintSet.START,
-//                                ConstraintSet.PARENT_ID, ConstraintSet.START
-//                            )
-//                            connect?.invoke(expandedLayout,
-//                                header_artist, ConstraintSet.START,
-//                                ConstraintSet.PARENT_ID, ConstraintSet.START
-//                            )
-//                            connect?.invoke(expandedLayout,
-//                                actions, ConstraintSet.TOP,
-//                                ConstraintSet.PARENT_ID, ConstraintSet.TOP
-//                            )
-//                            connect?.invoke(expandedLayout,
-//                                action0, ConstraintSet.TOP,
-//                                ConstraintSet.PARENT_ID, ConstraintSet.TOP
-//                            )
             setGoneMargin?.invoke(constraintSet, header_title, ConstraintSet.START, standardMargin)
             setGoneMargin?.invoke(constraintSet, header_artist, ConstraintSet.START, standardMargin)
-            setGoneMargin?.invoke(constraintSet, actions, ConstraintSet.TOP, 68.5.dp(context))
-            setGoneMargin?.invoke(constraintSet, action0, ConstraintSet.TOP, 79.5.dp(context))
+            setGoneMargin?.invoke(constraintSet, actions, ConstraintSet.TOP, 67.5.dp(context))
+            setGoneMargin?.invoke(constraintSet, action0, ConstraintSet.TOP, 78.5.dp(context))
             setVisibility?.invoke(constraintSet, album_art, View.GONE)
         }
         if (headerMargin != 21.0f) {
@@ -229,8 +196,38 @@ object CustomLayout : YukiBaseHooker() {
             setMargin?.invoke(constraintSet, header_title, ConstraintSet.TOP, headerMarginTop)
             setGoneMargin?.invoke(constraintSet, header_title, ConstraintSet.TOP, headerMarginTop)
         }
-        if (headerPadding != 2.0f) {
+        if (headerPadding != 4.0f) {
             setMargin?.invoke(constraintSet, header_artist, ConstraintSet.TOP, headerPadding.dp(context))
+        }
+        when (actionsOrder) {
+            1 -> {
+                connect?.invoke(constraintSet, action1, ConstraintSet.LEFT,  actions, ConstraintSet.LEFT)
+                connect?.invoke(constraintSet, action1, ConstraintSet.RIGHT,  action2, ConstraintSet.LEFT)
+                connect?.invoke(constraintSet, action2, ConstraintSet.LEFT,  action1, ConstraintSet.RIGHT)
+                connect?.invoke(constraintSet, action2, ConstraintSet.RIGHT,  action3, ConstraintSet.LEFT)
+                connect?.invoke(constraintSet, action3, ConstraintSet.LEFT,  action2, ConstraintSet.RIGHT)
+                connect?.invoke(constraintSet, action3, ConstraintSet.RIGHT,  action0, ConstraintSet.LEFT)
+                connect?.invoke(constraintSet, action0, ConstraintSet.LEFT,  action3, ConstraintSet.RIGHT)
+                connect?.invoke(constraintSet, action0, ConstraintSet.RIGHT,  action4, ConstraintSet.LEFT)
+                connect?.invoke(constraintSet, action4, ConstraintSet.LEFT,  action0, ConstraintSet.RIGHT)
+                connect?.invoke(constraintSet, action4, ConstraintSet.RIGHT,  actions, ConstraintSet.RIGHT)
+                setMargin?.invoke(constraintSet, action0, ConstraintSet.START, 0)
+                setMargin?.invoke(constraintSet, action1, ConstraintSet.START, 6.dp(context))
+            }
+            2 -> {
+                connect?.invoke(constraintSet, action2, ConstraintSet.LEFT,  actions, ConstraintSet.LEFT)
+                connect?.invoke(constraintSet, action2, ConstraintSet.RIGHT,  action1, ConstraintSet.LEFT)
+                connect?.invoke(constraintSet, action1, ConstraintSet.LEFT,  action2, ConstraintSet.RIGHT)
+                connect?.invoke(constraintSet, action1, ConstraintSet.RIGHT,  action3, ConstraintSet.LEFT)
+                connect?.invoke(constraintSet, action3, ConstraintSet.LEFT,  action1, ConstraintSet.RIGHT)
+                connect?.invoke(constraintSet, action3, ConstraintSet.RIGHT,  action0, ConstraintSet.LEFT)
+                connect?.invoke(constraintSet, action0, ConstraintSet.LEFT,  action3, ConstraintSet.RIGHT)
+                connect?.invoke(constraintSet, action0, ConstraintSet.RIGHT,  action4, ConstraintSet.LEFT)
+                connect?.invoke(constraintSet, action4, ConstraintSet.LEFT,  action0, ConstraintSet.RIGHT)
+                connect?.invoke(constraintSet, action4, ConstraintSet.RIGHT,  actions, ConstraintSet.RIGHT)
+                setMargin?.invoke(constraintSet, action0, ConstraintSet.START, 0)
+                setMargin?.invoke(constraintSet, action2, ConstraintSet.START, 6.dp(context))
+            }
         }
         if (actionsLeftAligned) {
             clear?.invoke(constraintSet, action4, ConstraintSet.RIGHT)
@@ -249,14 +246,6 @@ object CustomLayout : YukiBaseHooker() {
         }
         if (hideSeamless) {
             setVisibility?.invoke(constraintSet, media_seamless, View.GONE)
-//                            connect?.invoke(expandedLayout,
-//                                header_title, ConstraintSet.END,
-//                                ConstraintSet.PARENT_ID, ConstraintSet.END
-//                            )
-//                            connect?.invoke(expandedLayout,
-//                                header_artist, ConstraintSet.END,
-//                                ConstraintSet.PARENT_ID, ConstraintSet.END
-//                            )
             setGoneMargin?.invoke(constraintSet, header_title, ConstraintSet.END, standardMargin)
             setGoneMargin?.invoke(constraintSet, header_artist, ConstraintSet.END, standardMargin)
         }

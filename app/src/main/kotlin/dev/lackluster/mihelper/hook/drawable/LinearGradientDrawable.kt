@@ -46,6 +46,10 @@ class LinearGradientDrawable(
     override fun draw(p0: Canvas) {
         val bounds = bounds
         if (bounds.isEmpty) return
+        val skipAnim = !useAnim || skipAnimOnce
+        if (skipAnimOnce) {
+            skipAnimOnce = false
+        }
         var alpha = 255
         when (albumState) {
             AnimationState.STARTING -> {
@@ -57,10 +61,11 @@ class LinearGradientDrawable(
                     val normalized: Float = ((System.currentTimeMillis() - albumStartTimeMillis) / albumDuration.toFloat()).coerceIn(0.0f, 1.0f)
                     currentColor = argbEvaluator.evaluate(normalized, sourceColor, targetColor) as Int
                     alpha = Math.linearInterpolate(0, 255, normalized)
-                    if (normalized >= 1.0f || !useAnim) {
+                    if (normalized >= 1.0f || skipAnim) {
                         albumState = AnimationState.DONE
                         currentColor = targetColor
                         artwork = nextArtwork ?: artwork
+                        nextArtwork = null
                         alpha = 255
                     }
                 }
@@ -76,7 +81,7 @@ class LinearGradientDrawable(
                 if (resizeStartTimeMillis >= 0) {
                     val normalized: Float = ((System.currentTimeMillis() - resizeStartTimeMillis) / resizeDuration.toFloat()).coerceIn(0.0f, 1.0f)
                     currentSize = Math.linearInterpolate(sourceSize, targetSize, normalized)
-                    if (normalized >= 1.0f || !useAnim) {
+                    if (normalized >= 1.0f || skipAnim) {
                         resizeState = AnimationState.DONE
                         currentSize = targetSize
                     }
@@ -87,16 +92,19 @@ class LinearGradientDrawable(
         background.color = currentColor
         background.setBounds(0, 0, bounds.width(), bounds.height())
         background.draw(p0)
+
+        val drawBounds = Rect(bounds.width() - currentSize, 0, bounds.width(), currentSize)
+
         if (alpha == 0 || alpha == 255) {
-            artwork.setBounds(bounds.width() - currentSize, 0, bounds.width(), currentSize)
+            artwork.bounds = drawBounds
             artwork.draw(p0)
         } else {
-            artwork.setBounds(bounds.width() - currentSize, 0, bounds.width(), currentSize)
+            artwork.bounds = drawBounds
             artwork.alpha = 255 - alpha
             artwork.draw(p0)
             artwork.alpha = 255
             nextArtwork?.let {
-                it.setBounds(bounds.width() - currentSize, 0, bounds.width(), currentSize)
+                it.bounds = drawBounds
                 it.alpha = alpha
                 it.draw(p0)
                 it.alpha = 255
@@ -115,7 +123,8 @@ class LinearGradientDrawable(
 
     override fun updateAlbumCover(
         artwork: Drawable,
-        colorConfig: MediaViewColorConfig
+        colorConfig: MediaViewColorConfig,
+        skipAnim: Boolean
     ) {
         nextArtwork = artwork
         sourceColor = currentColor

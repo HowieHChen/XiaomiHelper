@@ -19,12 +19,9 @@ import android.media.ImageReader
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.drawable.toDrawable
 import androidx.core.graphics.get
+import com.highcapable.kavaref.KavaRef.Companion.resolve
+import com.highcapable.kavaref.condition.type.Modifiers
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.constructor
-import com.highcapable.yukihookapi.hook.factory.field
-import com.highcapable.yukihookapi.hook.factory.method
-import com.highcapable.yukihookapi.hook.type.android.IconClass
-import com.highcapable.yukihookapi.hook.type.java.StringClass
 import dev.lackluster.mihelper.hook.rules.systemui.media.bg.MediaViewColorConfig
 import kotlin.math.max
 import kotlin.math.min
@@ -36,91 +33,68 @@ object MediaControlBgFactory : YukiBaseHooker() {
         Color.BLACK,
         Color.BLACK
     )
-    val PlayerTwoCircleViewClass by lazy {
-        "com.android.systemui.statusbar.notification.mediacontrol.PlayerTwoCircleView".toClassOrNull()
+    val clzMediaData by lazy {
+        "com.android.systemui.media.controls.shared.model.MediaData".toClassOrNull()
     }
-    val MiuiMediaControlPanelClass by lazy {
-        "com.android.systemui.statusbar.notification.mediacontrol.MiuiMediaControlPanel".toClassOrNull()
-    }
-    val MiuiMediaViewControllerImplClass by lazy {
-        "com.android.systemui.statusbar.notification.mediacontrol.MiuiMediaViewControllerImpl".toClassOrNull()
-    }
-    val ColorSchemeClass by lazy {
+    private val clzColorScheme by lazy {
         "com.android.systemui.monet.ColorScheme".toClass()
     }
-    val conColorScheme2 by lazy {
-        ColorSchemeClass.constructor {
-            paramCount = 2
-        }.ignored().give()
-    }
-    val conColorScheme3 by lazy {
-        ColorSchemeClass.constructor {
-            paramCount = 3
-        }.ignored().give()
+    val ctorColorScheme by lazy {
+        clzColorScheme.resolve().firstConstructorOrNull {
+            parameterCount = 3
+            parameters(WallpaperColors::class, Boolean::class, Int::class)
+        }?.self
     }
     val fldTonalPaletteAllShades by lazy {
-        "com.android.systemui.monet.TonalPalette".toClass().field {
+        "com.android.systemui.monet.TonalPalette".toClass().resolve().firstFieldOrNull {
             name = "allShades"
-        }.give()
+        }?.self
     }
     val fldColorSchemeNeutral1 by lazy {
-        ColorSchemeClass.field {
+        clzColorScheme.resolve().firstFieldOrNull {
             name = "mNeutral1"
-        }.remedys {
-            field {
-                name = "neutral1"
-            }
-        }.give()
+        }?.self
     }
     val fldColorSchemeNeutral2 by lazy {
-        ColorSchemeClass.field {
+        clzColorScheme.resolve().firstFieldOrNull {
             name = "mNeutral2"
-        }.remedys {
-            field {
-                name = "neutral2"
-            }
-        }.give()
+        }?.self
     }
     val fldColorSchemeAccent1 by lazy {
-        ColorSchemeClass.field {
+        clzColorScheme.resolve().firstFieldOrNull {
             name = "mAccent1"
-        }.remedys {
-            field {
-                name = "accent1"
-            }
-        }.give()
+        }?.self
     }
     val fldColorSchemeAccent2 by lazy {
-        ColorSchemeClass.field {
+        clzColorScheme.resolve().firstFieldOrNull {
             name = "mAccent2"
-        }.remedys {
-            field {
-                name = "accent2"
-            }
-        }.give()
+        }?.self
+    }
+    val fldColorSchemeAccent3 by lazy {
+        clzColorScheme.resolve().firstFieldOrNull {
+            name = "mAccent3"
+        }?.self
     }
     val enumStyleContent by lazy {
-        "com.android.systemui.monet.Style".toClass().method {
+        "com.android.systemui.monet.Style".toClass().resolve().firstMethodOrNull {
             name = "valueOf"
-            param(StringClass)
-            modifiers { isStatic }
-        }.get().call("CONTENT")
+            parameters(String::class)
+            modifiers(Modifiers.STATIC)
+        }?.invoke("CONTENT")
     }
 
     private val metIconGetBitmap by lazy {
-        IconClass?.method {
+        Icon::class.resolve().firstMethodOrNull {
             name = "getBitmap"
-        }?.give()
+        }?.self?.apply {
+            isAccessible = true
+        }
     }
 
 
     override fun onHook() {
-        PlayerTwoCircleViewClass
-        MiuiMediaControlPanelClass
-        MiuiMediaViewControllerImplClass
-        ColorSchemeClass
-        conColorScheme2
-        conColorScheme3
+        clzColorScheme
+        ctorColorScheme
         fldTonalPaletteAllShades
         fldColorSchemeNeutral1
         fldColorSchemeNeutral2

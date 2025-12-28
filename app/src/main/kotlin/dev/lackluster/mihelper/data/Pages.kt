@@ -18,6 +18,7 @@ object Pages {
     const val ICON_TUNER = "IconTunerPage"
     const val ICON_DETAIL = "IconDetailPage"
     const val MEDIA_CONTROL = "MediaControlPage"
+    const val ISLAND_MEDIA_CONTROL = "IslandMediaControlPage"
 
     const val DEV_UI_TEST = "DevUITestPage"
     const val DEV_UI_TEST2 = "DevUITestPage2"

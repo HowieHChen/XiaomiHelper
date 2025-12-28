@@ -21,12 +21,14 @@
 package dev.lackluster.mihelper.hook.rules.systemui.compat
 
 import android.graphics.Typeface
+import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import dev.lackluster.mihelper.data.Constants.VARIABLE_FONT_DEFAULT_PATH
 import dev.lackluster.mihelper.data.Pref.Key.SystemUI.FontWeight
 import dev.lackluster.mihelper.utils.Prefs
 import dev.lackluster.mihelper.utils.SystemProperties
 import java.io.File
+import java.lang.reflect.Field
 import java.util.concurrent.ConcurrentHashMap
 
 object CommonClassUtils : YukiBaseHooker() {
@@ -67,6 +69,21 @@ object CommonClassUtils : YukiBaseHooker() {
     val clzJob by lazy {
         "kotlinx.coroutines.Job".toClassOrNull()
     }
+    val clzMiuiMediaViewControllerImpl by lazy {
+        "com.android.systemui.statusbar.notification.mediacontrol.MiuiMediaViewControllerImpl".toClassOrNull()
+    }
+    val clzMiuiMediaViewHolder by lazy {
+        "com.android.systemui.statusbar.notification.mediacontrol.MiuiMediaViewHolder".toClassOrNull()
+    }
+    val clzMiuiMediaNotificationControllerImpl by lazy {
+        "com.android.systemui.statusbar.notification.mediacontrol.MiuiMediaNotificationControllerImpl".toClassOrNull()
+    }
+    val clzMiuiIslandMediaViewBinderImpl by lazy {
+        "com.android.systemui.statusbar.notification.mediaisland.MiuiIslandMediaViewBinderImpl".toClassOrNull()
+    }
+    val clzMiuiIslandMediaViewHolder by lazy {
+        "com.android.systemui.statusbar.notification.mediaisland.MiuiIslandMediaViewHolder".toClassOrNull()
+    }
 
     val readonlyStateFlowFalse by lazy {
         MutableStateFlowCompat(false).toReadonlyStateFlow()
@@ -89,7 +106,15 @@ object CommonClassUtils : YukiBaseHooker() {
         ConcurrentHashMap<Int, Typeface>()
     }
 
+    private val ncMediaVHFieldCache by lazy {
+        mutableMapOf<String, Field?>()
+    }
+    private val diMediaVHFieldCache by lazy {
+        mutableMapOf<String, Field?>()
+    }
+
     override fun onHook() {
+        loadHooker(ConstraintSetCompat)
         clzMiuiClock
         clzMiuiKeyguardStatusBarView
         clzMiuiBatteryMeterView
@@ -102,11 +127,36 @@ object CommonClassUtils : YukiBaseHooker() {
         clzMainDispatcherLoader
         clzPair
         clzJob
+        clzMiuiMediaViewControllerImpl
+        clzMiuiMediaViewHolder
+        clzMiuiMediaNotificationControllerImpl
+        clzMiuiIslandMediaViewBinderImpl
+        clzMiuiIslandMediaViewHolder
     }
 
     fun getTypeface(weight: Int): Typeface {
         return typefaceCache.getOrPut(weight) {
             Typeface.Builder(fontPath).setFontVariationSettings("'wght' $weight").build()
+        }
+    }
+
+    fun getMediaViewHolderField(fieldName: String, isDynamicIsland: Boolean): Field? {
+        return if (isDynamicIsland) {
+            diMediaVHFieldCache.getOrPut(fieldName) {
+                clzMiuiIslandMediaViewHolder?.resolve()?.firstFieldOrNull {
+                    name = fieldName
+                }?.self?.apply {
+                    isAccessible = true
+                }
+            }
+        } else {
+            ncMediaVHFieldCache.getOrPut(fieldName) {
+                clzMiuiMediaViewHolder?.resolve()?.firstFieldOrNull {
+                    name = fieldName
+                }?.self?.apply {
+                    isAccessible = true
+                }
+            }
         }
     }
 }

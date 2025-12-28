@@ -6,27 +6,35 @@ import android.app.WallpaperColors
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
-import android.graphics.Paint
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.Icon
 import android.os.AsyncTask
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.graphics.drawable.toDrawable
+import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.constructor
-import com.highcapable.yukihookapi.hook.factory.current
-import com.highcapable.yukihookapi.hook.factory.method
 import com.highcapable.yukihookapi.hook.log.YLog
+import de.robv.android.xposed.XposedHelpers
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.hook.drawable.MediaControlBgDrawable
-import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.MiuiMediaControlPanelClass
-import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.MiuiMediaViewControllerImplClass
-import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.PlayerTwoCircleViewClass
-import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.conColorScheme2
-import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.conColorScheme3
+import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.media_bg
+import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.media_bg_view
+import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzMiuiIslandMediaViewBinderImpl
+import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzMiuiMediaViewControllerImpl
+import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.getMediaViewHolderField
+import dev.lackluster.mihelper.hook.rules.systemui.compat.ConstraintSetCompat.applyTo
+import dev.lackluster.mihelper.hook.rules.systemui.compat.ConstraintSetCompat.clone
+import dev.lackluster.mihelper.hook.rules.systemui.compat.ConstraintSetCompat.connect
+import dev.lackluster.mihelper.hook.rules.systemui.compat.ConstraintSetCompat.ctorConstraintSet
+import dev.lackluster.mihelper.hook.rules.systemui.compat.ConstraintSetCompat.setVisibility
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.clzMediaData
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.ctorColorScheme
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.defaultColorConfig
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.enumStyleContent
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.fldColorSchemeNeutral1
@@ -44,172 +52,220 @@ import dev.lackluster.mihelper.hook.rules.systemui.media.bg.LinearGradientProces
 import dev.lackluster.mihelper.hook.rules.systemui.media.bg.MediaViewColorConfig
 import dev.lackluster.mihelper.utils.Prefs
 
-
 object CustomBackground : YukiBaseHooker() {
-    // background: 0 -> Default; 1 -> Art; 2 -> Blurred cover; 3 -> AndroidNewStyle; 4 -> AndroidOldStyle
-    private val backgroundStyle = Prefs.getInt(Pref.Key.SystemUI.MediaControl.BACKGROUND_STYLE, 0)
-    private lateinit var processor: BgProcessor
+    data class PlayerConfig(
+        var mArtworkBoundId: Int = 0,
+        var mArtworkNextBindRequestId: Int = 0,
+        var mArtworkDrawable: MediaControlBgDrawable? = null,
+        var mIsArtworkBound: Boolean = false,
+        var mCurrentPkgName: String = "",
 
-    private var mArtworkBoundId = 0
-    private var mArtworkNextBindRequestId = 0
-    private var mArtworkDrawable: MediaControlBgDrawable? = null
-    private var mIsArtworkBound = false
-    private var mCurrentPkgName = ""
+        var mPrevColorConfig: MediaViewColorConfig = defaultColorConfig,
+        var mCurrColorConfig: MediaViewColorConfig = defaultColorConfig,
 
-    private var mPrevColorConfig = defaultColorConfig
-    private var mCurrColorConfig = defaultColorConfig
+        var lastWidth: Int = 0,
+        var lastHeight: Int = 0,
+    )
 
-    private var lastWidth = 0
-    private var lastHeight = 0
+    private const val KEY_VIEW_HOLDER_WRAPPER = "KEY_VIEW_HOLDER_WRAPPER"
+    // background: 0 -> Default; 1 -> Art; 2 -> Blurred cover; 3 -> AndroidNewStyle; 4 -> AndroidOldStyle;
+    private val ncBackgroundStyle = Prefs.getInt(Pref.Key.SystemUI.MediaControl.BACKGROUND_STYLE, 0)
+    private val diBackgroundStyle = Prefs.getInt(Pref.Key.DynamicIsland.MediaControl.BACKGROUND_STYLE, 0)
+    private var ncProcessor: BgProcessor? = null
+    private var diProcessor: BgProcessor? = null
+
+    private val ncPlayerConfig = PlayerConfig()
+    private val diPlayerConfig = PlayerConfig()
+
+    private val fldArtwork by lazy {
+        clzMediaData?.resolve()?.firstFieldOrNull {
+            name = "artwork"
+        }?.self
+    }
+    private val fldPackageName by lazy {
+        clzMediaData?.resolve()?.firstFieldOrNull {
+            name = "packageName"
+        }?.self
+    }
 
     override fun onHook() {
-        processor = when (backgroundStyle) {
+        loadHooker(AlwaysDark)
+        loadHooker(AmbientLight)
+        if (ncBackgroundStyle !in 1..4 && diBackgroundStyle !in 1..4) return
+        loadHooker(MediaControlBgFactory)
+        onHookNotificationCenter()
+        onHookDynamicIsland()
+    }
+
+    private fun onHookNotificationCenter() {
+        ncProcessor = when (ncBackgroundStyle) {
             1 -> CoverArtProcessor()
             2 -> BlurredCoverProcessor()
             3 -> RadialGradientProcessor()
             4 -> LinearGradientProcessor()
             else -> return
         }
-        loadHooker(MediaControlBgFactory)
-        "com.android.systemui.media.controls.ui.controller.MediaViewController".toClassOrNull()?.apply {
-            method {
-                name = "resetLayoutResource"
-            }.ignored().hook {
-                intercept()
-            }
-        }
-        PlayerTwoCircleViewClass?.apply {
-            constructor {
-                paramCount = 4
-            }.ignored().hook {
-                after {
-                    this.instance.current().field { name = "mPaint1" }.cast<Paint>()?.alpha = 0
-                    this.instance.current().field { name = "mPaint2" }.cast<Paint>()?.alpha = 0
-                    this.instance.current().field { name = "mRadius" }.set(0.0f)
-                }
-            }
-            method {
-                name = "setBackground"
-            }.ignored().hook {
-                before {
-                    this.result = null
-                }
-            }
-            method {
-                name = "setPaintColor"
-            }.ignored().hook {
-                before {
-                    this.result = null
-                }
-            }
-        }
-        MiuiMediaControlPanelClass?.apply {
-            method {
-                name = "onDestroy"
-                superClass()
-            }.hook {
-                after {
-                    finiMediaViewHolder()
-                }
-            }
-            method {
-                name = "setPlayerBg"
-            }.ignored().hook {
-                intercept()
-            }
-            method {
-                name = "setForegroundColors"
-            }.ignored().hook {
-                intercept()
-            }
-            method {
-                name = "bindPlayer"
-            }.hook {
-                after {
-                    val context = this.instance.current().field {
-                        name = "mContext"
-                        superClass()
-                    }.cast<Context>() ?: return@after
-                    val mediaData = this.args(0).any() ?: return@after
-                    val artwork = mediaData.current().field {
-                        name = "artwork"
-                    }.cast<Icon>()
-                    val packageName = mediaData.current().field {
-                        name = "packageName"
-                    }.string()
-                    val isArtWorkUpdate = this.instance.current().field {
-                        name = "mIsArtworkUpdate"
-                    }.boolean() || mCurrentPkgName != packageName
-                    val mMediaViewHolder = this.instance.current().field {
-                        name = "mMediaViewHolder"
-                        superClass()
-                    }.any() ?: return@after
-                    val holder = initMediaViewHolder(mMediaViewHolder) ?: return@after
-                    updateBackground(context, isArtWorkUpdate, artwork, packageName, holder)
-                }
-            }
-        }
-        MiuiMediaViewControllerImplClass?.apply {
-            method {
-                name = "updateMediaBackground"
-            }.hook {
-                intercept()
-            }
-            method {
-                name = "detach"
-            }.hook {
-                after {
-                    finiMediaViewHolder()
-                }
-            }
-            method {
+        clzMiuiMediaViewControllerImpl?.apply {
+            val fldContext = resolve().firstFieldOrNull {
+                name = "context"
+            }?.self
+            val fldIsArtWorkUpdate = resolve().firstFieldOrNull {
+                name = "isArtWorkUpdate"
+            }?.self
+            val fldHolder = resolve().firstFieldOrNull {
+                name = "holder"
+            }?.self
+            resolve().firstMethodOrNull {
                 name = "updateForegroundColors"
-            }.hook {
+            }?.hook {
                 intercept()
             }
-            method {
-                name = "bindMediaData"
-            }.hook {
+            resolve().firstMethodOrNull {
+                name = "updateMediaBackground"
+            }?.hook {
+                intercept()
+            }
+            resolve().firstMethodOrNull {
+                name = "detach"
+            }?.hook {
                 after {
-                    val context = this.instance.current().field {
-                        name = "context"
-                    }.cast<Context>() ?: return@after
+                    finiMediaViewHolder()
+                }
+            }
+            resolve().firstMethodOrNull {
+                name = "attach"
+            }?.hook {
+                after {
+                    val holder = fldHolder?.get(this.instance) ?: return@after
+                    getMediaViewHolderWrapper(holder, false)
+                }
+            }
+            resolve().firstMethodOrNull {
+                name = "bindMediaData"
+            }?.hook {
+                after {
                     val mediaData = this.args(0).any() ?: return@after
-                    val artwork = mediaData.current().field {
-                        name = "artwork"
-                    }.cast<Icon>()
-                    val packageName = mediaData.current().field {
-                        name = "packageName"
-                    }.string()
-                    val isArtWorkUpdate = this.instance.current().field {
-                        name = "isArtWorkUpdate"
-                    }.boolean() || mCurrentPkgName != packageName
-                    val mMediaViewHolder = this.instance.current().field {
-                        name = "holder"
-                        superClass()
-                    }.any() ?: return@after
-                    val holder = initMediaViewHolder(mMediaViewHolder) ?: return@after
-                    updateBackground(context, isArtWorkUpdate, artwork, packageName, holder)
+                    val context = fldContext?.get(this.instance) as? Context ?: return@after
+                    val holder = fldHolder?.get(this.instance) ?: return@after
+                    val artwork = fldArtwork?.get(mediaData) as? Icon ?: return@after
+                    val packageName = fldPackageName?.get(mediaData) as? String ?: return@after
+                    val holderWrapper = getMediaViewHolderWrapper(holder, false)  ?: return@after
+                    val isArtWorkUpdate = fldIsArtWorkUpdate?.get(this.instance) == true || ncPlayerConfig.mCurrentPkgName != packageName || !ncPlayerConfig.mIsArtworkBound
+                    if (isArtWorkUpdate) {
+                        updateBackground(context, artwork, packageName, holderWrapper, false)
+                    }
                 }
             }
         }
     }
 
-    private fun initMediaViewHolder(mMediaViewHolder: Any): MiuiMediaViewHolder? {
-        val mediaBg = mMediaViewHolder.current(true).field { name = "mediaBg" }.cast<ImageView>() ?: return null
-        val titleText = mMediaViewHolder.current(true).field { name = "titleText" }.cast<TextView>() ?: return null
-        val artistText = mMediaViewHolder.current(true).field { name = "artistText" }.cast<TextView>() ?: return null
-        val seamlessIcon = mMediaViewHolder.current(true).field { name = "seamlessIcon" }.cast<ImageView>() ?: return null
-        val action0 = mMediaViewHolder.current(true).field { name = "action0" }.cast<ImageButton>() ?: return null
-        val action1 = mMediaViewHolder.current(true).field { name = "action1" }.cast<ImageButton>() ?: return null
-        val action2 = mMediaViewHolder.current(true).field { name = "action2" }.cast<ImageButton>() ?: return null
-        val action3 = mMediaViewHolder.current(true).field { name = "action3" }.cast<ImageButton>() ?: return null
-        val action4 = mMediaViewHolder.current(true).field { name = "action4" }.cast<ImageButton>() ?: return null
-        val seekBar = mMediaViewHolder.current(true).field { name = "seekBar" }.cast<SeekBar>() ?: return null
-        val elapsedTimeView = mMediaViewHolder.current(true).field { name = "elapsedTimeView" }.cast<TextView>() ?: return null
-        val totalTimeView = mMediaViewHolder.current(true).field { name = "totalTimeView" }.cast<TextView>() ?: return null
-        val albumView = mMediaViewHolder.current(true).field { name = "albumView" }.cast<ImageView>() ?: return null
-        return MiuiMediaViewHolder(
+    private fun onHookDynamicIsland() {
+        diProcessor = when (diBackgroundStyle) {
+            1 -> CoverArtProcessor()
+            2 -> BlurredCoverProcessor()
+            3 -> RadialGradientProcessor()
+            4 -> LinearGradientProcessor()
+            else -> return
+        }
+        clzMiuiIslandMediaViewBinderImpl?.apply {
+            val fldContext = resolve().firstFieldOrNull {
+                name = "context"
+            }?.self
+            val fldIsArtWorkUpdate = resolve().firstFieldOrNull {
+                name = "isArtWorkUpdate"
+            }?.self
+            val fldHolder = resolve().firstFieldOrNull {
+                name = "holder"
+            }?.self
+            val fldDummyHolder = resolve().firstFieldOrNull {
+                name = "dummyHolder"
+            }?.self
+            resolve().firstMethodOrNull {
+                name = "updateForegroundColors"
+            }?.hook {
+                intercept()
+            }
+            resolve().firstMethodOrNull {
+                name = "detach"
+            }?.hook {
+                after {
+                    finiMediaViewHolder()
+                }
+            }
+            resolve().firstMethodOrNull {
+                name = "attach"
+            }?.hook {
+                after {
+                    val holder = fldHolder?.get(this.instance) ?: return@after
+                    getMediaViewHolderWrapper(holder, true)
+                    val dummyHolder = fldDummyHolder?.get(this.instance) ?: return@after
+                    getMediaViewHolderWrapper(dummyHolder, true)
+                }
+            }
+            resolve().firstMethodOrNull {
+                name = "bindMediaData"
+            }?.hook {
+                after {
+                    val mediaData = this.args(0).any() ?: return@after
+                    val context = fldContext?.get(this.instance) as? Context ?: return@after
+                    val holder = fldHolder?.get(this.instance) ?: return@after
+//                    val dummyHolder = fldDummyHolder?.get(this.instance) ?: return@after
+                    val artwork = fldArtwork?.get(mediaData) as? Icon ?: return@after
+                    val packageName = fldPackageName?.get(mediaData) as? String ?: return@after
+                    val holderWrapper = getMediaViewHolderWrapper(holder, true) ?: return@after
+//                    val dummyHolderWrapper = getMediaViewHolderWrapper(dummyHolder, true) ?: return@after
+                    val isArtWorkUpdate = fldIsArtWorkUpdate?.get(this.instance) == true || diPlayerConfig.mCurrentPkgName != packageName || !diPlayerConfig.mIsArtworkBound
+                    if (isArtWorkUpdate) {
+                        updateBackground(context, artwork, packageName, holderWrapper, true)
+//                        updateBackground(context, artwork, packageName, dummyHolderWrapper, true)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun getMediaViewHolderWrapper(mMediaViewHolder: Any, isDynamicIsland: Boolean): MiuiMediaViewHolderWrapper? {
+        (XposedHelpers.getAdditionalInstanceField(mMediaViewHolder, KEY_VIEW_HOLDER_WRAPPER) as? MiuiMediaViewHolderWrapper)?.let {
+            return it
+        }
+        val titleText = getMediaViewHolderField("titleText", isDynamicIsland)?.get(mMediaViewHolder) as? TextView ?: return null
+        val artistText = getMediaViewHolderField("artistText", isDynamicIsland)?.get(mMediaViewHolder) as? TextView ?: return null
+        val seamlessIcon = getMediaViewHolderField("seamlessIcon", isDynamicIsland)?.get(mMediaViewHolder) as? ImageView ?: return null
+        val action0 = getMediaViewHolderField("action0", isDynamicIsland)?.get(mMediaViewHolder) as? ImageButton ?: return null
+        val action1 = getMediaViewHolderField("action1", isDynamicIsland)?.get(mMediaViewHolder) as? ImageButton ?: return null
+        val action2 = getMediaViewHolderField("action2", isDynamicIsland)?.get(mMediaViewHolder) as? ImageButton ?: return null
+        val action3 = getMediaViewHolderField("action3", isDynamicIsland)?.get(mMediaViewHolder) as? ImageButton ?: return null
+        val action4 = getMediaViewHolderField("action4", isDynamicIsland)?.get(mMediaViewHolder) as? ImageButton ?: return null
+        val seekBar = getMediaViewHolderField("seekBar", isDynamicIsland)?.get(mMediaViewHolder) as? SeekBar ?: return null
+        val elapsedTimeView = getMediaViewHolderField("elapsedTimeView", isDynamicIsland)?.get(mMediaViewHolder) as? TextView ?: return null
+        val totalTimeView = getMediaViewHolderField("totalTimeView", isDynamicIsland)?.get(mMediaViewHolder) as? TextView ?: return null
+        val albumView = getMediaViewHolderField("albumImageView", isDynamicIsland)?.get(mMediaViewHolder) as? ImageView ?: return null
+        val mediaBg: ImageView
+        if (isDynamicIsland) {
+            val mediaBgView = getMediaViewHolderField("mediaBgView", true)?.get(mMediaViewHolder) as? View
+            mediaBg = ImageView(titleText.context).apply {
+                scaleType = ImageView.ScaleType.CENTER_CROP
+                id = media_bg
+                layoutParams = ViewGroup.LayoutParams(0, 0)
+            }.also {
+                val parent = titleText.parent as? ViewGroup ?: return@also
+                val index = (mediaBgView?.let { it1 -> parent.indexOfChild(it1) + 1 } ?: 0).coerceIn(0, parent.childCount)
+                parent.addView(it, index)
+                parent.removeView(mediaBgView)
+                val constraintSet = ctorConstraintSet.newInstance()
+                clone?.invoke(constraintSet, parent)
+                connect?.invoke(constraintSet, media_bg, ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT)
+                connect?.invoke(constraintSet, media_bg, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
+                connect?.invoke(constraintSet, media_bg, ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT)
+                connect?.invoke(constraintSet, media_bg, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
+                setVisibility?.invoke(constraintSet, media_bg_view, View.GONE)
+                applyTo?.invoke(constraintSet, parent)
+            }
+        } else {
+            mediaBg = getMediaViewHolderField("mediaBg", false)?.get(mMediaViewHolder) as? ImageView ?: return null
+        }
+
+        return MiuiMediaViewHolderWrapper(
             mMediaViewHolder.hashCode(),
             titleText,
             artistText,
@@ -224,16 +280,21 @@ object CustomBackground : YukiBaseHooker() {
             elapsedTimeView,
             totalTimeView,
             seekBar,
-        )
+        ).also {
+            XposedHelpers.setAdditionalInstanceField(mMediaViewHolder, KEY_VIEW_HOLDER_WRAPPER, it)
+        }
     }
 
     private fun finiMediaViewHolder() {
-        mArtworkDrawable = null
-        mIsArtworkBound = false
-        mCurrentPkgName = ""
+        ncPlayerConfig.mArtworkDrawable = null
+        ncPlayerConfig.mIsArtworkBound = false
+        ncPlayerConfig.mCurrentPkgName = ""
+        diPlayerConfig.mArtworkDrawable = null
+        diPlayerConfig.mIsArtworkBound = false
+        diPlayerConfig.mCurrentPkgName = ""
     }
 
-    private fun updateForegroundColors(holder: MiuiMediaViewHolder, colorConfig: MediaViewColorConfig) {
+    private fun updateForegroundColors(holder: MiuiMediaViewHolderWrapper, colorConfig: MediaViewColorConfig) {
         val primaryColorStateList = ColorStateList.valueOf(colorConfig.textPrimary)
         holder.titleText.setTextColor(colorConfig.textPrimary)
         holder.artistText.setTextColor(colorConfig.textSecondary)
@@ -251,79 +312,47 @@ object CustomBackground : YukiBaseHooker() {
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun updateBackground(context: Context, isArtWorkUpdate: Boolean, artwork: Icon?, pkgName: String, holder: MiuiMediaViewHolder) {
+    fun updateBackground(context: Context, artwork: Icon?, pkgName: String, holder: MiuiMediaViewHolderWrapper, isDynamicIsland: Boolean) {
         val artworkLayer = artwork?.loadDrawable(context) ?: return
-        val reqId = mArtworkNextBindRequestId++
-        if (isArtWorkUpdate) {
-            mIsArtworkBound = false
-        }
-        // Clip album cover image
-//        val finalSize = min(artworkLayer.intrinsicWidth, artworkLayer.intrinsicHeight)
-//        val bitmap = createBitmap(finalSize, finalSize)
-//        val canvas = Canvas(bitmap)
-//        val deltaW = (artworkLayer.intrinsicWidth - finalSize) / 2
-//        val deltaH = (artworkLayer.intrinsicHeight - finalSize) / 2
-//        artworkLayer.setBounds(-deltaW, -deltaH, finalSize + deltaW, finalSize + deltaH)
-//        artworkLayer.draw(canvas)
-//        val radius = 9.0f * context.resources.displayMetrics.density
-//        val newBitmap = createBitmap(finalSize, finalSize)
-//        val canvas1 = Canvas(newBitmap)
-//        val paint = Paint()
-//        val rect = Rect(0, 0, finalSize, finalSize)
-//        val rectF = RectF(rect)
-//        paint.isAntiAlias = true
-//        canvas1.drawARGB(0, 0, 0, 0)
-//        paint.color = Color.BLACK
-//        canvas1.drawRoundRect(rectF, radius, radius, paint)
-//        paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
-//        canvas1.drawBitmap(bitmap, rect, rect, paint)
-//        if (!bitmap.isRecycled) {
-//            bitmap.recycle()
-//        }
+        val processor = (if (isDynamicIsland) diProcessor else ncProcessor) ?: return
+        val playerConfig = if (isDynamicIsland) diPlayerConfig else ncPlayerConfig
+        val reqId = playerConfig.mArtworkNextBindRequestId++
         // Update album cover image
         holder.albumView.setImageDrawable(artworkLayer)
         // Capture width & height from views in foreground for artwork scaling in background
         val width: Int
         val height: Int
         if (holder.mediaBg.measuredWidth == 0 || holder.mediaBg.measuredHeight == 0) {
-            if (lastWidth == 0 || lastHeight == 0) {
+            if (playerConfig.lastWidth == 0 || playerConfig.lastHeight == 0) {
                 width = artworkLayer.intrinsicWidth
                 height = artworkLayer.intrinsicHeight
             } else {
-                width = lastWidth
-                height = lastHeight
+                width = playerConfig.lastWidth
+                height = playerConfig.lastHeight
             }
         } else {
             width = holder.mediaBg.measuredWidth
             height = holder.mediaBg.measuredHeight
-            lastWidth = width
-            lastHeight = height
+            playerConfig.lastWidth = width
+            playerConfig.lastHeight = height
         }
         // Override colors set by the original method
-        updateForegroundColors(holder, mCurrColorConfig)
+        updateForegroundColors(holder, playerConfig.mCurrColorConfig)
 
         AsyncTask.THREAD_POOL_EXECUTOR.execute {
             // Album art
             val mutableColorScheme: Any?
             val artworkDrawable: Drawable
-            val isArtworkBound: Boolean
             val wallpaperColors = context.getWallpaperColor(artwork)
             if (wallpaperColors != null) {
-                mutableColorScheme =
-                    conColorScheme3?.newInstance(wallpaperColors, true, enumStyleContent)
-                        ?: conColorScheme2?.newInstance(wallpaperColors, enumStyleContent)
+                mutableColorScheme = ctorColorScheme?.newInstance(wallpaperColors, true, enumStyleContent)
                 artworkDrawable = context.getScaledBackground(artwork, height, height) ?: Color.TRANSPARENT.toDrawable()
-                isArtworkBound = true
             } else {
                 // If there's no artwork, use colors from the app icon
                 artworkDrawable = Color.TRANSPARENT.toDrawable()
-                isArtworkBound = false
                 try {
                     val icon = context.packageManager.getApplicationIcon(pkgName)
-                    mutableColorScheme =
-                        conColorScheme3?.newInstance(WallpaperColors.fromDrawable(icon), true, enumStyleContent)
-                            ?: conColorScheme2?.newInstance(wallpaperColors, enumStyleContent)
-                                    ?: throw Exception()
+                    mutableColorScheme = ctorColorScheme?.newInstance(WallpaperColors.fromDrawable(icon), true, enumStyleContent)?: throw Exception()
                 } catch (_: Exception) {
                     YLog.warn("application not found!")
                     return@execute
@@ -338,8 +367,8 @@ object CustomBackground : YukiBaseHooker() {
                 val accent2 = fldTonalPaletteAllShades?.get(fldColorSchemeAccent2!!.get(mutableColorScheme)) as? List<Int>
                 if (neutral1 != null && neutral2 != null && accent1 != null && accent2 != null) {
                     colorConfig = processor.convertToColorConfig(artworkDrawable, neutral1, neutral2, accent1, accent2)
-                    colorSchemeChanged = colorConfig != mPrevColorConfig
-                    mPrevColorConfig = colorConfig
+                    colorSchemeChanged = colorConfig != playerConfig.mPrevColorConfig
+                    playerConfig.mPrevColorConfig = colorConfig
                 }
             }
             val processedArtwork =
@@ -350,34 +379,39 @@ object CustomBackground : YukiBaseHooker() {
                     width,
                     height
                 )
-            if (mArtworkDrawable == null) {
-                mArtworkDrawable = processor.createBackground(processedArtwork, colorConfig)
+            if (playerConfig.mArtworkDrawable == null) {
+                playerConfig.mArtworkDrawable = processor.createBackground(processedArtwork, colorConfig)
             }
-            mArtworkDrawable?.setBounds(0, 0, width, height)
-            mCurrentPkgName = pkgName
+            playerConfig.mArtworkDrawable?.setBounds(0, 0, width, height)
+            playerConfig.mCurrentPkgName = pkgName
 
-            holder.mediaBg.post(Runnable {
-                if (reqId < mArtworkBoundId) {
-                    return@Runnable
-                }
-                mArtworkBoundId = reqId
-                if (colorSchemeChanged) {
-                    updateForegroundColors(holder, colorConfig)
-                    mCurrColorConfig = colorConfig
-                }
+            holder.mediaBg.let { bg ->
+                bg.post {
+                    if (reqId < playerConfig.mArtworkBoundId) {
+                        return@post
+                    }
+                    playerConfig.mArtworkBoundId = reqId
+                    if (colorSchemeChanged) {
+                        updateForegroundColors(holder, colorConfig)
+                        playerConfig.mCurrColorConfig = colorConfig
+                    }
 
-                // Bind the album view to the artwork or a transition drawable
-                holder.mediaBg.setPadding(0, 0, 0, 0)
-                if (isArtWorkUpdate || (!mIsArtworkBound && isArtworkBound)) {
-                    holder.mediaBg.setImageDrawable(mArtworkDrawable)
-                    mArtworkDrawable?.updateAlbumCover(processedArtwork, colorConfig)
-                    mIsArtworkBound = isArtworkBound
+                    // Bind the album view to the artwork or a transition drawable
+                    holder.mediaBg.setPadding(0, 0, 0, 0)
+                    holder.mediaBg.setImageDrawable(playerConfig.mArtworkDrawable)
+
+                    if (bg.isShown) {
+                        playerConfig.mArtworkDrawable?.updateAlbumCover(processedArtwork, colorConfig, false)
+                    } else {
+                        playerConfig.mArtworkDrawable?.updateAlbumCover(processedArtwork, colorConfig, true)
+                    }
+                    playerConfig.mIsArtworkBound = true
                 }
-            })
+            }
         }
     }
 
-    data class MiuiMediaViewHolder(
+    data class MiuiMediaViewHolderWrapper(
         var innerHashCode: Int,
         var titleText: TextView,
         var artistText: TextView,

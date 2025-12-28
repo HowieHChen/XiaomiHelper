@@ -257,6 +257,18 @@ fun SystemUIPage(navController: NavController, adjustPadding: PaddingValues, mod
         }
         item {
             PreferenceGroup(
+                title = stringResource(R.string.ui_title_systemui_dynamic_island)
+            ) {
+                TextPreference(
+                    title = stringResource(R.string.systemui_di_media_control_style),
+                    summary = stringResource(R.string.systemui_di_media_control_style_tips)
+                ) {
+                    navController.navigateTo(Pages.ISLAND_MEDIA_CONTROL)
+                }
+            }
+        }
+        item {
+            PreferenceGroup(
                 title = stringResource(R.string.ui_title_systemui_control_center)
             ) {
                 SwitchPreference(

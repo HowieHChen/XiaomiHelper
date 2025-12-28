@@ -24,18 +24,20 @@ import dev.lackluster.hyperx.compose.base.TabRow
 import dev.lackluster.hyperx.compose.component.Hint
 import dev.lackluster.hyperx.compose.preference.DropDownEntry
 import dev.lackluster.hyperx.compose.preference.DropDownPreference
-import dev.lackluster.hyperx.compose.preference.PreferenceGroup
 import dev.lackluster.hyperx.compose.preference.SeekBarPreference
 import dev.lackluster.hyperx.compose.preference.SwitchPreference
 import dev.lackluster.mihelper.R
+import dev.lackluster.mihelper.data.Constants.MediaControlSpKey
+import dev.lackluster.mihelper.data.Constants.getKey
 import dev.lackluster.mihelper.ui.MainActivity
 import dev.lackluster.mihelper.ui.component.MediaControlCard
 import dev.lackluster.mihelper.ui.component.RebootMenuItem
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.data.Scope
+import dev.lackluster.mihelper.ui.component.itemPreferenceGroup
 
 @Composable
-fun MediaControlPage(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
+fun MediaControlPage(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode, isDynamicIsland: Boolean) {
     val hapticFeedback = LocalHapticFeedback.current
     var hintAdvancedTextures by remember { mutableStateOf(
         SafeSP.getBoolean(Pref.Key.Hints.MEDIA_ADVANCED_TEXTURES, false)
@@ -67,62 +69,68 @@ fun MediaControlPage(navController: NavController, adjustPadding: PaddingValues,
         DropDownEntry(stringResource(R.string.media_elm_thumb_style_gone)),
         DropDownEntry(stringResource(R.string.media_elm_thumb_style_vbar))
     )
-    val progressStyleEntries = listOf(
+    val progressStyleEntries = listOfNotNull(
         DropDownEntry(stringResource(R.string.media_elm_prog_style_default)),
         DropDownEntry(stringResource(R.string.media_elm_prog_style_custom)),
-        DropDownEntry(stringResource(R.string.media_elm_prog_style_squiggly))
+        if (isDynamicIsland) null else DropDownEntry(stringResource(R.string.media_elm_prog_style_squiggly))
     )
     var tabRowSelected by remember { mutableIntStateOf(0) }
     var backgroundStyle by remember { mutableIntStateOf(
-        SafeSP.getInt(Pref.Key.SystemUI.MediaControl.BACKGROUND_STYLE, 0)
+        SafeSP.getInt(MediaControlSpKey.BACKGROUND_STYLE.getKey(isDynamicIsland), 0)
     ) }
     var blurRadius by remember { mutableIntStateOf(
-        SafeSP.getInt(Pref.Key.SystemUI.MediaControl.BLUR_RADIUS, 10)
+        SafeSP.getInt(MediaControlSpKey.BLUR_RADIUS.getKey(isDynamicIsland), 10)
     ) }
     var allowReverse by remember { mutableStateOf(
-        SafeSP.getBoolean(Pref.Key.SystemUI.MediaControl.ALLOW_REVERSE, false)
+        SafeSP.getBoolean(MediaControlSpKey.ALLOW_REVERSE.getKey(isDynamicIsland), false)
+    ) }
+    var ambientLight by remember { mutableStateOf(
+        SafeSP.getBoolean(MediaControlSpKey.AMBIENT_LIGHT.getKey(isDynamicIsland), isDynamicIsland)
     ) }
     var lytAlbum by remember { mutableIntStateOf(
-        SafeSP.getInt(Pref.Key.SystemUI.MediaControl.LYT_ALBUM, 0)
+        SafeSP.getInt(MediaControlSpKey.LYT_ALBUM.getKey(isDynamicIsland), 0)
     ) }
     var lytLeftActions by remember { mutableStateOf(
-        SafeSP.getBoolean(Pref.Key.SystemUI.MediaControl.LYT_LEFT_ACTIONS, false)
+        SafeSP.getBoolean(MediaControlSpKey.LYT_LEFT_ACTIONS.getKey(isDynamicIsland), false)
     ) }
     var lytActionsOrder by remember { mutableIntStateOf(
-        SafeSP.getInt(Pref.Key.SystemUI.MediaControl.LYT_ACTIONS_ORDER, 0)
+        SafeSP.getInt(MediaControlSpKey.LYT_ACTIONS_ORDER.getKey(isDynamicIsland), 0)
     ) }
     var lytHideTime by remember { mutableStateOf(
-        SafeSP.getBoolean(Pref.Key.SystemUI.MediaControl.LYT_HIDE_TIME, false)
+        SafeSP.getBoolean(MediaControlSpKey.LYT_HIDE_TIME.getKey(isDynamicIsland), false)
     ) }
     var lytHideSeamless by remember { mutableStateOf(
-        SafeSP.getBoolean(Pref.Key.SystemUI.MediaControl.LYT_HIDE_SEAMLESS, false)
+        SafeSP.getBoolean(MediaControlSpKey.LYT_HIDE_SEAMLESS.getKey(isDynamicIsland), false)
     ) }
     var lytHeaderMargin by remember { mutableFloatStateOf(
-        SafeSP.getFloat(Pref.Key.SystemUI.MediaControl.LYT_HEADER_MARGIN, 21.0f)
+        SafeSP.getFloat(MediaControlSpKey.LYT_HEADER_MARGIN.getKey(isDynamicIsland), 21.0f)
     ) }
     var lytHeaderPadding by remember { mutableFloatStateOf(
-        SafeSP.getFloat(Pref.Key.SystemUI.MediaControl.LYT_HEADER_PADDING, 2.0f)
+        SafeSP.getFloat(MediaControlSpKey.LYT_HEADER_PADDING.getKey(isDynamicIsland), 4.0f)
+    ) }
+    var albumShadow by remember { mutableStateOf(
+        !isDynamicIsland && SafeSP.getBoolean(Pref.Key.SystemUI.MediaControl.ELM_ALBUM_SHADOW, true)
     ) }
     var modifyTextSize by remember { mutableStateOf(
-        SafeSP.getBoolean(Pref.Key.SystemUI.MediaControl.ELM_TEXT_SIZE, false)
+        SafeSP.getBoolean(MediaControlSpKey.ELM_TEXT_SIZE.getKey(isDynamicIsland), false)
     ) }
     var titleSize by remember { mutableFloatStateOf(
-        SafeSP.getFloat(Pref.Key.SystemUI.MediaControl.ELM_TITLE_SIZE, 18.0f)
+        SafeSP.getFloat(MediaControlSpKey.ELM_TITLE_SIZE.getKey(isDynamicIsland), 18.0f)
     ) }
     var artistSize by remember { mutableFloatStateOf(
-        SafeSP.getFloat(Pref.Key.SystemUI.MediaControl.ELM_ARTIST_SIZE, 12.0f)
+        SafeSP.getFloat(MediaControlSpKey.ELM_ARTIST_SIZE.getKey(isDynamicIsland), 12.0f)
     ) }
     var timeSize by remember { mutableFloatStateOf(
-        SafeSP.getFloat(Pref.Key.SystemUI.MediaControl.ELM_TIME_SIZE, 12.0f)
+        SafeSP.getFloat(MediaControlSpKey.ELM_TIME_SIZE.getKey(isDynamicIsland), 12.0f)
     ) }
     var thumbStyle by remember { mutableIntStateOf(
-        SafeSP.getInt(Pref.Key.SystemUI.MediaControl.ELM_THUMB_STYLE, 0)
+        SafeSP.getInt(MediaControlSpKey.ELM_THUMB_STYLE.getKey(isDynamicIsland), 0)
     ) }
     var progressStyle by remember { mutableIntStateOf(
-        SafeSP.getInt(Pref.Key.SystemUI.MediaControl.ELM_PROGRESS_STYLE, 0)
+        SafeSP.getInt(MediaControlSpKey.ELM_PROGRESS_STYLE.getKey(isDynamicIsland), 0)
     ) }
     var progressWidth by remember { mutableFloatStateOf(
-        SafeSP.getFloat(Pref.Key.SystemUI.MediaControl.ELM_PROGRESS_WIDTH, 4.0f)
+        SafeSP.getFloat(MediaControlSpKey.ELM_PROGRESS_WIDTH.getKey(isDynamicIsland), 4.0f)
     ) }
 
     BasePage(
@@ -145,6 +153,7 @@ fun MediaControlPage(navController: NavController, adjustPadding: PaddingValues,
                 backgroundStyle = backgroundStyle,
                 allowReverse = allowReverse,
                 blurRadius = blurRadius,
+                ambientLight = ambientLight,
                 lytAlbum = lytAlbum,
                 lytLeftActions = lytLeftActions,
                 lytActionsOrder = lytActionsOrder,
@@ -152,6 +161,7 @@ fun MediaControlPage(navController: NavController, adjustPadding: PaddingValues,
                 lytHideSeamless = lytHideSeamless,
                 lytHeaderMargin = lytHeaderMargin,
                 lytHeaderPadding = lytHeaderPadding,
+                albumShadow = albumShadow,
                 modifyTextSize = modifyTextSize,
                 titleSize = titleSize,
                 artistSize = artistSize,
@@ -171,201 +181,253 @@ fun MediaControlPage(navController: NavController, adjustPadding: PaddingValues,
                 tabRowSelected = it
                 hapticFeedback.performHapticFeedback(HapticFeedbackType.Confirm)
             }
-            PreferenceGroup(
-                last = true
+        }
+        itemPreferenceGroup(
+            key = "BACKGROUND_STYLE",
+            visible = (tabRowSelected == 0)
+        ) {
+            DropDownPreference(
+                title = stringResource(R.string.media_bg_custom),
+                entries = backgroundStyleEntries,
+                key = MediaControlSpKey.BACKGROUND_STYLE.getKey(isDynamicIsland)
             ) {
-                when (tabRowSelected) {
-                    0 -> {
-                        DropDownPreference(
-                            title = stringResource(R.string.media_bg_custom),
-                            entries = backgroundStyleEntries,
-                            key = Pref.Key.SystemUI.MediaControl.BACKGROUND_STYLE
-                        ) {
-                            backgroundStyle = it
-                        }
-                        AnimatedVisibility(
-                            backgroundStyle != 0
-                        ) {
-                            SwitchPreference(
-                                title = stringResource(R.string.media_bg_color_anim),
-                                summary = stringResource(R.string.media_bg_color_anim_tips),
-                                key = Pref.Key.SystemUI.MediaControl.USE_ANIM,
-                                defValue = true
-                            )
-                        }
-                        AnimatedVisibility(
-                            backgroundStyle == 2
-                        ) {
-                            SeekBarPreference(
-                                title = stringResource(R.string.media_bg_blur_radius),
-                                key = Pref.Key.SystemUI.MediaControl.BLUR_RADIUS,
-                                defValue = 10,
-                                min = 1,
-                                max = 20,
-                                format = "%d%%"
-                            ) {
-                                blurRadius = it
-                            }
-                        }
-                        AnimatedVisibility(
-                            backgroundStyle == 4
-                        ) {
-                            SwitchPreference(
-                                title = stringResource(R.string.media_bg_auto_color_reverse),
-                                key = Pref.Key.SystemUI.MediaControl.ALLOW_REVERSE
-                            ) {
-                                allowReverse = it
-                            }
-                        }
+                backgroundStyle = it
+            }
+        }
+        itemPreferenceGroup(
+            key = "BACKGROUND_STYLE_0_EXT",
+            last = true,
+            visible = (tabRowSelected == 0 && backgroundStyle == 0)
+        ) {
+            SwitchPreference(
+                title = stringResource(R.string.media_bg_ambient_light),
+                summary = stringResource(R.string.media_bg_ambient_light_tips),
+                key = MediaControlSpKey.AMBIENT_LIGHT.getKey(isDynamicIsland),
+                defValue = isDynamicIsland
+            ) {
+                ambientLight = it
+            }
+            AnimatedVisibility (!isDynamicIsland && !ambientLight) {
+                SwitchPreference(
+                    title = stringResource(R.string.media_bg_always_dark),
+                    summary = stringResource(R.string.media_bg_always_dark_tips),
+                    key = Pref.Key.SystemUI.MediaControl.ALWAYS_DARK
+                )
+            }
+        }
+        itemPreferenceGroup(
+            key = "BACKGROUND_STYLE_NOT_0_EXT",
+            last = hintAdvancedTextures,
+            visible = (tabRowSelected == 0 && backgroundStyle != 0)
+        ) {
+            SwitchPreference(
+                title = stringResource(R.string.media_bg_color_anim),
+                summary = stringResource(R.string.media_bg_color_anim_tips),
+                key = MediaControlSpKey.USE_ANIM.getKey(isDynamicIsland),
+                defValue = true
+            )
+            AnimatedVisibility(
+                backgroundStyle == 2
+            ) {
+                SeekBarPreference(
+                    title = stringResource(R.string.media_bg_blur_radius),
+                    key = MediaControlSpKey.BLUR_RADIUS.getKey(isDynamicIsland),
+                    defValue = 10,
+                    min = 1,
+                    max = 20,
+                    format = "%d%%"
+                ) {
+                    blurRadius = it
+                }
+            }
+            AnimatedVisibility(
+                backgroundStyle == 4
+            ) {
+                SwitchPreference(
+                    title = stringResource(R.string.media_bg_auto_color_reverse),
+                    key = MediaControlSpKey.ALLOW_REVERSE.getKey(isDynamicIsland)
+                ) {
+                    allowReverse = it
+                }
+            }
+        }
+        itemPreferenceGroup(
+            key = "BACKGROUND_STYLE_HINT",
+            last = true,
+            visible = (tabRowSelected == 0 && !hintAdvancedTextures)
+        ) {
+            Hint(
+                modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 0.dp, bottom = 12.dp),
+                text = stringResource(R.string.media_hint_advanced_textures),
+                closeable = true
+            ) {
+                hintAdvancedTextures = true
+                SafeSP.putAny(Pref.Key.Hints.MEDIA_ADVANCED_TEXTURES, true)
+            }
+        }
+        itemPreferenceGroup(
+            key = "BACKGROUND_LYT",
+            visible = (tabRowSelected == 1)
+        ) {
+            DropDownPreference(
+                title = stringResource(R.string.media_lyt_album),
+                entries = albumStyleEntries,
+                key = MediaControlSpKey.LYT_ALBUM.getKey(isDynamicIsland)
+            ) {
+                lytAlbum = it
+            }
+            SwitchPreference(
+                title = stringResource(R.string.media_lyt_left_actions),
+                key = MediaControlSpKey.LYT_LEFT_ACTIONS.getKey(isDynamicIsland)
+            ) {
+                lytLeftActions = it
+            }
+            DropDownPreference(
+                title = stringResource(R.string.media_lyt_actions_order),
+                entries = actionsOrderEntries,
+                key = MediaControlSpKey.LYT_ACTIONS_ORDER.getKey(isDynamicIsland)
+            ) {
+                lytActionsOrder = it
+            }
+            SwitchPreference(
+                title = stringResource(R.string.media_lyt_hide_time),
+                summary = stringResource(R.string.media_lyt_hide_time_tips),
+                key = MediaControlSpKey.LYT_HIDE_TIME.getKey(isDynamicIsland)
+            ) {
+                lytHideTime = it
+            }
+            SwitchPreference(
+                title = stringResource(R.string.media_lyt_hide_seamless),
+                summary = stringResource(R.string.media_lyt_hide_seamless_tips),
+                key = MediaControlSpKey.LYT_HIDE_SEAMLESS.getKey(isDynamicIsland)
+            ) {
+                lytHideSeamless = it
+            }
+        }
+        itemPreferenceGroup(
+            key = "BACKGROUND_LYT_EXT",
+            last = true,
+            visible = (tabRowSelected == 1)
+        ) {
+            SeekBarPreference(
+                title = stringResource(R.string.media_lyt_header_margin),
+                key = MediaControlSpKey.LYT_HEADER_MARGIN.getKey(isDynamicIsland),
+                defValue = 21.0f,
+                min = 0.0f,
+                max = 48.0f,
+                format = "%.2f dp"
+            ) {
+                lytHeaderMargin = it
+            }
+            SeekBarPreference(
+                title = stringResource(R.string.media_lyt_header_padding),
+                key = MediaControlSpKey.LYT_HEADER_PADDING.getKey(isDynamicIsland),
+                defValue = 4.0f,
+                min = 0.0f,
+                max = 36.0f,
+                format = "%.2f dp"
+            ) {
+                lytHeaderPadding = it
+            }
+        }
+        itemPreferenceGroup(
+            key = "BACKGROUND_ELM",
+            visible = (tabRowSelected == 2)
+        ) {
+            if (!isDynamicIsland) {
+                SwitchPreference(
+                    title = stringResource(R.string.media_elm_album_shadow),
+                    key = Pref.Key.SystemUI.MediaControl.ELM_ALBUM_SHADOW,
+                    defValue = true
+                ) {
+                    albumShadow = !isDynamicIsland && it
+                }
+            }
+            SwitchPreference(
+                title = stringResource(R.string.media_elm_album_flip_anim),
+                summary = stringResource(R.string.media_elm_album_flip_anim_tips),
+                key = Pref.Key.SystemUI.MediaControl.ELM_ALBUM_FLIP,
+                defValue = true
+            )
+            SwitchPreference(
+                title = stringResource(R.string.media_elm_text_size),
+                key = MediaControlSpKey.ELM_TEXT_SIZE.getKey(isDynamicIsland)
+            ) {
+                modifyTextSize = it
+            }
+            AnimatedVisibility(
+                modifyTextSize
+            ) {
+                Column {
+                    SeekBarPreference(
+                        title = stringResource(R.string.media_elm_text_size_title),
+                        key = MediaControlSpKey.ELM_TITLE_SIZE.getKey(isDynamicIsland),
+                        defValue = 18.0f,
+                        min = 0.5f,
+                        max = 36.0f,
+                        format = "%.2f sp"
+                    ) {
+                        titleSize = it
                     }
-                    1 -> {
-                        DropDownPreference(
-                            title = stringResource(R.string.media_lyt_album),
-                            entries = albumStyleEntries,
-                            key = Pref.Key.SystemUI.MediaControl.LYT_ALBUM
-                        ) {
-                            lytAlbum = it
-                        }
-                        SwitchPreference(
-                            title = stringResource(R.string.media_lyt_left_actions),
-                            key = Pref.Key.SystemUI.MediaControl.LYT_LEFT_ACTIONS
-                        ) {
-                            lytLeftActions = it
-                        }
-                        DropDownPreference(
-                            title = stringResource(R.string.media_lyt_actions_order),
-                            entries = actionsOrderEntries,
-                            key = Pref.Key.SystemUI.MediaControl.LYT_ACTIONS_ORDER
-                        ) {
-                            lytActionsOrder = it
-                        }
-                        SwitchPreference(
-                            title = stringResource(R.string.media_lyt_hide_time),
-                            summary = stringResource(R.string.media_lyt_hide_time_tips),
-                            key = Pref.Key.SystemUI.MediaControl.LYT_HIDE_TIME
-                        ) {
-                            lytHideTime = it
-                        }
-                        SwitchPreference(
-                            title = stringResource(R.string.media_lyt_hide_seamless),
-                            summary = stringResource(R.string.media_lyt_hide_seamless_tips),
-                            key = Pref.Key.SystemUI.MediaControl.LYT_HIDE_SEAMLESS
-                        ) {
-                            lytHideSeamless = it
-                        }
-                        SeekBarPreference(
-                            title = stringResource(R.string.media_lyt_header_margin),
-                            key = Pref.Key.SystemUI.MediaControl.LYT_HEADER_MARGIN,
-                            defValue = 21.0f,
-                            min = 0.0f,
-                            max = 48.0f,
-                            format = "%.2f dp"
-                        ) {
-                            lytHeaderMargin = it
-                        }
-                        SeekBarPreference(
-                            title = stringResource(R.string.media_lyt_header_padding),
-                            key = Pref.Key.SystemUI.MediaControl.LYT_HEADER_PADDING,
-                            defValue = 2.0f,
-                            min = 0.0f,
-                            max = 36.0f,
-                            format = "%.2f dp"
-                        ) {
-                            lytHeaderPadding = it
-                        }
+                    SeekBarPreference(
+                        title = stringResource(R.string.media_elm_text_size_artist),
+                        key = MediaControlSpKey.ELM_ARTIST_SIZE.getKey(isDynamicIsland),
+                        defValue = 12.0f,
+                        min = 0.5f,
+                        max = 24.0f,
+                        format = "%.2f sp"
+                    ) {
+                        artistSize = it
                     }
-                    2 -> {
-                        SwitchPreference(
-                            title = stringResource(R.string.media_elm_text_size),
-                            key = Pref.Key.SystemUI.MediaControl.ELM_TEXT_SIZE
-                        ) {
-                            modifyTextSize = it
-                        }
-                        AnimatedVisibility(
-                            modifyTextSize
-                        ) {
-                            Column {
-                                SeekBarPreference(
-                                    title = stringResource(R.string.media_elm_text_size_title),
-                                    key = Pref.Key.SystemUI.MediaControl.ELM_TITLE_SIZE,
-                                    defValue = 18.0f,
-                                    min = 0.5f,
-                                    max = 36.0f,
-                                    format = "%.2f sp"
-                                ) {
-                                    titleSize = it
-                                }
-                                SeekBarPreference(
-                                    title = stringResource(R.string.media_elm_text_size_artist),
-                                    key = Pref.Key.SystemUI.MediaControl.ELM_ARTIST_SIZE,
-                                    defValue = 12.0f,
-                                    min = 0.5f,
-                                    max = 24.0f,
-                                    format = "%.2f sp"
-                                ) {
-                                    artistSize = it
-                                }
-                                SeekBarPreference(
-                                    title = stringResource(R.string.media_elm_text_size_time),
-                                    key = Pref.Key.SystemUI.MediaControl.ELM_TIME_SIZE,
-                                    defValue = 12.0f,
-                                    min = 0.5f,
-                                    max = 24.0f,
-                                    format = "%.2f sp"
-                                ) {
-                                    timeSize = it
-                                }
-                            }
-                        }
-                        SwitchPreference(
-                            title = stringResource(R.string.media_elm_actions_resize),
-                            summary = stringResource(R.string.media_elm_actions_resize_tips),
-                            key = Pref.Key.SystemUI.MediaControl.ELM_ACTIONS_RESIZE
-                        )
-                        DropDownPreference(
-                            title = stringResource(R.string.media_elm_thumb_style),
-                            entries = thumbStyleEntries,
-                            key = Pref.Key.SystemUI.MediaControl.ELM_THUMB_STYLE
-                        ) {
-                            thumbStyle = it
-                        }
-                        SwitchPreference(
-                            title = stringResource(R.string.media_elm_fix_thumb_crop),
-                            summary = stringResource(R.string.media_elm_fix_thumb_crop_tips),
-                            key = Pref.Key.SystemUI.MediaControl.FIX_THUMB_CROPPED
-                        )
-                        DropDownPreference(
-                            title = stringResource(R.string.media_elm_prog_style),
-                            entries = progressStyleEntries,
-                            key = Pref.Key.SystemUI.MediaControl.ELM_PROGRESS_STYLE
-                        ) {
-                            progressStyle = it
-                        }
-                        AnimatedVisibility(
-                            progressStyle == 1
-                        ) {
-                            SeekBarPreference(
-                                title = stringResource(R.string.media_elm_prog_width),
-                                key = Pref.Key.SystemUI.MediaControl.ELM_PROGRESS_WIDTH,
-                                defValue = 4.0f,
-                                min = 0.5f,
-                                max = 14.0f,
-                                format = "%.2f dp"
-                            ) {
-                                progressWidth = it
-                            }
-                        }
+                    SeekBarPreference(
+                        title = stringResource(R.string.media_elm_text_size_time),
+                        key = MediaControlSpKey.ELM_TIME_SIZE.getKey(isDynamicIsland),
+                        defValue = 12.0f,
+                        min = 0.5f,
+                        max = 24.0f,
+                        format = "%.2f sp"
+                    ) {
+                        timeSize = it
                     }
                 }
             }
-            if (!hintAdvancedTextures && tabRowSelected == 0) {
-                Hint(
-                    modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 0.dp, bottom = 12.dp),
-                    text = stringResource(R.string.media_hint_advanced_textures),
-                    closeable = true
+        }
+        itemPreferenceGroup(
+            key = "BACKGROUND_ELM_PROGRESS_BAR",
+            last = true,
+            visible = (tabRowSelected == 2)
+        ) {
+            DropDownPreference(
+                title = stringResource(R.string.media_elm_thumb_style),
+                entries = thumbStyleEntries,
+                key = MediaControlSpKey.ELM_THUMB_STYLE.getKey(isDynamicIsland)
+            ) {
+                thumbStyle = it
+            }
+            SwitchPreference(
+                title = stringResource(R.string.media_elm_fix_thumb_crop),
+                summary = stringResource(R.string.media_elm_fix_thumb_crop_tips),
+                key = MediaControlSpKey.FIX_THUMB_CROPPED.getKey(isDynamicIsland)
+            )
+            DropDownPreference(
+                title = stringResource(R.string.media_elm_prog_style),
+                entries = progressStyleEntries,
+                key = MediaControlSpKey.ELM_PROGRESS_STYLE.getKey(isDynamicIsland)
+            ) {
+                progressStyle = it
+            }
+            AnimatedVisibility(
+                progressStyle == 1
+            ) {
+                SeekBarPreference(
+                    title = stringResource(R.string.media_elm_prog_width),
+                    key = MediaControlSpKey.ELM_PROGRESS_WIDTH.getKey(isDynamicIsland),
+                    defValue = 4.0f,
+                    min = 0.5f,
+                    max = 14.0f,
+                    format = "%.2f dp"
                 ) {
-                    hintAdvancedTextures = true
-                    SafeSP.putAny(Pref.Key.Hints.MEDIA_ADVANCED_TEXTURES, true)
+                    progressWidth = it
                 }
             }
         }

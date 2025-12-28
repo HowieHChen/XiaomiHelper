@@ -246,7 +246,7 @@
     <string name="systemui_notif_clock_anim_tips">Allow clock transition animation in landscape</string>
     <string name="systemui_notif_theme_blur">Allow Advanced textures to be enabled when using themes</string>
     <string name="systemui_notif_media_control_style" translatable="false">@string/page_media_control_style</string>
-    <string name="systemui_notif_media_control_style_tips">Customize the style of the media control</string>
+    <string name="systemui_notif_media_control_style_tips">Customize the style of the media control in the notification shade.</string>
     <string name="systemui_notif_expand_notif">Expand notifications</string>
     <string name="systemui_notif_expand_notif_tips">It\'s highly recommended to use an Overlay (RRO) to modify the notification expansion behavior</string>
     <string name="systemui_notif_expand_notif_def" translatable="false">@string/common_default</string>
@@ -267,6 +267,9 @@
     <string name="systemui_notif_lr_rerank_tips">Re-rank notifications and reorder them in the following sequence: media control panel, system alerts, Spotlight notifications, MessageStyle notifications, and other notifications.</string>
     <string name="systemui_notif_miuix_expand_btn">Miuix style expand button</string>
     <string name="systemui_notif_miuix_expand_btn_tips">Replace the expand button of Android-style notifications with Miuix button</string>
+    <string name="ui_title_systemui_dynamic_island">Dynamic Island</string>
+    <string name="systemui_di_media_control_style" translatable="false">@string/page_media_control_style</string>
+    <string name="systemui_di_media_control_style_tips">Customize the style of the media control in the Dynamic Island.</string>
     <string name="ui_title_systemui_control_center">Control center</string>
     <string name="systemui_control_hide_carrier_one">Hide carrier label for SIM card 1</string>
     <string name="systemui_control_hide_carrier_two">Hide carrier label for SIM card 2</string>
@@ -810,12 +813,16 @@
     <string name="media_bg_custom_blur">Blurred cover</string>
     <string name="media_bg_custom_radial_gradient">Radial gradient</string>
     <string name="media_bg_custom_linear_gradient">Linear gradient</string>
+    <string name="media_bg_ambient_light">Ambient light effect</string>
+    <string name="media_bg_ambient_light_tips">A music glow effect similar to the one on the Dynamic Island. When enabled, media controls are forced into dark mode.</string>
+    <string name="media_bg_always_dark">Always dark mode</string>
+    <string name="media_bg_always_dark_tips">Ignores system light/dark mode and keeps media controls in black background with white text.</string>
     <string name="media_bg_color_anim">Color animation</string>
     <string name="media_bg_color_anim_tips">Experimental feature. Use transition animation when changing text color.</string>
     <string name="media_bg_blur_radius">Blur radius</string>
     <string name="media_bg_auto_color_reverse">Auto-reverse color</string>
     <string name="ui_title_media_layout">Layout</string>
-    <string name="media_lyt_album">Album</string>
+    <string name="media_lyt_album">Album cover</string>
     <string name="media_lyt_album_default" translatable="false">@string/common_default</string>
     <string name="media_lyt_album_hide_app">No app icon</string>
     <string name="media_lyt_album_gone">Invisible</string>
@@ -831,6 +838,9 @@
     <string name="media_lyt_header_margin">Header margin top</string>
     <string name="media_lyt_header_padding">Header padding</string>
     <string name="ui_title_media_elements">Elements</string>
+    <string name="media_elm_album_shadow">Album cover shadow</string>
+    <string name="media_elm_album_flip_anim">Album cover flip animation</string>
+    <string name="media_elm_album_flip_anim_tips">Flip animation of the album cover when switching songs.</string>
     <string name="media_elm_text_size">Modify text font size</string>
     <string name="media_elm_text_size_title">Title</string>
     <string name="media_elm_text_size_artist">Artist</string>

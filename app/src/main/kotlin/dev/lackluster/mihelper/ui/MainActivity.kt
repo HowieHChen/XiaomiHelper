@@ -121,7 +121,8 @@ class MainActivity : HyperXActivity() {
                 miuixComposable(Pages.STATUS_BAR_FONT) { StatusBarFontPage(navController, adjustPadding, mode) }
                 miuixComposable(Pages.ICON_TUNER) { IconTunerPage(navController, adjustPadding, mode) }
                 miuixComposable(Pages.ICON_DETAIL) { IconDetailPage(navController, adjustPadding, mode) }
-                miuixComposable(Pages.MEDIA_CONTROL) { MediaControlPage(navController, adjustPadding, mode) }
+                miuixComposable(Pages.MEDIA_CONTROL) { MediaControlPage(navController, adjustPadding, mode, false) }
+                miuixComposable(Pages.ISLAND_MEDIA_CONTROL) { MediaControlPage(navController, adjustPadding, mode, true) }
 
                 miuixComposable(Pages.DIALOG_MARKET_FILTER_TAB) { MarketFilterTabDialog(navController, adjustPadding, mode) }
                 miuixComposable(Pages.DIALOG_SEARCH_CUSTOM_ENGINE) { SearchCustomEngineDialog(navController, adjustPadding, mode) }

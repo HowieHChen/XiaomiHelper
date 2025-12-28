@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
@@ -59,6 +60,7 @@ import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
 import kotlin.math.floor
+import kotlin.math.max
 import kotlin.math.min
 
 private val neutral1_1 = "#FEFBFC".toColorInt()
@@ -68,12 +70,16 @@ private val accent1_3 = "#D9E4ED".toColorInt()
 private val accent1_8 = "#556067".toColorInt()
 //private val accent1_9 = "#3E484F".toColorInt()
 private val accent2_9 = "#43474A".toColorInt()
+private val mainColorHCTPrimary_12 = "#FF8C57".toColorInt()
+private val mainColorHCTPrimary_10 = "#C05924".toColorInt()
+private val mainColorHCTTertiary_12 = "#B6AC76".toColorInt()
 
 @Composable
 fun MediaControlCard(
     backgroundStyle: Int = 0,
     allowReverse: Boolean = false,
     blurRadius: Int = 10,
+    ambientLight: Boolean = false,
     lytAlbum: Int = 0,
     lytLeftActions: Boolean = false,
     lytActionsOrder: Int = 0,
@@ -81,6 +87,7 @@ fun MediaControlCard(
     lytHideSeamless: Boolean = false,
     lytHeaderMargin: Float = 21.0f,
     lytHeaderPadding: Float = 2.0f,
+    albumShadow: Boolean = true,
     modifyTextSize: Boolean = false,
     titleSize: Float = 18.0f,
     artistSize: Float = 12.0f,
@@ -150,15 +157,15 @@ fun MediaControlCard(
                 end.linkTo(parent.end)
             }
             constrain(albumArt) {
-                start.linkTo(parent.start, 16.dp)
-                top.linkTo(parent.top, 16.dp)
+                start.linkTo(parent.start, 15.dp)
+                top.linkTo(parent.top, 15.dp)
                 if (lytAlbum == 2) {
                     visibility = Visibility.Gone
                 }
             }
             constrain(icon) {
-                end.linkTo(albumArt.end, 2.dp)
-                bottom.linkTo(albumArt.bottom, 2.dp)
+                end.linkTo(albumArt.end, 4.dp)
+                bottom.linkTo(albumArt.bottom, 4.dp)
                 if (lytAlbum != 0) {
                     visibility = Visibility.Gone
                 }
@@ -200,7 +207,7 @@ fun MediaControlCard(
             constrain(action0) {
                 width = 60.dp.asDimension()
                 height = 50.dp.asDimension()
-                top.linkTo(albumArt.bottom, 11.dp, 79.5.dp)
+                top.linkTo(albumArt.bottom, 11.dp, 78.5.dp)
             }
             constrain(action1) {
                 width = 60.dp.asDimension()
@@ -261,7 +268,8 @@ fun MediaControlCard(
                     .fillMaxSize(),
                 style = backgroundStyle,
                 blurRadius = blurRadius,
-                backgroundColor = backgroundColor
+                backgroundColor = backgroundColor,
+                ambientLight = ambientLight,
             )
             Image(
                 modifier = Modifier
@@ -269,8 +277,8 @@ fun MediaControlCard(
                     .size(52.5.dp)
                     .graphicsLayer(
                         clip = true,
-                        shape = G2RoundedCornerShape(8.dp),
-                        shadowElevation = 32f
+                        shape = G2RoundedCornerShape(10.dp),
+                        shadowElevation = if (albumShadow) 32f else 0f
                     ),
                 painter = painterResource(R.drawable.media_bg_ori),
                 contentScale = ContentScale.Crop,
@@ -418,63 +426,130 @@ private fun MediaBackground(
     modifier: Modifier,
     style: Int,
     blurRadius: Int,
-    backgroundColor: Color
+    backgroundColor: Color,
+    ambientLight: Boolean
 ) {
-    if (style == 4) {
-        Layout(
-            modifier = Modifier.background(backgroundColor),
-            content = {
-                Image(
-                    painter = painterResource(id = R.drawable.media_bg_ori),
-                    contentScale = ContentScale.Crop,
-                    contentDescription = null
+    when (style) {
+        0 -> {
+            Layout(
+                modifier = Modifier.background(backgroundColor),
+                content = {
+                    Image(
+                        painter = painterResource(id = R.drawable.media_bg_def),
+                        contentScale = ContentScale.Crop,
+                        contentDescription = null
+                    )
+                    if (ambientLight) {
+                        Image(
+                            painter = painterResource(id = R.drawable.media_bg_circle),
+                            contentScale = ContentScale.Crop,
+                            contentDescription = null,
+                            colorFilter = ColorFilter.tint(Color(mainColorHCTPrimary_12))
+                        )
+                        Image(
+                            painter = painterResource(id = R.drawable.media_bg_circle),
+                            contentScale = ContentScale.Crop,
+                            contentDescription = null,
+                            colorFilter = ColorFilter.tint(Color(mainColorHCTPrimary_10))
+                        )
+                        Image(
+                            painter = painterResource(id = R.drawable.media_bg_circle),
+                            contentScale = ContentScale.Crop,
+                            contentDescription = null,
+                            colorFilter = ColorFilter.tint(Color(mainColorHCTTertiary_12))
+                        )
+                    }
+                }
+            ) { measurables, constraints ->
+                val width = constraints.maxWidth
+                val height = constraints.maxHeight
+                val albumSize = max(width, height)
+                val albumConstraints = constraints.copy(
+                    minWidth = albumSize, maxWidth = albumSize,
+                    minHeight = albumSize, maxHeight = albumSize
                 )
-                Box(
-                    modifier = Modifier.background(
-                        brush = Brush.horizontalGradient(
-                            0.0f to backgroundColor,
-                            1.0f to backgroundColor.copy(0.2f)
+                val album = measurables[0].measure(albumConstraints)
+                val circles = mutableListOf<Placeable>()
+                val circleWidth = (width * 1.054f).toInt()
+                val circleHeight = (height * 2.295f).toInt()
+                if (ambientLight) {
+                    val circleConstraints = constraints.copy(
+                        minWidth = circleWidth, maxWidth = circleWidth,
+                        minHeight = circleHeight, maxHeight = circleHeight
+                    )
+                    for (i in 1..measurables.lastIndex) {
+                        circles.add(measurables[i].measure(circleConstraints))
+                    }
+                }
+                layout(width, height) {
+                    album.place(0, (constraints.maxHeight - albumSize) / 2)
+                    circles.forEachIndexed { index, circle ->
+                        when (index) {
+                            0 -> circle.place((width * 0.12f).toInt() - circleWidth / 2, (height * 1.45f).toInt() - circleHeight / 2)
+                            1 -> circle.place((width * 0.5f).toInt() - circleWidth / 2, (height * 1.34f).toInt() - circleHeight / 2)
+                            else -> circle.place((width * 0.83f).toInt() - circleWidth / 2, (height * 1.45f).toInt() - circleHeight / 2)
+                        }
+                    }
+                }
+            }
+        }
+        4 -> {
+            Layout(
+                modifier = Modifier.background(backgroundColor),
+                content = {
+                    Image(
+                        painter = painterResource(id = R.drawable.media_bg_ori),
+                        contentScale = ContentScale.Crop,
+                        contentDescription = null
+                    )
+                    Box(
+                        modifier = Modifier.background(
+                            brush = Brush.horizontalGradient(
+                                0.0f to backgroundColor,
+                                1.0f to backgroundColor.copy(0.2f)
+                            )
                         )
                     )
+                }
+            ) { measurables, constraints ->
+                val albumSize = min(constraints.maxHeight, constraints.maxWidth)
+                val albumConstraints = constraints.copy(
+                    minWidth = albumSize, maxWidth = albumSize,
+                    minHeight = albumSize, maxHeight = albumSize
                 )
+                val album = measurables[0].measure(albumConstraints)
+                val gradient = measurables[1].measure(albumConstraints)
+                layout(constraints.maxWidth, constraints.maxHeight) {
+                    album.place(constraints.maxWidth - albumSize, 0)
+                    gradient.place(constraints.maxWidth - albumSize, 0)
+                }
             }
-        ) { measurables, constraints ->
-            val albumSize = min(constraints.maxHeight, constraints.maxWidth)
-            val albumConstraints = constraints.copy(
-                minWidth = albumSize, maxWidth = albumSize,
-                minHeight = albumSize, maxHeight = albumSize
+        }
+        else -> {
+            val radiusBase = LocalDensity.current.density * 100f
+            var viewSize by remember { mutableStateOf(IntSize(800, 800)) }
+            val backgroundPainter = when (style) {
+                1 -> painterResource(id = R.drawable.media_bg_art)
+                2, 3 -> painterResource(id = R.drawable.media_bg_radial)
+                else -> painterResource(id = R.drawable.media_bg_def)
+            }
+            Image(
+                modifier = modifier.then(
+                    if (style == 2) Modifier
+                        .onGloballyPositioned { coordinates ->
+                            viewSize = coordinates.size
+                        }
+                        .blur(
+                            (viewSize.width * blurRadius / radiusBase).dp,
+                            BlurredEdgeTreatment.Rectangle
+                        )
+                    else Modifier
+                ),
+                painter = backgroundPainter,
+                contentScale = ContentScale.Crop,
+                contentDescription = null
             )
-            val album = measurables[0].measure(albumConstraints)
-            val gradient = measurables[1].measure(albumConstraints)
-            layout(constraints.maxWidth, constraints.maxHeight) {
-                album.place(constraints.maxWidth - albumSize, 0)
-                gradient.place(constraints.maxWidth - albumSize, 0)
-            }
         }
-    } else {
-        val radiusBase = LocalDensity.current.density * 100f
-        var viewSize by remember { mutableStateOf(IntSize(800, 800)) }
-        val backgroundPainter = when(style) {
-            1 -> painterResource(id = R.drawable.media_bg_art)
-            2,3 -> painterResource(id = R.drawable.media_bg_radial)
-            else -> painterResource(id = R.drawable.media_bg_def)
-        }
-        Image(
-            modifier = modifier.then(
-                if (style == 2) Modifier
-                    .onGloballyPositioned { coordinates ->
-                        viewSize = coordinates.size
-                    }
-                    .blur(
-                        (viewSize.width * blurRadius / radiusBase).dp,
-                        BlurredEdgeTreatment.Rectangle
-                    )
-                else Modifier
-            ),
-            painter = backgroundPainter,
-            contentScale = ContentScale.Crop,
-            contentDescription = null
-        )
     }
 }
 
@@ -503,7 +578,7 @@ private fun MediaProgressBar(
         val progressAlpha = if (progressStyle == 0) 0.5f else 0.75f
         val backgroundAlpha = if (progressStyle == 0) 0.1f else 0.2f
         if (progressStyle == 2) {
-            var heightFraction = 1.0f
+            val heightFraction = 1.0f
             val phaseSpeed = 8.dp.toPx()
             val waveLength = 20.dp.toPx()
             val phaseOffset = (SystemClock.uptimeMillis() / 1000f * phaseSpeed) % waveLength
@@ -526,14 +601,12 @@ private fun MediaProgressBar(
             }
             drawIntoCanvas { canvas ->
                 val progress = 0.728f
-                val totalWidth = barWidth
-                val totalProgressPx = totalWidth * progress
-                val waveProgressPx = totalWidth * progress
+                val totalProgressPx = barWidth * progress
+                val waveProgressPx = barWidth * progress
                 // Build Wiggly Path
                 val waveStart = -phaseOffset - waveLength / 2f
-                val waveEnd = waveProgressPx
                 // helper function, computes amplitude for wave segment
-                val computeAmplitude: (Float, Float) -> Float = { x, sign ->
+                val computeAmplitude: (Float, Float) -> Float = { _, sign ->
                     sign * heightFraction * lineAmplitude
                 }
                 // Reset path object to the start
@@ -544,7 +617,7 @@ private fun MediaProgressBar(
                 var waveSign = 1f
                 var currentAmp = computeAmplitude(currentX, waveSign)
                 val dist = waveLength / 2f
-                while (currentX < waveEnd) {
+                while (currentX < waveProgressPx) {
                     waveSign = -waveSign
                     val nextX = currentX + dist
                     val midX = currentX + dist / 2
@@ -562,7 +635,7 @@ private fun MediaProgressBar(
                 canvas.clipRect(0f, -1f * clipTop, totalProgressPx, clipTop)
                 canvas.drawPath(path, wavePaint)
                 canvas.restore()
-                canvas.drawLine(Offset(totalProgressPx, 0f), Offset(totalWidth, 0f), linePaint)
+                canvas.drawLine(Offset(totalProgressPx, 0f), Offset(barWidth, 0f), linePaint)
                 canvas.restore()
             }
         } else {

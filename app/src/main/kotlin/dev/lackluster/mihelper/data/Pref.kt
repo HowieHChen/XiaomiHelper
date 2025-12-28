@@ -344,6 +344,8 @@ object Pref {
                 const val BACKGROUND_STYLE = "media_ctrl_background"
                 const val BLUR_RADIUS = "media_ctrl_radius"
                 const val ALLOW_REVERSE = "media_allow_reverse"
+                const val AMBIENT_LIGHT = "media_ambient_light"
+                const val ALWAYS_DARK = "media_always_dark"
 
                 const val LYT_ALBUM = "media_lyt_album"
                 const val LYT_LEFT_ACTIONS = "media_lyt_left_actions"
@@ -353,11 +355,13 @@ object Pref {
                 const val LYT_HEADER_MARGIN = "media_lyt_header_margin"
                 const val LYT_HEADER_PADDING = "media_lyt_header_padding"
 
+                const val ELM_ALBUM_SHADOW = "media_elm_shadow"
+                const val ELM_ALBUM_FLIP = "media_elm_flip"
                 const val ELM_TEXT_SIZE = "media_elm_text_size"
                 const val ELM_TITLE_SIZE = "media_elm_title_size"
                 const val ELM_ARTIST_SIZE = "media_elm_artist_size"
                 const val ELM_TIME_SIZE = "media_elm_time_size"
-                const val ELM_ACTIONS_RESIZE = "media_elm_actions_resize"
+//                const val ELM_ACTIONS_RESIZE = "media_elm_actions_resize"
                 const val ELM_THUMB_STYLE = "media_elm_thumb_style"
                 const val ELM_PROGRESS_STYLE = "media_elm_prog_style"
                 const val ELM_PROGRESS_WIDTH = "media_elm_prog_width"
@@ -372,6 +376,36 @@ object Pref {
             }
             object Plugin {
                 const val AUTO_FLASH_ON = "sys_plugin_flash_on"
+            }
+        }
+        object DynamicIsland {
+            object MediaControl {
+                const val UNLOCK_ACTION = "di_media_unlock_action"
+
+                const val BACKGROUND_STYLE = "di_media_ctrl_background"
+                const val BLUR_RADIUS = "di_media_ctrl_radius"
+                const val ALLOW_REVERSE = "di_media_allow_reverse"
+                const val AMBIENT_LIGHT = "di_media_ambient_light"
+
+                const val LYT_ALBUM = "di_media_lyt_album"
+                const val LYT_LEFT_ACTIONS = "di_media_lyt_left_actions"
+                const val LYT_ACTIONS_ORDER = "di_media_lyt_actions_order"
+                const val LYT_HIDE_TIME = "di_media_lyt_hide_time"
+                const val LYT_HIDE_SEAMLESS = "di_media_lyt_hide_seamless"
+                const val LYT_HEADER_MARGIN = "di_media_lyt_header_margin"
+                const val LYT_HEADER_PADDING = "di_media_lyt_header_padding"
+
+                const val ELM_TEXT_SIZE = "di_media_elm_text_size"
+                const val ELM_TITLE_SIZE = "di_media_elm_title_size"
+                const val ELM_ARTIST_SIZE = "di_media_elm_artist_size"
+                const val ELM_TIME_SIZE = "di_media_elm_time_size"
+//                const val ELM_ACTIONS_RESIZE = "di_media_elm_actions_resize"
+                const val ELM_THUMB_STYLE = "di_media_elm_thumb_style"
+                const val ELM_PROGRESS_STYLE = "di_media_elm_prog_style"
+                const val ELM_PROGRESS_WIDTH = "di_media_elm_prog_width"
+
+                const val FIX_THUMB_CROPPED = "di_media_thumb_crop"
+                const val USE_ANIM = "di_media_ctrl_anim"
             }
         }
         object Taplus {

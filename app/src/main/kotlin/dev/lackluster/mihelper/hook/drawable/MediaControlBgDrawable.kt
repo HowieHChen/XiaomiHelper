@@ -26,7 +26,9 @@ abstract class MediaControlBgDrawable(
     protected var currentSize: Int = 0
     protected var targetSize: Int = 0
 
-    abstract fun updateAlbumCover(artwork: Drawable, colorConfig: MediaViewColorConfig)
+    protected var skipAnimOnce: Boolean = false
+
+    abstract fun updateAlbumCover(artwork: Drawable, colorConfig: MediaViewColorConfig, skipAnim: Boolean = false)
 
     override fun setAlpha(p0: Int) {
         artwork.alpha = p0

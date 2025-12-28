@@ -182,6 +182,7 @@
     <string name="systemui_notif_miuix_expand_btn_tips">使用 Miuix 按钮替换 Android 样式通知的展开按钮</string>
     <string name="systemui_others_monet_color_tips">此颜色将影响所有使用动态配色方案的应用程序</string>
     <string name="systemui_others_monet_color_msg">以 # 开头的十六进制颜色代码\n（如 #FF123456 #FF00FF）</string>
+    <string name="systemui_di_media_control_style_tips">自定义超级岛媒体控件的样式</string>
     <string name="ui_title_systemui_control_center">控制中心</string>
     <string name="ui_title_systemui_status_bar">状态栏</string>
     <string name="systemui_notif_disable_whitelist">禁用通知白名单</string>
@@ -349,7 +350,7 @@
     <string name="home_refactor_fix_small_window_tips">强制使用动画以避免拖动应用进入小窗时闪烁，暂时不确定是否有负面影响。只有当你非常介意这个时才启用</string>
     <string name="home_refactor_extra_compatibility">兼容性模式</string>
     <string name="home_refactor_extra_compatibility_tips">尝试与其它模块兼容，但无法确保兼容性。不推荐开启</string>
-    <string name="systemui_notif_media_control_style_tips">自定义媒体控件样式</string>
+    <string name="systemui_notif_media_control_style_tips">自定义通知中心媒体控件的样式</string>
     <string name="media_bg_custom_art">封面艺术</string>
     <string name="media_bg_custom_blur">模糊封面</string>
     <string name="home_refactor_minus_tips">用于模糊整个桌面视图，模糊会出现在处于负一屏时</string>
@@ -449,6 +450,7 @@
     <string name="media_general_hide_app_icon">隐藏应用图标</string>
     <string name="ui_title_media_bg">背景</string>
     <string name="media_bg_custom">背景风格</string>
+    <string name="media_bg_always_dark_tips">忽略系统浅色/深色模式，保持媒体控件为黑色背景白色文字</string>
     <string name="media_bg_color_anim">颜色动画</string>
     <string name="media_bg_color_anim_tips">使用动画更新文字颜色</string>
     <string name="media_bg_custom_linear_gradient">线性渐变</string>
@@ -613,6 +615,7 @@
     <string name="media_lyt_hide_seamless_tips">隐藏媒体控件右上角的设备切换按钮</string>
     <string name="media_lyt_header_padding">标题内边距</string>
     <string name="ui_title_media_elements">元素</string>
+    <string name="media_elm_album_flip_anim_tips">切换歌曲时的专辑封面翻转动画</string>
     <string name="media_elm_text_size">修改字号</string>
     <string name="media_elm_text_size_title">标题</string>
     <string name="media_elm_text_size_artist">艺术家</string>
@@ -762,7 +765,13 @@
     <string name="clock_fw_horizontal_time_weight">通知中心横屏日期时间字重</string>
     <string name="cleaner_browser_block_dialog">屏蔽营销弹窗</string>
     <string name="cleaner_browser_block_dialog_tips">阻止各种推广弹窗弹出，如小组件推荐对话框</string>
-    <string name="cleaner_browser_show_sug_switch">恢复搜素精选设置</string>
+    <string name="cleaner_browser_show_sug_switch">恢复搜索精选设置</string>
     <string name="cleaner_music_hide_listen_count">隐藏歌曲的播放次数</string>
     <string name="cleaner_music_hide_listen_count_tips">隐藏播放页的歌曲播放次数标签</string>
+    <string name="media_bg_ambient_light_tips">类似超级岛上的音乐流光效果，开启后将强制媒体控件始终为深色模式</string>
+    <string name="media_bg_always_dark">始终深色模式</string>
+    <string name="media_bg_ambient_light">氛围光效</string>
+    <string name="media_elm_album_shadow">封面阴影</string>
+    <string name="media_elm_album_flip_anim">封面翻转动画</string>
+    <string name="ui_title_systemui_dynamic_island">超级岛</string>
 </resources>

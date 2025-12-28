@@ -13,6 +13,9 @@ import dev.lackluster.mihelper.hook.rules.systemui.lockscreen.HideNextAlarm
 import dev.lackluster.mihelper.hook.rules.systemui.lockscreen.KeepNotification
 import dev.lackluster.mihelper.hook.rules.systemui.lockscreen.LockscreenDoubleTapToSleep
 import dev.lackluster.mihelper.hook.rules.systemui.lockscreen.StatusBarClockContainer
+import dev.lackluster.mihelper.hook.rules.systemui.media.CustomBackground
+import dev.lackluster.mihelper.hook.rules.systemui.media.CustomElement
+import dev.lackluster.mihelper.hook.rules.systemui.media.CustomLayout
 import dev.lackluster.mihelper.hook.rules.systemui.media.UnlockCustomAction
 import dev.lackluster.mihelper.hook.rules.systemui.notif.ExpandNotification
 import dev.lackluster.mihelper.hook.rules.systemui.notif.LayoutAndRankOpt
@@ -50,9 +53,9 @@ object SystemUI : YukiBaseHooker() {
         loadHooker(StatusBarClockContainer)
         loadHooker(CarrierLabelFontWeight)
 //
-//        loadHooker(CustomBackground)
-//        loadHooker(CustomLayout)
-//        loadHooker(CustomElement)
+        loadHooker(CustomBackground)
+        loadHooker(CustomLayout)
+        loadHooker(CustomElement)
 
         loadHooker(MiuiXExpandButton)
         loadHooker(NotifFreeform)
