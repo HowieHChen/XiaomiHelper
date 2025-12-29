@@ -122,7 +122,7 @@ object Constants {
         BACKGROUND_STYLE,
         BLUR_RADIUS,
         ALLOW_REVERSE,
-        AMBIENT_LIGHT,
+        AMBIENT_LIGHT_OPT,
 
         LYT_ALBUM,
         LYT_LEFT_ACTIONS,
@@ -136,10 +136,11 @@ object Constants {
         ELM_TITLE_SIZE,
         ELM_ARTIST_SIZE,
         ELM_TIME_SIZE,
-        ELM_ACTIONS_RESIZE,
+//        ELM_ACTIONS_RESIZE,
         ELM_THUMB_STYLE,
         ELM_PROGRESS_STYLE,
         ELM_PROGRESS_WIDTH,
+        ELM_PROGRESS_ROUND,
 
         FIX_THUMB_CROPPED,
         USE_ANIM,
@@ -152,7 +153,7 @@ object Constants {
             MediaControlSpKey.BACKGROUND_STYLE to Pref.Key.SystemUI.MediaControl.BACKGROUND_STYLE,
             MediaControlSpKey.BLUR_RADIUS to Pref.Key.SystemUI.MediaControl.BLUR_RADIUS,
             MediaControlSpKey.ALLOW_REVERSE to Pref.Key.SystemUI.MediaControl.ALLOW_REVERSE,
-            MediaControlSpKey.AMBIENT_LIGHT to Pref.Key.SystemUI.MediaControl.AMBIENT_LIGHT,
+            MediaControlSpKey.AMBIENT_LIGHT_OPT to Pref.Key.SystemUI.MediaControl.AMBIENT_LIGHT_OPT,
 
             MediaControlSpKey.LYT_ALBUM to Pref.Key.SystemUI.MediaControl.LYT_ALBUM,
             MediaControlSpKey.LYT_LEFT_ACTIONS to Pref.Key.SystemUI.MediaControl.LYT_LEFT_ACTIONS,
@@ -170,6 +171,7 @@ object Constants {
             MediaControlSpKey.ELM_THUMB_STYLE to Pref.Key.SystemUI.MediaControl.ELM_THUMB_STYLE,
             MediaControlSpKey.ELM_PROGRESS_STYLE to Pref.Key.SystemUI.MediaControl.ELM_PROGRESS_STYLE,
             MediaControlSpKey.ELM_PROGRESS_WIDTH to Pref.Key.SystemUI.MediaControl.ELM_PROGRESS_WIDTH,
+            MediaControlSpKey.ELM_PROGRESS_ROUND to Pref.Key.SystemUI.MediaControl.ELM_PROGRESS_ROUND,
 
             MediaControlSpKey.FIX_THUMB_CROPPED to Pref.Key.SystemUI.MediaControl.FIX_THUMB_CROPPED,
             MediaControlSpKey.USE_ANIM to Pref.Key.SystemUI.MediaControl.USE_ANIM,
@@ -183,7 +185,7 @@ object Constants {
             MediaControlSpKey.BACKGROUND_STYLE to Pref.Key.DynamicIsland.MediaControl.BACKGROUND_STYLE,
             MediaControlSpKey.BLUR_RADIUS to Pref.Key.DynamicIsland.MediaControl.BLUR_RADIUS,
             MediaControlSpKey.ALLOW_REVERSE to Pref.Key.DynamicIsland.MediaControl.ALLOW_REVERSE,
-            MediaControlSpKey.AMBIENT_LIGHT to Pref.Key.DynamicIsland.MediaControl.AMBIENT_LIGHT,
+            MediaControlSpKey.AMBIENT_LIGHT_OPT to Pref.Key.DynamicIsland.MediaControl.AMBIENT_LIGHT_OPT,
 
             MediaControlSpKey.LYT_ALBUM to Pref.Key.DynamicIsland.MediaControl.LYT_ALBUM,
             MediaControlSpKey.LYT_LEFT_ACTIONS to Pref.Key.DynamicIsland.MediaControl.LYT_LEFT_ACTIONS,
@@ -201,6 +203,7 @@ object Constants {
             MediaControlSpKey.ELM_THUMB_STYLE to Pref.Key.DynamicIsland.MediaControl.ELM_THUMB_STYLE,
             MediaControlSpKey.ELM_PROGRESS_STYLE to Pref.Key.DynamicIsland.MediaControl.ELM_PROGRESS_STYLE,
             MediaControlSpKey.ELM_PROGRESS_WIDTH to Pref.Key.DynamicIsland.MediaControl.ELM_PROGRESS_WIDTH,
+            MediaControlSpKey.ELM_PROGRESS_ROUND to Pref.Key.DynamicIsland.MediaControl.ELM_PROGRESS_ROUND,
 
             MediaControlSpKey.FIX_THUMB_CROPPED to Pref.Key.DynamicIsland.MediaControl.FIX_THUMB_CROPPED,
             MediaControlSpKey.USE_ANIM to Pref.Key.DynamicIsland.MediaControl.USE_ANIM,

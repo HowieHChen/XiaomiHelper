@@ -1,13 +1,16 @@
+@file:Suppress("DEPRECATION")
+
 package dev.lackluster.mihelper.hook.rules.systemui.media
 
+import android.app.WallpaperColors
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.Icon
+import android.os.AsyncTask
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintSet
 import com.highcapable.kavaref.KavaRef.Companion.resolve
@@ -25,51 +28,33 @@ import dev.lackluster.mihelper.hook.rules.systemui.compat.ConstraintSetCompat.co
 import dev.lackluster.mihelper.hook.rules.systemui.compat.ConstraintSetCompat.ctorConstraintSet
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.clzMediaData
 import dev.lackluster.mihelper.utils.Prefs
-import androidx.core.view.isVisible
 import com.highcapable.yukihookapi.hook.log.YLog
+import dev.lackluster.mihelper.hook.drawable.AmbientLightDrawable
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.ctorColorScheme
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.enumStyleContent
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.fldColorSchemeAccent1
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.fldTonalPaletteAllShades
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.getCachedWallpaperColor
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.releaseCachedWallpaperColor
+import dev.lackluster.mihelper.utils.factory.isSystemInDarkMode
 
 object AmbientLight : YukiBaseHooker() {
     private const val KEY_MEDIA_BG_VIEW = "KEY_MEDIA_BG_VIEW"
+    private const val KEY_MEDIA_BG_COLOR_LIGHT = "KEY_MEDIA_BG_COLOR_LIGHT"
+    private const val KEY_MEDIA_BG_COLOR_DARK = "KEY_MEDIA_BG_COLOR_DARK"
     // background: 0 -> Default; 1 -> Art; 2 -> Blurred cover; 3 -> AndroidNewStyle; 4 -> AndroidOldStyle;
     private val ncBackgroundStyle = Prefs.getInt(Pref.Key.SystemUI.MediaControl.BACKGROUND_STYLE, 0)
     private val diBackgroundStyle = Prefs.getInt(Pref.Key.DynamicIsland.MediaControl.BACKGROUND_STYLE, 0)
     private val ncAmbientLight = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.AMBIENT_LIGHT, false)
-    private val diAmbientLight = Prefs.getBoolean(Pref.Key.DynamicIsland.MediaControl.AMBIENT_LIGHT, true)
+    private val diAmbientLightType = Prefs.getInt(Pref.Key.DynamicIsland.MediaControl.AMBIENT_LIGHT_TYPE, 0)
+    private val ncAmbientColorOpt = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.AMBIENT_LIGHT_OPT, false)
+    private val diAmbientColorOpt = Prefs.getBoolean(Pref.Key.DynamicIsland.MediaControl.AMBIENT_LIGHT_OPT, false)
 
-    private val clzMusicBgView by lazy {
-        "com.mi.widget.view.MusicBgView".toClassOrNull()
-    }
-    private val ctorMusicBgView by lazy {
-        clzMusicBgView?.resolve()?.firstConstructorOrNull {
-            parameterCount = 1
-            parameters(Context::class)
-        }?.self
-    }
-    private val metStart by lazy {
-        clzMusicBgView?.resolve()?.firstMethodOrNull {
-            name = "start"
-        }?.self
-    }
-    private val metStop by lazy {
-        clzMusicBgView?.resolve()?.firstMethodOrNull {
-            name = "stop"
-        }?.self
-    }
-    private val metResume by lazy {
-        clzMusicBgView?.resolve()?.firstMethodOrNull {
-            name = "resume"
-        }?.self
-    }
-    private val metPause by lazy {
-        clzMusicBgView?.resolve()?.firstMethodOrNull {
-            name = "pause"
-        }?.self
-    }
-    private val metSetGradientColor by lazy {
-        clzMusicBgView?.resolve()?.firstMethodOrNull {
-            name = "setGradientColor"
-        }?.self
-    }
+    var ncCurrentPkgName = ""
+    var ncIsArtworkBound = false
+    var diCurrentPkgName = ""
+    var diIsArtworkBound = false
+
     private val fldIsPlaying by lazy {
         clzMediaData?.resolve()?.firstFieldOrNull {
             name = "isPlaying"
@@ -92,13 +77,6 @@ object AmbientLight : YukiBaseHooker() {
             modifiers(Modifiers.STATIC)
         }?.self
     }
-    private val metGetPaletteColor by lazy {
-        clzMiPalette?.resolve()?.firstMethodOrNull {
-            name = "getPaletteColor"
-            parameters(Int::class, String::class, Int::class)
-            modifiers(Modifiers.STATIC)
-        }?.self
-    }
     private val metAcquireApplicationIcon by lazy {
         "com.android.systemui.statusbar.notification.utils.NotificationUtil".toClassOrNull()?.resolve()?.firstMethodOrNull {
             name = "acquireApplicationIcon"
@@ -111,29 +89,46 @@ object AmbientLight : YukiBaseHooker() {
             name = "artwork"
         }?.self
     }
+    private val fldPackageName by lazy {
+        clzMediaData?.resolve()?.firstFieldOrNull {
+            name = "packageName"
+        }?.self
+    }
 
     override fun onHook() {
         if (ncBackgroundStyle == 0 && ncAmbientLight) {
-            var parentOnGlobalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener? = null
             clzMiuiMediaViewControllerImpl?.apply {
+                val fldContext = resolve().firstFieldOrNull {
+                    name = "context"
+                }?.self
+                val fldIsArtWorkUpdate = resolve().firstFieldOrNull {
+                    name = "isArtWorkUpdate"
+                }?.self
                 val fldHolder = resolve().firstFieldOrNull {
                     name = "holder"
                 }?.self
                 val fldMediaData = resolve().firstFieldOrNull {
                     name = "mediaData"
                 }?.self
+                val fldFullAodController = resolve().firstFieldOrNull {
+                    name = "fullAodController"
+                }?.self
+                val fldEnableFullAod = "com.android.systemui.statusbar.notification.fullaod.NotifiFullAodController".toClassOrNull()
+                    ?.resolve()?.firstFieldOrNull {
+                        name = "mEnableFullAod"
+                    }?.self
+                val metGet = "dagger.Lazy".toClassOrNull()?.resolve()?.firstMethodOrNull {
+                    name = "get"
+                }?.self
                 resolve().firstMethodOrNull {
                     name = "detach"
                 }?.hook {
                     after {
                         val holder = fldHolder?.get(this.instance) ?: return@after
-                        XposedHelpers.getAdditionalInstanceField(holder, KEY_MEDIA_BG_VIEW)?.let { musicBgView ->
-                            metStop?.invoke(musicBgView)
-                            val parent = (musicBgView as? View)?.parent as? ViewGroup ?: return@after
-                            parentOnGlobalLayoutListener?.let {
-                                parent.viewTreeObserver.removeOnGlobalLayoutListener(it)
-                            }
-                        }
+                        (getNewMediaBgView(holder, false)?.drawable as? AmbientLightDrawable)?.stop()
+                        ncCurrentPkgName = ""
+                        ncIsArtworkBound = false
+                        releaseCachedWallpaperColor()
                     }
                 }
                 resolve().firstMethodOrNull {
@@ -142,43 +137,7 @@ object AmbientLight : YukiBaseHooker() {
                     after {
                         val controllerImpl = this.instance
                         val holder = fldHolder?.get(controllerImpl) ?: return@after
-                        val mediaBg = getMediaViewHolderField("mediaBg", false)?.get(holder) as? ImageView ?: return@after
-                        val parent = mediaBg.parent as? ViewGroup ?: return@after
-                        val index = (parent.indexOfChild(mediaBg) + 1).coerceIn(0, parent.childCount)
-                        (ctorMusicBgView?.newInstance(mediaBg.context) as? View)?.let { musicBgView ->
-                            musicBgView.apply {
-                                id = media_bg_view
-                                layoutParams = ViewGroup.LayoutParams(0, 0)
-                                clipToOutline = true
-                                outlineProvider = mediaBg.outlineProvider
-                            }
-                            parent.addView(musicBgView, index)
-                            XposedHelpers.setAdditionalInstanceField(holder, KEY_MEDIA_BG_VIEW, musicBgView)
-                            val constraintSet = ctorConstraintSet.newInstance()
-                            clone?.invoke(constraintSet, parent)
-                            connect?.invoke(constraintSet, media_bg_view, ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT)
-                            connect?.invoke(constraintSet, media_bg_view, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
-                            connect?.invoke(constraintSet, media_bg_view, ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT)
-                            connect?.invoke(constraintSet, media_bg_view, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
-                            applyTo?.invoke(constraintSet, parent)
-                        }
-                        parentOnGlobalLayoutListener = object : ViewTreeObserver.OnGlobalLayoutListener {
-                            override fun onGlobalLayout() {
-                                val holder = fldHolder.get(controllerImpl) ?: return
-                                val musicBgView = XposedHelpers.getAdditionalInstanceField(holder, KEY_MEDIA_BG_VIEW) as? View ?: return
-                                val mediaData = fldMediaData?.get(controllerImpl) ?: return
-                                val isPlaying = fldIsPlaying?.get(mediaData) == true
-                                if (parent.isVisible && isPlaying) {
-                                    metStart?.invoke(musicBgView)
-                                    metResume?.invoke(musicBgView)
-                                } else {
-                                    metPause?.invoke(musicBgView)
-                                }
-                            }
-                        }
-                        parentOnGlobalLayoutListener.let {
-                            parent.viewTreeObserver.addOnGlobalLayoutListener(it)
-                        }
+                        getNewMediaBgView(holder, false)
                     }
                 }
                 resolve().firstMethodOrNull {
@@ -186,25 +145,27 @@ object AmbientLight : YukiBaseHooker() {
                 }?.hook {
                     after {
                         val mediaData = this.args(0).any() ?: return@after
-                        val holder = fldHolder?.get(this.instance) ?: return@after
-                        val musicBgView = XposedHelpers.getAdditionalInstanceField(holder, KEY_MEDIA_BG_VIEW) as? View ?: return@after
-                        val context = musicBgView.context
-                        val artwork = fldArtwork?.get(mediaData) as? Icon
+                        val packageName = fldPackageName?.get(mediaData) as? String ?: return@after
+                        val isArtWorkUpdate = fldIsArtWorkUpdate?.get(this.instance) == true || ncCurrentPkgName != packageName || !ncIsArtworkBound
 
-                        val isPlaying = fldIsPlaying?.get(mediaData) == true
-                        val artWorkDrawable =
-                            (artwork?.loadDrawable(context) ?: (metAcquireApplicationIcon?.invoke(null, context, mediaData) as? Drawable)) ?: return@after
-                        val mainColorHCT = getMainColorHCT(artWorkDrawable)?.also { YLog.info(it.toHexString()) } ?: Color.TRANSPARENT
-                        if (isPlaying) {
-                            metSetGradientColor?.invoke(musicBgView, mainColorHCT, intArrayOf(
-                                (metGetPaletteColor?.invoke(null, mainColorHCT, "primary", 12) as? Int)?.also { YLog.info(it.toHexString()) } ?: mainColorHCT,
-                                (metGetPaletteColor?.invoke(null, mainColorHCT, "primary", 10) as? Int)?.also { YLog.info(it.toHexString()) } ?: mainColorHCT,
-                                (metGetPaletteColor?.invoke(null, mainColorHCT, "tertiary", 12) as? Int)?.also { YLog.info(it.toHexString()) } ?: mainColorHCT,
-                            ))
-                            metStart?.invoke(musicBgView)
-                            metResume?.invoke(musicBgView)
+                        val holder = fldHolder?.get(this.instance) ?: return@after
+                        val context = fldContext?.get(this.instance) as? Context ?: return@after
+
+                        if (isArtWorkUpdate) {
+                            val fullAodControllerLazy = fldFullAodController?.get(this.instance)
+                            val fullAodController = fullAodControllerLazy?.let { it1 -> metGet?.invoke(it1) }
+                            val enableFullAod = fldEnableFullAod?.get(fullAodController) == true
+
+                            updateColor(context, mediaData, packageName, holder, false, context.isSystemInDarkMode || enableFullAod)
                         } else {
-                            metPause?.invoke(musicBgView)
+                            val mediaBgView = getNewMediaBgView(holder, false) ?: return@after
+                            val ambientLightDrawable = mediaBgView.drawable as? AmbientLightDrawable ?: return@after
+                            val isPlaying = fldIsPlaying?.get(mediaData) == true
+                            if (isPlaying) {
+                                ambientLightDrawable.resume()
+                            } else {
+                                ambientLightDrawable.pause()
+                            }
                         }
                     }
                 }
@@ -213,41 +174,120 @@ object AmbientLight : YukiBaseHooker() {
                 }?.hook {
                     after {
                         val holder = fldHolder?.get(this.instance) ?: return@after
-                        val musicBgView = XposedHelpers.getAdditionalInstanceField(holder, KEY_MEDIA_BG_VIEW) as? View ?: return@after
+                        val ambientLightDrawable = getNewMediaBgView(holder, false)?.drawable as? AmbientLightDrawable ?: return@after
                         val mediaData = fldMediaData?.get(this.instance) ?: return@after
                         val toFullAod = this.args(0).boolean()
                         val isPlaying = fldIsPlaying?.get(mediaData) == true
                         if (!toFullAod && isPlaying) {
-                            metStart?.invoke(musicBgView)
-                            metResume?.invoke(musicBgView)
+                            ambientLightDrawable.resume()
                         } else {
-                            metPause?.invoke(musicBgView)
+                            ambientLightDrawable.pause()
                         }
+                    }
+                }
+                resolve().firstMethodOrNull {
+                    name = "updateForegroundColors"
+                }?.hook {
+                    before {
+                        val holder = fldHolder?.get(this.instance) ?: return@before
+                        val mediaBgView = getNewMediaBgView(holder, false)
+                        val ambientLightDrawable = mediaBgView?.drawable as? AmbientLightDrawable ?: return@before
+                        val context = fldContext?.get(this.instance) as? Context ?: return@before
+                        val fullAodControllerLazy = fldFullAodController?.get(this.instance)
+                        val fullAodController = fullAodControllerLazy?.let { it1 -> metGet?.invoke(it1) }
+                        val enableFullAod = fldEnableFullAod?.get(fullAodController) == true
+                        val isDark = enableFullAod || context.isSystemInDarkMode
+                        if (ncAmbientColorOpt) {
+                            val light = XposedHelpers.getAdditionalInstanceField(holder, KEY_MEDIA_BG_COLOR_LIGHT) as? Int ?: Color.TRANSPARENT
+                            val dark = XposedHelpers.getAdditionalInstanceField(holder, KEY_MEDIA_BG_COLOR_DARK) as? Int ?: Color.TRANSPARENT
+                            ambientLightDrawable.setGradientColor(if (isDark) dark else light, !mediaBgView.isShown)
+                        }
+                        ambientLightDrawable.setLightMode(!isDark)
                     }
                 }
             }
         }
-        if (diBackgroundStyle == 0 && !diAmbientLight) {
+        if (diBackgroundStyle == 0 && diAmbientLightType != 0) {
             clzMiuiIslandMediaViewBinderImpl?.apply {
+                val fldContext = resolve().firstFieldOrNull {
+                    name = "context"
+                }?.self
+                val fldIsArtWorkUpdate = resolve().firstFieldOrNull {
+                    name = "isArtWorkUpdate"
+                }?.self
                 val fldHolder = resolve().firstFieldOrNull {
                     name = "holder"
                 }?.self
                 val fldDummyHolder = resolve().firstFieldOrNull {
                     name = "dummyHolder"
                 }?.self
-                resolve().firstMethodOrNull {
-                    name = "attach"
-                }?.hook {
-                    after {
-                        fldHolder?.get(this.instance)?.let { holder ->
-                            val mediaBgView = getMediaViewHolderField("mediaBgView", true)?.get(holder) as? View ?: return@let
-                            val parent = mediaBgView.parent as? ViewGroup ?: return@let
-                            parent.removeView(mediaBgView)
+                if (diAmbientLightType == 1) {
+                    resolve().firstMethodOrNull {
+                        name = "attach"
+                    }?.hook {
+                        after {
+                            fldHolder?.get(this.instance)?.let { holder ->
+                                val mediaBgView = getMediaViewHolderField("mediaBgView", true)?.get(holder) as? View ?: return@let
+                                val parent = mediaBgView.parent as? ViewGroup ?: return@let
+                                parent.removeView(mediaBgView)
+                            }
+                            fldDummyHolder?.get(this.instance)?.let { holder ->
+                                val mediaBgView = getMediaViewHolderField("mediaBgView", true)?.get(holder) as? View ?: return@let
+                                val parent = mediaBgView.parent as? ViewGroup ?: return@let
+                                parent.removeView(mediaBgView)
+                            }
                         }
-                        fldDummyHolder?.get(this.instance)?.let { holder ->
-                            val mediaBgView = getMediaViewHolderField("mediaBgView", true)?.get(holder) as? View ?: return@let
-                            val parent = mediaBgView.parent as? ViewGroup ?: return@let
-                            parent.removeView(mediaBgView)
+                    }
+                } else {
+                    resolve().firstMethodOrNull {
+                        name = "detach"
+                    }?.hook {
+                        after {
+                            val holder = fldHolder?.get(this.instance) ?: return@after
+                            (getNewMediaBgView(holder, true)?.drawable as? AmbientLightDrawable)?.stop()
+                            diCurrentPkgName = ""
+                            diIsArtworkBound = false
+                            releaseCachedWallpaperColor()
+                        }
+                    }
+                    resolve().firstMethodOrNull {
+                        name = "attach"
+                    }?.hook {
+                        after {
+                            fldHolder?.get(this.instance)?.let { holder ->
+                                getNewMediaBgView(holder, true)
+                            }
+                            fldDummyHolder?.get(this.instance)?.let { holder ->
+                                getNewMediaBgView(holder, true)
+                            }
+                        }
+                    }
+                    resolve().firstMethodOrNull {
+                        name = "bindMediaData"
+                    }?.hook {
+                        after {
+                            val mediaData = this.args(0).any() ?: return@after
+                            val packageName = fldPackageName?.get(mediaData) as? String ?: return@after
+                            val isArtWorkUpdate = fldIsArtWorkUpdate?.get(this.instance) == true || diCurrentPkgName != packageName || !diIsArtworkBound
+
+                            val holder = fldHolder?.get(this.instance) ?: return@after
+                            val context = fldContext?.get(this.instance) as? Context ?: return@after
+
+                            if (isArtWorkUpdate) {
+                                updateColor(context, mediaData, packageName, holder,
+                                    isDynamicIsland = true,
+                                    isDark = true
+                                )
+                            } else {
+                                val mediaBgView = getNewMediaBgView(holder, true) ?: return@after
+                                val ambientLightDrawable = mediaBgView.drawable as? AmbientLightDrawable ?: return@after
+                                val isPlaying = fldIsPlaying?.get(mediaData) == true
+                                if (isPlaying) {
+                                    ambientLightDrawable.resume()
+                                } else {
+                                    ambientLightDrawable.pause()
+                                }
+                            }
                         }
                     }
                 }
@@ -255,9 +295,107 @@ object AmbientLight : YukiBaseHooker() {
         }
     }
 
+    private fun getNewMediaBgView(mMediaViewHolder: Any, isDynamicIsland: Boolean): ImageView? {
+        val newMediaBgView = XposedHelpers.getAdditionalInstanceField(mMediaViewHolder, KEY_MEDIA_BG_VIEW) as? ImageView
+        if (newMediaBgView?.drawable is AmbientLightDrawable) {
+            return newMediaBgView
+        } else {
+            val mediaBg = if (isDynamicIsland) {
+                getMediaViewHolderField("mediaBgView", true)?.get(mMediaViewHolder) as? View
+            } else {
+                getMediaViewHolderField("mediaBg", false)?.get(mMediaViewHolder) as? View
+            }
+            val parent = mediaBg?.parent as? ViewGroup ?: return null
+            val index = (parent.indexOfChild(mediaBg) + 1).coerceIn(0, parent.childCount)
+            val ambientLightDrawable = AmbientLightDrawable().apply {
+                start()
+            }
+            val musicBgView = ImageView(mediaBg.context).apply {
+                id = media_bg_view
+                layoutParams = ViewGroup.LayoutParams(0, 0)
+                clipToOutline = true
+                outlineProvider = mediaBg.outlineProvider
+                setImageDrawable(ambientLightDrawable)
+            }
+            parent.addView(musicBgView, index)
+            if (isDynamicIsland) {
+                parent.removeView(mediaBg)
+            }
+            val constraintSet = ctorConstraintSet.newInstance()
+            clone?.invoke(constraintSet, parent)
+            connect?.invoke(constraintSet, media_bg_view, ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT)
+            connect?.invoke(constraintSet, media_bg_view, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
+            connect?.invoke(constraintSet, media_bg_view, ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT)
+            connect?.invoke(constraintSet, media_bg_view, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
+            applyTo?.invoke(constraintSet, parent)
+            XposedHelpers.setAdditionalInstanceField(mMediaViewHolder, KEY_MEDIA_BG_VIEW, musicBgView)
+            return musicBgView
+        }
+    }
+
     private fun getMainColorHCT(drawable: Drawable): Int? {
         return metDrawable2Bitmap?.invoke(null, drawable)?.let { bitmap ->
             metGetMainColorHCT?.invoke(null, bitmap) as? Int
+        }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    fun updateColor(context: Context, mediaData: Any, pkgName: String, holder: Any, isDynamicIsland: Boolean, isDark: Boolean) {
+        val mediaBgView = getNewMediaBgView(holder, isDynamicIsland) ?: return
+        val ambientLightDrawable = mediaBgView.drawable as? AmbientLightDrawable ?: return
+        val artwork = fldArtwork?.get(mediaData) as? Icon
+        AsyncTask.THREAD_POOL_EXECUTOR.execute {
+            val colorOpt = if (isDynamicIsland) diAmbientColorOpt else ncAmbientColorOpt
+            val mainColorHCT: Int
+            if (colorOpt) {
+                val wallpaperColors = context.getCachedWallpaperColor(artwork)
+                val mutableColorScheme: Any?
+                if (wallpaperColors != null) {
+                    mutableColorScheme = ctorColorScheme?.newInstance(wallpaperColors, true, enumStyleContent)
+                } else {
+                    try {
+                        val icon = context.packageManager.getApplicationIcon(pkgName)
+                        mutableColorScheme = ctorColorScheme?.newInstance(WallpaperColors.fromDrawable(icon), true, enumStyleContent)?: throw Exception()
+                    } catch (_: Exception) {
+                        YLog.warn("application not found!")
+                        return@execute
+                    }
+                }
+                val accent1 = (fldTonalPaletteAllShades?.get(fldColorSchemeAccent1!!.get(mutableColorScheme)) as? List<*>)?.filterIsInstance<Int>()
+                if (accent1?.size != 13) {
+                    mainColorHCT = Color.TRANSPARENT
+                } else if (isDynamicIsland) {
+                    mainColorHCT = accent1[7]
+                } else {
+                    val light = accent1[4]
+                    val dark = accent1[7]
+                    XposedHelpers.setAdditionalInstanceField(holder, KEY_MEDIA_BG_COLOR_LIGHT, light)
+                    XposedHelpers.setAdditionalInstanceField(holder, KEY_MEDIA_BG_COLOR_DARK, dark)
+                    mainColorHCT = if (isDark) dark else light
+                }
+            } else {
+                val artWorkDrawable =
+                    (artwork?.loadDrawable(context) ?: (metAcquireApplicationIcon?.invoke(null, context, mediaData) as? Drawable)) ?: return@execute
+                mainColorHCT = getMainColorHCT(artWorkDrawable) ?: Color.TRANSPARENT
+            }
+            mediaBgView.let { bg ->
+                bg.post {
+                    val isPlaying = fldIsPlaying?.get(mediaData) == true
+                    ambientLightDrawable.setGradientColor(mainColorHCT, !mediaBgView.isShown)
+                    if (isPlaying) {
+                        ambientLightDrawable.resume()
+                    } else {
+                        ambientLightDrawable.pause()
+                    }
+                    if (isDynamicIsland) {
+                        diCurrentPkgName = pkgName
+                        diIsArtworkBound = true
+                    } else {
+                        ncCurrentPkgName = pkgName
+                        ncIsArtworkBound = true
+                    }
+                }
+            }
         }
     }
 }

@@ -53,3 +53,28 @@ fun LazyListScope.itemPreferenceGroup(
         }
     }
 }
+
+fun LazyListScope.itemAnimated(
+    key: Any? = null,
+    titleResId: Int? = null,
+    visible: Boolean = true,
+    content: @Composable ColumnScope.() -> Unit
+) {
+    if (visible) {
+        item(
+            key = key ?: (titleResId.hashCode() + content.hashCode())
+        ) {
+            Column(
+                modifier = Modifier.animateItem(
+                    fadeInSpec = spring(stiffness = Spring.StiffnessMediumLow),
+                    placementSpec = spring(
+                        stiffness = Spring.StiffnessMediumLow,
+                        visibilityThreshold = IntOffset.VisibilityThreshold,
+                    ),
+                    fadeOutSpec = spring(stiffness = Spring.StiffnessMediumLow),
+                ),
+                content = content
+            )
+        }
+    }
+}

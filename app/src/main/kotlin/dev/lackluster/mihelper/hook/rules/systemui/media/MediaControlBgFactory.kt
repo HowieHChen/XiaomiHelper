@@ -23,6 +23,7 @@ import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.condition.type.Modifiers
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import dev.lackluster.mihelper.hook.rules.systemui.media.bg.MediaViewColorConfig
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.max
 import kotlin.math.min
 
@@ -91,6 +92,7 @@ object MediaControlBgFactory : YukiBaseHooker() {
         }
     }
 
+    private val artworkColorMap = ConcurrentHashMap<Icon, WallpaperColors>()
 
     override fun onHook() {
         clzColorScheme
@@ -117,19 +119,27 @@ object MediaControlBgFactory : YukiBaseHooker() {
         return loadDrawable
     }
 
-    fun Context.getWallpaperColor(icon: Icon?): WallpaperColors? {
+    fun Context.getCachedWallpaperColor(icon: Icon?): WallpaperColors? {
         val iconType = icon?.type ?: return null
         if (iconType != Icon.TYPE_BITMAP && iconType != Icon.TYPE_ADAPTIVE_BITMAP) {
             val drawable = icon.loadDrawable(this) ?: return null
-            return WallpaperColors.fromDrawable(drawable)
+            return artworkColorMap.getOrPut(icon) {
+                WallpaperColors.fromDrawable(drawable)
+            }
         } else {
             val bitmap = metIconGetBitmap?.invoke(icon) as? Bitmap
             return if (bitmap?.isRecycled == false) {
-                WallpaperColors.fromBitmap(bitmap)
+                artworkColorMap.getOrPut(icon) {
+                    WallpaperColors.fromBitmap(bitmap)
+                }
             } else {
                 null
             }
         }
+    }
+
+    fun releaseCachedWallpaperColor() {
+        artworkColorMap.clear()
     }
 
     fun Bitmap.brightness(): Float {

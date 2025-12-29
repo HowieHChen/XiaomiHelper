@@ -43,7 +43,8 @@ import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.f
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.fldColorSchemeAccent2
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.fldTonalPaletteAllShades
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.getScaledBackground
-import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.getWallpaperColor
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.getCachedWallpaperColor
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.releaseCachedWallpaperColor
 import dev.lackluster.mihelper.hook.rules.systemui.media.bg.BgProcessor
 import dev.lackluster.mihelper.hook.rules.systemui.media.bg.BlurredCoverProcessor
 import dev.lackluster.mihelper.hook.rules.systemui.media.bg.CoverArtProcessor
@@ -129,7 +130,7 @@ object CustomBackground : YukiBaseHooker() {
                 name = "detach"
             }?.hook {
                 after {
-                    finiMediaViewHolder()
+                    finiMediaViewHolder(false)
                 }
             }
             resolve().firstMethodOrNull {
@@ -189,7 +190,7 @@ object CustomBackground : YukiBaseHooker() {
                 name = "detach"
             }?.hook {
                 after {
-                    finiMediaViewHolder()
+                    finiMediaViewHolder(true)
                 }
             }
             resolve().firstMethodOrNull {
@@ -285,13 +286,17 @@ object CustomBackground : YukiBaseHooker() {
         }
     }
 
-    private fun finiMediaViewHolder() {
-        ncPlayerConfig.mArtworkDrawable = null
-        ncPlayerConfig.mIsArtworkBound = false
-        ncPlayerConfig.mCurrentPkgName = ""
-        diPlayerConfig.mArtworkDrawable = null
-        diPlayerConfig.mIsArtworkBound = false
-        diPlayerConfig.mCurrentPkgName = ""
+    private fun finiMediaViewHolder(isDynamicIsland: Boolean) {
+        if (isDynamicIsland) {
+            diPlayerConfig.mArtworkDrawable = null
+            diPlayerConfig.mIsArtworkBound = false
+            diPlayerConfig.mCurrentPkgName = ""
+        } else {
+            ncPlayerConfig.mArtworkDrawable = null
+            ncPlayerConfig.mIsArtworkBound = false
+            ncPlayerConfig.mCurrentPkgName = ""
+        }
+        releaseCachedWallpaperColor()
     }
 
     private fun updateForegroundColors(holder: MiuiMediaViewHolderWrapper, colorConfig: MediaViewColorConfig) {
@@ -343,7 +348,7 @@ object CustomBackground : YukiBaseHooker() {
             // Album art
             val mutableColorScheme: Any?
             val artworkDrawable: Drawable
-            val wallpaperColors = context.getWallpaperColor(artwork)
+            val wallpaperColors = context.getCachedWallpaperColor(artwork)
             if (wallpaperColors != null) {
                 mutableColorScheme = ctorColorScheme?.newInstance(wallpaperColors, true, enumStyleContent)
                 artworkDrawable = context.getScaledBackground(artwork, height, height) ?: Color.TRANSPARENT.toDrawable()

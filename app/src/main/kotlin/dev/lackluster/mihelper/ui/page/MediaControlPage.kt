@@ -34,6 +34,7 @@ import dev.lackluster.mihelper.ui.component.MediaControlCard
 import dev.lackluster.mihelper.ui.component.RebootMenuItem
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.data.Scope
+import dev.lackluster.mihelper.ui.component.itemAnimated
 import dev.lackluster.mihelper.ui.component.itemPreferenceGroup
 
 @Composable
@@ -53,6 +54,11 @@ fun MediaControlPage(navController: NavController, adjustPadding: PaddingValues,
         DropDownEntry(stringResource(R.string.media_bg_custom_blur)),
         DropDownEntry(stringResource(R.string.media_bg_custom_radial_gradient)),
         DropDownEntry(stringResource(R.string.media_bg_custom_linear_gradient))
+    )
+    val backgroundAmbientLightEntries = listOf(
+        DropDownEntry(stringResource(R.string.media_bg_ambient_light_default)),
+        DropDownEntry(stringResource(R.string.media_bg_ambient_light_hidden)),
+        DropDownEntry(stringResource(R.string.media_bg_ambient_light_custom)),
     )
     val albumStyleEntries = listOf(
         DropDownEntry(stringResource(R.string.media_lyt_album_default)),
@@ -85,7 +91,17 @@ fun MediaControlPage(navController: NavController, adjustPadding: PaddingValues,
         SafeSP.getBoolean(MediaControlSpKey.ALLOW_REVERSE.getKey(isDynamicIsland), false)
     ) }
     var ambientLight by remember { mutableStateOf(
-        SafeSP.getBoolean(MediaControlSpKey.AMBIENT_LIGHT.getKey(isDynamicIsland), isDynamicIsland)
+        if (isDynamicIsland) {
+            SafeSP.getInt(Pref.Key.DynamicIsland.MediaControl.AMBIENT_LIGHT_TYPE, 0) != 1
+        } else {
+            SafeSP.getBoolean(Pref.Key.SystemUI.MediaControl.AMBIENT_LIGHT, false)
+        }
+    ) }
+    var ambientLightType by remember { mutableIntStateOf(
+        SafeSP.getInt(Pref.Key.DynamicIsland.MediaControl.AMBIENT_LIGHT_TYPE, 0)
+    ) }
+    var ambientLightOpt by remember { mutableStateOf(
+        SafeSP.getBoolean(MediaControlSpKey.AMBIENT_LIGHT_OPT.getKey(isDynamicIsland), false)
     ) }
     var lytAlbum by remember { mutableIntStateOf(
         SafeSP.getInt(MediaControlSpKey.LYT_ALBUM.getKey(isDynamicIsland), 0)
@@ -132,6 +148,9 @@ fun MediaControlPage(navController: NavController, adjustPadding: PaddingValues,
     var progressWidth by remember { mutableFloatStateOf(
         SafeSP.getFloat(MediaControlSpKey.ELM_PROGRESS_WIDTH.getKey(isDynamicIsland), 4.0f)
     ) }
+    var progressRound by remember { mutableStateOf(
+        SafeSP.getBoolean(MediaControlSpKey.ELM_PROGRESS_ROUND.getKey(isDynamicIsland), false)
+    ) }
 
     BasePage(
         navController,
@@ -154,6 +173,7 @@ fun MediaControlPage(navController: NavController, adjustPadding: PaddingValues,
                 allowReverse = allowReverse,
                 blurRadius = blurRadius,
                 ambientLight = ambientLight,
+                ambientLightOpt = ambientLightOpt,
                 lytAlbum = lytAlbum,
                 lytLeftActions = lytLeftActions,
                 lytActionsOrder = lytActionsOrder,
@@ -168,7 +188,8 @@ fun MediaControlPage(navController: NavController, adjustPadding: PaddingValues,
                 timeSize = timeSize,
                 thumbStyle = thumbStyle,
                 progressStyle = progressStyle,
-                progressWidth = progressWidth
+                progressWidth = progressWidth,
+                progressRound = progressRound
             )
         }
         item {
@@ -199,20 +220,43 @@ fun MediaControlPage(navController: NavController, adjustPadding: PaddingValues,
             last = true,
             visible = (tabRowSelected == 0 && backgroundStyle == 0)
         ) {
-            SwitchPreference(
-                title = stringResource(R.string.media_bg_ambient_light),
-                summary = stringResource(R.string.media_bg_ambient_light_tips),
-                key = MediaControlSpKey.AMBIENT_LIGHT.getKey(isDynamicIsland),
-                defValue = isDynamicIsland
-            ) {
-                ambientLight = it
-            }
-            AnimatedVisibility (!isDynamicIsland && !ambientLight) {
+            if (isDynamicIsland) {
+                DropDownPreference(
+                    title = stringResource(R.string.media_bg_ambient_light),
+                    entries = backgroundAmbientLightEntries,
+                    key = Pref.Key.DynamicIsland.MediaControl.AMBIENT_LIGHT_TYPE
+                ) {
+                    ambientLightType = it
+                    ambientLight = (it != 1)
+                    if (it == 0) {
+                        ambientLightOpt = false
+                    } else if (it == 2) {
+                        ambientLightOpt = SafeSP.getBoolean(MediaControlSpKey.AMBIENT_LIGHT_OPT.getKey(isDynamicIsland))
+                    }
+                }
+            } else {
+                SwitchPreference(
+                    title = stringResource(R.string.media_bg_ambient_light),
+                    summary = stringResource(R.string.media_bg_ambient_light_tips),
+                    key = Pref.Key.SystemUI.MediaControl.AMBIENT_LIGHT,
+                    defValue = false
+                ) {
+                    ambientLight = it
+                }
                 SwitchPreference(
                     title = stringResource(R.string.media_bg_always_dark),
                     summary = stringResource(R.string.media_bg_always_dark_tips),
                     key = Pref.Key.SystemUI.MediaControl.ALWAYS_DARK
                 )
+            }
+            AnimatedVisibility ((isDynamicIsland && ambientLightType == 2) || (!isDynamicIsland && ambientLight)) {
+                SwitchPreference(
+                    title = stringResource(R.string.media_bg_ambient_light_opt),
+                    summary = stringResource(R.string.media_bg_ambient_light_opt_tips),
+                    key = MediaControlSpKey.AMBIENT_LIGHT_OPT.getKey(isDynamicIsland),
+                ) {
+                    ambientLightOpt = it
+                }
             }
         }
         itemPreferenceGroup(
@@ -251,9 +295,8 @@ fun MediaControlPage(navController: NavController, adjustPadding: PaddingValues,
                 }
             }
         }
-        itemPreferenceGroup(
+        itemAnimated(
             key = "BACKGROUND_STYLE_HINT",
-            last = true,
             visible = (tabRowSelected == 0 && !hintAdvancedTextures)
         ) {
             Hint(
@@ -419,15 +462,23 @@ fun MediaControlPage(navController: NavController, adjustPadding: PaddingValues,
             AnimatedVisibility(
                 progressStyle == 1
             ) {
-                SeekBarPreference(
-                    title = stringResource(R.string.media_elm_prog_width),
-                    key = MediaControlSpKey.ELM_PROGRESS_WIDTH.getKey(isDynamicIsland),
-                    defValue = 4.0f,
-                    min = 0.5f,
-                    max = 14.0f,
-                    format = "%.2f dp"
-                ) {
-                    progressWidth = it
+                Column {
+                    SeekBarPreference(
+                        title = stringResource(R.string.media_elm_prog_width),
+                        key = MediaControlSpKey.ELM_PROGRESS_WIDTH.getKey(isDynamicIsland),
+                        defValue = 4.0f,
+                        min = 0.5f,
+                        max = 14.0f,
+                        format = "%.2f dp"
+                    ) {
+                        progressWidth = it
+                    }
+                    SwitchPreference(
+                        title = stringResource(R.string.media_elm_prog_round),
+                        key = MediaControlSpKey.ELM_PROGRESS_ROUND.getKey(isDynamicIsland),
+                    ) {
+                        progressRound = it
+                    }
                 }
             }
         }

@@ -23,10 +23,10 @@ package dev.lackluster.mihelper.hook.rules.systemui.media
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.drawable.ClipDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
+import android.graphics.drawable.ScaleDrawable
 import android.util.TypedValue
 import android.view.Gravity
 import android.widget.SeekBar
@@ -61,6 +61,7 @@ object CustomElement : YukiBaseHooker() {
     private val ncThumbStyle = Prefs.getInt(Pref.Key.SystemUI.MediaControl.ELM_THUMB_STYLE, 0)
     private val ncProgressStyle = Prefs.getInt(Pref.Key.SystemUI.MediaControl.ELM_PROGRESS_STYLE, 0)
     private val ncProgressWidth = Prefs.getFloat(Pref.Key.SystemUI.MediaControl.ELM_PROGRESS_WIDTH, 4.0f)
+    private val ncProgressRound = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.ELM_PROGRESS_ROUND, false)
     private val ncThumbCropFix = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.FIX_THUMB_CROPPED, false)
 
     private val diModifyTextSize = Prefs.getBoolean(Pref.Key.DynamicIsland.MediaControl.ELM_TEXT_SIZE, false)
@@ -70,6 +71,7 @@ object CustomElement : YukiBaseHooker() {
     private val diThumbStyle = Prefs.getInt(Pref.Key.DynamicIsland.MediaControl.ELM_THUMB_STYLE, 0)
     private val diProgressStyle = Prefs.getInt(Pref.Key.DynamicIsland.MediaControl.ELM_PROGRESS_STYLE, 0)
     private val diProgressWidth = Prefs.getFloat(Pref.Key.DynamicIsland.MediaControl.ELM_PROGRESS_WIDTH, 4.0f)
+    private val diProgressRound = Prefs.getBoolean(Pref.Key.DynamicIsland.MediaControl.ELM_PROGRESS_ROUND, false)
     private val diThumbCropFix = Prefs.getBoolean(Pref.Key.DynamicIsland.MediaControl.FIX_THUMB_CROPPED, false)
 
     private var ncProgress: Drawable? = null
@@ -245,7 +247,7 @@ object CustomElement : YukiBaseHooker() {
                         if (ncProgressStyle == 1) {
                             val width = ncProgressWidth.dp(context)
                             if (ncProgress == null) {
-                                ncProgress = generateCustomProgressDrawable(width)
+                                ncProgress = generateCustomProgressDrawable(width, ncProgressRound)
                             }
                             seekBar.minHeight = width
                             seekBar.maxHeight = width
@@ -350,7 +352,7 @@ object CustomElement : YukiBaseHooker() {
                         if (diProgressStyle == 1) {
                             val width = diProgressWidth.dp(context)
                             if (diProgress == null) {
-                                diProgress = generateCustomProgressDrawable(width)
+                                diProgress = generateCustomProgressDrawable(width, diProgressRound)
                             }
                             seekBar1.minHeight = width
                             seekBar1.maxHeight = width
@@ -376,17 +378,22 @@ object CustomElement : YukiBaseHooker() {
     }
 
     @SuppressLint("RtlHardcoded")
-    private fun generateCustomProgressDrawable(height: Int): Drawable {
+    private fun generateCustomProgressDrawable(height: Int, round: Boolean): Drawable {
+        val radius = height / 2.0f
         return LayerDrawable(arrayOf(
             GradientDrawable().apply {
-                cornerRadius = height / 2.0f
+                cornerRadius = radius
                 setColor("#33FFFFFF".toColorInt())
             },
-            ClipDrawable(
+            ScaleDrawable(
                 GradientDrawable().apply {
-                    cornerRadius = height / 2.0f
+                    if (round) {
+                        cornerRadius = radius
+                    } else {
+                        cornerRadii = floatArrayOf(radius, radius, 0f, 0f, 0f, 0f, radius, radius)
+                    }
                     setColor("#B3FFFFFF".toColorInt())
-                }, Gravity.LEFT, ClipDrawable.HORIZONTAL
+                }, Gravity.LEFT, 1.0f, -1.0f
             ),
         )).apply {
             setId(0, android.R.id.background)

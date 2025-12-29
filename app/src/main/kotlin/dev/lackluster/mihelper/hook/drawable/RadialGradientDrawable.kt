@@ -4,6 +4,7 @@ import android.graphics.Canvas
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
+import android.os.SystemClock
 import dev.lackluster.mihelper.hook.rules.systemui.media.bg.MediaViewColorConfig
 import dev.lackluster.mihelper.utils.Math
 import kotlin.math.abs
@@ -48,15 +49,25 @@ class RadialGradientDrawable(
         if (skipAnimOnce) {
             skipAnimOnce = false
         }
+        val now = SystemClock.elapsedRealtime()
         var alpha = 255
         when (albumState) {
             AnimationState.STARTING -> {
-                albumStartTimeMillis = System.currentTimeMillis()
-                albumState = AnimationState.RUNNING
+                if (skipAnim) {
+                    albumState = AnimationState.DONE
+                    currentStartColor = targetStartColor
+                    currentEndColor = targetEndColor
+                    artwork = nextArtwork ?: artwork
+                    nextArtwork = null
+                    alpha = 255
+                } else {
+                    albumStartTimeMillis = now
+                    albumState = AnimationState.RUNNING
+                }
             }
             AnimationState.RUNNING -> {
                 if (albumStartTimeMillis >= 0) {
-                    val normalized: Float = ((System.currentTimeMillis() - albumStartTimeMillis) / albumDuration.toFloat()).coerceIn(0.0f, 1.0f)
+                    val normalized: Float = ((now - albumStartTimeMillis) / albumDuration.toFloat()).coerceIn(0.0f, 1.0f)
                     currentStartColor = argbEvaluator.evaluate(normalized, sourceStartColor, targetStartColor) as Int
                     currentEndColor = argbEvaluator.evaluate(normalized, sourceEndColor, targetEndColor) as Int
                     alpha = Math.linearInterpolate(0, 255, normalized)
@@ -74,12 +85,17 @@ class RadialGradientDrawable(
         }
         when (resizeState) {
             AnimationState.STARTING -> {
-                resizeStartTimeMillis = System.currentTimeMillis()
-                resizeState = AnimationState.RUNNING
+                if (skipAnim) {
+                    resizeState = AnimationState.DONE
+                    currentSize = targetSize
+                } else {
+                    resizeStartTimeMillis = now
+                    resizeState = AnimationState.RUNNING
+                }
             }
             AnimationState.RUNNING -> {
                 if (resizeStartTimeMillis >= 0) {
-                    val normalized: Float = ((System.currentTimeMillis() - resizeStartTimeMillis) / resizeDuration.toFloat()).coerceIn(0.0f, 1.0f)
+                    val normalized: Float = ((now - resizeStartTimeMillis) / resizeDuration.toFloat()).coerceIn(0.0f, 1.0f)
                     currentSize = Math.linearInterpolate(sourceSize, targetSize, normalized)
                     if (normalized >= 1.0f || skipAnim) {
                         resizeState = AnimationState.DONE
@@ -133,6 +149,7 @@ class RadialGradientDrawable(
         targetEndColor = colorConfig.bgEndColor
         albumState = AnimationState.STARTING
         this.colorConfig = colorConfig
+        skipAnimOnce = skipAnim
         invalidateSelf()
     }
 }

@@ -11,10 +11,9 @@ import dev.lackluster.mihelper.utils.Prefs
 object AlwaysDark : YukiBaseHooker() {
     private val ncBackgroundStyle = Prefs.getInt(Pref.Key.SystemUI.MediaControl.BACKGROUND_STYLE, 0)
     private val ncAlwaysDark = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.ALWAYS_DARK, false)
-    private val ncAmbientLight = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.AMBIENT_LIGHT, false)
 
     override fun onHook() {
-        if (ncBackgroundStyle == 0 && (ncAlwaysDark || ncAmbientLight)) {
+        if (ncBackgroundStyle == 0 && ncAlwaysDark) {
             clzMiuiMediaViewControllerImpl?.apply {
                 val fldContext = resolve().firstFieldOrNull {
                     name = "context"

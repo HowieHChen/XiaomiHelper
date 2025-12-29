@@ -345,6 +345,7 @@ object Pref {
                 const val BLUR_RADIUS = "media_ctrl_radius"
                 const val ALLOW_REVERSE = "media_allow_reverse"
                 const val AMBIENT_LIGHT = "media_ambient_light"
+                const val AMBIENT_LIGHT_OPT = "media_ambient_light_opt"
                 const val ALWAYS_DARK = "media_always_dark"
 
                 const val LYT_ALBUM = "media_lyt_album"
@@ -365,6 +366,7 @@ object Pref {
                 const val ELM_THUMB_STYLE = "media_elm_thumb_style"
                 const val ELM_PROGRESS_STYLE = "media_elm_prog_style"
                 const val ELM_PROGRESS_WIDTH = "media_elm_prog_width"
+                const val ELM_PROGRESS_ROUND = "media_elm_prog_round"
 
                 const val FIX_THUMB_CROPPED = "media_thumb_crop"
                 const val USE_ANIM = "media_ctrl_anim"
@@ -385,7 +387,8 @@ object Pref {
                 const val BACKGROUND_STYLE = "di_media_ctrl_background"
                 const val BLUR_RADIUS = "di_media_ctrl_radius"
                 const val ALLOW_REVERSE = "di_media_allow_reverse"
-                const val AMBIENT_LIGHT = "di_media_ambient_light"
+                const val AMBIENT_LIGHT_TYPE = "di_media_ambient_light_type"
+                const val AMBIENT_LIGHT_OPT = "di_media_ambient_light_opt"
 
                 const val LYT_ALBUM = "di_media_lyt_album"
                 const val LYT_LEFT_ACTIONS = "di_media_lyt_left_actions"
@@ -403,6 +406,7 @@ object Pref {
                 const val ELM_THUMB_STYLE = "di_media_elm_thumb_style"
                 const val ELM_PROGRESS_STYLE = "di_media_elm_prog_style"
                 const val ELM_PROGRESS_WIDTH = "di_media_elm_prog_width"
+                const val ELM_PROGRESS_ROUND = "di_media_elm_prog_round"
 
                 const val FIX_THUMB_CROPPED = "di_media_thumb_crop"
                 const val USE_ANIM = "di_media_ctrl_anim"

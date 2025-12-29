@@ -73,6 +73,9 @@ private val accent2_9 = "#43474A".toColorInt()
 private val mainColorHCTPrimary_12 = "#FF8C57".toColorInt()
 private val mainColorHCTPrimary_10 = "#C05924".toColorInt()
 private val mainColorHCTTertiary_12 = "#B6AC76".toColorInt()
+private val mainColorHCTPrimary_12_OPT = "#0EB7F8".toColorInt()
+private val mainColorHCTPrimary_10_OPT = "#0080AE".toColorInt()
+private val mainColorHCTTertiary_12_OPT = "#AFA6CD".toColorInt()
 
 @Composable
 fun MediaControlCard(
@@ -80,6 +83,7 @@ fun MediaControlCard(
     allowReverse: Boolean = false,
     blurRadius: Int = 10,
     ambientLight: Boolean = false,
+    ambientLightOpt: Boolean = false,
     lytAlbum: Int = 0,
     lytLeftActions: Boolean = false,
     lytActionsOrder: Int = 0,
@@ -94,7 +98,8 @@ fun MediaControlCard(
     timeSize: Float = 12.0f,
     thumbStyle: Int = 0,
     progressStyle: Int = 0,
-    progressWidth: Float = 4.0f
+    progressWidth: Float = 4.0f,
+    progressRound: Boolean = false,
 ) {
     Card(
         modifier = Modifier
@@ -270,6 +275,7 @@ fun MediaControlCard(
                 blurRadius = blurRadius,
                 backgroundColor = backgroundColor,
                 ambientLight = ambientLight,
+                ambientLightOpt = ambientLightOpt
             )
             Image(
                 modifier = Modifier
@@ -415,7 +421,8 @@ fun MediaControlCard(
                 color = textPrimaryColor,
                 thumbStyle = thumbStyle,
                 progressStyle = progressStyle,
-                progressWidth = progressWidth
+                progressWidth = progressWidth,
+                progressRound = progressRound
             )
         }
     }
@@ -427,7 +434,8 @@ private fun MediaBackground(
     style: Int,
     blurRadius: Int,
     backgroundColor: Color,
-    ambientLight: Boolean
+    ambientLight: Boolean,
+    ambientLightOpt: Boolean
 ) {
     when (style) {
         0 -> {
@@ -444,19 +452,19 @@ private fun MediaBackground(
                             painter = painterResource(id = R.drawable.media_bg_circle),
                             contentScale = ContentScale.Crop,
                             contentDescription = null,
-                            colorFilter = ColorFilter.tint(Color(mainColorHCTPrimary_12))
+                            colorFilter = ColorFilter.tint(Color(if (ambientLightOpt) mainColorHCTPrimary_12_OPT else mainColorHCTPrimary_12))
                         )
                         Image(
                             painter = painterResource(id = R.drawable.media_bg_circle),
                             contentScale = ContentScale.Crop,
                             contentDescription = null,
-                            colorFilter = ColorFilter.tint(Color(mainColorHCTPrimary_10))
+                            colorFilter = ColorFilter.tint(Color(if (ambientLightOpt) mainColorHCTPrimary_10_OPT else mainColorHCTPrimary_10))
                         )
                         Image(
                             painter = painterResource(id = R.drawable.media_bg_circle),
                             contentScale = ContentScale.Crop,
                             contentDescription = null,
-                            colorFilter = ColorFilter.tint(Color(mainColorHCTTertiary_12))
+                            colorFilter = ColorFilter.tint(Color(if (ambientLightOpt) mainColorHCTTertiary_12_OPT else mainColorHCTTertiary_12))
                         )
                     }
                 }
@@ -559,7 +567,8 @@ private fun MediaProgressBar(
     color: Color,
     thumbStyle: Int,
     progressStyle: Int,
-    progressWidth: Float
+    progressWidth: Float,
+    progressRound: Boolean
 ) {
     val progressHeight = if (progressStyle == 0) 4.dp else progressWidth.dp
     Canvas(
@@ -569,7 +578,7 @@ private fun MediaProgressBar(
     ) {
         val barHeight = progressHeight.toPx()
         val barWidth = size.width
-        val progWidth = (barWidth - barHeight) * 0.728f
+        val progWidth = floor((barWidth - barHeight) * 0.728f)
         val thumbOffset = if (progressStyle == 2) {
             barWidth * 0.728f
         } else {
@@ -660,6 +669,17 @@ private fun MediaProgressBar(
                 topLeft = Offset(floor(barHeight / 2), center.y - barHeight / 2),
                 cornerRadius = CornerRadius.Zero
             )
+            if (progressRound) {
+                drawArc(
+                    color = color.copy(alpha = progressAlpha),
+                    startAngle = -90f,
+                    sweepAngle = 180f,
+                    useCenter = true,
+                    alpha = 1f,
+                    topLeft = Offset(progWidth, center.y - barHeight / 2),
+                    size = Size(floor(barHeight), barHeight)
+                )
+            }
         }
         when (thumbStyle) {
             0 -> {
