@@ -4,7 +4,7 @@ import android.animation.ArgbEvaluator
 import android.graphics.ColorFilter
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
-import dev.lackluster.mihelper.hook.rules.systemui.media.bg.MediaViewColorConfig
+import dev.lackluster.mihelper.hook.rules.systemui.media.data.MediaViewColorConfig
 
 abstract class MediaControlBgDrawable(
     protected var artwork: Drawable,

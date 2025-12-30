@@ -12,6 +12,7 @@ import dev.lackluster.mihelper.hook.drawable.MediaControlBgDrawable
 import dev.lackluster.mihelper.hook.drawable.RadialMaskedDrawable
 import dev.lackluster.mihelper.hook.drawable.TransitionDrawable
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.hardwareBlur
+import dev.lackluster.mihelper.hook.rules.systemui.media.data.MediaViewColorConfig
 import dev.lackluster.mihelper.utils.Prefs
 import kotlin.math.max
 

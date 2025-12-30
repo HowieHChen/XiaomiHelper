@@ -22,7 +22,7 @@ import androidx.core.graphics.get
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.condition.type.Modifiers
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.hook.rules.systemui.media.bg.MediaViewColorConfig
+import dev.lackluster.mihelper.hook.rules.systemui.media.data.MediaViewColorConfig
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.max
 import kotlin.math.min

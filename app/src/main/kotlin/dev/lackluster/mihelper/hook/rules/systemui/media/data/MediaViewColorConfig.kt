@@ -1,4 +1,4 @@
-package dev.lackluster.mihelper.hook.rules.systemui.media.bg
+package dev.lackluster.mihelper.hook.rules.systemui.media.data
 
 data class MediaViewColorConfig(
     val textPrimary: Int,

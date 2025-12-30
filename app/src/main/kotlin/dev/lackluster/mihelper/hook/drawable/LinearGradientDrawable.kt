@@ -5,7 +5,7 @@ import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.SystemClock
-import dev.lackluster.mihelper.hook.rules.systemui.media.bg.MediaViewColorConfig
+import dev.lackluster.mihelper.hook.rules.systemui.media.data.MediaViewColorConfig
 import dev.lackluster.mihelper.utils.Math
 import kotlin.math.min
 

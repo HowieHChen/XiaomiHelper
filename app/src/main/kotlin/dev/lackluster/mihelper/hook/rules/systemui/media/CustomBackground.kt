@@ -22,7 +22,6 @@ import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.log.YLog
 import de.robv.android.xposed.XposedHelpers
 import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.hook.drawable.MediaControlBgDrawable
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.media_bg
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.media_bg_view
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzMiuiIslandMediaViewBinderImpl
@@ -50,24 +49,13 @@ import dev.lackluster.mihelper.hook.rules.systemui.media.bg.BlurredCoverProcesso
 import dev.lackluster.mihelper.hook.rules.systemui.media.bg.CoverArtProcessor
 import dev.lackluster.mihelper.hook.rules.systemui.media.bg.RadialGradientProcessor
 import dev.lackluster.mihelper.hook.rules.systemui.media.bg.LinearGradientProcessor
-import dev.lackluster.mihelper.hook.rules.systemui.media.bg.MediaViewColorConfig
+import dev.lackluster.mihelper.hook.rules.systemui.media.data.MediaViewColorConfig
+import dev.lackluster.mihelper.hook.rules.systemui.media.data.MiuiMediaViewHolderWrapper
+import dev.lackluster.mihelper.hook.rules.systemui.media.data.PlayerConfig
+import dev.lackluster.mihelper.hook.rules.systemui.media.data.PlayerType
 import dev.lackluster.mihelper.utils.Prefs
 
 object CustomBackground : YukiBaseHooker() {
-    data class PlayerConfig(
-        var mArtworkBoundId: Int = 0,
-        var mArtworkNextBindRequestId: Int = 0,
-        var mArtworkDrawable: MediaControlBgDrawable? = null,
-        var mIsArtworkBound: Boolean = false,
-        var mCurrentPkgName: String = "",
-
-        var mPrevColorConfig: MediaViewColorConfig = defaultColorConfig,
-        var mCurrColorConfig: MediaViewColorConfig = defaultColorConfig,
-
-        var lastWidth: Int = 0,
-        var lastHeight: Int = 0,
-    )
-
     private const val KEY_VIEW_HOLDER_WRAPPER = "KEY_VIEW_HOLDER_WRAPPER"
     // background: 0 -> Default; 1 -> Art; 2 -> Blurred cover; 3 -> AndroidNewStyle; 4 -> AndroidOldStyle;
     private val ncBackgroundStyle = Prefs.getInt(Pref.Key.SystemUI.MediaControl.BACKGROUND_STYLE, 0)
@@ -77,6 +65,7 @@ object CustomBackground : YukiBaseHooker() {
 
     private val ncPlayerConfig = PlayerConfig()
     private val diPlayerConfig = PlayerConfig()
+    private val diPlayerConfigDummy = PlayerConfig()
 
     private val fldArtwork by lazy {
         clzMediaData?.resolve()?.firstFieldOrNull {
@@ -153,7 +142,7 @@ object CustomBackground : YukiBaseHooker() {
                     val holderWrapper = getMediaViewHolderWrapper(holder, false)  ?: return@after
                     val isArtWorkUpdate = fldIsArtWorkUpdate?.get(this.instance) == true || ncPlayerConfig.mCurrentPkgName != packageName || !ncPlayerConfig.mIsArtworkBound
                     if (isArtWorkUpdate) {
-                        updateBackground(context, artwork, packageName, holderWrapper, false)
+                        updateBackground(context, artwork, packageName, holderWrapper, PlayerType.NOTIFICATION_CANTER)
                     }
                 }
             }
@@ -210,15 +199,15 @@ object CustomBackground : YukiBaseHooker() {
                     val mediaData = this.args(0).any() ?: return@after
                     val context = fldContext?.get(this.instance) as? Context ?: return@after
                     val holder = fldHolder?.get(this.instance) ?: return@after
-//                    val dummyHolder = fldDummyHolder?.get(this.instance) ?: return@after
+                    val dummyHolder = fldDummyHolder?.get(this.instance) ?: return@after
                     val artwork = fldArtwork?.get(mediaData) as? Icon ?: return@after
                     val packageName = fldPackageName?.get(mediaData) as? String ?: return@after
                     val holderWrapper = getMediaViewHolderWrapper(holder, true) ?: return@after
-//                    val dummyHolderWrapper = getMediaViewHolderWrapper(dummyHolder, true) ?: return@after
+                    val dummyHolderWrapper = getMediaViewHolderWrapper(dummyHolder, true) ?: return@after
                     val isArtWorkUpdate = fldIsArtWorkUpdate?.get(this.instance) == true || diPlayerConfig.mCurrentPkgName != packageName || !diPlayerConfig.mIsArtworkBound
                     if (isArtWorkUpdate) {
-                        updateBackground(context, artwork, packageName, holderWrapper, true)
-//                        updateBackground(context, artwork, packageName, dummyHolderWrapper, true)
+                        updateBackground(context, artwork, packageName, holderWrapper, PlayerType.DYNAMIC_ISLAND)
+                        updateBackground(context, artwork, packageName, dummyHolderWrapper, PlayerType.DUMMY_DYNAMIC_ISLAND)
                     }
                 }
             }
@@ -291,6 +280,9 @@ object CustomBackground : YukiBaseHooker() {
             diPlayerConfig.mArtworkDrawable = null
             diPlayerConfig.mIsArtworkBound = false
             diPlayerConfig.mCurrentPkgName = ""
+            diPlayerConfigDummy.mArtworkDrawable = null
+            diPlayerConfigDummy.mIsArtworkBound = false
+            diPlayerConfigDummy.mCurrentPkgName = ""
         } else {
             ncPlayerConfig.mArtworkDrawable = null
             ncPlayerConfig.mIsArtworkBound = false
@@ -317,10 +309,24 @@ object CustomBackground : YukiBaseHooker() {
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun updateBackground(context: Context, artwork: Icon?, pkgName: String, holder: MiuiMediaViewHolderWrapper, isDynamicIsland: Boolean) {
+    fun updateBackground(context: Context, artwork: Icon?, pkgName: String, holder: MiuiMediaViewHolderWrapper, type: PlayerType) {
         val artworkLayer = artwork?.loadDrawable(context) ?: return
-        val processor = (if (isDynamicIsland) diProcessor else ncProcessor) ?: return
-        val playerConfig = if (isDynamicIsland) diPlayerConfig else ncPlayerConfig
+        val processor: BgProcessor
+        val playerConfig: PlayerConfig
+        when (type) {
+            PlayerType.NOTIFICATION_CANTER -> {
+                processor = ncProcessor ?: return
+                playerConfig = ncPlayerConfig
+            }
+            PlayerType.DYNAMIC_ISLAND -> {
+                processor = diProcessor ?: return
+                playerConfig = diPlayerConfig
+            }
+            PlayerType.DUMMY_DYNAMIC_ISLAND -> {
+                processor = diProcessor ?: return
+                playerConfig = diPlayerConfigDummy
+            }
+        }
         val reqId = playerConfig.mArtworkNextBindRequestId++
         // Update album cover image
         holder.albumView.setImageDrawable(artworkLayer)
@@ -415,21 +421,4 @@ object CustomBackground : YukiBaseHooker() {
             }
         }
     }
-
-    data class MiuiMediaViewHolderWrapper(
-        var innerHashCode: Int,
-        var titleText: TextView,
-        var artistText: TextView,
-        var albumView: ImageView,
-        var mediaBg: ImageView,
-        var seamlessIcon: ImageView,
-        var action0: ImageButton,
-        var action1: ImageButton,
-        var action2: ImageButton,
-        var action3: ImageButton,
-        var action4: ImageButton,
-        var elapsedTimeView: TextView,
-        var totalTimeView: TextView,
-        var seekBar: SeekBar
-    )
 }

@@ -244,7 +244,9 @@ object AmbientLight : YukiBaseHooker() {
                     }?.hook {
                         after {
                             val holder = fldHolder?.get(this.instance) ?: return@after
+                            val dummyHolder = fldDummyHolder?.get(this.instance) ?: return@after
                             (getNewMediaBgView(holder, true)?.drawable as? AmbientLightDrawable)?.stop()
+                            (getNewMediaBgView(dummyHolder, true)?.drawable as? AmbientLightDrawable)?.stop()
                             diCurrentPkgName = ""
                             diIsArtworkBound = false
                             releaseCachedWallpaperColor()
@@ -271,6 +273,7 @@ object AmbientLight : YukiBaseHooker() {
                             val isArtWorkUpdate = fldIsArtWorkUpdate?.get(this.instance) == true || diCurrentPkgName != packageName || !diIsArtworkBound
 
                             val holder = fldHolder?.get(this.instance) ?: return@after
+                            val dummyHolder = fldDummyHolder?.get(this.instance) ?: return@after
                             val context = fldContext?.get(this.instance) as? Context ?: return@after
 
                             if (isArtWorkUpdate) {
@@ -278,14 +281,22 @@ object AmbientLight : YukiBaseHooker() {
                                     isDynamicIsland = true,
                                     isDark = true
                                 )
+                                updateColor(context, mediaData, packageName, dummyHolder,
+                                    isDynamicIsland = true,
+                                    isDark = true
+                                )
                             } else {
                                 val mediaBgView = getNewMediaBgView(holder, true) ?: return@after
+                                val dummyMediaBgView = getNewMediaBgView(dummyHolder, true) ?: return@after
                                 val ambientLightDrawable = mediaBgView.drawable as? AmbientLightDrawable ?: return@after
+                                val dummyAmbientLightDrawable = dummyMediaBgView.drawable as? AmbientLightDrawable ?: return@after
                                 val isPlaying = fldIsPlaying?.get(mediaData) == true
                                 if (isPlaying) {
                                     ambientLightDrawable.resume()
+                                    dummyAmbientLightDrawable.resume()
                                 } else {
                                     ambientLightDrawable.pause()
+                                    dummyAmbientLightDrawable.pause()
                                 }
                             }
                         }

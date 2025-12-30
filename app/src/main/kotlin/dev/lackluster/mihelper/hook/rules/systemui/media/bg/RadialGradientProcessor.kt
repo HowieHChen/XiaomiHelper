@@ -6,6 +6,7 @@ import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.hook.drawable.MediaControlBgDrawable
 import dev.lackluster.mihelper.hook.drawable.RadialGradientDrawable
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.toSquare
+import dev.lackluster.mihelper.hook.rules.systemui.media.data.MediaViewColorConfig
 import dev.lackluster.mihelper.utils.Prefs
 
 class RadialGradientProcessor : BgProcessor {
