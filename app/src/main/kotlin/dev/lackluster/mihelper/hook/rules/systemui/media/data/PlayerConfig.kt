@@ -10,7 +10,7 @@ data class PlayerConfig(
     var mIsArtworkBound: Boolean = false,
     var mCurrentPkgName: String = "",
 
-    var mPrevColorConfig: MediaViewColorConfig = defaultColorConfig,
+//    var mPrevColorConfig: MediaViewColorConfig = defaultColorConfig,
     var mCurrColorConfig: MediaViewColorConfig = defaultColorConfig,
 
     var lastWidth: Int = 0,

@@ -1,5 +1,3 @@
-@file:Suppress("DEPRECATION")
-
 package dev.lackluster.mihelper.hook.rules.systemui.media
 
 import android.app.WallpaperColors
@@ -8,7 +6,7 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.Icon
-import android.os.AsyncTask
+import android.util.Pair
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
@@ -53,6 +51,7 @@ import dev.lackluster.mihelper.hook.rules.systemui.media.data.MediaViewColorConf
 import dev.lackluster.mihelper.hook.rules.systemui.media.data.MiuiMediaViewHolderWrapper
 import dev.lackluster.mihelper.hook.rules.systemui.media.data.PlayerConfig
 import dev.lackluster.mihelper.hook.rules.systemui.media.data.PlayerType
+import dev.lackluster.mihelper.utils.HostExecutor
 import dev.lackluster.mihelper.utils.Prefs
 
 object CustomBackground : YukiBaseHooker() {
@@ -350,75 +349,79 @@ object CustomBackground : YukiBaseHooker() {
         // Override colors set by the original method
         updateForegroundColors(holder, playerConfig.mCurrColorConfig)
 
-        AsyncTask.THREAD_POOL_EXECUTOR.execute {
-            // Album art
-            val mutableColorScheme: Any?
-            val artworkDrawable: Drawable
-            val wallpaperColors = context.getCachedWallpaperColor(artwork)
-            if (wallpaperColors != null) {
-                mutableColorScheme = ctorColorScheme?.newInstance(wallpaperColors, true, enumStyleContent)
-                artworkDrawable = context.getScaledBackground(artwork, height, height) ?: Color.TRANSPARENT.toDrawable()
-            } else {
-                // If there's no artwork, use colors from the app icon
-                artworkDrawable = Color.TRANSPARENT.toDrawable()
-                try {
-                    val icon = context.packageManager.getApplicationIcon(pkgName)
-                    mutableColorScheme = ctorColorScheme?.newInstance(WallpaperColors.fromDrawable(icon), true, enumStyleContent)?: throw Exception()
-                } catch (_: Exception) {
-                    YLog.warn("application not found!")
-                    return@execute
+        HostExecutor.execute(
+            tag = type,
+            backgroundTask = {
+                // Album art
+                val mutableColorScheme: Any?
+                val artworkDrawable: Drawable
+                val wallpaperColors = context.getCachedWallpaperColor(artwork)
+                if (wallpaperColors != null) {
+                    mutableColorScheme = ctorColorScheme?.newInstance(wallpaperColors, true, enumStyleContent)
+                    artworkDrawable = context.getScaledBackground(artwork, height, height) ?: Color.TRANSPARENT.toDrawable()
+                } else {
+                    // If there's no artwork, use colors from the app icon
+                    artworkDrawable = Color.TRANSPARENT.toDrawable()
+                    try {
+                        val icon = context.packageManager.getApplicationIcon(pkgName)
+                        mutableColorScheme = ctorColorScheme?.newInstance(WallpaperColors.fromDrawable(icon), true, enumStyleContent)?: throw Exception()
+                    } catch (_: Exception) {
+                        YLog.warn("application not found!")
+                        return@execute null
+                    }
                 }
-            }
-            var colorConfig = defaultColorConfig
-            var colorSchemeChanged = false
-            if (mutableColorScheme != null) {
-                val neutral1 = fldTonalPaletteAllShades?.get(fldColorSchemeNeutral1!!.get(mutableColorScheme)) as? List<Int>
-                val neutral2 = fldTonalPaletteAllShades?.get(fldColorSchemeNeutral2!!.get(mutableColorScheme)) as? List<Int>
-                val accent1 = fldTonalPaletteAllShades?.get(fldColorSchemeAccent1!!.get(mutableColorScheme)) as? List<Int>
-                val accent2 = fldTonalPaletteAllShades?.get(fldColorSchemeAccent2!!.get(mutableColorScheme)) as? List<Int>
-                if (neutral1 != null && neutral2 != null && accent1 != null && accent2 != null) {
-                    colorConfig = processor.convertToColorConfig(artworkDrawable, neutral1, neutral2, accent1, accent2)
-                    colorSchemeChanged = colorConfig != playerConfig.mPrevColorConfig
-                    playerConfig.mPrevColorConfig = colorConfig
+                var colorConfig = defaultColorConfig.copy()
+                if (mutableColorScheme != null) {
+                    val neutral1 = fldTonalPaletteAllShades?.get(fldColorSchemeNeutral1!!.get(mutableColorScheme)) as? List<Int>
+                    val neutral2 = fldTonalPaletteAllShades?.get(fldColorSchemeNeutral2!!.get(mutableColorScheme)) as? List<Int>
+                    val accent1 = fldTonalPaletteAllShades?.get(fldColorSchemeAccent1!!.get(mutableColorScheme)) as? List<Int>
+                    val accent2 = fldTonalPaletteAllShades?.get(fldColorSchemeAccent2!!.get(mutableColorScheme)) as? List<Int>
+                    if (neutral1 != null && neutral2 != null && accent1 != null && accent2 != null) {
+                        colorConfig = processor.convertToColorConfig(artworkDrawable, neutral1, neutral2, accent1, accent2)
+                    }
                 }
-            }
-            val processedArtwork =
-                processor.processAlbumCover(
+                val processedArtwork = processor.processAlbumCover(
                     artworkDrawable,
                     colorConfig,
                     context,
                     width,
                     height
                 )
+
+                return@execute Pair(colorConfig, processedArtwork)
+            },
+            runOnMain = true
+        ) { pair ->
+            if (reqId < playerConfig.mArtworkBoundId) {
+                return@execute
+            }
+
+            val colorConfig = pair.first
+            val processedArtwork = pair.second
+
             if (playerConfig.mArtworkDrawable == null) {
                 playerConfig.mArtworkDrawable = processor.createBackground(processedArtwork, colorConfig)
             }
             playerConfig.mArtworkDrawable?.setBounds(0, 0, width, height)
             playerConfig.mCurrentPkgName = pkgName
 
-            holder.mediaBg.let { bg ->
-                bg.post {
-                    if (reqId < playerConfig.mArtworkBoundId) {
-                        return@post
-                    }
-                    playerConfig.mArtworkBoundId = reqId
-                    if (colorSchemeChanged) {
-                        updateForegroundColors(holder, colorConfig)
-                        playerConfig.mCurrColorConfig = colorConfig
-                    }
+            playerConfig.mArtworkBoundId = reqId
 
-                    // Bind the album view to the artwork or a transition drawable
-                    holder.mediaBg.setPadding(0, 0, 0, 0)
-                    holder.mediaBg.setImageDrawable(playerConfig.mArtworkDrawable)
-
-                    if (bg.isShown) {
-                        playerConfig.mArtworkDrawable?.updateAlbumCover(processedArtwork, colorConfig, false)
-                    } else {
-                        playerConfig.mArtworkDrawable?.updateAlbumCover(processedArtwork, colorConfig, true)
-                    }
-                    playerConfig.mIsArtworkBound = true
-                }
+            if (colorConfig != playerConfig.mCurrColorConfig) {
+                updateForegroundColors(holder, colorConfig)
+                playerConfig.mCurrColorConfig = colorConfig
             }
+
+            // Bind the album view to the artwork or a transition drawable
+            holder.mediaBg.setPadding(0, 0, 0, 0)
+            holder.mediaBg.setImageDrawable(playerConfig.mArtworkDrawable)
+
+            if (holder.mediaBg.isShown) {
+                playerConfig.mArtworkDrawable?.updateAlbumCover(processedArtwork, colorConfig, false)
+            } else {
+                playerConfig.mArtworkDrawable?.updateAlbumCover(processedArtwork, colorConfig, true)
+            }
+            playerConfig.mIsArtworkBound = true
         }
     }
 }

@@ -9,6 +9,7 @@ import android.graphics.Rect
 import android.graphics.RuntimeShader
 import android.graphics.drawable.Drawable
 import android.os.SystemClock
+import android.view.View
 import dev.lackluster.mihelper.utils.Math
 import kotlin.math.max
 import kotlin.math.min
@@ -38,7 +39,6 @@ class AmbientLightDrawable(
     private var currentHeight = 0
     private var targetHeight = 0
 
-    private var skipAnimOnce: Boolean = false
     private var isLightMode = 0
 
     init {
@@ -56,10 +56,19 @@ class AmbientLightDrawable(
 
     fun setGradientColor(color: Int, skipAnim: Boolean = false) {
         if (targetColor == color) return
-        sourceColor = currentColor
-        targetColor = color
-        colorState = AnimationState.STARTING
-        skipAnimOnce = skipAnim
+
+        val hostView = callback as? View
+        val shouldSnap = !useAnim || skipAnim || hostView == null || !hostView.isShown || !hostView.isAttachedToWindow
+
+        if (shouldSnap) {
+            sourceColor = color
+            currentColor = color
+            colorState = AnimationState.DONE
+        } else {
+            sourceColor = currentColor
+            targetColor = color
+            colorState = AnimationState.STARTING
+        }
         invalidateSelf()
     }
 
@@ -99,35 +108,33 @@ class AmbientLightDrawable(
         if (currentHeight == 0) {
             currentHeight = newHeight
         }
-        sourceHeight = currentHeight
-        targetHeight = newHeight
-        resizeState = AnimationState.STARTING
+        if (!useAnim) {
+            sourceHeight = newHeight
+            currentHeight = newHeight
+            resizeState = AnimationState.DONE
+        } else {
+            sourceHeight = currentHeight
+            targetHeight = newHeight
+            resizeState = AnimationState.STARTING
+        }
         invalidateSelf()
     }
 
     override fun draw(p0: Canvas) {
         if (runtimeShader == null || bounds.isEmpty) return
-        val skipAnim = !useAnim || skipAnimOnce
-        if (skipAnimOnce) {
-            skipAnimOnce = false
-        }
+
         val now = SystemClock.elapsedRealtime()
 
         when (colorState) {
             AnimationState.STARTING -> {
-                if (skipAnim) {
-                    colorState = AnimationState.DONE
-                    currentColor = targetColor
-                } else {
-                    colorStartTimeMillis = now
-                    colorState = AnimationState.RUNNING
-                }
+                colorStartTimeMillis = now
+                colorState = AnimationState.RUNNING
             }
             AnimationState.RUNNING -> {
                 if (colorStartTimeMillis >= 0) {
                     val normalized: Float = ((now - colorStartTimeMillis) / COLOR_ANIM_DURATION).coerceIn(0.0f, 1.0f)
                     currentColor = argbEvaluator(normalized, sourceColor, targetColor)
-                    if (normalized >= 1.0f || skipAnim) {
+                    if (normalized >= 1.0f) {
                         colorState = AnimationState.DONE
                         currentColor = targetColor
                     }
@@ -137,19 +144,14 @@ class AmbientLightDrawable(
         }
         when (resizeState) {
             AnimationState.STARTING -> {
-                if (skipAnim) {
-                    resizeState = AnimationState.DONE
-                    currentHeight = targetHeight
-                } else {
-                    resizeStartTimeMillis = now
-                    resizeState = AnimationState.RUNNING
-                }
+                resizeStartTimeMillis = now
+                resizeState = AnimationState.RUNNING
             }
             AnimationState.RUNNING -> {
                 if (resizeStartTimeMillis >= 0) {
                     val normalized: Float = ((now - resizeStartTimeMillis) / RESIZE_ANIM_DURATION).coerceIn(0.0f, 1.0f)
                     currentHeight = Math.linearInterpolate(sourceHeight, targetHeight, normalized)
-                    if (normalized >= 1.0f || skipAnim) {
+                    if (normalized >= 1.0f) {
                         resizeState = AnimationState.DONE
                         currentHeight = targetHeight
                     }

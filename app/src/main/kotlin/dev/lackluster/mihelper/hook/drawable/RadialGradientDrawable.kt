@@ -5,6 +5,7 @@ import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.SystemClock
+import android.view.View
 import dev.lackluster.mihelper.hook.rules.systemui.media.data.MediaViewColorConfig
 import dev.lackluster.mihelper.utils.Math
 import kotlin.math.abs
@@ -36,34 +37,29 @@ class RadialGradientDrawable(
         if (currentSize == 0) {
             currentSize = newSize
         }
-        sourceSize = currentSize
-        targetSize = newSize
-        resizeState = AnimationState.STARTING
+        if (!useAnim) {
+            sourceSize = newSize
+            currentSize = newSize
+            resizeState = AnimationState.DONE
+        } else {
+            sourceSize = currentSize
+            targetSize = newSize
+            resizeState = AnimationState.STARTING
+        }
         invalidateSelf()
     }
 
     override fun draw(p0: Canvas) {
         val bounds = bounds
         if (bounds.isEmpty) return
-        val skipAnim = !useAnim || skipAnimOnce
-        if (skipAnimOnce) {
-            skipAnimOnce = false
-        }
+
         val now = SystemClock.elapsedRealtime()
+
         var alpha = 255
         when (albumState) {
             AnimationState.STARTING -> {
-                if (skipAnim) {
-                    albumState = AnimationState.DONE
-                    currentStartColor = targetStartColor
-                    currentEndColor = targetEndColor
-                    artwork = nextArtwork ?: artwork
-                    nextArtwork = null
-                    alpha = 255
-                } else {
-                    albumStartTimeMillis = now
-                    albumState = AnimationState.RUNNING
-                }
+                albumStartTimeMillis = now
+                albumState = AnimationState.RUNNING
             }
             AnimationState.RUNNING -> {
                 if (albumStartTimeMillis >= 0) {
@@ -71,7 +67,7 @@ class RadialGradientDrawable(
                     currentStartColor = argbEvaluator.evaluate(normalized, sourceStartColor, targetStartColor) as Int
                     currentEndColor = argbEvaluator.evaluate(normalized, sourceEndColor, targetEndColor) as Int
                     alpha = Math.linearInterpolate(0, 255, normalized)
-                    if (normalized >= 1.0f || skipAnim) {
+                    if (normalized >= 1.0f) {
                         albumState = AnimationState.DONE
                         currentStartColor = targetStartColor
                         currentEndColor = targetEndColor
@@ -85,19 +81,14 @@ class RadialGradientDrawable(
         }
         when (resizeState) {
             AnimationState.STARTING -> {
-                if (skipAnim) {
-                    resizeState = AnimationState.DONE
-                    currentSize = targetSize
-                } else {
-                    resizeStartTimeMillis = now
-                    resizeState = AnimationState.RUNNING
-                }
+                resizeStartTimeMillis = now
+                resizeState = AnimationState.RUNNING
             }
             AnimationState.RUNNING -> {
                 if (resizeStartTimeMillis >= 0) {
                     val normalized: Float = ((now - resizeStartTimeMillis) / resizeDuration.toFloat()).coerceIn(0.0f, 1.0f)
                     currentSize = Math.linearInterpolate(sourceSize, targetSize, normalized)
-                    if (normalized >= 1.0f || skipAnim) {
+                    if (normalized >= 1.0f) {
                         resizeState = AnimationState.DONE
                         currentSize = targetSize
                     }
@@ -142,14 +133,27 @@ class RadialGradientDrawable(
         colorConfig: MediaViewColorConfig,
         skipAnim: Boolean
     ) {
-        nextArtwork = artwork
-        sourceStartColor = currentStartColor
-        targetStartColor = colorConfig.bgStartColor
-        sourceEndColor = currentEndColor
-        targetEndColor = colorConfig.bgEndColor
-        albumState = AnimationState.STARTING
-        this.colorConfig = colorConfig
-        skipAnimOnce = skipAnim
+        val hostView = callback as? View
+        val shouldSnap = !useAnim || skipAnim || hostView == null || !hostView.isShown || !hostView.isAttachedToWindow
+
+        if (shouldSnap) {
+            nextArtwork = null
+            this.artwork = artwork
+            sourceStartColor = colorConfig.bgStartColor
+            currentStartColor = colorConfig.bgStartColor
+            sourceEndColor = colorConfig.bgEndColor
+            currentEndColor = colorConfig.bgEndColor
+            albumState = AnimationState.DONE
+            this.colorConfig = colorConfig
+        } else {
+            nextArtwork = artwork
+            sourceStartColor = currentStartColor
+            targetStartColor = colorConfig.bgStartColor
+            sourceEndColor = currentEndColor
+            targetEndColor = colorConfig.bgEndColor
+            albumState = AnimationState.STARTING
+            this.colorConfig = colorConfig
+        }
         invalidateSelf()
     }
 }

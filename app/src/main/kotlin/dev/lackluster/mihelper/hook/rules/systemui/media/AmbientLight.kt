@@ -1,5 +1,3 @@
-@file:Suppress("DEPRECATION")
-
 package dev.lackluster.mihelper.hook.rules.systemui.media
 
 import android.app.WallpaperColors
@@ -8,7 +6,6 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.Icon
-import android.os.AsyncTask
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -36,6 +33,8 @@ import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.f
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.fldTonalPaletteAllShades
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.getCachedWallpaperColor
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.releaseCachedWallpaperColor
+import dev.lackluster.mihelper.hook.rules.systemui.media.data.PlayerType
+import dev.lackluster.mihelper.utils.HostExecutor
 import dev.lackluster.mihelper.utils.factory.isSystemInDarkMode
 
 object AmbientLight : YukiBaseHooker() {
@@ -156,7 +155,7 @@ object AmbientLight : YukiBaseHooker() {
                             val fullAodController = fullAodControllerLazy?.let { it1 -> metGet?.invoke(it1) }
                             val enableFullAod = fldEnableFullAod?.get(fullAodController) == true
 
-                            updateColor(context, mediaData, packageName, holder, false, context.isSystemInDarkMode || enableFullAod)
+                            updateColor(context, mediaData, packageName, holder, PlayerType.NOTIFICATION_CANTER, context.isSystemInDarkMode || enableFullAod)
                         } else {
                             val mediaBgView = getNewMediaBgView(holder, false) ?: return@after
                             val ambientLightDrawable = mediaBgView.drawable as? AmbientLightDrawable ?: return@after
@@ -277,14 +276,8 @@ object AmbientLight : YukiBaseHooker() {
                             val context = fldContext?.get(this.instance) as? Context ?: return@after
 
                             if (isArtWorkUpdate) {
-                                updateColor(context, mediaData, packageName, holder,
-                                    isDynamicIsland = true,
-                                    isDark = true
-                                )
-                                updateColor(context, mediaData, packageName, dummyHolder,
-                                    isDynamicIsland = true,
-                                    isDark = true
-                                )
+                                updateColor(context, mediaData, packageName, holder, PlayerType.DYNAMIC_ISLAND, true)
+                                updateColor(context, mediaData, packageName, dummyHolder, PlayerType.DUMMY_DYNAMIC_ISLAND, true)
                             } else {
                                 val mediaBgView = getNewMediaBgView(holder, true) ?: return@after
                                 val dummyMediaBgView = getNewMediaBgView(dummyHolder, true) ?: return@after
@@ -351,61 +344,64 @@ object AmbientLight : YukiBaseHooker() {
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun updateColor(context: Context, mediaData: Any, pkgName: String, holder: Any, isDynamicIsland: Boolean, isDark: Boolean) {
+    fun updateColor(context: Context, mediaData: Any, pkgName: String, holder: Any, type: PlayerType, isDark: Boolean) {
+        val isDynamicIsland = (type != PlayerType.NOTIFICATION_CANTER)
         val mediaBgView = getNewMediaBgView(holder, isDynamicIsland) ?: return
         val ambientLightDrawable = mediaBgView.drawable as? AmbientLightDrawable ?: return
         val artwork = fldArtwork?.get(mediaData) as? Icon
-        AsyncTask.THREAD_POOL_EXECUTOR.execute {
-            val colorOpt = if (isDynamicIsland) diAmbientColorOpt else ncAmbientColorOpt
-            val mainColorHCT: Int
-            if (colorOpt) {
-                val wallpaperColors = context.getCachedWallpaperColor(artwork)
-                val mutableColorScheme: Any?
-                if (wallpaperColors != null) {
-                    mutableColorScheme = ctorColorScheme?.newInstance(wallpaperColors, true, enumStyleContent)
-                } else {
-                    try {
-                        val icon = context.packageManager.getApplicationIcon(pkgName)
-                        mutableColorScheme = ctorColorScheme?.newInstance(WallpaperColors.fromDrawable(icon), true, enumStyleContent)?: throw Exception()
-                    } catch (_: Exception) {
-                        YLog.warn("application not found!")
-                        return@execute
+        val colorOpt = if (isDynamicIsland) diAmbientColorOpt else ncAmbientColorOpt
+
+        HostExecutor.execute(
+            tag = type,
+            backgroundTask = {
+                val mainColorHCT: Int
+                if (colorOpt) {
+                    val wallpaperColors = context.getCachedWallpaperColor(artwork)
+                    val mutableColorScheme: Any?
+                    if (wallpaperColors != null) {
+                        mutableColorScheme = ctorColorScheme?.newInstance(wallpaperColors, true, enumStyleContent)
+                    } else {
+                        try {
+                            val icon = context.packageManager.getApplicationIcon(pkgName)
+                            mutableColorScheme = ctorColorScheme?.newInstance(WallpaperColors.fromDrawable(icon), true, enumStyleContent)?: throw Exception()
+                        } catch (_: Exception) {
+                            YLog.warn("application not found!")
+                            return@execute null
+                        }
                     }
-                }
-                val accent1 = (fldTonalPaletteAllShades?.get(fldColorSchemeAccent1!!.get(mutableColorScheme)) as? List<*>)?.filterIsInstance<Int>()
-                if (accent1?.size != 13) {
-                    mainColorHCT = Color.TRANSPARENT
-                } else if (isDynamicIsland) {
-                    mainColorHCT = accent1[7]
+                    val accent1 = (fldTonalPaletteAllShades?.get(fldColorSchemeAccent1!!.get(mutableColorScheme)) as? List<*>)?.filterIsInstance<Int>()
+                    if (accent1?.size != 13) {
+                        mainColorHCT = Color.TRANSPARENT
+                    } else if (isDynamicIsland) {
+                        mainColorHCT = accent1[7]
+                    } else {
+                        val light = accent1[4]
+                        val dark = accent1[7]
+                        XposedHelpers.setAdditionalInstanceField(holder, KEY_MEDIA_BG_COLOR_LIGHT, light)
+                        XposedHelpers.setAdditionalInstanceField(holder, KEY_MEDIA_BG_COLOR_DARK, dark)
+                        mainColorHCT = if (isDark) dark else light
+                    }
                 } else {
-                    val light = accent1[4]
-                    val dark = accent1[7]
-                    XposedHelpers.setAdditionalInstanceField(holder, KEY_MEDIA_BG_COLOR_LIGHT, light)
-                    XposedHelpers.setAdditionalInstanceField(holder, KEY_MEDIA_BG_COLOR_DARK, dark)
-                    mainColorHCT = if (isDark) dark else light
+                    val artWorkDrawable = (artwork?.loadDrawable(context) ?: (metAcquireApplicationIcon?.invoke(null, context, mediaData) as? Drawable)) ?: return@execute null
+                    mainColorHCT = getMainColorHCT(artWorkDrawable) ?: Color.TRANSPARENT
                 }
+                return@execute mainColorHCT
+            },
+            runOnMain = true
+        ) { mainColorHCT ->
+            val isPlaying = fldIsPlaying?.get(mediaData) == true
+            ambientLightDrawable.setGradientColor(mainColorHCT, !mediaBgView.isShown)
+            if (isPlaying) {
+                ambientLightDrawable.resume()
             } else {
-                val artWorkDrawable =
-                    (artwork?.loadDrawable(context) ?: (metAcquireApplicationIcon?.invoke(null, context, mediaData) as? Drawable)) ?: return@execute
-                mainColorHCT = getMainColorHCT(artWorkDrawable) ?: Color.TRANSPARENT
+                ambientLightDrawable.pause()
             }
-            mediaBgView.let { bg ->
-                bg.post {
-                    val isPlaying = fldIsPlaying?.get(mediaData) == true
-                    ambientLightDrawable.setGradientColor(mainColorHCT, !mediaBgView.isShown)
-                    if (isPlaying) {
-                        ambientLightDrawable.resume()
-                    } else {
-                        ambientLightDrawable.pause()
-                    }
-                    if (isDynamicIsland) {
-                        diCurrentPkgName = pkgName
-                        diIsArtworkBound = true
-                    } else {
-                        ncCurrentPkgName = pkgName
-                        ncIsArtworkBound = true
-                    }
-                }
+            if (isDynamicIsland) {
+                diCurrentPkgName = pkgName
+                diIsArtworkBound = true
+            } else {
+                ncCurrentPkgName = pkgName
+                ncIsArtworkBound = true
             }
         }
     }
