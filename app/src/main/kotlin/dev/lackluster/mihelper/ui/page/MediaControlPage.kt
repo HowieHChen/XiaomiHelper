@@ -151,6 +151,9 @@ fun MediaControlPage(navController: NavController, adjustPadding: PaddingValues,
     var progressRound by remember { mutableStateOf(
         SafeSP.getBoolean(MediaControlSpKey.ELM_PROGRESS_ROUND.getKey(isDynamicIsland), false)
     ) }
+    var progressComet by remember { mutableStateOf(
+        SafeSP.getBoolean(MediaControlSpKey.ELM_PROGRESS_COMET.getKey(isDynamicIsland), false)
+    ) }
 
     BasePage(
         navController,
@@ -189,7 +192,8 @@ fun MediaControlPage(navController: NavController, adjustPadding: PaddingValues,
                 thumbStyle = thumbStyle,
                 progressStyle = progressStyle,
                 progressWidth = progressWidth,
-                progressRound = progressRound
+                progressRound = progressRound,
+                progressComet = progressComet
             )
         }
         item {
@@ -441,18 +445,6 @@ fun MediaControlPage(navController: NavController, adjustPadding: PaddingValues,
             visible = (tabRowSelected == 2)
         ) {
             DropDownPreference(
-                title = stringResource(R.string.media_elm_thumb_style),
-                entries = thumbStyleEntries,
-                key = MediaControlSpKey.ELM_THUMB_STYLE.getKey(isDynamicIsland)
-            ) {
-                thumbStyle = it
-            }
-            SwitchPreference(
-                title = stringResource(R.string.media_elm_fix_thumb_crop),
-                summary = stringResource(R.string.media_elm_fix_thumb_crop_tips),
-                key = MediaControlSpKey.FIX_THUMB_CROPPED.getKey(isDynamicIsland)
-            )
-            DropDownPreference(
                 title = stringResource(R.string.media_elm_prog_style),
                 entries = progressStyleEntries,
                 key = MediaControlSpKey.ELM_PROGRESS_STYLE.getKey(isDynamicIsland)
@@ -479,8 +471,27 @@ fun MediaControlPage(navController: NavController, adjustPadding: PaddingValues,
                     ) {
                         progressRound = it
                     }
+                    SwitchPreference(
+                        title = stringResource(R.string.media_elm_prog_comet),
+                        summary = stringResource(R.string.media_elm_prog_comet_tips),
+                        key = MediaControlSpKey.ELM_PROGRESS_COMET.getKey(isDynamicIsland),
+                    ) {
+                        progressComet = it
+                    }
                 }
             }
+            DropDownPreference(
+                title = stringResource(R.string.media_elm_thumb_style),
+                entries = thumbStyleEntries,
+                key = MediaControlSpKey.ELM_THUMB_STYLE.getKey(isDynamicIsland)
+            ) {
+                thumbStyle = it
+            }
+            SwitchPreference(
+                title = stringResource(R.string.media_elm_fix_thumb_crop),
+                summary = stringResource(R.string.media_elm_fix_thumb_crop_tips),
+                key = MediaControlSpKey.FIX_THUMB_CROPPED.getKey(isDynamicIsland)
+            )
         }
     }
 }

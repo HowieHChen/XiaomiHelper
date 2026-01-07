@@ -23,6 +23,7 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -31,6 +32,8 @@ import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.PaintingStyle
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
@@ -100,6 +103,7 @@ fun MediaControlCard(
     progressStyle: Int = 0,
     progressWidth: Float = 4.0f,
     progressRound: Boolean = false,
+    progressComet: Boolean = false,
 ) {
     Card(
         modifier = Modifier
@@ -422,7 +426,8 @@ fun MediaControlCard(
                 thumbStyle = thumbStyle,
                 progressStyle = progressStyle,
                 progressWidth = progressWidth,
-                progressRound = progressRound
+                progressRound = progressRound,
+                progressComet = progressComet,
             )
         }
     }
@@ -568,7 +573,8 @@ private fun MediaProgressBar(
     thumbStyle: Int,
     progressStyle: Int,
     progressWidth: Float,
-    progressRound: Boolean
+    progressRound: Boolean,
+    progressComet: Boolean
 ) {
     val progressHeight = if (progressStyle == 0) 4.dp else progressWidth.dp
     Canvas(
@@ -584,7 +590,7 @@ private fun MediaProgressBar(
         } else {
             (barWidth - barHeight) * 0.728f + floor(barHeight / 2)
         }
-        val progressAlpha = if (progressStyle == 0) 0.5f else 0.75f
+        val progressAlpha = if (progressStyle == 0) 0.5f else 0.6f
         val backgroundAlpha = if (progressStyle == 0) 0.1f else 0.2f
         if (progressStyle == 2) {
             val heightFraction = 1.0f
@@ -648,37 +654,49 @@ private fun MediaProgressBar(
                 canvas.restore()
             }
         } else {
-            drawRoundRect(
-                color = color.copy(alpha = backgroundAlpha),
-                size = Size(barWidth, barHeight),
-                topLeft = Offset(0f, center.y - barHeight / 2),
-                cornerRadius = CornerRadius(barHeight / 2)
-            )
-            drawArc(
-                color = color.copy(alpha = progressAlpha),
-                startAngle = 90f,
-                sweepAngle = 180f,
-                useCenter = true,
-                alpha = 1f,
-                topLeft = Offset(0f, center.y - barHeight / 2),
-                size = Size(floor(barHeight), barHeight)
-            )
-            drawRoundRect(
-                color = color.copy(alpha = progressAlpha),
-                size = Size(progWidth, barHeight),
-                topLeft = Offset(floor(barHeight / 2), center.y - barHeight / 2),
-                cornerRadius = CornerRadius.Zero
-            )
-            if (progressRound) {
-                drawArc(
-                    color = color.copy(alpha = progressAlpha),
-                    startAngle = -90f,
-                    sweepAngle = 180f,
-                    useCenter = true,
-                    alpha = 1f,
-                    topLeft = Offset(progWidth, center.y - barHeight / 2),
-                    size = Size(floor(barHeight), barHeight)
+            val trackTop = center.y - barHeight / 2
+            val trackPath = Path().apply {
+                addRoundRect(
+                    RoundRect(
+                        left = 0f,
+                        top = trackTop,
+                        right = size.width,
+                        bottom = trackTop + barHeight,
+                        cornerRadius = CornerRadius(barHeight / 2)
+                    )
                 )
+            }
+            clipPath(trackPath) {
+                drawRect(
+                    color = color.copy(alpha = backgroundAlpha),
+                    topLeft = Offset(0f, trackTop),
+                    size = Size(size.width, barHeight)
+                )
+            }
+            clipPath(trackPath) {
+                val gradientBrush = Brush.linearGradient(
+                    colors = listOf(
+                        color.copy(alpha = progressAlpha),
+                        color.copy(alpha = if (progressStyle == 1 && progressComet) 1.0f else progressAlpha)
+                    ),
+                    start = Offset(progWidth - 143f, 0f),
+                    end = Offset(progWidth, 0f),
+                    tileMode = TileMode.Clamp
+                )
+                if (progressStyle == 1 && progressRound) {
+                    drawRoundRect(
+                        brush = gradientBrush,
+                        size = Size(progWidth, barHeight),
+                        topLeft = Offset(0f, center.y - barHeight / 2),
+                        cornerRadius = CornerRadius(barHeight / 2)
+                    )
+                } else {
+                    drawRect(
+                        brush = gradientBrush,
+                        topLeft = Offset(0f, trackTop),
+                        size = Size(progWidth, barHeight)
+                    )
+                }
             }
         }
         when (thumbStyle) {

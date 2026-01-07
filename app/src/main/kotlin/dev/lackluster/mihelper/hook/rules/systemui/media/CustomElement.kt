@@ -26,9 +26,7 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
-import android.graphics.drawable.ScaleDrawable
 import android.util.TypedValue
-import android.view.Gravity
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.core.graphics.toColorInt
@@ -38,6 +36,7 @@ import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import dev.lackluster.mihelper.BuildConfig
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.data.Pref
+import dev.lackluster.mihelper.hook.drawable.CometProgressDrawable
 import dev.lackluster.mihelper.hook.drawable.SquigglyProgress
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzMiuiIslandMediaViewBinderImpl
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzMiuiIslandMediaViewHolder
@@ -62,6 +61,7 @@ object CustomElement : YukiBaseHooker() {
     private val ncProgressStyle = Prefs.getInt(Pref.Key.SystemUI.MediaControl.ELM_PROGRESS_STYLE, 0)
     private val ncProgressWidth = Prefs.getFloat(Pref.Key.SystemUI.MediaControl.ELM_PROGRESS_WIDTH, 4.0f)
     private val ncProgressRound = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.ELM_PROGRESS_ROUND, false)
+    private val ncProgressComet = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.ELM_PROGRESS_COMET, false)
     private val ncThumbCropFix = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.FIX_THUMB_CROPPED, false)
 
     private val diModifyTextSize = Prefs.getBoolean(Pref.Key.DynamicIsland.MediaControl.ELM_TEXT_SIZE, false)
@@ -72,6 +72,7 @@ object CustomElement : YukiBaseHooker() {
     private val diProgressStyle = Prefs.getInt(Pref.Key.DynamicIsland.MediaControl.ELM_PROGRESS_STYLE, 0)
     private val diProgressWidth = Prefs.getFloat(Pref.Key.DynamicIsland.MediaControl.ELM_PROGRESS_WIDTH, 4.0f)
     private val diProgressRound = Prefs.getBoolean(Pref.Key.DynamicIsland.MediaControl.ELM_PROGRESS_ROUND, false)
+    private val diProgressComet = Prefs.getBoolean(Pref.Key.DynamicIsland.MediaControl.ELM_PROGRESS_COMET, false)
     private val diThumbCropFix = Prefs.getBoolean(Pref.Key.DynamicIsland.MediaControl.FIX_THUMB_CROPPED, false)
 
     private var ncProgress: Drawable? = null
@@ -247,7 +248,7 @@ object CustomElement : YukiBaseHooker() {
                         if (ncProgressStyle == 1) {
                             val width = ncProgressWidth.dp(context)
                             if (ncProgress == null) {
-                                ncProgress = generateCustomProgressDrawable(width, ncProgressRound)
+                                ncProgress = generateCustomProgressDrawable(width, ncProgressRound, ncProgressComet)
                             }
                             seekBar.minHeight = width
                             seekBar.maxHeight = width
@@ -352,7 +353,7 @@ object CustomElement : YukiBaseHooker() {
                         if (diProgressStyle == 1) {
                             val width = diProgressWidth.dp(context)
                             if (diProgress == null) {
-                                diProgress = generateCustomProgressDrawable(width, diProgressRound)
+                                diProgress = generateCustomProgressDrawable(width, diProgressRound, diProgressComet)
                             }
                             seekBar1.minHeight = width
                             seekBar1.maxHeight = width
@@ -378,23 +379,17 @@ object CustomElement : YukiBaseHooker() {
     }
 
     @SuppressLint("RtlHardcoded")
-    private fun generateCustomProgressDrawable(height: Int, round: Boolean): Drawable {
+    private fun generateCustomProgressDrawable(height: Int, round: Boolean, comet: Boolean): Drawable {
         val radius = height / 2.0f
         return LayerDrawable(arrayOf(
             GradientDrawable().apply {
                 cornerRadius = radius
                 setColor("#33FFFFFF".toColorInt())
             },
-            ScaleDrawable(
-                GradientDrawable().apply {
-                    if (round) {
-                        cornerRadius = radius
-                    } else {
-                        cornerRadii = floatArrayOf(radius, radius, 0f, 0f, 0f, 0f, radius, radius)
-                    }
-                    setColor("#B3FFFFFF".toColorInt())
-                }, Gravity.LEFT, 1.0f, -1.0f
-            ),
+            CometProgressDrawable(
+                cometEffect = comet,
+                roundCorner = round
+            )
         )).apply {
             setId(0, android.R.id.background)
             setId(1, android.R.id.progress)

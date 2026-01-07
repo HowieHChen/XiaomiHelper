@@ -777,4 +777,6 @@
     <string name="ui_title_systemui_dynamic_island">超级岛</string>
     <string name="media_bg_ambient_light_opt">优化取色</string>
     <string name="media_elm_prog_round">圆角进度条</string>
+    <string name="media_elm_prog_comet">彗星进度条</string>
+    <string name="media_elm_prog_comet_tips">进度条带有逐渐变透明的效果，就像彗星拖着一条小尾巴一样</string>
 </resources>

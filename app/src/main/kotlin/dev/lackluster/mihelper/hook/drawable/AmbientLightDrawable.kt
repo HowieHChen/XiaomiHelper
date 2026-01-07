@@ -11,8 +11,6 @@ import android.graphics.drawable.Drawable
 import android.os.SystemClock
 import android.view.View
 import dev.lackluster.mihelper.utils.Math
-import kotlin.math.max
-import kotlin.math.min
 
 class AmbientLightDrawable(
     private val useAnim: Boolean = true
@@ -100,6 +98,7 @@ class AmbientLightDrawable(
         } else {
             pauseDuration += (now - pauseTime)
         }
+        invalidateSelf()
     }
 
     override fun onBoundsChange(bounds: Rect) {
@@ -163,7 +162,12 @@ class AmbientLightDrawable(
         val w = bounds.width().toFloat()
         val h = currentHeight.toFloat()
         if (w > 0 && h > 0) {
-            val time = (now - startTime) / 1000f
+            val duration = if (pause) {
+                pauseTime - startTime - pauseDuration
+            } else {
+                now - startTime - pauseDuration
+            }
+            val time = duration / 1000f
             runtimeShader?.apply {
                 setFloatUniform("uTime", time)
                 setFloatUniform("uResolution", w, h)
@@ -175,7 +179,7 @@ class AmbientLightDrawable(
                 colorVec4[0] = Color.red(currentColor) / 255f
                 colorVec4[1] = Color.green(currentColor) / 255f
                 colorVec4[2] = Color.blue(currentColor) / 255f
-                colorVec4[3] = min(1.0f, max((now - startTime - pauseDuration) / LIGHT_ANIM_DURATION, 0.0f))
+                colorVec4[3] = (duration / LIGHT_ANIM_DURATION).coerceIn(0.0f, 1.0f)
                 setFloatUniform("uGradientColor", colorVec4)
             }
             p0.drawRect(0.0f, 0.0f, w, h, paint)

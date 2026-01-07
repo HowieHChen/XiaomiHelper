@@ -367,6 +367,7 @@ object Pref {
                 const val ELM_PROGRESS_STYLE = "media_elm_prog_style"
                 const val ELM_PROGRESS_WIDTH = "media_elm_prog_width"
                 const val ELM_PROGRESS_ROUND = "media_elm_prog_round"
+                const val ELM_PROGRESS_COMET = "media_elm_prog_comet"
 
                 const val FIX_THUMB_CROPPED = "media_thumb_crop"
                 const val USE_ANIM = "media_ctrl_anim"
@@ -407,6 +408,7 @@ object Pref {
                 const val ELM_PROGRESS_STYLE = "di_media_elm_prog_style"
                 const val ELM_PROGRESS_WIDTH = "di_media_elm_prog_width"
                 const val ELM_PROGRESS_ROUND = "di_media_elm_prog_round"
+                const val ELM_PROGRESS_COMET = "di_media_elm_prog_comet"
 
                 const val FIX_THUMB_CROPPED = "di_media_thumb_crop"
                 const val USE_ANIM = "di_media_ctrl_anim"

@@ -864,6 +864,8 @@
     <string name="media_elm_prog_style_squiggly">Squiggly</string>
     <string name="media_elm_prog_width">Progress bar thickness</string>
     <string name="media_elm_prog_round">Rounded progress bar</string>
+    <string name="media_elm_prog_comet">Comet progress bar</string>
+    <string name="media_elm_prog_comet_tips">A progress bar with a fading transparency effect, like a comet trailing a small tail.</string>
     <string name="ui_title_media_others" translatable="false">@string/common_others</string>
     <string name="media_hint_advanced_textures">Since Advanced textures have been set as the default background for media controls, the corresponding option has been removed. If you need to adjust the effects of Advanced textures, use a Magisk module or the system theme to modify the blur parameters.</string>
     <!-- HomeRefactorPage -->

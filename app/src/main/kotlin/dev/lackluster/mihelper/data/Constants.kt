@@ -141,6 +141,7 @@ object Constants {
         ELM_PROGRESS_STYLE,
         ELM_PROGRESS_WIDTH,
         ELM_PROGRESS_ROUND,
+        ELM_PROGRESS_COMET,
 
         FIX_THUMB_CROPPED,
         USE_ANIM,
@@ -172,6 +173,7 @@ object Constants {
             MediaControlSpKey.ELM_PROGRESS_STYLE to Pref.Key.SystemUI.MediaControl.ELM_PROGRESS_STYLE,
             MediaControlSpKey.ELM_PROGRESS_WIDTH to Pref.Key.SystemUI.MediaControl.ELM_PROGRESS_WIDTH,
             MediaControlSpKey.ELM_PROGRESS_ROUND to Pref.Key.SystemUI.MediaControl.ELM_PROGRESS_ROUND,
+            MediaControlSpKey.ELM_PROGRESS_COMET to Pref.Key.SystemUI.MediaControl.ELM_PROGRESS_COMET,
 
             MediaControlSpKey.FIX_THUMB_CROPPED to Pref.Key.SystemUI.MediaControl.FIX_THUMB_CROPPED,
             MediaControlSpKey.USE_ANIM to Pref.Key.SystemUI.MediaControl.USE_ANIM,
@@ -204,6 +206,7 @@ object Constants {
             MediaControlSpKey.ELM_PROGRESS_STYLE to Pref.Key.DynamicIsland.MediaControl.ELM_PROGRESS_STYLE,
             MediaControlSpKey.ELM_PROGRESS_WIDTH to Pref.Key.DynamicIsland.MediaControl.ELM_PROGRESS_WIDTH,
             MediaControlSpKey.ELM_PROGRESS_ROUND to Pref.Key.DynamicIsland.MediaControl.ELM_PROGRESS_ROUND,
+            MediaControlSpKey.ELM_PROGRESS_COMET to Pref.Key.DynamicIsland.MediaControl.ELM_PROGRESS_COMET,
 
             MediaControlSpKey.FIX_THUMB_CROPPED to Pref.Key.DynamicIsland.MediaControl.FIX_THUMB_CROPPED,
             MediaControlSpKey.USE_ANIM to Pref.Key.DynamicIsland.MediaControl.USE_ANIM,
