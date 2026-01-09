@@ -33,6 +33,7 @@ import androidx.core.graphics.toColorInt
 import androidx.core.view.updatePadding
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
+import de.robv.android.xposed.XposedHelpers
 import dev.lackluster.mihelper.BuildConfig
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.data.Pref
@@ -49,6 +50,7 @@ import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzMi
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.getMediaViewHolderField
 
 object CustomElement : YukiBaseHooker() {
+    private const val KEY_PROGRESS_BAR = "KEY_PROGRESS_BAR"
     private val ncAlbum = Prefs.getInt(Pref.Key.SystemUI.MediaControl.LYT_ALBUM, 0)
     private val ncAlbumShadow = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.ELM_ALBUM_SHADOW, true)
     private val albumFlip = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.ELM_ALBUM_FLIP, true)
@@ -75,11 +77,9 @@ object CustomElement : YukiBaseHooker() {
     private val diProgressComet = Prefs.getBoolean(Pref.Key.DynamicIsland.MediaControl.ELM_PROGRESS_COMET, false)
     private val diThumbCropFix = Prefs.getBoolean(Pref.Key.DynamicIsland.MediaControl.FIX_THUMB_CROPPED, false)
 
-    private var ncProgress: Drawable? = null
     private var ncThumb1: Drawable? = null
     private var ncThumb2: Drawable? = null
 
-    private var diProgress: Drawable? = null
     private var diThumb1: Drawable? = null
     private var diThumb2: Drawable? = null
 
@@ -247,12 +247,9 @@ object CustomElement : YukiBaseHooker() {
                         val context = seekBar.context
                         if (ncProgressStyle == 1) {
                             val width = ncProgressWidth.dp(context)
-                            if (ncProgress == null) {
-                                ncProgress = generateCustomProgressDrawable(width, ncProgressRound, ncProgressComet)
-                            }
                             seekBar.minHeight = width
                             seekBar.maxHeight = width
-                            seekBar.progressDrawable = ncProgress
+                            seekBar.progressDrawable = generateCustomProgressDrawable(seekBar, width, ncProgressRound, ncProgressComet)
                         } else if (ncProgressStyle == 2) {
                             seekBar.progressDrawable = SquigglyProgress().apply {
                                 waveLength = 20.dpFloat(context)
@@ -352,26 +349,34 @@ object CustomElement : YukiBaseHooker() {
                         val context = seekBar1.context
                         if (diProgressStyle == 1) {
                             val width = diProgressWidth.dp(context)
-                            if (diProgress == null) {
-                                diProgress = generateCustomProgressDrawable(width, diProgressRound, diProgressComet)
-                            }
                             seekBar1.minHeight = width
                             seekBar1.maxHeight = width
                             seekBar2.minHeight = width
                             seekBar2.maxHeight = width
-                            seekBar1.progressDrawable = diProgress
-                            seekBar2.progressDrawable = diProgress?.mutate()
-                        } else if (diProgressStyle == 2) {
-                            SquigglyProgress().apply {
-                                waveLength = 20.dpFloat(context)
-                                lineAmplitude = 1.5.dpFloat(context)
-                                phaseSpeed = 8.dpFloat(context)
-                                strokeWidth = 2.dpFloat(context)
-                            }.let {
-                                seekBar1.progressDrawable = it
-                                seekBar2.progressDrawable = it.mutate()
-                            }
+                            seekBar1.progressDrawable = generateCustomProgressDrawable(
+                                seekBar1,
+                                width,
+                                diProgressRound,
+                                diProgressComet
+                            )
+                            seekBar2.progressDrawable = generateCustomProgressDrawable(
+                                seekBar2,
+                                width,
+                                diProgressRound,
+                                diProgressComet
+                            )
                         }
+//                        } else if (diProgressStyle == 2) {
+//                            SquigglyProgress().apply {
+//                                waveLength = 20.dpFloat(context)
+//                                lineAmplitude = 1.5.dpFloat(context)
+//                                phaseSpeed = 8.dpFloat(context)
+//                                strokeWidth = 2.dpFloat(context)
+//                            }.let {
+//                                seekBar1.progressDrawable = it
+//                                seekBar2.progressDrawable = it.mutate()
+//                            }
+//                        }
                     }
                 }
             }
@@ -379,7 +384,10 @@ object CustomElement : YukiBaseHooker() {
     }
 
     @SuppressLint("RtlHardcoded")
-    private fun generateCustomProgressDrawable(height: Int, round: Boolean, comet: Boolean): Drawable {
+    private fun generateCustomProgressDrawable(seekBar: SeekBar, height: Int, round: Boolean, comet: Boolean): Drawable {
+        (XposedHelpers.getAdditionalInstanceField(seekBar, KEY_PROGRESS_BAR) as? LayerDrawable)?.let {
+            return it
+        }
         val radius = height / 2.0f
         return LayerDrawable(arrayOf(
             GradientDrawable().apply {
@@ -393,6 +401,8 @@ object CustomElement : YukiBaseHooker() {
         )).apply {
             setId(0, android.R.id.background)
             setId(1, android.R.id.progress)
+        }.also {
+            XposedHelpers.setAdditionalInstanceField(seekBar, KEY_PROGRESS_BAR, it)
         }
     }
 }

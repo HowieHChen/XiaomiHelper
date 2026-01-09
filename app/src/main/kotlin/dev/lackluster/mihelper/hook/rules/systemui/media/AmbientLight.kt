@@ -53,6 +53,7 @@ object AmbientLight : YukiBaseHooker() {
     var ncIsArtworkBound = false
     var diCurrentPkgName = ""
     var diIsArtworkBound = false
+    var inFullAod = false
 
     private val fldIsPlaying by lazy {
         clzMediaData?.resolve()?.firstFieldOrNull {
@@ -160,7 +161,7 @@ object AmbientLight : YukiBaseHooker() {
                             val mediaBgView = getNewMediaBgView(holder, false) ?: return@after
                             val ambientLightDrawable = mediaBgView.drawable as? AmbientLightDrawable ?: return@after
                             val isPlaying = fldIsPlaying?.get(mediaData) == true
-                            if (isPlaying) {
+                            if (!inFullAod && isPlaying) {
                                 ambientLightDrawable.resume()
                             } else {
                                 ambientLightDrawable.pause()
@@ -176,6 +177,7 @@ object AmbientLight : YukiBaseHooker() {
                         val ambientLightDrawable = getNewMediaBgView(holder, false)?.drawable as? AmbientLightDrawable ?: return@after
                         val mediaData = fldMediaData?.get(this.instance) ?: return@after
                         val toFullAod = this.args(0).boolean()
+                        inFullAod = toFullAod
                         val isPlaying = fldIsPlaying?.get(mediaData) == true
                         if (!toFullAod && isPlaying) {
                             ambientLightDrawable.resume()
@@ -343,7 +345,6 @@ object AmbientLight : YukiBaseHooker() {
         }
     }
 
-    @Suppress("UNCHECKED_CAST")
     fun updateColor(context: Context, mediaData: Any, pkgName: String, holder: Any, type: PlayerType, isDark: Boolean) {
         val isDynamicIsland = (type != PlayerType.NOTIFICATION_CANTER)
         val mediaBgView = getNewMediaBgView(holder, isDynamicIsland) ?: return
@@ -391,7 +392,7 @@ object AmbientLight : YukiBaseHooker() {
         ) { mainColorHCT ->
             val isPlaying = fldIsPlaying?.get(mediaData) == true
             ambientLightDrawable.setGradientColor(mainColorHCT, !mediaBgView.isShown)
-            if (isPlaying) {
+            if (isPlaying && !(type == PlayerType.NOTIFICATION_CANTER && inFullAod)) {
                 ambientLightDrawable.resume()
             } else {
                 ambientLightDrawable.pause()
