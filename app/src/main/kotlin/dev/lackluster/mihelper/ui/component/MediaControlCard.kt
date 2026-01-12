@@ -58,11 +58,10 @@ import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.Visibility
 import androidx.core.graphics.toColorInt
+import dev.lackluster.hyperx.compose.base.Card
 import dev.lackluster.mihelper.R
-import top.yukonga.miuix.kmp.basic.Card
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
-import kotlin.math.floor
 import kotlin.math.max
 import kotlin.math.min
 
@@ -82,6 +81,7 @@ private val mainColorHCTTertiary_12_OPT = "#AFA6CD".toColorInt()
 
 @Composable
 fun MediaControlCard(
+    isDynamicIsland: Boolean = false,
     backgroundStyle: Int = 0,
     allowReverse: Boolean = false,
     blurRadius: Int = 10,
@@ -110,7 +110,8 @@ fun MediaControlCard(
             .fillMaxWidth()
             .height(dimensionResource(R.dimen.media_session_height_expanded))
             .padding(horizontal = 12.dp)
-            .padding(bottom = 6.dp, top = 12.dp)
+            .padding(bottom = 6.dp, top = 12.dp),
+        shape = if (isDynamicIsland) G2RoundedCornerShape(30.dp) else G2RoundedCornerShape(20.dp)
     ) {
         val backgroundColor: Color
         val textPrimaryColor: Color
@@ -580,18 +581,10 @@ private fun MediaProgressBar(
     Canvas(
         modifier = modifier
             .fillMaxWidth()
-            .height(14.dp)
+            .height(16.dp)
     ) {
-        val barHeight = progressHeight.toPx()
+        val progressRatio = 0.728f
         val barWidth = size.width
-        val progWidth = floor((barWidth - barHeight) * 0.728f)
-        val thumbOffset = if (progressStyle == 2) {
-            barWidth * 0.728f
-        } else {
-            (barWidth - barHeight) * 0.728f + floor(barHeight / 2)
-        }
-        val progressAlpha = if (progressStyle == 0) 0.5f else 0.6f
-        val backgroundAlpha = if (progressStyle == 0) 0.1f else 0.2f
         if (progressStyle == 2) {
             val heightFraction = 1.0f
             val phaseSpeed = 8.dp.toPx()
@@ -614,10 +607,16 @@ private fun MediaProgressBar(
                 this.color = color
                 this.colorFilter = ColorFilter.tint(color.copy(0.3f))
             }
+            val thumbPaint = Paint().apply {
+                this.strokeWidth = strokeWidth
+                this.strokeCap = StrokeCap.Round
+                this.style = PaintingStyle.Fill
+                this.color = color
+                this.colorFilter = ColorFilter.tint(color)
+            }
             drawIntoCanvas { canvas ->
-                val progress = 0.728f
-                val totalProgressPx = barWidth * progress
-                val waveProgressPx = barWidth * progress
+                val totalProgressPx = barWidth * progressRatio
+                val waveProgressPx = barWidth * progressRatio
                 // Build Wiggly Path
                 val waveStart = -phaseOffset - waveLength / 2f
                 // helper function, computes amplitude for wave segment
@@ -652,68 +651,120 @@ private fun MediaProgressBar(
                 canvas.restore()
                 canvas.drawLine(Offset(totalProgressPx, 0f), Offset(barWidth, 0f), linePaint)
                 canvas.restore()
+                when (thumbStyle) {
+                    0 -> {
+                        val radius = 5.dp.toPx()
+                        canvas.drawCircle(Offset(totalProgressPx, center.y), radius, thumbPaint)
+                    }
+                    2 -> {
+                        val width = 4.dp.toPx()
+                        val height = 14.dp.toPx()
+                        val left = totalProgressPx - width / 2
+                        val top = center.y - height / 2
+                        canvas.drawRoundRect(left, top, left + width, top + height, width / 2, width / 2, thumbPaint)
+                    }
+                }
             }
         } else {
-            val trackTop = center.y - barHeight / 2
+            val currentTrackHeight = progressHeight.toPx()
+            val centerY = size.height / 2f
+
+            val trackColor = color.copy(alpha = if (progressStyle == 0) 0.1f else 0x33 / 255.0f)
+            val progressColor = color.copy(alpha = if (progressStyle == 0) 0.5f else 0x99 / 255.0f)
+            val cometColor = color.copy(alpha = if (progressStyle == 0) 1.0f else 0xFF / 255.0f)
+
+            val trackTop = centerY - currentTrackHeight / 2f
+            val trackBottom = centerY + currentTrackHeight / 2f
+            val cornerRadius = currentTrackHeight / 2f
+
             val trackPath = Path().apply {
                 addRoundRect(
                     RoundRect(
                         left = 0f,
                         top = trackTop,
                         right = size.width,
-                        bottom = trackTop + barHeight,
-                        cornerRadius = CornerRadius(barHeight / 2)
+                        bottom = trackBottom,
+                        cornerRadius = CornerRadius(cornerRadius)
                     )
                 )
             }
             clipPath(trackPath) {
                 drawRect(
-                    color = color.copy(alpha = backgroundAlpha),
+                    color = trackColor,
                     topLeft = Offset(0f, trackTop),
-                    size = Size(size.width, barHeight)
+                    size = Size(size.width, currentTrackHeight)
                 )
             }
+            val availableWidth = size.width
+            val progressWidth: Float
+            when (thumbStyle) {
+                0 -> {
+                    val thumbHeight = 10.dp.toPx().coerceAtLeast(currentTrackHeight)
+                    val availableRunway = (availableWidth - thumbHeight).coerceAtLeast(0f)
+                    progressWidth = (thumbHeight / 2) + (availableRunway * progressRatio)
+                }
+                1 -> {
+                    if (progressRound) {
+                        val availableRunway = (availableWidth - currentTrackHeight).coerceAtLeast(0f)
+                        progressWidth = currentTrackHeight + (availableRunway * progressRatio)
+                    } else {
+                        progressWidth = availableWidth * progressRatio
+                    }
+                }
+                else -> {
+                    val thumbVBarWidth = 4.dp.toPx()
+                    val availableRunway = (availableWidth - thumbVBarWidth).coerceAtLeast(0f)
+                    progressWidth = (thumbVBarWidth / 2) + (availableRunway * progressRatio)
+                }
+            }
+
+            val currentX = progressWidth
             clipPath(trackPath) {
                 val gradientBrush = Brush.linearGradient(
                     colors = listOf(
-                        color.copy(alpha = progressAlpha),
-                        color.copy(alpha = if (progressStyle == 1 && progressComet) 1.0f else progressAlpha)
+                        progressColor,
+                        if (progressStyle == 1 && progressComet) cometColor else progressColor
                     ),
-                    start = Offset(progWidth - 143f, 0f),
-                    end = Offset(progWidth, 0f),
+                    start = Offset(currentX - 52.dp.toPx(), 0f),
+                    end = Offset(currentX, 0f),
                     tileMode = TileMode.Clamp
                 )
-                if (progressStyle == 1 && progressRound) {
+                if (progressStyle == 1 && thumbStyle == 1 && progressRound) {
                     drawRoundRect(
                         brush = gradientBrush,
-                        size = Size(progWidth, barHeight),
-                        topLeft = Offset(0f, center.y - barHeight / 2),
-                        cornerRadius = CornerRadius(barHeight / 2)
+                        size = Size(currentX, currentTrackHeight),
+                        topLeft = Offset(0f, center.y - currentTrackHeight / 2),
+                        cornerRadius = CornerRadius(cornerRadius)
                     )
                 } else {
                     drawRect(
                         brush = gradientBrush,
                         topLeft = Offset(0f, trackTop),
-                        size = Size(progWidth, barHeight)
+                        size = Size(currentX, currentTrackHeight)
                     )
                 }
             }
-        }
-        when (thumbStyle) {
-            0 -> {
-                drawCircle(
-                    color = color,
-                    radius = 10.dp.toPx() / 2,
-                    center = Offset(thumbOffset, center.y)
-                )
-            }
-            2 -> {
-                drawRoundRect(
-                    color = color,
-                    size = Size(4.dp.toPx(), 14.dp.toPx()),
-                    topLeft = Offset(thumbOffset - 2.dp.toPx(), center.y - 7.dp.toPx()),
-                    cornerRadius = CornerRadius(2.dp.toPx())
-                )
+            when (thumbStyle) {
+                0 -> {
+                    val radius = 10.dp.toPx().coerceAtLeast(currentTrackHeight) / 2
+                    drawCircle(
+                        color = cometColor,
+                        radius = radius,
+                        center = Offset(currentX, center.y)
+                    )
+                }
+                2 -> {
+                    val width = 4.dp.toPx()
+                    val height = 14.dp.toPx()
+                    val left = currentX - width / 2
+                    val top = center.y - height / 2
+                    drawRoundRect(
+                        color = cometColor,
+                        topLeft = Offset(left, top),
+                        size = Size(width, height),
+                        cornerRadius = CornerRadius(width / 2)
+                    )
+                }
             }
         }
     }

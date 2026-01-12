@@ -16,8 +16,9 @@ import androidx.core.graphics.withClip
 
 class CometProgressDrawable(
     private val cometEffect: Boolean = true,
-    private val roundCorner: Boolean = true
+    private val roundCorner: Boolean = true,
 ) : Drawable() {
+
     private val tailLengthPx: Float = 143f
 
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)

@@ -344,6 +344,7 @@
     <string name="home_refactor_extra_fix">额外修复模糊缺失</string>
     <string name="home_refactor_extra_fix_tips">强制使用动画以避免快速滑动时模糊未及时出现。只有当你发现存在此问题时才启用</string>
     <string name="media_elm_fix_thumb_crop_tips">确保滑块在进度条的两端时均能完整显示</string>
+    <string name="media_hint_ambient_lighting">氛围光效需要较高的性能和资源占用，可能会导致设备过热等问题。请谨慎启用。如果出现任何问题，建议禁用此功能。</string>
     <string name="media_hint_advanced_textures">由于高级材质已被设置为媒体控制的默认背景，我们移除了相应的选项。若需修改高级材质效果，请通过 Magisk 模块或系统主题调整模糊参数。</string>
     <string name="home_refactor_blur">模糊效果</string>
     <string name="home_refactor_fix_small_window">额外修复小窗动画</string>

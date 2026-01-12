@@ -22,24 +22,20 @@
 package dev.lackluster.mihelper.hook.rules.systemui.media
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.GradientDrawable
-import android.graphics.drawable.LayerDrawable
 import android.util.TypedValue
+import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.TextView
-import androidx.core.graphics.toColorInt
+import androidx.core.view.updateMargins
 import androidx.core.view.updatePadding
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import de.robv.android.xposed.XposedHelpers
-import dev.lackluster.mihelper.BuildConfig
-import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.hook.drawable.CometProgressDrawable
+import dev.lackluster.mihelper.hook.drawable.GhostThumb
 import dev.lackluster.mihelper.hook.drawable.SquigglyProgress
-import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzMiuiIslandMediaViewBinderImpl
+import dev.lackluster.mihelper.hook.drawable.VerticalBarThumb
+import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.media_progress_bar
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzMiuiIslandMediaViewHolder
 import dev.lackluster.mihelper.utils.Prefs
 import dev.lackluster.mihelper.utils.factory.dp
@@ -48,9 +44,9 @@ import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzMi
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzMiuiMediaViewControllerImpl
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzMiuiMediaViewHolder
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.getMediaViewHolderField
+import dev.lackluster.mihelper.hook.view.CometSeekBar
 
 object CustomElement : YukiBaseHooker() {
-    private const val KEY_PROGRESS_BAR = "KEY_PROGRESS_BAR"
     private val ncAlbum = Prefs.getInt(Pref.Key.SystemUI.MediaControl.LYT_ALBUM, 0)
     private val ncAlbumShadow = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.ELM_ALBUM_SHADOW, true)
     private val albumFlip = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.ELM_ALBUM_FLIP, true)
@@ -62,9 +58,16 @@ object CustomElement : YukiBaseHooker() {
     private val ncThumbStyle = Prefs.getInt(Pref.Key.SystemUI.MediaControl.ELM_THUMB_STYLE, 0)
     private val ncProgressStyle = Prefs.getInt(Pref.Key.SystemUI.MediaControl.ELM_PROGRESS_STYLE, 0)
     private val ncProgressWidth = Prefs.getFloat(Pref.Key.SystemUI.MediaControl.ELM_PROGRESS_WIDTH, 4.0f)
-    private val ncProgressRound = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.ELM_PROGRESS_ROUND, false)
-    private val ncProgressComet = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.ELM_PROGRESS_COMET, false)
-    private val ncThumbCropFix = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.FIX_THUMB_CROPPED, false)
+    private val ncProgressRound = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.ELM_PROGRESS_ROUND, false) && ncProgressStyle == 1
+    private val ncProgressComet = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.ELM_PROGRESS_COMET, false) && ncProgressStyle == 1
+    private val ncThumbCropFix = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.FIX_THUMB_CROPPED, false) && ncProgressStyle != 1
+    private val ncCustomThumbStyle by lazy {
+        when (ncThumbStyle) {
+            1 -> if (ncProgressRound) CometSeekBar.ThumbStyle.RoundRect else CometSeekBar.ThumbStyle.Hidden
+            2 -> CometSeekBar.ThumbStyle.VerticalBar
+            else -> CometSeekBar.ThumbStyle.Circle
+        }
+    }
 
     private val diModifyTextSize = Prefs.getBoolean(Pref.Key.DynamicIsland.MediaControl.ELM_TEXT_SIZE, false)
     private val diTitleSize = Prefs.getFloat(Pref.Key.DynamicIsland.MediaControl.ELM_TITLE_SIZE, 18.0f)
@@ -73,9 +76,16 @@ object CustomElement : YukiBaseHooker() {
     private val diThumbStyle = Prefs.getInt(Pref.Key.DynamicIsland.MediaControl.ELM_THUMB_STYLE, 0)
     private val diProgressStyle = Prefs.getInt(Pref.Key.DynamicIsland.MediaControl.ELM_PROGRESS_STYLE, 0)
     private val diProgressWidth = Prefs.getFloat(Pref.Key.DynamicIsland.MediaControl.ELM_PROGRESS_WIDTH, 4.0f)
-    private val diProgressRound = Prefs.getBoolean(Pref.Key.DynamicIsland.MediaControl.ELM_PROGRESS_ROUND, false)
-    private val diProgressComet = Prefs.getBoolean(Pref.Key.DynamicIsland.MediaControl.ELM_PROGRESS_COMET, false)
-    private val diThumbCropFix = Prefs.getBoolean(Pref.Key.DynamicIsland.MediaControl.FIX_THUMB_CROPPED, false)
+    private val diProgressRound = Prefs.getBoolean(Pref.Key.DynamicIsland.MediaControl.ELM_PROGRESS_ROUND, false) && diProgressStyle == 1
+    private val diProgressComet = Prefs.getBoolean(Pref.Key.DynamicIsland.MediaControl.ELM_PROGRESS_COMET, false) && diProgressStyle == 1
+    private val diThumbCropFix = Prefs.getBoolean(Pref.Key.DynamicIsland.MediaControl.FIX_THUMB_CROPPED, false) && diProgressStyle != 1
+    private val diCustomThumbStyle by lazy {
+        when (diThumbStyle) {
+            1 -> if (diProgressRound) CometSeekBar.ThumbStyle.RoundRect else CometSeekBar.ThumbStyle.Hidden
+            2 -> CometSeekBar.ThumbStyle.VerticalBar
+            else -> CometSeekBar.ThumbStyle.Circle
+        }
+    }
 
     private var ncThumb1: Drawable? = null
     private var ncThumb2: Drawable? = null
@@ -209,33 +219,41 @@ object CustomElement : YukiBaseHooker() {
                             totalTimeView?.setTextSize(TypedValue.COMPLEX_UNIT_SP, ncTimeSize)
                         }
                         val seekBar = (ncSeekBar?.get(mediaViewHolder) as? SeekBar) ?: return@after
-                        if (ncThumbStyle != 0) {
+                        if (ncProgressStyle != 1 && ncThumbStyle != 0) {
                             val context = seekBar.context
                             when (ncThumbStyle) {
                                 1 -> {
                                     if (ncThumb1 == null) {
-                                        val moduleContext = context.createPackageContext(BuildConfig.APPLICATION_ID, Context.CONTEXT_IGNORE_SECURITY)
-                                        ncThumb1 = moduleContext.getDrawable(R.drawable.media_seekbar_thumb_none)
+                                        val thumbSize = 14.dp(context)
+                                        ncThumb1 = GhostThumb(thumbSize, thumbSize)
                                     }
                                     seekBar.thumb = ncThumb1
                                 }
                                 2 -> {
                                     if (ncThumb2 == null) {
-                                        val moduleContext = context.createPackageContext(BuildConfig.APPLICATION_ID, Context.CONTEXT_IGNORE_SECURITY)
-                                        ncThumb2 = moduleContext.getDrawable(R.drawable.media_seekbar_thumb)
+                                        ncThumb2 = VerticalBarThumb(context.resources.displayMetrics.density)
                                     }
                                     seekBar.thumb = ncThumb2
                                 }
                             }
                         }
-                        if (ncThumbCropFix && ncThumbStyle != 1) {
+                        if (ncProgressStyle != 1 && ncThumbCropFix && ncThumbStyle != 1) {
                             seekBar.updatePadding(left = seekBar.thumbOffset, right = seekBar.thumbOffset)
                         }
                     }
                 }
             }
         }
-        if (ncProgressStyle != 0) {
+        if (ncProgressStyle == 1) {
+            clzMiuiMediaViewHolder?.apply {
+                resolve().firstConstructor().hook {
+                    after {
+                        replaceSeekBar(this.instance, false)
+                    }
+                }
+            }
+        }
+        if (ncProgressStyle == 2) {
             clzMiuiMediaViewControllerImpl?.apply {
                 resolve().firstMethodOrNull {
                     name = "attach"
@@ -245,49 +263,40 @@ object CustomElement : YukiBaseHooker() {
                         val mediaViewHolder = this.args(0).any() ?: return@after
                         val seekBar = (ncSeekBar?.get(mediaViewHolder) as? SeekBar) ?: return@after
                         val context = seekBar.context
-                        if (ncProgressStyle == 1) {
-                            val width = ncProgressWidth.dp(context)
-                            seekBar.minHeight = width
-                            seekBar.maxHeight = width
-                            seekBar.progressDrawable = generateCustomProgressDrawable(seekBar, width, ncProgressRound, ncProgressComet)
-                        } else if (ncProgressStyle == 2) {
-                            seekBar.progressDrawable = SquigglyProgress().apply {
-                                waveLength = 20.dpFloat(context)
-                                lineAmplitude = 1.5.dpFloat(context)
-                                phaseSpeed = 8.dpFloat(context)
-                                strokeWidth = 2.dpFloat(context)
-                            }
+                        seekBar.progressDrawable = SquigglyProgress().apply {
+                            waveLength = 20.dpFloat(context)
+                            lineAmplitude = 1.5.dpFloat(context)
+                            phaseSpeed = 8.dpFloat(context)
+                            strokeWidth = 2.dpFloat(context)
                         }
                     }
                 }
             }
-            if (ncProgressStyle == 2) {
-                clzSeekBarObserver?.apply {
-                    val fldOuter = resolve().firstFieldOrNull {
-                        name = "this$0"
-                    }?.self
-                    val fldHolder = clzMiuiMediaViewControllerImpl?.resolve()?.firstFieldOrNull {
-                        name = "holder"
-                    }?.self
-                    resolve().firstMethodOrNull {
-                        name = "onChanged"
-                    }?.hook {
-                        after {
-                            val mediaViewHolder = fldHolder?.get(fldOuter?.get(this.instance)) ?: return@after
-                            val seekBar = (ncSeekBar?.get(mediaViewHolder) as? SeekBar) ?: return@after
-                            val drawable = seekBar.progressDrawable
-                            if (drawable !is SquigglyProgress) return@after
-                            val progress = this.args(0).any() ?: return@after
-                            val seekAvailable = fldSeekAvailable?.get(progress) == true
-                            val playing = fldPlaying?.get(progress) == true
-                            val scrubbing = fldScrubbing?.get(progress) == true
-                            val enabled = fldEnabled?.get(progress) == true
-                            if (!enabled) {
-                                drawable.animate = false
-                            } else {
-                                drawable.animate = playing && !scrubbing
-                                drawable.transitionEnabled = !seekAvailable
-                            }
+            clzSeekBarObserver?.apply {
+                val fldOuter = resolve().firstFieldOrNull {
+                    name = "this$0"
+                }?.self
+                val fldHolder = clzMiuiMediaViewControllerImpl?.resolve()?.firstFieldOrNull {
+                    name = "holder"
+                }?.self
+                resolve().firstMethodOrNull {
+                    name = "onChanged"
+                }?.hook {
+                    after {
+                        val mediaViewHolder = fldHolder?.get(fldOuter?.get(this.instance)) ?: return@after
+                        val seekBar = (ncSeekBar?.get(mediaViewHolder) as? SeekBar) ?: return@after
+                        val drawable = seekBar.progressDrawable
+                        if (drawable !is SquigglyProgress) return@after
+                        val progress = this.args(0).any() ?: return@after
+                        val seekAvailable = fldSeekAvailable?.get(progress) == true
+                        val playing = fldPlaying?.get(progress) == true
+                        val scrubbing = fldScrubbing?.get(progress) == true
+                        val enabled = fldEnabled?.get(progress) == true
+                        if (!enabled) {
+                            drawable.animate = false
+                        } else {
+                            drawable.animate = playing && !scrubbing
+                            drawable.transitionEnabled = !seekAvailable
                         }
                     }
                 }
@@ -309,100 +318,62 @@ object CustomElement : YukiBaseHooker() {
                             totalTimeView?.setTextSize(TypedValue.COMPLEX_UNIT_SP, diTimeSize)
                         }
                         val seekBar = (diSeekBar?.get(mediaViewHolder) as? SeekBar) ?: return@after
-                        if (diThumbStyle != 0) {
+                        if (diProgressStyle != 1 && diThumbStyle != 0) {
                             val context = seekBar.context
                             when (diThumbStyle) {
                                 1 -> {
                                     if (diThumb1 == null) {
-                                        val moduleContext = context.createPackageContext(BuildConfig.APPLICATION_ID, Context.CONTEXT_IGNORE_SECURITY)
-                                        diThumb1 = moduleContext.getDrawable(R.drawable.media_seekbar_thumb_none)
+                                        val thumbSize = 14.dp(context)
+                                        diThumb1 = GhostThumb(thumbSize, thumbSize)
                                     }
                                     seekBar.thumb = diThumb1
                                 }
                                 2 -> {
                                     if (diThumb2 == null) {
-                                        val moduleContext = context.createPackageContext(BuildConfig.APPLICATION_ID, Context.CONTEXT_IGNORE_SECURITY)
-                                        diThumb2 = moduleContext.getDrawable(R.drawable.media_seekbar_thumb)
+                                        diThumb2 = VerticalBarThumb(context.resources.displayMetrics.density)
                                     }
                                     seekBar.thumb = diThumb2
                                 }
                             }
                         }
-                        if (diThumbCropFix && diThumbStyle != 1) {
+                        if (diProgressStyle != 1 && diThumbCropFix && diThumbStyle != 1) {
                             seekBar.updatePadding(left = seekBar.thumbOffset, right = seekBar.thumbOffset)
                         }
                     }
                 }
             }
         }
-        if (diProgressStyle != 0) {
-            clzMiuiIslandMediaViewBinderImpl?.apply {
-                resolve().firstMethodOrNull {
-                    name = "attach"
-                    parameterCount = 2
-                }?.hook {
+        if (diProgressStyle == 1) {
+            clzMiuiIslandMediaViewHolder?.apply {
+                resolve().firstConstructor().hook {
                     after {
-                        val mediaViewHolder1 = this.args(0).any() ?: return@after
-                        val mediaViewHolder2 = this.args(1).any() ?: return@after
-                        val seekBar1 = (diSeekBar?.get(mediaViewHolder1) as? SeekBar) ?: return@after
-                        val seekBar2 = (diSeekBar?.get(mediaViewHolder2) as? SeekBar) ?: return@after
-                        val context = seekBar1.context
-                        if (diProgressStyle == 1) {
-                            val width = diProgressWidth.dp(context)
-                            seekBar1.minHeight = width
-                            seekBar1.maxHeight = width
-                            seekBar2.minHeight = width
-                            seekBar2.maxHeight = width
-                            seekBar1.progressDrawable = generateCustomProgressDrawable(
-                                seekBar1,
-                                width,
-                                diProgressRound,
-                                diProgressComet
-                            )
-                            seekBar2.progressDrawable = generateCustomProgressDrawable(
-                                seekBar2,
-                                width,
-                                diProgressRound,
-                                diProgressComet
-                            )
-                        }
-//                        } else if (diProgressStyle == 2) {
-//                            SquigglyProgress().apply {
-//                                waveLength = 20.dpFloat(context)
-//                                lineAmplitude = 1.5.dpFloat(context)
-//                                phaseSpeed = 8.dpFloat(context)
-//                                strokeWidth = 2.dpFloat(context)
-//                            }.let {
-//                                seekBar1.progressDrawable = it
-//                                seekBar2.progressDrawable = it.mutate()
-//                            }
-//                        }
+                        replaceSeekBar(this.instance, true)
                     }
                 }
             }
         }
     }
 
-    @SuppressLint("RtlHardcoded")
-    private fun generateCustomProgressDrawable(seekBar: SeekBar, height: Int, round: Boolean, comet: Boolean): Drawable {
-        (XposedHelpers.getAdditionalInstanceField(seekBar, KEY_PROGRESS_BAR) as? LayerDrawable)?.let {
-            return it
+    private fun replaceSeekBar(mediaViewHolder: Any, isDynamicIsland: Boolean) {
+        val fldSeekBar = if (isDynamicIsland) diSeekBar else ncSeekBar
+        val seekBar = (fldSeekBar?.get(mediaViewHolder) as? SeekBar)
+        val parent = seekBar?.parent as? ViewGroup ?: return
+        val context = seekBar.context
+        val index = (parent.indexOfChild(seekBar) + 1).coerceIn(0, parent.childCount)
+        val height = if (isDynamicIsland) diProgressWidth.dp(context) else ncProgressWidth.dp(context)
+        val comet = if (isDynamicIsland) diProgressComet else ncProgressComet
+        val thumb = if (isDynamicIsland) diCustomThumbStyle else ncCustomThumbStyle
+        val cometSeekBar = CometSeekBar(context).apply {
+            id = media_progress_bar
+            layoutParams = seekBar.layoutParams?.apply {
+                (this as? ViewGroup.MarginLayoutParams)?.updateMargins(top = 0, bottom = 0)
+            }
+            progressHeight = height
+            cometEffect = comet
+            thumbStyle = thumb
         }
-        val radius = height / 2.0f
-        return LayerDrawable(arrayOf(
-            GradientDrawable().apply {
-                cornerRadius = radius
-                setColor("#33FFFFFF".toColorInt())
-            },
-            CometProgressDrawable(
-                cometEffect = comet,
-                roundCorner = round
-            )
-        )).apply {
-            setId(0, android.R.id.background)
-            setId(1, android.R.id.progress)
-        }.also {
-            XposedHelpers.setAdditionalInstanceField(seekBar, KEY_PROGRESS_BAR, it)
-        }
+        parent.addView(cometSeekBar, index)
+        parent.removeView(seekBar)
+        fldSeekBar.set(mediaViewHolder, cometSeekBar)
     }
 }

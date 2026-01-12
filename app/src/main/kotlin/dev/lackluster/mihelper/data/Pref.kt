@@ -424,6 +424,7 @@ object Pref {
         }
         object Hints {
             const val MEDIA_ADVANCED_TEXTURES = "hint_media_adv_textures"
+            const val MEDIA_AMBIENT_LIGHTING = "hint_media_ambient_light"
         }
         object Updater {
             const val DISABLE_VALIDATION = "updater_no_validation"

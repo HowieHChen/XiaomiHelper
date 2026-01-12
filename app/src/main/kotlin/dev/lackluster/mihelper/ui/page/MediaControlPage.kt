@@ -40,8 +40,11 @@ import dev.lackluster.mihelper.ui.component.itemPreferenceGroup
 @Composable
 fun MediaControlPage(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode, isDynamicIsland: Boolean) {
     val hapticFeedback = LocalHapticFeedback.current
-    var hintAdvancedTextures by remember { mutableStateOf(
+    var hintCloseAdvancedTextures by remember { mutableStateOf(
         SafeSP.getBoolean(Pref.Key.Hints.MEDIA_ADVANCED_TEXTURES, false)
+    ) }
+    var hintCloseAmbientLighting by remember { mutableStateOf(
+        SafeSP.getBoolean(Pref.Key.Hints.MEDIA_AMBIENT_LIGHTING, false)
     ) }
     val tabRowItems = listOf(
         stringResource(R.string.ui_title_media_bg),
@@ -73,7 +76,7 @@ fun MediaControlPage(navController: NavController, adjustPadding: PaddingValues,
     val thumbStyleEntries = listOf(
         DropDownEntry(stringResource(R.string.media_elm_thumb_style_default)),
         DropDownEntry(stringResource(R.string.media_elm_thumb_style_gone)),
-        DropDownEntry(stringResource(R.string.media_elm_thumb_style_vbar))
+        DropDownEntry(stringResource(R.string.media_elm_thumb_style_vbar)),
     )
     val progressStyleEntries = listOfNotNull(
         DropDownEntry(stringResource(R.string.media_elm_prog_style_default)),
@@ -172,6 +175,7 @@ fun MediaControlPage(navController: NavController, adjustPadding: PaddingValues,
     ) {
         item {
             MediaControlCard(
+                isDynamicIsland = isDynamicIsland,
                 backgroundStyle = backgroundStyle,
                 allowReverse = allowReverse,
                 blurRadius = blurRadius,
@@ -265,7 +269,7 @@ fun MediaControlPage(navController: NavController, adjustPadding: PaddingValues,
         }
         itemPreferenceGroup(
             key = "BACKGROUND_STYLE_NOT_0_EXT",
-            last = hintAdvancedTextures,
+            last = true,
             visible = (tabRowSelected == 0 && backgroundStyle != 0)
         ) {
             SwitchPreference(
@@ -300,15 +304,28 @@ fun MediaControlPage(navController: NavController, adjustPadding: PaddingValues,
             }
         }
         itemAnimated(
+            key = "BACKGROUND_STYLE_HINT_AMBIENT_LIGHT",
+            visible = (tabRowSelected == 0 && !hintCloseAmbientLighting && backgroundStyle == 0)
+        ) {
+            Hint(
+                modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 0.dp, bottom = 12.dp),
+                text = stringResource(R.string.media_hint_ambient_lighting),
+                closeable = true
+            ) {
+                hintCloseAmbientLighting = true
+                SafeSP.putAny(Pref.Key.Hints.MEDIA_AMBIENT_LIGHTING, true)
+            }
+        }
+        itemAnimated(
             key = "BACKGROUND_STYLE_HINT",
-            visible = (tabRowSelected == 0 && !hintAdvancedTextures)
+            visible = (tabRowSelected == 0 && !hintCloseAdvancedTextures)
         ) {
             Hint(
                 modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 0.dp, bottom = 12.dp),
                 text = stringResource(R.string.media_hint_advanced_textures),
                 closeable = true
             ) {
-                hintAdvancedTextures = true
+                hintCloseAdvancedTextures = true
                 SafeSP.putAny(Pref.Key.Hints.MEDIA_ADVANCED_TEXTURES, true)
             }
         }
@@ -466,12 +483,6 @@ fun MediaControlPage(navController: NavController, adjustPadding: PaddingValues,
                         progressWidth = it
                     }
                     SwitchPreference(
-                        title = stringResource(R.string.media_elm_prog_round),
-                        key = MediaControlSpKey.ELM_PROGRESS_ROUND.getKey(isDynamicIsland),
-                    ) {
-                        progressRound = it
-                    }
-                    SwitchPreference(
                         title = stringResource(R.string.media_elm_prog_comet),
                         summary = stringResource(R.string.media_elm_prog_comet_tips),
                         key = MediaControlSpKey.ELM_PROGRESS_COMET.getKey(isDynamicIsland),
@@ -487,11 +498,25 @@ fun MediaControlPage(navController: NavController, adjustPadding: PaddingValues,
             ) {
                 thumbStyle = it
             }
-            SwitchPreference(
-                title = stringResource(R.string.media_elm_fix_thumb_crop),
-                summary = stringResource(R.string.media_elm_fix_thumb_crop_tips),
-                key = MediaControlSpKey.FIX_THUMB_CROPPED.getKey(isDynamicIsland)
-            )
+            AnimatedVisibility(
+                progressStyle == 1 && thumbStyle == 1
+            ) {
+                SwitchPreference(
+                    title = stringResource(R.string.media_elm_prog_round),
+                    key = MediaControlSpKey.ELM_PROGRESS_ROUND.getKey(isDynamicIsland),
+                ) {
+                    progressRound = it
+                }
+            }
+            AnimatedVisibility(
+                progressStyle != 1
+            ) {
+                SwitchPreference(
+                    title = stringResource(R.string.media_elm_fix_thumb_crop),
+                    summary = stringResource(R.string.media_elm_fix_thumb_crop_tips),
+                    key = MediaControlSpKey.FIX_THUMB_CROPPED.getKey(isDynamicIsland)
+                )
+            }
         }
     }
 }

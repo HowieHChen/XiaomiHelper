@@ -300,7 +300,7 @@ object CustomBackground : YukiBaseHooker() {
         holder.action2.imageTintList = primaryColorStateList
         holder.action3.imageTintList = primaryColorStateList
         holder.action4.imageTintList = primaryColorStateList
-        holder.seekBar.thumb.setTintList(primaryColorStateList)
+        holder.seekBar.thumbTintList = primaryColorStateList
         holder.seekBar.progressTintList = primaryColorStateList
         holder.seekBar.progressBackgroundTintList = primaryColorStateList
         holder.elapsedTimeView.setTextColor(colorConfig.textPrimary)
