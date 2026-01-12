@@ -21,9 +21,8 @@
 package dev.lackluster.mihelper.hook.rules.market
 
 import android.view.View
+import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.constructor
-import com.highcapable.yukihookapi.hook.factory.method
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.factory.hasEnable
 
@@ -31,33 +30,33 @@ object HideAppSecurity : YukiBaseHooker() {
     override fun onHook() {
         hasEnable(Pref.Key.Market.HIDE_APP_SECURITY) {
             "com.xiaomi.market.business_ui.main.mine.app_security.MineAppSecurityView".toClassOrNull()?.apply {
-                constructor().hookAll {
+                resolve().firstConstructor().hook {
                     after {
-                        (this.instance as? View)?.visibility = View.GONE
+                        this.instance<View>().visibility = View.GONE
                     }
                 }
-                method {
+                resolve().firstMethodOrNull {
                     name = "checkShown"
-                }.hook {
+                }?.hook {
                     replaceToFalse()
                 }
-                method {
+                resolve().firstMethodOrNull {
                     name = "checkSettingSwitch"
-                }.hook {
+                }?.hook {
                     replaceToFalse()
                 }
             }
             "com.xiaomi.market.util.SettingsUtils".toClassOrNull()?.apply {
-                method {
+                resolve().firstMethodOrNull {
                     name = "isSupportAppSecurityCheck"
-                }.ignored().hook {
+                }?.hook {
                     replaceToFalse()
                 }
             }
-            "com.xiaomi.market.common.analytics.onetrack.ExperimentManager\$Companion".toClassOrNull()?.apply {
-                method {
+            $$"com.xiaomi.market.common.analytics.onetrack.ExperimentManager$Companion".toClassOrNull()?.apply {
+                resolve().optional().firstMethodOrNull {
                     name = "isMineAppSecurityCheckOpen"
-                }.ignored().hook {
+                }?.hook {
                     replaceToFalse()
                 }
             }
