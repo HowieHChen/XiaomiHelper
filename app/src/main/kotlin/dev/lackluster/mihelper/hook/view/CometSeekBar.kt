@@ -1,10 +1,12 @@
 package dev.lackluster.mihelper.hook.view
 
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.LinearGradient
+import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.RectF
@@ -70,9 +72,13 @@ class CometSeekBar(
     private val trackPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val progressPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val thumbPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+
     private val trackPath = Path()
     private val trackRect = RectF()
     private var baseColor: Int = Color.WHITE
+    private val shaderMatrix = Matrix()
+    private var cometShader: LinearGradient? = null
+    private var cachedShaderColor: Int? = null
 
     private var touchAnimProgress = 0f // 0f..1f
     private var touchAnimator: ValueAnimator? = null
@@ -163,13 +169,18 @@ class CometSeekBar(
         if (currentX > paddingLeft) {
             // Draw progress
             if (cometEffect) {
-                val shader = LinearGradient(
-                    currentX - tailLength, 0f, currentX, 0f,
-                    intArrayOf(progressColor, cometColor),
-                    null,
-                    Shader.TileMode.CLAMP
-                )
-                progressPaint.shader = shader
+                if (cometShader == null || cachedShaderColor != baseColor) {
+                    cometShader = LinearGradient(
+                        -tailLength.toFloat(), 0f, 0f, 0f,
+                        intArrayOf(progressColor, cometColor),
+                        null,
+                        Shader.TileMode.CLAMP
+                    )
+                    cachedShaderColor = baseColor
+                }
+                shaderMatrix.setTranslate(currentX, 0f)
+                cometShader?.setLocalMatrix(shaderMatrix)
+                progressPaint.shader = cometShader
             } else {
                 progressPaint.color = progressColor
             }
@@ -198,6 +209,7 @@ class CometSeekBar(
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         val superResult = super.onTouchEvent(event)
 

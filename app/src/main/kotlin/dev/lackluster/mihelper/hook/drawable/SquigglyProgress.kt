@@ -38,16 +38,17 @@ import dev.lackluster.mihelper.utils.Math.lerpInv
 import dev.lackluster.mihelper.utils.Math.lerpInvSat
 import kotlin.math.abs
 import kotlin.math.cos
-
-const val TWO_PI = (Math.PI * 2f).toFloat()
-
-@VisibleForTesting
-internal const val DISABLED_ALPHA = 77
+import androidx.core.graphics.withClip
 
 class SquigglyProgress : Drawable() {
     companion object {
         val EMPHASIZED_DECELERATE: Interpolator = PathInterpolator(0.05f, 0.7f, 0.1f, 1f)
         val STANDARD_DECELERATE: Interpolator = PathInterpolator(0f, 0f, 0f, 1f)
+
+        const val TWO_PI = (Math.PI * 2f).toFloat()
+
+        @VisibleForTesting
+        internal const val DISABLED_ALPHA = 77
     }
     private val wavePaint = Paint()
     private val linePaint = Paint()
@@ -211,10 +212,9 @@ class SquigglyProgress : Drawable() {
         if (transitionEnabled) {
             // If there's a smooth transition, we draw the rest of the
             // path in a different color (using different clip params)
-            canvas.save()
-            canvas.clipRect(totalProgressPx, -1f * clipTop, totalWidth, clipTop)
-            canvas.drawPath(path, linePaint)
-            canvas.restore()
+            canvas.withClip(totalProgressPx, -1f * clipTop, totalWidth, clipTop) {
+                drawPath(path, linePaint)
+            }
         } else {
             // No transition, just draw a flat line to the end of the region.
             // The discontinuity is hidden by the progress bar thumb shape.
