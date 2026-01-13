@@ -37,12 +37,27 @@ object HideWatermark : YukiBaseHooker(){
             }
         }
     }
+    private val metAiImageWaterMark by lazy {
+        DexKit.findMethodWithCache("image_watermark") {
+            matcher {
+                paramCount = 2
+                paramTypes("android.content.Context", "android.graphics.Bitmap")
+                returnType = "android.graphics.Bitmap"
+                addUsingString("composeAiImageWatermark", StringMatchType.StartsWith)
+            }
+        }
+    }
 
     override fun onHook() {
         hasEnable(Pref.Key.MiAi.HIDE_WATERMARK) {
             if (appClassLoader == null) return@hasEnable
             addWatermark?.getMethodInstance(appClassLoader!!)?.hook {
                 intercept()
+            }
+            metAiImageWaterMark?.getMethodInstance(appClassLoader!!)?.hook {
+                before {
+                    this.result = this.args(1).any()
+                }
             }
         }
     }

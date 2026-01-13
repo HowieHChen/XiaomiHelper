@@ -34,7 +34,6 @@ import dev.lackluster.mihelper.hook.apps.MiTrust
 import dev.lackluster.mihelper.hook.apps.RemoteController
 import dev.lackluster.mihelper.hook.apps.Search
 import dev.lackluster.mihelper.hook.apps.SystemUIPlugin
-import dev.lackluster.mihelper.hook.apps.Weather
 import dev.lackluster.mihelper.utils.factory.hasEnable
 
 @InjectYukiHookWithXposed
@@ -76,7 +75,6 @@ class HookEntry : IYukiHookXposedInit {
             loadApp(Scope.TAPLUS, Taplus)
             loadApp(Scope.THEMES, Themes)
             loadApp(Scope.UPDATER, Updater)
-            loadApp(Scope.WEATHER, Weather)
             loadApp(Scope.SYSTEM_UI_PLUGIN, SystemUIPlugin)
         }
     }

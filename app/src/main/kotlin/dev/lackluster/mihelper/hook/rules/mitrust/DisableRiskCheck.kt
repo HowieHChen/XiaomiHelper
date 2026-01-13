@@ -23,19 +23,27 @@
 package dev.lackluster.mihelper.hook.rules.mitrust
 
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.method
 import dev.lackluster.mihelper.data.Pref
+import dev.lackluster.mihelper.utils.DexKit
 import dev.lackluster.mihelper.utils.factory.hasEnable
+import org.luckypray.dexkit.query.enums.StringMatchType
 
 object DisableRiskCheck : YukiBaseHooker() {
+    private val metInitMrmService by lazy {
+        DexKit.findMethodWithCache("init_mrm") {
+            matcher {
+                returnType = "boolean"
+                addUsingString("MiTrustService/statusEventHandle", StringMatchType.Equals)
+                addUsingString("vendor.xiaomi.hardware.mrm.IMrm/default", StringMatchType.Equals)
+            }
+        }
+    }
+
     override fun onHook() {
         hasEnable(Pref.Key.MiTrust.DISABLE_RISK_CHECK) {
-            "com.xiaomi.trustservice.remoteservice.eventhandle.statusEventHandle".toClassOrNull()?.apply {
-                method {
-                    name = "initIMrmService"
-                }.hook {
-                    replaceToFalse()
-                }
+            if (appClassLoader == null) return@hasEnable
+            metInitMrmService?.getMethodInstance(appClassLoader!!)?.hook {
+                replaceToFalse()
             }
         }
     }

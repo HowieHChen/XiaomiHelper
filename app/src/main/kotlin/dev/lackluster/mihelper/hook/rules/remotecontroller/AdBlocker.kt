@@ -1,7 +1,29 @@
+/*
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ *
+ * This file is part of XiaomiHelper project
+
+ * This file references HyperCeiler <https://github.com/ReChronoRain/HyperCeiler/blob/main/library/hook/src/main/java/com/sevtinge/hyperceiler/hook/module/rules/remotecontroller/DisableAd.java>
+ * Copyright (C) 2023-2025 HyperCeiler Contributions
+
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package dev.lackluster.mihelper.hook.rules.remotecontroller
 
+import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.method
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.factory.hasEnable
 
@@ -9,11 +31,18 @@ object AdBlocker : YukiBaseHooker() {
     override fun onHook() {
         hasEnable(Pref.Key.RemoteController.AD_BLOCKER) {
             "com.xiaomi.mitv.phone.remotecontroller.common.activity.BaseActivity".toClassOrNull()?.apply {
-                method {
+                resolve().firstMethodOrNull {
                     name = "setActionMark"
-                    paramCount = 2
-                }.hook {
+                    parameterCount = 2
+                }?.hook {
                     intercept()
+                }
+            }
+            "com.duokan.phone.remotecontroller.operation.SHBusinessManager".toClassOrNull()?.apply {
+                resolve().firstMethodOrNull {
+                    name = "isUserClosedBanner"
+                }?.hook {
+                    replaceToTrue()
                 }
             }
         }

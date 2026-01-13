@@ -1,11 +1,29 @@
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
+ * This file is part of XiaomiHelper project
+ * Copyright (C) 2025 HowieHChen, howie.dev@outlook.com
+
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package dev.lackluster.mihelper.hook.rules.settings
 
 import android.app.Activity
 import android.provider.Settings
+import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.current
-import com.highcapable.yukihookapi.hook.factory.method
-import com.highcapable.yukihookapi.hook.type.android.BundleClass
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.Prefs
 
@@ -16,24 +34,26 @@ object QuickPermission : YukiBaseHooker() {
     override fun onHook() {
         if (perOverlay || perInstallSource) {
             "com.android.settings.SettingsActivity".toClass().apply {
-                method {
+                val fldInitialFragmentName = resolve().firstFieldOrNull {
+                    name = "initialFragmentName"
+                    superclass()
+                }
+                resolve().firstMethodOrNull {
                     name = "redirectTabletActivity"
-                    param(BundleClass)
-                }.hook {
+                    parameterCount = 1
+                }?.hook {
                      before {
                          val intent = this.instance<Activity>().intent
                          if (intent?.data == null || intent.data?.scheme != "package") return@before
                          if (perOverlay && intent.action == Settings.ACTION_MANAGE_OVERLAY_PERMISSION) {
-                             this.instance.current().field {
-                                 name = "initialFragmentName"
-                                 superClass()
-                             }.set("com.android.settings.applications.appinfo.DrawOverlayDetails")
+                             fldInitialFragmentName?.copy()?.of(this.instance)?.set(
+                                 "com.android.settings.applications.appinfo.DrawOverlayDetails"
+                             )
                          }
                          if (perInstallSource && intent.action == Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES) {
-                             this.instance.current().field {
-                                 name = "initialFragmentName"
-                                 superClass()
-                             }.set("com.android.settings.applications.appinfo.ExternalSourcesDetails")
+                             fldInitialFragmentName?.copy()?.of(this.instance)?.set(
+                                 "com.android.settings.applications.appinfo.ExternalSourcesDetails"
+                             )
                          }
                      }
                 }

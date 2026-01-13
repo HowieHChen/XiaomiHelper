@@ -3,8 +3,8 @@
  *
  * This file is part of XiaomiHelper project
 
- * This file references HyperCeiler <https://github.com/ReChronoRain/HyperCeiler/blob/main/app/src/main/java/com/sevtinge/hyperceiler/module/hook/updater/VabUpdate.kt>
- * Copyright (C) 2023-2024 HyperCeiler Contributions
+ * This file references HyperCeiler <https://github.com/ReChronoRain/HyperCeiler/blob/main/library/hook/src/main/java/com/sevtinge/hyperceiler/hook/module/rules/updater/AutoUpdateDialog.kt>
+ * Copyright (C) 2023-2025 HyperCeiler Contributions
 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,23 +22,29 @@
 
 package dev.lackluster.mihelper.hook.rules.updater
 
-import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import dev.lackluster.mihelper.data.Pref
+import dev.lackluster.mihelper.utils.DexKit
 import dev.lackluster.mihelper.utils.factory.hasEnable
+import org.luckypray.dexkit.query.enums.StringMatchType
 
-object DisableValidation : YukiBaseHooker() {
+object BlockAutoUpdateDialog : YukiBaseHooker() {
+    private val metShowAutoSetDialog by lazy {
+        DexKit.findMethodWithCache("show_auto_set") {
+            matcher {
+                paramCount = 2
+                paramTypes("boolean", "boolean")
+                addUsingString("XBaseDownloadActivity", StringMatchType.Equals)
+                addUsingString("showAutoSetDialog", StringMatchType.StartsWith)
+            }
+        }
+    }
+
     override fun onHook() {
-        hasEnable(Pref.Key.Updater.DISABLE_VALIDATION) {
-            "miui.util.FeatureParser".toClassOrNull()?.resolve()?.firstMethodOrNull {
-                name = "hasFeature"
-                parameterCount = 2
-            }?.hook {
-                before {
-                    if (this.args(0).string() == "support_ota_validate") {
-                        this.result = false
-                    }
-                }
+        hasEnable(Pref.Key.Updater.BLOCK_AUTO_UPDATE_DIALOG) {
+            if (appClassLoader == null) return@hasEnable
+            metShowAutoSetDialog?.getMethodInstance(appClassLoader!!)?.hook {
+                intercept()
             }
         }
     }

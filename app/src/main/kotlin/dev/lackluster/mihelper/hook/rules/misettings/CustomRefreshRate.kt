@@ -1,8 +1,8 @@
 package dev.lackluster.mihelper.hook.rules.misettings
 
+import com.highcapable.kavaref.KavaRef.Companion.resolve
+import com.highcapable.kavaref.condition.type.Modifiers
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.field
-import com.highcapable.yukihookapi.hook.type.java.BooleanClass
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.DexKit
 import dev.lackluster.mihelper.utils.factory.hasEnable
@@ -13,6 +13,8 @@ object CustomRefreshRate : YukiBaseHooker() {
         DexKit.findMethodWithCache("custom_high_refresh_rate") {
             matcher {
                 addUsingString("btn_preferce_category", StringMatchType.Equals)
+                paramCount = 1
+                paramTypes("boolean")
             }
         }
     }
@@ -26,12 +28,12 @@ object CustomRefreshRate : YukiBaseHooker() {
                 }
             }
             "com.xiaomi.misettings.display.RefreshRate.RefreshRateActivity".toClassOrNull()?.apply {
-                field {
-                    type = BooleanClass
+                resolve().firstFieldOrNull {
+                    type("java.lang.Boolean")
                     modifiers {
-                        isStatic && isFinal
+                        it.contains(Modifiers.STATIC) && it.contains(Modifiers.FINAL)
                     }
-                }.get().setTrue()
+                }?.set(true)
             }
         }
     }

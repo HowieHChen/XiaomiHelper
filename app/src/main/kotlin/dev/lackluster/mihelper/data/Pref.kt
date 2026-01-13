@@ -94,7 +94,6 @@ object Pref {
         }
         object MiMirror {
             const val CONTINUE_ALL_TASKS = "mismarthub_all_app"
-            const val ENHANCE_CONTINUE_TASKS = "mismarthub_enhance_continue"
         }
         object MiTrust {
             const val DISABLE_RISK_CHECK = "mitrust_skip_risk_check"
@@ -427,6 +426,7 @@ object Pref {
             const val MEDIA_AMBIENT_LIGHTING = "hint_media_ambient_light"
         }
         object Updater {
+            const val BLOCK_AUTO_UPDATE_DIALOG = "updater_block_dialog"
             const val DISABLE_VALIDATION = "updater_no_validation"
         }
         object Weather {

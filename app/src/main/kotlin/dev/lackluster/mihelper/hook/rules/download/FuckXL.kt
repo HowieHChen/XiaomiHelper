@@ -20,52 +20,50 @@
 
 package dev.lackluster.mihelper.hook.rules.download
 
+import com.highcapable.kavaref.KavaRef.Companion.resolve
+import com.highcapable.kavaref.condition.type.Modifiers
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.field
-import com.highcapable.yukihookapi.hook.factory.method
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.factory.hasEnable
 
 object FuckXL : YukiBaseHooker() {
     override fun onHook() {
         hasEnable(Pref.Key.Download.FUCK_XL) {
-            val sdcardPath = "com.android.providers.downloads.config.XLDownloadCfg".toClassOrNull()?.field {
-                name = "sdcardPath"
-            }?.get()?.string() ?: "/storage/emulated/0"
-            "com.android.providers.downloads.config.DownloadSettings\$XLSecureConfigSettings".toClassOrNull()?.apply {
-                method {
-                    name = "saveDpDebugLogPath"
-                }.hook {
-                    intercept()
-                }
-                method {
+            val sdcardPath = "com.android.providers.downloads.config.XLDownloadCfg".toClassOrNull()
+                ?.resolve()?.firstFieldOrNull {
+                    name = "sdcardPath"
+                }?.get<String>() ?: "/storage/emulated/0"
+            $$"com.android.providers.downloads.config.DownloadSettings$XLSecureConfigSettings".toClassOrNull()?.apply {
+                resolve().firstMethodOrNull {
                     name = "getDpDebugLogPath"
-                }.hook {
+                }?.hook {
                     before {
                         this.result = this.args(0).string()
                     }
                 }
             }
-            "com.android.providers.downloads.config.XLConfig".toClass().apply {
-                field {
+            "com.android.providers.downloads.config.XLConfig".toClassOrNull()?.apply {
+                resolve().firstFieldOrNull {
                     name = "logDir"
-                }.ignored().get().set("${sdcardPath}/MIUI/.xlDownload/dp.log")
-                field {
+                    modifiers(Modifiers.STATIC)
+                }?.set("${sdcardPath}/MIUI/.xlDownload/dp.log")
+                resolve().firstFieldOrNull {
                     name = "logSoDir"
-                }.ignored().get().set("${sdcardPath}/MIUI/.xlDownload/dp_so.log")
-                method {
+                    modifiers(Modifiers.STATIC)
+                }?.set("${sdcardPath}/MIUI/.xlDownload/dp_so.log")
+                resolve().firstMethodOrNull {
                     name = "isDebug"
-                }.hook {
+                }?.hook {
                     replaceToFalse()
                 }
-                method {
+                resolve().firstMethodOrNull {
                     name = "setDebug"
-                }.hook {
+                }?.hook {
                     intercept()
                 }
-                method {
+                resolve().firstMethodOrNull {
                     name = "setSoDebug"
-                }.hook {
+                }?.hook {
                     intercept()
                 }
             }

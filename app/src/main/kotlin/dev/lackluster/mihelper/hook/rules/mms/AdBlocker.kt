@@ -20,57 +20,56 @@
 
 package dev.lackluster.mihelper.hook.rules.mms
 
+import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.method
-import com.highcapable.yukihookapi.hook.type.java.BooleanType
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.DexKit
 import dev.lackluster.mihelper.utils.factory.hasEnable
 import org.luckypray.dexkit.query.enums.StringMatchType
 
 object AdBlocker : YukiBaseHooker() {
-    private val messageCardClass by lazy {
-        DexKit.dexKitBridge.findClass {
+    private val clzMessageItem by lazy {
+        DexKit.findClassesWithCache("message_item") {
             matcher {
                 addUsingString("Unknown type of the message: ", StringMatchType.Equals)
             }
         }
     }
-    private val messageType11Method by lazy {
+    private val metIsType11 by lazy {
         DexKit.findMethodWithCache("is_type_11") {
             matcher {
                 returnType = "boolean"
                 addUsingNumber(11)
             }
-            searchClasses = messageCardClass
+            searchClasses = clzMessageItem.mapNotNull { DexKit.dexKitBridge.getClassData(it.className) }
         }
     }
 
     override fun onHook() {
         hasEnable(Pref.Key.MMS.AD_BLOCKER) {
             if (appClassLoader == null) return@hasEnable
-            messageType11Method?.getMethodInstance(appClassLoader!!)?.hook {
+            metIsType11?.getMethodInstance(appClassLoader!!)?.hook {
                 replaceToFalse()
             }
             "com.miui.smsextra.ui.BottomMenu".toClassOrNull()?.apply {
-                method {
+                resolve().firstMethodOrNull {
                     name = "allowMenuMode"
-                }.hook {
+                }?.hook {
                     replaceToFalse()
                 }
             }
             "com.miui.smsextra.ui.UnderstandButton".toClassOrNull()?.apply {
-                method {
+                resolve().firstMethodOrNull {
                     name = "requestADInAdvance"
-                }.ignored().hook {
+                }?.hook {
                     intercept()
                 }
-                method {
-                    returnType = BooleanType
+                resolve().firstMethodOrNull {
+                    returnType = Boolean::class
                     name {
                         it == "needRequestAD" || it == "requestAD"
                     }
-                }.hook {
+                }?.hook {
                     replaceToFalse()
                 }
             }

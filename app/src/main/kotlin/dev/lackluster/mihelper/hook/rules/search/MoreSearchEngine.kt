@@ -1,10 +1,8 @@
 package dev.lackluster.mihelper.hook.rules.search
 
+import com.highcapable.kavaref.KavaRef.Companion.asResolver
+import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.constructor
-import com.highcapable.yukihookapi.hook.factory.current
-import com.highcapable.yukihookapi.hook.type.java.IntType
-import com.highcapable.yukihookapi.hook.type.java.ListClass
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.DexKit
 import dev.lackluster.mihelper.utils.Prefs
@@ -13,28 +11,30 @@ import org.luckypray.dexkit.query.enums.StringMatchType
 
 object MoreSearchEngine : YukiBaseHooker() {
     private val customSearchEngine = Prefs.getBoolean(Pref.Key.Search.CUSTOM_SEARCH_ENGINE, false)
-    private val searchEngineItemClass by lazy {
+    private val clzSearchEngineItem by lazy {
         DexKit.findClassWithCache("search_engine_item") {
             matcher {
                 addUsingString("SearchEngineItem{searchEngineName=\'", StringMatchType.Equals)
             }
         }
     }
-    private val searchEngineSetClass by lazy {
+    private val clzSearchEngineSet by lazy {
         DexKit.findClassWithCache("search_engine_set") {
             matcher {
                 addUsingString("SearchEngineSet{searchBox=",StringMatchType.Equals)
             }
         }
     }
-    private val searchEngineItem by lazy {
-        searchEngineItemClass?.getInstance(appClassLoader!!)?.constructor{
-            paramCount = 10
-        }?.get()
+    private val ctorSearchEngineItem by lazy {
+        appClassLoader?.let {
+            clzSearchEngineItem?.getInstance(it)?.resolve()?.firstConstructor {
+                parameterCount = 10
+            }
+        }
     }
     private val searchEngineItemBing by lazy {
         SearchEngineItem.Bing.let {
-            searchEngineItem?.call(
+            ctorSearchEngineItem?.copy()?.create(
                 it.searchEngineName,
                 it.channelNo,
                 it.showIcon,
@@ -50,7 +50,7 @@ object MoreSearchEngine : YukiBaseHooker() {
     }
     private val searchEngineItemGoogle by lazy {
         SearchEngineItem.Google.let {
-            searchEngineItem?.call(
+            ctorSearchEngineItem?.copy()?.create(
                 it.searchEngineName,
                 it.channelNo,
                 it.showIcon,
@@ -70,7 +70,7 @@ object MoreSearchEngine : YukiBaseHooker() {
         }?.let {
             SearchEngineItem.decodeFromString(it)
         }?.let {
-            searchEngineItem?.call(
+            ctorSearchEngineItem?.copy()?.create(
                 it.searchEngineName,
                 it.channelNo,
                 it.showIcon,
@@ -88,11 +88,11 @@ object MoreSearchEngine : YukiBaseHooker() {
     @Suppress("UNCHECKED_CAST")
     override fun onHook() {
         hasEnable(Pref.Key.Search.MORE_SEARCH_ENGINE) {
-            if (appClassLoader == null || searchEngineItem == null) return@hasEnable
-            searchEngineSetClass?.getInstance(appClassLoader!!)?.apply {
-                constructor {
-                    paramCount = 5
-                }.hook {
+            if (appClassLoader == null || ctorSearchEngineItem == null) return@hasEnable
+            clzSearchEngineSet?.getInstance(appClassLoader!!)?.apply {
+                resolve().firstConstructorOrNull {
+                    parameterCount = 5
+                }?.hook {
                     before {
                         val searchBox = this.args(0).any() ?: return@before
                         val hotRank = this.args(1).any() ?: return@before
@@ -109,8 +109,8 @@ object MoreSearchEngine : YukiBaseHooker() {
                             sceneSearchEngineMap["globalSearchHotList"]?.put("custom", searchEngineItemCustom)
                         }
                         listOf(searchBox, hotRank).forEach {
-                            val mapFiled = it.current().field { type = "java.util.LinkedHashMap" }
-                            val map = (mapFiled.any() as? LinkedHashMap<String, Any?>)?.apply {
+                            val mapFiled = it.asResolver().firstField { type = "java.util.LinkedHashMap" }
+                            val map = mapFiled.get<LinkedHashMap<String, Any?>>()?.apply {
                                 put("bing", searchEngineItemBing)
                                 put("google", searchEngineItemGoogle)
                                 if (addCustomEngine) {
@@ -118,8 +118,8 @@ object MoreSearchEngine : YukiBaseHooker() {
                                 }
                             }
                             map?.let { it1 -> mapFiled.set(it1) }
-                            val listFiled = it.current().field {  type = ListClass }
-                            val list = (listFiled.any() as? List<Any?>)?.toMutableList()?.apply {
+                            val listFiled = it.asResolver().firstField {  type = "java.util.List" }
+                            val list = (listFiled.get<List<Any?>>())?.toMutableList()?.apply {
                                 add(searchEngineItemBing)
                                 add(searchEngineItemGoogle)
                                 if (addCustomEngine) {
@@ -127,8 +127,10 @@ object MoreSearchEngine : YukiBaseHooker() {
                                 }
                             }
                             list?.let { it1 -> listFiled.set(it1) }
-                            it.current().field { type = IntType }.let { count ->
-                                count.set(count.int() + if (addCustomEngine) 3 else 2)
+                            it.asResolver().field { type = Int::class }.minByOrNull { fld ->
+                                fld.self.name
+                            }?.let { count ->
+                                count.set((count.get<Int>() ?: 0) + if (addCustomEngine) 3 else 2)
                             }
                         }
                     }

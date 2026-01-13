@@ -1,3 +1,23 @@
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
+ * This file is part of XiaomiHelper project
+ * Copyright (C) 2026 HowieHChen, howie.dev@outlook.com
+
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package dev.lackluster.mihelper.hook.rules.packageinstaller
 
 import android.app.Dialog
@@ -5,12 +25,11 @@ import android.content.Context
 import android.view.Menu
 import android.view.View
 import android.widget.CheckBox
+import com.highcapable.kavaref.KavaRef.Companion.resolve
+import com.highcapable.kavaref.condition.type.Modifiers
+import com.highcapable.kavaref.extension.makeAccessible
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.current
-import com.highcapable.yukihookapi.hook.factory.method
 import com.highcapable.yukihookapi.hook.log.YLog
-import com.highcapable.yukihookapi.hook.type.android.ContextClass
-import com.highcapable.yukihookapi.hook.type.android.DialogClass
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.DexKit
 import dev.lackluster.mihelper.utils.factory.hasEnable
@@ -51,6 +70,16 @@ object RemoveElement : YukiBaseHooker() {
             searchClasses = menuCreateClass2
         }
     }
+    private val clzPureModeGuide by lazy {
+        DexKit.findClassWithCache("safe_mode_guidance") {
+            matcher {
+                addUsingString("null cannot be cast to non-null type com.miui.packageInstaller.analytics.IPage" ,StringMatchType.Equals)
+                addUsingString("safe_mode_guidance_popup" ,StringMatchType.Equals)
+                addUsingString("safe_mode_guidance_popup_open_btn" ,StringMatchType.Equals)
+                addUsingString("safe_mode_guidance_popup_cancel_btn" ,StringMatchType.Equals)
+            }
+        }
+    }
     private val showPopupMethod by lazy {
         DexKit.findMethodWithCache("safe_mode_show_popup") {
             matcher {
@@ -59,6 +88,7 @@ object RemoveElement : YukiBaseHooker() {
                 addUsingString("safe_mode_guidance_popup_open_btn" ,StringMatchType.Equals)
                 addUsingString("safe_mode_guidance_popup_cancel_btn" ,StringMatchType.Equals)
             }
+            searchClasses = listOfNotNull(clzPureModeGuide?.className?.let { DexKit.dexKitBridge.getClassData(it) })
         }
     }
     private val cancelClickMethod by lazy {
@@ -85,11 +115,11 @@ object RemoveElement : YukiBaseHooker() {
             }
         }
     }
-    private val safeModeTipViewObjectClass by lazy {
+    private val clzSafeModeTipViewObject by lazy {
         "com.miui.packageInstaller.ui.listcomponets.SafeModeTipViewObject".toClassOrNull()
     }
-    private val safeModeTipViewObjectViewHolderClass by lazy {
-        "com.miui.packageInstaller.ui.listcomponets.SafeModeTipViewObject\$ViewHolder".toClass()
+    private val clzSafeModeTipViewObjectViewHolder by lazy {
+        $$"com.miui.packageInstaller.ui.listcomponets.SafeModeTipViewObject$ViewHolder".toClassOrNull()
     }
 
     override fun onHook() {
@@ -98,46 +128,62 @@ object RemoveElement : YukiBaseHooker() {
             onCreateOptionsMenuMethod1?.getMethodInstance(appClassLoader!!)?.hook {
                 after {
                     val menu = this.args(0).cast<Menu>() ?: return@after
-                    menu.findItem(ResourcesUtils.feedback)?.setVisible(false)
+                    menu.findItem(ResourcesUtils.feedback)?.isVisible = false
                 }
             }
             onCreateOptionsMenuMethod2?.getMethodInstance(appClassLoader!!)?.hook {
                 after {
                     val menu = this.args(0).cast<Menu>() ?: return@after
-                    menu.findItem(ResourcesUtils.feedback)?.setVisible(false)
+                    menu.findItem(ResourcesUtils.feedback)?.isVisible = false
                 }
             }
-            safeModeTipViewObjectClass?.method {
-                param(safeModeTipViewObjectViewHolderClass)
-                paramCount = 1
-            }?.ignored()?.hookAll {
+            val metGetClContentView = clzSafeModeTipViewObjectViewHolder?.resolve()?.firstMethodOrNull {
+                name = "getClContentView"
+            }
+            clzSafeModeTipViewObject?.resolve()?.firstMethodOrNull {
+                clzSafeModeTipViewObjectViewHolder?.let {
+                    parameters(it)
+                }
+                parameterCount = 1
+                modifiers(Modifiers.PUBLIC)
+            }?.hook {
                 after {
                     val viewHolder = this.args(0).any()
-                    (viewHolder?.current()?.method {
-                        name = "getClContentView"
-                    }?.call() as? View)?.visibility = View.GONE
+                    metGetClContentView?.copy()?.of(viewHolder)?.invoke<View>()?.visibility = View.GONE
                 }
             }
             val cancelClickInstance = cancelClickMethod?.getMethodInstance(appClassLoader!!)
-            val miuixDialogClz = miuixDialogClass?.getInstance(appClassLoader!!) ?: DialogClass
-            showPopupMethod?.getMethodInstance(appClassLoader!!)?.hook {
-                before {
-                    val dialog = this.instance.current().field {
-                        type = miuixDialogClz
-                    }.any() as? Dialog
-                    val context = this.instance.current().field { type = ContextClass }.any() as? Context
-                    if (dialog == null || context == null) return@before
-                    if (cancelClickInstance == null) {
-                        dialog.dismiss()
-                        YLog.error("[PackageInstaller] Can't click the negative button of the dialog")
-                    } else {
-                        val checkBox = CheckBox(context).apply {
-                            isChecked = true
-                        }
-                        checkBox.isChecked = true
-                        cancelClickInstance.invoke(null, this.instance, checkBox, dialog, -2)
+            val miuixDialogClz = miuixDialogClass?.getInstance(appClassLoader!!)
+            clzPureModeGuide?.getInstance(appClassLoader!!)?.apply {
+                val fldDialog = resolve().firstFieldOrNull {
+                    type {
+                        it == miuixDialogClz || it == Dialog::class.java
                     }
-                    this.result = null
+                }?.self?.apply {
+                    makeAccessible()
+                }
+                val fldContext = resolve().firstFieldOrNull {
+                    type(Context::class)
+                }?.self?.apply {
+                    makeAccessible()
+                }
+                showPopupMethod?.getMethodInstance(appClassLoader!!)?.hook {
+                    before {
+                        val dialog = fldDialog?.get(this.instance) as? Dialog
+                        val context = fldContext?.get(this.instance) as? Context
+                        if (dialog == null || context == null) return@before
+                        if (cancelClickInstance == null) {
+                            dialog.dismiss()
+                            YLog.error("[PackageInstaller] Can't click the negative button of the dialog")
+                        } else {
+                            val checkBox = CheckBox(context).apply {
+                                isChecked = true
+                            }
+                            checkBox.isChecked = true
+                            cancelClickInstance.invoke(null, this.instance, checkBox, dialog, -2)
+                        }
+                        this.result = null
+                    }
                 }
             }
         }

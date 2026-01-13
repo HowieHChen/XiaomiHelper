@@ -6,7 +6,6 @@ import dev.lackluster.mihelper.hook.rules.android.DarkModeForAll
 import dev.lackluster.mihelper.hook.rules.android.DisableFixedOrientation
 import dev.lackluster.mihelper.hook.rules.android.FontScale
 import dev.lackluster.mihelper.hook.rules.android.RemoveFreeformRestriction
-import dev.lackluster.mihelper.hook.rules.android.WallpaperScaleRatio
 
 object Android : YukiBaseHooker() {
     override fun onHook() {
@@ -16,6 +15,5 @@ object Android : YukiBaseHooker() {
         loadHooker(FontScale)
         return
         loadHooker(DisableFixedOrientation)
-        loadHooker(WallpaperScaleRatio)
     }
 }

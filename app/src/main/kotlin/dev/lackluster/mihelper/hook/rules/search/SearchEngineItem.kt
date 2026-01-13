@@ -1,7 +1,6 @@
 package dev.lackluster.mihelper.hook.rules.search
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 @Serializable

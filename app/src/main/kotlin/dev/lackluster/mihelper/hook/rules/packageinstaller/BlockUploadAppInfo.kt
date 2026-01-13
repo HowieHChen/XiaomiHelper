@@ -42,7 +42,7 @@ object BlockUploadAppInfo : YukiBaseHooker() {
         DexKit.findMethodsWithCache("report_method") {
             matcher {
                 addUsingString("appSourcepackageName", StringMatchType.Equals)
-                addUsingString("\$apkInfo", StringMatchType.Equals)
+                addUsingString($$"$apkInfo", StringMatchType.Equals)
                 modifiers = Modifier.STATIC
             }
         }

@@ -18,7 +18,6 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 package dev.lackluster.mihelper.hook.rules.android
 
 import com.highcapable.kavaref.KavaRef.Companion.asResolver

@@ -20,6 +20,7 @@
 
 package dev.lackluster.mihelper.hook.rules.guardprovider
 
+import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.DexKit
@@ -42,6 +43,14 @@ object BlockUploadAppList : YukiBaseHooker() {
             if (appClassLoader == null) return@hasEnable
             detect?.getMethodInstance(appClassLoader!!)?.hook {
                 replaceTo(null)
+            }
+            "com.miui.guardprovider.manager.SecurityService".toClassOrNull()?.apply {
+                resolve().firstMethodOrNull {
+                    parameterCount = 0
+                    returnType(Boolean::class)
+                }?.hook {
+                    replaceToTrue()
+                }
             }
         }
     }

@@ -23,8 +23,8 @@ package dev.lackluster.mihelper.hook.rules.taplus
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.method
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.Prefs
 import dev.lackluster.mihelper.utils.factory.hasEnable
@@ -41,25 +41,25 @@ object CustomSearch : YukiBaseHooker() {
     )
     override fun onHook() {
         hasEnable(Pref.Key.Taplus.SEARCH_USE_BROWSER) {
-            "com.miui.contentextension.utils.AppsUtils".toClass().method {
+            "com.miui.contentextension.utils.AppsUtils".toClassOrNull()?.resolve()?.firstMethodOrNull {
                 name = "openGlobalSearch"
-            }.hook {
+            }?.hook {
                 before {
-                    val context = this.args[0] as Context
-                    val queryString = this.args[1] as String
+                    val context = this.args(0).cast<Context>() ?: return@before
+                    val queryString = this.args(1).cast<String>() ?: return@before
                     var searchUrl =
                         when (searchEngine) {
                             in 1..4 -> searchUrlValues[searchEngine].replaceFirst("%s",queryString)
                             5 -> searchEngineUrl?.replaceFirst("%s",queryString)
                             else -> ""
                         }
-                    val intent = Intent()
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    val intent = Intent().apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    }
                     if (searchEngine == 0 || searchUrl.isNullOrBlank()) {
                         intent.action = Intent.ACTION_WEB_SEARCH
                         intent.putExtra("query", queryString)
-                    }
-                    else {
+                    } else {
                         if (!searchUrl.startsWith("https://") && !searchUrl.startsWith("http://")) {
                             searchUrl = "https://$searchUrl"
                         }

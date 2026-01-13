@@ -299,5 +299,13 @@ object AdBlocker : YukiBaseHooker() {
                 }
             }
         }
+        // 蓝牙设备弹窗
+        "com.tencent.qqmusiclite.business.bluetooth.headphone.DeviceFrequency".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "canShowHeadPhoneDialog"
+            }?.hook {
+                replaceToFalse()
+            }
+        }
     }
 }
