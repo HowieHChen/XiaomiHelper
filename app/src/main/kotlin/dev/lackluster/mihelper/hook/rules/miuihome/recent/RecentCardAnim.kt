@@ -32,13 +32,13 @@ import kotlin.math.abs
 
 object RecentCardAnim : YukiBaseHooker() {
     private val metGetScreenHeight by lazy {
-        "com.miui.home.common.device.DeviceConfigs".toClass().resolve().firstMethod {
+        "com.miui.home.common.device.DeviceConfigs".toClassOrNull()?.resolve()?.firstMethodOrNull {
             name = "getScreenHeight"
             modifiers(Modifiers.STATIC)
         }
     }
     private val ctorPhysicBasedInterpolator by lazy {
-        "com.miui.home.launcher.anim.PhysicBasedInterpolator".toClass().resolve().firstConstructor {
+        "com.miui.home.launcher.anim.PhysicBasedInterpolator".toClassOrNull()?.resolve()?.firstConstructorOrNull {
             parameterCount = 2
         }
     }
@@ -60,22 +60,47 @@ object RecentCardAnim : YukiBaseHooker() {
                 }
             }
             "com.miui.home.recents.TaskStackViewLayoutStyleHorizontal".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
+                resolve().optional().firstMethodOrNull {
+                    name = "createSwipeAnimation"
+                    parameters(View::class, Float::class)
+                }?.hook {
+                    before {
+                        val view = this.args(0).cast<View>() ?: return@before
+                        createSwipeAnimation(view, 450L)?.let {
+                            this.result = it
+                        }
+                    }
+                }
+                resolve().optional().firstMethodOrNull {
                     name = "createScaleDismissAnimation"
                     parameters(View::class, Float::class)
                 }?.hook {
-                    replaceAny {
-                        val view = this.args(0).any() as View
-                        val getScreenHeight = metGetScreenHeight.copy().invoke<Int>()?.toFloat() ?: 0.0f
-                        val physicBasedInterpolator = ctorPhysicBasedInterpolator.copy().createAsType<Interpolator>(0.72f, 0.72f)
-                        ObjectAnimator.ofFloat(
-                            view,
-                            View.TRANSLATION_Y,
-                            view.translationY,
-                            -getScreenHeight
-                        ).apply {
-                            interpolator = physicBasedInterpolator
-                            duration = 450L
+                    before {
+                        val view = this.args(0).cast<View>() ?: return@before
+                        createSwipeAnimation(view, 450L)?.let {
+                            this.result = it
+                        }
+                    }
+                }
+            }
+            "com.miui.home.recents.TaskStackViewLayoutStyleStack".toClassOrNull()?.apply {
+                resolve().firstMethodOrNull {
+                    name = "createSwipeAnimation"
+                }?.hook {
+                    before {
+                        val view = this.args(0).cast<View>() ?: return@before
+                        createSwipeAnimation(view, 550L)?.let {
+                            this.result = it
+                        }
+                    }
+                }
+                resolve().firstMethodOrNull {
+                    name = "createCleanDismissAnimation"
+                }?.hook {
+                    before {
+                        val view = this.args(0).cast<View>() ?: return@before
+                        createSwipeAnimation(view, 550L)?.let {
+                            this.result = it
                         }
                     }
                 }
@@ -116,6 +141,60 @@ object RecentCardAnim : YukiBaseHooker() {
                     }
                 }
             }
+            "com.miui.home.recents.views.VerticalSwipeForStack".toClassOrNull()?.apply {
+                val mCanLockTaskView = resolve().firstFieldOrNull {
+                    name = "mCanLockTaskView"
+                    superclass()
+                }
+                val mCurAlpha = resolve().firstFieldOrNull {
+                    name = "mCurAlpha"
+                    superclass()
+                }
+                val mCurScale = resolve().firstFieldOrNull {
+                    name = "mCurScale"
+                    superclass()
+                }
+                val mCurTransY = resolve().firstFieldOrNull {
+                    name = "mCurTransY"
+                    superclass()
+                }
+                resolve().firstConstructor().hook {
+                    after {
+                        mCurAlpha?.copy()?.of(this.instance)?.set(1.0f)
+                        mCurScale?.copy()?.of(this.instance)?.set(1.0f)
+                    }
+                }
+                resolve().firstMethodOrNull {
+                    name = "calculate"
+                    parameters(Float::class)
+                }?.hook {
+                    replaceUnit {
+                        val f = this.args(0).float()
+                        val transY: Float
+                        if (f <= 0.0f) {
+                            transY = f
+                        } else {
+                            val canLockTaskView = mCanLockTaskView?.copy()?.of(this.instance)?.get<Boolean>() == true
+                            transY = f / if (canLockTaskView) 3.0f else 6.0f
+                        }
+                        mCurTransY?.copy()?.of(this.instance)?.set(transY)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun createSwipeAnimation(view: View, duration: Long): ObjectAnimator? {
+        val getScreenHeight = metGetScreenHeight?.copy()?.invoke<Int>()?.toFloat() ?: return null
+        val physicBasedInterpolator = ctorPhysicBasedInterpolator?.copy()?.createAsType<Interpolator>(0.72f, 0.72f) ?: return null
+        return ObjectAnimator.ofFloat(
+            view,
+            View.TRANSLATION_Y,
+            view.translationY,
+            -getScreenHeight
+        ).apply {
+            this.interpolator = physicBasedInterpolator
+            this.duration = duration
         }
     }
 }

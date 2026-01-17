@@ -1,7 +1,6 @@
 package dev.lackluster.mihelper.ui.page
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -28,7 +27,6 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 @Composable
 fun MiuiHomePage(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
     var spValueQuickSwitch by remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.MiuiHome.QUICK_SWITCH)) }
-    var spValuePadShowMemory by remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.MiuiHome.PAD_RECENT_SHOW_MEMORY)) }
     var spValueHideClearButton by remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.MiuiHome.RECENT_HIDE_CLEAR_BUTTON)) }
 
     val tintColor = MiuixTheme.colorScheme.onSurfaceSecondary
@@ -204,28 +202,33 @@ fun MiuiHomePage(navController: NavController, adjustPadding: PaddingValues, mod
                     key = Pref.Key.MiuiHome.BACK_HAPTIC
                 )
                 SwitchPreference(
-                    title = stringResource(R.string.home_gesture_quick_switch),
-                    summary = stringResource(R.string.home_gesture_quick_switch_tips),
-                    key = Pref.Key.MiuiHome.QUICK_SWITCH
-                ) {
-                    spValueQuickSwitch = it
-                }
-                AnimatedVisibility(
-                    spValueQuickSwitch
-                ) {
-                    Column {
-                        DropDownPreference(
-                            title = stringResource(R.string.home_gesture_quick_switch_left),
-                            entries = dropdownEntriesQuickSwitchAction,
-                            key = Pref.Key.MiuiHome.QUICK_SWITCH_LEFT
-                        )
-                        DropDownPreference(
-                            title = stringResource(R.string.home_gesture_quick_switch_right),
-                            entries = dropdownEntriesQuickSwitchAction,
-                            key = Pref.Key.MiuiHome.QUICK_SWITCH_RIGHT
-                        )
-                    }
-                }
+                    title = stringResource(R.string.home_gesture_fix_predictive_back),
+                    summary = stringResource(R.string.home_gesture_fix_predictive_back_tips),
+                    key = Pref.Key.MiuiHome.FIX_PREDICTIVE_BACK_PROG
+                )
+//                SwitchPreference(
+//                    title = stringResource(R.string.home_gesture_quick_switch),
+//                    summary = stringResource(R.string.home_gesture_quick_switch_tips),
+//                    key = Pref.Key.MiuiHome.QUICK_SWITCH
+//                ) {
+//                    spValueQuickSwitch = it
+//                }
+//                AnimatedVisibility(
+//                    spValueQuickSwitch
+//                ) {
+//                    Column {
+//                        DropDownPreference(
+//                            title = stringResource(R.string.home_gesture_quick_switch_left),
+//                            entries = dropdownEntriesQuickSwitchAction,
+//                            key = Pref.Key.MiuiHome.QUICK_SWITCH_LEFT
+//                        )
+//                        DropDownPreference(
+//                            title = stringResource(R.string.home_gesture_quick_switch_right),
+//                            entries = dropdownEntriesQuickSwitchAction,
+//                            key = Pref.Key.MiuiHome.QUICK_SWITCH_RIGHT
+//                        )
+//                    }
+//                }
                 DropDownPreference(
                     title = stringResource(R.string.home_gesture_line_long_press),
                     summary = stringResource(R.string.home_gesture_line_long_press_tips),
@@ -248,18 +251,6 @@ fun MiuiHomePage(navController: NavController, adjustPadding: PaddingValues, mod
                     title = stringResource(R.string.home_recent_dismiss_anim),
                     key = Pref.Key.MiuiHome.RECENT_CARD_ANIM
                 )
-                if (Device.isPad) {
-                    SwitchPreference(
-                        title = stringResource(R.string.home_recent_pad_show_memory),
-                        key = Pref.Key.MiuiHome.PAD_RECENT_SHOW_MEMORY
-                    ) {
-                        spValuePadShowMemory = it
-                    }
-                    SwitchPreference(
-                        title = stringResource(R.string.home_recent_pad_hide_world),
-                        key = Pref.Key.MiuiHome.PAD_RECENT_HIDE_WORLD
-                    )
-                }
                 SwitchPreference(
                     title = stringResource(R.string.home_recent_hide_clear_all),
                     key = Pref.Key.MiuiHome.RECENT_HIDE_CLEAR_BUTTON
@@ -267,7 +258,7 @@ fun MiuiHomePage(navController: NavController, adjustPadding: PaddingValues, mod
                     spValueHideClearButton = it
                 }
                 AnimatedVisibility(
-                    spValueHideClearButton && (!Device.isPad || spValuePadShowMemory)
+                    spValueHideClearButton && !Device.isPad
                 ) {
                     SwitchPreference(
                         title = stringResource(R.string.home_recent_mem_info_clear),
@@ -275,7 +266,7 @@ fun MiuiHomePage(navController: NavController, adjustPadding: PaddingValues, mod
                     )
                 }
                 AnimatedVisibility(
-                    !Device.isPad || spValuePadShowMemory
+                    !Device.isPad
                 ) {
                     SwitchPreference(
                         title = stringResource(R.string.home_recent_show_real_memory),

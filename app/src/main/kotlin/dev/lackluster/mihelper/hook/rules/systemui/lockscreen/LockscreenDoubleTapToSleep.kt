@@ -27,13 +27,18 @@ import android.view.MotionEvent
 import android.view.View
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.method
 import de.robv.android.xposed.XposedHelpers
 import dev.lackluster.mihelper.data.Pref
+import dev.lackluster.mihelper.utils.factory.getAdditionalInstanceField
 import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.utils.factory.setAdditionalInstanceField
 import kotlin.math.abs
 
 object LockscreenDoubleTapToSleep : YukiBaseHooker() {
+    private const val KEY_CURRENT_TOUCH_TIME = "KEY_CURRENT_TOUCH_TIME"
+    private const val KEY_CURRENT_TOUCH_X = "KEY_CURRENT_TOUCH_X"
+    private const val KEY_CURRENT_TOUCH_Y = "KEY_CURRENT_TOUCH_Y"
+
     override fun onHook() {
         hasEnable(Pref.Key.SystemUI.LockScreen.DOUBLE_TAP_TO_SLEEP) {
             "com.android.systemui.shade.NotificationsQuickSettingsContainer".toClass()
@@ -44,14 +49,14 @@ object LockscreenDoubleTapToSleep : YukiBaseHooker() {
                 ?.hook {
                     before {
                         val view = this.instance as View
-                        XposedHelpers.setAdditionalInstanceField(view, "currentTouchTime", 0L)
-                        XposedHelpers.setAdditionalInstanceField(view, "currentTouchX", 0f)
-                        XposedHelpers.setAdditionalInstanceField(view, "currentTouchY", 0f)
+                        view.setAdditionalInstanceField(KEY_CURRENT_TOUCH_TIME, 0L)
+                        view.setAdditionalInstanceField(KEY_CURRENT_TOUCH_X, 0f)
+                        view.setAdditionalInstanceField(KEY_CURRENT_TOUCH_Y, 0f)
                         view.setOnTouchListener { v, motionEvent ->
                             if (motionEvent.action != MotionEvent.ACTION_DOWN) return@setOnTouchListener false
-                            var currentTouchTime = XposedHelpers.getAdditionalInstanceField(v, "currentTouchTime") as? Long ?: 0L
-                            var currentTouchX = XposedHelpers.getAdditionalInstanceField(v, "currentTouchX") as? Float ?: 0f
-                            var currentTouchY = XposedHelpers.getAdditionalInstanceField(v, "currentTouchY") as? Float ?: 0f
+                            var currentTouchTime = v.getAdditionalInstanceField(KEY_CURRENT_TOUCH_TIME, 0L) ?: 0L
+                            var currentTouchX = v.getAdditionalInstanceField(KEY_CURRENT_TOUCH_X, 0f) ?: 0f
+                            var currentTouchY = v.getAdditionalInstanceField(KEY_CURRENT_TOUCH_Y, 0f) ?: 0f
                             val lastTouchTime = currentTouchTime
                             val lastTouchX = currentTouchX
                             val lastTouchY = currentTouchY
@@ -76,9 +81,9 @@ object LockscreenDoubleTapToSleep : YukiBaseHooker() {
                                 currentTouchX = 0f
                                 currentTouchY = 0f
                             }
-                            XposedHelpers.setAdditionalInstanceField(v, "currentTouchTime", currentTouchTime)
-                            XposedHelpers.setAdditionalInstanceField(v, "currentTouchX", currentTouchX)
-                            XposedHelpers.setAdditionalInstanceField(v, "currentTouchY", currentTouchY)
+                            v.setAdditionalInstanceField(KEY_CURRENT_TOUCH_TIME, currentTouchTime)
+                            v.setAdditionalInstanceField(KEY_CURRENT_TOUCH_X, currentTouchX)
+                            v.setAdditionalInstanceField(KEY_CURRENT_TOUCH_Y, currentTouchY)
                             v.performClick()
                             return@setOnTouchListener false
                         }

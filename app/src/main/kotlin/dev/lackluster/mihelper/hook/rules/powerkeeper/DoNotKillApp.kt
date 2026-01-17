@@ -20,17 +20,17 @@
 
 package dev.lackluster.mihelper.hook.rules.powerkeeper
 
+import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.method
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.factory.hasEnable
 
 object DoNotKillApp : YukiBaseHooker() {
     override fun onHook() {
         hasEnable(Pref.Key.PowerKeeper.DO_NOT_KILL_APP) {
-            "miui.process.ProcessManager".toClass().method {
+            "miui.process.ProcessManager".toClassOrNull()?.resolve()?.firstMethodOrNull {
                 name = "kill"
-            }.hook {
+            }?.hook {
                 replaceToFalse()
             }
         }

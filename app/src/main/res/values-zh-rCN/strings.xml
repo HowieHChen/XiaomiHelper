@@ -53,8 +53,6 @@
     <string name="search_engine_custom_url">自定义搜索引擎（URL）</string>
     <string name="others_settings_unlock_taplus_for_pad">解锁传送门</string>
     <string name="scope_settings">设置</string>
-    <string name="security_security_skip_open_no_restriction">禁用链式启动管理</string>
-    <string name="security_security_skip_open_auto_approve">自动批准启动</string>
     <string name="security_security_screen_battery">在耗电排行中显示屏幕使用情况</string>
     <string name="security_security_screen_battery_tips">默认被隐藏的应用的耗电信息也会被展示</string>
     <string name="others_settings_show_google">显示 Google 设置</string>
@@ -92,8 +90,6 @@
     <string name="common_tap_sleep">双击空白处锁屏</string>
     <string name="ui_title_home_recent">最近任务</string>
     <string name="home_recent_show_real_memory">显示真实内存占用</string>
-    <string name="home_recent_pad_hide_world">隐藏“融合设备中心”按钮</string>
-    <string name="home_recent_pad_show_memory">在平板上显示内存占用</string>
     <string name="home_recent_mem_info_clear">长按内存信息清除全部</string>
     <string name="home_recent_wallpaper_darken">阻止壁纸变暗</string>
     <string name="home_recent_wallpaper_darken_tips">阻止在进入最近任务界面时自动降低壁纸亮度</string>
@@ -284,6 +280,7 @@
     <string name="scope_mi_ai">小爱同学</string>
     <string name="others_miai_hide_watermark">隐藏内测版本和人工智能生成内容水印</string>
     <string name="scope_updater">系统更新</string>
+    <string name="others_updater_block_dialog">屏蔽“开启智能更新”弹窗</string>
     <string name="others_updater_disable_validation">移除 OTA 验证</string>
     <string name="others_updater_disable_validation_tips">仅支持 VAB 设备，非 VAB 设备请勿开启！</string>
     <string name="about_yuki_tips">了解更多 https://github.com/HighCapable/YuKiHookAPI</string>
@@ -409,6 +406,7 @@
     <string name="ui_title_home_exclusive">独家特性</string>
     <string name="ui_title_home_gesture">手势</string>
     <string name="home_gesture_back_haptic_tips">在返回手势开始和释放时震动</string>
+    <string name="home_gesture_fix_predictive_back_tips">HyperOS 破坏了预测性返回功能，导致所需的滑动距离过短。启用此选项后，将恢复 AOSP 的行为。此选项只能修复预测性返回的进度错误，无法处理预测性返回功能完全失效的情况。</string>
     <string name="home_gesture_quick_switch">增强返回手势</string>
     <string name="home_gesture_quick_switch_tips">返回手势中远距离滑动触发特定功能</string>
     <string name="home_anim_icon_zoom">禁用点击图标时的缩放动画</string>
@@ -551,8 +549,6 @@
     <string name="others_search_more_search_engines_tips">将必应和谷歌添加到搜索引擎选项</string>
     <string name="others_search_custom_search_engine">添加自定义搜索引擎</string>
     <string name="others_search_custom_reset">重置</string>
-    <string name="weather_card_color">卡片背景颜色</string>
-    <string name="weather_card_color_tips">默认情况下，卡片会根据日出日落切换背景颜色。强制浅色/深色以使卡片背景始终不变。</string>
     <string name="weather_card_color_light">强制浅色</string>
     <string name="weather_card_color_dark">强制深色</string>
     <string name="home_recent_hide_status_bar_tips">在最近任务界面时隐藏状态栏</string>
@@ -742,6 +738,7 @@
     <string name="icon_tuner_position_demo_mobile">移动网络（演示模式）</string>
     <string name="icon_tuner_position_reset_default">重置为默认值</string>
     <string name="icon_detail_net_speed_style_separate_tri_outline">分离（自适应三角）</string>
+    <string name="icon_detail_net_speed_refresh_tips">每秒计算一次网速，而不是每四秒计算一次</string>
     <string name="icon_detail_net_speed_fw_num">自定义数字字重</string>
     <string name="icon_detail_net_speed_fw_num_weight">数字字重</string>
     <string name="icon_detail_net_speed_fw_unit_weight">单位字重</string>
@@ -780,4 +777,7 @@
     <string name="media_elm_prog_round">圆角进度条</string>
     <string name="media_elm_prog_comet">彗星进度条</string>
     <string name="media_elm_prog_comet_tips">进度条带有逐渐变透明的效果，就像彗星拖着一条小尾巴一样</string>
+    <string name="home_gesture_fix_predictive_back">修复预测性返回进度错误</string>
+    <string name="icon_detail_net_speed_refresh">每秒刷新</string>
+    <string name="icon_detail_net_speed_unit_style">速度单位样式</string>
 </resources>

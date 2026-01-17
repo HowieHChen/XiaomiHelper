@@ -12,6 +12,7 @@ import android.content.res.Configuration
 import android.provider.Settings
 import dev.lackluster.mihelper.utils.Prefs
 import androidx.core.net.toUri
+import de.robv.android.xposed.XposedHelpers
 
 
 /**
@@ -100,4 +101,18 @@ inline fun hasEnable(
     if (Prefs.getBoolean(key, default) && conditionResult) {
         block()
     }
+}
+
+fun Any.setAdditionalInstanceField(
+    fieldName: String,
+    value: Any?
+) {
+    XposedHelpers.setAdditionalInstanceField(this, fieldName, value)
+}
+
+inline fun <reified T: Any?> Any.getAdditionalInstanceField(
+    fieldName: String,
+    defValue: T? = null
+): T? {
+    return XposedHelpers.getAdditionalInstanceField(this, fieldName) as? T ?: defValue
 }

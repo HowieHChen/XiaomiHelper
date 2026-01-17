@@ -28,7 +28,7 @@ object Pref {
             const val HIDE_WINDOW_TOP_BAR = "android_freeform_hide_top_bar"
             const val BLOCK_FIXED_ORIENTATION = "android_no_fixed_orientation"
             const val BLOCK_FIXED_ORIENTATION_LIST = "android_no_fixed_orientation_list"
-            const val WALLPAPER_SCALE_RATIO = "android_wallpaper_scale"
+//            const val WALLPAPER_SCALE_RATIO = "android_wallpaper_scale"
             const val BLOCK_FORCE_DARK_WHITELIST = "android_dark_mode_all"
             const val FONT_SCALE = "android_font_scale"
             const val FONT_SCALE_SMALL = "android_font_scale_small"
@@ -102,6 +102,7 @@ object Pref {
             const val REMOVE_REPORT = "home_remove_report"
             const val DOUBLE_TAP_TO_SLEEP = "home_double_tap_sleep"
             const val BACK_HAPTIC = "home_back_haptic"
+            const val FIX_PREDICTIVE_BACK_PROG = "home_back_predictive_prog"
             const val QUICK_SWITCH = "home_quick_back"
             const val QUICK_SWITCH_LEFT = "home_quick_back_left"
             const val QUICK_SWITCH_RIGHT = "home_quick_back_right"
@@ -112,8 +113,8 @@ object Pref {
             const val ANIM_FOLDER_ZOOM = "home_anim_folder_zoom"
             const val ANIM_FOLDER_ICON_DARKEN = "home_anim_folder_icon_darken"
             const val FOLDER_ADAPT_SIZE ="home_folder_aapt_size"
-            const val PAD_RECENT_SHOW_MEMORY = "home_recent_pad_memory"
-            const val PAD_RECENT_HIDE_WORLD = "home_recent_pad_world"
+//            const val PAD_RECENT_SHOW_MEMORY = "home_recent_pad_memory"
+//            const val PAD_RECENT_HIDE_WORLD = "home_recent_pad_world"
             const val RECENT_SHOW_REAL_MEMORY = "home_recent_real_memory"
             const val RECENT_CARD_ANIM = "home_recent_anim"
             const val RECENT_HIDE_CLEAR_BUTTON = "home_recent_hide_clear_button"
@@ -172,7 +173,8 @@ object Pref {
             const val DISABLE_RISK_APP_NOTIF = "security_no_risk_notification"
             const val REMOVE_REPORT = "security_remove_report"
             const val SKIP_WARNING = "security_skip_warn"
-            const val LINK_START = "security_link_start"
+            const val CHAIN_START = "security_chain_start"
+//            const val LINK_START = "security_link_start"
             const val SHOW_SCREEN_BATTERY = "security_screen_battery"
             const val SHOW_SYSTEM_BATTERY = "security_system_battery"
             const val DISABLE_BUBBLE_RESTRICT = "security_bubble_restriction"
@@ -280,6 +282,8 @@ object Pref {
                 const val ICON_POSITION_VAL = "icon_tuner_position_val"
 
                 const val NET_SPEED_MODE = "icon_tuner_net_speed_mode"
+                const val NET_SPEED_UNIT_MODE = "icon_tuner_net_speed_unit_mode"
+                const val NET_SPEED_REFRESH = "icon_tuner_net_speed_refresh"
 
                 const val MOBILE = "icon_tuner_slot_mobile"
                 const val NO_SIM = "icon_tuner_slot_no_sim"
@@ -428,9 +432,6 @@ object Pref {
         object Updater {
             const val BLOCK_AUTO_UPDATE_DIALOG = "updater_block_dialog"
             const val DISABLE_VALIDATION = "updater_no_validation"
-        }
-        object Weather {
-            const val CARD_COLOR = "weather_card_color"
         }
     }
     @Suppress("unused")

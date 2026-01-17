@@ -291,6 +291,8 @@
     <string name="home_gesture_double_tap" translatable="false">@string/common_tap_sleep</string>
     <string name="home_gesture_back_haptic">Enhanced back gesture haptic feedback</string>
     <string name="home_gesture_back_haptic_tips">Perform haptic feedback on the start and release of swipes</string>
+    <string name="home_gesture_fix_predictive_back">Fix predictive back progress error</string>
+    <string name="home_gesture_fix_predictive_back_tips">HyperOS has broken the predictive back behavior, causing the swipe distance requirement to be too short. When enabled, it restores the AOSP behavior. This option can only fix the progress error of predictive back and cannot recover scenarios where predictive back is completely broken.</string>
     <string name="home_gesture_quick_switch">Enhanced back gesture</string>
     <string name="home_gesture_quick_switch_tips">In the back gesture, a long swipe will trigger a specific function.</string>
     <string name="home_gesture_quick_switch_left">Left enhanced back gesture function</string>
@@ -323,8 +325,6 @@
     <string name="home_icon_corner4large_tips">Capsule shape icons will become rounded rectangle icons</string>
     <string name="ui_title_home_recent">Recent tasks</string>
     <string name="home_recent_dismiss_anim">Modify card animation when dismissing recent tasks</string>
-    <string name="home_recent_pad_show_memory">Show memory usage on tablet</string>
-    <string name="home_recent_pad_hide_world">Hide Xiaomi Smart Hub button</string>
     <string name="home_recent_hide_status_bar">Hide the status bar</string>
     <string name="home_recent_hide_status_bar_tips">Hide the status bar in Recents</string>
     <string name="home_recent_hide_clear_all">Hide Clear all button</string>
@@ -508,9 +508,6 @@
     <string name="security_security_skip_warning_tips">Skip wait times when using USB debugging, unknown sources, and accessibility.</string>
     <string name="security_security_skip_open_app">Remove pop-ups when opening apps</string>
     <string name="security_security_skip_open_app_tips">Remove \"Allow XXX to open XXX\" chain start pop-up</string>
-    <string name="security_security_skip_open_default" translatable="false">@string/common_default</string>
-    <string name="security_security_skip_open_no_restriction">Disable chain start management</string>
-    <string name="security_security_skip_open_auto_approve">Approve automatically</string>
     <string name="security_security_screen_battery">Show screen usage in power consumption ranking</string>
     <string name="security_security_screen_battery_tips">Battery usage of apps that are hidden by default will also be shown</string>
     <string name="security_security_hide_screen_system">Show Android System in power consumption ranking</string>
@@ -602,11 +599,9 @@
     <string name="others_settings_quick_per_tips">Go directly to the switch that grants this permission to a specific app, instead of the list of apps associated with this permission.</string>
     <string name="ui_title_others_taplus" translatable="false">@string/scope_taplus</string>
     <string name="ui_title_others_updater" translatable="false">@string/scope_updater</string>
+    <string name="others_updater_block_dialog">Block \"Install automatically?\" popup</string>
     <string name="others_updater_disable_validation">Remove OTA validation</string>
     <string name="others_updater_disable_validation_tips">Only VAB devices are supported, don\'t turn it on for non-VAB devices!</string>
-    <string name="ui_title_others_weather" translatable="false">@string/scope_weather</string>
-    <string name="weather_card_color">Card background color</string>
-    <string name="weather_card_color_tips">The cards will switch the background color according to the sunrise and sunset by default. Force light/dark to keep the card background constant.</string>
     <string name="weather_card_color_default" translatable="false">@string/common_default</string>
     <string name="weather_card_color_light">Force light</string>
     <string name="weather_card_color_dark">Force dark</string>
@@ -795,6 +790,12 @@
     <string name="icon_detail_net_speed_style_separate_arrow">Split (arrow)</string>
     <string name="icon_detail_net_speed_style_separate_tri_filled">Split (filled triangle)</string>
     <string name="icon_detail_net_speed_style_separate_tri_outline">Split (adaptive triangle)</string>
+    <string name="icon_detail_net_speed_unit_style">Speed unit style</string>
+    <string name="icon_detail_net_speed_unit_style_k" translatable="false">6.18K</string>
+    <string name="icon_detail_net_speed_unit_style_kb" translatable="false">6.18KB</string>
+    <string name="icon_detail_net_speed_unit_style_kbps" translatable="false">6.18KB/s</string>
+    <string name="icon_detail_net_speed_refresh">Refresh every second</string>
+    <string name="icon_detail_net_speed_refresh_tips">Calculates connection speed every second instead of every four seconds</string>
     <string name="icon_detail_net_speed_fw_num">Customize font weight (Numeric)</string>
     <string name="icon_detail_net_speed_fw_num_weight">Font weight (Numeric)</string>
     <string name="icon_detail_net_speed_fw_unit">Customize font weight (Unit)</string>

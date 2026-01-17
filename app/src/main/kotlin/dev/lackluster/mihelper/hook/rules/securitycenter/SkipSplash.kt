@@ -1,15 +1,14 @@
 package dev.lackluster.mihelper.hook.rules.securitycenter
 
+import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.method
-import com.highcapable.yukihookapi.hook.type.java.BooleanType
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.DexKit
 import dev.lackluster.mihelper.utils.factory.hasEnable
 import org.luckypray.dexkit.query.enums.StringMatchType
 
 object SkipSplash : YukiBaseHooker() {
-    private val screenAdUtilsClass by lazy {
+    private val clzScreenAdUtils by lazy {
         DexKit.findClassWithCache("screen_ad_utils") {
             matcher {
                 addUsingString("ScreenAdUtils", StringMatchType.Equals)
@@ -21,17 +20,17 @@ object SkipSplash : YukiBaseHooker() {
     override fun onHook() {
         hasEnable(Pref.Key.SecurityCenter.SKIP_SPLASH) {
             if (appClassLoader == null) return@hasEnable
-            screenAdUtilsClass?.getInstance(appClassLoader!!)?.apply {
-                method {
-                    paramCount = 2
-                    returnType = BooleanType
-                }.hook {
+            clzScreenAdUtils?.getInstance(appClassLoader!!)?.apply {
+                resolve().firstMethodOrNull {
+                    parameterCount = 2
+                    returnType = Boolean::class
+                }?.hook {
                     replaceToTrue()
                 }
-                method {
-                    paramCount = 3
+                resolve().firstMethodOrNull {
+                    parameterCount = 3
                     returnType = Void.TYPE
-                }.hook {
+                }?.hook {
                     before {
                         this.args(2).setTrue()
                     }

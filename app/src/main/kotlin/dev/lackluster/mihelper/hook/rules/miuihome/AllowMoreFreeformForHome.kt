@@ -22,36 +22,39 @@
 
 package dev.lackluster.mihelper.hook.rules.miuihome
 
-import android.util.ArraySet
+import android.content.Context
+import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.current
-import com.highcapable.yukihookapi.hook.factory.method
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.factory.hasEnable
+import java.util.concurrent.CopyOnWriteArraySet
 
 object AllowMoreFreeformForHome : YukiBaseHooker() {
     override fun onHook() {
         hasEnable(Pref.Key.Android.ALLOW_MORE_FREEFORM) {
             "com.miui.home.launcher.RecentsAndFSGestureUtils".toClassOrNull()?.apply {
-                method {
+                resolve().firstMethodOrNull {
                     name = "canTaskEnterMiniSmallWindow"
-                }.ignored().giveAll().hookAll {
+                }?.hook {
                     replaceToTrue()
                 }
-                method {
+                resolve().firstMethodOrNull {
                     name = "canTaskEnterSmallWindow"
-                }.ignored().giveAll().hookAll {
+                    parameterCount = 4
+                    parameters(Context::class, String::class, Int::class, Int::class)
+                }?.hook {
                     replaceToTrue()
                 }
             }
             "com.miui.home.smallwindow.SmallWindowStateHelperUseManager".toClassOrNull()?.apply {
-                method {
+                val fldMiniSmallWindowInfoSet = resolve().firstFieldOrNull {
+                    name = "mMiniSmallWindowInfoSet"
+                }
+                resolve().firstMethodOrNull {
                     name = "canEnterMiniSmallWindow"
-                }.ignored().hook {
+                }?.hook {
                     replaceAny {
-                        (this.instance.current().field {
-                            name = "mMiniSmallWindowInfoSet"
-                        }.any() as ArraySet<*>).isEmpty()
+                        fldMiniSmallWindowInfoSet?.copy()?.of(this.instance)?.get<CopyOnWriteArraySet<*>>().isNullOrEmpty()
                     }
                 }
             }

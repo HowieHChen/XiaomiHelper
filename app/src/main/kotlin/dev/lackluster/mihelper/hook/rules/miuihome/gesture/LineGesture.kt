@@ -1,12 +1,12 @@
 package dev.lackluster.mihelper.hook.rules.miuihome.gesture
 
 import android.app.Application
+import android.content.Context
 import android.content.Intent
 import android.widget.Toast
+import com.highcapable.kavaref.KavaRef.Companion.resolve
+import com.highcapable.kavaref.condition.type.Modifiers
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.current
-import com.highcapable.yukihookapi.hook.factory.method
-import com.highcapable.yukihookapi.hook.type.android.ContextClass
 import dev.lackluster.mihelper.data.Constants.ACTION_HOME
 import dev.lackluster.mihelper.data.Constants.ACTION_NOTIFICATIONS
 import dev.lackluster.mihelper.data.Constants.ACTION_QUICK_SETTINGS
@@ -31,56 +31,58 @@ object LineGesture : YukiBaseHooker() {
      */
     private val actionLongPress = Prefs.getInt(Pref.Key.MiuiHome.LINE_GESTURE_LONG_PRESS, 0)
     private val actionDoubleTap = Prefs.getInt(Pref.Key.MiuiHome.LINE_GESTURE_DOUBLE_TAP, 0)
-    private val applicationGetInstanceMethod by lazy {
-        "com.miui.home.launcher.Application".toClass().method {
+    private val metGetInstance by lazy {
+        "com.miui.home.launcher.Application".toClassOrNull()?.resolve()?.firstMethodOrNull {
             name = "getInstance"
-            modifiers { isStatic }
-        }.get()
+            modifiers(Modifiers.STATIC)
+        }
     }
-    private val startSmallFreeformMethod by lazy {
-        "android.util.MiuiMultiWindowUtils".toClassOrNull()?.method {
+    private val metStartSmallFreeformForControlCenter by lazy {
+        "android.util.MiuiMultiWindowUtils".toClassOrNull()?.resolve()?.firstMethodOrNull {
             name = "startSmallFreeformForControlCenter"
-            param(ContextClass)
-        }?.get()
+            modifiers(Modifiers.STATIC)
+            parameters(Context::class)
+        }
     }
 
     override fun onHook() {
         if (actionLongPress != 0 || actionDoubleTap != 0) {
             "com.miui.home.recents.gesture.NavStubGestureEventManager".toClassOrNull()?.apply {
                 if (actionLongPress != 0) {
-                    method {
+                    resolve().firstMethodOrNull {
                         name = "handleLongPressEvent"
-                    }.hook {
+                    }?.hook {
                         before {
-                            val application = applicationGetInstanceMethod.invoke<Application>() ?: return@before
+                            val application = metGetInstance?.invoke<Application>() ?: return@before
                             doAction(application, actionLongPress)
                             this.result = null
                         }
                     }
                 }
                 if (actionDoubleTap != 0) {
-                    method {
+                    resolve().firstMethodOrNull {
                         name = "handleDoubleClickEvent"
-                    }.hook {
+                    }?.hook {
                         before {
-                            val application = applicationGetInstanceMethod.invoke<Application>() ?: return@before
+                            val application = metGetInstance?.invoke<Application>() ?: return@before
                             doAction(application, actionDoubleTap)
                             this.result = null
                         }
                     }
-                    method {
+                    val fldIsCanDoubleClickTriggerApp = resolve().firstFieldOrNull {
+                        name = "isCanDoubleClickTriggerApp"
+                    }
+                    resolve().firstMethodOrNull {
                         name = "checkDoubleClickTriggerApp"
-                    }.ignored().hook {
+                    }?.hook {
                         before {
-                            this.instance.current(true).field {
-                                name = "isCanDoubleClickTriggerApp"
-                            }.set(true)
+                            fldIsCanDoubleClickTriggerApp?.copy()?.of(this.instance)?.set(true)
                             this.result = null
                         }
                     }
-                    method {
+                    resolve().firstMethodOrNull {
                         name = "updateIsCanDoubleClickTriggerApp"
-                    }.ignored().hook {
+                    }?.hook {
                         intercept()
                     }
                 }
@@ -124,7 +126,7 @@ object LineGesture : YukiBaseHooker() {
             }
             9 -> {
                 val context = application.applicationContext
-                startSmallFreeformMethod?.string(context)?.let {
+                metStartSmallFreeformForControlCenter?.invoke<String>(context)?.let {
                     if (it.isNotBlank()) {
                         Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
                     }

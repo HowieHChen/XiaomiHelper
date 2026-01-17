@@ -21,6 +21,7 @@
 package dev.lackluster.mihelper.hook.rules.systemui.lockscreen
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
+import com.highcapable.kavaref.extension.makeAccessible
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.factory.hasEnable
@@ -28,19 +29,15 @@ import dev.lackluster.mihelper.utils.factory.hasEnable
 object KeepNotification : YukiBaseHooker() {
     private val mSbn by lazy {
         "com.android.systemui.statusbar.notification.collection.NotificationEntry".toClassOrNull()
-            ?.resolve()
-            ?.firstFieldOrNull {
+            ?.resolve()?.firstFieldOrNull {
                 name = "mSbn"
-            }
-            ?.self
+            }?.self?.apply { makeAccessible() }
     }
     private val mHasShownAfterUnlock by lazy {
         "com.android.systemui.statusbar.notification.ExpandedNotification".toClassOrNull()
-            ?.resolve()
-            ?.firstFieldOrNull {
+            ?.resolve()?.firstFieldOrNull {
                 name = "mHasShownAfterUnlock"
-            }
-            ?.self
+            }?.self?.apply { makeAccessible() }
     }
 
     override fun onHook() {

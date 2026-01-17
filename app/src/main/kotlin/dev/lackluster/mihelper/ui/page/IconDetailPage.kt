@@ -32,7 +32,6 @@ import dev.lackluster.hyperx.compose.preference.DropDownMode
 import dev.lackluster.hyperx.compose.preference.DropDownPreference
 import dev.lackluster.hyperx.compose.preference.EditTextDataType
 import dev.lackluster.hyperx.compose.preference.EditTextPreference
-import dev.lackluster.hyperx.compose.preference.PreferenceGroup
 import dev.lackluster.hyperx.compose.preference.SeekBarPreference
 import dev.lackluster.hyperx.compose.preference.SwitchPreference
 import dev.lackluster.hyperx.compose.preference.ValuePosition
@@ -47,6 +46,7 @@ import dev.lackluster.mihelper.ui.component.MobileIcons
 import dev.lackluster.mihelper.ui.component.NetworkSpeed
 import dev.lackluster.mihelper.ui.component.RebootMenuItem
 import dev.lackluster.mihelper.ui.component.WifiIcon
+import dev.lackluster.mihelper.ui.component.itemPreferenceGroup
 import dev.lackluster.mihelper.ui.component.scaleDp
 import top.yukonga.miuix.kmp.basic.Card
 
@@ -132,6 +132,11 @@ fun IconDetailPage(navController: NavController, adjustPadding: PaddingValues, m
             title = stringResource(R.string.icon_detail_net_speed_style_separate_tri_outline),
             iconRes = R.drawable.ic_net_speed_style_separate_tri_outline
         ),
+    )
+    val dropdownEntriesNetworkSpeedUnit = listOf(
+        DropDownEntry(title = stringResource(R.string.icon_detail_net_speed_unit_style_k)),
+        DropDownEntry(title = stringResource(R.string.icon_detail_net_speed_unit_style_kb)),
+        DropDownEntry(title = stringResource(R.string.icon_detail_net_speed_unit_style_kbps)),
     )
 
     var tabRowSelected by remember { mutableIntStateOf(0) }
@@ -248,6 +253,9 @@ fun IconDetailPage(navController: NavController, adjustPadding: PaddingValues, m
     var netSpeedStyle by remember { mutableIntStateOf(
         SafeSP.getInt(Pref.Key.SystemUI.IconTuner.NET_SPEED_MODE, 0)
     ) }
+    var netSpeedUnitStyle by remember { mutableStateOf(
+        SafeSP.getInt(Pref.Key.SystemUI.IconTuner.NET_SPEED_UNIT_MODE, 0)
+    ) }
     var netSpeedNumFW by remember { mutableStateOf(
         SafeSP.getBoolean(Pref.Key.SystemUI.FontWeight.NET_SPEED_NUMBER, false)
     ) }
@@ -300,6 +308,7 @@ fun IconDetailPage(navController: NavController, adjustPadding: PaddingValues, m
                     Row {
                         NetworkSpeed(
                             style = netSpeedStyle,
+                            unitStyle = netSpeedUnitStyle,
                             netSpeedNumFW = netSpeedNumFW,
                             netSpeedNumFWVal = netSpeedNumFWVal,
                             netSpeedUnitFW = netSpeedUnitFW,
@@ -398,364 +407,390 @@ fun IconDetailPage(navController: NavController, adjustPadding: PaddingValues, m
                 tabRowSelected = it
                 hapticFeedback.performHapticFeedback(HapticFeedbackType.Confirm)
             }
-            when (tabRowSelected) {
-                0 -> {
-                    PreferenceGroup {
-                        SwitchPreference(
-                            title = stringResource(R.string.icon_detail_cellular_hide_sim_auto),
-                            summary = stringResource(R.string.icon_detail_cellular_hide_sim_auto_tips),
-                            key = Pref.Key.SystemUI.IconTuner.HIDE_SIM_AUTO
-                        ) { hideSimAuto = it }
-                        AnimatedVisibility(!hideSimAuto) {
-                            Column {
-                                SwitchPreference(
-                                    title = stringResource(R.string.icon_detail_cellular_hide_sim_one),
-                                    key = Pref.Key.SystemUI.IconTuner.HIDE_SIM_ONE
-                                )
-                                SwitchPreference(
-                                    title = stringResource(R.string.icon_detail_cellular_hide_sim_two),
-                                    key = Pref.Key.SystemUI.IconTuner.HIDE_SIM_TWO
-                                )
+        }
+        itemPreferenceGroup(
+            key = "MOBILE",
+            visible = (tabRowSelected == 0)
+        ) {
+            SwitchPreference(
+                title = stringResource(R.string.icon_detail_cellular_hide_sim_auto),
+                summary = stringResource(R.string.icon_detail_cellular_hide_sim_auto_tips),
+                key = Pref.Key.SystemUI.IconTuner.HIDE_SIM_AUTO
+            ) { hideSimAuto = it }
+            AnimatedVisibility(!hideSimAuto) {
+                Column {
+                    SwitchPreference(
+                        title = stringResource(R.string.icon_detail_cellular_hide_sim_one),
+                        key = Pref.Key.SystemUI.IconTuner.HIDE_SIM_ONE
+                    )
+                    SwitchPreference(
+                        title = stringResource(R.string.icon_detail_cellular_hide_sim_two),
+                        key = Pref.Key.SystemUI.IconTuner.HIDE_SIM_TWO
+                    )
+                }
+            }
+            SwitchPreference(
+                title = stringResource(R.string.icon_detail_cellular_hide_activity),
+                key = Pref.Key.SystemUI.IconTuner.HIDE_CELLULAR_ACTIVITY
+            ) { hideCellularActivity = it }
+            SwitchPreference(
+                title = stringResource(R.string.icon_detail_cellular_hide_type),
+                key = Pref.Key.SystemUI.IconTuner.HIDE_CELLULAR_TYPE
+            ) { hideCellularType = it }
+            SwitchPreference(
+                title = stringResource(R.string.icon_detail_cellular_hide_roam_global),
+                summary = stringResource(R.string.icon_detail_cellular_hide_roam_global_tips),
+                key = Pref.Key.SystemUI.IconTuner.HIDE_CELLULAR_ROAM_GLOBAL
+            ) { hideRoamGlobal = it }
+            AnimatedVisibility(!hideRoamGlobal) {
+                Column {
+                    SwitchPreference(
+                        title = stringResource(R.string.icon_detail_cellular_hide_roam),
+                        key = Pref.Key.SystemUI.IconTuner.HIDE_CELLULAR_ROAM
+                    ) { hideRoam = it }
+                    SwitchPreference(
+                        title = stringResource(R.string.icon_detail_cellular_hide_roam_small),
+                        key = Pref.Key.SystemUI.IconTuner.HIDE_CELLULAR_SMALL_ROAM
+                    ) { hideSmallRoam = it }
+                }
+            }
+        }
+        itemPreferenceGroup(
+            key = "MOBILE_TYPE",
+            titleResId = R.string.ui_title_icon_detail_cellular_type,
+            visible = (tabRowSelected == 0)
+        ) {
+            SwitchPreference(
+                title = stringResource(R.string.icon_detail_cellular_single),
+                key = Pref.Key.SystemUI.IconTuner.CELLULAR_TYPE_SINGLE
+            ) { cellularTypeSingle = it }
+            AnimatedVisibility(cellularTypeSingle) {
+                Column {
+                    SwitchPreference(
+                        title = stringResource(R.string.icon_detail_cellular_single_swap),
+                        summary = stringResource(R.string.icon_detail_cellular_single_swap_tips),
+                        key = Pref.Key.SystemUI.IconTuner.CELLULAR_TYPE_SINGLE_SWAP
+                    ) { cellularTypeSingleSwap = it }
+                    SwitchPreference(
+                        title = stringResource(R.string.icon_detail_cellular_single_size),
+                        key = Pref.Key.SystemUI.IconTuner.CELLULAR_TYPE_SINGLE_SIZE
+                    ) { cellularTypeSingleSize = it }
+                    AnimatedVisibility(cellularTypeSingleSize) {
+                        EditTextPreference(
+                            title = stringResource(R.string.icon_detail_cellular_single_size_value),
+                            key = Pref.Key.SystemUI.IconTuner.CELLULAR_TYPE_SINGLE_SIZE_VAL,
+                            defValue = 14f,
+                            dataType = EditTextDataType.FLOAT,
+                            isValueValid = {
+                                (it as? Float ?: -1.0f) > 0.0f
                             }
-                        }
-                        SwitchPreference(
-                            title = stringResource(R.string.icon_detail_cellular_hide_activity),
-                            key = Pref.Key.SystemUI.IconTuner.HIDE_CELLULAR_ACTIVITY
-                        ) { hideCellularActivity = it }
-                        SwitchPreference(
-                            title = stringResource(R.string.icon_detail_cellular_hide_type),
-                            key = Pref.Key.SystemUI.IconTuner.HIDE_CELLULAR_TYPE
-                        ) { hideCellularType = it }
-                        SwitchPreference(
-                            title = stringResource(R.string.icon_detail_cellular_hide_roam_global),
-                            summary = stringResource(R.string.icon_detail_cellular_hide_roam_global_tips),
-                            key = Pref.Key.SystemUI.IconTuner.HIDE_CELLULAR_ROAM_GLOBAL
-                        ) { hideRoamGlobal = it }
-                        AnimatedVisibility(!hideRoamGlobal) {
-                            Column {
-                                SwitchPreference(
-                                    title = stringResource(R.string.icon_detail_cellular_hide_roam),
-                                    key = Pref.Key.SystemUI.IconTuner.HIDE_CELLULAR_ROAM
-                                ) { hideRoam = it }
-                                SwitchPreference(
-                                    title = stringResource(R.string.icon_detail_cellular_hide_roam_small),
-                                    key = Pref.Key.SystemUI.IconTuner.HIDE_CELLULAR_SMALL_ROAM
-                                ) { hideSmallRoam = it }
-                            }
-                        }
-                    }
-                    PreferenceGroup(
-                        stringResource(R.string.ui_title_icon_detail_cellular_type)
-                    ) {
-                        SwitchPreference(
-                            title = stringResource(R.string.icon_detail_cellular_single),
-                            key = Pref.Key.SystemUI.IconTuner.CELLULAR_TYPE_SINGLE
-                        ) { cellularTypeSingle = it }
-                        AnimatedVisibility(cellularTypeSingle) {
-                            Column {
-                                SwitchPreference(
-                                    title = stringResource(R.string.icon_detail_cellular_single_swap),
-                                    summary = stringResource(R.string.icon_detail_cellular_single_swap_tips),
-                                    key = Pref.Key.SystemUI.IconTuner.CELLULAR_TYPE_SINGLE_SWAP
-                                ) { cellularTypeSingleSwap = it }
-                                SwitchPreference(
-                                    title = stringResource(R.string.icon_detail_cellular_single_size),
-                                    key = Pref.Key.SystemUI.IconTuner.CELLULAR_TYPE_SINGLE_SIZE
-                                ) { cellularTypeSingleSize = it }
-                                AnimatedVisibility(cellularTypeSingleSize) {
-                                    EditTextPreference(
-                                        title = stringResource(R.string.icon_detail_cellular_single_size_value),
-                                        key = Pref.Key.SystemUI.IconTuner.CELLULAR_TYPE_SINGLE_SIZE_VAL,
-                                        defValue = 14f,
-                                        dataType = EditTextDataType.FLOAT,
-                                        isValueValid = {
-                                            (it as? Float ?: -1.0f) > 0.0f
-                                        }
-                                    ) { _, value -> cellularTypeSingleSizeVal = value as? Float ?: 0.0f}
-                                }
-                            }
-                        }
-                        SwitchPreference(
-                            title = stringResource(R.string.icon_detail_cellular_type_map),
-                            key = Pref.Key.SystemUI.IconTuner.CELLULAR_TYPE_CUSTOM
-                        ) { cellularTypeCustom = it }
-                        AnimatedVisibility(cellularTypeCustom) {
-                            EditTextPreference(
-                                title = stringResource(R.string.icon_detail_cellular_type_map_value),
-                                key = Pref.Key.SystemUI.IconTuner.CELLULAR_TYPE_CUSTOM_VAL,
-                                defValue = ",G,E,3G,H,H+,4G,4G+,,LTE,5G,5G,5G+,5GA,5G",
-                                dataType = EditTextDataType.STRING,
-                                dialogMessage = stringResource(R.string.icon_detail_cellular_type_map_msg),
-                                isValueValid = {
-                                    it is String && it.isNotEmpty() && it.split(',').let { list ->
-                                        list.size == 15 || (list.size == 1 && list[0].isNotBlank())
-                                    }
-                                },
-                                valuePosition = ValuePosition.HIDDEN,
-                            )
-                        }
-                    }
-                    PreferenceGroup(
-                        stringResource(R.string.ui_title_icon_detail_font_weight)
-                    ) {
-                        SwitchPreference(
-                            title = stringResource(R.string.icon_detail_cellular_fw_type),
-                            key = Pref.Key.SystemUI.FontWeight.CELLULAR_TYPE
-                        ) { cellularTypeFW = it }
-                        AnimatedVisibility(cellularTypeFW) {
-                            SeekBarPreference(
-                                title = stringResource(R.string.icon_detail_cellular_fw_type_weight),
-                                key = Pref.Key.SystemUI.FontWeight.CELLULAR_TYPE_VAL,
-                                defValue = 660,
-                                min = 1,
-                                max = 1000
-                            ) { cellularTypeFWVal = it }
-                        }
-                        SwitchPreference(
-                            title = stringResource(R.string.icon_detail_cellular_fw_type_single),
-                            key = Pref.Key.SystemUI.FontWeight.CELLULAR_TYPE_SINGLE
-                        ) { cellularTypeSingleFW = it }
-                        AnimatedVisibility(cellularTypeSingleFW) {
-                            SeekBarPreference(
-                                title = stringResource(R.string.icon_detail_cellular_fw_type_single_weight),
-                                key = Pref.Key.SystemUI.FontWeight.CELLULAR_TYPE_SINGLE_VAL,
-                                defValue = 400,
-                                min = 1,
-                                max = 1000
-                            ) { cellularTypeSingleFWVal = it }
-                        }
-                    }
-                    PreferenceGroup(
-                        title = stringResource(R.string.ui_title_icon_detail_other),
-                        last = true
-                    ) {
-                        SwitchPreference(
-                            icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_vowifi),
-                            title = stringResource(R.string.icon_detail_cellular_hide_vowifi),
-                            key = Pref.Key.SystemUI.IconTuner.HIDE_CELLULAR_VO_WIFI
-                        )
-                        SwitchPreference(
-                            icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_signal_volte),
-                            title = stringResource(R.string.icon_detail_cellular_hide_volte),
-                            key = Pref.Key.SystemUI.IconTuner.HIDE_CELLULAR_VOLTE
-                        )
-                        SwitchPreference(
-                            icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_volte_no_service),
-                            title = stringResource(R.string.icon_detail_cellular_hide_volte_no_service),
-                            key = Pref.Key.SystemUI.IconTuner.HIDE_CELLULAR_VOLTE_NO_SERVICE
-                        )
-                        SwitchPreference(
-                            icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_speech_hd),
-                            title = stringResource(R.string.icon_detail_cellular_hide_speech_hd),
-                            key = Pref.Key.SystemUI.IconTuner.HIDE_CELLULAR_SPEECH_HD
-                        )
+                        ) { _, value -> cellularTypeSingleSizeVal = value as? Float ?: 0.0f}
                     }
                 }
-                1 -> {
-                    PreferenceGroup(last = true) {
-                        SwitchPreference(
-                            title = stringResource(R.string.icon_detail_wifi_hide_standard),
-                            key = Pref.Key.SystemUI.IconTuner.HIDE_WIFI_STANDARD
-                        ) { hideWifiStandard = it }
-                        SwitchPreference(
-                            title = stringResource(R.string.icon_detail_wifi_hide_activity),
-                            key = Pref.Key.SystemUI.IconTuner.HIDE_WIFI_ACTIVITY
-                        ) { hideWifiActivity = it }
-                        AnimatedVisibility(hideWifiStandard && !hideWifiActivity) {
-                            SwitchPreference(
-                                title = stringResource(R.string.icon_detail_wifi_right_activity),
-                                key = Pref.Key.SystemUI.IconTuner.WIFI_ACTIVITY_RIGHT
-                            ) { rightWifiActivity = it }
+            }
+            SwitchPreference(
+                title = stringResource(R.string.icon_detail_cellular_type_map),
+                key = Pref.Key.SystemUI.IconTuner.CELLULAR_TYPE_CUSTOM
+            ) { cellularTypeCustom = it }
+            AnimatedVisibility(cellularTypeCustom) {
+                EditTextPreference(
+                    title = stringResource(R.string.icon_detail_cellular_type_map_value),
+                    key = Pref.Key.SystemUI.IconTuner.CELLULAR_TYPE_CUSTOM_VAL,
+                    defValue = ",G,E,3G,H,H+,4G,4G+,,LTE,5G,5G,5G+,5GA,5G",
+                    dataType = EditTextDataType.STRING,
+                    dialogMessage = stringResource(R.string.icon_detail_cellular_type_map_msg),
+                    isValueValid = {
+                        it is String && it.isNotEmpty() && it.split(',').let { list ->
+                            list.size == 15 || (list.size == 1 && list[0].isNotBlank())
                         }
-                    }
+                    },
+                    valuePosition = ValuePosition.HIDDEN,
+                )
+            }
+        }
+        itemPreferenceGroup(
+            key = "MOBILE_FONT",
+            titleResId = R.string.ui_title_icon_detail_font_weight,
+            visible = (tabRowSelected == 0)
+        ) {
+            SwitchPreference(
+                title = stringResource(R.string.icon_detail_cellular_fw_type),
+                key = Pref.Key.SystemUI.FontWeight.CELLULAR_TYPE
+            ) { cellularTypeFW = it }
+            AnimatedVisibility(cellularTypeFW) {
+                SeekBarPreference(
+                    title = stringResource(R.string.icon_detail_cellular_fw_type_weight),
+                    key = Pref.Key.SystemUI.FontWeight.CELLULAR_TYPE_VAL,
+                    defValue = 660,
+                    min = 1,
+                    max = 1000
+                ) { cellularTypeFWVal = it }
+            }
+            SwitchPreference(
+                title = stringResource(R.string.icon_detail_cellular_fw_type_single),
+                key = Pref.Key.SystemUI.FontWeight.CELLULAR_TYPE_SINGLE
+            ) { cellularTypeSingleFW = it }
+            AnimatedVisibility(cellularTypeSingleFW) {
+                SeekBarPreference(
+                    title = stringResource(R.string.icon_detail_cellular_fw_type_single_weight),
+                    key = Pref.Key.SystemUI.FontWeight.CELLULAR_TYPE_SINGLE_VAL,
+                    defValue = 400,
+                    min = 1,
+                    max = 1000
+                ) { cellularTypeSingleFWVal = it }
+            }
+        }
+        itemPreferenceGroup(
+            key = "MOBILE_OTHERS",
+            titleResId = R.string.ui_title_icon_detail_other,
+            last = true,
+            visible = (tabRowSelected == 0)
+        ) {
+            SwitchPreference(
+                icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_vowifi),
+                title = stringResource(R.string.icon_detail_cellular_hide_vowifi),
+                key = Pref.Key.SystemUI.IconTuner.HIDE_CELLULAR_VO_WIFI
+            )
+            SwitchPreference(
+                icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_signal_volte),
+                title = stringResource(R.string.icon_detail_cellular_hide_volte),
+                key = Pref.Key.SystemUI.IconTuner.HIDE_CELLULAR_VOLTE
+            )
+            SwitchPreference(
+                icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_volte_no_service),
+                title = stringResource(R.string.icon_detail_cellular_hide_volte_no_service),
+                key = Pref.Key.SystemUI.IconTuner.HIDE_CELLULAR_VOLTE_NO_SERVICE
+            )
+            SwitchPreference(
+                icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_speech_hd),
+                title = stringResource(R.string.icon_detail_cellular_hide_speech_hd),
+                key = Pref.Key.SystemUI.IconTuner.HIDE_CELLULAR_SPEECH_HD
+            )
+        }
+        itemPreferenceGroup(
+            key = "WLAN",
+            last = true,
+            visible = (tabRowSelected == 1)
+        ) {
+            SwitchPreference(
+                title = stringResource(R.string.icon_detail_wifi_hide_standard),
+                key = Pref.Key.SystemUI.IconTuner.HIDE_WIFI_STANDARD
+            ) { hideWifiStandard = it }
+            SwitchPreference(
+                title = stringResource(R.string.icon_detail_wifi_hide_activity),
+                key = Pref.Key.SystemUI.IconTuner.HIDE_WIFI_ACTIVITY
+            ) { hideWifiActivity = it }
+            AnimatedVisibility(hideWifiStandard && !hideWifiActivity) {
+                SwitchPreference(
+                    title = stringResource(R.string.icon_detail_wifi_right_activity),
+                    key = Pref.Key.SystemUI.IconTuner.WIFI_ACTIVITY_RIGHT
+                ) { rightWifiActivity = it }
+            }
+        }
+        itemPreferenceGroup(
+            key = "BATTERY",
+            visible = (tabRowSelected == 2)
+        ) {
+            DropDownPreference(
+                title = stringResource(R.string.icon_detail_battery_bar_style),
+                entries = dropdownEntriesBatteryStyle,
+                key = Pref.Key.SystemUI.IconTuner.BATTERY_STYLE,
+                mode = DropDownMode.Dialog
+            ) { batteryStyle = it }
+            DropDownPreference(
+                title = stringResource(R.string.icon_detail_battery_cc_style),
+                entries = dropdownEntriesBatteryStyle,
+                key = Pref.Key.SystemUI.IconTuner.BATTERY_STYLE_CC,
+                mode = DropDownMode.Dialog
+            ) { batteryStyleCC = it }
+            SwitchPreference(
+                title = stringResource(R.string.icon_detail_battery_layout_custom),
+                key = Pref.Key.SystemUI.IconTuner.BATTERY_PADDING_HORIZON
+            ) { batteryPadding = it }
+            AnimatedVisibility(batteryPadding) {
+                Column {
+                    EditTextPreference(
+                        title = stringResource(R.string.icon_detail_battery_padding_start),
+                        key = Pref.Key.SystemUI.IconTuner.BATTERY_PADDING_START_VAL,
+                        defValue = 0.0f,
+                        dataType = EditTextDataType.FLOAT
+                    ) { _, value -> batteryPaddingStartVal = value as Float }
+                    EditTextPreference(
+                        title = stringResource(R.string.icon_detail_battery_padding_end),
+                        key = Pref.Key.SystemUI.IconTuner.BATTERY_PADDING_END_VAL,
+                        defValue = 0.0f,
+                        dataType = EditTextDataType.FLOAT
+                    ) { _, value -> batteryPaddingEndVal = value as Float }
                 }
-                2 -> {
-                    PreferenceGroup {
-                        DropDownPreference(
-                            title = stringResource(R.string.icon_detail_battery_bar_style),
-                            entries = dropdownEntriesBatteryStyle,
-                            key = Pref.Key.SystemUI.IconTuner.BATTERY_STYLE,
-                            mode = DropDownMode.Dialog
-                        ) { batteryStyle = it }
-                        DropDownPreference(
-                            title = stringResource(R.string.icon_detail_battery_cc_style),
-                            entries = dropdownEntriesBatteryStyle,
-                            key = Pref.Key.SystemUI.IconTuner.BATTERY_STYLE_CC,
-                            mode = DropDownMode.Dialog
-                        ) { batteryStyleCC = it }
-                        SwitchPreference(
-                            title = stringResource(R.string.icon_detail_battery_layout_custom),
-                            key = Pref.Key.SystemUI.IconTuner.BATTERY_PADDING_HORIZON
-                        ) { batteryPadding = it }
-                        AnimatedVisibility(batteryPadding) {
-                            Column {
-                                EditTextPreference(
-                                    title = stringResource(R.string.icon_detail_battery_padding_start),
-                                    key = Pref.Key.SystemUI.IconTuner.BATTERY_PADDING_START_VAL,
-                                    defValue = 0.0f,
-                                    dataType = EditTextDataType.FLOAT
-                                ) { str, value -> batteryPaddingStartVal = value as Float }
-                                EditTextPreference(
-                                    title = stringResource(R.string.icon_detail_battery_padding_end),
-                                    key = Pref.Key.SystemUI.IconTuner.BATTERY_PADDING_END_VAL,
-                                    defValue = 0.0f,
-                                    dataType = EditTextDataType.FLOAT
-                                ) { str, value -> batteryPaddingEndVal = value as Float }
-                            }
-                        }
-                        SwitchPreference(
-                            title = stringResource(R.string.icon_detail_battery_hide_charge),
-                            summary = stringResource(R.string.icon_detail_battery_hide_charge_tips),
-                            key = Pref.Key.SystemUI.IconTuner.HIDE_BATTERY_CHARGE_OUT
-                        ) { batteryHideChargeOut = it }
+            }
+            SwitchPreference(
+                title = stringResource(R.string.icon_detail_battery_hide_charge),
+                summary = stringResource(R.string.icon_detail_battery_hide_charge_tips),
+                key = Pref.Key.SystemUI.IconTuner.HIDE_BATTERY_CHARGE_OUT
+            ) { batteryHideChargeOut = it }
+        }
+        itemPreferenceGroup(
+            key = "BATTERY_PERCENT",
+            titleResId = R.string.ui_title_icon_detail_batter_percentage,
+            visible = (tabRowSelected == 2)
+        ) {
+            DropDownPreference(
+                title = stringResource(R.string.icon_detail_battery_percent_mark_style),
+                entries = dropdownEntriesBatteryPercentage,
+                key = Pref.Key.SystemUI.IconTuner.BATTERY_PERCENT_MARK_STYLE,
+                mode = DropDownMode.Dialog
+            ) { batteryPercentMarkStyle = it }
+            SwitchPreference(
+                title = stringResource(R.string.icon_detail_battery_percent_out_size),
+                key = Pref.Key.SystemUI.IconTuner.BATTERY_PERCENT_OUT_SIZE
+            ) { batteryPercentOutSize = it }
+            AnimatedVisibility(batteryPercentOutSize) {
+                EditTextPreference(
+                    title = stringResource(R.string.icon_detail_battery_percent_out_size_value),
+                    key = Pref.Key.SystemUI.IconTuner.BATTERY_PERCENT_OUT_SIZE_VAL,
+                    defValue = 12.5f,
+                    dataType = EditTextDataType.FLOAT,
+                    isValueValid = {
+                        (it as? Float ?: -1.0f) > 0.0f
                     }
-                    PreferenceGroup(
-                        stringResource(R.string.ui_title_icon_detail_batter_percentage)
-                    ) {
-                        DropDownPreference(
-                            title = stringResource(R.string.icon_detail_battery_percent_mark_style),
-                            entries = dropdownEntriesBatteryPercentage,
-                            key = Pref.Key.SystemUI.IconTuner.BATTERY_PERCENT_MARK_STYLE,
-                            mode = DropDownMode.Dialog
-                        ) { batteryPercentMarkStyle = it }
-                        SwitchPreference(
-                            title = stringResource(R.string.icon_detail_battery_percent_out_size),
-                            key = Pref.Key.SystemUI.IconTuner.BATTERY_PERCENT_OUT_SIZE
-                        ) { batteryPercentOutSize = it }
-                        AnimatedVisibility(batteryPercentOutSize) {
-                            EditTextPreference(
-                                title = stringResource(R.string.icon_detail_battery_percent_out_size_value),
-                                key = Pref.Key.SystemUI.IconTuner.BATTERY_PERCENT_OUT_SIZE_VAL,
-                                defValue = 12.5f,
-                                dataType = EditTextDataType.FLOAT,
-                                isValueValid = {
-                                    (it as? Float ?: -1.0f) > 0.0f
-                                }
-                            ) { _, value -> batteryPercentOutSizeVal = value as? Float ?: 0.0f}
-                        }
-                        SwitchPreference(
-                            title = stringResource(R.string.icon_detail_battery_percent_in_size),
-                            key = Pref.Key.SystemUI.IconTuner.BATTERY_PERCENT_IN_SIZE
-                        ) { batteryPercentInSize = it }
-                        AnimatedVisibility(batteryPercentInSize) {
-                            EditTextPreference(
-                                title = stringResource(R.string.icon_detail_battery_percent_in_size_value),
-                                key = Pref.Key.SystemUI.IconTuner.BATTERY_PERCENT_IN_SIZE_VAL,
-                                defValue = 9.599976f,
-                                dataType = EditTextDataType.FLOAT,
-                                isValueValid = {
-                                    (it as? Float ?: -1.0f) > 0.0f
-                                }
-                            ) { _, value -> batteryPercentInSizeVal = value as? Float ?: 0.0f}
-                        }
+                ) { _, value -> batteryPercentOutSizeVal = value as? Float ?: 0.0f}
+            }
+            SwitchPreference(
+                title = stringResource(R.string.icon_detail_battery_percent_in_size),
+                key = Pref.Key.SystemUI.IconTuner.BATTERY_PERCENT_IN_SIZE
+            ) { batteryPercentInSize = it }
+            AnimatedVisibility(batteryPercentInSize) {
+                EditTextPreference(
+                    title = stringResource(R.string.icon_detail_battery_percent_in_size_value),
+                    key = Pref.Key.SystemUI.IconTuner.BATTERY_PERCENT_IN_SIZE_VAL,
+                    defValue = 9.599976f,
+                    dataType = EditTextDataType.FLOAT,
+                    isValueValid = {
+                        (it as? Float ?: -1.0f) > 0.0f
                     }
-                    PreferenceGroup(
-                        title = stringResource(R.string.ui_title_icon_detail_font_weight),
-                        last = true
-                    ) {
-                        SwitchPreference(
-                            title = stringResource(R.string.icon_detail_battery_fw_percent_out),
-                            key = Pref.Key.SystemUI.FontWeight.BATTERY_PERCENTAGE_OUT
-                        ) { batteryPercentOutFW = it }
-                        AnimatedVisibility(batteryPercentOutFW) {
-                            SeekBarPreference(
-                                title = stringResource(R.string.icon_detail_battery_fw_percent_out_weight),
-                                key = Pref.Key.SystemUI.FontWeight.BATTERY_PERCENTAGE_OUT_VAL,
-                                defValue = 500,
-                                min = 1,
-                                max = 1000
-                            ) { batteryPercentOutFWVal = it }
-                        }
-                        SwitchPreference(
-                            title = stringResource(R.string.icon_detail_battery_fw_percent_mark),
-                            key = Pref.Key.SystemUI.FontWeight.BATTERY_PERCENTAGE_MARK
-                        ) { batteryPercentMarkFW = it }
-                        AnimatedVisibility(batteryPercentMarkFW) {
-                            SeekBarPreference(
-                                title = stringResource(R.string.icon_detail_battery_fw_percent_mark_weight),
-                                key = Pref.Key.SystemUI.FontWeight.BATTERY_PERCENTAGE_MARK_VAL,
-                                defValue = 600,
-                                min = 1,
-                                max = 1000
-                            ) { batteryPercentMarkFWVal = it }
-                        }
-                        SwitchPreference(
-                            title = stringResource(R.string.icon_detail_battery_fw_percent_in),
-                            key = Pref.Key.SystemUI.FontWeight.BATTERY_PERCENTAGE_IN
-                        ) { batteryPercentInFW = it }
-                        AnimatedVisibility(batteryPercentInFW) {
-                            SeekBarPreference(
-                                title = stringResource(R.string.icon_detail_battery_fw_percent_in_weight),
-                                key = Pref.Key.SystemUI.FontWeight.BATTERY_PERCENTAGE_IN_VAL,
-                                defValue = 620,
-                                min = 1,
-                                max = 1000
-                            ) { batteryPercentInFWVal = it }
-                        }
-                    }
-                }
-                3 -> {
-                    PreferenceGroup {
-                        DropDownPreference(
-                            title = stringResource(R.string.icon_detail_net_speed_style),
-                            entries = dropdownEntriesNetworkSpeed,
-                            key = Pref.Key.SystemUI.IconTuner.NET_SPEED_MODE,
-                            mode = DropDownMode.Dialog
-                        ) { netSpeedStyle = it }
-                    }
-                    PreferenceGroup(
-                        title = stringResource(R.string.ui_title_icon_detail_font_weight),
-                        last = true
-                    ) {
-                        AnimatedVisibility(netSpeedStyle == 0) {
-                            Column {
-                                SwitchPreference(
-                                    title = stringResource(R.string.icon_detail_net_speed_fw_num),
-                                    key = Pref.Key.SystemUI.FontWeight.NET_SPEED_NUMBER
-                                ) { netSpeedNumFW = it }
-                                AnimatedVisibility(netSpeedNumFW) {
-                                    SeekBarPreference(
-                                        title = stringResource(R.string.icon_detail_net_speed_fw_num_weight),
-                                        key = Pref.Key.SystemUI.FontWeight.NET_SPEED_NUMBER_VAL,
-                                        defValue = 630,
-                                        min = 1,
-                                        max = 1000
-                                    ) { netSpeedNumFWVal = it }
-                                }
-                                SwitchPreference(
-                                    title = stringResource(R.string.icon_detail_net_speed_fw_unit),
-                                    key = Pref.Key.SystemUI.FontWeight.NET_SPEED_UNIT
-                                ) { netSpeedUnitFW = it }
-                                AnimatedVisibility(netSpeedUnitFW) {
-                                    SeekBarPreference(
-                                        title = stringResource(R.string.icon_detail_net_speed_fw_unit_weight),
-                                        key = Pref.Key.SystemUI.FontWeight.NET_SPEED_UNIT_VAL,
-                                        defValue = 630,
-                                        min = 1,
-                                        max = 1000
-                                    ) { netSpeedUnitFWVal = it }
-                                }
-                            }
-                        }
-                        AnimatedVisibility(netSpeedStyle != 0) {
-                            Column {
-                                SwitchPreference(
-                                    title = stringResource(R.string.icon_detail_net_speed_fw_separate),
-                                    key = Pref.Key.SystemUI.FontWeight.NET_SPEED_SEPARATE
-                                ) { netSpeedSeparateFW = it }
-                                AnimatedVisibility(netSpeedSeparateFW) {
-                                    SeekBarPreference(
-                                        title = stringResource(R.string.icon_detail_net_speed_fw_separate_weight),
-                                        key = Pref.Key.SystemUI.FontWeight.NET_SPEED_SEPARATE_VAL,
-                                        defValue = 630,
-                                        min = 1,
-                                        max = 1000
-                                    ) { netSpeedSeparateFWVal = it }
-                                }
-                            }
-                        }
-                    }
-                }
+                ) { _, value -> batteryPercentInSizeVal = value as? Float ?: 0.0f}
+            }
+        }
+        itemPreferenceGroup(
+            key = "BATTERY_FONT",
+            titleResId = R.string.ui_title_icon_detail_font_weight,
+            last = true,
+            visible = (tabRowSelected == 2)
+        ) {
+            SwitchPreference(
+                title = stringResource(R.string.icon_detail_battery_fw_percent_out),
+                key = Pref.Key.SystemUI.FontWeight.BATTERY_PERCENTAGE_OUT
+            ) { batteryPercentOutFW = it }
+            AnimatedVisibility(batteryPercentOutFW) {
+                SeekBarPreference(
+                    title = stringResource(R.string.icon_detail_battery_fw_percent_out_weight),
+                    key = Pref.Key.SystemUI.FontWeight.BATTERY_PERCENTAGE_OUT_VAL,
+                    defValue = 500,
+                    min = 1,
+                    max = 1000
+                ) { batteryPercentOutFWVal = it }
+            }
+            SwitchPreference(
+                title = stringResource(R.string.icon_detail_battery_fw_percent_mark),
+                key = Pref.Key.SystemUI.FontWeight.BATTERY_PERCENTAGE_MARK
+            ) { batteryPercentMarkFW = it }
+            AnimatedVisibility(batteryPercentMarkFW) {
+                SeekBarPreference(
+                    title = stringResource(R.string.icon_detail_battery_fw_percent_mark_weight),
+                    key = Pref.Key.SystemUI.FontWeight.BATTERY_PERCENTAGE_MARK_VAL,
+                    defValue = 600,
+                    min = 1,
+                    max = 1000
+                ) { batteryPercentMarkFWVal = it }
+            }
+            SwitchPreference(
+                title = stringResource(R.string.icon_detail_battery_fw_percent_in),
+                key = Pref.Key.SystemUI.FontWeight.BATTERY_PERCENTAGE_IN
+            ) { batteryPercentInFW = it }
+            AnimatedVisibility(batteryPercentInFW) {
+                SeekBarPreference(
+                    title = stringResource(R.string.icon_detail_battery_fw_percent_in_weight),
+                    key = Pref.Key.SystemUI.FontWeight.BATTERY_PERCENTAGE_IN_VAL,
+                    defValue = 620,
+                    min = 1,
+                    max = 1000
+                ) { batteryPercentInFWVal = it }
+            }
+        }
+        itemPreferenceGroup(
+            key = "NET_SPEED",
+            visible = (tabRowSelected == 3)
+        ) {
+            DropDownPreference(
+                title = stringResource(R.string.icon_detail_net_speed_style),
+                entries = dropdownEntriesNetworkSpeed,
+                key = Pref.Key.SystemUI.IconTuner.NET_SPEED_MODE,
+                mode = DropDownMode.Dialog
+            ) { netSpeedStyle = it }
+            AnimatedVisibility(netSpeedStyle != 0) {
+                DropDownPreference(
+                    title = stringResource(R.string.icon_detail_net_speed_unit_style),
+                    entries = dropdownEntriesNetworkSpeedUnit,
+                    key = Pref.Key.SystemUI.IconTuner.NET_SPEED_UNIT_MODE
+                ) { netSpeedUnitStyle = it }
+            }
+            SwitchPreference(
+                title = stringResource(R.string.icon_detail_net_speed_refresh),
+                summary = stringResource(R.string.icon_detail_net_speed_refresh_tips),
+                key = Pref.Key.SystemUI.IconTuner.NET_SPEED_REFRESH
+            )
+        }
+        itemPreferenceGroup(
+            key = "NET_SPEED_FONT_0",
+            titleResId = R.string.ui_title_icon_detail_font_weight,
+            last = true,
+            visible = (tabRowSelected == 3 && netSpeedStyle == 0)
+        ) {
+            SwitchPreference(
+                title = stringResource(R.string.icon_detail_net_speed_fw_num),
+                key = Pref.Key.SystemUI.FontWeight.NET_SPEED_NUMBER
+            ) { netSpeedNumFW = it }
+            AnimatedVisibility(netSpeedNumFW) {
+                SeekBarPreference(
+                    title = stringResource(R.string.icon_detail_net_speed_fw_num_weight),
+                    key = Pref.Key.SystemUI.FontWeight.NET_SPEED_NUMBER_VAL,
+                    defValue = 630,
+                    min = 1,
+                    max = 1000
+                ) { netSpeedNumFWVal = it }
+            }
+            SwitchPreference(
+                title = stringResource(R.string.icon_detail_net_speed_fw_unit),
+                key = Pref.Key.SystemUI.FontWeight.NET_SPEED_UNIT
+            ) { netSpeedUnitFW = it }
+            AnimatedVisibility(netSpeedUnitFW) {
+                SeekBarPreference(
+                    title = stringResource(R.string.icon_detail_net_speed_fw_unit_weight),
+                    key = Pref.Key.SystemUI.FontWeight.NET_SPEED_UNIT_VAL,
+                    defValue = 630,
+                    min = 1,
+                    max = 1000
+                ) { netSpeedUnitFWVal = it }
+            }
+        }
+        itemPreferenceGroup(
+            key = "NET_SPEED_FONT_OTHERS",
+            titleResId = R.string.ui_title_icon_detail_font_weight,
+            last = true,
+            visible = (tabRowSelected == 3 && netSpeedStyle != 0)
+        ) {
+            SwitchPreference(
+                title = stringResource(R.string.icon_detail_net_speed_fw_separate),
+                key = Pref.Key.SystemUI.FontWeight.NET_SPEED_SEPARATE
+            ) { netSpeedSeparateFW = it }
+            AnimatedVisibility(netSpeedSeparateFW) {
+                SeekBarPreference(
+                    title = stringResource(R.string.icon_detail_net_speed_fw_separate_weight),
+                    key = Pref.Key.SystemUI.FontWeight.NET_SPEED_SEPARATE_VAL,
+                    defValue = 630,
+                    min = 1,
+                    max = 1000
+                ) { netSpeedSeparateFWVal = it }
             }
         }
     }

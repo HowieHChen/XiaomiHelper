@@ -20,6 +20,8 @@ import dev.lackluster.hyperx.compose.preference.SwitchPreference
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.ui.MainActivity
 import dev.lackluster.mihelper.data.Pref
+import dev.lackluster.mihelper.data.Scope
+import dev.lackluster.mihelper.ui.component.RebootMenuItem
 import dev.lackluster.mihelper.ui.component.itemPreferenceGroup
 import dev.lackluster.mihelper.utils.Device
 
@@ -54,7 +56,13 @@ fun StatusBarClockPage(navController: NavController, adjustPadding: PaddingValue
         MainActivity.blurEnabled,
         MainActivity.blurTintAlphaLight,
         MainActivity.blurTintAlphaDark,
-        mode
+        mode,
+        actions = {
+            RebootMenuItem(
+                appName = stringResource(R.string.scope_systemui),
+                appPkg = Scope.SYSTEM_UI
+            )
+        }
     ) {
         itemPreferenceGroup(
             key = "general",

@@ -22,9 +22,8 @@ package dev.lackluster.mihelper.hook.rules.miuihome
 
 import android.view.View
 import android.widget.TextView
+import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.current
-import com.highcapable.yukihookapi.hook.factory.method
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.Device
 import dev.lackluster.mihelper.utils.factory.hasEnable
@@ -32,18 +31,21 @@ import dev.lackluster.mihelper.utils.factory.hasEnable
 object RemoveReport : YukiBaseHooker(){
     override fun onHook() {
         hasEnable(Pref.Key.MiuiHome.REMOVE_REPORT, extraCondition = { !Device.isPad }) {
-            "com.miui.home.launcher.uninstall.BaseUninstallDialog".toClass().method {
-                name = "init"
-                paramCount = 2
-            }.hook {
-                after {
-                    this.instance.current().field {
-                        name = "mDialogView"
-                        superClass()
-                    }.any()?.current(true)?.field {
+            "com.miui.home.launcher.uninstall.BaseUninstallDialog".toClassOrNull()?.apply {
+                val fldDialogView = resolve().firstFieldOrNull {
+                    name = "mDialogView"
+                }
+                val fldReport = "com.miui.home.launcher.uninstall.UninstallDialogViewContainer".toClassOrNull()
+                    ?.resolve()?.firstFieldOrNull {
                         name = "mReport"
-                    }?.any()?.let {
-                        (it as? TextView)?.visibility = View.GONE
+                    }
+                resolve().firstMethodOrNull {
+                    name = "init"
+                }?.hook {
+                    after {
+                        fldDialogView?.copy()?.of(this.instance)?.get()?.let { dialogView ->
+                            fldReport?.copy()?.of(dialogView)?.get<TextView>()?.visibility = View.GONE
+                        }
                     }
                 }
             }

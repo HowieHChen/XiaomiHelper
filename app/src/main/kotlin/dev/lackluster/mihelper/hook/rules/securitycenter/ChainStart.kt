@@ -20,61 +20,45 @@
 
 package dev.lackluster.mihelper.hook.rules.securitycenter
 
-import android.content.DialogInterface
+import android.view.View
+import android.widget.Button
+import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.current
-import com.highcapable.yukihookapi.hook.type.android.DialogInterfaceClass
-import com.highcapable.yukihookapi.hook.type.java.IntType
 import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.DexKit
-import dev.lackluster.mihelper.utils.Prefs
+import dev.lackluster.mihelper.utils.factory.hasEnable
+
 
 object ChainStart : YukiBaseHooker() {
-    private val mode = Prefs.getInt(Pref.Key.SecurityCenter.LINK_START, 0)
-    private val confirmStartActivity by lazy {
-        DexKit.dexKitBridge.getClassData("com.miui.wakepath.ui.ConfirmStartActivity")
-    }
-    private val initDialogMethod by lazy {
-        DexKit.findMethodWithCache("link_start_init") {
-            matcher {
-                addUsingString("restrictForChain")
-                addUsingString("CallerPkgName")
-                addUsingString("CalleePkgName")
-            }
-            searchClasses = confirmStartActivity?.let { listOf(it) }
-        }
-    }
-    private val showDialogMethod by lazy {
-        DexKit.findMethodWithCache("link_start_show") {
-            matcher {
-                paramCount = 1
-                paramTypes("miuix.appcompat.app.AlertDialog")
-            }
-            searchClasses = confirmStartActivity?.let { listOf(it) }
-        }
-    }
 
     override fun onHook() {
-        if (mode != 0 && appClassLoader != null) {
-            if (mode == 1) {
-                showDialogMethod?.getMethodInstance(appClassLoader!!)?.hook {
-                    before {
-                        val dialog = this.args(0).any() ?: return@before
-                        this.instance.current().method {
-                            name = "onClick"
-                            param(DialogInterfaceClass, IntType)
-                        }.call(dialog, DialogInterface.BUTTON_POSITIVE)
-                        this.result = null
-                    }
+        hasEnable(Pref.Key.SecurityCenter.CHAIN_START) {
+            "com.miui.wakepath.ui.ConfirmStartActivity".toClassOrNull()?.apply {
+                val metOnClick = resolve().firstMethodOrNull {
+                    name = "onClick"
+                    parameters(View::class)
                 }
-            } else if (mode == 2) {
-                initDialogMethod?.getMethodInstance(appClassLoader!!)?.hook {
-                    after {
-                        this.instance.current().field {
-                            type = Boolean
-                            modifiers { isProtected }
-                            superClass(true)
-                        }.setTrue()
+                val fldDialog = resolve().firstFieldOrNull {
+                    type("miuix.appcompat.app.AlertDialog")
+                    superclass()
+                }
+                val metGetButton = "miuix.appcompat.app.AlertDialog".toClassOrNull()?.resolve()?.firstMethodOrNull {
+                    name = "getButton"
+                }
+                resolve().firstMethodOrNull {
+                    name = "onDialogCreated"
+                }?.hook {
+                    before {
+                        val mDialog = fldDialog?.copy()?.of(this.instance)?.get() ?: return@before
+                        val buttonAlways = metGetButton?.copy()?.of(mDialog)?.invoke<Button>(2)
+                        if (buttonAlways != null) {
+                            buttonAlways.id = 2
+                            metOnClick?.copy()?.of(this.instance)?.invoke(buttonAlways)
+                        } else {
+                            metGetButton?.copy()?.of(mDialog)?.invoke<Button>(3)?.let { buttonOnce ->
+                                buttonOnce.id = 3
+                                metOnClick?.copy()?.of(this.instance)?.invoke(buttonOnce)
+                            }
+                        }
                     }
                 }
             }

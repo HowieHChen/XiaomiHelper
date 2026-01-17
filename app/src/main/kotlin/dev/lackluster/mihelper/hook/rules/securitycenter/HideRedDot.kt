@@ -1,7 +1,7 @@
 package dev.lackluster.mihelper.hook.rules.securitycenter
 
+import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.method
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.DexKit
 import dev.lackluster.mihelper.utils.factory.hasEnable
@@ -16,64 +16,27 @@ object HideRedDot : YukiBaseHooker() {
             }
         }
     }
+
     override fun onHook() {
         hasEnable(Pref.Key.SecurityCenter.HIDE_RED_DOT) {
             if (appClassLoader == null) return@hasEnable
             sixCardViewHolderClass?.getInstance(appClassLoader!!)?.apply {
-                method {
-                    name = "refreshAntiSpam"
-                }.hook {
-                    before {
-                        this.args(0).setTrue()
-                    }
-                }
-                method {
-                    name = "refreshAppManager"
-                }.hook {
-                    before {
-                        this.args(0).setTrue()
-                    }
-                }
-                method {
-                    name = "refreshCleanMaster"
-                }.hook {
-                    before {
-                        this.args(0).setTrue()
-                    }
-                }
-                method {
-                    name = "refreshDeepClean"
-                }.hook {
-                    before {
-                        this.args(0).setTrue()
-                    }
-                }
-                method {
-                    name = "refreshNetworkAssist"
-                }.hook {
-                    before {
-                        this.args(0).setTrue()
-                    }
-                }
-                method {
-                    name = "refreshOptimizemanage"
-                }.hook {
-                    before {
-                        this.args(0).setTrue()
-                    }
-                }
-                method {
-                    name = "refreshPowerCenter"
-                }.hook {
-                    before {
-                        this.args(0).setTrue()
-                    }
-                }
-                method {
-                    name = "refreshSecurityScan"
-                }.hook {
-                    before {
-                        this.args(0).setTrue()
+                listOf(
+                    "refreshAntiSpam",
+                    "refreshAppManager",
+                    "refreshCleanMaster",
+                    "refreshDeepClean",
+                    "refreshNetworkAssist",
+                    "refreshOptimizemanage",
+                    "refreshPowerCenter",
+                    "refreshSecurityScan",
+                ).forEach { metName ->
+                    resolve().firstMethodOrNull {
+                        name = metName
+                    }?.hook {
+                        before {
+                            this.args(0).setTrue()
+                        }
                     }
                 }
             }

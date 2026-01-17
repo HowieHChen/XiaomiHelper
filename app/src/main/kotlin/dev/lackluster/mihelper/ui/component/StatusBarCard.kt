@@ -492,6 +492,7 @@ fun BatteryIcon(
 @Composable
 fun NetworkSpeed(
     style: Int,
+    unitStyle: Int,
     netSpeedNumFW: Boolean,
     netSpeedNumFWVal: Int,
     netSpeedUnitFW: Boolean,
@@ -522,27 +523,44 @@ fun NetworkSpeed(
     )
     val textLine1: String
     val textLine2: String
-    when (style) {
-        1 -> {
-            textLine1 = "0.00MB "
-            textLine2 = "11.8MB "
+    if (style in 1..4) {
+        val textLineSb1 = StringBuilder()
+        val textLineSb2 = StringBuilder()
+        textLineSb1.append("0.00")
+        textLineSb2.append("11.8")
+        textLineSb1.append("M")
+        textLineSb2.append("M")
+        when (unitStyle) {
+            1 -> {
+                textLineSb1.append("B")
+                textLineSb2.append("B")
+            }
+            2 -> {
+                textLineSb1.append("B/s")
+                textLineSb2.append("B/s")
+            }
         }
-        2 -> {
-            textLine1 = "0.00MB↑ "
-            textLine2 = "11.8MB↓ "
+        when (style) {
+            2 -> {
+                textLineSb1.append("↑")
+                textLineSb2.append("↓")
+            }
+            3 -> {
+                textLineSb1.append("▲")
+                textLineSb2.append("▼")
+            }
+            4 -> {
+                textLineSb1.append("△")
+                textLineSb2.append("▼")
+            }
         }
-        3 -> {
-            textLine1 = "0.00MB▲ "
-            textLine2 = "11.8MB▼ "
-        }
-        4 -> {
-            textLine1 = "0.00MB△ "
-            textLine2 = "11.8MB▼ "
-        }
-        else -> {
-            textLine1 = "6.13 "
-            textLine2 = "MB/s "
-        }
+        textLineSb1.append(" ")
+        textLineSb2.append(" ")
+        textLine1 = textLineSb1.toString()
+        textLine2 = textLineSb2.toString()
+    } else {
+        textLine1 = "6.13 "
+        textLine2 = "MB/s "
     }
     val constraints = ConstraintSet {
         val parent = createRefFor("parent")

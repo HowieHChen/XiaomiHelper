@@ -21,98 +21,114 @@
 package dev.lackluster.mihelper.hook.rules.miuihome.minus
 
 import android.content.Intent
+import android.os.Bundle
+import com.highcapable.kavaref.KavaRef.Companion.resolve
+import com.highcapable.kavaref.condition.type.Modifiers
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.constructor
-import com.highcapable.yukihookapi.hook.factory.current
-import com.highcapable.yukihookapi.hook.factory.field
-import com.highcapable.yukihookapi.hook.factory.method
-import com.highcapable.yukihookapi.hook.type.android.BundleClass
-import com.highcapable.yukihookapi.hook.type.java.StringClass
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.factory.hasEnable
 
 object MinusSettings : YukiBaseHooker() {
+    private val fldCanSwitchMinusScreen by lazy {
+        "com.miui.home.launcher.LauncherAssistantCompat".toClassOrNull()?.resolve()?.firstFieldOrNull {
+            name = "CAN_SWITCH_MINUS_SCREEN"
+            modifiers(Modifiers.STATIC)
+        }
+    }
+    private val fldIsInternationalBuild by lazy {
+        "miui.os.Build".toClassOrNull()?.resolve()?.firstFieldOrNull {
+            name = "IS_INTERNATIONAL_BUILD"
+            modifiers(Modifiers.STATIC)
+        }
+    }
+
     override fun onHook() {
         hasEnable(Pref.Key.MiuiHome.MINUS_RESTORE_SETTING) {
-            val clazzUtilities = "com.miui.home.launcher.common.Utilities".toClass()
-            val clazzLauncher = "com.miui.home.launcher.Launcher".toClass()
-            val clazzMiuiHomeSettings = "com.miui.home.settings.MiuiHomeSettings".toClass()
-            val isInternationalBuild = "miui.os.Build".toClass().field {
-                name = "IS_INTERNATIONAL_BUILD"
-                modifiers { isStatic }
-            }.get()
             "com.miui.home.launcher.DeviceConfig".toClassOrNull()?.apply {
-                method {
+                resolve().firstMethodOrNull {
                     name = "isUseGoogleMinusScreen"
-                }.hook {
+                }?.hook {
                     before {
-                        "com.miui.home.launcher.LauncherAssistantCompat".toClass().field {
-                            name = "CAN_SWITCH_MINUS_SCREEN"
-                            modifiers { isStatic }
-                        }.get().setTrue()
+                        fldCanSwitchMinusScreen?.set(true)
                     }
                 }
             }
             "com.miui.home.launcher.LauncherAssistantCompat".toClassOrNull()?.apply {
-                method {
+                val metGetCurrentPersonalAssistant = "com.miui.home.launcher.common.Utilities".toClassOrNull()
+                    ?.resolve()?.firstMethodOrNull {
+                        name = "getCurrentPersonalAssistant"
+                        modifiers(Modifiers.STATIC)
+                    }
+                resolve().firstMethodOrNull {
                     name = "newInstance"
-                    param(clazzLauncher.name)
-                }.hook {
+                    parameterCount = 1
+                }?.hook {
                     before {
-                        val isPersonalAssistantGoogle = clazzUtilities.method {
-                            name = "getCurrentPersonalAssistant"
-                        }.get().string() == "personal_assistant_google"
-                        isInternationalBuild.set(isPersonalAssistantGoogle)
+                        fldIsInternationalBuild?.set(
+                            metGetCurrentPersonalAssistant?.invoke<String>() == "personal_assistant_google"
+                        )
                     }
                     after {
-                        isInternationalBuild.setFalse()
+                        fldIsInternationalBuild?.set(false)
                     }
                 }
             }
-            clazzLauncher.constructor().hook {
-                before {
-                    isInternationalBuild.setTrue()
-                }
-                after {
-                    isInternationalBuild.setFalse()
+            "com.miui.home.launcher.Launcher".toClassOrNull()?.apply {
+                resolve().firstConstructorOrNull()?.hook {
+                    before {
+                        fldIsInternationalBuild?.set(true)
+                    }
+                    after {
+                        fldIsInternationalBuild?.set(false)
+                    }
                 }
             }
-            clazzMiuiHomeSettings.apply {
-                method {
+            "com.miui.home.settings.MiuiHomeSettings".toClassOrNull()?.apply {
+                val fldSwitchPersonalAssistant = resolve().firstFieldOrNull {
+                    name = "mSwitchPersonalAssistant"
+                }
+                val metGetPreferenceScreen = resolve().firstMethodOrNull {
+                    name = "getPreferenceScreen"
+                    superclass()
+                }
+                val metAddPreference = "androidx.preference.PreferenceScreen".toClassOrNull()?.resolve()?.firstMethodOrNull {
+                    name = "addPreference"
+                    superclass()
+                }
+                val clzValuePreference = "com.miui.home.settings.preference.ValuePreference".toClassOrNull()
+                val metSetVisible = clzValuePreference?.resolve()?.firstMethodOrNull {
+                    name = "setVisible"
+                    superclass()
+                }
+                val metSetIntent = clzValuePreference?.resolve()?.firstMethodOrNull {
+                    name = "setIntent"
+                    superclass()
+                }
+                val metSetOnPreferenceChangeListener = clzValuePreference?.resolve()?.firstMethodOrNull {
+                    name = "setOnPreferenceChangeListener"
+                    superclass()
+                }
+                resolve().firstMethodOrNull {
                     name = "onCreatePreferences"
-                    param(BundleClass, StringClass)
-                }.hook {
+                    parameters(Bundle::class, String::class)
+                }?.hook {
                     after {
-                        val mSwitchPersonalAssistant = this.instance.current().field {
-                            name = "mSwitchPersonalAssistant"
-                        }.any() ?: return@after
-                        mSwitchPersonalAssistant.current().method {
-                            name = "setIntent"
-                            superClass()
-                        }.call(Intent("com.miui.home.action.LAUNCHER_PERSONAL_ASSISTANT_SETTING"))
-                        mSwitchPersonalAssistant.current().method {
-                            name = "setOnPreferenceChangeListener"
-                            superClass()
-                        }.call(this.instance)
-                        this.instance.current().method {
-                            name = "getPreferenceScreen"
-                            superClass()
-                        }.call()?.current()?.method {
-                            name = "addPreference"
-                            superClass()
-                        }?.call(mSwitchPersonalAssistant)
+                        val switchPersonalAssistant = fldSwitchPersonalAssistant?.copy()?.of(this.instance)?.get() ?: return@after
+                        metSetIntent?.copy()?.of(switchPersonalAssistant)?.invoke(
+                            Intent("com.miui.home.action.LAUNCHER_PERSONAL_ASSISTANT_SETTING")
+                        )
+                        metSetOnPreferenceChangeListener?.copy()?.of(switchPersonalAssistant)?.invoke(this.instance)
+                        metGetPreferenceScreen?.copy()?.of(this.instance)?.invoke()?.let { preferenceScreen ->
+                            metAddPreference?.copy()?.of(preferenceScreen)?.invoke(switchPersonalAssistant)
+                        }
                     }
                 }
-                method {
+                resolve().firstMethodOrNull {
                     name = "onResume"
-                }.hook {
+                }?.hook {
                     after {
-                        this.instance.current().field {
-                            name = "mSwitchPersonalAssistant"
-                        }.any()?.current()?.method {
-                            name = "setVisible"
-                            superClass()
-                        }?.call(true)
+                        val switchPersonalAssistant = fldSwitchPersonalAssistant?.copy()?.of(this.instance)?.get() ?: return@after
+                        metSetVisible?.copy()?.of(switchPersonalAssistant)?.invoke(true)
                     }
                 }
             }

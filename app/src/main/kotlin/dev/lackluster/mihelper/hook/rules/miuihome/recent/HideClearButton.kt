@@ -1,174 +1,99 @@
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
+ * This file is part of XiaomiHelper project
+ * Copyright (C) 2026 HowieHChen, howie.dev@outlook.com
+
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package dev.lackluster.mihelper.hook.rules.miuihome.recent
 
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.MarginLayoutParams
-import android.widget.FrameLayout
 import android.widget.TextView
-import androidx.core.view.marginStart
+import com.highcapable.kavaref.KavaRef.Companion.resolve
+import com.highcapable.kavaref.extension.makeAccessible
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.current
-import com.highcapable.yukihookapi.hook.factory.field
-import com.highcapable.yukihookapi.hook.factory.method
 import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.Device
 import dev.lackluster.mihelper.utils.Prefs
 import dev.lackluster.mihelper.utils.factory.hasEnable
 
 object HideClearButton : YukiBaseHooker() {
     private val memInfoClear = Prefs.getBoolean(Pref.Key.MiuiHome.RECENT_MEM_INFO_CLEAR, false)
-    private val recentsContainerClass by lazy {
-        "com.miui.home.recents.views.RecentsContainer".toClass()
+    private val clzRecentsContainer by lazy {
+        "com.miui.home.recents.views.RecentsContainer".toClassOrNull()
     }
-    private val cleanInRecentsMethod by lazy {
-        recentsContainerClass.method {
+    private val metCleanInRecents by lazy {
+        clzRecentsContainer?.resolve()?.firstMethodOrNull {
             name = "cleanInRecents"
-        }.give()
+        }?.self?.apply { makeAccessible() }
     }
-    private val isClearContainerVisibleMethod by lazy {
-        recentsContainerClass.method {
+    private val metIsClearContainerVisible by lazy {
+        clzRecentsContainer?.resolve()?.firstMethodOrNull {
             name = "isClearContainerVisible"
-        }.give()
+        }?.self?.apply { makeAccessible() }
     }
-    private val cleanAllTaskMethod by lazy {
-        recentsContainerClass.method {
-            name = "cleanAllTask"
-        }.give()
-    }
-    private val recentsDecorationsClass by lazy {
-        "com.miui.home.recents.views.RecentsDecorations".toClass()
-    }
-    private val isClearContainerVisibleDMethod by lazy {
-        recentsDecorationsClass.method {
-            name = "isClearContainerVisible"
-        }.give()
-    }
-    private val mClearAllViewJustClickedField by lazy {
-        recentsDecorationsClass.field {
-            name = "mClearAllViewJustClicked"
-        }.give()
-    }
-    private val mResetClearAllViewClickableField by lazy {
-        recentsDecorationsClass.field {
-            name = "mResetClearAllViewClickable"
-        }.give()
-    }
-    private val mRecentsContainerField by lazy {
-        recentsDecorationsClass.field {
-            name = "mRecentsContainer"
-        }.give()
-    }
-
 
     override fun onHook() {
         hasEnable(Pref.Key.MiuiHome.RECENT_HIDE_CLEAR_BUTTON) {
-            if (Device.isPad) {
-                recentsDecorationsClass.apply {
-                    method {
-                        name = "updateClearContainerVisible"
-                    }.hook {
-                        intercept()
-                    }
-                    method {
-                        name = "findAndSetupViews"
-                    }.hook {
-                        after {
-                            this.instance.current().field {
-                                name = "mClearAllTaskContainerForPad"
-                            }.cast<View>()?.apply {
-                                isClickable = false
-                                setOnClickListener(null)
-                                visibility = View.GONE
-                            }
-                            if (memInfoClear) {
-                                this.instance.current().field {
-                                    name = "mTxtMemoryInfo1"
-                                }.cast<TextView>()?.apply {
-                                    isClickable = false
-                                }
-                                this.instance.current().field {
-                                    name = "mTxtMemoryInfo2"
-                                }.cast<TextView>()?.apply {
-                                    isClickable = false
-                                }
-                                this.instance.current().field {
-                                    name = "mSeparatorForMemoryInfo"
-                                }.cast<View>()?.apply {
-                                    isClickable = false
-                                }
-                                val mWorldContainer = this.instance.current().field {
-                                    name = "mWorldContainer"
-                                }.cast<FrameLayout>()
-                                this.instance.current().field {
-                                    name = "mTxtMemoryContainer"
-                                }.cast<ViewGroup>()?.apply {
-                                    mWorldContainer?.marginStart?.let {
-                                        layoutParams = (layoutParams as MarginLayoutParams).apply {
-                                            marginEnd = it
-                                        }
-                                    }
-                                    isLongClickable = true
-                                    setOnLongClickListener {
-                                        val instance = this@after.instance as View
-                                        if (mClearAllViewJustClickedField?.getBoolean(instance) == true) return@setOnLongClickListener true
-                                        val isClearContainerVisible = isClearContainerVisibleDMethod?.invoke(instance) == true
-                                        if (isClearContainerVisible) {
-                                            mClearAllViewJustClickedField?.setBoolean(instance, true)
-                                            val mResetClearAllViewClickable = mResetClearAllViewClickableField?.get(instance) as? Runnable
-                                            instance.postDelayed(mResetClearAllViewClickable, 800L)
-                                            val mRecentsContainer = mRecentsContainerField?.get(instance)
-                                            cleanAllTaskMethod?.invoke(mRecentsContainer)
-                                        }
-                                        true
-                                    }
-                                }
-                            }
-                        }
-                    }
+            clzRecentsContainer?.apply {
+                val fldClearAnimView = resolve().firstFieldOrNull {
+                    name = "mClearAnimView"
                 }
-            } else {
-                recentsContainerClass.apply {
-                    method {
-                        name = "onFinishInflate"
-                    }.hook {
-                        after {
-                            this.instance.current().field {
-                                name = "mClearAnimView"
-                            }.cast<View>()?.apply {
+                val fldTxtMemoryInfo1 = resolve().firstFieldOrNull {
+                    name = "mTxtMemoryInfo1"
+                }
+                val fldTxtMemoryInfo2 = resolve().firstFieldOrNull {
+                    name = "mTxtMemoryInfo2"
+                }
+                val fldSeparatorForMemoryInfo = resolve().firstFieldOrNull {
+                    name = "mSeparatorForMemoryInfo"
+                }
+                val fldTxtMemoryContainer = resolve().firstFieldOrNull {
+                    name = "mTxtMemoryContainer"
+                }
+                resolve().firstMethodOrNull {
+                    name = "onFinishInflate"
+                }?.hook {
+                    after {
+                        fldClearAnimView?.copy()?.of(this.instance)?.get<View>()?.apply {
+                            isClickable = false
+                            isLongClickable = false
+                            setOnClickListener(null)
+                            setOnLongClickListener(null)
+                            visibility = View.INVISIBLE
+                        }
+                        if (memInfoClear) {
+                            val instance = this.instance
+                            fldTxtMemoryInfo1?.copy()?.of(this.instance)?.get<TextView>()?.apply {
                                 isClickable = false
-                                isLongClickable = false
-                                setOnClickListener(null)
-                                setOnLongClickListener(null)
-                                visibility = View.INVISIBLE
                             }
-                            if (memInfoClear) {
-                                this.instance.current().field {
-                                    name = "mTxtMemoryInfo1"
-                                }.cast<TextView>()?.apply {
-                                    isClickable = false
-                                }
-                                this.instance.current().field {
-                                    name = "mTxtMemoryInfo2"
-                                }.cast<TextView>()?.apply {
-                                    isClickable = false
-                                }
-                                this.instance.current().field {
-                                    name = "mSeparatorForMemoryInfo"
-                                }.cast<View>()?.apply {
-                                    isClickable = false
-                                }
-                                this.instance.current().field {
-                                    name = "mTxtMemoryContainer"
-                                }.cast<ViewGroup>()?.apply {
-                                    isLongClickable = true
-                                    setOnLongClickListener {
-                                        val instance = this@after.instance
-                                        val isClearContainerVisible = isClearContainerVisibleMethod?.invoke(instance) == true
-                                        if (isClearContainerVisible) {
-                                            cleanInRecentsMethod?.invoke(instance)
-                                        }
-                                        true
+                            fldTxtMemoryInfo2?.copy()?.of(this.instance)?.get<TextView>()?.apply {
+                                isClickable = false
+                            }
+                            fldSeparatorForMemoryInfo?.copy()?.of(this.instance)?.get<View>()?.apply {
+                                isClickable = false
+                            }
+                            fldTxtMemoryContainer?.copy()?.of(this.instance)?.get<ViewGroup>()?.apply {
+                                isLongClickable = true
+                                setOnLongClickListener {
+                                    val isClearContainerVisible = metIsClearContainerVisible?.invoke(instance) == true
+                                    if (isClearContainerVisible) {
+                                        metCleanInRecents?.invoke(instance)
                                     }
+                                    true
                                 }
                             }
                         }

@@ -199,11 +199,6 @@ class MainActivity : HyperXActivity() {
                 val newValue = if (oldValue) 1 else 0
                 SafeSP.putAny(Pref.Key.PackageInstaller.INSTALL_SOURCE, newValue)
             }
-            if (SafeSP.getInt(Pref.Key.SecurityCenter.LINK_START, -1) == -1) {
-                val oldValue = SafeSP.getBoolean(Pref.OldKey.SecurityCenter.SKIP_WARNING, false)
-                val newValue = if (oldValue) 1 else 0
-                SafeSP.putAny(Pref.Key.SecurityCenter.LINK_START, newValue)
-            }
         }
         if (spVersion < 5) {
             if (SafeSP.getInt(Pref.Key.SystemUI.MediaControl.LYT_ALBUM, -1) == -1) {

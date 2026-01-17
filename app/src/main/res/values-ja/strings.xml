@@ -184,7 +184,6 @@
     <string name="home_icon_corner4large">大きなアイコンのコーナーの半径を均一にする</string>
     <string name="home_icon_corner4large_tips">カプセル型のアイコンは、丸みを帯びた長方形のアイコンになります</string>
     <string name="ui_title_home_recent">最近のタスク</string>
-    <string name="home_recent_pad_show_memory">タブレットにメモリ使用量を表示する</string>
     <string name="home_recent_show_real_memory">実際のメモリ使用量を表示する</string>
     <string name="home_recent_wallpaper_darken">壁紙の輝度を下げるのを止める</string>
     <string name="home_recent_wallpaper_darken_tips">最近のタスクの表示時に壁紙の輝度を自動的に下げる動作を止めます</string>

@@ -50,6 +50,8 @@ object ResourcesUtils : YukiBaseHooker() {
     var mobile_signal_container = 0
     var TextAppearance_StatusBar_Battery_Percent = 0
     var TextAppearance_StatusBar_NetWorkSpeedNumber = 0
+    var megabyte_per_second = 0
+    var kilobyte_per_second = 0
     // Media control panel
     var notification_element_blend_shade_colors = 0
     var notification_element_blend_colors = 0
@@ -109,6 +111,8 @@ object ResourcesUtils : YukiBaseHooker() {
                     mobile_signal_container = this.getResID("mobile_signal_container", "id", PKG_NAME)
                     TextAppearance_StatusBar_Battery_Percent = this.getResID("TextAppearance.StatusBar.Battery.Percent", "style", PKG_NAME)
                     TextAppearance_StatusBar_NetWorkSpeedNumber = this.getResID("TextAppearance.StatusBar.NetWorkSpeedNumber", "style", PKG_NAME)
+                    megabyte_per_second = this.getResID("TextAppearance.StatusBar.NetWorkSpeedNumber", "string", PKG_NAME)
+                    kilobyte_per_second = this.getResID("kilobyte_per_second", "string", PKG_NAME)
                     notification_element_blend_shade_colors = this.getResID("notification_element_blend_shade_colors", "array", PKG_NAME)
                     notification_element_blend_colors = this.getResID("notification_element_blend_colors", "array", PKG_NAME)
                     notification_item_bg_radius = this.getResID("notification_item_bg_radius", "dimen", PKG_NAME)

@@ -1,9 +1,27 @@
+/*
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
+ * This file is part of XiaomiHelper project
+ * Copyright (C) 2026 HowieHChen, howie.dev@outlook.com
+
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package dev.lackluster.mihelper.hook.rules.securitycenter
 
+import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.method
-import com.highcapable.yukihookapi.hook.type.java.ArrayListClass
-import com.highcapable.yukihookapi.hook.type.java.ListClass
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.Prefs
 
@@ -30,26 +48,28 @@ object HideHomeElement : YukiBaseHooker() {
     override fun onHook() {
         if (hideRec || hideCommon || hidePopular) {
             "com.miui.common.card.CardViewRvAdapter".toClassOrNull()?.apply {
-                method {
+                resolve().firstMethodOrNull {
                     name = "addAll"
-                    param(ListClass)
-                }.hook {
+                    parameters("java.util.List")
+                }?.hook {
                     before {
-                        val filteredList = this.args(0).list<Any>().filterNot {
+                        this.args(0).list<Any>().filterNot {
                             removeElements.contains(it.javaClass.name)
-                        }.toList()
-                        this.args(0).set(filteredList)
+                        }.toList().let {
+                            this.args(0).set(it)
+                        }
                     }
                 }
-                method {
+                resolve().firstMethodOrNull {
                     name = "setModelList"
-                    param(ArrayListClass)
-                }.hook {
+                    parameters("java.util.ArrayList")
+                }?.hook {
                     before {
-                        val filteredList = this.args(0).list<Any>().filterNot {
+                        this.args(0).list<Any>().filterNot {
                             removeElements.contains(it.javaClass.name)
-                        }.toMutableList()
-                        this.args(0).set(filteredList)
+                        }.toMutableList().let {
+                            this.args(0).set(it)
+                        }
                     }
                 }
             }

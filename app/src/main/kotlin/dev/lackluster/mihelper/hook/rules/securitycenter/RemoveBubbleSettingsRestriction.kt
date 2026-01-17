@@ -20,57 +20,64 @@
 
 package dev.lackluster.mihelper.hook.rules.securitycenter
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.util.ArrayMap
+import com.highcapable.kavaref.KavaRef.Companion.resolve
+import com.highcapable.kavaref.condition.type.Modifiers
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.constructor
-import com.highcapable.yukihookapi.hook.factory.current
-import com.highcapable.yukihookapi.hook.factory.method
-import com.highcapable.yukihookapi.hook.type.android.ContextClass
-import com.highcapable.yukihookapi.hook.type.java.BooleanType
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.factory.hasEnable
+import java.util.ArrayList
 
 object RemoveBubbleSettingsRestriction : YukiBaseHooker() {
-    private val bubbleAppClass by lazy {
-        "com.miui.bubbles.settings.BubbleApp".toClass()
+    private val clzBubbleApp by lazy {
+        "com.miui.bubbles.settings.BubbleApp".toClassOrNull()
     }
-    private val getFreeformSuggestionListMethod by lazy {
-        "android.util.MiuiMultiWindowUtils".toClass().method {
+    private val ctorBubbleApp by lazy {
+        clzBubbleApp?.resolve()?.firstConstructor {
+            parameters(String::class, Int::class)
+            parameterCount = 2
+        }
+    }
+    private val metSetChecked by lazy {
+        clzBubbleApp?.resolve()?.firstMethodOrNull {
+            name = "setChecked"
+            parameters(Boolean::class)
+        }
+    }
+    private val metGetFreeformSuggestionList by lazy {
+        "android.util.MiuiMultiWindowUtils".toClassOrNull()?.resolve()?.firstMethodOrNull {
             name = "getFreeformSuggestionList"
-            param(ContextClass)
-            paramCount = 1
-            modifiers { isStatic }
+            parameters(Context::class)
+            parameterCount = 1
+            modifiers(Modifiers.STATIC)
         }
     }
 
-    @SuppressLint("PrivateApi")
     override fun onHook() {
         hasEnable(Pref.Key.SecurityCenter.DISABLE_BUBBLE_RESTRICT) {
-            "com.miui.bubbles.settings.BubblesSettings".toClass().method {
-                name = "getDefaultBubbles"
-            }.hook {
-                before {
-                    val arrayMap = ArrayMap<String, Any>()
-                    val context = this.instance.current().field {
-                        name = "mContext"
-                    }.any() as Context
-                    val currentUserId = this.instance.current().field {
-                        name = "mCurrentUserId"
-                    }.int()
-                    val freeformSuggestionList = getFreeformSuggestionListMethod.get().list<String>(context)
-                    if (freeformSuggestionList.isNotEmpty()) {
-                        for (str in freeformSuggestionList) {
-                            val bubbleApp = bubbleAppClass.constructor().get().call(str, currentUserId)
-                            bubbleApp?.current()?.method {
-                                name = "setChecked"
-                                param(BooleanType)
-                            }?.call(true)
-                            arrayMap[str] = bubbleApp
+            "com.miui.bubbles.settings.BubblesSettings".toClassOrNull()?.apply {
+                val fldContext = resolve().firstFieldOrNull {
+                    name = "mContext"
+                }
+                val fldCurrentUserId = resolve().firstFieldOrNull {
+                    name = "mCurrentUserId"
+                }
+                resolve().firstMethodOrNull {
+                    name = "getDefaultBubbles"
+                }?.hook {
+                    before {
+                        val arrayMap = ArrayMap<String, Any>()
+                        val context = fldContext?.copy()?.of(this.instance)?.get<Context>()
+                        val currentUserId =fldCurrentUserId?.copy()?.of(this.instance)?.get<Int>()
+                        val freeformSuggestionList = metGetFreeformSuggestionList?.invoke<ArrayList<String>>(context)
+                        freeformSuggestionList?.forEach { pkg ->
+                            val bubbleApp = ctorBubbleApp?.create(pkg, currentUserId)
+                            metSetChecked?.copy()?.of(bubbleApp)?.invoke(true)
+                            arrayMap[pkg] = bubbleApp
                         }
+                        this.result = arrayMap
                     }
-                    this.result = arrayMap
                 }
             }
         }

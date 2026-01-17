@@ -20,6 +20,7 @@
 
 package dev.lackluster.mihelper.hook.rules.systemui.statusbar
 
+import android.content.Context
 import android.net.TrafficStats
 import android.os.Handler
 import android.os.Message
@@ -35,6 +36,8 @@ import de.robv.android.xposed.XposedHelpers
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.data.Pref.Key.SystemUI.FontWeight
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.TextAppearance_StatusBar_NetWorkSpeedNumber
+import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.kilobyte_per_second
+import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.megabyte_per_second
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.getTypeface
 import dev.lackluster.mihelper.utils.Prefs
 import dev.lackluster.mihelper.utils.factory.dpFloat
@@ -43,14 +46,26 @@ object NetworkSpeed : YukiBaseHooker() {
     private const val KEY_UP_BYTES = "KEY_UP_BYTES"
     private const val KEY_DOWN_BYTES = "KEY_DOWN_BYTES"
     private val mode = Prefs.getInt(Pref.Key.SystemUI.IconTuner.NET_SPEED_MODE, 0)
+    private val refreshPerSecond = Prefs.getBoolean(Pref.Key.SystemUI.IconTuner.NET_SPEED_REFRESH, false)
+    private val unitMode = Prefs.getInt(Pref.Key.SystemUI.IconTuner.NET_SPEED_UNIT_MODE, 0)
     private val measureText by lazy {
-        when (mode) {
-            1 -> "0.00KB "
-            2 -> "0.00KB↑ "
-            3 -> "0.00KB▲ "
-            4 -> "0.00KB△ "
-            else -> ""
-        }
+        StringBuilder().apply {
+            append("0.00")
+            when (unitMode) {
+                0 -> "K"
+                1 -> "KB"
+                2 -> "KB/s"
+                else -> null
+            }?.let {
+                append(it)
+            }
+            when (mode) {
+                2 -> append("↑")
+                3 -> append("▲")
+                4 -> append("△")
+            }
+            append(" ")
+        }.toString()
     }
 
     private val valueNetSpeedFW = Prefs.getInt(FontWeight.NET_SPEED_NUMBER_VAL, 630)
@@ -73,85 +88,87 @@ object NetworkSpeed : YukiBaseHooker() {
     }
 
     override fun onHook() {
-        if (mode == 0 && !modifyNetSpeedNumberFW && !modifyNetSpeedUnitFW) return
-        "com.android.systemui.statusbar.views.NetworkSpeedView".toClassOrNull()?.apply {
-            val mNetworkSpeedNumberText = resolve().firstFieldOrNull {
-                name = "mNetworkSpeedNumberText"
-            }
-            val mNetworkSpeedUnitText = resolve().firstFieldOrNull {
-                name = "mNetworkSpeedUnitText"
-            }
-            resolve().firstMethodOrNull {
-                name {
-                    it.contains("updateResources")
+        if (mode == 0 && !refreshPerSecond && !modifyNetSpeedNumberFW && !modifyNetSpeedUnitFW) return
+        if (mode != 0 || modifyNetSpeedNumberFW || modifyNetSpeedUnitFW) {
+            "com.android.systemui.statusbar.views.NetworkSpeedView".toClassOrNull()?.apply {
+                val mNetworkSpeedNumberText = resolve().firstFieldOrNull {
+                    name = "mNetworkSpeedNumberText"
                 }
-            }?.hook {
-                after {
-                    val networkSpeedNumberText = mNetworkSpeedNumberText?.copy()?.of(this.instance)?.get<TextView>() ?: return@after
-                    val networkSpeedUnitText = mNetworkSpeedUnitText?.copy()?.of(this.instance)?.get<TextView>() ?: return@after
-                    if (mode == 0) {
-                        if (modifyNetSpeedNumberFW) {
-                            networkSpeedNumberText.typeface = typefaceNetSpeedNumberFW
-                        }
-                        if (modifyNetSpeedUnitFW) {
-                            networkSpeedUnitText.typeface = typefaceNetSpeedUnitFW
-                        }
-                    } else {
-                        val translationY = 4.dpFloat(this.instance<View>().context)
-                        val lp = FrameLayout.LayoutParams(
-                            FrameLayout.LayoutParams.WRAP_CONTENT,
-                            FrameLayout.LayoutParams.WRAP_CONTENT
-                        ).apply {
-                            gravity = Gravity.CENTER_VERTICAL or Gravity.END
-                        }
-                        networkSpeedNumberText.setTextAppearance(TextAppearance_StatusBar_NetWorkSpeedNumber)
-                        networkSpeedNumberText.translationY = -translationY
-                        networkSpeedNumberText.layoutParams = lp
-                        networkSpeedUnitText.setTextAppearance(TextAppearance_StatusBar_NetWorkSpeedNumber)
-                        networkSpeedUnitText.translationY = translationY
-                        networkSpeedUnitText.layoutParams = lp
-                        if (modifyNetSpeedSeparateFW) {
-                            networkSpeedNumberText.typeface = typefaceNetSpeedSeparateFW
-                            networkSpeedUnitText.typeface = typefaceNetSpeedSeparateFW
+                val mNetworkSpeedUnitText = resolve().firstFieldOrNull {
+                    name = "mNetworkSpeedUnitText"
+                }
+                resolve().firstMethodOrNull {
+                    name {
+                        it.contains("updateResources")
+                    }
+                }?.hook {
+                    after {
+                        val networkSpeedNumberText = mNetworkSpeedNumberText?.copy()?.of(this.instance)?.get<TextView>() ?: return@after
+                        val networkSpeedUnitText = mNetworkSpeedUnitText?.copy()?.of(this.instance)?.get<TextView>() ?: return@after
+                        if (mode == 0) {
+                            if (modifyNetSpeedNumberFW) {
+                                networkSpeedNumberText.typeface = typefaceNetSpeedNumberFW
+                            }
+                            if (modifyNetSpeedUnitFW) {
+                                networkSpeedUnitText.typeface = typefaceNetSpeedUnitFW
+                            }
+                        } else {
+                            val translationY = 4.dpFloat(this.instance<View>().context)
+                            val lp = FrameLayout.LayoutParams(
+                                FrameLayout.LayoutParams.WRAP_CONTENT,
+                                FrameLayout.LayoutParams.WRAP_CONTENT
+                            ).apply {
+                                gravity = Gravity.CENTER_VERTICAL or Gravity.END
+                            }
+                            networkSpeedNumberText.setTextAppearance(TextAppearance_StatusBar_NetWorkSpeedNumber)
+                            networkSpeedNumberText.translationY = -translationY
+                            networkSpeedNumberText.layoutParams = lp
+                            networkSpeedUnitText.setTextAppearance(TextAppearance_StatusBar_NetWorkSpeedNumber)
+                            networkSpeedUnitText.translationY = translationY
+                            networkSpeedUnitText.layoutParams = lp
+                            if (modifyNetSpeedSeparateFW) {
+                                networkSpeedNumberText.typeface = typefaceNetSpeedSeparateFW
+                                networkSpeedUnitText.typeface = typefaceNetSpeedSeparateFW
+                            }
                         }
                     }
                 }
-            }
-            if (mode != 0) {
-                val mEmptyWidth = resolve().firstFieldOrNull {
-                    name = "mEmptyWidth"
-                }
-                resolve().firstMethodOrNull {
-                    name = "getNetworkSpeedWidth"
-                }?.hook {
-                    before {
-                        val view = this.instance<View>()
-                        if (view.width != view.paddingStart + view.paddingEnd) {
-                            this.result = view.width
-                            return@before
+                if (mode != 0) {
+                    val mEmptyWidth = resolve().firstFieldOrNull {
+                        name = "mEmptyWidth"
+                    }
+                    resolve().firstMethodOrNull {
+                        name = "getNetworkSpeedWidth"
+                    }?.hook {
+                        before {
+                            val view = this.instance<View>()
+                            if (view.width != view.paddingStart + view.paddingEnd) {
+                                this.result = view.width
+                                return@before
+                            }
+                            val emptyWidth = mEmptyWidth?.copy()?.of(this.instance)?.get<Int>() ?: -1
+                            if (emptyWidth != -1) {
+                                this.result = emptyWidth
+                                return@before
+                            }
+                            val networkSpeedNumberText = mNetworkSpeedNumberText?.copy()?.of(this.instance)?.get<TextView>()
+                            val networkSpeedUnitText = mNetworkSpeedUnitText?.copy()?.of(this.instance)?.get<TextView>()
+                            var finalWidth = 0
+                            networkSpeedNumberText?.paint?.let {
+                                finalWidth = it.measureText(measureText).toInt()
+                            }
+                            networkSpeedUnitText?.paint?.let {
+                                finalWidth = maxOf(finalWidth, it.measureText(measureText).toInt())
+                            }
+                            finalWidth += view.paddingStart + view.paddingEnd
+                            mEmptyWidth?.copy()?.of(this.instance)?.set(finalWidth)
+                            this.result = finalWidth
                         }
-                        val emptyWidth = mEmptyWidth?.copy()?.of(this.instance)?.get<Int>() ?: -1
-                        if (emptyWidth != -1) {
-                            this.result = emptyWidth
-                            return@before
-                        }
-                        val networkSpeedNumberText = mNetworkSpeedNumberText?.copy()?.of(this.instance)?.get<TextView>()
-                        val networkSpeedUnitText = mNetworkSpeedUnitText?.copy()?.of(this.instance)?.get<TextView>()
-                        var finalWidth = 0
-                        networkSpeedNumberText?.paint?.let {
-                            finalWidth = it.measureText(measureText).toInt()
-                        }
-                        networkSpeedUnitText?.paint?.let {
-                            finalWidth = maxOf(finalWidth, it.measureText(measureText).toInt())
-                        }
-                        finalWidth += view.paddingStart + view.paddingEnd
-                        mEmptyWidth?.copy()?.of(this.instance)?.set(finalWidth)
-                        this.result = finalWidth
                     }
                 }
             }
         }
-        if (mode != 0) {
+        if (mode != 0 || refreshPerSecond) {
             "com.android.systemui.statusbar.policy.NetworkSpeedController".toClassOrNull()?.apply {
                 val mBgHandler = resolve().firstFieldOrNull {
                     name = "mBgHandler"
@@ -161,6 +178,9 @@ object NetworkSpeed : YukiBaseHooker() {
                 }
                 val mLastTime = resolve().firstFieldOrNull {
                     name = "mLastTime"
+                }
+                val mContext = resolve().firstFieldOrNull {
+                    name = "mContext"
                 }
                 val updateText = resolve().firstMethodOrNull {
                     name = "updateText"
@@ -180,6 +200,7 @@ object NetworkSpeed : YukiBaseHooker() {
                     val instance = resolve().firstFieldOrNull {
                         type("com.android.systemui.statusbar.policy.NetworkSpeedController")
                     }
+                    val postDelayed = if (refreshPerSecond) 1000L else 4000L
                     resolve().firstMethodOrNull {
                         name = "handleMessage"
                     }?.hook {
@@ -213,7 +234,7 @@ object NetworkSpeed : YukiBaseHooker() {
                                 message.obj = Pair(uploadSpeed, downloadSpeed)
                                 message.sendToTarget()
                                 bgHandler.removeMessages(200001)
-                                bgHandler.sendEmptyMessageDelayed(200001, 4000L)
+                                bgHandler.sendEmptyMessageDelayed(200001, postDelayed)
                                 this.result = null
                             }
                             if (classId == 0 && obtainMessage?.what == 100004) {
@@ -224,10 +245,32 @@ object NetworkSpeed : YukiBaseHooker() {
                                 ) {
                                     val uploadSpeed = (obtainMessage.obj as Pair<*, *>).first as Long
                                     val downloadSpeed = (obtainMessage.obj as Pair<*, *>).second as Long
-                                    updateText?.copy()?.of(controller)?.invoke(arrayOf(
-                                        formatSpeed(uploadSpeed / 1024.0f, true),
-                                        formatSpeed(downloadSpeed / 1024.0f, false),
-                                    ))
+                                    if (mode != 0) {
+                                        updateText?.copy()?.of(controller)?.invoke(arrayOf(
+                                            formatSpeed(uploadSpeed / 1024.0f, true),
+                                            formatSpeed(downloadSpeed / 1024.0f, false),
+                                        ))
+                                    } else  {
+                                        var number = (uploadSpeed + downloadSpeed) / 1024.0f
+                                        val stringResId: Int
+                                        if (number > 999.0f) {
+                                            number /= 1024.0f
+                                            stringResId = megabyte_per_second
+                                        } else {
+                                            stringResId = kilobyte_per_second
+                                        }
+                                        val unitStr = mContext?.copy()?.of(controller)?.get<Context>()?.getString(stringResId)
+                                        val speedStr: String = if (number < 10.0f) {
+                                            "%.2f".format(number)
+                                        } else if (number < 100.0f) {
+                                            "%.1f".format(number)
+                                        } else {
+                                            "%.0f".format(number)
+                                        }
+                                        updateText?.copy()?.of(controller)?.invoke(
+                                            arrayOf(speedStr, unitStr)
+                                        )
+                                    }
                                 }
                                 this.result = null
                             }
@@ -246,14 +289,14 @@ object NetworkSpeed : YukiBaseHooker() {
                 2 -> "↑"
                 3 -> "▲"
                 4 -> if (finalSpeed == 0.0f) "△" else "▲"
-                else -> ""
+                else -> null
             }
         } else {
             when (mode) {
                 2 -> "↓"
                 3 -> "▼"
                 4 -> if (finalSpeed == 0.0f) "▽" else "▼"
-                else -> ""
+                else -> null
             }
         }
         if (finalSpeed > 999.0f) {
@@ -262,12 +305,29 @@ object NetworkSpeed : YukiBaseHooker() {
         } else {
             unitMega = false
         }
-        return (if (finalSpeed < 10.0f) {
-            "%.2f".format(finalSpeed)
+        val sb = StringBuilder()
+        if (finalSpeed < 10.0f) {
+            sb.append("%.2f".format(finalSpeed))
         } else if (finalSpeed < 100.0f) {
-            "%.1f".format(finalSpeed)
+            sb.append("%.1f".format(finalSpeed))
         } else {
-            "%.0f".format(finalSpeed)
-        }) + (if (unitMega) "MB" else "KB") + downloadSymbol
+            sb.append("%.0f".format(finalSpeed))
+        }
+        if (unitMega) {
+            sb.append("M")
+        } else {
+            sb.append("K")
+        }
+        when (unitMode) {
+            1 -> "B"
+            2 -> "B/s"
+            else -> null
+        }?.let {
+            sb.append(it)
+        }
+        downloadSymbol?.let {
+            sb.append(it)
+        }
+        return sb.toString()
     }
 }

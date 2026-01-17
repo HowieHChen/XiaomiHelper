@@ -254,8 +254,6 @@
     <string name="home_icon_corner4large_tips">Os ícones em forma de cápsula se tornarão ícones de retângulo arredondado</string>
     <string name="ui_title_home_recent">Recentes</string>
     <string name="home_recent_dismiss_anim">Modificar animação ao remover apps nos Recentes</string>
-    <string name="home_recent_pad_show_memory">Mostrar uso da memória no tablet</string>
-    <string name="home_recent_pad_hide_world">Ocultar botão Xiaomi Smart Hub</string>
     <string name="home_recent_hide_status_bar">Ocultar barra de status</string>
     <string name="home_recent_hide_status_bar_tips">Oculte a barra de status nos Recentes</string>
     <string name="home_recent_hide_clear_all">Ocultar botão Limpar tudo</string>
@@ -408,8 +406,6 @@
     <string name="security_security_skip_warning_tips">Ignore os tempos de espera ao usar a depuração USB, fontes desconhecidas e acessibilidade.</string>
     <string name="security_security_skip_open_app">Remover pop-ups ao abrir apps</string>
     <string name="security_security_skip_open_app_tips">Remova o pop-up \"Permitir que XXX abra XXX\" do início da cadeia</string>
-    <string name="security_security_skip_open_no_restriction">Desativar gerenciamento de inicialização em cadeia</string>
-    <string name="security_security_skip_open_auto_approve">Aprovar automaticamente</string>
     <string name="security_security_screen_battery">Exibir dados detalhados do consumo de energia</string>
     <string name="security_security_screen_battery_tips">O uso da bateria de apps ocultos por padrão também será mostrado</string>
     <string name="security_security_hide_screen_system">Mostrar Sistema Android na classificação do consumo de energia</string>
@@ -477,8 +473,6 @@
     <string name="others_settings_quick_per_tips">Vá diretamente para o interruptor que concede essa permissão a um app específico, em vez da lista de apps associados a essa permissão.</string>
     <string name="others_updater_disable_validation">Remover verificação OTA</string>
     <string name="others_updater_disable_validation_tips">Apenas dispositivos VAB são suportados. Por favor, não ative outros dispositivos não-VAB!</string>
-    <string name="weather_card_color">Cor de fundo do cartão</string>
-    <string name="weather_card_color_tips">Os cartões mudarão a cor de fundo de acordo com o nascer e o pôr do sol por padrão. Forçar claro/escuro para manter o fundo do cartão constante.</string>
     <string name="weather_card_color_light">Modo claro</string>
     <string name="weather_card_color_dark">Modo escuro</string>
     <!-- StatusBarClockPage -->
