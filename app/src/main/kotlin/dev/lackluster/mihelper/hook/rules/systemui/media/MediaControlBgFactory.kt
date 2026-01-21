@@ -23,7 +23,7 @@ import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.condition.type.Modifiers
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import dev.lackluster.mihelper.hook.rules.systemui.media.data.MediaViewColorConfig
-import java.util.concurrent.ConcurrentHashMap
+import java.util.WeakHashMap
 import kotlin.math.max
 import kotlin.math.min
 
@@ -92,7 +92,7 @@ object MediaControlBgFactory : YukiBaseHooker() {
         }
     }
 
-    private val artworkColorMap = ConcurrentHashMap<Icon, WallpaperColors>()
+    private val artworkColorMap = WeakHashMap<Icon, WallpaperColors>()
 
     override fun onHook() {
         clzColorScheme
@@ -123,23 +123,33 @@ object MediaControlBgFactory : YukiBaseHooker() {
         val iconType = icon?.type ?: return null
         if (iconType != Icon.TYPE_BITMAP && iconType != Icon.TYPE_ADAPTIVE_BITMAP) {
             val drawable = icon.loadDrawable(this) ?: return null
-            return artworkColorMap.getOrPut(icon) {
-                WallpaperColors.fromDrawable(drawable)
+            val colors: WallpaperColors?
+            synchronized(artworkColorMap) {
+                colors = artworkColorMap.getOrPut(icon) {
+                    WallpaperColors.fromDrawable(drawable)
+                }
             }
+            return colors
         } else {
             val bitmap = metIconGetBitmap?.invoke(icon) as? Bitmap
-            return if (bitmap?.isRecycled == false) {
-                artworkColorMap.getOrPut(icon) {
-                    WallpaperColors.fromBitmap(bitmap)
+            if (bitmap?.isRecycled == false) {
+                val colors: WallpaperColors?
+                synchronized(artworkColorMap) {
+                    colors = artworkColorMap.getOrPut(icon) {
+                        WallpaperColors.fromBitmap(bitmap)
+                    }
                 }
+                return colors
             } else {
-                null
+                return null
             }
         }
     }
 
     fun releaseCachedWallpaperColor() {
-        artworkColorMap.clear()
+        synchronized(artworkColorMap) {
+            artworkColorMap.clear()
+        }
     }
 
     fun Bitmap.brightness(): Float {

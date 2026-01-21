@@ -84,6 +84,7 @@ object ResourcesUtils : YukiBaseHooker() {
     var normal_control_center_carrier_second_view = 0
     var normal_control_center_carrier_vertical_separator = 0
     var lock_screen_carrier_airplane_mode_on = 0
+    var kept_notifications_on_keyguard = 0
 
     @SuppressLint("DiscouragedApi")
     override fun onHook() {
@@ -143,6 +144,7 @@ object ResourcesUtils : YukiBaseHooker() {
                     normal_control_center_carrier_second_view = this.getResID("normal_control_center_carrier_second_view", "id", PKG_NAME)
                     normal_control_center_carrier_vertical_separator = this.getResID("normal_control_center_carrier_vertical_separator", "id", PKG_NAME)
                     lock_screen_carrier_airplane_mode_on = this.getResID("lock_screen_carrier_airplane_mode_on", "string", PKG_NAME)
+                    kept_notifications_on_keyguard = this.getResID("kept_notifications_on_keyguard", "bool", PKG_NAME)
                     isInitialized = true
                 }
             }

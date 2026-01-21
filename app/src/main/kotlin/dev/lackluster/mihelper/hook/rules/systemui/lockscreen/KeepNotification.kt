@@ -20,41 +20,46 @@
 
 package dev.lackluster.mihelper.hook.rules.systemui.lockscreen
 
+import android.content.res.Resources
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.kavaref.extension.makeAccessible
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import dev.lackluster.mihelper.data.Pref
+import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils
+import dev.lackluster.mihelper.hook.rules.systemui.compat.ResourcesWrapper
 import dev.lackluster.mihelper.utils.factory.hasEnable
 
 object KeepNotification : YukiBaseHooker() {
-    private val mSbn by lazy {
-        "com.android.systemui.statusbar.notification.collection.NotificationEntry".toClassOrNull()
-            ?.resolve()?.firstFieldOrNull {
-                name = "mSbn"
-            }?.self?.apply { makeAccessible() }
-    }
-    private val mHasShownAfterUnlock by lazy {
-        "com.android.systemui.statusbar.notification.ExpandedNotification".toClassOrNull()
-            ?.resolve()?.firstFieldOrNull {
-                name = "mHasShownAfterUnlock"
-            }?.self?.apply { makeAccessible() }
+    private val booleanOverrides by lazy {
+        mapOf(
+            ResourcesUtils.kept_notifications_on_keyguard to true
+        )
     }
 
     override fun onHook() {
         hasEnable(Pref.Key.SystemUI.LockScreen.KEEP_NOTIFICATION) {
-            setOf(
-                "com.android.systemui.statusbar.notification.interruption.MiuiKeyguardNotificationVisibilityProvider",
-                "com.android.systemui.statusbar.notification.interruption.KeyguardNotificationVisibilityProviderImpl",
-            ).forEach { className ->
-                className.toClassOrNull()?.apply {
-                    resolve().firstMethodOrNull {
-                        name = "shouldHideNotification"
-                    }?.hook {
-                        before {
-                            val notificationEntry = this.args(0).any() ?: return@before
-                            mSbn?.get(notificationEntry)?.let { sbn ->
-                                mHasShownAfterUnlock?.set(sbn, false)
-                            }
+            "com.android.systemui.MiuiOperatorCustomizedPolicy".toClassOrNull()?.apply {
+                val fldShowKeyguardNotifications = resolve().firstFieldOrNull {
+                    name = "mShowKeyguardNotifications"
+                }
+                resolve().firstConstructor().hook {
+                    after {
+                        fldShowKeyguardNotifications?.copy()?.of(this.instance)?.set(true)
+                    }
+                }
+                resolve().firstMethodOrNull {
+                    name = "updateMiuiOperatorConfig"
+                }?.hook {
+                    after {
+                        fldShowKeyguardNotifications?.copy()?.of(this.instance)?.set(true)
+                    }
+                }
+                resolve().firstMethodOrNull {
+                    name = "getResourcesForOperation"
+                }?.hook {
+                    after {
+                        val ori = this.result<Resources>()
+                        if (ori != null && ori !is ResourcesWrapper) {
+                            this.result = ResourcesWrapper(ori, booleanOverrides)
                         }
                     }
                 }
