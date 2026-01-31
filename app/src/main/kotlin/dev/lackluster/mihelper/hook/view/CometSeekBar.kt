@@ -1,8 +1,11 @@
 package dev.lackluster.mihelper.hook.view
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.LinearGradient
@@ -19,7 +22,7 @@ import dev.lackluster.mihelper.hook.drawable.GhostThumb
 import dev.lackluster.mihelper.utils.Math.linearInterpolate
 import dev.lackluster.mihelper.utils.factory.dp
 
-class CometSeekBar(
+class CometSeekBar @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
@@ -39,17 +42,10 @@ class CometSeekBar(
         private const val THUMB_V_BAR_HEIGHT_DP = 14
     }
 
-    enum class ThumbStyle {
-        Circle,
-        VerticalBar,
-        RoundRect,
-        Hidden
-    }
-
     var cometEffect: Boolean = true
         set(value) {
             field = value
-            invalidate()
+            updateColorsFromTint()
         }
 
     var thumbStyle: ThumbStyle = ThumbStyle.Hidden
@@ -117,9 +113,6 @@ class CometSeekBar(
     }
 
     override fun onDraw(canvas: Canvas) {
-        progressTintList?.getColorForState(drawableState, baseColor)?.let {
-            baseColor = it
-        }
 
         val animT = touchAnimProgress
         val progressRatio = if (max > 0) progress.toFloat() / max else 0f
@@ -130,10 +123,6 @@ class CometSeekBar(
         }
         val centerY = height / 2f
 
-        val trackColor = (baseColor and 0x00FFFFFF) or (trackAlpha shl 24)
-        val progressColor = (baseColor and 0x00FFFFFF) or (progressAlpha shl 24)
-        val cometColor = (baseColor and 0x00FFFFFF) or (cometAlpha shl 24)
-
         // Draw track
         val trackTop = centerY - currentTrackHeight / 2f
         val trackBottom = centerY + currentTrackHeight / 2f
@@ -142,7 +131,6 @@ class CometSeekBar(
         trackRect.set(paddingLeft.toFloat(), trackTop, (width - paddingRight).toFloat(), trackBottom)
         trackPath.reset()
         trackPath.addRoundRect(trackRect, cornerRadius, cornerRadius, Path.Direction.CW)
-        trackPaint.color = trackColor
         canvas.drawPath(trackPath, trackPaint)
 
         val availableWidth = width - paddingLeft - paddingRight
@@ -169,20 +157,9 @@ class CometSeekBar(
         if (currentX > paddingLeft) {
             // Draw progress
             if (cometEffect) {
-                if (cometShader == null || cachedShaderColor != baseColor) {
-                    cometShader = LinearGradient(
-                        -tailLength.toFloat(), 0f, 0f, 0f,
-                        intArrayOf(progressColor, cometColor),
-                        null,
-                        Shader.TileMode.CLAMP
-                    )
-                    cachedShaderColor = baseColor
-                }
                 shaderMatrix.setTranslate(currentX, 0f)
                 cometShader?.setLocalMatrix(shaderMatrix)
                 progressPaint.shader = cometShader
-            } else {
-                progressPaint.color = progressColor
             }
             if (thumbStyle == ThumbStyle.RoundRect) {
                 canvas.drawRoundRect(paddingLeft.toFloat(), trackTop, currentX, trackBottom, cornerRadius, cornerRadius, progressPaint)
@@ -193,7 +170,6 @@ class CometSeekBar(
             }
 
             // Draw thumb
-            thumbPaint.color = cometColor
             when (thumbStyle) {
                 ThumbStyle.Circle -> {
                     val currentThumbHeight = linearInterpolate(thumbHeight, thumbHeightPressed, animT).coerceAtLeast(currentTrackHeight)
@@ -227,17 +203,15 @@ class CometSeekBar(
         return superResult
     }
 
-//    override fun setProgressTintList(tint: ColorStateList?) {
-//        super.setProgressTintList(tint)
-//    }
-//
-//    override fun setProgressBackgroundTintList(tint: ColorStateList?) {
-//        super.setProgressBackgroundTintList(tint)
-//    }
-//
-//    override fun setThumbTintList(tint: ColorStateList?) {
-//        super.setThumbTintList(tint)
-//    }
+    override fun setProgressTintList(tint: ColorStateList?) {
+        super.setProgressTintList(tint)
+        updateColorsFromTint()
+    }
+
+    override fun drawableStateChanged() {
+        super.drawableStateChanged()
+        updateColorsFromTint()
+    }
 
     private fun startAnimation(target: Float) {
         if (touchAnimProgress == target) return
@@ -249,6 +223,13 @@ class CometSeekBar(
                 touchAnimProgress = it.animatedValue as Float
                 invalidate()
             }
+            addListener(
+                object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator) {
+                        touchAnimator = null
+                    }
+                }
+            )
             start()
         }
     }
@@ -260,5 +241,33 @@ class CometSeekBar(
             else -> 0
         }
         setPadding(requiredPadding, paddingTop, requiredPadding, paddingBottom)
+    }
+
+    private fun updateColorsFromTint() {
+        progressTintList?.getColorForState(drawableState, baseColor)?.let {
+            baseColor = it
+        }
+
+        val rgb = baseColor and 0x00FFFFFF
+        val trackColor = rgb or (trackAlpha shl 24)
+        val progressColor = rgb or (progressAlpha shl 24)
+        val cometColor = rgb or (cometAlpha shl 24)
+        trackPaint.color = trackColor
+        if (cometEffect) {
+            if (cometShader == null || cachedShaderColor != baseColor) {
+                cometShader = LinearGradient(
+                    -tailLength.toFloat(), 0f, 0f, 0f,
+                    intArrayOf(progressColor, cometColor),
+                    null,
+                    Shader.TileMode.CLAMP
+                )
+                cachedShaderColor = baseColor
+            }
+            progressPaint.shader = cometShader
+        } else {
+            progressPaint.color = progressColor
+        }
+        thumbPaint.color = cometColor
+        invalidate()
     }
 }

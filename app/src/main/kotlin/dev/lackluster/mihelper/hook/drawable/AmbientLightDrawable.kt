@@ -38,6 +38,7 @@ class AmbientLightDrawable(
     private var targetHeight = 0
 
     private var isLightMode = 0
+    private var nextResizeAnim = false
 
     init {
         try {
@@ -46,6 +47,10 @@ class AmbientLightDrawable(
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    fun animateNextResize() {
+        nextResizeAnim = true
     }
 
     fun setLightMode(light: Boolean) {
@@ -107,14 +112,15 @@ class AmbientLightDrawable(
         if (currentHeight == 0) {
             currentHeight = newHeight
         }
-        if (!useAnim) {
-            sourceHeight = newHeight
-            currentHeight = newHeight
-            resizeState = AnimationState.DONE
-        } else {
+        if (useAnim && nextResizeAnim) {
             sourceHeight = currentHeight
             targetHeight = newHeight
             resizeState = AnimationState.STARTING
+            nextResizeAnim = false
+        } else {
+            sourceHeight = newHeight
+            currentHeight = newHeight
+            resizeState = AnimationState.DONE
         }
         invalidateSelf()
     }

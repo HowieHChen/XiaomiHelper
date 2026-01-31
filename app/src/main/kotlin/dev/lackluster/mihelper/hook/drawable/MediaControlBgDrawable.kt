@@ -26,6 +26,12 @@ abstract class MediaControlBgDrawable(
     protected var currentSize: Int = 0
     protected var targetSize: Int = 0
 
+    protected var useResizeAnim = false
+
+    fun setResizeAnim(enabled: Boolean) {
+        useResizeAnim = enabled
+    }
+
     abstract fun updateAlbumCover(artwork: Drawable, colorConfig: MediaViewColorConfig, skipAnim: Boolean = false)
 
     override fun setAlpha(p0: Int) {

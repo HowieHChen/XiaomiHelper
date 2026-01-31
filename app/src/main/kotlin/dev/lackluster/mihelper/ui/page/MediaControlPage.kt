@@ -81,7 +81,7 @@ fun MediaControlPage(navController: NavController, adjustPadding: PaddingValues,
     val progressStyleEntries = listOfNotNull(
         DropDownEntry(stringResource(R.string.media_elm_prog_style_default)),
         DropDownEntry(stringResource(R.string.media_elm_prog_style_custom)),
-        if (isDynamicIsland) null else DropDownEntry(stringResource(R.string.media_elm_prog_style_squiggly))
+        DropDownEntry(stringResource(R.string.media_elm_prog_style_squiggly))
     )
     var tabRowSelected by remember { mutableIntStateOf(0) }
     var backgroundStyle by remember { mutableIntStateOf(
@@ -469,19 +469,23 @@ fun MediaControlPage(navController: NavController, adjustPadding: PaddingValues,
                 progressStyle = it
             }
             AnimatedVisibility(
+                progressStyle == 0 || progressStyle == 1
+            ) {
+                SeekBarPreference(
+                    title = stringResource(R.string.media_elm_prog_width),
+                    key = MediaControlSpKey.ELM_PROGRESS_WIDTH.getKey(isDynamicIsland),
+                    defValue = 6.0f,
+                    min = 0.5f,
+                    max = 14.0f,
+                    format = "%.2f dp"
+                ) {
+                    progressWidth = it
+                }
+            }
+            AnimatedVisibility(
                 progressStyle == 1
             ) {
                 Column {
-                    SeekBarPreference(
-                        title = stringResource(R.string.media_elm_prog_width),
-                        key = MediaControlSpKey.ELM_PROGRESS_WIDTH.getKey(isDynamicIsland),
-                        defValue = 4.0f,
-                        min = 0.5f,
-                        max = 14.0f,
-                        format = "%.2f dp"
-                    ) {
-                        progressWidth = it
-                    }
                     SwitchPreference(
                         title = stringResource(R.string.media_elm_prog_comet),
                         summary = stringResource(R.string.media_elm_prog_comet_tips),
@@ -491,12 +495,16 @@ fun MediaControlPage(navController: NavController, adjustPadding: PaddingValues,
                     }
                 }
             }
-            DropDownPreference(
-                title = stringResource(R.string.media_elm_thumb_style),
-                entries = thumbStyleEntries,
-                key = MediaControlSpKey.ELM_THUMB_STYLE.getKey(isDynamicIsland)
+            AnimatedVisibility(
+                progressStyle != 0
             ) {
-                thumbStyle = it
+                DropDownPreference(
+                    title = stringResource(R.string.media_elm_thumb_style),
+                    entries = thumbStyleEntries,
+                    key = MediaControlSpKey.ELM_THUMB_STYLE.getKey(isDynamicIsland)
+                ) {
+                    thumbStyle = it
+                }
             }
             AnimatedVisibility(
                 progressStyle == 1 && thumbStyle == 1
@@ -508,15 +516,15 @@ fun MediaControlPage(navController: NavController, adjustPadding: PaddingValues,
                     progressRound = it
                 }
             }
-            AnimatedVisibility(
-                progressStyle != 1
-            ) {
-                SwitchPreference(
-                    title = stringResource(R.string.media_elm_fix_thumb_crop),
-                    summary = stringResource(R.string.media_elm_fix_thumb_crop_tips),
-                    key = MediaControlSpKey.FIX_THUMB_CROPPED.getKey(isDynamicIsland)
-                )
-            }
+//            AnimatedVisibility(
+//                progressStyle != 1
+//            ) {
+//                SwitchPreference(
+//                    title = stringResource(R.string.media_elm_fix_thumb_crop),
+//                    summary = stringResource(R.string.media_elm_fix_thumb_crop_tips),
+//                    key = MediaControlSpKey.FIX_THUMB_CROPPED.getKey(isDynamicIsland)
+//                )
+//            }
         }
     }
 }

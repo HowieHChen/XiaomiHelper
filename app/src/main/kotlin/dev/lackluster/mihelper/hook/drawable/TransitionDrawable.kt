@@ -24,14 +24,14 @@ class TransitionDrawable(
         if (currentSize == 0) {
             currentSize = newSize
         }
-        if (!useAnim) {
-            sourceSize = newSize
-            currentSize = newSize
-            resizeState = AnimationState.DONE
-        } else {
+        if (useAnim && useResizeAnim) {
             sourceSize = currentSize
             targetSize = newSize
             resizeState = AnimationState.STARTING
+        } else {
+            sourceSize = newSize
+            currentSize = newSize
+            resizeState = AnimationState.DONE
         }
         invalidateSelf()
     }

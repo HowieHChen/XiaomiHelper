@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.Icon
+import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -13,7 +14,6 @@ import androidx.constraintlayout.widget.ConstraintSet
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.condition.type.Modifiers
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import de.robv.android.xposed.XposedHelpers
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.media_bg_view
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzMiuiIslandMediaViewBinderImpl
@@ -27,6 +27,7 @@ import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.c
 import dev.lackluster.mihelper.utils.Prefs
 import com.highcapable.yukihookapi.hook.log.YLog
 import dev.lackluster.mihelper.hook.drawable.AmbientLightDrawable
+import dev.lackluster.mihelper.hook.rules.systemui.compat.PairCompat
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.ctorColorScheme
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.enumStyleContent
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.fldColorSchemeAccent1
@@ -35,7 +36,9 @@ import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.g
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.releaseCachedWallpaperColor
 import dev.lackluster.mihelper.hook.rules.systemui.media.data.PlayerType
 import dev.lackluster.mihelper.utils.HostExecutor
+import dev.lackluster.mihelper.utils.factory.getAdditionalInstanceField
 import dev.lackluster.mihelper.utils.factory.isSystemInDarkMode
+import dev.lackluster.mihelper.utils.factory.setAdditionalInstanceField
 
 object AmbientLight : YukiBaseHooker() {
     private const val KEY_MEDIA_BG_VIEW = "KEY_MEDIA_BG_VIEW"
@@ -177,6 +180,9 @@ object AmbientLight : YukiBaseHooker() {
                         val ambientLightDrawable = getNewMediaBgView(holder, false)?.drawable as? AmbientLightDrawable ?: return@after
                         val mediaData = fldMediaData?.get(this.instance) ?: return@after
                         val toFullAod = this.args(0).boolean()
+                        if (toFullAod != inFullAod) {
+                            ambientLightDrawable.animateNextResize()
+                        }
                         inFullAod = toFullAod
                         val isPlaying = fldIsPlaying?.get(mediaData) == true
                         if (!toFullAod && isPlaying) {
@@ -199,8 +205,8 @@ object AmbientLight : YukiBaseHooker() {
                         val enableFullAod = fldEnableFullAod?.get(fullAodController) == true
                         val isDark = enableFullAod || context.isSystemInDarkMode
                         if (ncAmbientColorOpt) {
-                            val light = XposedHelpers.getAdditionalInstanceField(holder, KEY_MEDIA_BG_COLOR_LIGHT) as? Int ?: Color.TRANSPARENT
-                            val dark = XposedHelpers.getAdditionalInstanceField(holder, KEY_MEDIA_BG_COLOR_DARK) as? Int ?: Color.TRANSPARENT
+                            val light = holder.getAdditionalInstanceField<Int>(KEY_MEDIA_BG_COLOR_LIGHT) ?: Color.TRANSPARENT
+                            val dark = holder.getAdditionalInstanceField<Int>(KEY_MEDIA_BG_COLOR_DARK) ?: Color.TRANSPARENT
                             ambientLightDrawable.setGradientColor(if (isDark) dark else light, !mediaBgView.isShown)
                         }
                         ambientLightDrawable.setLightMode(!isDark)
@@ -221,6 +227,9 @@ object AmbientLight : YukiBaseHooker() {
                 }?.self
                 val fldDummyHolder = resolve().firstFieldOrNull {
                     name = "dummyHolder"
+                }?.self
+                val fldMediaBgTransYOffset = resolve().optional(true).firstFieldOrNull {
+                    name = "mediaBgTransYOffset"
                 }?.self
                 if (diAmbientLightType == 1) {
                     resolve().firstMethodOrNull {
@@ -294,6 +303,40 @@ object AmbientLight : YukiBaseHooker() {
                                     dummyAmbientLightDrawable.pause()
                                 }
                             }
+                            val mediaBgTransYOffset = fldMediaBgTransYOffset?.get(this.instance) as? Float
+                            if (mediaBgTransYOffset != null && mediaBgTransYOffset != 0.0f) {
+                                getNewMediaBgView(dummyHolder, true)?.translationY = mediaBgTransYOffset
+                            }
+                        }
+                    }
+                    $$"com.android.systemui.statusbar.notification.mediaisland.MiuiIslandMediaViewBinderImpl$attach$4$1".toClassOrNull()?.apply {
+                        val fldHolder = resolve().firstFieldOrNull {
+                            name = $$"$holder"
+                        }?.self
+                        val fldDummyHolder = resolve().firstFieldOrNull {
+                            name = $$"$dummyHolder"
+                        }?.self
+                        resolve().firstMethodOrNull {
+                            name = "emit"
+                        }?.hook {
+                            after {
+                                val pair = this.args(0).any() ?: return@after
+                                val action = PairCompat.getFirst(pair) as? String ?: return@after
+                                val data = PairCompat.getSecond(pair) as? Bundle
+                                val mediaBgView = fldHolder?.get(this.instance)?.let { it1 -> getNewMediaBgView(it1, true) } ?: return@after
+                                val dummyMediaBgView = fldDummyHolder?.get(this.instance)?.let { it1 -> getNewMediaBgView(it1, true) } ?: return@after
+                                when (action) {
+                                    "pull_down_type_start" -> {
+                                        (mediaBgView.drawable as? AmbientLightDrawable)?.pause()
+                                    }
+                                    "pull_down_type_update" -> {
+                                        dummyMediaBgView.translationY = data?.getFloat("pull_down_action_offset_y", 0.0f) ?: 0.0f
+                                    }
+                                    "pull_down_type_finish" -> {
+                                        (mediaBgView.drawable as? AmbientLightDrawable)?.resume()
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -302,7 +345,7 @@ object AmbientLight : YukiBaseHooker() {
     }
 
     private fun getNewMediaBgView(mMediaViewHolder: Any, isDynamicIsland: Boolean): ImageView? {
-        val newMediaBgView = XposedHelpers.getAdditionalInstanceField(mMediaViewHolder, KEY_MEDIA_BG_VIEW) as? ImageView
+        val newMediaBgView = mMediaViewHolder.getAdditionalInstanceField<ImageView>(KEY_MEDIA_BG_VIEW)
         if (newMediaBgView?.drawable is AmbientLightDrawable) {
             return newMediaBgView
         } else {
@@ -334,7 +377,7 @@ object AmbientLight : YukiBaseHooker() {
             connect?.invoke(constraintSet, media_bg_view, ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT)
             connect?.invoke(constraintSet, media_bg_view, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
             applyTo?.invoke(constraintSet, parent)
-            XposedHelpers.setAdditionalInstanceField(mMediaViewHolder, KEY_MEDIA_BG_VIEW, musicBgView)
+            mMediaViewHolder.setAdditionalInstanceField(KEY_MEDIA_BG_VIEW, musicBgView)
             return musicBgView
         }
     }
@@ -378,8 +421,8 @@ object AmbientLight : YukiBaseHooker() {
                     } else {
                         val light = accent1[4]
                         val dark = accent1[7]
-                        XposedHelpers.setAdditionalInstanceField(holder, KEY_MEDIA_BG_COLOR_LIGHT, light)
-                        XposedHelpers.setAdditionalInstanceField(holder, KEY_MEDIA_BG_COLOR_DARK, dark)
+                        holder.setAdditionalInstanceField(KEY_MEDIA_BG_COLOR_LIGHT, light)
+                        holder.setAdditionalInstanceField(KEY_MEDIA_BG_COLOR_DARK, dark)
                         mainColorHCT = if (isDark) dark else light
                     }
                 } else {

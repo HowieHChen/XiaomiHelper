@@ -4,11 +4,14 @@ import android.app.WallpaperColors
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.Outline
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.Icon
+import android.os.Bundle
 import android.util.Pair
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewOutlineProvider
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.SeekBar
@@ -18,10 +21,10 @@ import androidx.core.graphics.drawable.toDrawable
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.log.YLog
-import de.robv.android.xposed.XposedHelpers
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.media_bg
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.media_bg_view
+import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.media_control_bg_radius
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzMiuiIslandMediaViewBinderImpl
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzMiuiMediaViewControllerImpl
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.getMediaViewHolderField
@@ -30,6 +33,7 @@ import dev.lackluster.mihelper.hook.rules.systemui.compat.ConstraintSetCompat.cl
 import dev.lackluster.mihelper.hook.rules.systemui.compat.ConstraintSetCompat.connect
 import dev.lackluster.mihelper.hook.rules.systemui.compat.ConstraintSetCompat.ctorConstraintSet
 import dev.lackluster.mihelper.hook.rules.systemui.compat.ConstraintSetCompat.setVisibility
+import dev.lackluster.mihelper.hook.rules.systemui.compat.PairCompat
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.clzMediaData
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.ctorColorScheme
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.defaultColorConfig
@@ -47,12 +51,15 @@ import dev.lackluster.mihelper.hook.rules.systemui.media.bg.BlurredCoverProcesso
 import dev.lackluster.mihelper.hook.rules.systemui.media.bg.CoverArtProcessor
 import dev.lackluster.mihelper.hook.rules.systemui.media.bg.RadialGradientProcessor
 import dev.lackluster.mihelper.hook.rules.systemui.media.bg.LinearGradientProcessor
+import dev.lackluster.mihelper.hook.rules.systemui.media.CustomProgressBar.KEY_REAL_PROGRESS_BAR
 import dev.lackluster.mihelper.hook.rules.systemui.media.data.MediaViewColorConfig
 import dev.lackluster.mihelper.hook.rules.systemui.media.data.MiuiMediaViewHolderWrapper
 import dev.lackluster.mihelper.hook.rules.systemui.media.data.PlayerConfig
 import dev.lackluster.mihelper.hook.rules.systemui.media.data.PlayerType
 import dev.lackluster.mihelper.utils.HostExecutor
 import dev.lackluster.mihelper.utils.Prefs
+import dev.lackluster.mihelper.utils.factory.getAdditionalInstanceField
+import dev.lackluster.mihelper.utils.factory.setAdditionalInstanceField
 
 object CustomBackground : YukiBaseHooker() {
     private const val KEY_VIEW_HOLDER_WRAPPER = "KEY_VIEW_HOLDER_WRAPPER"
@@ -169,6 +176,9 @@ object CustomBackground : YukiBaseHooker() {
             val fldDummyHolder = resolve().firstFieldOrNull {
                 name = "dummyHolder"
             }?.self
+            val fldMediaBgTransYOffset = resolve().optional(true).firstFieldOrNull {
+                name = "mediaBgTransYOffset"
+            }?.self
             resolve().firstMethodOrNull {
                 name = "updateForegroundColors"
             }?.hook {
@@ -208,13 +218,50 @@ object CustomBackground : YukiBaseHooker() {
                         updateBackground(context, artwork, packageName, holderWrapper, PlayerType.DYNAMIC_ISLAND)
                         updateBackground(context, artwork, packageName, dummyHolderWrapper, PlayerType.DUMMY_DYNAMIC_ISLAND)
                     }
+                    val mediaBgTransYOffset = fldMediaBgTransYOffset?.get(this.instance) as? Float
+                    if (mediaBgTransYOffset != null && mediaBgTransYOffset != 0.0f) {
+                        val height = dummyHolderWrapper.mediaBg.height
+                        dummyHolderWrapper.mediaBg.scaleY = (height + mediaBgTransYOffset) / height
+                    }
+                }
+            }
+        }
+        $$"com.android.systemui.statusbar.notification.mediaisland.MiuiIslandMediaViewBinderImpl$attach$4$1".toClassOrNull()?.apply {
+//            val fldHolder = resolve().firstFieldOrNull {
+//                name = $$"$holder"
+//            }?.self
+            val fldDummyHolder = resolve().firstFieldOrNull {
+                name = $$"$dummyHolder"
+            }?.self
+            resolve().firstMethodOrNull {
+                name = "emit"
+            }?.hook {
+                after {
+                    val pair = this.args(0).any() ?: return@after
+                    val action = PairCompat.getFirst(pair) as? String ?: return@after
+                    val data = PairCompat.getSecond(pair) as? Bundle
+//                    val mediaBgView = fldHolder?.get(this.instance)?.let { it1 -> getMediaViewHolderWrapper(it1, true)?.mediaBg  } ?: return@after
+                    val dummyMediaBgView = fldDummyHolder?.get(this.instance)?.let { it1 -> getMediaViewHolderWrapper(it1, true)?.mediaBg } ?: return@after
+                    when (action) {
+                        "pull_down_type_start" -> {
+                            dummyMediaBgView.pivotY = 0.0f
+                        }
+                        "pull_down_type_update" -> {
+                            val pullDownOffset = data?.getFloat("pull_down_action_offset_y", 0.0f) ?: 0.0f
+                            val height = dummyMediaBgView.height
+                            dummyMediaBgView.scaleY = (height + pullDownOffset) / height
+                        }
+                        "pull_down_type_finish" -> {
+
+                        }
+                    }
                 }
             }
         }
     }
 
     private fun getMediaViewHolderWrapper(mMediaViewHolder: Any, isDynamicIsland: Boolean): MiuiMediaViewHolderWrapper? {
-        (XposedHelpers.getAdditionalInstanceField(mMediaViewHolder, KEY_VIEW_HOLDER_WRAPPER) as? MiuiMediaViewHolderWrapper)?.let {
+        mMediaViewHolder.getAdditionalInstanceField<MiuiMediaViewHolderWrapper>(KEY_VIEW_HOLDER_WRAPPER)?.let {
             return it
         }
         val titleText = getMediaViewHolderField("titleText", isDynamicIsland)?.get(mMediaViewHolder) as? TextView ?: return null
@@ -226,6 +273,7 @@ object CustomBackground : YukiBaseHooker() {
         val action3 = getMediaViewHolderField("action3", isDynamicIsland)?.get(mMediaViewHolder) as? ImageButton ?: return null
         val action4 = getMediaViewHolderField("action4", isDynamicIsland)?.get(mMediaViewHolder) as? ImageButton ?: return null
         val seekBar = getMediaViewHolderField("seekBar", isDynamicIsland)?.get(mMediaViewHolder) as? SeekBar ?: return null
+        val realSeekBar = mMediaViewHolder.getAdditionalInstanceField<SeekBar>(KEY_REAL_PROGRESS_BAR)
         val elapsedTimeView = getMediaViewHolderField("elapsedTimeView", isDynamicIsland)?.get(mMediaViewHolder) as? TextView ?: return null
         val totalTimeView = getMediaViewHolderField("totalTimeView", isDynamicIsland)?.get(mMediaViewHolder) as? TextView ?: return null
         val albumView = getMediaViewHolderField("albumImageView", isDynamicIsland)?.get(mMediaViewHolder) as? ImageView ?: return null
@@ -238,7 +286,19 @@ object CustomBackground : YukiBaseHooker() {
                 layoutParams = ViewGroup.LayoutParams(0, 0)
             }.also {
                 val parent = titleText.parent as? ViewGroup ?: return@also
-                val index = (mediaBgView?.let { it1 -> parent.indexOfChild(it1) + 1 } ?: 0).coerceIn(0, parent.childCount)
+                val index: Int
+                if (mediaBgView != null) {
+                    index = (parent.indexOfChild(mediaBgView) + 1).coerceIn(0, parent.childCount)
+                    it.outlineProvider = object : ViewOutlineProvider() {
+                        override fun getOutline(p0: View?, p1: Outline?) {
+                            val cornerRadius = p0?.context?.resources?.getDimension(media_control_bg_radius) ?: return
+                            p1?.setRoundRect(0, 0, p0.width, p0.height, cornerRadius)
+                        }
+                    }
+                    it.clipToOutline = true
+                } else {
+                    index = 0
+                }
                 parent.addView(it, index)
                 parent.removeView(mediaBgView)
                 val constraintSet = ctorConstraintSet.newInstance()
@@ -268,9 +328,9 @@ object CustomBackground : YukiBaseHooker() {
             action4,
             elapsedTimeView,
             totalTimeView,
-            seekBar,
+            realSeekBar ?: seekBar,
         ).also {
-            XposedHelpers.setAdditionalInstanceField(mMediaViewHolder, KEY_VIEW_HOLDER_WRAPPER, it)
+            mMediaViewHolder.setAdditionalInstanceField(KEY_VIEW_HOLDER_WRAPPER, it)
         }
     }
 
@@ -312,18 +372,22 @@ object CustomBackground : YukiBaseHooker() {
         val artworkLayer = artwork?.loadDrawable(context) ?: return
         val processor: BgProcessor
         val playerConfig: PlayerConfig
+        val allowResizeAnim: Boolean
         when (type) {
             PlayerType.NOTIFICATION_CANTER -> {
                 processor = ncProcessor ?: return
                 playerConfig = ncPlayerConfig
+                allowResizeAnim = true
             }
             PlayerType.DYNAMIC_ISLAND -> {
                 processor = diProcessor ?: return
                 playerConfig = diPlayerConfig
+                allowResizeAnim = false
             }
             PlayerType.DUMMY_DYNAMIC_ISLAND -> {
                 processor = diProcessor ?: return
                 playerConfig = diPlayerConfigDummy
+                allowResizeAnim = false
             }
         }
         val reqId = playerConfig.mArtworkNextBindRequestId++
@@ -400,7 +464,9 @@ object CustomBackground : YukiBaseHooker() {
             val processedArtwork = pair.second
 
             if (playerConfig.mArtworkDrawable == null) {
-                playerConfig.mArtworkDrawable = processor.createBackground(processedArtwork, colorConfig)
+                playerConfig.mArtworkDrawable = processor.createBackground(processedArtwork, colorConfig).apply {
+                    setResizeAnim(allowResizeAnim)
+                }
             }
             playerConfig.mArtworkDrawable?.setBounds(0, 0, width, height)
             playerConfig.mCurrentPkgName = pkgName

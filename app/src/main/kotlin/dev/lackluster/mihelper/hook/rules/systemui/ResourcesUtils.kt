@@ -74,6 +74,7 @@ object ResourcesUtils : YukiBaseHooker() {
     var media_progress_bar = 0
     var media_elapsed_time = 0
     var media_total_time = 0
+    var media_control_bg_radius = 0
     // Lockscreen
     var pad_clock_xml = 0
     var keyguard_carrier_text = 0
@@ -140,6 +141,7 @@ object ResourcesUtils : YukiBaseHooker() {
                     media_progress_bar = this.getResID("media_progress_bar", "id", PKG_NAME)
                     media_elapsed_time = this.getResID("media_elapsed_time", "id", PKG_NAME)
                     media_total_time = this.getResID("media_total_time", "id", PKG_NAME)
+                    media_control_bg_radius = this.getResID("media_control_bg_radius", "dimen", PKG_NAME)
                     normal_control_center_carrier_view = this.getResID("normal_control_center_carrier_view", "id", PKG_NAME)
                     normal_control_center_carrier_second_view = this.getResID("normal_control_center_carrier_second_view", "id", PKG_NAME)
                     normal_control_center_carrier_vertical_separator = this.getResID("normal_control_center_carrier_vertical_separator", "id", PKG_NAME)
