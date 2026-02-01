@@ -76,7 +76,7 @@ fun MenuPage(navController: NavController, adjustPadding: PaddingValues, mode: B
     ) {
         dialogRebootSystem.value = false
         try {
-            ShellUtils.tryExec("/system/bin/sync;/system/bin/svc power reboot || reboot", useRoot = true, checkSuccess = true)
+            ShellUtils.tryExec("/system/bin/sync;/system/bin/svc power reboot || reboot", useRoot = true, throwIfError = true)
         } catch (tout : Throwable) {
             makeText(
                 context,
@@ -98,7 +98,7 @@ fun MenuPage(navController: NavController, adjustPadding: PaddingValues, mode: B
             try {
                 it.resources.getStringArray(R.array.module_scope).forEach { pkg ->
                     try {
-                        if (pkg != "android") ShellUtils.tryExec("killall -q $it", useRoot = true, checkSuccess = true)
+                        if (pkg != "android") ShellUtils.tryExec("killall -q $it", useRoot = true, throwIfError = true)
                     } catch (t: Throwable) {
                         if (t.message?.contains("No such process") == false) {
                             throw t
@@ -129,7 +129,7 @@ fun MenuPage(navController: NavController, adjustPadding: PaddingValues, mode: B
     ) {
         dialogRebootSystemUI.value = false
         try {
-            ShellUtils.tryExec("killall com.android.systemui", useRoot = true, checkSuccess = true)
+            ShellUtils.tryExec("killall com.android.systemui", useRoot = true, throwIfError = true)
             context.let {
                 makeText(
                     it,
@@ -157,7 +157,7 @@ fun MenuPage(navController: NavController, adjustPadding: PaddingValues, mode: B
     ) {
         dialogRebootLauncher.value = false
         try {
-            ShellUtils.tryExec("killall com.miui.home", useRoot = true, checkSuccess = true)
+            ShellUtils.tryExec("killall com.miui.home", useRoot = true, throwIfError = true)
             context.let {
                 makeText(
                     it,

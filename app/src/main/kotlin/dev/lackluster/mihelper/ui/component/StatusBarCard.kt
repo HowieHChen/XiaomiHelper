@@ -649,7 +649,7 @@ object FontFamilyCache {
     }
 
     fun updateVfCustomPath() {
-        val prefPath = SafeSP.getString(Pref.Key.SystemUI.FontWeight.FONT_PATH_APP, vfDefaultPath)
+        val prefPath = SafeSP.getString(Pref.Key.SystemUI.FontWeight.FONT_PATH_INTERNAL, vfDefaultPath)
         val fontFile = File(prefPath)
         vfCustomPath = if (fontFile.exists() && fontFile.isFile) prefPath else vfDefaultPath
         customWeightCache.clear()

@@ -780,4 +780,5 @@
     <string name="home_gesture_fix_predictive_back">修复预测性返回进度错误</string>
     <string name="icon_detail_net_speed_refresh">每秒刷新</string>
     <string name="icon_detail_net_speed_unit_style">速度单位样式</string>
+    <string name="font_hint_general_root">字体需要 root 权限才能在重启后自动生效。否则，您需要解锁设备并重启系统界面才能使更改生效。</string>
 </resources>

@@ -97,7 +97,7 @@ object CommonClassUtils : YukiBaseHooker() {
 
     val fontPath by lazy {
         val defaultPath = SystemProperties.get("ro.miui.ui.font.mi_font_path", VARIABLE_FONT_DEFAULT_PATH)
-        val prefPath = Prefs.getString(FontWeight.FONT_PATH_REAL, defaultPath) ?: defaultPath
+        val prefPath = Prefs.getString(FontWeight.FONT_PATH_INTERNAL, defaultPath) ?: defaultPath
         val fontFile = File(prefPath)
         if (fontFile.exists() && fontFile.isFile && fontFile.canRead()) prefPath else defaultPath
     }

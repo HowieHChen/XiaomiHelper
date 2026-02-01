@@ -209,7 +209,7 @@ object Pref {
                 const val REGION_SAMPLING = "statusbar_region_sampling"
             }
             object FontWeight {
-                const val FONT_PATH_APP = "sb_font_path_app"
+                const val FONT_PATH_INTERNAL = "sb_font_path_app"
                 const val FONT_PATH_REAL = "sb_font_path_real"
                 const val CLOCK = "sb_font_clock"
                 const val CLOCK_WEIGHT = "sb_font_clock_weight"
@@ -428,6 +428,7 @@ object Pref {
         object Hints {
             const val MEDIA_ADVANCED_TEXTURES = "hint_media_adv_textures"
             const val MEDIA_AMBIENT_LIGHTING = "hint_media_ambient_light"
+            const val CLOSE_STATUS_BAR_FONT_ROOT = "hint_status_bar_font_root"
         }
         object Updater {
             const val BLOCK_AUTO_UPDATE_DIALOG = "updater_block_dialog"

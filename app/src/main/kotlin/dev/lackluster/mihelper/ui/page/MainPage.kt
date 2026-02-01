@@ -87,7 +87,7 @@ fun MainPage(navController: NavController, adjustPadding: PaddingValues, mode: B
                                             ShellUtils.tryExec(
                                                 Constants.CMD_LSPOSED,
                                                 useRoot = true,
-                                                checkSuccess = true
+                                                throwIfError = true
                                             )
                                         } catch (tout : Throwable) {
                                             makeText(
@@ -222,7 +222,7 @@ fun MainPage(navController: NavController, adjustPadding: PaddingValues, mode: B
             ShellUtils.tryExec(
                 Constants.CMD_LSPOSED,
                 useRoot = true,
-                checkSuccess = true
+                throwIfError = true
             )
         } catch (tout : Throwable) {
             makeText(

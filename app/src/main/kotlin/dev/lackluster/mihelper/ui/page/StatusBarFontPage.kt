@@ -1,5 +1,6 @@
 package dev.lackluster.mihelper.ui.page
 
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -20,18 +21,19 @@ import dev.lackluster.hyperx.compose.base.BasePageDefaults
 import dev.lackluster.hyperx.compose.component.Hint
 import dev.lackluster.hyperx.compose.preference.EditTextDataType
 import dev.lackluster.hyperx.compose.preference.EditTextPreference
-import dev.lackluster.hyperx.compose.preference.PreferenceGroup
 import dev.lackluster.hyperx.compose.preference.SeekBarPreference
 import dev.lackluster.hyperx.compose.preference.SwitchPreference
 import dev.lackluster.hyperx.compose.preference.ValuePosition
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.data.Constants.VARIABLE_FONT_DEFAULT_PATH
 import dev.lackluster.mihelper.data.Constants.VARIABLE_FONT_REAL_FILE_NAME
+import dev.lackluster.mihelper.data.Constants.VARIABLE_FONT_REAL_FILE_PATH
 import dev.lackluster.mihelper.ui.MainActivity
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.ui.component.FontFamilyCache
+import dev.lackluster.mihelper.ui.component.itemAnimated
+import dev.lackluster.mihelper.ui.component.itemPreferenceGroup
 import dev.lackluster.mihelper.utils.ShellUtils
-import top.yukonga.miuix.kmp.basic.SmallTitle
 import java.io.File
 
 @Composable
@@ -39,6 +41,9 @@ fun StatusBarFontPage(navController: NavController, adjustPadding: PaddingValues
     val context = LocalContext.current
 
     var spValueCarrierFont by remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.SystemUI.FontWeight.LOCK_SCREEN_CARRIER)) }
+    var hintCloseFontRoot by remember { mutableStateOf(
+        SafeSP.getBoolean(Pref.Key.Hints.CLOSE_STATUS_BAR_FONT_ROOT, false)
+    ) }
 
     BasePage(
         navController,
@@ -49,103 +54,107 @@ fun StatusBarFontPage(navController: NavController, adjustPadding: PaddingValues
         MainActivity.blurTintAlphaDark,
         mode
     ) {
-        item {
-            SmallTitle(
-                text = stringResource(R.string.ui_title_font_general),
-                modifier = Modifier.padding(top = 6.dp),
-            )
-            Hint(
-                modifier = Modifier
-                    .padding(horizontal = 12.dp)
-                    .padding(bottom = 6.dp),
-                text = stringResource(R.string.font_hint_path)
-            )
-            PreferenceGroup(
-                first = true
-            ) {
-                EditTextPreference(
-                    title = stringResource(R.string.font_general_path),
-                    key = Pref.Key.SystemUI.FontWeight.FONT_PATH_REAL,
-                    defValue = VARIABLE_FONT_DEFAULT_PATH,
-                    dataType = EditTextDataType.STRING,
-                    dialogMessage = stringResource(R.string.font_general_path_tips),
-                    isValueValid = { path ->
-                        (path as? String)?.let {
-                            val file = File(it)
-                            file.exists() && file.isFile
-                        } ?: false
-                    },
-                    valuePosition = ValuePosition.SUMMARY_VIEW,
-                    onValueChange = { path, _ ->
+        itemPreferenceGroup(
+            key = "FONT_GENERAL",
+            titleResId = R.string.ui_title_font_general,
+            first = true
+        ) {
+            EditTextPreference(
+                title = stringResource(R.string.font_general_path),
+                key = Pref.Key.SystemUI.FontWeight.FONT_PATH_REAL,
+                defValue = VARIABLE_FONT_DEFAULT_PATH,
+                dataType = EditTextDataType.STRING,
+                dialogMessage = stringResource(R.string.font_general_path_tips),
+                isValueValid = { path ->
+                    (path as? String)?.let {
+                        val file = File(it)
+                        file.exists() && file.isFile
+                    } ?: false
+                },
+                valuePosition = ValuePosition.SUMMARY_VIEW,
+                onValueChange = { path, _ ->
+                    if (path == VARIABLE_FONT_DEFAULT_PATH) {
+                        SafeSP.putAny(Pref.Key.SystemUI.FontWeight.FONT_PATH_REAL, VARIABLE_FONT_DEFAULT_PATH)
+                        SafeSP.putAny(Pref.Key.SystemUI.FontWeight.FONT_PATH_INTERNAL, VARIABLE_FONT_DEFAULT_PATH)
+                    } else {
+                        val oriFilePath = File(path).absolutePath
                         try {
-                            val file = File(context.filesDir, VARIABLE_FONT_REAL_FILE_NAME)
-                            if (file.exists() && file.isFile) {
-                                file.delete()
-                            }
-                        } catch (_: Throwable) { }
-                        if (path == VARIABLE_FONT_DEFAULT_PATH) {
-                            SafeSP.putAny(Pref.Key.SystemUI.FontWeight.FONT_PATH_REAL, VARIABLE_FONT_DEFAULT_PATH)
-                            SafeSP.putAny(Pref.Key.SystemUI.FontWeight.FONT_PATH_APP, VARIABLE_FONT_DEFAULT_PATH)
-                        } else {
-                            try {
-                                val oriFile = File(path)
-                                val newFile = File(context.filesDir, VARIABLE_FONT_REAL_FILE_NAME)
-                                if (newFile.exists()) {
-                                    newFile.delete()
-                                }
-                                val owner = ShellUtils.tryExec(
-                                    "ls -ld /data/data/dev.lackluster.mihelper/files | awk '{print $3}'",
-                                    useRoot = true,
-                                    checkSuccess = true
-                                ).successMsg
-                                val group = ShellUtils.tryExec(
-                                    "ls -ld /data/data/dev.lackluster.mihelper/files | awk '{print $4}'",
-                                    useRoot = true,
-                                    checkSuccess = true
-                                ).successMsg
-                                ShellUtils.tryExec(
-                                    "cp ${oriFile.absolutePath} ${newFile.absolutePath}",
-                                    useRoot = true,
-                                    checkSuccess = true
-                                )
-                                ShellUtils.tryExec(
-                                    "chown ${owner}:${group} ${newFile.absolutePath} && chmod 644 ${newFile.absolutePath}",
-                                    useRoot = true,
-                                    checkSuccess = true
-                                )
-                                SafeSP.putAny(Pref.Key.SystemUI.FontWeight.FONT_PATH_APP, newFile.absolutePath)
-                                FontFamilyCache.updateVfCustomPath()
-                            } catch (t: Throwable) {
-                                YLog.error("error", t)
-                                SafeSP.putAny(Pref.Key.SystemUI.FontWeight.FONT_PATH_APP, VARIABLE_FONT_DEFAULT_PATH)
+                            val newFilePath = "${VARIABLE_FONT_REAL_FILE_PATH}/${VARIABLE_FONT_REAL_FILE_NAME}"
+                            ShellUtils.tryExec(
+                                "cp -f $oriFilePath $newFilePath",
+                                useRoot = true,
+                                throwIfError = true
+                            )
+                            ShellUtils.tryExec(
+                                "chmod 755 $newFilePath",
+                                useRoot = true,
+                                throwIfError = true
+                            )
+                            SafeSP.putAny(Pref.Key.SystemUI.FontWeight.FONT_PATH_INTERNAL, newFilePath)
+                            FontFamilyCache.updateVfCustomPath()
+                        } catch (t: Throwable) {
+                            YLog.error("error", t)
+                            if (t.message?.trim()?.endsWith("Permission denied") == true) {
+                                SafeSP.putAny(Pref.Key.SystemUI.FontWeight.FONT_PATH_INTERNAL, oriFilePath)
+                                Toast.makeText(
+                                    context,
+                                    context.getString(R.string.font_hint_general_root),
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            } else {
+                                SafeSP.putAny(Pref.Key.SystemUI.FontWeight.FONT_PATH_INTERNAL, VARIABLE_FONT_DEFAULT_PATH)
                             }
                         }
                     }
-                )
+                }
+            )
+        }
+        itemAnimated(
+            key = "FONT_GENERAL_HINT"
+        ) {
+            Hint(
+                modifier = Modifier
+                    .padding(horizontal = 12.dp)
+                    .padding(vertical = 6.dp),
+                text = stringResource(R.string.font_hint_path)
+            )
+        }
+        itemAnimated(
+            key = "FONT_ROOT_HINT",
+            visible = !hintCloseFontRoot
+        ) {
+            Hint(
+                modifier = Modifier
+                    .padding(horizontal = 12.dp)
+                    .padding(vertical = 6.dp),
+                text = stringResource(R.string.font_hint_general_root),
+                closeable = true
+            ) {
+                hintCloseFontRoot = true
+                SafeSP.putAny(Pref.Key.Hints.CLOSE_STATUS_BAR_FONT_ROOT, true)
             }
         }
-        item {
-            PreferenceGroup(
-                title = stringResource(R.string.ui_title_font_weight),
-                last = true
+        itemPreferenceGroup(
+            key = "FONT_WEIGHT",
+            titleResId = R.string.ui_title_font_weight,
+            last = true
+        ) {
+            SwitchPreference(
+                title = stringResource(R.string.font_weight_lockscreen_carrier),
+                key = Pref.Key.SystemUI.FontWeight.LOCK_SCREEN_CARRIER
             ) {
-                SwitchPreference(
-                    title = stringResource(R.string.font_weight_lockscreen_carrier),
-                    key = Pref.Key.SystemUI.FontWeight.LOCK_SCREEN_CARRIER
-                ) {
-                    spValueCarrierFont = it
-                }
-                AnimatedVisibility(
-                    spValueCarrierFont
-                ) {
-                    SeekBarPreference(
-                        title = stringResource(R.string.font_weight_lockscreen_carrier_weight),
-                        key = Pref.Key.SystemUI.FontWeight.LOCK_SCREEN_CARRIER_WEIGHT,
-                        defValue = 430,
-                        min = 1,
-                        max = 1000
-                    )
-                }
+                spValueCarrierFont = it
+            }
+            AnimatedVisibility(
+                spValueCarrierFont
+            ) {
+                SeekBarPreference(
+                    title = stringResource(R.string.font_weight_lockscreen_carrier_weight),
+                    key = Pref.Key.SystemUI.FontWeight.LOCK_SCREEN_CARRIER_WEIGHT,
+                    defValue = 430,
+                    min = 1,
+                    max = 1000
+                )
             }
         }
     }

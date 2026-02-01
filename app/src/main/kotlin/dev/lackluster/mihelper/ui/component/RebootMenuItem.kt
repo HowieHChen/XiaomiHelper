@@ -53,10 +53,10 @@ fun RebootMenuItem(
             try {
                 when (appPkg) {
                     Scope.ANDROID -> {
-                        ShellUtils.tryExec("/system/bin/sync;/system/bin/svc power reboot || reboot", useRoot = true, checkSuccess = true)
+                        ShellUtils.tryExec("/system/bin/sync;/system/bin/svc power reboot || reboot", useRoot = true, throwIfError = true)
                     }
                     else -> {
-                        ShellUtils.tryExec("killall $appPkg", useRoot = true, checkSuccess = true)
+                        ShellUtils.tryExec("killall $appPkg", useRoot = true, throwIfError = true)
                     }
                 }
                 context.let {

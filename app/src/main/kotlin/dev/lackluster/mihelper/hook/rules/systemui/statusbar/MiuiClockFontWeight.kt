@@ -174,11 +174,35 @@ object MiuiClockFontWeight : YukiBaseHooker() {
                 samples.add(typefaceBigTimeFW)
                 typefaces.copy().set(samples)
             }
+            "com.android.systemui.statusbar.policy.MiuiStatusBarClockController".toClassOrNull()?.apply {
+                val mClockListeners = resolve().firstFieldOrNull {
+                    name = "mClockListeners"
+                }
+                resolve().firstMethodOrNull {
+                    name {
+                        it.startsWith("onMiuiThemeChanged")
+                    }
+                }?.hook {
+                    after {
+                        mClockListeners?.copy()?.of(this.instance)?.get<List<*>>()?.forEach { listener ->
+                            if (listener is TextView) {
+                                listener.typeface = typefaceClockFW
+                            }
+                        }
+                    }
+                }
+            }
         }
-        if (modifyDateTimeFW) {
+        if (modifyDateTimeFW || modifyClockFW || modifyBigTimeFW) {
             "com.android.systemui.qs.MiuiNotificationHeaderView".toClassOrNull()?.apply {
                 val mDateView = resolve().firstFieldOrNull {
                     name = "mDateView"
+                }
+                val usingMiPro = resolve().firstFieldOrNull {
+                    name = "usingMiPro"
+                }
+                val mBigTime = resolve().firstFieldOrNull {
+                    name = "mBigTime"
                 }
                 resolve().firstMethodOrNull {
                     name {
@@ -186,7 +210,13 @@ object MiuiClockFontWeight : YukiBaseHooker() {
                     }
                 }?.hook {
                     after {
-                        mDateView?.copy()?.of(this.instance)?.get<TextView>()?.typeface = typefaceDateTimeFW
+                        if (modifyDateTimeFW) {
+                            mDateView?.copy()?.of(this.instance)?.get<TextView>()?.typeface = typefaceDateTimeFW
+                        }
+                        if (modifyClockFW || modifyBigTimeFW) {
+                            usingMiPro?.copy()?.of(this.instance)?.set(true)
+                            mBigTime?.copy()?.of(this.instance)?.get<TextView>()?.typeface = typefaceBigTimeFW
+                        }
                     }
                 }
             }

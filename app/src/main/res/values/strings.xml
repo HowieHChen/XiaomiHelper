@@ -647,6 +647,7 @@
     <string name="font_hint_path">All custom font weight features (not limited to the options below) will load the variable font file specified by this path. Unless you know what you are doing and understand the possible consequences, do not modify it. \n\nIf you want to change the font without altering the weight, enable the corresponding custom font weight preference but keep the weight set to Default.</string>
     <string name="font_general_path">Font file path</string>
     <string name="font_general_path_tips">Unless you know what you are doing and understand the possible consequences, do not modify it.\n\nPlease use variable fonts.</string>
+    <string name="font_hint_general_root">Fonts require root access to take effect automatically after reboot. Otherwise, you need to unlock the device and restart the system UI for the changes to apply.</string>
     <string name="ui_title_font_weight" translatable="false">@string/ui_title_icon_detail_font_weight</string>
     <string name="font_weight_lockscreen_carrier">Customize font weight (Lock screen carrier label)</string>
     <string name="font_weight_lockscreen_carrier_weight">Font weight (Lock screen carrier name)</string>

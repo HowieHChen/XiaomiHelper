@@ -150,7 +150,7 @@ class MainActivity : HyperXActivity() {
                     ShellUtils.tryExec(
                         "whoami",
                         useRoot = true,
-                        checkSuccess = true
+                        throwIfError = true
                     ).successMsg.trim().contentEquals("root")
                 } catch (_: Exception) {
                     false

@@ -11,9 +11,9 @@ object ShellUtils {
         val successMsg: String,
         val errorMsg: String
     )
-    fun tryExec(command: String, useRoot: Boolean = false, checkSuccess: Boolean = true): ShellResult {
+    fun tryExec(command: String, useRoot: Boolean = false, throwIfError: Boolean = true): ShellResult {
         return execInternal(command, useRoot).also {
-            if (checkSuccess && it.exitCode != 0) {
+            if (throwIfError && it.exitCode != 0) {
                 throw Exception(it.errorMsg)
             }
         }

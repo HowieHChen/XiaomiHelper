@@ -44,7 +44,7 @@ fun SystemFrameworkPage(navController: NavController, adjustPadding: PaddingValu
             ShellUtils.tryExec(
                 "settings get system font_scale",
                 useRoot = true,
-                checkSuccess = true
+                throwIfError = true
             ).let { result ->
                 val newScale = result.successMsg.toFloatOrNull()
                 if (result.exitCode == 0 && newScale != null) {
