@@ -80,7 +80,7 @@ object CustomProgressBar : YukiBaseHooker() {
     }
     private val fldProgressHeight by lazy {
         clzHyperProgressSeekBar?.resolve()?.firstFieldOrNull {
-            name = "progressHeight"
+            name = "mProgressHeight"
         }
     }
     private val fldListening by lazy {
@@ -265,7 +265,7 @@ object CustomProgressBar : YukiBaseHooker() {
         }
         if (diProgressStyle == 0) {
             if (clzHyperProgressSeekBar != null) {
-                clzMiuiMediaViewHolder?.apply {
+                clzMiuiIslandMediaViewHolder?.apply {
                     resolve().firstConstructor().hook {
                         after {
                             val seekBar = diSeekBar?.get(this.instance) as? SeekBar ?: return@after

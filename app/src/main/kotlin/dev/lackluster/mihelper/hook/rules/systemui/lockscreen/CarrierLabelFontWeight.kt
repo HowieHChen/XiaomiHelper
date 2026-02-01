@@ -35,12 +35,34 @@ object CarrierLabelFontWeight : YukiBaseHooker() {
     private val typefaceLockScreenCarrierFW by lazy {
         getTypeface(valueLockScreenCarrierFW)
     }
+    private val clzMiuiCarrierTextLayout by lazy {
+        "com.android.systemui.controlcenter.shade.MiuiCarrierTextLayout".toClassOrNull()
+    }
+    private val fldLeftCarrierTextView by lazy {
+        clzMiuiCarrierTextLayout?.resolve()?.firstFieldOrNull {
+            name = "leftCarrierTextView"
+        }
+    }
+    private val fldRightCarrierTextView by lazy {
+        clzMiuiCarrierTextLayout?.resolve()?.firstFieldOrNull {
+            name = "rightCarrierTextView"
+        }
+    }
+    private val metGetCarrierTextView by lazy {
+        "com.android.systemui.controlcenter.shade.ControlCenterCarrierText".toClassOrNull()
+            ?.resolve()?.firstMethodOrNull {
+                name = "getCarrierTextView"
+            }
+    }
 
     override fun onHook() {
         if (modifyLockScreenCarrierFW) {
             clzMiuiKeyguardStatusBarView?.apply {
-                val mCarrierLabel = resolve().firstFieldOrNull {
+                val mCarrierLabel = resolve().optional(true).firstFieldOrNull {
                     name = "mCarrierLabel"
+                }
+                val mCarrierTextLayout = resolve().optional(true).firstFieldOrNull {
+                    name = "mCarrierTextLayout"
                 }
                 resolve().method {
                     name {
@@ -49,6 +71,14 @@ object CarrierLabelFontWeight : YukiBaseHooker() {
                 }.hookAll {
                     after {
                         mCarrierLabel?.copy()?.of(this.instance)?.get<TextView>()?.typeface = typefaceLockScreenCarrierFW
+                        mCarrierTextLayout?.copy()?.of(this.instance)?.let {
+                            listOfNotNull(
+                                fldLeftCarrierTextView?.copy()?.of(it)?.get(),
+                                fldRightCarrierTextView?.copy()?.of(it)?.get()
+                            ).forEach { carrierLabel ->
+                                metGetCarrierTextView?.copy()?.of(carrierLabel)?.invoke<TextView>()?.typeface = typefaceLockScreenCarrierFW
+                            }
+                        }
                     }
                 }
             }
