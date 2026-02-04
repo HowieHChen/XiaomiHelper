@@ -121,6 +121,14 @@ object RemoveElement : YukiBaseHooker() {
     private val clzSafeModeTipViewObjectViewHolder by lazy {
         $$"com.miui.packageInstaller.ui.listcomponets.SafeModeTipViewObject$ViewHolder".toClassOrNull()
     }
+    private val metShowEnhanceDialog by lazy {
+        DexKit.findMethodWithCache("show_enhance_dialog") {
+            matcher {
+                addUsingString("enhance_dialog_already_pop_sum", StringMatchType.Equals)
+                returnType = "void"
+            }
+        }
+    }
 
     override fun onHook() {
         hasEnable(Pref.Key.PackageInstaller.REMOVE_ELEMENT) {
@@ -185,6 +193,9 @@ object RemoveElement : YukiBaseHooker() {
                         this.result = null
                     }
                 }
+            }
+            metShowEnhanceDialog?.getMethodInstance(appClassLoader!!)?.hook {
+                intercept()
             }
         }
     }

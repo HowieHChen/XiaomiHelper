@@ -13,7 +13,6 @@ import androidx.core.view.updateMargins
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.condition.type.Modifiers
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.log.YLog
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzMiuiIslandMediaViewBinderImpl
@@ -253,11 +252,8 @@ object CustomProgressBar : YukiBaseHooker() {
                         val fullAodController = fullAodControllerLazy?.let { it1 -> metGet?.invoke(it1) }
                         val enableFullAod = fldEnableFullAod?.get(fullAodController) == true
                         val isDark = enableFullAod || context.isSystemInDarkMode
-                        YLog.info("updateForegroundColors enableFullAod $enableFullAod isDark $isDark")
                         getRealSeekBar(mediaViewHolder, false)?.progressTintList = ColorStateList.valueOf(
-                            (if (isDark) Color.WHITE else Color.BLACK).also {
-                                YLog.info("updateForegroundColors color #${it.toHexString()}")
-                            }
+                            if (isDark) Color.WHITE else Color.BLACK
                         )
                     }
                 }

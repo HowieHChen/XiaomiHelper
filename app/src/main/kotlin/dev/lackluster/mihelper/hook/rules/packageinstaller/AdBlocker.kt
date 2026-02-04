@@ -80,6 +80,14 @@ object AdBlocker : YukiBaseHooker() {
             }
         }
     }
+    private val metStartVirusScan by lazy {
+        DexKit.findMethodWithCache("start_virus_scan") {
+            matcher {
+                addUsingString("startVirusScan", StringMatchType.Equals)
+                addUsingString("get_guardprovider_time", StringMatchType.Equals)
+            }
+        }
+    }
 
     @SuppressLint("DiscouragedApi")
     override fun onHook() {
@@ -96,6 +104,9 @@ object AdBlocker : YukiBaseHooker() {
             }
             virusScanInstallMethod?.getMethodInstance(appClassLoader!!)?.hook {
                 replaceToFalse()
+            }
+            metStartVirusScan?.getMethodInstance(appClassLoader!!)?.hook {
+                intercept()
             }
             cloudParamsMethod?.getMethodInstance(appClassLoader!!)?.hook {
                 before {

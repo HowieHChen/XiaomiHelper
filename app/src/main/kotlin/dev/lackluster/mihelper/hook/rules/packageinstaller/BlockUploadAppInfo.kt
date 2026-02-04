@@ -47,6 +47,15 @@ object BlockUploadAppInfo : YukiBaseHooker() {
             }
         }
     }
+    private val metCloudFetchTime by lazy {
+        DexKit.findMethodWithCache("cloud_data_fetch_time") {
+            matcher {
+                addUsingString("cloud_data_fetch_time", StringMatchType.Equals)
+                paramCount = 0
+                returnType = "long"
+            }
+        }
+    }
 
     override fun onHook() {
         hasEnable(Pref.Key.PackageInstaller.BLOCK_UPLOAD_INFO) {
@@ -62,6 +71,9 @@ object BlockUploadAppInfo : YukiBaseHooker() {
                 instance.hook {
                     intercept()
                 }
+            }
+            metCloudFetchTime?.getMethodInstance(appClassLoader!!)?.hook {
+                replaceTo(Long.MAX_VALUE)
             }
         }
     }
