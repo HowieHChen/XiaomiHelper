@@ -1,11 +1,11 @@
 import com.android.SdkConstants
+import com.android.build.api.variant.impl.VariantOutputImpl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.text.SimpleDateFormat
 import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.ksp)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
@@ -19,6 +19,19 @@ kotlin {
             "-Xno-call-assertions",
             "-Xno-receiver-assertions"
         ))
+    }
+}
+
+androidComponents {
+    onVariants { variant ->
+        variant.outputs.forEach { output ->
+            if (output is VariantOutputImpl) {
+                val versionName = output.versionName.getOrElse("null")
+                val versionCode = output.versionCode.getOrElse(0)
+                val newFileName = "${libs.versions.project.name.get()}_${versionName}_${versionCode}_${variant.name}_${System.currentTimeMillis() / 1000}.apk"
+                output.outputFileName.set(newFileName)
+            }
+        }
     }
 }
 
@@ -71,14 +84,6 @@ android {
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             signingConfig = signingConfigs.getByName("release")
-        }
-    }
-    packaging {
-        applicationVariants.all {
-            outputs.all {
-                (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName =
-                    "${libs.versions.project.name.get()}_${versionName}_${versionCode}_${buildType.name}_${System.currentTimeMillis() / 1000}.apk"
-            }
         }
     }
 }
