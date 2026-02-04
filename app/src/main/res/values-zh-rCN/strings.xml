@@ -191,7 +191,7 @@
     <string name="systemui_lock_hide_unlock_tip">隐藏锁屏界面底部的解锁提示</string>
     <string name="icon_detail_battery_hide_charge_tips">仅适用于“内部百分比”和“仅百分比”样式</string>
     <string name="ui_title_icon_detail_batter_percentage">百分比</string>
-    <string name="icon_detail_battery_percent_mark_style">"百分比符号样式 "</string>
+    <string name="icon_detail_battery_percent_mark_style">百分比符号样式</string>
     <string name="icon_detail_battery_percent_mark_style_uni">匹配数字大小</string>
     <string name="icon_detail_battery_hide_charge">隐藏充电图标</string>
     <string name="icon_tuner_connect_location">定位服务</string>
@@ -206,8 +206,8 @@
     <string name="ui_title_icon_tuner_network">网络</string>
     <string name="icon_tuner_network_mobile">移动网络</string>
     <string name="icon_detail_cellular_hide_sim_auto_tips">跟随“上网卡”设置，只显示数据 SIM 卡的信号图标</string>
-    <string name="icon_detail_cellular_hide_sim_one">"隐藏 SIM 卡 1 信号图标 "</string>
-    <string name="icon_detail_cellular_hide_sim_two">"隐藏 SIM 卡 2 信号图标 "</string>
+    <string name="icon_detail_cellular_hide_sim_one">隐藏 SIM 卡 1 信号图标</string>
+    <string name="icon_detail_cellular_hide_sim_two">隐藏 SIM 卡 2 信号图标</string>
     <string name="icon_detail_cellular_hide_activity">隐藏移动网络活动</string>
     <string name="icon_detail_cellular_hide_type">隐藏移动网络类型</string>
     <string name="icon_tuner_network_wifi">WLAN</string>
