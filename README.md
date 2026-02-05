@@ -24,6 +24,12 @@ HyperOS 的轻量级模块，专注于提升日常使用体验。
 
 加入 [Telegram 频道](https://t.me/lackluster_stuff) 以反馈问题并获取内部更新。
 
+## 贡献翻译
+
+我们使用了 Hosted Weblate 进行项目翻译同步，您可以在[这里](https://hosted.weblate.org/engage/hyper-helper/)为本项目贡献翻译。
+
+[![翻译状态](https://hosted.weblate.org/widget/hyper-helper/multi-auto.svg)](https://hosted.weblate.org/engage/hyper-helper/)
+
 ## 仓库
 
 - [GitHub Repository](https://github.com/HowieHChen/XiaomiHelper)
