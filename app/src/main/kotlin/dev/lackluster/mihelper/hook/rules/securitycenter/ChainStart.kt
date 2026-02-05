@@ -20,44 +20,35 @@
 
 package dev.lackluster.mihelper.hook.rules.securitycenter
 
+import android.annotation.SuppressLint
+import android.app.Activity
 import android.view.View
-import android.widget.Button
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.factory.hasEnable
-
+import dev.lackluster.mihelper.utils.Prefs
 
 object ChainStart : YukiBaseHooker() {
 
+    @SuppressLint("ResourceType")
     override fun onHook() {
-        hasEnable(Pref.Key.SecurityCenter.CHAIN_START) {
+        if (Prefs.getInt(Pref.Key.SecurityCenter.LINK_START, 0) == 1) {
             "com.miui.wakepath.ui.ConfirmStartActivity".toClassOrNull()?.apply {
                 val metOnClick = resolve().firstMethodOrNull {
                     name = "onClick"
                     parameters(View::class)
                 }
-                val fldDialog = resolve().firstFieldOrNull {
-                    type("miuix.appcompat.app.AlertDialog")
-                    superclass()
-                }
-                val metGetButton = "miuix.appcompat.app.AlertDialog".toClassOrNull()?.resolve()?.firstMethodOrNull {
-                    name = "getButton"
-                }
                 resolve().firstMethodOrNull {
                     name = "onDialogCreated"
                 }?.hook {
                     before {
-                        val mDialog = fldDialog?.copy()?.of(this.instance)?.get() ?: return@before
-                        val buttonAlways = metGetButton?.copy()?.of(mDialog)?.invoke<Button>(2)
-                        if (buttonAlways != null) {
-                            buttonAlways.id = 2
-                            metOnClick?.copy()?.of(this.instance)?.invoke(buttonAlways)
-                        } else {
-                            metGetButton?.copy()?.of(mDialog)?.invoke<Button>(3)?.let { buttonOnce ->
-                                buttonOnce.id = 3
-                                metOnClick?.copy()?.of(this.instance)?.invoke(buttonOnce)
-                            }
+                        metOnClick?.copy()?.of(this.instance)?.let {
+                            it.invoke(
+                                View(this.instance<Activity>()).apply {
+                                    id = 2
+                                }
+                            )
+                            this.result = null
                         }
                     }
                 }

@@ -506,8 +506,13 @@
     <string name="ui_title_security_security_pad" translatable="false">@string/scope_security_center_pad</string>
     <string name="security_security_skip_warning">Skip the wait time on warnings</string>
     <string name="security_security_skip_warning_tips">Skip wait times when using USB debugging, unknown sources, and accessibility.</string>
-    <string name="security_security_skip_open_app">Remove pop-ups when opening apps</string>
-    <string name="security_security_skip_open_app_tips">Remove \"Allow XXX to open XXX\" chain start pop-up</string>
+    <string name="security_security_skip_open_app">Chain start management</string>
+    <string name="security_security_skip_open_app_tips">Remove the confirmation pop-up containing \"Allow XXX to open XXX\" when opening apps</string>
+    <string name="security_security_skip_open_app_default" translatable="false">@string/common_default</string>
+    <string name="security_security_skip_open_app_auto_approve">Auto-approve</string>
+    <string name="security_security_skip_open_app_auto_approve_tips">Automatically approves by clicking \"Always allow\". There may be slight lag during the process. The \"Allow chain start\" switch in the system setting \"Manage chain start\" will still work.</string>
+    <string name="security_security_skip_open_app_disable">Disable wake path checker</string>
+    <string name="security_security_skip_open_app_disable_tips">App wake-ups and launches will not be recorded and cannot be viewed in \"App behavior records\". All preferences in the system setting \"Manage chain start\" will be ignored.</string>
     <string name="security_security_screen_battery">Show screen usage in power consumption ranking</string>
     <string name="security_security_screen_battery_tips">Battery usage of apps that are hidden by default will also be shown</string>
     <string name="security_security_hide_screen_system">Show Android System in power consumption ranking</string>

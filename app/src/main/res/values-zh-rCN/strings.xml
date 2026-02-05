@@ -65,8 +65,12 @@
     <string name="scope_security_center_pad">平板管家</string>
     <string name="security_security_skip_warning">跳过警告等待时间</string>
     <string name="security_security_skip_warning_tips">在使用 USB 调试、未知来源和可访问性时，跳过5秒或10秒的等待时间</string>
-    <string name="security_security_skip_open_app">移除链式启动弹窗</string>
-    <string name="security_security_skip_open_app_tips">删除包含“XXX 想要打开 XXX”的链式启动警告弹出窗口</string>
+    <string name="security_security_skip_open_app">链式启动策略</string>
+    <string name="security_security_skip_open_app_tips">移除打开应用时包含“XXX 想要打开 XXX”的确认弹窗</string>
+    <string name="security_security_skip_open_app_auto_approve">自动批准</string>
+    <string name="security_security_skip_open_app_auto_approve_tips">自动点击“始终允许”按钮，过程中可能会有轻微卡顿。系统设置“链式启动管理”中的“允许链式启动”开关仍可生效。</string>
+    <string name="security_security_skip_open_app_disable">禁用唤醒路径检查</string>
+    <string name="security_security_skip_open_app_disable_tips">应用的唤醒和启动将不会被记录，无法在“权限使用记录”中查看。系统设置“链式启动管理”的所有首选项将被忽略。</string>
     <string name="cleaner_security_lock_score">锁定安全得分</string>
     <string name="cleaner_security_lock_score_tips">将安全得分锁定为100分，并禁用“优化”按钮</string>
     <string name="security_power_unlock_custom_refresh">自定义高刷新率应用</string>

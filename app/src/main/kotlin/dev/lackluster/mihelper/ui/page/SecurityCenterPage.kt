@@ -12,6 +12,8 @@ import androidx.navigation.NavController
 import dev.lackluster.hyperx.compose.activity.SafeSP
 import dev.lackluster.hyperx.compose.base.BasePage
 import dev.lackluster.hyperx.compose.base.BasePageDefaults
+import dev.lackluster.hyperx.compose.preference.DropDownEntry
+import dev.lackluster.hyperx.compose.preference.DropDownPreference
 import dev.lackluster.hyperx.compose.preference.PreferenceGroup
 import dev.lackluster.hyperx.compose.preference.SwitchPreference
 import dev.lackluster.mihelper.R
@@ -24,6 +26,20 @@ fun SecurityCenterPage(navController: NavController, adjustPadding: PaddingValue
     var visibilityShowSystem by remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.SecurityCenter.SHOW_SCREEN_BATTERY)) }
 
     val securityCenter = if (Device.isPad) stringResource(R.string.page_security_center_pad) else stringResource(R.string.page_security_center)
+
+    val dropdownEntriesChainStart = listOf(
+        DropDownEntry(
+            title = stringResource(R.string.security_security_skip_open_app_default)
+        ),
+        DropDownEntry(
+            title = stringResource(R.string.security_security_skip_open_app_auto_approve),
+            summary = stringResource(R.string.security_security_skip_open_app_auto_approve_tips)
+        ),
+        DropDownEntry(
+            title = stringResource(R.string.security_security_skip_open_app_disable),
+            summary = stringResource(R.string.security_security_skip_open_app_disable_tips)
+        ),
+    )
 
     BasePage(
         navController,
@@ -44,10 +60,11 @@ fun SecurityCenterPage(navController: NavController, adjustPadding: PaddingValue
                     summary = stringResource(R.string.security_security_skip_warning_tips),
                     key = Pref.Key.SecurityCenter.SKIP_WARNING
                 )
-                SwitchPreference(
+                DropDownPreference(
                     title = stringResource(R.string.security_security_skip_open_app),
                     summary = stringResource(R.string.security_security_skip_open_app_tips),
-                    key = Pref.Key.SecurityCenter.CHAIN_START
+                    entries = dropdownEntriesChainStart,
+                    key = Pref.Key.SecurityCenter.LINK_START
                 )
                 SwitchPreference(
                     title = stringResource(R.string.security_security_screen_battery),
