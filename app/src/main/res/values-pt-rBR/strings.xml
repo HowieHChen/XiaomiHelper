@@ -177,7 +177,7 @@
     <string name="systemui_lock_keep_notif">Manter notificações após desbloquear</string>
     <string name="systemui_lock_keep_notif_tips">As notificações serão sempre exibidas na Tela de bloqueio até que sejam descartadas manualmente.</string>
     <string name="systemui_lock_block_editor">Desativar toque longo para editar a Tela de bloqueio</string>
-    <string name="systemui_lock_block_editor_tips">Você pode editar a Tela de bloqueio em Configurações > Personalização</string>
+    <string name="systemui_lock_block_editor_tips">Você pode editar a Tela de bloqueio em Configurações &gt; Personalização</string>
     <string name="systemui_lock_flashlight_on">Ligar a lanterna automaticamente</string>
     <string name="systemui_lock_flashlight_on_tips">Ligue a lanterna automaticamente ao abrir a interface de ajuste da lanterna a partir do atalho da Tela de bloqueio.</string>
     <string name="ui_title_systemui_notification_center">Área de notificações</string>
