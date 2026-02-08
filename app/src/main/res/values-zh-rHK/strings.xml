@@ -528,4 +528,22 @@
     <string name="clock_easy_show_ampm">顯示上午/下午</string>
     <string name="clock_easy_show_ampm_tips">僅12小時制時鐘格式時有效</string>
     <string name="clock_easy_show_leading_zero">顯示前導0</string>
+    <string name="clock_easy_show_leading_zero_tips">建議在24小時制時鐘格式時開啟</string>
+    <string name="clock_easy_show_seconds">顯示秒</string>
+    <string name="clock_easy_show_seconds_tips">會同時開啟狀態欄時間每秒刷新</string>
+    <string name="clock_fw_clock">自訂狀態欄時間字體粗細</string>
+    <string name="clock_fw_clock_weight">狀態欄時間字體粗細</string>
+    <string name="clock_fw_pad_clock">自訂狀態欄日期字體粗細</string>
+    <string name="clock_fw_pad_clock_weight">狀態欄日期字體粗細</string>
+    <string name="clock_fw_big_time">自訂通知中心時間字體粗細</string>
+    <string name="clock_fw_big_time_weight">通知中心時間字體粗細</string>
+    <string name="clock_fw_date_time">自訂通知中心日期字體粗細</string>
+    <string name="clock_fw_date_time_weight">通知中心日期字體粗細</string>
+    <string name="clock_fw_cc_date">自訂控制中心日期字體粗細</string>
+    <string name="clock_fw_cc_date_weight">控制中心日期字體粗細</string>
+    <string name="clock_fw_horizontal_time">自訂通知中心橫屏日期時間字體粗細</string>
+    <string name="clock_fw_horizontal_time_weight">通知中心橫屏日期時間字體粗細</string>
+    <string name="font_hint_path">所有自訂字體粗細功能（不僅限於下方的選項）都會載入此路徑所指定的可變字體檔案。除非你清楚自己在做什麽並且瞭解可能的後果，否則請勿修改。\n\n如果你希望修改字體但不修改字體粗細，請啟用對應的自訂字體粗細首選項，並保持字體粗細為預設值。</string>
+    <string name="font_general_path">字體文件路徑</string>
+    <string name="font_general_path_tips">除非你清楚自己在做什麽並且瞭解可能的後果，否則請勿修改。\n\n請使用可變字體。</string>
 </resources>
