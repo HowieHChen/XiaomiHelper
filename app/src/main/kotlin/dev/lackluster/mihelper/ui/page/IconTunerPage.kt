@@ -131,6 +131,11 @@ fun IconTunerPage(navController: NavController, adjustPadding: PaddingValues, mo
                     navController.navigateTo(Pages.DIALOG_STATUS_BAR_ICON_POSITION)
                 }
             }
+            SwitchPreference(
+                title = stringResource(R.string.icon_tuner_general_auto_reorder),
+                summary = stringResource(R.string.icon_tuner_general_auto_reorder_tips),
+                key = Pref.Key.SystemUI.IconTuner.ICON_POSITION_REORDER
+            )
         }
         itemPreferenceGroup(
             key = "ICON_TUNER_NETWORK",

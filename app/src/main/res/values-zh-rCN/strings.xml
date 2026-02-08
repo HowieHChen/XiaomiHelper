@@ -207,6 +207,7 @@
     <string name="icon_detail_cellular_hide_vowifi">隐藏 VoWiFi 图标</string>
     <string name="icon_detail_cellular_hide_volte_no_service">隐藏 VoLTE 无服务 图标</string>
     <string name="icon_tuner_network_no_sim">无 SIM 卡</string>
+    <string name="icon_tuner_general_auto_reorder_tips">前移不可见的状态栏图标，以改善进入控制中心时下拉动画的连贯性</string>
     <string name="ui_title_icon_tuner_network">网络</string>
     <string name="icon_tuner_network_mobile">移动网络</string>
     <string name="icon_detail_cellular_hide_sim_auto_tips">跟随“上网卡”设置，只显示数据 SIM 卡的信号图标</string>
@@ -796,4 +797,5 @@
     <string name="icon_tuner_left_icon_unlocked">仅解锁后</string>
     <string name="icon_tuner_left_extra_blocked_slots">额外屏蔽列表</string>
     <string name="icon_tuner_left_extra_blocked_slots_tips">屏蔽状态栏左侧出现的非预期额外图标</string>
+    <string name="icon_tuner_general_auto_reorder">自动调整图标顺序</string>
 </resources>

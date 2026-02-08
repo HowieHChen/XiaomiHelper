@@ -280,6 +280,7 @@ object Pref {
 
                 const val ICON_POSITION = "icon_tuner_position"
                 const val ICON_POSITION_VAL = "icon_tuner_position_val"
+                const val ICON_POSITION_REORDER = "icon_tuner_position_reorder"
 
                 const val NET_SPEED_MODE = "icon_tuner_net_speed_mode"
                 const val NET_SPEED_UNIT_MODE = "icon_tuner_net_speed_unit_mode"

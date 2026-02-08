@@ -674,6 +674,8 @@
     <string name="icon_tuner_general_order_swap">Swap mobile network and WLAN</string>
     <string name="icon_tuner_general_order_custom" translatable="false">@string/common_custom</string>
     <string name="icon_tuner_general_order_custom_entry" translatable="false">@string/page_status_bar_icon_order</string>
+    <string name="icon_tuner_general_auto_reorder">Auto adjust icon order</string>
+    <string name="icon_tuner_general_auto_reorder_tips">Shift hidden icons forward for smoother animation</string>
     <string name="ui_title_icon_tuner_network">Network</string>
     <string name="icon_tuner_network_mobile">Mobile network</string>
     <string name="icon_tuner_network_no_sim">No SIM card</string>

@@ -31,6 +31,7 @@ import dev.lackluster.mihelper.utils.Prefs
 
 object IconManager : YukiBaseHooker() {
     private val iconPositionMode = Prefs.getInt(IconTuner.ICON_POSITION, 0)
+    private val iconPositionAutoReorder = Prefs.getBoolean(IconTuner.ICON_POSITION_REORDER, false)
     private val addCompoundIcon = Prefs.getInt(IconTuner.COMPOUND_ICON, 0) in 1..3
     private val leftContainer = Prefs.getInt(IconTuner.LEFT_CONTAINER, 0) != 0
     private val leftCompoundIcon = Prefs.getBoolean(IconTuner.LEFT_COMPOUND_ICON, false)
@@ -177,13 +178,21 @@ object IconManager : YukiBaseHooker() {
         }
         rightBlockList.copy().set(listStatusBar)
         controlCenterBlockList.copy().set(listControlCenter)
-        if (iconPositionMode != 0 || addCompoundIcon) {
+        if (iconPositionMode != 0 || addCompoundIcon || iconPositionAutoReorder) {
             "com.android.systemui.statusbar.phone.ui.StatusBarIconList".toClassOrNull()?.apply {
                 resolve().firstConstructorOrNull {
                     parameters(Array<String>::class)
                 }?.hook {
                     before {
-                        this.args(0).set(finalSlots)
+                        this.args(0).set(
+                            if (iconPositionAutoReorder) {
+                                finalSlots.sortedBy {
+                                    it !in listStatusBar
+                                }.toTypedArray()
+                            } else {
+                                finalSlots
+                            }
+                        )
                     }
                 }
             }
