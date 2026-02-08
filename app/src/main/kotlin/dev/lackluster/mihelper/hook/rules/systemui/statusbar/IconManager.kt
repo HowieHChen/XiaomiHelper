@@ -32,12 +32,13 @@ import dev.lackluster.mihelper.utils.Prefs
 object IconManager : YukiBaseHooker() {
     private val iconPositionMode = Prefs.getInt(IconTuner.ICON_POSITION, 0)
     private val addCompoundIcon = Prefs.getInt(IconTuner.COMPOUND_ICON, 0) in 1..3
-    private val leftContainer = Prefs.getBoolean(IconTuner.LEFT_CONTAINER, false)
+    private val leftContainer = Prefs.getInt(IconTuner.LEFT_CONTAINER, 0) != 0
     private val leftCompoundIcon = Prefs.getBoolean(IconTuner.LEFT_COMPOUND_ICON, false)
     private val leftLocation = Prefs.getBoolean(IconTuner.LEFT_LOCATION, false)
     private val leftAlarmClock = Prefs.getBoolean(IconTuner.LEFT_ALARM_CLOCK, false)
     private val leftZen = Prefs.getBoolean(IconTuner.LEFT_ZEN, false)
     private val leftVolume = Prefs.getBoolean(IconTuner.LEFT_VOLUME, false)
+    private val leftExtraBlockedSlots = Prefs.getString(IconTuner.LEFT_EXT_BLOCK_LIST, "")
 
     private val slotsCustom by lazy {
         Prefs.getStringSet(
@@ -89,6 +90,11 @@ object IconManager : YukiBaseHooker() {
     val leftBlockList by lazy {
         finalSlots.toMutableList().apply {
             removeAll(leftSlots)
+            leftExtraBlockedSlots?.split(',', ' ', '，')?.forEach {
+                if (!contains(it)) {
+                    add(it)
+                }
+            }
         }.toList()
     }
 

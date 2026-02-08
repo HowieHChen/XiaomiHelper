@@ -717,10 +717,16 @@
     <string name="icon_tuner_compound_icon">Combined icon</string>
     <string name="icon_tuner_compound_icon_tips">Display multiple status icons in a single slot according to rules</string>
     <string name="icon_tuner_compound_priority">Display priority</string>
-    <string name="icon_tuner_compound_priority_tips">Use commas (,) to separate items, sorted from left to right in descending priority</string>
+    <string name="icon_tuner_compound_priority_tips">Use commas \",\" to separate items, sorted from left to right in descending priority</string>
     <string name="ui_title_icon_tuner_left_icon" translatable="false">@string/icon_tuner_left_icon</string>
     <string name="icon_tuner_left_icon">Shift status icon to start</string>
     <string name="icon_tuner_left_icon_tips">Move selected status icon to the position between the time and notification icons</string>
+    <string name="icon_tuner_left_icon_disabled" translatable="false">@string/common_disabled</string>
+    <string name="icon_tuner_left_icon_unlocked">Only when unlocked</string>
+    <string name="icon_tuner_left_icon_enabled" translatable="false">@string/common_enabled</string>
+    <string name="icon_tuner_left_extra_blocked_slots">Extra blocklist</string>
+    <string name="icon_tuner_left_extra_blocked_slots_tips">Block unexpected extra icons on the start side of the status bar</string>
+    <string name="icon_tuner_left_extra_blocked_slots_msg">Some modules may add extra custom status icons. When \"Shift status icon to start\" is enabled, these extra icons might appear on both sides of the status bar. \n\nEnter the slot names of these icons here to prevent them from appearing on the start side. To enter multiple names, separate them with commas (,) such as \"zen,volume\".</string>
     <string name="icon_tuner_hint_left_icon_order">Please note that the icon order on the start side is the mirror of the order you set!</string>
     <!-- IconDetailPage -->
     <string name="ui_title_icon_detail_cellular">Cellular</string>

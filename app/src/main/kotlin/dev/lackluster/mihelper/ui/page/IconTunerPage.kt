@@ -29,6 +29,7 @@ import dev.lackluster.hyperx.compose.preference.ValuePosition
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.data.Constants.IconSlots
 import dev.lackluster.mihelper.data.Constants.COMPOUND_ICON_PRIORITY_STR
+import dev.lackluster.mihelper.data.Constants.COMPOUND_ICON_REAL_SLOTS
 import dev.lackluster.mihelper.data.Pages
 import dev.lackluster.mihelper.ui.MainActivity
 import dev.lackluster.mihelper.data.Pref
@@ -46,10 +47,15 @@ fun IconTunerPage(navController: NavController, adjustPadding: PaddingValues, mo
         DropDownEntry(stringResource(R.string.icon_tuner_hide_selection_show_qs)),
         DropDownEntry(stringResource(R.string.icon_tuner_hide_selection_hidden)),
     )
-    val dropDownEntriesIconPosition = listOf(
+    val dropdownEntriesIconPosition = listOf(
         DropDownEntry(stringResource(R.string.icon_tuner_general_order_default)),
         DropDownEntry(stringResource(R.string.icon_tuner_general_order_swap)),
         DropDownEntry(stringResource(R.string.icon_tuner_general_order_custom)),
+    )
+    val dropdownEntriesLeftContainer = listOf(
+        DropDownEntry(stringResource(R.string.icon_tuner_left_icon_disabled)),
+        DropDownEntry(stringResource(R.string.icon_tuner_left_icon_unlocked)),
+        DropDownEntry(stringResource(R.string.icon_tuner_left_icon_enabled)),
     )
 
     var hintCloseAdvancedTextures by remember { mutableStateOf(
@@ -62,7 +68,7 @@ fun IconTunerPage(navController: NavController, adjustPadding: PaddingValues, mo
         SafeSP.getInt(Pref.Key.SystemUI.IconTuner.COMPOUND_ICON, 0) in 1..3
     ) }
     var visibilityLeftIcon by remember { mutableStateOf(
-        SafeSP.getBoolean(Pref.Key.SystemUI.IconTuner.LEFT_CONTAINER, false)
+        SafeSP.getInt(Pref.Key.SystemUI.IconTuner.LEFT_CONTAINER, 0) != 0
     ) }
 
     BasePage(
@@ -111,7 +117,7 @@ fun IconTunerPage(navController: NavController, adjustPadding: PaddingValues, mo
             DropDownPreference(
                 title = stringResource(R.string.icon_tuner_general_order),
                 summary = stringResource(R.string.icon_tuner_general_order_tips),
-                entries = dropDownEntriesIconPosition,
+                entries = dropdownEntriesIconPosition,
                 key = Pref.Key.SystemUI.IconTuner.ICON_POSITION
             ) {
                 visibilityIconOrder = it == 2
@@ -353,21 +359,25 @@ fun IconTunerPage(navController: NavController, adjustPadding: PaddingValues, mo
                     SwitchPreference(
                         icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_location),
                         title = stringResource(R.string.icon_tuner_connect_location),
+                        summary = IconSlots.LOCATION,
                         key = Pref.Key.SystemUI.IconTuner.COMPOUND_ICON_LOCATION
                     )
                     SwitchPreference(
                         icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_alarm_clock),
                         title = stringResource(R.string.icon_tuner_other_alarm),
+                        summary = IconSlots.ALARM_CLOCK,
                         key = Pref.Key.SystemUI.IconTuner.COMPOUND_ICON_ALARM
                     )
                     SwitchPreference(
                         icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_zen),
                         title = stringResource(R.string.icon_tuner_other_zen),
+                        summary = IconSlots.ZEN,
                         key = Pref.Key.SystemUI.IconTuner.COMPOUND_ICON_ZEN
                     )
                     SwitchPreference(
                         icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_volume),
                         title = stringResource(R.string.icon_tuner_other_volume),
+                        summary = IconSlots.VOLUME,
                         key = Pref.Key.SystemUI.IconTuner.COMPOUND_ICON_VOLUME
                     )
                     EditTextPreference(
@@ -395,38 +405,53 @@ fun IconTunerPage(navController: NavController, adjustPadding: PaddingValues, mo
             titleResId = R.string.ui_title_icon_tuner_left_icon,
             last = !visibilityLeftIcon
         ) {
-            SwitchPreference(
+            DropDownPreference(
                 title = stringResource(R.string.icon_tuner_left_icon),
                 summary = stringResource(R.string.icon_tuner_left_icon_tips),
+                entries = dropdownEntriesLeftContainer,
                 key = Pref.Key.SystemUI.IconTuner.LEFT_CONTAINER
             ) {
-                visibilityLeftIcon = it
+                visibilityLeftIcon = (it != 0)
             }
             AnimatedVisibility(visibilityLeftIcon) {
                 Column {
+                    EditTextPreference(
+                        title = stringResource(R.string.icon_tuner_left_extra_blocked_slots),
+                        summary = stringResource(R.string.icon_tuner_left_extra_blocked_slots_tips),
+                        key = Pref.Key.SystemUI.IconTuner.LEFT_EXT_BLOCK_LIST,
+                        defValue = "",
+                        dataType = EditTextDataType.STRING,
+                        dialogMessage = stringResource(R.string.icon_tuner_left_extra_blocked_slots_msg),
+                        valuePosition = ValuePosition.SUMMARY_VIEW,
+                    )
                     SwitchPreference(
                         icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_compound),
                         title = stringResource(R.string.icon_tuner_compound_icon),
+                        summary = COMPOUND_ICON_REAL_SLOTS.joinToString(","),
                         key = Pref.Key.SystemUI.IconTuner.LEFT_COMPOUND_ICON
                     )
                     SwitchPreference(
                         icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_location),
                         title = stringResource(R.string.icon_tuner_connect_location),
+                        summary = IconSlots.LOCATION,
                         key = Pref.Key.SystemUI.IconTuner.LEFT_LOCATION
                     )
                     SwitchPreference(
                         icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_alarm_clock),
                         title = stringResource(R.string.icon_tuner_other_alarm),
+                        summary = IconSlots.ALARM_CLOCK,
                         key = Pref.Key.SystemUI.IconTuner.LEFT_ALARM_CLOCK
                     )
                     SwitchPreference(
                         icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_zen),
                         title = stringResource(R.string.icon_tuner_other_zen),
+                        summary = IconSlots.ZEN,
                         key = Pref.Key.SystemUI.IconTuner.LEFT_ZEN
                     )
                     SwitchPreference(
                         icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_volume),
                         title = stringResource(R.string.icon_tuner_other_volume),
+                        summary = IconSlots.VOLUME,
                         key = Pref.Key.SystemUI.IconTuner.LEFT_VOLUME
                     )
                 }

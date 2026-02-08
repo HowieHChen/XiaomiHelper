@@ -324,12 +324,13 @@ object Pref {
                 const val COMPOUND_ICON_VOLUME = "icon_tuner_compound_icon_volume"
                 const val COMPOUND_PRIORITY = "icon_tuner_compound_priority"
 
-                const val LEFT_CONTAINER = "icon_tuner_left"
+                const val LEFT_CONTAINER = "icon_tuner_left_container"
                 const val LEFT_COMPOUND_ICON = "icon_tuner_left_compound_icon"
                 const val LEFT_LOCATION = "icon_tuner_left_location"
                 const val LEFT_ALARM_CLOCK = "icon_tuner_left_alarm_clock"
                 const val LEFT_ZEN = "icon_tuner_left_zen"
                 const val LEFT_VOLUME = "icon_tuner_left_volume"
+                const val LEFT_EXT_BLOCK_LIST = "icon_tuner_ext_blocked"
             }
             object LockScreen {
                 const val DOUBLE_TAP_TO_SLEEP = "systemui_double_tap_sleep"

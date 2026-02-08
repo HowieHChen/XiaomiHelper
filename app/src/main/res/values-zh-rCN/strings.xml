@@ -698,6 +698,7 @@
     <string name="systemui_notif_lr_opt">优化布局和排序</string>
     <string name="systemui_notif_lr_rerank">重新排序通知</string>
     <string name="icon_tuner_position_demo_wifi">WLAN（演示模式）</string>
+    <string name="icon_tuner_left_extra_blocked_slots_msg">部分模块会添加额外自定义状态图标，启用“状态图标左移”时这些额外的状态图标可能同时出现在状态栏两侧。\n\n在此输入这些图标的插槽名以阻止它们出现在左侧。如需输入多个，可以用逗号“,”分隔，比如“zen,volume”。</string>
     <string name="icon_tuner_hint_left_icon_order">"请注意，左侧状态图标的顺序与您设置的顺序相反！ "</string>
     <string name="ui_title_icon_detail_cellular">移动网络</string>
     <string name="ui_title_icon_detail_wifi">WLAN</string>
@@ -789,7 +790,10 @@
     <string name="icon_tuner_compound_icon">组合图标</string>
     <string name="icon_tuner_compound_icon_tips">在一个图标槽位内按规则显示多个状态图标</string>
     <string name="icon_tuner_compound_priority">显示优先级</string>
-    <string name="icon_tuner_compound_priority_tips">请使用逗号（,）分隔，（从左至右）按优先级递减排序</string>
+    <string name="icon_tuner_compound_priority_tips">请使用逗号“,”分隔，从左至右按优先级递减排序</string>
     <string name="icon_tuner_left_icon">状态图标左移</string>
     <string name="icon_tuner_left_icon_tips">将部分状态图标移动到时间和通知图标之间</string>
+    <string name="icon_tuner_left_icon_unlocked">仅解锁后</string>
+    <string name="icon_tuner_left_extra_blocked_slots">额外屏蔽列表</string>
+    <string name="icon_tuner_left_extra_blocked_slots_tips">屏蔽状态栏左侧出现的非预期额外图标</string>
 </resources>

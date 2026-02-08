@@ -12,15 +12,19 @@ import com.highcapable.kavaref.extension.makeAccessible
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
+import dev.lackluster.mihelper.data.Pref.Key.SystemUI.IconTuner
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.notification_icon_area
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzMiuiKeyguardStatusBarView
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.IconManager.leftBlockList
+import dev.lackluster.mihelper.utils.Prefs
 import dev.lackluster.mihelper.utils.factory.getAdditionalInstanceField
 import dev.lackluster.mihelper.utils.factory.setAdditionalInstanceField
 
 object LeftContainer : YukiBaseHooker() {
     private const val KEY_LEFT_STATUS_ICON_CONTAINER = "KEY_LEFT_STATUS_ICON_CONTAINER"
     private const val KEY_LEFT_STATUS_ICON_MANAGER = "KEY_LEFT_STATUS_ICON_MANAGER"
+
+    private val leftContainerMode = Prefs.getInt(IconTuner.LEFT_CONTAINER, 0)
 
     private val clzMiuiStatusIconContainer by lazy {
         "com.android.systemui.statusbar.views.MiuiStatusIconContainer".toClassOrNull()
@@ -33,6 +37,7 @@ object LeftContainer : YukiBaseHooker() {
     }
 
     override fun onHook() {
+        if (leftContainerMode == 0) return
         val metUpdateLayoutFrom = clzMiuiStatusIconContainer?.resolve()?.firstMethodOrNull {
             name = "updateLayoutFrom"
         }?.self?.apply { makeAccessible() }
@@ -225,6 +230,7 @@ object LeftContainer : YukiBaseHooker() {
             }
         }
         // 锁屏
+        if (leftContainerMode != 2) return
         "com.android.systemui.statusbar.phone.KeyguardStatusBarViewController".toClassOrNull()?.apply {
             val fldView = resolve().firstFieldOrNull {
                 name = "mView"
