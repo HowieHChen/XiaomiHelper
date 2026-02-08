@@ -119,7 +119,7 @@ object ResourcesUtils : YukiBaseHooker() {
                     mobile_signal_container = this.getResID("mobile_signal_container", "id", PKG_NAME)
                     TextAppearance_StatusBar_Battery_Percent = this.getResID("TextAppearance.StatusBar.Battery.Percent", "style", PKG_NAME)
                     TextAppearance_StatusBar_NetWorkSpeedNumber = this.getResID("TextAppearance.StatusBar.NetWorkSpeedNumber", "style", PKG_NAME)
-                    megabyte_per_second = this.getResID("TextAppearance.StatusBar.NetWorkSpeedNumber", "string", PKG_NAME)
+                    megabyte_per_second = this.getResID("megabyte_per_second", "string", PKG_NAME)
                     kilobyte_per_second = this.getResID("kilobyte_per_second", "string", PKG_NAME)
                     stat_sys_alarm = this.getResID("stat_sys_alarm", "drawable", PKG_NAME)
                     stat_sys_gps_on = this.getResID("stat_sys_gps_on", "drawable", PKG_NAME)

@@ -10,7 +10,6 @@ import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.condition.type.Modifiers
 import com.highcapable.kavaref.extension.makeAccessible
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.log.YLog
 import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.notification_icon_area
@@ -117,7 +116,6 @@ object LeftContainer : YukiBaseHooker() {
                 name = "onViewCreated"
             }?.hook {
                 after {
-                    YLog.info("onViewCreated start")
                     val mStatusBar = fldStatusBar?.get(this.instance) as? FrameLayout ?: return@after
                     val leftStatusIcons = getOrPutAdditionalInstanceField(mStatusBar, mStatusBar.context) ?: return@after
                     mStatusBar.findViewById<ViewGroup>(notification_icon_area)?.let { notificationContainer ->
@@ -145,16 +143,11 @@ object LeftContainer : YukiBaseHooker() {
                     }
                     metSetIgnoredSlots?.invoke(leftStatusIcons, leftBlockList)
                     fldStatusContainer?.get(this.instance)?.let { container ->
-                        YLog.info("fldStatusContainer $container")
-                        YLog.info("fldAnimatable ${fldAnimatable?.get(container)}")
-                        YLog.info("fldAnimatorController ${fldAnimatorController?.get(container)}")
                         fldAnimatable?.get(container)?.let {
                             metSetAnimatable?.invoke(leftStatusIcons, it)
-                            YLog.info("metSetAnimatable")
                         }
                         fldAnimatorController?.get(container)?.let {
                             metSetAnimatorController?.invoke(leftStatusIcons, it)
-                            YLog.info("metSetAnimatorController")
                         }
                     }
                 }
@@ -212,12 +205,9 @@ object LeftContainer : YukiBaseHooker() {
             }?.hook {
                 after {
                     val view = this.instance<View>()
-                    YLog.info("MiuiPhoneStatusBarView#onAttachedToWindow ${this.instance}")
                     val leftStatusIconContainer = getOrPutAdditionalInstanceField(view, view.context) ?: return@after
                     metUpdateLayoutFrom?.invoke(leftStatusIconContainer, 0)
-                    metSetNeedLimitIcon?.invoke(leftStatusIconContainer, true)?.also {
-                        YLog.info("MiuiPhoneStatusBarView#onAttachedToWindow")
-                    }
+                    metSetNeedLimitIcon?.invoke(leftStatusIconContainer, true)
                 }
             }
             resolve().firstMethodOrNull {
@@ -225,15 +215,12 @@ object LeftContainer : YukiBaseHooker() {
             }?.hook {
                 after {
                     val view = this.instance<View>()
-                    YLog.info("MiuiPhoneStatusBarView#setDependence ${this.instance}")
                     val leftStatusIconContainer = getOrPutAdditionalInstanceField(view, view.context) ?: return@after
                     metSetIslandController?.invoke(
                         leftStatusIconContainer,
                         XposedHelpers.getObjectField(this.args(0).any(), "islandController"),
                         0
-                    )?.also {
-                        YLog.info("MiuiPhoneStatusBarView#setDependence")
-                    }
+                    )
                 }
             }
         }
