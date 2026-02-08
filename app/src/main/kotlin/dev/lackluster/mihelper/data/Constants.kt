@@ -49,10 +49,24 @@ object Constants {
         const val TAG_POSITION_CONTROL_CENTER = 6
     }
 
+    object IconSlots {
+        const val LOCATION = "location"
+        const val ALARM_CLOCK = "alarm_clock"
+        const val ZEN = "zen"
+        const val VOLUME = "volume"
+
+        const val COMPOUND_ICON_STUB = "compound_stub"
+        const val COMPOUND_ICON_REAL_LOCATION = "compound_location"
+        const val COMPOUND_ICON_REAL_ALARM_CLOCK = "compound_alarm_clock"
+        const val COMPOUND_ICON_REAL_ZEN = "compound_zen"
+        const val COMPOUND_ICON_REAL_VIBRATE = "compound_volume_vibrate"
+        const val COMPOUND_ICON_REAL_MUTE = "compound_volume_mute"
+    }
+
     val STATUS_BAR_ICONS_DEFAULT = listOf(
         "handle", "network_speed", "mute", "micphone", "headset", "mikey", "privacy_mode", "nfc", "gps",
-        "missed_call", "managed_profile", "second_space", "ime", "cast", "location", "stealth", "tty",
-        "alarm_clock", "vpn", "ethernet", "handle_battery", "bluetooth", "bluetooth_handsfree_battery",
+        "missed_call", "managed_profile", "second_space", "ime", "cast", IconSlots.LOCATION, "stealth", "tty",
+        IconSlots.ALARM_CLOCK, "vpn", "ethernet", "handle_battery", "bluetooth", "bluetooth_handsfree_battery",
         "hotspot", "sound_box_group", "stereo", "sound_box_screen", "sound_box", "wireless_headset",
         "zen", "volume", "dist_compute", "camera", "glasses", "car", "tv", "pc", "pad", "phone",
         "hd", "airplane", "mobile", "demo_mobile", "no_sim", "wifi", "demo_wifi",
@@ -60,8 +74,8 @@ object Constants {
 
     val STATUS_BAR_ICONS_SWAP = listOf(
         "handle", "network_speed", "mute", "micphone", "headset", "mikey", "privacy_mode", "nfc", "gps",
-        "missed_call", "managed_profile", "second_space", "ime", "cast", "location", "stealth", "tty",
-        "alarm_clock", "vpn", "ethernet", "handle_battery", "bluetooth", "bluetooth_handsfree_battery",
+        "missed_call", "managed_profile", "second_space", "ime", "cast", IconSlots.LOCATION, "stealth", "tty",
+        IconSlots.ALARM_CLOCK, "vpn", "ethernet", "handle_battery", "bluetooth", "bluetooth_handsfree_battery",
         "hotspot", "sound_box_group", "stereo", "sound_box_screen", "sound_box", "wireless_headset",
         "zen", "volume", "dist_compute", "camera", "glasses", "car", "tv", "pc", "pad", "phone",
         "wifi", "demo_wifi", "hd", "airplane", "mobile", "demo_mobile", "no_sim",
@@ -73,7 +87,7 @@ object Constants {
         "network_speed" to StatusBarIconSlotWrap("network_speed", R.drawable.ic_stat_sys_net_speed, R.string.icon_tuner_network_net_speed),
         "mute" to StatusBarIconSlotWrap("mute", R.drawable.ic_stat_sys_unknown, 0),
         "micphone" to StatusBarIconSlotWrap("micphone", R.drawable.ic_stat_sys_micphone, 0),
-        "headset" to StatusBarIconSlotWrap("headset", R.drawable.ic_stat_sys_headset, R.string.icon_tuner_other_headset),
+        "headset" to StatusBarIconSlotWrap("headset", R.drawable.ic_stat_sys_headset, R.string.icon_tuner_connect_headset),
         "mikey" to StatusBarIconSlotWrap("mikey", R.drawable.ic_stat_sys_unknown, 0),
         "privacy_mode" to StatusBarIconSlotWrap("privacy_mode", R.drawable.ic_stat_sys_unknown, 0),
         "nfc" to StatusBarIconSlotWrap("nfc", R.drawable.ic_stat_sys_nfc, R.string.icon_tuner_connect_nfc),
@@ -83,10 +97,10 @@ object Constants {
         "second_space" to StatusBarIconSlotWrap("second_space", R.drawable.ic_stat_sys_second_space, R.string.icon_tuner_other_second_space),
         "ime" to StatusBarIconSlotWrap("ime", R.drawable.ic_stat_sys_unknown, 0),
         "cast" to StatusBarIconSlotWrap("cast", R.drawable.ic_stat_sys_unknown, 0),
-        "location" to StatusBarIconSlotWrap("location", R.drawable.ic_stat_sys_location, R.string.icon_tuner_connect_location),
+        IconSlots.LOCATION to StatusBarIconSlotWrap(IconSlots.LOCATION, R.drawable.ic_stat_sys_location, R.string.icon_tuner_connect_location),
         "stealth" to StatusBarIconSlotWrap("stealth", R.drawable.ic_stat_sys_stealth, 0),
         "tty" to StatusBarIconSlotWrap("tty", R.drawable.ic_stat_sys_tty, 0),
-        "alarm_clock" to StatusBarIconSlotWrap("alarm_clock", R.drawable.ic_stat_sys_alarm_clock, R.string.icon_tuner_other_alarm),
+        IconSlots.ALARM_CLOCK to StatusBarIconSlotWrap(IconSlots.ALARM_CLOCK, R.drawable.ic_stat_sys_alarm_clock, R.string.icon_tuner_other_alarm),
         "vpn" to StatusBarIconSlotWrap("vpn", R.drawable.ic_stat_sys_vpn, R.string.icon_tuner_network_vpn),
         "ethernet" to StatusBarIconSlotWrap("ethernet", R.drawable.ic_stat_sys_unknown, 0),
         "handle_battery" to StatusBarIconSlotWrap("handle_battery", R.drawable.ic_stat_sys_handle_battery, R.string.icon_tuner_connect_handle_battery),
@@ -98,8 +112,8 @@ object Constants {
         "sound_box_screen" to StatusBarIconSlotWrap("sound_box_screen", R.drawable.ic_stat_sys_sound_box_screen, R.string.icon_tuner_device_sound_box_screen),
         "sound_box" to StatusBarIconSlotWrap("sound_box", R.drawable.ic_stat_sys_sound_box, R.string.icon_tuner_device_sound_box),
         "wireless_headset" to StatusBarIconSlotWrap("wireless_headset", R.drawable.ic_stat_sys_wireless_headset, R.string.icon_tuner_device_wireless_headset),
-        "zen" to StatusBarIconSlotWrap("zen", R.drawable.ic_stat_sys_zen, R.string.icon_tuner_other_zen),
-        "volume" to StatusBarIconSlotWrap("volume", R.drawable.ic_stat_sys_volume, R.string.icon_tuner_other_volume),
+        IconSlots.ZEN to StatusBarIconSlotWrap(IconSlots.ZEN, R.drawable.ic_stat_sys_zen, R.string.icon_tuner_other_zen),
+        IconSlots.VOLUME to StatusBarIconSlotWrap(IconSlots.VOLUME, R.drawable.ic_stat_sys_volume, R.string.icon_tuner_other_volume),
         "dist_compute" to StatusBarIconSlotWrap("dist_compute", R.drawable.ic_stat_sys_dist_compute, R.string.icon_tuner_device_dist_compute),
         "camera" to StatusBarIconSlotWrap("camera", R.drawable.ic_stat_sys_camera, R.string.icon_tuner_device_camera),
         "glasses" to StatusBarIconSlotWrap("glasses", R.drawable.ic_stat_sys_glasses, R.string.icon_tuner_device_glasses),
@@ -115,6 +129,7 @@ object Constants {
         "no_sim" to StatusBarIconSlotWrap("no_sim", R.drawable.ic_stat_sys_no_sim, R.string.icon_tuner_network_no_sim),
         "wifi" to StatusBarIconSlotWrap("wifi", R.drawable.ic_stat_sys_wifi, R.string.icon_tuner_network_wifi),
         "demo_wifi" to StatusBarIconSlotWrap("demo_wifi", R.drawable.ic_stat_sys_wifi, R.string.icon_tuner_position_demo_wifi),
+        IconSlots.COMPOUND_ICON_STUB to StatusBarIconSlotWrap(IconSlots.COMPOUND_ICON_STUB, R.drawable.ic_stat_sys_zen, 0)
     )
 
     enum class MediaControlSpKey {
@@ -221,4 +236,14 @@ object Constants {
             normalMediaControlSpKeyMap.getOrDefault(this, "")
         }
     }
+
+
+    val COMPOUND_ICON_REAL_SLOTS = listOf(
+        IconSlots.COMPOUND_ICON_REAL_LOCATION,
+        IconSlots.COMPOUND_ICON_REAL_ALARM_CLOCK,
+        IconSlots.COMPOUND_ICON_REAL_ZEN,
+        IconSlots.COMPOUND_ICON_REAL_VIBRATE,
+        IconSlots.COMPOUND_ICON_REAL_MUTE,
+    )
+    const val COMPOUND_ICON_PRIORITY_STR = "${IconSlots.LOCATION},${IconSlots.ALARM_CLOCK},${IconSlots.ZEN},${IconSlots.VOLUME}"
 }

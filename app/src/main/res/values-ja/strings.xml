@@ -350,7 +350,7 @@
     <string name="icon_tuner_device_tv">テレビ</string>
     <string name="icon_tuner_device_wireless_headset">ワイヤレスヘッドセット</string>
     <string name="icon_tuner_other_alarm">アラームアイコン</string>
-    <string name="icon_tuner_other_headset">ヘッドセットアイコン</string>
+    <string name="icon_tuner_connect_headset">ヘッドセットアイコン</string>
     <string name="icon_tuner_other_volume">音量アイコン</string>
     <string name="icon_tuner_other_zen">Do Not Disturbモードアイコン</string>
     <!-- MediaControlStylePage -->

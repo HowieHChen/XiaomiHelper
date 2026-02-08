@@ -222,7 +222,7 @@
     <string name="icon_tuner_network_vpn">VPN</string>
     <string name="icon_tuner_network_airplane">飞行模式</string>
     <string name="icon_tuner_other_alarm">闹钟</string>
-    <string name="icon_tuner_other_headset">耳机</string>
+    <string name="icon_tuner_connect_headset">耳机</string>
     <string name="icon_tuner_other_volume">静音</string>
     <string name="icon_tuner_other_zen">勿扰</string>
     <string name="systemui_control_hide_carrier_one">隐藏 SIM 卡 1 的运营商标签</string>
@@ -698,6 +698,7 @@
     <string name="systemui_notif_lr_opt">优化布局和排序</string>
     <string name="systemui_notif_lr_rerank">重新排序通知</string>
     <string name="icon_tuner_position_demo_wifi">WLAN（演示模式）</string>
+    <string name="icon_tuner_hint_left_icon_order">"请注意，左侧状态图标的顺序与您设置的顺序相反！ "</string>
     <string name="ui_title_icon_detail_cellular">移动网络</string>
     <string name="ui_title_icon_detail_wifi">WLAN</string>
     <string name="ui_title_icon_detail_battery">电池</string>
@@ -785,4 +786,10 @@
     <string name="icon_detail_net_speed_refresh">每秒刷新</string>
     <string name="icon_detail_net_speed_unit_style">速度单位样式</string>
     <string name="font_hint_general_root">字体需要 root 权限才能在重启后自动生效。否则，您需要解锁设备并重启系统界面才能使更改生效。</string>
+    <string name="icon_tuner_compound_icon">组合图标</string>
+    <string name="icon_tuner_compound_icon_tips">在一个图标槽位内按规则显示多个状态图标</string>
+    <string name="icon_tuner_compound_priority">显示优先级</string>
+    <string name="icon_tuner_compound_priority_tips">请使用逗号（,）分隔，（从左至右）按优先级递减排序</string>
+    <string name="icon_tuner_left_icon">状态图标左移</string>
+    <string name="icon_tuner_left_icon_tips">将部分状态图标移动到时间和通知图标之间</string>
 </resources>

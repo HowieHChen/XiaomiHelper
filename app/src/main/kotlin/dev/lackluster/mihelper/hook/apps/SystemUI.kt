@@ -27,8 +27,8 @@ import dev.lackluster.mihelper.hook.rules.systemui.statusbar.CellularTypeIcon
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.HideCarrierLabel
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.HideCellularIcon
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.IconManager
-import dev.lackluster.mihelper.hook.rules.systemui.statusbar.IconPosition
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.IgnoreSysIconSettings
+import dev.lackluster.mihelper.hook.rules.systemui.statusbar.CompoundIcon
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.MiuiClock
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.MiuiClockFontWeight
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.NetworkSpeed
@@ -70,8 +70,8 @@ object SystemUI : YukiBaseHooker() {
         loadHooker(HideCarrierLabel)
         loadHooker(HideCellularIcon)
         loadHooker(IconManager)
-        loadHooker(IconPosition)
         loadHooker(IgnoreSysIconSettings)
+        loadHooker(CompoundIcon)
         loadHooker(MiuiClock)
         loadHooker(MiuiClockFontWeight)
         loadHooker(NetworkSpeed)

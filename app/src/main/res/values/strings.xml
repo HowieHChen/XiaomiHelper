@@ -687,6 +687,7 @@
     <string name="icon_tuner_connect_bluetooth_battery">Bluetooth device battery</string>
     <string name="icon_tuner_connect_handle_battery">Camera grip battery</string>
     <string name="icon_tuner_connect_nfc">NFC</string>
+    <string name="icon_tuner_connect_headset">Headset</string>
     <string name="icon_tuner_connect_location">Location services</string>
     <string name="ui_title_icon_tuner_device">Device</string>
     <string name="icon_tuner_device_wireless_headset">Earphones</string>
@@ -703,7 +704,6 @@
     <string name="icon_tuner_device_camera">Camera</string>
     <string name="icon_tuner_device_dist_compute">Computing support</string>
     <string name="ui_title_icon_tuner_other" translatable="false">@string/common_others</string>
-    <string name="icon_tuner_other_headset">Headset</string>
     <string name="icon_tuner_other_alarm">Alarm</string>
     <string name="icon_tuner_other_zen">DND</string>
     <string name="icon_tuner_other_volume">Silent</string>
@@ -713,6 +713,15 @@
     <string name="ui_title_icon_tuner_order" translatable="false">@string/page_status_bar_icon_order</string>
     <string name="icon_tuner_position_demo_mobile">Mobile network in demo mode</string>
     <string name="icon_tuner_position_demo_wifi">WLAN in demo mode</string>
+    <string name="ui_title_icon_tuner_compound_icon" translatable="false">@string/icon_tuner_compound_icon</string>
+    <string name="icon_tuner_compound_icon">Combined icon</string>
+    <string name="icon_tuner_compound_icon_tips">Display multiple status icons in a single slot according to rules</string>
+    <string name="icon_tuner_compound_priority">Display priority</string>
+    <string name="icon_tuner_compound_priority_tips">Use commas (,) to separate items, sorted from left to right in descending priority</string>
+    <string name="ui_title_icon_tuner_left_icon" translatable="false">@string/icon_tuner_left_icon</string>
+    <string name="icon_tuner_left_icon">Shift status icon to start</string>
+    <string name="icon_tuner_left_icon_tips">Move selected status icon to the position between the time and notification icons</string>
+    <string name="icon_tuner_hint_left_icon_order">Please note that the icon order on the start side is the mirror of the order you set!</string>
     <!-- IconDetailPage -->
     <string name="ui_title_icon_detail_cellular">Cellular</string>
     <string name="ui_title_icon_detail_wifi">WLAN</string>

@@ -52,6 +52,12 @@ object ResourcesUtils : YukiBaseHooker() {
     var TextAppearance_StatusBar_NetWorkSpeedNumber = 0
     var megabyte_per_second = 0
     var kilobyte_per_second = 0
+    var stat_sys_alarm = 0
+    var stat_sys_gps_on = 0
+    var stat_sys_quiet_mode = 0
+    var stat_sys_ringer_silent = 0
+    var stat_sys_ringer_vibrate = 0
+    var notification_icon_area = 0
     // Media control panel
     var notification_element_blend_shade_colors = 0
     var notification_element_blend_colors = 0
@@ -115,6 +121,12 @@ object ResourcesUtils : YukiBaseHooker() {
                     TextAppearance_StatusBar_NetWorkSpeedNumber = this.getResID("TextAppearance.StatusBar.NetWorkSpeedNumber", "style", PKG_NAME)
                     megabyte_per_second = this.getResID("TextAppearance.StatusBar.NetWorkSpeedNumber", "string", PKG_NAME)
                     kilobyte_per_second = this.getResID("kilobyte_per_second", "string", PKG_NAME)
+                    stat_sys_alarm = this.getResID("stat_sys_alarm", "drawable", PKG_NAME)
+                    stat_sys_gps_on = this.getResID("stat_sys_gps_on", "drawable", PKG_NAME)
+                    stat_sys_quiet_mode = this.getResID("stat_sys_quiet_mode", "drawable", PKG_NAME)
+                    stat_sys_ringer_silent = this.getResID("stat_sys_ringer_silent", "drawable", PKG_NAME)
+                    stat_sys_ringer_vibrate = this.getResID("stat_sys_ringer_vibrate", "drawable", PKG_NAME)
+                    notification_icon_area = this.getResID("notification_icon_area", "id", PKG_NAME)
                     notification_element_blend_shade_colors = this.getResID("notification_element_blend_shade_colors", "array", PKG_NAME)
                     notification_element_blend_colors = this.getResID("notification_element_blend_colors", "array", PKG_NAME)
                     notification_item_bg_radius = this.getResID("notification_item_bg_radius", "dimen", PKG_NAME)

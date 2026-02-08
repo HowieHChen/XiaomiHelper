@@ -50,6 +50,7 @@ import dev.lackluster.hyperx.compose.preference.RightActionDefaults
 import dev.lackluster.hyperx.compose.preference.TextPreference
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.data.Constants
+import dev.lackluster.mihelper.data.Constants.IconSlots.COMPOUND_ICON_STUB
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.data.StatusBarIconSlotWrap
 import dev.lackluster.mihelper.ui.MainActivity
@@ -76,8 +77,10 @@ private const val LIST_INDEX_OFFSET = 1
 
 @Composable
 fun StatusBarIconPositionDialog(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
+    val addCompoundIcon = SafeSP.getInt(Pref.Key.SystemUI.IconTuner.COMPOUND_ICON, 0) in 1..3
+
     val slots = remember {
-        (SafeSP.getStringSet(
+        val slotsOrderStr = SafeSP.getStringSet(
             Pref.Key.SystemUI.IconTuner.ICON_POSITION_VAL,
             mutableSetOf()
         ).mapNotNull { str ->
@@ -86,7 +89,16 @@ fun StatusBarIconPositionDialog(navController: NavController, adjustPadding: Pad
             it[0].toInt()
         }.map { it[1] }.takeIf {
             it.isNotEmpty()
-        } ?: Constants.STATUS_BAR_ICONS_DEFAULT).mapNotNull {
+        } ?: Constants.STATUS_BAR_ICONS_DEFAULT
+        slotsOrderStr.let {
+            if (addCompoundIcon && !it.contains(COMPOUND_ICON_STUB)) {
+                it.toMutableList().apply {
+                    add(indexOf(Constants.IconSlots.ZEN), COMPOUND_ICON_STUB)
+                }
+            } else {
+                it
+            }
+        }.mapNotNull {
             Constants.STATUS_BAR_ICON_SLOT_MAP[it]
         }.toMutableStateList()
     }
@@ -231,7 +243,15 @@ fun StatusBarIconPositionDialog(navController: NavController, adjustPadding: Pad
                     ) {
                         slots.clear()
                         slots.addAll(
-                            Constants.STATUS_BAR_ICONS_DEFAULT.toMutableSet().mapNotNull {
+                            Constants.STATUS_BAR_ICONS_DEFAULT.toMutableList().let {
+                                if (addCompoundIcon && !it.contains(COMPOUND_ICON_STUB)) {
+                                    it.apply {
+                                        add(indexOf(Constants.IconSlots.ZEN), COMPOUND_ICON_STUB)
+                                    }
+                                } else {
+                                    it
+                                }
+                            }.mapNotNull {
                                 Constants.STATUS_BAR_ICON_SLOT_MAP[it]
                             }
                         )

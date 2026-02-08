@@ -316,6 +316,20 @@ object Pref {
                 const val VOLUME = "icon_tuner_slot_volume"
                 const val SECOND_SPACE = "icon_tuner_slot_second_space"
                 const val HIDE_PRIVACY = "icon_tuner_hide_privacy"
+
+                const val COMPOUND_ICON = "icon_tuner_slot_compound_icon"
+                const val COMPOUND_ICON_ALARM = "icon_tuner_compound_icon_alarm"
+                const val COMPOUND_ICON_ZEN = "icon_tuner_compound_icon_zen"
+                const val COMPOUND_ICON_LOCATION = "icon_tuner_compound_icon_location"
+                const val COMPOUND_ICON_VOLUME = "icon_tuner_compound_icon_volume"
+                const val COMPOUND_PRIORITY = "icon_tuner_compound_priority"
+
+                const val LEFT_CONTAINER = "icon_tuner_left"
+                const val LEFT_COMPOUND_ICON = "icon_tuner_left_compound_icon"
+                const val LEFT_LOCATION = "icon_tuner_left_location"
+                const val LEFT_ALARM_CLOCK = "icon_tuner_left_alarm_clock"
+                const val LEFT_ZEN = "icon_tuner_left_zen"
+                const val LEFT_VOLUME = "icon_tuner_left_volume"
             }
             object LockScreen {
                 const val DOUBLE_TAP_TO_SLEEP = "systemui_double_tap_sleep"
@@ -426,6 +440,7 @@ object Pref {
             const val SKIP_SPLASH = "themes_skip_splash"
         }
         object Hints {
+            const val ICON_TUNER_GENERAL = "hint_icon_tuner_general"
             const val MEDIA_ADVANCED_TEXTURES = "hint_media_adv_textures"
             const val MEDIA_AMBIENT_LIGHTING = "hint_media_ambient_light"
             const val CLOSE_STATUS_BAR_FONT_ROOT = "hint_status_bar_font_root"

@@ -563,7 +563,7 @@
     <string name="icon_tuner_device_wireless_headset">Fone de ouvido sem fio</string>
     <string name="icon_tuner_other_hide_privacy">Ocultar ícone de aviso de privacidade</string>
     <string name="icon_tuner_other_alarm">Ícone de alarme</string>
-    <string name="icon_tuner_other_headset">Ícone do fone de ouvido</string>
+    <string name="icon_tuner_connect_headset">Ícone do fone de ouvido</string>
     <string name="icon_tuner_other_volume">Ícone de volume</string>
     <string name="icon_tuner_other_zen">Ícone do modo Não perturbe</string>
     <!-- MediaControlStylePage -->
