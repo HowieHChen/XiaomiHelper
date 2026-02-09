@@ -54,6 +54,9 @@ object CommonClassUtils : YukiBaseHooker() {
     val clzMutableStateFlow by lazy {
         "kotlinx.coroutines.flow.MutableStateFlow".toClassOrNull()
     }
+    val clzStateFlowImpl by lazy {
+        "kotlinx.coroutines.flow.StateFlowImpl".toClassOrNull()
+    }
     val clzMainDispatcherLoader by lazy {
         "kotlinx.coroutines.internal.MainDispatcherLoader".toClassOrNull()
     }
@@ -121,6 +124,7 @@ object CommonClassUtils : YukiBaseHooker() {
         clzReadonlyStateFlow
         clzStateFlowKt
         clzMutableStateFlow
+        clzStateFlowImpl
         clzJavaAdapterKt
         clzCoroutineScope
         clzEmptyCoroutineContext

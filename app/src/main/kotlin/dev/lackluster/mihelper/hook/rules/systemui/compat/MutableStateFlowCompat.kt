@@ -22,8 +22,8 @@ package dev.lackluster.mihelper.hook.rules.systemui.compat
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.condition.type.Modifiers
-import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzMutableStateFlow
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzReadonlyStateFlow
+import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzStateFlowImpl
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzStateFlowKt
 
 class MutableStateFlowCompat<T>() : IStateFlowCompat<T> {
@@ -37,7 +37,7 @@ class MutableStateFlowCompat<T>() : IStateFlowCompat<T> {
         }
 
         private val metSetValue by lazy {
-            clzMutableStateFlow?.resolve()?.firstMethodOrNull {
+            clzStateFlowImpl?.resolve()?.optional(true)?.firstMethodOrNull {
                 name = "setValue"
                 parameterCount = 1
             }?.self
