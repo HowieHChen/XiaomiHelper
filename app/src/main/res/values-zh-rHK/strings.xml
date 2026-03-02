@@ -601,7 +601,7 @@
     <string name="icon_tuner_compound_icon">組合圖示</string>
     <string name="icon_tuner_compound_icon_tips">在i一個圖示槽位内按規則顯示多個狀態圖示</string>
     <string name="icon_tuner_compound_priority">顯示優先級</string>
-    <string name="icon_tuner_compound_priority_tips">請使用逗號（,）分隔，（從左至右）按優先級遞減排序</string>
+    <string name="icon_tuner_compound_priority_tips">請使用逗號“ , ”分隔，（從左至右）按優先級遞減排序</string>
     <string name="icon_tuner_left_icon">狀態圖示左移</string>
     <string name="icon_tuner_left_icon_tips">將部分狀態圖示移動到時間同通知圖示之間</string>
     <string name="icon_tuner_hint_left_icon_order">請注意，左側狀態圖示的順序與你設定的順序相反！</string>
@@ -793,4 +793,10 @@
     <string name="home_refactor_minus_overlap_mode">負一屏重疊模式</string>
     <string name="home_refactor_minus_overlap_mode_tips">讓負一屏懸浮在桌面之上</string>
     <string name="home_refactor_launch_show_minus_tips">在進入負一屏時不隱藏桌面視圖</string>
+    <string name="icon_tuner_general_auto_reorder">自動調整圖示順序</string>
+    <string name="icon_tuner_general_auto_reorder_tips">前移不可見的狀態欄圖示，以改善進入控制中心時下拉動畫的連貫性</string>
+    <string name="icon_tuner_left_icon_unlocked">僅解鎖後</string>
+    <string name="icon_tuner_left_extra_blocked_slots">額外屏蔽列表</string>
+    <string name="icon_tuner_left_extra_blocked_slots_tips">屏蔽狀態欄左側出現的非預期額外圖示</string>
+    <string name="icon_tuner_left_extra_blocked_slots_msg">部分模組會添加額外自訂狀態圖示，啟用“狀態圖示左移”時這些額外的狀態圖示可能同時出現在狀態欄兩側。\n\n在此輸入這些圖示的插槽名以阻止他們出現在左側。如需輸入多個，可以用逗號“ , ”分隔，比如“zen, volume”。</string>
 </resources>
