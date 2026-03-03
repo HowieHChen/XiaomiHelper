@@ -23,7 +23,6 @@ package dev.lackluster.mihelper.hook.rules.systemui.statusbar
 import android.telephony.SubscriptionManager
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import de.robv.android.xposed.XposedHelpers
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzCoroutineScope
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.readonlyStateFlowFalse
@@ -32,6 +31,9 @@ import dev.lackluster.mihelper.hook.rules.systemui.compat.Flow.combineFlows
 import dev.lackluster.mihelper.hook.rules.systemui.compat.MutableStateFlowCompat
 import dev.lackluster.mihelper.hook.rules.systemui.compat.ReadonlyStateFlowCompat
 import dev.lackluster.mihelper.utils.Prefs
+import dev.lackluster.mihelper.utils.factory.getAdditionalInstanceField
+import dev.lackluster.mihelper.utils.factory.setAdditionalInstanceField
+import java.util.concurrent.ConcurrentHashMap
 
 object HideCellularIcon : YukiBaseHooker() {
     private const val KEY_DEF_DATA_CONFIG_FLOW = "KEY_DEF_DATA_CONFIG_FLOW"
@@ -40,11 +42,11 @@ object HideCellularIcon : YukiBaseHooker() {
     private val hideSimOne = Prefs.getBoolean(Pref.Key.SystemUI.IconTuner.HIDE_SIM_ONE, false)
     private val hideSimTwo = Prefs.getBoolean(Pref.Key.SystemUI.IconTuner.HIDE_SIM_TWO, false)
 
-    private val hideSimJobMap = mutableMapOf<Int, Pair<Any?, Any?>>()
+    private val hideSimJobMap = ConcurrentHashMap<Int, Pair<Any?, Any?>>()
 
     override fun onHook() {
         if (hideSimAuto || hideSimOne || hideSimTwo) {
-            val clzMobileIconInteractorImpl = "com.android.systemui.statusbar.pipeline.mobile.domain.interactor.MobileIconInteractorImpl".toClassOrNull()
+            val clzMobileIconInteractor = "com.android.systemui.statusbar.pipeline.mobile.domain.interactor.MobileIconInteractor".toClassOrNull()
             if (hideSimAuto) {
                 "com.android.systemui.statusbar.pipeline.mobile.domain.interactor.MobileIconsInteractorImpl".toClassOrNull()?.apply {
                     val defaultDataSubId = resolve().firstFieldOrNull {
@@ -54,13 +56,9 @@ object HideCellularIcon : YukiBaseHooker() {
                         name = "getMobileConnectionInteractorForSubId"
                     }?.hook {
                         after {
-                            val mobileIconInteractor = this.result
+                            val mobileIconInteractor = this.result ?: return@after
                             val defaultDataSubIdFlow = defaultDataSubId?.copy()?.of(this.instance)?.get()
-                            XposedHelpers.setAdditionalInstanceField(
-                                mobileIconInteractor,
-                                KEY_DEF_DATA_CONFIG_FLOW,
-                                defaultDataSubIdFlow
-                            )
+                            mobileIconInteractor.setAdditionalInstanceField(KEY_DEF_DATA_CONFIG_FLOW, defaultDataSubIdFlow)
                         }
                     }
                 }
@@ -84,11 +82,10 @@ object HideCellularIcon : YukiBaseHooker() {
                             val coroutineScope =
                                 this.args.firstOrNull { clzCoroutineScope?.isInstance(it) == true } ?: return@after
                             val mobileIconInteractor =
-                                this.args.firstOrNull { clzMobileIconInteractorImpl?.isInstance(it) == true } ?: return@after
-                            val defaultDataSubIdFlow = XposedHelpers.getAdditionalInstanceField(
-                                mobileIconInteractor,
-                                KEY_DEF_DATA_CONFIG_FLOW
-                            )?.let { ReadonlyStateFlowCompat<Int?>().of(it) } ?: return@after
+                                this.args.firstOrNull { clzMobileIconInteractor?.isInstance(it) == true } ?: return@after
+                            val defaultDataSubIdFlow = mobileIconInteractor.getAdditionalInstanceField<Any>(KEY_DEF_DATA_CONFIG_FLOW)?.let {
+                                ReadonlyStateFlowCompat<Int?>().of(it)
+                            } ?: return@after
                             val oriVisibleFlow = isVisible?.copy()?.of(this.instance)?.get()?.let {
                                 ReadonlyStateFlowCompat<Boolean>().of(it)
                             } ?: return@after
@@ -103,7 +100,7 @@ object HideCellularIcon : YukiBaseHooker() {
                             ) { a, b ->
                                 return@combineFlows a && (b == subId)
                             }
-                            hideSimJobMap.put(subId, jobs)
+                            hideSimJobMap[subId] = jobs
                             isVisible.copy().of(instance).set(proxyStateFlow.toReadonlyStateFlow())
                         } else if (
                             slotIndex == 0 && hideSimOne ||

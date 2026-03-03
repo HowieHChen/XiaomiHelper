@@ -827,7 +827,6 @@
     <string name="icon_detail_net_speed_fw_separate_weight">Font weight</string>
     <!-- MediaControlStylePage -->
     <string name="ui_title_media_general" translatable="false">@string/common_general</string>
-    <string name="media_general_unlock_action">Display all control icons</string>
     <string name="media_general_squiggly_progress">Use squiggly progress</string>
     <string name="media_general_hide_app_icon">Hide app icons</string>
     <string name="ui_title_media_bg">Background</string>
@@ -855,6 +854,8 @@
     <string name="media_lyt_album_default" translatable="false">@string/common_default</string>
     <string name="media_lyt_album_hide_app">No app icon</string>
     <string name="media_lyt_album_gone">Invisible</string>
+    <string name="media_lyt_unlock_action">Show all action buttons</string>
+    <string name="media_lyt_unlock_action_tips">This option affects both notifications and Dynamic Island</string>
     <string name="media_lyt_left_actions">Action buttons left-aligned</string>
     <string name="media_lyt_actions_order">Sequence of action buttons</string>
     <string name="media_lyt_actions_order_default" translatable="false">@string/common_default</string>

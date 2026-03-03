@@ -686,7 +686,6 @@
     <string name="icon_detail_net_speed_fw_unit_weight">單位字體粗細</string>
     <string name="icon_detail_net_speed_fw_separate">自訂字體粗細</string>
     <string name="icon_detail_net_speed_fw_separate_weight">字體粗細</string>
-    <string name="media_general_unlock_action">顯示所有控制按鍵</string>
     <string name="media_general_squiggly_progress">使用波浪進度條</string>
     <string name="media_general_hide_app_icon">隱藏應用程式圖示</string>
     <string name="ui_title_media_bg">背景</string>
@@ -709,6 +708,8 @@
     <string name="media_lyt_album">封面</string>
     <string name="media_lyt_album_hide_app">隱藏 App 圖示</string>
     <string name="media_lyt_album_gone">不可見</string>
+    <string name="media_lyt_unlock_action">顯示所有動作按鈕</string>
+    <string name="media_lyt_unlock_action_tips">此選項會同時影響通知和超級島</string>
     <string name="media_lyt_left_actions">動作按鈕左對齊</string>
     <string name="media_lyt_actions_order">動作按鈕順序</string>
     <string name="media_lyt_actions_order_custom_right">自訂按鈕在右側</string>

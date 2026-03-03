@@ -402,8 +402,6 @@ object Pref {
         }
         object DynamicIsland {
             object MediaControl {
-                const val UNLOCK_ACTION = "di_media_unlock_action"
-
                 const val BACKGROUND_STYLE = "di_media_ctrl_background"
                 const val BLUR_RADIUS = "di_media_ctrl_radius"
                 const val ALLOW_REVERSE = "di_media_allow_reverse"

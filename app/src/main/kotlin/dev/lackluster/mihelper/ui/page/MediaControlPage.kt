@@ -341,6 +341,11 @@ fun MediaControlPage(navController: NavController, adjustPadding: PaddingValues,
                 lytAlbum = it
             }
             SwitchPreference(
+                title = stringResource(R.string.media_lyt_unlock_action),
+                summary = stringResource(R.string.media_lyt_unlock_action_tips),
+                key = Pref.Key.SystemUI.MediaControl.UNLOCK_ACTION
+            )
+            SwitchPreference(
                 title = stringResource(R.string.media_lyt_left_actions),
                 key = MediaControlSpKey.LYT_LEFT_ACTIONS.getKey(isDynamicIsland)
             ) {

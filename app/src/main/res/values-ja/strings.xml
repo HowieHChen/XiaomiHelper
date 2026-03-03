@@ -354,7 +354,7 @@
     <string name="icon_tuner_other_volume">音量アイコン</string>
     <string name="icon_tuner_other_zen">Do Not Disturbモードアイコン</string>
     <!-- MediaControlStylePage -->
-    <string name="media_general_unlock_action">すべてのコントロールアイコンを表示する</string>
+    <string name="media_lyt_unlock_action">すべてのコントロールアイコンを表示する</string>
     <string name="media_general_squiggly_progress">波状の進捗状況を使用する</string>
     <string name="media_general_hide_app_icon">アプリアイコンを非表示にする</string>
     <string name="media_bg_custom">背景のスタイル</string>

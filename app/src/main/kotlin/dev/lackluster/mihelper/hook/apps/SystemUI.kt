@@ -15,6 +15,7 @@ import dev.lackluster.mihelper.hook.rules.systemui.media.CustomBackground
 import dev.lackluster.mihelper.hook.rules.systemui.media.CustomElement
 import dev.lackluster.mihelper.hook.rules.systemui.media.CustomLayout
 import dev.lackluster.mihelper.hook.rules.systemui.media.CustomProgressBar
+import dev.lackluster.mihelper.hook.rules.systemui.media.UnlockCustomAction
 import dev.lackluster.mihelper.hook.rules.systemui.notif.ExpandNotification
 import dev.lackluster.mihelper.hook.rules.systemui.notif.LayoutAndRankOpt
 import dev.lackluster.mihelper.hook.rules.systemui.notif.MiuiXExpandButton
@@ -55,6 +56,7 @@ object SystemUI : YukiBaseHooker() {
         loadHooker(CustomLayout)
         loadHooker(CustomElement)
         loadHooker(CustomProgressBar)
+        loadHooker(UnlockCustomAction)
 
         loadHooker(MiuiXExpandButton)
         loadHooker(NotifFreeform)

@@ -20,82 +20,41 @@
 
 package dev.lackluster.mihelper.hook.rules.systemui.media
 
-import android.content.Context
-import android.content.res.Resources
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.Icon
-import android.graphics.drawable.ScaleDrawable
-import android.media.session.PlaybackState.CustomAction
-import android.view.Gravity
+import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.factory.current
-import com.highcapable.yukihookapi.hook.factory.method
-import com.highcapable.yukihookapi.hook.log.YLog
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.factory.hasEnable
 
 object UnlockCustomAction : YukiBaseHooker() {
-//    private val mHiddenCustomActionsList by lazy {
-//        "com.android.systemui.statusbar.notification.NotificationSettingsManager\$Holder".toClass().field {
-//            name = "INSTANCE"
-//            modifiers { isStatic }
-//        }.get().any()?.current()?.field {
-//            name = "mHiddenCustomActionsList"
-//        }?.list<String>() ?: listOf(
-//            "com.netease.cloudmusic",
-//            "com.netease.cloudmusic.lite",
-//            "com.tencent.qqmusic",
-//            "com.tencent.qqmusiclite",
-//            "com.tencent.qqmusicpad",
-//            "com.tencent.radio",
-//            "com.apple.android.music",
-//            "com.google.android.apps.youtube.music",
-//            "com.spotify.music",
-//        )
-//    }
-    private val skipPkgList by lazy {
-        listOf(
-            "com.miui.player",
-        )
-    }
-    private val forceScalePkgList by lazy {
-        listOf(
-            "com.apple.android.music",
-        )
-    }
-
     override fun onHook() {
         hasEnable(Pref.Key.SystemUI.MediaControl.UNLOCK_ACTION) {
-            "com.android.systemui.media.controls.pipeline.MediaDataManager\$createActionsFromState\$customActions\$1".toClass().method {
-                name = "invoke"
-            }.hook {
-                after {
-                    val mediaAction = this.result ?: return@after
-                    val pkgName = this.instance.current().field { name = "\$packageName" }.string()
-//                    if (pkgName in mHiddenCustomActionsList) {
-//                        val customAction = this.args(0).any() as? CustomAction? ?: return@after
-//                        val mediaDataManager = this.instance.current().field { name = "this\$0" }.any() ?: return@after
-//                        val context = mediaDataManager.current().field { name = "context" }.any() as Context
-//                        mediaAction.current().field { name = "icon" }.set(
-//                            Icon.createWithResource(pkgName, customAction.icon).loadDrawable(context)
-//                        )
-//                    }
-                    if (pkgName in skipPkgList) {
-                        return@after
+            "com.miui.systemui.notification.NotificationSettingsManager".toClassOrNull()?.apply {
+                val fldHiddenCustomActionsList = resolve().firstFieldOrNull {
+                    name = "mHiddenCustomActionsList"
+                }
+                val fldHiddenCustomActionsListLocal = resolve().firstFieldOrNull {
+                    name = "mHiddenCustomActionsListLocal"
+                }
+                resolve().firstConstructor().hook {
+                    after {
+                        fldHiddenCustomActionsList?.copy()?.of(this.instance)?.set(emptyList<String>())
+                        fldHiddenCustomActionsListLocal?.copy()?.of(this.instance)?.set(emptyList<String>())
                     }
-                    val customAction = this.args(0).any() as? CustomAction? ?: return@after
-                    val mediaDataManager = this.instance.current().field { name = "this\$0" }.any() ?: return@after
-                    val context = mediaDataManager.current().field { name = "context" }.any() as Context
-                    val drawable = Icon.createWithResource(pkgName, customAction.icon).loadDrawable(context) as Drawable
-                    val maxSize = maxOf(drawable.intrinsicHeight, drawable.intrinsicWidth) / Resources.getSystem().displayMetrics.density
-                    if (pkgName in forceScalePkgList || maxSize > 45) {
-                        val scale = 1 - (24 / maxSize) * 44 / 40
-                        YLog.info(scale.toString())
-                        mediaAction.current().field { name = "icon" }.set(
-                            ScaleDrawable(drawable, Gravity.CENTER, scale, scale).apply { level = 1 }
-                        )
-                    } else {
-                        mediaAction.current().field { name = "icon" }.set(drawable)
+                }
+                resolve().firstMethodOrNull {
+                    name = "onCloudDataUpdated"
+                }?.hook {
+                    after {
+                        fldHiddenCustomActionsList?.copy()?.of(this.instance)?.set(emptyList<String>())
+                        fldHiddenCustomActionsListLocal?.copy()?.of(this.instance)?.set(emptyList<String>())
+                    }
+                }
+                resolve().firstMethodOrNull {
+                    name = "onLocalDataUsed"
+                }?.hook {
+                    after {
+                        fldHiddenCustomActionsList?.copy()?.of(this.instance)?.set(emptyList<String>())
+                        fldHiddenCustomActionsListLocal?.copy()?.of(this.instance)?.set(emptyList<String>())
                     }
                 }
             }

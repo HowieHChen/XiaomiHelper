@@ -567,7 +567,7 @@
     <string name="icon_tuner_other_volume">Ícone de volume</string>
     <string name="icon_tuner_other_zen">Ícone do modo Não perturbe</string>
     <!-- MediaControlStylePage -->
-    <string name="media_general_unlock_action">Exibir todos os ícones de controle</string>
+    <string name="media_lyt_unlock_action">Exibir todos os ícones de controle</string>
     <string name="media_general_squiggly_progress">Usar progresso ondulado</string>
     <string name="media_general_hide_app_icon">Ocultar ícones de apps</string>
     <string name="ui_title_media_bg">Fundo</string>

@@ -449,7 +449,8 @@
     <string name="clock_geek_time_format_pattern_cc_date">控制中心日期格式</string>
     <string name="clock_geek_time_format_pattern_horizon">通知中心横屏日期时间格式</string>
     <string name="ui_title_clock_easy">快速设置</string>
-    <string name="media_general_unlock_action">显示所有控制按键</string>
+    <string name="media_lyt_unlock_action">显示所有动作按钮</string>
+    <string name="media_lyt_unlock_action_tips">此选项会同时影响通知和超级岛</string>
     <string name="media_general_squiggly_progress">使用波浪进度条</string>
     <string name="media_general_hide_app_icon">隐藏应用图标</string>
     <string name="ui_title_media_bg">背景</string>

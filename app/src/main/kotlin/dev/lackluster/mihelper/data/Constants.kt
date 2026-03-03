@@ -133,8 +133,6 @@ object Constants {
     )
 
     enum class MediaControlSpKey {
-        UNLOCK_ACTION,
-
         BACKGROUND_STYLE,
         BLUR_RADIUS,
         ALLOW_REVERSE,
@@ -165,8 +163,6 @@ object Constants {
 
     private val normalMediaControlSpKeyMap by lazy {
         mapOf(
-            MediaControlSpKey.UNLOCK_ACTION to Pref.Key.SystemUI.MediaControl.UNLOCK_ACTION,
-
             MediaControlSpKey.BACKGROUND_STYLE to Pref.Key.SystemUI.MediaControl.BACKGROUND_STYLE,
             MediaControlSpKey.BLUR_RADIUS to Pref.Key.SystemUI.MediaControl.BLUR_RADIUS,
             MediaControlSpKey.ALLOW_REVERSE to Pref.Key.SystemUI.MediaControl.ALLOW_REVERSE,
@@ -198,8 +194,6 @@ object Constants {
 
     private val islandMediaControlSpKeyMap by lazy {
         mapOf(
-            MediaControlSpKey.UNLOCK_ACTION to Pref.Key.DynamicIsland.MediaControl.UNLOCK_ACTION,
-
             MediaControlSpKey.BACKGROUND_STYLE to Pref.Key.DynamicIsland.MediaControl.BACKGROUND_STYLE,
             MediaControlSpKey.BLUR_RADIUS to Pref.Key.DynamicIsland.MediaControl.BLUR_RADIUS,
             MediaControlSpKey.ALLOW_REVERSE to Pref.Key.DynamicIsland.MediaControl.ALLOW_REVERSE,
