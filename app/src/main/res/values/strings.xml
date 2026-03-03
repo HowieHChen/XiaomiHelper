@@ -246,7 +246,7 @@
     <string name="systemui_notif_clock_anim_tips">Allow clock transition animation in landscape</string>
     <string name="systemui_notif_theme_blur">Allow Advanced textures to be enabled when using themes</string>
     <string name="systemui_notif_media_control_style" translatable="false">@string/page_media_control_style</string>
-    <string name="systemui_notif_media_control_style_tips">Customize the style of the media control in the notification shade.</string>
+    <string name="systemui_notif_media_control_style_tips">Customize the style of the media control in the notification shade</string>
     <string name="systemui_notif_expand_notif">Expand notifications</string>
     <string name="systemui_notif_expand_notif_tips">It\'s highly recommended to use an Overlay (RRO) to modify the notification expansion behavior</string>
     <string name="systemui_notif_expand_notif_def" translatable="false">@string/common_default</string>
@@ -269,7 +269,11 @@
     <string name="systemui_notif_miuix_expand_btn_tips">Replace the expand button of Android-style notifications with Miuix button</string>
     <string name="ui_title_systemui_dynamic_island">Dynamic Island</string>
     <string name="systemui_di_media_control_style" translatable="false">@string/page_media_control_style</string>
-    <string name="systemui_di_media_control_style_tips">Customize the style of the media control in the Dynamic Island.</string>
+    <string name="systemui_di_media_control_style_tips">Customize the style of the media control in the Dynamic Island</string>
+    <string name="systemui_di_disable_whitelist">Disable Dynamic Island whitelist</string>
+    <string name="systemui_di_disable_whitelist_tips">Allow any app to appear on Dynamic Island</string>
+    <string name="systemui_di_disable_media_whitelist">Disable media control pull‑down window whitelist</string>
+    <string name="systemui_di_disable_media_whitelist_tips">Allow any media app to open in a small window via Dynamic Island pull‑down</string>
     <string name="ui_title_systemui_control_center">Control center</string>
     <string name="systemui_control_hide_carrier_one">Hide carrier label for SIM card 1</string>
     <string name="systemui_control_hide_carrier_two">Hide carrier label for SIM card 2</string>

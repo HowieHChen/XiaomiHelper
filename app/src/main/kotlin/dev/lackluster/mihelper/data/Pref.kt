@@ -398,6 +398,8 @@ object Pref {
             }
             object Plugin {
                 const val AUTO_FLASH_ON = "sys_plugin_flash_on"
+                const val ISLAND_WHITELIST = "sys_plugin_island_whitelist"
+                const val ISLAND_MEDIA_WHITELIST = "sys_plugin_island_media_whitelist"
             }
         }
         object DynamicIsland {

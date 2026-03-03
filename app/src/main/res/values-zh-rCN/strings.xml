@@ -183,6 +183,10 @@
     <string name="systemui_others_monet_color_tips">此颜色将影响所有使用动态配色方案的应用程序</string>
     <string name="systemui_others_monet_color_msg">以 # 开头的十六进制颜色代码\n（如 #FF123456 #FF00FF）</string>
     <string name="systemui_di_media_control_style_tips">自定义超级岛媒体控件的样式</string>
+    <string name="systemui_di_disable_whitelist">禁用超级岛白名单</string>
+    <string name="systemui_di_disable_whitelist_tips">允许任何应用显示在超级岛上</string>
+    <string name="systemui_di_disable_media_whitelist">禁用媒体控件下拉小窗白名单</string>
+    <string name="systemui_di_disable_media_whitelist_tips">允许任何媒体应用通过超级岛下拉以小窗打开</string>
     <string name="ui_title_systemui_control_center">控制中心</string>
     <string name="ui_title_systemui_status_bar">状态栏</string>
     <string name="systemui_notif_disable_whitelist">禁用通知白名单</string>

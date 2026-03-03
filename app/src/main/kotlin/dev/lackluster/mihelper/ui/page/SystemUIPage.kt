@@ -265,6 +265,16 @@ fun SystemUIPage(navController: NavController, adjustPadding: PaddingValues, mod
                 ) {
                     navController.navigateTo(Pages.ISLAND_MEDIA_CONTROL)
                 }
+                SwitchPreference(
+                    title = stringResource(R.string.systemui_di_disable_whitelist),
+                    summary = stringResource(R.string.systemui_di_disable_whitelist_tips),
+                    key = Pref.Key.SystemUI.Plugin.ISLAND_WHITELIST
+                )
+                SwitchPreference(
+                    title = stringResource(R.string.systemui_di_disable_media_whitelist),
+                    summary = stringResource(R.string.systemui_di_disable_media_whitelist_tips),
+                    key = Pref.Key.SystemUI.Plugin.ISLAND_MEDIA_WHITELIST
+                )
             }
         }
         item {

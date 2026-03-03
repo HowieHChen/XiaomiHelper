@@ -21,6 +21,7 @@ import dev.lackluster.mihelper.hook.rules.systemui.notif.LayoutAndRankOpt
 import dev.lackluster.mihelper.hook.rules.systemui.notif.MiuiXExpandButton
 import dev.lackluster.mihelper.hook.rules.systemui.notif.NotifFreeform
 import dev.lackluster.mihelper.hook.rules.systemui.notif.NotifWhitelist
+import dev.lackluster.mihelper.hook.rules.systemui.plugin.PluginFactory
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.BatteryIndicator
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.CellularIcon
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.BatteryIndicatorStyle
@@ -44,6 +45,7 @@ object SystemUI : YukiBaseHooker() {
         loadHooker(CommonClassUtils)
         loadHooker(MonetOverlay)
         loadHooker(StatusBarActions)
+        loadHooker(PluginFactory)
 
         loadHooker(LockscreenDoubleTapToSleep)
         loadHooker(HideDisturbNotification)
@@ -84,9 +86,6 @@ object SystemUI : YukiBaseHooker() {
         loadHooker(WifiIcon)
 //        loadHooker(UnlockMultipleTask)
 //        loadHooker(HideTopBar)
-
-
-//        loadHooker(UnlockCustomAction)
 //        loadHooker(PadClockAnim)
     }
 }

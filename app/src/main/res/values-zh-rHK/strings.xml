@@ -227,6 +227,10 @@
     <string name="systemui_notif_miuix_expand_btn_tips">使用 Miuix 按鈕替換 Android 樣式通知的展開按鈕</string>
     <string name="ui_title_systemui_dynamic_island">超級島</string>
     <string name="systemui_di_media_control_style_tips">自訂超級島媒體控件的樣式。</string>
+    <string name="systemui_di_disable_whitelist">禁用超級島白名單</string>
+    <string name="systemui_di_disable_whitelist_tips">允許任何應用顯示在超級島上</string>
+    <string name="systemui_di_disable_media_whitelist">禁用媒體控件下拉小窗白名單</string>
+    <string name="systemui_di_disable_media_whitelist_tips">允許任何媒體應用透過超級島下拉以小窗打開</string>
     <string name="ui_title_systemui_control_center">控制中心</string>
     <string name="systemui_control_hide_carrier_one">隱藏 SIM 卡 1 的運營商標簽</string>
     <string name="systemui_control_hide_carrier_two">隱藏 SIM 卡 2 的運營商標簽</string>
