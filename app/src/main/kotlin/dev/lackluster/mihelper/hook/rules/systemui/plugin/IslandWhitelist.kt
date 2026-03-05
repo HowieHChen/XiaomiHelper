@@ -31,7 +31,7 @@ object IslandWhitelist : YukiBaseHooker() {
         }
         hasEnable(Pref.Key.SystemUI.Plugin.ISLAND_MEDIA_WHITELIST) {
             "miui.systemui.notification.NotificationSettingsManager".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
+                resolve().optional(true).firstMethodOrNull {
                     name = "mediaIslandSupportMiniWindow"
                 }?.hook {
                     replaceToTrue()
