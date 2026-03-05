@@ -1,3 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">Hyper Helper</string>
+    <string name="xposed_desc">Làm cho HyperOS trở nên vĩ đại!</string>
+    <string name="about_module">Module này được xây dựng bằng YukiHookAPI. Tìm hiểu thêm tại https://github.com/HighCapable/YuKiHookAPI</string>
+    <string name="common_default">Mặc định</string>
+    <string name="common_current">Hiện tại</string>
+    <string name="common_custom">Tuỳ chỉnh</string>
+    <string name="common_general">Tổng quan</string>
+    <string name="common_invalid_input">Nhập không hợp lệ</string>
+    <string name="common_range">Phạm vi</string>
+    <string name="common_search">Tìm kiếm</string>
+    <string name="common_others">Khác</string>
+    <string name="common_tap_sleep">Nhấn đúp vào vùng trống để khóa màn hình</string>
+    <string name="common_disabled">Tắt</string>
+    <string name="common_enabled">Bật</string>
+    <string name="common_on">Đã bật</string>
+    <string name="common_off">Đã tắt</string>
+    <string name="button_cancel">Huỷ bỏ</string>
+    <string name="button_ok">OK</string>
+    <string name="button_clear">Xoá</string>
+    <string name="button_enable">Cho phép</string>
+    <string name="button_disable">Tắt</string>
+    <string name="button_ignore">Bỏ qua</string>
+    <string name="dialog_done">Hoàn thành</string>
+    <string name="dialog_warning">Cảnh báo</string>
+    <string name="dialog_error">Lỗi</string>
 </resources>
