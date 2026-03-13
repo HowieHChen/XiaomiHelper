@@ -4,11 +4,11 @@ android-compileSdk = "36"
 android-minSdk = "35"
 android-targetSdk = "36"
 project-app-packageName = "dev.lackluster.mihelper"
-project-app-versionName = "3.2.5"
+project-app-versionName = "26032"
 project-app-versionCode = "325"
 
-androidGradlePlugin = "9.0.0"
-kotlin = "2.3.0"
+androidGradlePlugin = "9.0.1"
+kotlin = "2.3.10"
 ksp = "2.3.4"
 xposed = "82"
 yukihookapi = "1.3.1"
@@ -31,9 +31,9 @@ androidx-constraintlayout-compose = { group = "androidx.constraintlayout", name 
 dexkit = { module = "org.luckypray:dexkit", version.ref = "dexkit" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization-json" }
 
-androidx-ui = { group = "androidx.compose.ui", name = "ui", version = "1.10.2" }
+androidx-ui = { group = "androidx.compose.ui", name = "ui", version = "1.10.5" }
 
-androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version = "1.17.0" }
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version = "1.18.0" }
 
 androidx-test-junit = { group = "androidx.test.ext", name = "junit", version = "1.3.0" }
 androidx-test-espresso = { group = "androidx.test.espresso", name = "espresso-core", version = "3.7.0" }
