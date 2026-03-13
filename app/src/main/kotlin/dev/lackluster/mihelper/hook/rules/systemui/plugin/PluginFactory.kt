@@ -1,3 +1,27 @@
+/*
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * This file is part of XiaomiHelper project
+
+ * This file references Hyper5GSwitch <https://github.com/buffcow/Hyper5GSwitch/blob/2244de0a2675bdaa40b1a5c6c42da16537718ef4/app/src/main/kotlin/cn/buffcow/hyper5g/MainModule.kt>
+ * @author qingyu
+ * <p>Create on 2025/10/09 15:15</p>
+ *
+ * Copyright 2025 qingyu
+
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+
+ * http://www.apache.org/licenses/LICENSE-2.0
+
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package dev.lackluster.mihelper.hook.rules.systemui.plugin
 
 import android.content.ComponentName
