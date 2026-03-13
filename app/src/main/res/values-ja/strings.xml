@@ -412,4 +412,5 @@
     <string name="home_refactor_minus_overlap_mode">マイナス画面のオーバーラップモード</string>
     <string name="home_refactor_minus_overlap_mode_tips">マイナス画面をランチャー上にホバーさせます</string>
     <string name="home_refactor_launch_show_minus_tips">マイナス画面に移動時にランチャービューを非表示にしません</string>
+    <string name="scope_ai_engine">Xiaomi HyperAI エンジン</string>
 </resources>

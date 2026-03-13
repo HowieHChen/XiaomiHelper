@@ -33,6 +33,7 @@
     <string name="menu_reboot_done_toast">已重启所有目标应用</string>
     <string name="main_module_inactive_tips">模块未激活。请检查 LSPosed 版本和模块激活信息后重试。</string>
     <string name="scope_power_keeper">电量和性能</string>
+    <string name="scope_ai_engine">小米澎湃AI引擎</string>
     <string name="scope_android">系统</string>
     <string name="scope_browser">浏览器</string>
     <string name="others_browser_debug_mode">Debug 模式</string>
@@ -805,4 +806,6 @@
     <string name="icon_tuner_left_extra_blocked_slots_tips">屏蔽状态栏左侧出现的非预期额外图标</string>
     <string name="icon_tuner_general_auto_reorder">自动调整图标顺序</string>
     <string name="cleaner_market_disable_customize_icon">禁用营销图标</string>
+    <string name="others_aiengine_copy_link_island_browser">使用任意浏览器打开复制的链接</string>
+    <string name="others_aiengine_copy_link_island_browser_tips">复制 URL 并点击超级岛后，可以用任何浏览器打开（而非仅限小米浏览器）</string>
 </resources>

@@ -62,8 +62,19 @@ fun OthersPage(navController: NavController, adjustPadding: PaddingValues, mode:
     ) {
         item {
             PreferenceGroup(
-                title = stringResource(R.string.ui_title_others_browser),
+                title = stringResource(R.string.ui_title_others_aiengine),
                 first = true
+            ) {
+                SwitchPreference(
+                    title = stringResource(R.string.others_aiengine_copy_link_island_browser),
+                    summary = stringResource(R.string.others_aiengine_copy_link_island_browser_tips),
+                    key = Pref.Key.AIEngine.COPY_LINK_CUSTOM_BROWSER
+                )
+            }
+        }
+        item {
+            PreferenceGroup(
+                title = stringResource(R.string.ui_title_others_browser)
             ) {
                 SwitchPreference(
                     title = stringResource(R.string.others_browser_debug_mode),

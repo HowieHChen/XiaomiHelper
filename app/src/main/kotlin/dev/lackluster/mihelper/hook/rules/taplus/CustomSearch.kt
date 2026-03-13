@@ -22,12 +22,12 @@ package dev.lackluster.mihelper.hook.rules.taplus
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.Prefs
 import dev.lackluster.mihelper.utils.factory.hasEnable
+import androidx.core.net.toUri
 
 object CustomSearch : YukiBaseHooker() {
     private val searchEngine = Prefs.getInt(Pref.Key.Taplus.SEARCH_ENGINE, 0)
@@ -64,7 +64,7 @@ object CustomSearch : YukiBaseHooker() {
                             searchUrl = "https://$searchUrl"
                         }
                         intent.action = Intent.ACTION_VIEW
-                        intent.data = Uri.parse(searchUrl)
+                        intent.data = searchUrl.toUri()
                     }
                     context.startActivity(intent)
                     this.result = null

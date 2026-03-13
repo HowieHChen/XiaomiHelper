@@ -25,4 +25,5 @@
     <string name="dialog_done">Hoàn thành</string>
     <string name="dialog_warning">Cảnh báo</string>
     <string name="dialog_error">Lỗi</string>
+    <string name="scope_ai_engine">Công cụ Xiaomi HyperAI</string>
 </resources>

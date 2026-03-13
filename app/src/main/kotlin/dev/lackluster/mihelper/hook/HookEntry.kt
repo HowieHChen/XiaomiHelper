@@ -6,6 +6,7 @@ import com.highcapable.yukihookapi.hook.factory.encase
 import com.highcapable.yukihookapi.hook.xposed.proxy.IYukiHookXposedInit
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.data.Scope
+import dev.lackluster.mihelper.hook.apps.AIEngine
 import dev.lackluster.mihelper.hook.apps.Android
 import dev.lackluster.mihelper.hook.apps.Browser
 import dev.lackluster.mihelper.hook.apps.Download
@@ -49,6 +50,7 @@ class HookEntry : IYukiHookXposedInit {
     override fun onHook() = encase {
         hasEnable(Pref.Key.Module.ENABLED) {
             loadSystem(Android)
+            loadApp(Scope.AI_ENGINE, AIEngine)
             loadApp(Scope.BROWSER, Browser)
             loadApp(Scope.DOWNLOAD, Download)
             loadApp(Scope.DOWNLOAD_UI, DownloadUI)

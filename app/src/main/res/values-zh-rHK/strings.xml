@@ -39,6 +39,7 @@
     <string name="page_status_bar_font">字體</string>
     <string name="page_media_control_style">媒體控制風格</string>
     <string name="page_minus_blur">負一屏的模糊效果</string>
+    <string name="scope_ai_engine">小米澎湃AI引擎</string>
     <string name="scope_android">系統</string>
     <string name="scope_browser">瀏覽器</string>
     <string name="scope_download">下載</string>

@@ -48,6 +48,7 @@
     <string name="page_media_control_style">Media control style</string>
     <string name="page_home_refactor" translatable="false">@string/home_exclusive_refactor</string>
     <string name="page_minus_blur">Blur effect of Personal assistant</string>
+    <string name="scope_ai_engine">Xiaomi HyperAI Engine</string>
     <string name="scope_android">System</string>
     <string name="scope_browser">Mi Browser</string>
     <string name="scope_download">Download</string>
@@ -547,6 +548,9 @@
     <string name="ui_title_interconnection_mishare" translatable="false">@string/scope_mi_share</string>
     <string name="interconnection_mishare_no_auto_off">Disable Xiaomi Share auto-off</string>
     <!-- OthersPage -->
+    <string name="ui_title_others_aiengine" translatable="false">@string/scope_ai_engine</string>
+    <string name="others_aiengine_copy_link_island_browser">Open copied URL with any browser</string>
+    <string name="others_aiengine_copy_link_island_browser_tips">After copying a URL and clicking the Dynamic Island, it can be opened with any browser (instead of only Xiaomi Browser)</string>
     <string name="ui_title_others_browser" translatable="false">@string/scope_browser</string>
     <string name="others_browser_debug_mode">Enable debug mode</string>
     <string name="others_browser_debug_mode_tips">Forces debug mode to be enabled. Only works with older versions of browsers.</string>

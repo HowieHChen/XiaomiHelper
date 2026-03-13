@@ -37,6 +37,7 @@
     <string name="page_status_bar_font">Fonte</string>
     <string name="page_media_control_style">Estilo do controle de mídia</string>
     <string name="page_minus_blur">Efeito de blur do Assistente</string>
+    <string name="scope_ai_engine">Mecanismo Xiaomi HyperAI</string>
     <string name="scope_android">Sistema</string>
     <string name="scope_browser">Navegador Mi</string>
     <string name="scope_download">Downloads</string>

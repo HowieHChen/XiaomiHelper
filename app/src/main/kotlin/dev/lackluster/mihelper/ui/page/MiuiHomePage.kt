@@ -193,10 +193,10 @@ fun MiuiHomePage(navController: NavController, adjustPadding: PaddingValues, mod
             PreferenceGroup(
                 title = stringResource(R.string.ui_title_home_gesture)
             ) {
-                SwitchPreference(
-                    title = stringResource(R.string.home_gesture_double_tap),
-                    key = Pref.Key.MiuiHome.DOUBLE_TAP_TO_SLEEP
-                )
+//                SwitchPreference(
+//                    title = stringResource(R.string.home_gesture_double_tap),
+//                    key = Pref.Key.MiuiHome.DOUBLE_TAP_TO_SLEEP
+//                )
                 SwitchPreference(
                     title = stringResource(R.string.home_gesture_back_haptic),
                     summary = stringResource(R.string.home_gesture_back_haptic_tips),

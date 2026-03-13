@@ -21,6 +21,9 @@ object Pref {
             const val SETTINGS_NAME_CUSTOM = "entry_name_custom"
             const val SP_VERSION = "sp_version"
         }
+        object AIEngine {
+            const val COPY_LINK_CUSTOM_BROWSER = "aicr_link_browser"
+        }
         object Android {
             const val DISABLE_FREEFORM_RESTRICT = "android_freeform_restriction"
             const val ALLOW_MORE_FREEFORM = "android_freeform_allow_more"
@@ -101,7 +104,7 @@ object Pref {
         }
         object MiuiHome {
             const val REMOVE_REPORT = "home_remove_report"
-            const val DOUBLE_TAP_TO_SLEEP = "home_double_tap_sleep"
+//            const val DOUBLE_TAP_TO_SLEEP = "home_double_tap_sleep"
             const val BACK_HAPTIC = "home_back_haptic"
             const val FIX_PREDICTIVE_BACK_PROG = "home_back_predictive_prog"
             const val QUICK_SWITCH = "home_quick_back"
