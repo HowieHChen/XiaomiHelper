@@ -34,37 +34,48 @@ object ForceColorScheme : YukiBaseHooker() {
     private val clzWallpaperUtil by lazy {
         "com.miui.home.isolate.wallpaper.WallpaperUtil".toClassOrNull()
     }
+    private const val FG_DEFAULT = -1
+    private const val FG_LIGHT = 0
+    private const val FG_DARK = 2
 
     override fun onHook() {
-        if (forceColorSchemeStatusBar + forceColorSchemeTextIcon > -2) {
-            if (forceColorSchemeTextIcon > -1) {
-                clzWallpaperUtils?.apply {
-                    resolve().firstMethodOrNull {
-                        name = "setCurrentSearchBarAreaColorMode"
-                    }?.hook {
-                        before {
-                            this.args(0).set(forceColorSchemeTextIcon)
-                        }
-                    }
-                }
-                clzWallpaperUtil?.apply {
-                    resolve().firstMethodOrNull {
-                        name = "setCurrentWallpaperColorMode"
-                    }?.hook {
-                        before {
-                            this.args(0).set(forceColorSchemeTextIcon)
-                        }
+        if (forceColorSchemeTextIcon > -1) {
+            clzWallpaperUtils?.apply {
+                resolve().firstMethodOrNull {
+                    name = "setCurrentSearchBarAreaColorMode"
+                }?.hook {
+                    before {
+                        this.args(0).set(forceColorSchemeTextIcon)
                     }
                 }
             }
-            if (forceColorSchemeStatusBar > -1) {
-                clzWallpaperUtils?.apply {
-                    resolve().firstMethodOrNull {
-                        name = "setCurrentStatusBarAreaColorMode"
-                    }?.hook {
-                        before {
-                            this.args(0).set(forceColorSchemeStatusBar)
+            clzWallpaperUtil?.apply {
+                resolve().firstMethodOrNull {
+                    name = "setCurrentWallpaperColorMode"
+                }?.hook {
+                    before {
+                        this.args(0).set(forceColorSchemeTextIcon)
+                    }
+                }
+            }
+        }
+        if (forceColorSchemeStatusBar > -1) {
+            clzWallpaperUtils?.apply {
+                resolve().firstMethodOrNull {
+                    name = "hasLightBgForStatusBar"
+                }?.hook {
+                    before {
+                        when (forceColorSchemeStatusBar) {
+                            FG_LIGHT -> this.result = false
+                            FG_DARK -> this.result = true
                         }
+                    }
+                }
+                resolve().firstMethodOrNull {
+                    name = "setCurrentStatusBarAreaColorMode"
+                }?.hook {
+                    before {
+                        this.args(0).set(forceColorSchemeStatusBar)
                     }
                 }
             }
@@ -73,9 +84,9 @@ object ForceColorScheme : YukiBaseHooker() {
 
     private fun Int.convertToColorMode(): Int {
         return when(this) {
-            1 -> 0
-            2 -> 2
-            else -> -1
+            1 -> FG_LIGHT
+            2 -> FG_DARK
+            else -> FG_DEFAULT
         }
     }
 }

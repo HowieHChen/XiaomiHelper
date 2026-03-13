@@ -26,7 +26,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 @Composable
 fun RebootMenuItem(
     appName: String,
-    appPkg: String
+    vararg appPkg: String
 ) {
     val context = LocalContext.current
     val dialogVisibility = remember { mutableStateOf(false) }
@@ -51,12 +51,11 @@ fun RebootMenuItem(
         mode = AlertDialogMode.NegativeAndPositive,
         onPositiveButton = {
             try {
-                when (appPkg) {
-                    Scope.ANDROID -> {
-                        ShellUtils.tryExec("/system/bin/sync;/system/bin/svc power reboot || reboot", useRoot = true, throwIfError = true)
-                    }
-                    else -> {
-                        ShellUtils.tryExec("killall $appPkg", useRoot = true, throwIfError = true)
+                if (appPkg.contains(Scope.ANDROID)) {
+                    ShellUtils.tryExec("/system/bin/sync;/system/bin/svc power reboot || reboot", useRoot = true, throwIfError = true)
+                } else {
+                    appPkg.forEach { packageName ->
+                        ShellUtils.tryExec("killall $packageName", useRoot = true, throwIfError = true)
                     }
                 }
                 context.let {

@@ -149,8 +149,9 @@ fun MiuiHomePage(navController: NavController, adjustPadding: PaddingValues, mod
         mode,
         actions = {
             RebootMenuItem(
-                appName = stringResource(R.string.scope_miui_home),
-                appPkg = Scope.MIUI_HOME
+                stringResource(R.string.scope_miui_home),
+                Scope.MIUI_HOME,
+                Scope.PERSONAL_ASSIST
             )
         }
     ) {

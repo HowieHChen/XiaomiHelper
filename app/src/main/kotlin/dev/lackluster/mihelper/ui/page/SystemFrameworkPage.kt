@@ -73,8 +73,8 @@ fun SystemFrameworkPage(navController: NavController, adjustPadding: PaddingValu
         mode,
         actions = {
             RebootMenuItem(
-                appName = stringResource(R.string.scope_android),
-                appPkg = Scope.ANDROID
+                stringResource(R.string.scope_android),
+                Scope.ANDROID
             )
         }
     ) {

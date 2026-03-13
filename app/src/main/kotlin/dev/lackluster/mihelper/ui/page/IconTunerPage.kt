@@ -81,8 +81,8 @@ fun IconTunerPage(navController: NavController, adjustPadding: PaddingValues, mo
         mode,
         actions = {
             RebootMenuItem(
-                appName = stringResource(R.string.scope_systemui),
-                appPkg = Scope.SYSTEM_UI
+                stringResource(R.string.scope_systemui),
+                Scope.SYSTEM_UI
             )
         }
     ) {
