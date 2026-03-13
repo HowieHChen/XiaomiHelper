@@ -89,7 +89,8 @@ fun SystemUIPage(navController: NavController, adjustPadding: PaddingValues, mod
         actions = {
             RebootMenuItem(
                 stringResource(R.string.scope_systemui),
-                Scope.SYSTEM_UI
+                Scope.SYSTEM_UI,
+                Scope.SYSTEM_UI_PLUGIN
             )
         }
     ) {
@@ -303,6 +304,10 @@ fun SystemUIPage(navController: NavController, adjustPadding: PaddingValues, mod
                     title = stringResource(R.string.systemui_control_hide_carrier_hd),
                     summary = stringResource(R.string.systemui_control_hide_carrier_hd_tips),
                     key = Pref.Key.SystemUI.ControlCenter.HIDE_CARRIER_HD
+                )
+                SwitchPreference(
+                    title = stringResource(R.string.systemui_control_hide_edit),
+                    key = Pref.Key.SystemUI.Plugin.CONTROL_CENTER_HIDE_EDIT
                 )
             }
         }
