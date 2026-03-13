@@ -205,7 +205,7 @@
     <string name="systemui_notif_clock_anim">強制啟用時鐘的過渡動畫</string>
     <string name="systemui_notif_clock_anim_tips">在橫屏時允許使用時鐘過渡動畫</string>
     <string name="systemui_notif_theme_blur">允許在使用主題時啟用高級材質</string>
-    <string name="systemui_notif_media_control_style_tips">自訂通知中心媒體控件的樣式。</string>
+    <string name="systemui_notif_media_control_style_tips">自訂通知中心媒體控件的樣式</string>
     <string name="systemui_notif_expand_notif">展開通知</string>
     <string name="systemui_notif_expand_notif_tips">強烈建議使用 叠加層 (RRO) 去修改通知擴展行為</string>
     <string name="systemui_notif_expand_notif_def_tips">不展開通知</string>
@@ -226,7 +226,7 @@
     <string name="systemui_notif_miuix_expand_btn">Miuix 樣式的展開按鈕</string>
     <string name="systemui_notif_miuix_expand_btn_tips">使用 Miuix 按鈕替換 Android 樣式通知的展開按鈕</string>
     <string name="ui_title_systemui_dynamic_island">超級島</string>
-    <string name="systemui_di_media_control_style_tips">自訂超級島媒體控件的樣式。</string>
+    <string name="systemui_di_media_control_style_tips">自訂超級島媒體控件的樣式</string>
     <string name="systemui_di_disable_whitelist">禁用超級島白名單</string>
     <string name="systemui_di_disable_whitelist_tips">允許任何應用顯示在超級島上</string>
     <string name="systemui_di_disable_media_whitelist">禁用媒體控件下拉小窗白名單</string>
