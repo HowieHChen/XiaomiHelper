@@ -6,6 +6,7 @@ object References {
         Reference("miuix-kotlin-multiplatform/miuix", "Apache-2.0","https://github.com/miuix-kotlin-multiplatform/miuix"),
         Reference("YifePlayte/MaxFreeForm", "GPL-3.0", "https://github.com/YifePlayte/MaxFreeForm"),
         Reference("YifePlayte/MaxMiPad", "GPL-3.0", "https://github.com/YifePlayte/MaxMiPad"),
+        Reference("YifePlayte/WOMMO", "GPL-3.0", "https://github.com/YifePlayte/WOMMO"),
         Reference("zerorooot/HorizontalContentextension", "GPL-3.0", "https://github.com/zerorooot/HorizontalContentextension"),
         Reference("LuckyPray/DexKit", "GPL-3.0", "https://github.com/LuckyPray/DexKit"),
         Reference("Simplicity-Team/WooBoxForMIUI", "GPL-3.0", "https://github.com/Simplicity-Team/WooBoxForMIUI"),

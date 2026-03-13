@@ -35,6 +35,7 @@ HyperOS専用の軽量なモジュールです! Xiaomi 12S ProとXiaomi Pad 6 Pr
 
 - [「MaxFreeForm」by YifePlayte](https://github.com/YifePlayte/MaxFreeForm)
 - [「MaxMiPad」by YifePlayte](https://github.com/YifePlayte/MaxMiPad)
+- [「WOMMO」by YifePlayte](https://github.com/YifePlayte/WOMMO)
 - [「HorizontalContentextension」by zerorooot](https://github.com/zerorooot/HorizontalContentextension)
 - [「DexKit」by LuckyPray](https://github.com/LuckyPray/DexKit)
 - [「WooboxForMIUI」by Simplicity-Team](https://github.com/Simplicity-Team/WooBoxForMIUI)

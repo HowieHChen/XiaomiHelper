@@ -39,6 +39,7 @@ Join our [Telegram](https://t.me/lackluster_stuff) channel to report issues and 
 
 - [「MaxFreeForm」by YifePlayte](https://github.com/YifePlayte/MaxFreeForm)
 - [「MaxMiPad」by YifePlayte](https://github.com/YifePlayte/MaxMiPad)
+- [「WOMMO」by YifePlayte](https://github.com/YifePlayte/WOMMO)
 - [「HorizontalContentextension」by zerorooot](https://github.com/zerorooot/HorizontalContentextension)
 - [「DexKit」by LuckyPray](https://github.com/LuckyPray/DexKit)
 - [「WooboxForMIUI」by Simplicity-Team](https://github.com/Simplicity-Team/WooBoxForMIUI)

@@ -82,6 +82,7 @@ object Pref {
             const val HIDE_TAB_OTHERS = "market_hide_tab_others"
             const val BLOCK_UPDATE_DIALOG = "market_block_up_dialog"
             const val HIDE_APP_SECURITY = "market_hide_app_security"
+            const val DISABLE_CUSTOMIZE_ICON = "market_diable_customize_icon"
         }
         object MiAi {
             const val SEARCH_USE_BROWSER = "xiaoai_use_browser"

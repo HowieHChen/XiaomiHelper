@@ -657,6 +657,7 @@
     <string name="cleaner_market_filter_unknown_tabs">过滤掉未知标签页</string>
     <string name="cleaner_market_filter_unknown_tabs_tips">过滤掉所有未在下方显示的标签页</string>
     <string name="cleaner_market_bottom_tab_blur_tips">强制开启底部标签栏的模糊效果</string>
+    <string name="cleaner_market_disable_customize_icon_tips">禁用应用商店将桌面应用图标替换为营销图标的能力</string>
     <string name="cleaner_market_filter_tab">过滤底部标签页</string>
     <string name="cleaner_market_filter_tab_tips">隐藏标签页（及对应页面）</string>
     <string name="cleaner_market_visible_tabs">可见标签页</string>
@@ -803,4 +804,5 @@
     <string name="icon_tuner_left_extra_blocked_slots">额外屏蔽列表</string>
     <string name="icon_tuner_left_extra_blocked_slots_tips">屏蔽状态栏左侧出现的非预期额外图标</string>
     <string name="icon_tuner_general_auto_reorder">自动调整图标顺序</string>
+    <string name="cleaner_market_disable_customize_icon">禁用营销图标</string>
 </resources>
