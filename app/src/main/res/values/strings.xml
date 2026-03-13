@@ -230,6 +230,7 @@
     <string name="systemui_lock_hide_next_alarm_tips">Hide the next alarm time indicator at the start of the status bar</string>
     <string name="systemui_lock_hide_carrier_one" translatable="false">@string/systemui_control_hide_carrier_one</string>
     <string name="systemui_lock_hide_carrier_two" translatable="false">@string/systemui_control_hide_carrier_two</string>
+    <string name="systemui_lock_force_color_scheme_statusbar" translatable="false">@string/home_others_force_color_scheme_statusbar</string>
     <string name="ui_title_systemui_notification_center">Notification shade</string>
     <string name="systemui_notif_redirect_settings">Redirect notification settings</string>
     <string name="systemui_notif_redirect_settings_tips">When you open the notification settings, it navigates to the corresponding notification channel settings instead of the app notification settings.</string>

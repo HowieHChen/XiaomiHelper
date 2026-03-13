@@ -59,6 +59,11 @@ fun SystemUIPage(navController: NavController, adjustPadding: PaddingValues, mod
             summary = stringResource(R.string.systemui_statusbar_region_sampling_disable_tips),
         ),
     )
+    val dropdownEntriesForceColorScheme = listOf(
+        DropDownEntry(stringResource(R.string.weather_card_color_default)),
+        DropDownEntry(stringResource(R.string.weather_card_color_light)),
+        DropDownEntry(stringResource(R.string.weather_card_color_dark)),
+    )
 
     var visibilityCustomNotifCount by remember { mutableStateOf(
         SafeSP.getBoolean(Pref.Key.SystemUI.StatusBar.NOTIFICATION_COUNT)
@@ -177,6 +182,11 @@ fun SystemUIPage(navController: NavController, adjustPadding: PaddingValues, mod
                 SwitchPreference(
                     title = stringResource(R.string.systemui_lock_hide_carrier_two),
                     key = Pref.Key.SystemUI.LockScreen.HIDE_CARRIER_TWO
+                )
+                DropDownPreference(
+                    title = stringResource(R.string.systemui_lock_force_color_scheme_statusbar),
+                    entries = dropdownEntriesForceColorScheme,
+                    key = Pref.Key.SystemUI.LockScreen.FORCE_COLOR_STATUS_BAR
                 )
             }
         }

@@ -6,6 +6,7 @@ import dev.lackluster.mihelper.hook.rules.systemui.MonetOverlay
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils
 import dev.lackluster.mihelper.hook.rules.systemui.StatusBarActions
 import dev.lackluster.mihelper.hook.rules.systemui.lockscreen.CarrierLabelFontWeight
+import dev.lackluster.mihelper.hook.rules.systemui.lockscreen.ForceColorScheme
 import dev.lackluster.mihelper.hook.rules.systemui.lockscreen.HideDisturbNotification
 import dev.lackluster.mihelper.hook.rules.systemui.lockscreen.HideNextAlarm
 import dev.lackluster.mihelper.hook.rules.systemui.lockscreen.KeepNotification
@@ -53,6 +54,7 @@ object SystemUI : YukiBaseHooker() {
         loadHooker(KeepNotification)
         loadHooker(StatusBarClockContainer)
         loadHooker(CarrierLabelFontWeight)
+        loadHooker(ForceColorScheme)
 
         loadHooker(CustomBackground)
         loadHooker(CustomLayout)

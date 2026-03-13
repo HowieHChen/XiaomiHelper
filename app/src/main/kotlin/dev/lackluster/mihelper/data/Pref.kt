@@ -346,6 +346,7 @@ object Pref {
                 const val HIDE_NEXT_ALARM = "systemui_ls_hide_next_alarm"
                 const val HIDE_CARRIER_ONE = "systemui_ls_hide_carrier_one"
                 const val HIDE_CARRIER_TWO = "systemui_ls_hide_carrier_two"
+                const val FORCE_COLOR_STATUS_BAR = "systemui_ls_force_color_status_bar"
             }
             object NotifCenter {
                 const val NOTIF_NO_WHITELIST = "systemui_notif_no_whitelist"
