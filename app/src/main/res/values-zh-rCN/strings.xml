@@ -415,7 +415,8 @@
     <string name="systemui_notif_theme_blur">允许在使用主题时启用高级材质</string>
     <string name="ui_title_home_exclusive">独家特性</string>
     <string name="ui_title_home_gesture">手势</string>
-    <string name="home_gesture_back_haptic_tips">在返回手势开始和释放时震动</string>
+    <string name="home_gesture_back_haptic_enhanced">增强</string>
+    <string name="home_gesture_back_haptic_enhanced_tips">在返回手势开始和释放时震动</string>
     <string name="home_gesture_fix_predictive_back_tips">HyperOS 破坏了预测性返回功能，导致所需的滑动距离过短。启用此选项后，将恢复 AOSP 的行为。此选项只能修复预测性返回的进度错误，无法处理预测性返回功能完全失效的情况。</string>
     <string name="home_gesture_quick_switch">增强返回手势</string>
     <string name="home_gesture_quick_switch_tips">返回手势中远距离滑动触发特定功能</string>
@@ -576,7 +577,7 @@
     <string name="action_screenshot">截图</string>
     <string name="action_notifications">通知中心</string>
     <string name="action_home">主页</string>
-    <string name="home_gesture_back_haptic">增强返回手势触觉反馈</string>
+    <string name="home_gesture_back_haptic">返回手势触觉反馈</string>
     <string name="icon_detail_cellular_hide_roam_global_tips">隐藏所有漫游状态图标，按照非漫游状态显示</string>
     <string name="icon_detail_cellular_hide_roam">隐藏漫游图标</string>
     <string name="icon_detail_cellular_hide_roam_small">隐藏小漫游图标</string>
@@ -808,4 +809,5 @@
     <string name="cleaner_market_disable_customize_icon">禁用营销图标</string>
     <string name="others_aiengine_copy_link_island_browser">使用任意浏览器打开复制的链接</string>
     <string name="others_aiengine_copy_link_island_browser_tips">复制 URL 并点击超级岛后，可以用任何浏览器打开（而非仅限小米浏览器）</string>
+    <string name="home_gesture_back_haptic_default_tips">在返回手势开始时震动</string>
 </resources>

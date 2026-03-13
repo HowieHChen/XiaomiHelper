@@ -293,9 +293,12 @@
     <string name="home_exclusive_refactor_dialog_title" translatable="false">@string/dialog_warning</string>
     <string name="home_exclusive_refactor_dialog_msg">!!EXPERIMENTAL FEATURES!!\n\nThis feature refactors the launcher based on Advanced textures, please make sure your device supports Advanced textures.\n\nIf you turn it on, you will be exposed to risks including, but not limited to, power consumption, frame drops, jank, and even crashes.\n\nMake sure you aren\'t using a modified launcher and have disabled any other modules related to launcher blurring and animation.</string>
     <string name="ui_title_home_gesture">Gesture</string>
-    <string name="home_gesture_double_tap" translatable="false">@string/common_tap_sleep</string>
-    <string name="home_gesture_back_haptic">Enhanced back gesture haptic feedback</string>
-    <string name="home_gesture_back_haptic_tips">Perform haptic feedback on the start and release of swipes</string>
+    <string name="home_gesture_back_haptic">Back gesture haptic feedback</string>
+    <string name="home_gesture_back_haptic_default" translatable="false">@string/common_default</string>
+    <string name="home_gesture_back_haptic_default_tips">Perform haptic feedback on the start of swipes</string>
+    <string name="home_gesture_back_haptic_enhanced">Enhanced</string>
+    <string name="home_gesture_back_haptic_enhanced_tips">Perform haptic feedback on the start and release of swipes</string>
+    <string name="home_gesture_back_haptic_disabled" translatable="false">@string/common_disabled</string>
     <string name="home_gesture_fix_predictive_back">Fix predictive back progress error</string>
     <string name="home_gesture_fix_predictive_back_tips">HyperOS has broken the predictive back behavior, causing the swipe distance requirement to be too short. When enabled, it restores the AOSP behavior. This option can only fix the progress error of predictive back and cannot recover scenarios where predictive back is completely broken.</string>
     <string name="home_gesture_quick_switch">Enhanced back gesture</string>

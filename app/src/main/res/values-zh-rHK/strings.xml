@@ -247,8 +247,8 @@
     <string name="home_exclusive_refactor_tips">犧牲性能同功耗換取全新交互體驗</string>
     <string name="home_exclusive_refactor_dialog_msg">！！實驗性功能！！\n\n此功能基於“高級材質”重構桌面，請確保你的裝置支援“高級材質”。\n\n開啟後，你將會面臨包括但不限於以下風險：耗電量增加、畫面掉幀、卡頓甚至崩潰。\n\n請確保你未使用任何修改版的桌面並且已停用與桌面模糊效果、動畫相關的其他模組。</string>
     <string name="ui_title_home_gesture">手勢</string>
-    <string name="home_gesture_back_haptic">增強後退手勢觸覺回饋</string>
-    <string name="home_gesture_back_haptic_tips">在後退手勢開始和釋放時震動</string>
+    <string name="home_gesture_back_haptic_enhanced">增強</string>
+    <string name="home_gesture_back_haptic_enhanced_tips">在後退手勢開始和釋放時震動</string>
     <string name="home_gesture_fix_predictive_back">修復預測性後退進度錯誤</string>
     <string name="home_gesture_fix_predictive_back_tips">HyperOS 破壞了預測性後退功能，導致所需的滑動距離過短。啟用此選項後，將還原 AOSP 的行爲。此選項只能修復預測性後退的進度錯誤，無法處理預測性後退功能完全失效的情況。</string>
     <string name="home_gesture_quick_switch">增強後退手勢</string>

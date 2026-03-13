@@ -222,8 +222,7 @@
     <string name="home_exclusive_refactor_tips">Novas experiências interativas às custas do desempenho e do consumo de energia</string>
     <string name="home_exclusive_refactor_dialog_msg">!!RECURSO EXPERIMENTAL!!\n\nEste recurso refatora a launcher com base nas Texturas avançadas. Certifique-se de que seu dispositivo suporta Texturas avançadas.\n\nSe você ativá-lo, estará exposto a riscos, incluindo, mas não se limitando a consumo de energia, quedas na taxa de quadros, instabilidade e até travamentos.\n\nCertifique-se de não estar usando uma launcher modificada e de ter desativado quaisquer outros módulos relacionados ao blur e animação da launcher.</string>
     <string name="ui_title_home_gesture">Gestos</string>
-    <string name="home_gesture_back_haptic">Retorno tátil aprimorado do gesto de voltar</string>
-    <string name="home_gesture_back_haptic_tips">Execute o retorno tátil no início e libere os deslizamentos</string>
+    <string name="home_gesture_back_haptic_enhanced_tips">Execute o retorno tátil no início e libere os deslizamentos</string>
     <string name="home_gesture_quick_switch">Gesto de voltar aprimorado</string>
     <string name="home_gesture_quick_switch_tips">Deslize pela tela começando pela borda para voltar ao app anterior</string>
     <string name="home_gesture_quick_switch_left">Função do gesto de voltar aprimorada para a esquerda</string>

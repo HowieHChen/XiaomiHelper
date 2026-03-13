@@ -60,7 +60,7 @@ object RecentCardAnim : YukiBaseHooker() {
                 }
             }
             "com.miui.home.recents.TaskStackViewLayoutStyleHorizontal".toClassOrNull()?.apply {
-                resolve().optional().firstMethodOrNull {
+                resolve().optional(true).firstMethodOrNull {
                     name = "createSwipeAnimation"
                     parameters(View::class, Float::class)
                 }?.hook {
@@ -71,7 +71,7 @@ object RecentCardAnim : YukiBaseHooker() {
                         }
                     }
                 }
-                resolve().optional().firstMethodOrNull {
+                resolve().optional(true).firstMethodOrNull {
                     name = "createScaleDismissAnimation"
                     parameters(View::class, Float::class)
                 }?.hook {

@@ -24,7 +24,7 @@ import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.condition.type.Modifiers
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.utils.Prefs
 
 object BackGestureHaptic : YukiBaseHooker() {
     private const val TIME_OUT_BLOCKER_KEY = "BLOCKER_ID_FOR_HAPTIC_GESTURE_BACK"
@@ -60,61 +60,83 @@ object BackGestureHaptic : YukiBaseHooker() {
     }
 
     override fun onHook() {
-        hasEnable(Pref.Key.MiuiHome.BACK_HAPTIC) {
-            if (clzHapticFeedbackCompatV2 == null) return@hasEnable
-            clzHapticFeedbackCompatV2?.apply {
-                val mHapticHelper = resolve().firstFieldOrNull {
-                    name = "mHapticHelper"
-                }
-                resolve().firstMethodOrNull {
-                    name = "performGestureReadyBack"
-                }?.hook {
-                    after {
-                        metGetHandler?.copy()?.invoke()?.let { handler ->
-                            metStartCountDown?.copy()?.invoke(handler, 140L, TIME_OUT_BLOCKER_KEY)
+        when (Prefs.getInt(Pref.Key.MiuiHome.BACK_GESTURE_HAPTIC, 0)) {
+            1 -> {
+                if (clzHapticFeedbackCompatV2 == null) return
+                clzHapticFeedbackCompatV2?.apply {
+                    val mHapticHelper = resolve().firstFieldOrNull {
+                        name = "mHapticHelper"
+                    }
+                    resolve().firstMethodOrNull {
+                        name = "performGestureReadyBack"
+                    }?.hook {
+                        after {
+                            metGetHandler?.copy()?.invoke()?.let { handler ->
+                                metStartCountDown?.copy()?.invoke(handler, 140L, TIME_OUT_BLOCKER_KEY)
+                            }
+                        }
+                    }
+                    resolve().firstMethodOrNull {
+                        name = "performGestureBackHandUp"
+                    }?.hook {
+                        before {
+                            val isBlocked = metIsBlocked?.invoke<Boolean>(TIME_OUT_BLOCKER_KEY)
+                            if (isBlocked == true) {
+                                this.result = null
+                            }
+                        }
+                    }
+                    resolve().firstMethodOrNull {
+                        name {
+                            it.startsWith("lambda") && it.contains("performGestureReadyBack")
+                        }
+                    }?.hook {
+                        replaceUnit {
+                            mHapticHelper?.copy()?.of(this.instance)?.get()?.let {
+                                metPerformExtHapticFeedback?.copy()?.of(it)?.invoke(0)
+                            }
+                        }
+                    }
+                    resolve().firstMethodOrNull {
+                        name {
+                            it.startsWith("lambda") && it.contains("performGestureBackHandUp")
+                        }
+                    }?.hook {
+                        replaceUnit {
+                            mHapticHelper?.copy()?.of(this.instance)?.get()?.let {
+                                metPerformExtHapticFeedback?.copy()?.of(it)?.invoke(1)
+                            }
                         }
                     }
                 }
-                resolve().firstMethodOrNull {
-                    name = "performGestureBackHandUp"
-                }?.hook {
-                    before {
-                        val isBlocked = metIsBlocked?.invoke<Boolean>(TIME_OUT_BLOCKER_KEY)
-                        if (isBlocked == true) {
-                            this.result = null
-                        }
-                    }
-                }
-                resolve().firstMethodOrNull {
-                    name {
-                        it.startsWith("lambda") && it.contains("performGestureReadyBack")
-                    }
-                }?.hook {
-                    replaceUnit {
-                        mHapticHelper?.copy()?.of(this.instance)?.get()?.let {
-                            metPerformExtHapticFeedback?.copy()?.of(it)?.invoke(0)
-                        }
-                    }
-                }
-                resolve().firstMethodOrNull {
-                    name {
-                        it.startsWith("lambda") && it.contains("performGestureBackHandUp")
-                    }
-                }?.hook {
-                    replaceUnit {
-                        mHapticHelper?.copy()?.of(this.instance)?.get()?.let {
-                            metPerformExtHapticFeedback?.copy()?.of(it)?.invoke(1)
+                "com.miui.home.recents.GestureStubView".toClassOrNull()?.apply {
+                    resolve().firstMethodOrNull {
+                        name = "injectBackKeyEvent"
+                        parameters(Boolean::class)
+                    }?.hook {
+                        before {
+                            this.args(0).setTrue()
                         }
                     }
                 }
             }
-            "com.miui.home.recents.GestureStubView".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
-                    name = "injectBackKeyEvent"
-                    parameters(Boolean::class)
-                }?.hook {
-                    before {
-                        this.args(0).setTrue()
+            2 -> {
+                setOf(
+                    "com.miui.home.common.hapticfeedback.HapticFeedbackCompatLinear",
+                    "com.miui.home.common.hapticfeedback.HapticFeedbackCompatNormal",
+                    "com.miui.home.common.hapticfeedback.HapticFeedbackCompatV2",
+                ).forEach { className ->
+                    className.toClassOrNull()?.apply {
+                        resolve().firstMethodOrNull {
+                            name = "performGestureBackHandUp"
+                        }?.hook {
+                            intercept()
+                        }
+                        resolve().firstMethodOrNull {
+                            name = "performGestureReadyBack"
+                        }?.hook {
+                            intercept()
+                        }
                     }
                 }
             }

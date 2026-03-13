@@ -47,7 +47,7 @@ object QuickSwitch : YukiBaseHooker() {
      */
     private val actionQuickSwitchLeft = Prefs.getInt(Pref.Key.MiuiHome.QUICK_SWITCH_LEFT, 0)
     private val actionQuickSwitchRight = Prefs.getInt(Pref.Key.MiuiHome.QUICK_SWITCH_RIGHT, 0)
-    private val backGestureHaptic = Prefs.getBoolean(Pref.Key.MiuiHome.BACK_HAPTIC, false)
+    private val backGestureHaptic = Prefs.getBoolean(Pref.Key.MiuiHome.BACK_GESTURE_HAPTIC, false)
     private var fakeTaskLeft: Any? = null
     private var fakeTaskRight: Any? = null
     private val applicationGetInstanceMethod by lazy {

@@ -30,6 +30,19 @@ fun MiuiHomePage(navController: NavController, adjustPadding: PaddingValues, mod
     var spValueHideClearButton by remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.MiuiHome.RECENT_HIDE_CLEAR_BUTTON)) }
 
     val tintColor = MiuixTheme.colorScheme.onSurfaceSecondary
+    val dropdownEntriesBackHaptic = listOf(
+        DropDownEntry(
+            title = stringResource(R.string.home_gesture_back_haptic_default),
+            summary = stringResource(R.string.home_gesture_back_haptic_default_tips)
+        ),
+        DropDownEntry(
+            title = stringResource(R.string.home_gesture_back_haptic_enhanced),
+            summary = stringResource(R.string.home_gesture_back_haptic_enhanced_tips)
+        ),
+        DropDownEntry(
+            title = stringResource(R.string.home_gesture_back_haptic_disabled)
+        ),
+    )
     val dropdownEntriesQuickSwitchAction = listOf(
         DropDownEntry(
             title = stringResource(R.string.home_gesture_quick_switch_previous_app),
@@ -193,14 +206,10 @@ fun MiuiHomePage(navController: NavController, adjustPadding: PaddingValues, mod
             PreferenceGroup(
                 title = stringResource(R.string.ui_title_home_gesture)
             ) {
-//                SwitchPreference(
-//                    title = stringResource(R.string.home_gesture_double_tap),
-//                    key = Pref.Key.MiuiHome.DOUBLE_TAP_TO_SLEEP
-//                )
-                SwitchPreference(
+                DropDownPreference(
                     title = stringResource(R.string.home_gesture_back_haptic),
-                    summary = stringResource(R.string.home_gesture_back_haptic_tips),
-                    key = Pref.Key.MiuiHome.BACK_HAPTIC
+                    entries = dropdownEntriesBackHaptic,
+                    key = Pref.Key.MiuiHome.BACK_GESTURE_HAPTIC
                 )
                 SwitchPreference(
                     title = stringResource(R.string.home_gesture_fix_predictive_back),

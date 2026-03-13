@@ -105,7 +105,7 @@ object Pref {
         object MiuiHome {
             const val REMOVE_REPORT = "home_remove_report"
 //            const val DOUBLE_TAP_TO_SLEEP = "home_double_tap_sleep"
-            const val BACK_HAPTIC = "home_back_haptic"
+            const val BACK_GESTURE_HAPTIC = "home_back_gesture_haptic"
             const val FIX_PREDICTIVE_BACK_PROG = "home_back_predictive_prog"
             const val QUICK_SWITCH = "home_quick_back"
             const val QUICK_SWITCH_LEFT = "home_quick_back_left"
