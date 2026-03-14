@@ -33,6 +33,7 @@ import android.widget.ImageView
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.condition.type.Modifiers
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
+import com.highcapable.yukihookapi.hook.log.YLog
 import dev.lackluster.mihelper.BuildConfig
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.ui.MainActivity
@@ -168,10 +169,16 @@ object HeaderList : YukiBaseHooker() {
                     after {
                         val headerList = this.args(0).list<Any?>() as MutableList<Any?>
                         if (showSettingsEntry) {
+                            YLog.info(headerList.joinToString(
+                                separator = "\n",
+                                transform = {
+                                    fldHeaderId?.copy()?.of(it)?.get<Long>()?.toHexString()+ "#" + fldHeaderTitle?.copy()?.of(it)?.get<String>()
+                                }
+                            ))
                             val activity = this.instance<Activity>()
                             val moduleRes = activity.packageManager.getResourcesForApplication(BuildConfig.APPLICATION_ID)
                             if (idMyDevice == 0) {
-                                idMyDevice = activity.getResID("my_device", "id", "com.android.settings")
+                                idMyDevice = activity.getResID("wifi_settings", "id", "com.android.settings")
                             }
                             val header = ctorHeader?.copy()?.create()
                             fldHeaderId?.copy()?.of(header)?.set(XIAOMI_HELPER_IDENTIFIER)
@@ -198,7 +205,7 @@ object HeaderList : YukiBaseHooker() {
                             for ((index, head) in headerList.withIndex()) {
                                 val identifier = fldHeaderId?.copy()?.of(head)?.get<Long>()?.toInt()
                                 if (identifier == idMyDevice) {
-                                    headerList.add(index + 1, header)
+                                    headerList.add(index, header)
                                     added = true
                                     break
                                 }
