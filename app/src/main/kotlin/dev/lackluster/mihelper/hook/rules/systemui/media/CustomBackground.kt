@@ -107,6 +107,7 @@ object CustomBackground : YukiBaseHooker() {
     override fun onHook() {
         loadHooker(AlwaysDark)
         loadHooker(AmbientLight)
+        loadHooker(FlipTinyScreen) // Not fully verified
         if (ncBackgroundStyle !in 1..4 && diBackgroundStyle !in 1..4) return
         loadHooker(MediaControlBgFactory)
         onHookNotificationCenter()

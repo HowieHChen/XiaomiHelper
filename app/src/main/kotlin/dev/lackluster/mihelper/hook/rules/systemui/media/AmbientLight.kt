@@ -100,7 +100,7 @@ object AmbientLight : YukiBaseHooker() {
             modifiers(Modifiers.STATIC)
         }?.self
     }
-    private val metAcquireApplicationIcon by lazy {
+    val metAcquireApplicationIcon by lazy {
         "com.android.systemui.statusbar.notification.utils.NotificationUtil".toClassOrNull()?.resolve()?.firstMethodOrNull {
             name = "acquireApplicationIcon"
             parameterCount = 2
@@ -402,7 +402,7 @@ object AmbientLight : YukiBaseHooker() {
         }
     }
 
-    private fun getMainColorHCT(drawable: Drawable): Int? {
+    fun getMainColorHCT(drawable: Drawable): Int? {
         return metDrawable2Bitmap?.invoke(null, drawable)?.let { bitmap ->
             metGetMainColorHCT?.invoke(null, bitmap) as? Int
         }
