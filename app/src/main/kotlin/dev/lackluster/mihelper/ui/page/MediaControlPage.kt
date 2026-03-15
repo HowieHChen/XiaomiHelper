@@ -29,11 +29,11 @@ import dev.lackluster.hyperx.compose.preference.SwitchPreference
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.data.Constants.MediaControlSpKey
 import dev.lackluster.mihelper.data.Constants.getKey
+import dev.lackluster.mihelper.data.Pref
+import dev.lackluster.mihelper.data.Scope
 import dev.lackluster.mihelper.ui.MainActivity
 import dev.lackluster.mihelper.ui.component.MediaControlCard
 import dev.lackluster.mihelper.ui.component.RebootMenuItem
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.data.Scope
 import dev.lackluster.mihelper.ui.component.itemAnimated
 import dev.lackluster.mihelper.ui.component.itemPreferenceGroup
 
@@ -171,9 +171,8 @@ fun MediaControlPage(navController: NavController, adjustPadding: PaddingValues,
                 stringResource(R.string.scope_systemui),
                 Scope.SYSTEM_UI
             )
-        }
-    ) {
-        item {
+        },
+        fixedContent = {
             MediaControlCard(
                 isDynamicIsland = isDynamicIsland,
                 backgroundStyle = backgroundStyle,
@@ -200,6 +199,7 @@ fun MediaControlPage(navController: NavController, adjustPadding: PaddingValues,
                 progressComet = progressComet
             )
         }
+    ) {
         item {
             TabRow(
                 modifier = Modifier
