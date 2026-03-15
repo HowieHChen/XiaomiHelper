@@ -804,4 +804,11 @@
     <string name="icon_tuner_left_extra_blocked_slots">額外屏蔽列表</string>
     <string name="icon_tuner_left_extra_blocked_slots_tips">屏蔽狀態欄左側出現的非預期額外圖示</string>
     <string name="icon_tuner_left_extra_blocked_slots_msg">部分模組會添加額外自訂狀態圖示，啟用“狀態圖示左移”時這些額外的狀態圖示可能同時出現在狀態欄兩側。\n\n在此輸入這些圖示的插槽名以阻止他們出現在左側。如需輸入多個，可以用逗號“ , ”分隔，比如“zen, volume”。</string>
+    <string name="systemui_control_hide_edit">隱藏編輯按鈕</string>
+    <string name="home_gesture_back_haptic_default_tips">在後退手勢開始時震動</string>
+    <string name="cleaner_market_disable_customize_icon">停用營銷圖示</string>
+    <string name="cleaner_market_disable_customize_icon_tips">停用應用程式商店將桌面應用程式圖示替換為營銷圖示的能力</string>
+    <string name="others_aiengine_copy_link_island_browser">使用任意瀏覽器打開複製的連結</string>
+    <string name="others_aiengine_copy_link_island_browser_tips">複製 URL 並點擊超級島後，可以用任何瀏覽器打開（而非僅限小米瀏覽器）</string>
+    <string name="home_gesture_back_haptic">增強後退手勢觸覺回饋</string>
 </resources>
