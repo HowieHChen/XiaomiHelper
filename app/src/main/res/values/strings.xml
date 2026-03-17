@@ -142,6 +142,9 @@
     <string name="about_author_tips">No profile or signature</string>
     <string name="about_author_url" translatable="false">https://github.com/HowieHChen</string>
     <string name="ui_title_about_others" translatable="false">@string/common_others</string>
+    <string name="about_translate">Translate</string>
+    <string name="about_translate_tips">Help us translate the app into your language</string>
+    <string name="about_translate_url" translatable="false">https://hosted.weblate.org/engage/hyper-helper/</string>
     <string name="about_donate">Donate</string>
     <string name="about_donate_tips">Buy me a coffee</string>
     <string name="about_donate_url" translatable="false">https://github.com/HowieHChen/XiaomiHelper/blob/master/DONATE.md</string>

@@ -196,6 +196,12 @@ fun AboutPage(navController: NavController, adjustPadding: PaddingValues, mode: 
                 title = stringResource(R.string.ui_title_about_others)
             ) {
                 TextPreference(
+                    title = stringResource(R.string.about_translate),
+                    summary = stringResource(R.string.about_translate_tips)
+                ) {
+                    context.openUrl(R.string.about_translate_url)
+                }
+                TextPreference(
                     title = stringResource(R.string.about_donate),
                     summary = stringResource(R.string.about_donate_tips)
                 ) {

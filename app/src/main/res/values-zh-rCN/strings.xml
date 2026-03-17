@@ -831,4 +831,6 @@
     <string name="icon_tuner_stacked_mobile_icon">双排信号图标</string>
     <string name="icon_tuner_stacked_mobile_type">移动网络类型图标</string>
     <string name="stacked_icon_style_stacked_msg">粘贴包含下列八个 ID 的 SVG 代码：\nsignal_1_1、signal_1_2、signal_1_3、signal_1_4、\nsignal_2_1、signal_2_2、signal_2_3 和 signal_2_4。\n\n其中，signal_1_2 代表 SIM 1 的第二个信号条。当 SIM 1 有 2 格信号，而 SIM 2 只有 1 格信号时，signal_1_1、signal_1_2 和 signal_2_1 将使用填充不透明度填充，而 signal_1_3、signal_1_4、signal_2_2、signal_2_3 和 signal_2_4 将使用背景不透明度填充。</string>
+    <string name="about_translate">翻译</string>
+    <string name="about_translate_tips">帮助我们将应用翻译成您的语言</string>
 </resources>
