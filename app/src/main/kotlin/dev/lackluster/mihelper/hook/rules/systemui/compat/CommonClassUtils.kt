@@ -41,6 +41,9 @@ object CommonClassUtils : YukiBaseHooker() {
     val clzMiuiBatteryMeterView by lazy {
         "com.android.systemui.statusbar.views.MiuiBatteryMeterView".toClassOrNull()
     }
+    val clzStatusBarIconControllerImpl by lazy {
+        "com.android.systemui.statusbar.phone.ui.StatusBarIconControllerImpl".toClassOrNull()
+    }
     val clzJavaAdapterKt by lazy {
         "com.android.systemui.util.kotlin.JavaAdapterKt".toClassOrNull()
     }
@@ -69,9 +72,13 @@ object CommonClassUtils : YukiBaseHooker() {
     val clzPair by lazy {
         "kotlin.Pair".toClass()
     }
+    val clzTriple by lazy {
+        "kotlin.Triple".toClass()
+    }
     val clzJob by lazy {
         "kotlinx.coroutines.Job".toClassOrNull()
     }
+
     val clzMiuiMediaViewControllerImpl by lazy {
         "com.android.systemui.statusbar.notification.mediacontrol.MiuiMediaViewControllerImpl".toClassOrNull()
     }
@@ -100,7 +107,7 @@ object CommonClassUtils : YukiBaseHooker() {
 
     val fontPath by lazy {
         val defaultPath = SystemProperties.get("ro.miui.ui.font.mi_font_path", VARIABLE_FONT_DEFAULT_PATH)
-        val prefPath = Prefs.getString(FontWeight.FONT_PATH_INTERNAL, defaultPath) ?: defaultPath
+        val prefPath = Prefs.getString(FontWeight.FONT_PATH_INTERNAL, defaultPath)
         val fontFile = File(prefPath)
         if (fontFile.exists() && fontFile.isFile && fontFile.canRead()) prefPath else defaultPath
     }
@@ -121,6 +128,7 @@ object CommonClassUtils : YukiBaseHooker() {
         clzMiuiClock
         clzMiuiKeyguardStatusBarView
         clzMiuiBatteryMeterView
+        clzStatusBarIconControllerImpl
         clzReadonlyStateFlow
         clzStateFlowKt
         clzMutableStateFlow
@@ -130,6 +138,7 @@ object CommonClassUtils : YukiBaseHooker() {
         clzEmptyCoroutineContext
         clzMainDispatcherLoader
         clzPair
+        clzTriple
         clzJob
         clzMiuiMediaViewControllerImpl
         clzMiuiMediaViewHolder

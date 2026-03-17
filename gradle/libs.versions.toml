@@ -16,6 +16,7 @@ kavaref-core = "1.0.2"
 kavaref-extension = "1.0.2"
 dexkit = "2.0.7"
 serialization-json = "1.10.0"
+android-svg = "1.4"
 
 [libraries]
 xposed-api = { group = "de.robv.android.xposed", name = "api", version.ref = "xposed" }
@@ -30,6 +31,7 @@ androidx-constraintlayout-compose = { group = "androidx.constraintlayout", name 
 
 dexkit = { module = "org.luckypray:dexkit", version.ref = "dexkit" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization-json" }
+android-svg = { module = "com.caverock:androidsvg-aar", version.ref = "android-svg" }
 
 androidx-ui = { group = "androidx.compose.ui", name = "ui", version = "1.10.5" }
 

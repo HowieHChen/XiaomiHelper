@@ -44,6 +44,7 @@
     <string name="page_status_bar_icon_tuner">Icon tuner</string>
     <string name="page_status_bar_icon_detail">Icon customizer</string>
     <string name="page_status_bar_icon_order">Customize icon order</string>
+    <string name="page_status_bar_stacked_mobile">Dual‑row signal customizer</string>
     <string name="page_status_bar_font">Font</string>
     <string name="page_media_control_style">Media control style</string>
     <string name="page_home_refactor" translatable="false">@string/home_exclusive_refactor</string>
@@ -691,6 +692,13 @@
     <string name="icon_tuner_general_order_custom_entry" translatable="false">@string/page_status_bar_icon_order</string>
     <string name="icon_tuner_general_auto_reorder">Auto adjust icon order</string>
     <string name="icon_tuner_general_auto_reorder_tips">Shift hidden icons forward for smoother animation</string>
+    <string name="ui_title_icon_tuner_stacked_mobile" translatable="false">@string/icon_tuner_stacked_mobile_icon</string>
+    <string name="icon_tuner_stacked_mobile">Enable dual‑row signal icon</string>
+    <string name="icon_tuner_stacked_mobile_tips">Adds new combined signal icon and network type icon</string>
+    <string name="icon_tuner_stacked_mobile_icon">Dual‑row signal icon</string>
+    <string name="icon_tuner_stacked_mobile_type">Mobile network type icon</string>
+    <string name="icon_tuner_stacked_mobile_custom_entry" translatable="false">@string/page_status_bar_stacked_mobile</string>
+    <string name="icon_tuner_hint_stacked_mobile">Please go to the \"Icon customizer\" page to manually hide the original SIM 1 and SIM 2 signal icons. You can also adjust the relative position of the new icons through \"Customize icon order\".</string>
     <string name="ui_title_icon_tuner_network">Network</string>
     <string name="icon_tuner_network_mobile">Mobile network</string>
     <string name="icon_tuner_network_no_sim">No SIM card</string>
@@ -784,6 +792,7 @@
     <string name="icon_detail_wifi_hide_standard">Hide WLAN standard</string>
     <string name="icon_detail_wifi_hide_activity">Hide WLAN activity</string>
     <string name="icon_detail_wifi_right_activity">Align WLAN activity to the right</string>
+    <string name="icon_detail_wifi_hide_unavailable">Hide WLAN icon when unavailable</string>
     <!-- IconDetailPage - Battery -->
     <string name="icon_detail_battery_bar_style">Battery indicator (Status bar)</string>
     <string name="icon_detail_battery_cc_style">Battery indicator (Control center)</string>
@@ -909,6 +918,25 @@
     <string name="ui_title_media_others" translatable="false">@string/common_others</string>
     <string name="media_hint_ambient_lighting">The ambient light effect requires high performance and resource usage, which may cause issues such as device overheating. Please enable with caution. If any problems occur, it is recommended to disable this feature.</string>
     <string name="media_hint_advanced_textures">Since Advanced textures have been set as the default background for media controls, the corresponding option has been removed. If you need to adjust the effects of Advanced textures, use a Magisk module or the system theme to modify the blur parameters.</string>
+    <!-- StackedMobileTunerPage -->
+    <string name="ui_title_stacked_icon" translatable="false">@string/icon_tuner_stacked_mobile_icon</string>
+    <string name="stacked_icon_style_single">Signal icon style (single SIM)</string>
+    <string name="stacked_icon_style_single_val">Customize single‑SIM signal icon</string>
+    <string name="stacked_icon_style_single_msg">Paste SVG code containing the four IDs \nsignal_1, signal_2, signal_3, and signal_4. \n\nHere, signal_2 represents the second signal bar. When the current signal strength is 2 bars, signal_1 and signal_2 will be filled using Fill opacity, while signal_3 and signal_4 will be filled using Background opacity.</string>
+    <string name="stacked_icon_style_stacked">Signal icon style (dual SIM)</string>
+    <string name="stacked_icon_style_stacked_val">Customize dual‑SIM signal icon</string>
+    <string name="stacked_icon_style_stacked_msg">Paste SVG code containing the eight IDs \nsignal_1_1, signal_1_2, signal_1_3, signal_1_4, \nsignal_2_1, signal_2_2, signal_2_3, and signal_2_4. \n\nHere, signal_1_2 represents the second signal bar of SIM 1. When SIM 1 has 2 bars and SIM 2 has 1 bar, signal_1_1, signal_1_2, and signal_2_1 will be filled using Fill opacity, while signal_1_3, signal_1_4, signal_2_2, signal_2_3, and signal_2_4 will be filled using Background opacity.</string>
+    <string name="stacked_icon_style_miui" translatable="false">HyperOS</string>
+    <string name="stacked_icon_style_ios" translatable="false">iOS</string>
+    <string name="stacked_icon_style_custom" translatable="false">@string/common_custom</string>
+    <string name="stacked_icon_alpha_fg">Fill opacity</string>
+    <string name="stacked_icon_alpha_bg">Background opacity</string>
+    <string name="stacked_icon_alpha_error">No service opacity</string>
+    <string name="ui_title_stacked_type" translatable="false">@string/icon_tuner_stacked_mobile_type</string>
+    <string name="stacked_type_hide_disconnect">Hide when not connected</string>
+    <string name="stacked_type_hide_disconnect_tips">Hide the icon when mobile data is off or no data connection can be established</string>
+    <string name="stacked_type_hide_wifi">Hide when WLAN is available</string>
+    <string name="stacked_type_size">Font size (mobile network type icon)</string>
     <!-- HomeRefactorPage -->
     <string name="home_refactor_blur">Blur effect</string>
     <string name="home_refactor_blur_radius">Blur radius</string>

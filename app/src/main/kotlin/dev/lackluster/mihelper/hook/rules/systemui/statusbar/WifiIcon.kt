@@ -21,6 +21,7 @@
 package dev.lackluster.mihelper.hook.rules.systemui.statusbar
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
+import com.highcapable.kavaref.condition.type.Modifiers
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.readonlyStateFlow0
@@ -31,8 +32,33 @@ object WifiIcon : YukiBaseHooker() {
     private var hideActivity = Prefs.getBoolean(Pref.Key.SystemUI.IconTuner.HIDE_WIFI_ACTIVITY, false)
     private val hideStandard = Prefs.getBoolean(Pref.Key.SystemUI.IconTuner.HIDE_WIFI_STANDARD, false)
     private val activityRight = Prefs.getBoolean(Pref.Key.SystemUI.IconTuner.WIFI_ACTIVITY_RIGHT, false)
+    private val hideUnavailable = Prefs.getBoolean(Pref.Key.SystemUI.IconTuner.HIDE_WIFI_UNAVAILABLE, false)
 
     override fun onHook() {
+        if (hideUnavailable) {
+            $$"com.android.systemui.statusbar.pipeline.wifi.ui.model.WifiIcon$Companion".toClassOrNull()?.apply {
+                val clzWifiNetworkModeActive = $$"com.android.systemui.statusbar.pipeline.wifi.shared.model.WifiNetworkModel$Active".toClassOrNull()
+                val clzWifiIconHidden =
+                    $$"com.android.systemui.statusbar.pipeline.wifi.ui.model.WifiIcon$Hidden".toClassOrNull()
+                        ?.resolve()
+                        ?.firstFieldOrNull {
+                            name = "INSTANCE"
+                            modifiers(Modifiers.STATIC)
+                        }
+                        ?.get()
+                resolve().firstMethodOrNull {
+                    name = "fromModel"
+                }?.hook {
+                    before {
+                        val networkModel = this.args(0).any()
+                        val hasInternet = this.args(4).boolean()
+                        if (clzWifiNetworkModeActive?.isInstance(networkModel) == true && !hasInternet && clzWifiIconHidden != null) {
+                            this.result = clzWifiIconHidden
+                        }
+                    }
+                }
+            }
+        }
         if (!hideActivity && !hideStandard) return
         "com.android.systemui.statusbar.pipeline.wifi.ui.viewmodel.WifiViewModel".toClassOrNull()?.apply {
             val activityInOutRes = resolve().firstFieldOrNull {

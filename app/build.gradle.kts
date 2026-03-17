@@ -101,6 +101,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.dexkit)
     implementation(project(mapOf("path" to ":hyperx-compose")))
+    implementation(libs.android.svg)
 
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.constraintlayout)

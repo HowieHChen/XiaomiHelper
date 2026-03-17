@@ -64,6 +64,9 @@ fun IconTunerPage(navController: NavController, adjustPadding: PaddingValues, mo
     var visibilityIconOrder by remember { mutableStateOf(
         SafeSP.getInt(Pref.Key.SystemUI.IconTuner.ICON_POSITION, 0) == 2
     ) }
+    var visibilityStackedMobileIcon by remember { mutableStateOf(
+        SafeSP.getBoolean(Pref.Key.SystemUI.IconTuner.ENABLE_STACKED_MOBILE_ICON, false)
+    ) }
     var visibilityCompoundIcon by remember { mutableStateOf(
         SafeSP.getInt(Pref.Key.SystemUI.IconTuner.COMPOUND_ICON, 0) in 1..3
     ) }
@@ -135,6 +138,50 @@ fun IconTunerPage(navController: NavController, adjustPadding: PaddingValues, mo
                 title = stringResource(R.string.icon_tuner_general_auto_reorder),
                 summary = stringResource(R.string.icon_tuner_general_auto_reorder_tips),
                 key = Pref.Key.SystemUI.IconTuner.ICON_POSITION_REORDER
+            )
+        }
+        itemPreferenceGroup(
+            key = "ICON_TUNER_STACKED_MOBILE",
+            titleResId = R.string.ui_title_icon_tuner_stacked_mobile
+        ) {
+            SwitchPreference(
+                icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_stacked_icon),
+                title = stringResource(R.string.icon_tuner_stacked_mobile),
+                summary = stringResource(R.string.icon_tuner_stacked_mobile_tips),
+                key = Pref.Key.SystemUI.IconTuner.ENABLE_STACKED_MOBILE_ICON
+            ) {
+                visibilityStackedMobileIcon = it
+            }
+            AnimatedVisibility(visibilityStackedMobileIcon) {
+                Column {
+                    DropDownPreference(
+                        icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_stacked_icon),
+                        title = stringResource(R.string.icon_tuner_stacked_mobile_icon),
+                        entries = dropdownEntriesAdvVisible,
+                        key = Pref.Key.SystemUI.IconTuner.STACKED_MOBILE_ICON
+                    )
+                    DropDownPreference(
+                        icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_stacked_type),
+                        title = stringResource(R.string.icon_tuner_stacked_mobile_type),
+                        entries = dropdownEntriesAdvVisible,
+                        key = Pref.Key.SystemUI.IconTuner.STACKED_MOBILE_TYPE
+                    )
+                    TextPreference(
+                        title = stringResource(R.string.icon_tuner_stacked_mobile_custom_entry)
+                    ) {
+                        navController.navigateTo(Pages.STACKED_MOBILE_TUNER)
+                    }
+                }
+            }
+        }
+        itemAnimated(
+            key = "ICON_TUNER_STACKED_MOBILE_HINT",
+            visible = visibilityStackedMobileIcon
+        ) {
+            Hint(
+                modifier = Modifier
+                    .padding(horizontal = 12.dp, vertical = 6.dp),
+                text = stringResource(R.string.icon_tuner_hint_stacked_mobile)
             )
         }
         itemPreferenceGroup(
@@ -408,7 +455,7 @@ fun IconTunerPage(navController: NavController, adjustPadding: PaddingValues, mo
         itemPreferenceGroup(
             key = "ICON_TUNER_LEFT_CONTAINER",
             titleResId = R.string.ui_title_icon_tuner_left_icon,
-            last = !visibilityLeftIcon
+            last = true
         ) {
             DropDownPreference(
                 title = stringResource(R.string.icon_tuner_left_icon),
@@ -461,17 +508,6 @@ fun IconTunerPage(navController: NavController, adjustPadding: PaddingValues, mo
                     )
                 }
             }
-        }
-        itemAnimated(
-            key = "ICON_TUNER_LEFT_CONTAINER_HINT",
-            visible = visibilityLeftIcon
-        ) {
-            Hint(
-                modifier = Modifier
-                    .padding(horizontal = 12.dp)
-                    .padding(top = 6.dp, bottom = 12.dp),
-                text = stringResource(R.string.icon_tuner_hint_left_icon_order)
-            )
         }
     }
 }

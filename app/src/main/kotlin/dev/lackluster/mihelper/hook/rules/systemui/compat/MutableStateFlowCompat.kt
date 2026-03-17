@@ -36,6 +36,12 @@ class MutableStateFlowCompat<T>() : IStateFlowCompat<T> {
             }?.self
         }
 
+        private val metGetValue by lazy {
+            clzStateFlowImpl?.resolve()?.optional(true)?.firstMethodOrNull {
+                name = "getValue"
+            }?.self
+        }
+
         private val metSetValue by lazy {
             clzStateFlowImpl?.resolve()?.optional(true)?.firstMethodOrNull {
                 name = "setValue"
@@ -59,6 +65,11 @@ class MutableStateFlowCompat<T>() : IStateFlowCompat<T> {
     fun of(mutableStateFlow: Any?): MutableStateFlowCompat<T> {
         real = mutableStateFlow
         return this
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    fun getValue(): T? {
+        return real?.let { metGetValue?.invoke(it) as? T }
     }
 
     fun setValue(value: T?) {

@@ -213,6 +213,7 @@
     <string name="icon_detail_cellular_hide_volte_no_service">隐藏 VoLTE 无服务 图标</string>
     <string name="icon_tuner_network_no_sim">无 SIM 卡</string>
     <string name="icon_tuner_general_auto_reorder_tips">前移不可见的状态栏图标，以改善进入控制中心时下拉动画的连贯性</string>
+    <string name="icon_tuner_hint_stacked_mobile">请前往“图标定制”页面手动隐藏原本的 SIM 卡 1 和 SIM 卡 2 信号图标。您还可以通过“图标顺序自定义”调整新图标的相对位置。</string>
     <string name="ui_title_icon_tuner_network">网络</string>
     <string name="icon_tuner_network_mobile">移动网络</string>
     <string name="icon_detail_cellular_hide_sim_auto_tips">跟随“上网卡”设置，只显示数据 SIM 卡的信号图标</string>
@@ -353,6 +354,7 @@
     <string name="media_elm_fix_thumb_crop_tips">确保滑块在进度条的两端时均能完整显示</string>
     <string name="media_hint_ambient_lighting">氛围光效需要较高的性能和资源占用，可能会导致设备过热等问题。请谨慎启用。如果出现任何问题，建议禁用此功能。</string>
     <string name="media_hint_advanced_textures">由于高级材质已被设置为媒体控制的默认背景，我们移除了相应的选项。若需修改高级材质效果，请通过 Magisk 模块或系统主题调整模糊参数。</string>
+    <string name="stacked_type_size">移动网络类型字号</string>
     <string name="home_refactor_blur">模糊效果</string>
     <string name="home_refactor_fix_small_window">额外修复小窗动画</string>
     <string name="home_refactor_fix_small_window_tips">强制使用动画以避免拖动应用进入小窗时闪烁，暂时不确定是否有负面影响。只有当你非常介意这个时才启用</string>
@@ -381,6 +383,7 @@
     <string name="page_cleaner">净化</string>
     <string name="page_status_bar_icon_detail">图标定制</string>
     <string name="page_status_bar_icon_order">图标顺序自定义</string>
+    <string name="page_status_bar_stacked_mobile">双排信号自定义</string>
     <string name="page_status_bar_font">字体</string>
     <string name="page_media_control_style">媒体控件风格</string>
     <string name="scope_mi_link">互联互通服务</string>
@@ -716,6 +719,7 @@
     <string name="ui_title_icon_detail_font_weight">字重</string>
     <string name="ui_title_icon_detail_cellular_type">移动网络类型</string>
     <string name="icon_detail_wifi_right_activity">WLAN 活动右置</string>
+    <string name="icon_detail_wifi_hide_unavailable">网络不可用时隐藏 WLAN 图标</string>
     <string name="icon_detail_battery_bar_style">状态栏电量样式</string>
     <string name="icon_detail_battery_cc_style">控制中心电量样式</string>
     <string name="icon_detail_battery_style_default_tips">跟随系统设置</string>
@@ -811,4 +815,20 @@
     <string name="others_aiengine_copy_link_island_browser_tips">复制 URL 并点击超级岛后，可以用任何浏览器打开（而非仅限小米浏览器）</string>
     <string name="home_gesture_back_haptic_default_tips">在返回手势开始时震动</string>
     <string name="systemui_control_hide_edit">隐藏编辑按钮</string>
+    <string name="stacked_icon_alpha_fg">填充不透明度</string>
+    <string name="stacked_icon_alpha_bg">背景不透明度</string>
+    <string name="stacked_icon_alpha_error">无服务不透明度</string>
+    <string name="stacked_icon_style_single">单卡信号图标风格</string>
+    <string name="stacked_icon_style_single_msg">粘贴包含下列四个 ID 的 SVG 代码：\nsignal_1、signal_2、signal_3 和 signal_4。\n\n其中，signal_2 代表第二个信号条。当信号强度为 2 格时，signal_1 和 signal_2 将使用填充不透明度填充，而 signal_3 和 signal_4 将使用背景不透明度填充。</string>
+    <string name="stacked_icon_style_stacked">双卡信号图标风格</string>
+    <string name="stacked_icon_style_single_val">自定义单卡信号图标风格</string>
+    <string name="stacked_icon_style_stacked_val">自定义双卡信号图标风格</string>
+    <string name="stacked_type_hide_disconnect">没有连接时隐藏</string>
+    <string name="stacked_type_hide_disconnect_tips">当移动数据关闭或无法建立数据连接时隐藏图标</string>
+    <string name="stacked_type_hide_wifi">WLAN 可用时隐藏</string>
+    <string name="icon_tuner_stacked_mobile">启用双排信号图标</string>
+    <string name="icon_tuner_stacked_mobile_tips">新增组合信号图标和网络类型图标</string>
+    <string name="icon_tuner_stacked_mobile_icon">双排信号图标</string>
+    <string name="icon_tuner_stacked_mobile_type">移动网络类型图标</string>
+    <string name="stacked_icon_style_stacked_msg">粘贴包含下列八个 ID 的 SVG 代码：\nsignal_1_1、signal_1_2、signal_1_3、signal_1_4、\nsignal_2_1、signal_2_2、signal_2_3 和 signal_2_4。\n\n其中，signal_1_2 代表 SIM 1 的第二个信号条。当 SIM 1 有 2 格信号，而 SIM 2 只有 1 格信号时，signal_1_1、signal_1_2 和 signal_2_1 将使用填充不透明度填充，而 signal_1_3、signal_1_4、signal_2_2、signal_2_3 和 signal_2_4 将使用背景不透明度填充。</string>
 </resources>

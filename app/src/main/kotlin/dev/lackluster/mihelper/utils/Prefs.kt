@@ -34,11 +34,11 @@ object Prefs {
         return xPrefs.getFloat(key, defValue)
     }
 
-    fun getString(key: String, defValue: String): String? {
+    fun getString(key: String, defValue: String): String {
         if (xPrefs.hasFileChanged()) {
             xPrefs.reload()
         }
-        return xPrefs.getString(key, defValue)
+        return xPrefs.getString(key, defValue) ?:defValue
     }
 
     fun getStringSet(key: String, defValue: MutableSet<String>): MutableSet<String> {

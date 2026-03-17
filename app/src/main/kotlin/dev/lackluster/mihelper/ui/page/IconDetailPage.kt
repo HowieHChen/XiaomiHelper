@@ -569,7 +569,6 @@ fun IconDetailPage(navController: NavController, adjustPadding: PaddingValues, m
         }
         itemPreferenceGroup(
             key = "WLAN",
-            last = true,
             visible = (tabRowSelected == 1)
         ) {
             SwitchPreference(
@@ -586,6 +585,18 @@ fun IconDetailPage(navController: NavController, adjustPadding: PaddingValues, m
                     key = Pref.Key.SystemUI.IconTuner.WIFI_ACTIVITY_RIGHT
                 ) { rightWifiActivity = it }
             }
+        }
+        itemPreferenceGroup(
+            key = "WLAN_OTHERS",
+            titleResId = R.string.ui_title_icon_detail_other,
+            last = true,
+            visible = (tabRowSelected == 1)
+        ) {
+            SwitchPreference(
+                icon = ImageIcon(iconRes = R.drawable.ic_stat_sys_wifi_unavailable),
+                title = stringResource(R.string.icon_detail_wifi_hide_unavailable),
+                key = Pref.Key.SystemUI.IconTuner.HIDE_WIFI_UNAVAILABLE
+            )
         }
         itemPreferenceGroup(
             key = "BATTERY",

@@ -57,6 +57,7 @@ object ResourcesUtils : YukiBaseHooker() {
     var stat_sys_quiet_mode = 0
     var stat_sys_ringer_silent = 0
     var stat_sys_ringer_vibrate = 0
+    var stat_sys_signal_0 = 0
     var notification_icon_area = 0
     var status_bar_view_state_tag = 0
     // Media control panel
@@ -128,6 +129,7 @@ object ResourcesUtils : YukiBaseHooker() {
                     stat_sys_quiet_mode = this.getResID("stat_sys_quiet_mode", "drawable", PKG_NAME)
                     stat_sys_ringer_silent = this.getResID("stat_sys_ringer_silent", "drawable", PKG_NAME)
                     stat_sys_ringer_vibrate = this.getResID("stat_sys_ringer_vibrate", "drawable", PKG_NAME)
+                    stat_sys_signal_0 = this.getResID("stat_sys_signal_0", "drawable", PKG_NAME)
                     notification_icon_area = this.getResID("notification_icon_area", "id", PKG_NAME)
                     status_bar_view_state_tag = this.getResID("status_bar_view_state_tag", "id", PKG_NAME)
                     notification_element_blend_shade_colors = this.getResID("notification_element_blend_shade_colors", "array", PKG_NAME)

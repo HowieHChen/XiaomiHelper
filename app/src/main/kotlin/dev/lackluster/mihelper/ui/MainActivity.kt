@@ -44,6 +44,7 @@ import dev.lackluster.mihelper.ui.dialog.MarketFilterTabDialog
 import dev.lackluster.mihelper.ui.dialog.StatusBarIconPositionDialog
 import dev.lackluster.mihelper.ui.page.MediaActionResizePage
 import dev.lackluster.mihelper.ui.page.IconDetailPage
+import dev.lackluster.mihelper.ui.page.StackedMobileTunerPage
 import dev.lackluster.mihelper.utils.Device
 import dev.lackluster.mihelper.utils.ShellUtils
 import dev.lackluster.mihelper.utils.factory.getSP
@@ -123,6 +124,7 @@ class MainActivity : HyperXActivity() {
                 miuixComposable(Pages.ICON_DETAIL) { IconDetailPage(navController, adjustPadding, mode) }
                 miuixComposable(Pages.MEDIA_CONTROL) { MediaControlPage(navController, adjustPadding, mode, false) }
                 miuixComposable(Pages.ISLAND_MEDIA_CONTROL) { MediaControlPage(navController, adjustPadding, mode, true) }
+                miuixComposable(Pages.STACKED_MOBILE_TUNER) { StackedMobileTunerPage(navController, adjustPadding, mode) }
 
                 miuixComposable(Pages.DIALOG_MARKET_FILTER_TAB) { MarketFilterTabDialog(navController, adjustPadding, mode) }
                 miuixComposable(Pages.DIALOG_SEARCH_CUSTOM_ENGINE) { SearchCustomEngineDialog(navController, adjustPadding, mode) }

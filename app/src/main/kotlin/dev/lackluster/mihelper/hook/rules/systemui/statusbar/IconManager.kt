@@ -91,7 +91,7 @@ object IconManager : YukiBaseHooker() {
     val leftBlockList by lazy {
         finalSlots.toMutableList().apply {
             removeAll(leftSlots)
-            leftExtraBlockedSlots?.split(',', ' ', '，')?.forEach {
+            leftExtraBlockedSlots.split(',', ' ', '，').forEach {
                 if (!contains(it)) {
                     add(it)
                 }
@@ -112,6 +112,8 @@ object IconManager : YukiBaseHooker() {
         val listStatusBar = rightBlockList?.copy()?.get<List<String>>()?.toMutableList() ?: return
         val listControlCenter = controlCenterBlockList?.copy()?.get<List<String>>()?.toMutableList() ?: return
         mapOf(
+            IconSlots.STACKED_MOBILE_ICON to IconTuner.STACKED_MOBILE_ICON,
+            IconSlots.STACKED_MOBILE_TYPE to IconTuner.STACKED_MOBILE_TYPE,
             "mobile" to IconTuner.MOBILE,
             "demo_mobile" to IconTuner.MOBILE,
             "no_sim" to IconTuner.NO_SIM,

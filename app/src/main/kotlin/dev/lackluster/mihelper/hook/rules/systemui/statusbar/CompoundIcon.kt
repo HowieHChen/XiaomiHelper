@@ -14,6 +14,8 @@ import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.stat_sys_gps_o
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.stat_sys_quiet_mode
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.stat_sys_ringer_silent
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.stat_sys_ringer_vibrate
+import dev.lackluster.mihelper.hook.rules.systemui.compat.IconControllerCompat.setIcon
+import dev.lackluster.mihelper.hook.rules.systemui.compat.IconControllerCompat.setIconVisibility
 import dev.lackluster.mihelper.utils.Prefs
 import dev.lackluster.mihelper.utils.factory.getAdditionalInstanceField
 import dev.lackluster.mihelper.utils.factory.setAdditionalInstanceField
@@ -25,13 +27,10 @@ object CompoundIcon : YukiBaseHooker() {
     private val mergeDnd = Prefs.getBoolean(IconTuner.COMPOUND_ICON_ZEN, false)
     private val mergeLocation = Prefs.getBoolean(IconTuner.COMPOUND_ICON_LOCATION, false)
     private val mergeRinger = Prefs.getBoolean(IconTuner.COMPOUND_ICON_VOLUME, false)
-    private val iconPriority = Prefs.getString(IconTuner.COMPOUND_PRIORITY, COMPOUND_ICON_PRIORITY_STR) ?: COMPOUND_ICON_PRIORITY_STR
+    private val iconPriority = Prefs.getString(IconTuner.COMPOUND_PRIORITY, COMPOUND_ICON_PRIORITY_STR)
 
     private val clzPhoneStatusBarPolicy by lazy {
         "com.android.systemui.statusbar.phone.PhoneStatusBarPolicy".toClassOrNull()
-    }
-    private val clzStatusBarIconControllerImpl by lazy {
-        "com.android.systemui.statusbar.phone.ui.StatusBarIconControllerImpl".toClassOrNull()
     }
     private val clzMiuiPrivacyControllerImpl by lazy {
         "com.android.systemui.statusbar.privacy.MiuiPrivacyControllerImpl".toClassOrNull()
@@ -41,18 +40,6 @@ object CompoundIcon : YukiBaseHooker() {
             name = "isCTARequiredLocation"
             modifiers(Modifiers.STATIC)
         }
-    }
-    private val metSetIcon by lazy {
-        clzStatusBarIconControllerImpl?.resolve()?.firstMethodOrNull {
-            name = "setIcon"
-            parameters(CharSequence::class, String::class, Int::class)
-        }?.self?.apply { makeAccessible() }
-    }
-    private val metSetIconVisibility by lazy {
-        clzStatusBarIconControllerImpl?.resolve()?.firstMethodOrNull {
-            name = "setIconVisibility"
-            parameters(String::class, Boolean::class)
-        }?.self?.apply { makeAccessible() }
     }
     private val metUpdateVolumeZen by lazy {
         clzPhoneStatusBarPolicy?.resolve()?.firstMethodOrNull {
@@ -282,24 +269,24 @@ object CompoundIcon : YukiBaseHooker() {
 
         fun updateStateIfNeeded(iconController: Any) {
             if (visibleSlot == null) {
-                metSetIcon?.invoke(iconController, null, IconSlots.COMPOUND_ICON_REAL_LOCATION, stat_sys_gps_on)
-                metSetIcon?.invoke(iconController, null, IconSlots.COMPOUND_ICON_REAL_ALARM_CLOCK, stat_sys_alarm)
-                metSetIcon?.invoke(iconController, null, IconSlots.COMPOUND_ICON_REAL_ZEN, stat_sys_quiet_mode)
-                metSetIcon?.invoke(iconController, null, IconSlots.COMPOUND_ICON_REAL_MUTE, stat_sys_ringer_silent)
-                metSetIcon?.invoke(iconController, null, IconSlots.COMPOUND_ICON_REAL_VIBRATE, stat_sys_ringer_vibrate)
-                metSetIconVisibility?.invoke(iconController, IconSlots.COMPOUND_ICON_REAL_LOCATION, false)
-                metSetIconVisibility?.invoke(iconController, IconSlots.COMPOUND_ICON_REAL_ALARM_CLOCK, false)
-                metSetIconVisibility?.invoke(iconController, IconSlots.COMPOUND_ICON_REAL_ZEN, false)
-                metSetIconVisibility?.invoke(iconController, IconSlots.COMPOUND_ICON_REAL_MUTE, false)
-                metSetIconVisibility?.invoke(iconController, IconSlots.COMPOUND_ICON_REAL_VIBRATE, false)
+                setIcon(iconController, null, IconSlots.COMPOUND_ICON_REAL_LOCATION, stat_sys_gps_on)
+                setIcon(iconController, null, IconSlots.COMPOUND_ICON_REAL_ALARM_CLOCK, stat_sys_alarm)
+                setIcon(iconController, null, IconSlots.COMPOUND_ICON_REAL_ZEN, stat_sys_quiet_mode)
+                setIcon(iconController, null, IconSlots.COMPOUND_ICON_REAL_MUTE, stat_sys_ringer_silent)
+                setIcon(iconController, null, IconSlots.COMPOUND_ICON_REAL_VIBRATE, stat_sys_ringer_vibrate)
+                setIconVisibility(iconController, IconSlots.COMPOUND_ICON_REAL_LOCATION, false)
+                setIconVisibility(iconController, IconSlots.COMPOUND_ICON_REAL_ALARM_CLOCK, false)
+                setIconVisibility(iconController, IconSlots.COMPOUND_ICON_REAL_ZEN, false)
+                setIconVisibility(iconController, IconSlots.COMPOUND_ICON_REAL_MUTE, false)
+                setIconVisibility(iconController, IconSlots.COMPOUND_ICON_REAL_VIBRATE, false)
             }
             val newVisibleSlot = getIconSlot()
             if (visibleSlot != newVisibleSlot) {
                 visibleSlot?.let {
-                    metSetIconVisibility?.invoke(iconController, it, false)
+                    setIconVisibility(iconController, it, false)
                 }
                 newVisibleSlot?.let {
-                    metSetIconVisibility?.invoke(iconController, it, true)
+                    setIconVisibility(iconController, it, true)
                 }
                 visibleSlot = newVisibleSlot
             }
