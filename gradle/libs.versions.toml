@@ -4,7 +4,7 @@ android-compileSdk = "36"
 android-minSdk = "35"
 android-targetSdk = "36"
 project-app-packageName = "dev.lackluster.mihelper"
-project-app-versionName = "26032"
+project-app-versionName = "26033"
 project-app-versionCode = "325"
 
 androidGradlePlugin = "9.0.1"
