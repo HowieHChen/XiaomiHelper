@@ -110,7 +110,7 @@ fun MediaControlCard(
             .fillMaxWidth()
             .height(dimensionResource(R.dimen.media_session_height_expanded))
             .padding(horizontal = 12.dp)
-            .padding(bottom = 6.dp, top = 12.dp),
+            .padding(bottom = 8.dp, top = 8.dp),
         shape = if (isDynamicIsland) G2RoundedCornerShape(30.dp) else G2RoundedCornerShape(20.dp)
     ) {
         val backgroundColor: Color

@@ -288,14 +288,13 @@ fun IconDetailPage(navController: NavController, adjustPadding: PaddingValues, m
                 stringResource(R.string.scope_systemui),
                 Scope.SYSTEM_UI
             )
-        }
-    ) {
-        item {
+        },
+        fixedContent = {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 12.dp)
-                    .padding(bottom = 6.dp, top = 12.dp)
+                    .padding(bottom = 8.dp, top = 8.dp)
             ) {
                 Row(
                     modifier = Modifier
@@ -397,6 +396,7 @@ fun IconDetailPage(navController: NavController, adjustPadding: PaddingValues, m
                 }
             }
         }
+    ) {
         item {
             TabRow(
                 modifier = Modifier
