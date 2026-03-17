@@ -811,4 +811,26 @@
     <string name="others_aiengine_copy_link_island_browser">使用任意瀏覽器打開複製的連結</string>
     <string name="others_aiengine_copy_link_island_browser_tips">複製 URL 並點擊超級島後，可以用任何瀏覽器打開（而非僅限小米瀏覽器）</string>
     <string name="home_gesture_back_haptic">增強後退手勢觸覺回饋</string>
+    <string name="page_status_bar_stacked_mobile">雙排訊號自訂</string>
+    <string name="about_translate">翻譯</string>
+    <string name="about_translate_tips">幫助我們將應用程式翻譯成您的語言</string>
+    <string name="icon_tuner_stacked_mobile">啟用雙排訊號圖示</string>
+    <string name="icon_tuner_stacked_mobile_tips">新增組合訊號圖示同網絡類型圖示</string>
+    <string name="icon_tuner_stacked_mobile_icon">雙排訊號圖示</string>
+    <string name="icon_tuner_stacked_mobile_type">移動網絡類型圖示</string>
+    <string name="icon_tuner_hint_stacked_mobile">請前往“圖示定制”頁面手動隱藏原本的 SIM 卡1 同 SIM 卡 2 訊號圖示。您還可以通過“圖示順序自訂”調整新圖示的相對位置。</string>
+    <string name="icon_detail_wifi_hide_unavailable">網絡不可用時隱藏 WLAN 圖示</string>
+    <string name="stacked_icon_style_single">單卡訊號圖示風格</string>
+    <string name="stacked_icon_style_single_val">自訂單卡訊號圖示風格</string>
+    <string name="stacked_icon_style_single_msg">粘貼包含下列四個 ID 的 SVG 代碼：\nsignal_1、signal_2、signal_3 和 signal_4。\n\n其中，signal_2 代表第二個訊號條。當訊號強度為 2 格時，signal_1 同 signal_2 將使用填充不透明度填充，而 signal_3 同 signal_4 將使用背景不透明度填充。</string>
+    <string name="stacked_icon_style_stacked">雙卡訊號圖示風格</string>
+    <string name="stacked_icon_style_stacked_val">自訂雙卡訊號圖示風格</string>
+    <string name="stacked_icon_style_stacked_msg">粘貼包含下列八個 ID 的 SVG 代碼：\nsignal_1_1、signal_1_2、signal_1_3、signal_1_4、\nsignal_2_1、signal_2_2、signal_2_3 同 signal_2_4。\n\n其中，signal_1_2 代表 SIM 1 的第二個訊號條。當 SIM 1 有 2 格訊號，而 SIM 2 只有 1 格訊號時，signal_1_1、signal_1_2 同 signal_2_1 將使用填充不透明度填充，而 signal_1_3、signal_1_4、signal_2_2、signal_2_3 同 signal_2_4 將使用背景不透明度填充。</string>
+    <string name="stacked_icon_alpha_fg">填充不透明度</string>
+    <string name="stacked_icon_alpha_bg">背景不透明度</string>
+    <string name="stacked_icon_alpha_error">無服務不透明度</string>
+    <string name="stacked_type_hide_disconnect">沒有連接時隱藏</string>
+    <string name="stacked_type_hide_disconnect_tips">當移動數據關閉或無法建立數據連接時隱藏圖示</string>
+    <string name="stacked_type_hide_wifi">WLAN 可用時隱藏</string>
+    <string name="stacked_type_size">移動網絡類型字體大小</string>
 </resources>
