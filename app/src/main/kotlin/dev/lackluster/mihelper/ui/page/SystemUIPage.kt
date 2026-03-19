@@ -206,6 +206,11 @@ fun SystemUIPage(navController: NavController, adjustPadding: PaddingValues, mod
                     key = Pref.Key.SystemUI.NotifCenter.NOTIF_NO_WHITELIST
                 )
                 SwitchPreference(
+                    title = stringResource(R.string.systemui_notif_suppress_fold),
+                    summary = stringResource(R.string.systemui_notif_suppress_fold_tips),
+                    key = Pref.Key.SystemUI.NotifCenter.SUPPRESS_FOLD
+                )
+                SwitchPreference(
                     title = stringResource(R.string.systemui_notif_miuix_expand_btn),
                     summary = stringResource(R.string.systemui_notif_miuix_expand_btn_tips),
                     key = Pref.Key.SystemUI.NotifCenter.MIUIX_EXPAND_BUTTON

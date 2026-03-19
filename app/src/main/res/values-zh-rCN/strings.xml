@@ -192,6 +192,7 @@
     <string name="ui_title_systemui_status_bar">状态栏</string>
     <string name="systemui_notif_disable_whitelist">禁用通知白名单</string>
     <string name="systemui_notif_disable_whitelist_tips">通知过多可能会导致锁屏卡顿</string>
+    <string name="systemui_notif_suppress_fold_tips">阻止系统将通知收纳进“更多通知”</string>
     <string name="systemui_notif_freeform">允许大多数通知以小窗打开</string>
     <string name="systemui_notif_freeform_tips">下拉通知以打开小窗，部分通过“Mi Push”推送的通知可能不受支持</string>
     <string name="systemui_notif_redirect_settings">重定向通知设置</string>
@@ -354,7 +355,9 @@
     <string name="media_elm_fix_thumb_crop_tips">确保滑块在进度条的两端时均能完整显示</string>
     <string name="media_hint_ambient_lighting">氛围光效需要较高的性能和资源占用，可能会导致设备过热等问题。请谨慎启用。如果出现任何问题，建议禁用此功能。</string>
     <string name="media_hint_advanced_textures">由于高级材质已被设置为媒体控制的默认背景，我们移除了相应的选项。若需修改高级材质效果，请通过 Magisk 模块或系统主题调整模糊参数。</string>
+    <string name="stacked_type_font_width_condensed">窄体字宽度</string>
     <string name="stacked_type_size">移动网络类型字号</string>
+    <string name="stacked_type_vertical_offset_tips">控制图标的垂直偏移量。正值向下移动图标，负值向上移动图标。</string>
     <string name="home_refactor_blur">模糊效果</string>
     <string name="home_refactor_fix_small_window">额外修复小窗动画</string>
     <string name="home_refactor_fix_small_window_tips">强制使用动画以避免拖动应用进入小窗时闪烁，暂时不确定是否有负面影响。只有当你非常介意这个时才启用</string>
@@ -833,4 +836,7 @@
     <string name="stacked_icon_style_stacked_msg">粘贴包含下列八个 ID 的 SVG 代码：\nsignal_1_1、signal_1_2、signal_1_3、signal_1_4、\nsignal_2_1、signal_2_2、signal_2_3 和 signal_2_4。\n\n其中，signal_1_2 代表 SIM 1 的第二个信号条。当 SIM 1 有 2 格信号，而 SIM 2 只有 1 格信号时，signal_1_1、signal_1_2 和 signal_2_1 将使用填充不透明度填充，而 signal_1_3、signal_1_4、signal_2_2、signal_2_3 和 signal_2_4 将使用背景不透明度填充。</string>
     <string name="about_translate">翻译</string>
     <string name="about_translate_tips">帮助我们将应用翻译成您的语言</string>
+    <string name="stacked_type_font_tips">使用 MiSans 或 SF Pro 时，4G+、5G+、5GA、LTE 文本将显示为窄体</string>
+    <string name="stacked_type_vertical_offset">垂直偏移</string>
+    <string name="systemui_notif_suppress_fold">禁用折叠通知</string>
 </resources>

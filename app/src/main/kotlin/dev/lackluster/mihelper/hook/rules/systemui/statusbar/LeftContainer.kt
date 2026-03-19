@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.LinearLayout.LayoutParams
-import androidx.core.view.doOnLayout
 import androidx.core.view.isGone
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.condition.type.Modifiers
@@ -19,12 +18,12 @@ import dev.lackluster.mihelper.data.Pref.Key.SystemUI.IconTuner
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.notification_icon_area
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.status_bar_view_state_tag
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzMiuiKeyguardStatusBarView
+import dev.lackluster.mihelper.hook.rules.systemui.statusbar.IconManager.getLeftBlockList
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.IconManager.leftBlockList
 import dev.lackluster.mihelper.utils.Prefs
 import dev.lackluster.mihelper.utils.factory.dp
 import dev.lackluster.mihelper.utils.factory.getAdditionalInstanceField
 import dev.lackluster.mihelper.utils.factory.setAdditionalInstanceField
-
 
 object LeftContainer : YukiBaseHooker() {
     private const val KEY_LEFT_STATUS_ICON_CONTAINER = "KEY_LEFT_STATUS_ICON_CONTAINER"
@@ -76,6 +75,19 @@ object LeftContainer : YukiBaseHooker() {
             name = "addIconGroup"
             parameterCount = 1
         }?.self?.apply { makeAccessible() }
+        val fldStatusBarIconList = clzStatusBarIconControllerImpl?.resolve()?.firstFieldOrNull {
+            name = "mStatusBarIconList"
+        }?.self?.apply { makeAccessible() }
+        val fldSlots = "com.android.systemui.statusbar.phone.ui.StatusBarIconList".toClassOrNull()?.let {
+            it.resolve().firstFieldOrNull {
+                name = "mSlots"
+            }?.self?.apply { makeAccessible() }
+        }
+        val fldSlotName = $$"com.android.systemui.statusbar.phone.ui.StatusBarIconList$Slot".toClassOrNull()?.let {
+            it.resolve().firstFieldOrNull {
+                name = "mName"
+            }?.self?.apply { makeAccessible() }
+        }
         val enumValueOf = "com.android.systemui.statusbar.phone.StatusBarLocation".toClassOrNull()?.let {
             it.resolve().firstMethodOrNull {
                 name = "valueOf"
@@ -95,7 +107,6 @@ object LeftContainer : YukiBaseHooker() {
             }
         val enumStateTransitionIslandHide = enumValueOf2?.invoke("ISLAND_HIDE")
         val enumStateTransitionIslandShow = enumValueOf2?.invoke("ISLAND_SHOW")
-
         // 状态栏
         "com.android.systemui.statusbar.phone.MiuiCollapsedStatusBarFragment".toClassOrNull()?.apply {
             val fldStatusBar = resolve().firstFieldOrNull {
@@ -159,10 +170,18 @@ object LeftContainer : YukiBaseHooker() {
                     val darkIconManager = fldDarkIconManagerFactory?.get(this.instance)?.let {
                         XposedHelpers.callMethod(it, "create", leftStatusIcons, enumStatusBarLocationHome, darkIconDispatcher)
                     }
-                    fldStatusBarIconController?.get(this.instance)?.let {
-                        metAddIconGroup?.invoke(it, darkIconManager)
-                    }
-                    metSetIgnoredSlots?.invoke(leftStatusIcons, leftBlockList)
+                    val statusBarIconController = fldStatusBarIconController?.get(this.instance) ?: return@after
+                    metAddIconGroup?.invoke(statusBarIconController, darkIconManager)
+                    val blockList = fldStatusBarIconList?.get(statusBarIconController)?.let { controller ->
+                        (fldSlots?.get(controller) as? List<*>)?.let { slots ->
+                            slots.mapNotNull { slot ->
+                                fldSlotName?.get(slot) as? String
+                            }
+                        }
+                    }?.let {
+                        getLeftBlockList(it)
+                    } ?: leftBlockList
+                    metSetIgnoredSlots?.invoke(leftStatusIcons, blockList)
                     fldStatusContainer?.get(this.instance)?.let { container ->
                         fldAnimatable?.get(container)?.let {
                             metSetAnimatable?.invoke(leftStatusIcons, it)
@@ -371,14 +390,14 @@ object LeftContainer : YukiBaseHooker() {
                                 position
                             )
                         }
-                        leftStatusIcons.doOnLayout {
-                            val parentDirection = (it.parent as? ViewGroup)?.layoutDirection ?: View.LAYOUT_DIRECTION_LTR
-                            it.layoutDirection = if (parentDirection == View.LAYOUT_DIRECTION_LTR) {
-                                View.LAYOUT_DIRECTION_RTL
-                            } else {
-                                View.LAYOUT_DIRECTION_LTR
-                            }
-                        }
+//                        leftStatusIcons.doOnLayout {
+//                            val parentDirection = (it.parent as? ViewGroup)?.layoutDirection ?: View.LAYOUT_DIRECTION_LTR
+//                            it.layoutDirection = if (parentDirection == View.LAYOUT_DIRECTION_LTR) {
+//                                View.LAYOUT_DIRECTION_RTL
+//                            } else {
+//                                View.LAYOUT_DIRECTION_LTR
+//                            }
+//                        }
                     }
                     val mLightLockScreenWallpaper = fldLightLockScreenWallpaper?.getBoolean(miuiKeyguardStatusBarView) == true
                     val mDep = fldDep?.get(miuiKeyguardStatusBarView)
@@ -396,10 +415,18 @@ object LeftContainer : YukiBaseHooker() {
                         )
                     }
                     miuiKeyguardStatusBarView.setAdditionalInstanceField(KEY_LEFT_STATUS_ICON_MANAGER, createMiuiIconManager)
-                    fldIconController?.get(miuiKeyguardStatusBarView)?.let {
-                        metAddIconGroup?.invoke(it, createMiuiIconManager)
-                    }
-                    metSetIgnoredSlots?.invoke(leftStatusIcons, leftBlockList)
+                    val statusBarIconController = fldIconController?.get(miuiKeyguardStatusBarView) ?: return@after
+                    metAddIconGroup?.invoke(statusBarIconController, createMiuiIconManager)
+                    val blockList = fldStatusBarIconList?.get(statusBarIconController)?.let { controller ->
+                        (fldSlots?.get(controller) as? List<*>)?.let { slots ->
+                            slots.mapNotNull { slot ->
+                                fldSlotName?.get(slot) as? String
+                            }
+                        }
+                    }?.let {
+                        getLeftBlockList(it)
+                    } ?: leftBlockList
+                    metSetIgnoredSlots?.invoke(leftStatusIcons, blockList)
                     metUpdateLayoutFrom?.invoke(leftStatusIcons, 1)
                     val islandController = mDep?.let {
                         XposedHelpers.getObjectField(it, "islandController")

@@ -100,7 +100,7 @@ object Flow {
         defValue2: B? = null,
         dst: MutableStateFlowCompat<R>,
         bifunction: (a: A, b: B) -> R
-    ): Pair<Any?, Any?> {
+    ): List<Any?> {
         var value1: A? = defValue1
         var value2: B? = defValue2
         val job1 = src1.collectFlow(scope) { it1 ->
@@ -117,7 +117,7 @@ object Flow {
                 dst.setValue(bifunction.invoke(it1, it2))
             }
         }
-        return Pair(job1, job2)
+        return listOf(job1, job2)
     }
 
     fun <A, B, C, R> combineFlows(
@@ -130,7 +130,7 @@ object Flow {
         defValue3: C? = null,
         dst: MutableStateFlowCompat<R>,
         bifunction: (a: A, b: B, c: C) -> R
-    ): Triple<Any?, Any?, Any?> {
+    ): List<Any?> {
         var value1: A? = defValue1
         var value2: B? = defValue2
         var value3: C? = defValue3
@@ -157,7 +157,7 @@ object Flow {
             value3 = it3
             update.invoke()
         }
-        return Triple(job1, job2, job3)
+        return listOf(job1, job2, job3)
     }
 
     fun <A, B, C, D, R> combineFlows(

@@ -38,7 +38,8 @@ import dev.lackluster.mihelper.hook.rules.systemui.statusbar.NetworkSpeed
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.WifiIcon
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.NotificationMaxNumber
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.RegionSampling
-import dev.lackluster.mihelper.hook.rules.systemui.statusbar.StackedMobileIcon
+import dev.lackluster.mihelper.hook.rules.systemui.mobile.StackedMobileIcon
+import dev.lackluster.mihelper.hook.rules.systemui.notif.SuppressFold
 import dev.lackluster.mihelper.hook.rules.systemui.statusbar.StatusBarDoubleTapToSleep
 
 object SystemUI : YukiBaseHooker() {
@@ -68,7 +69,7 @@ object SystemUI : YukiBaseHooker() {
         loadHooker(NotifWhitelist)
         loadHooker(ExpandNotification)
         loadHooker(LayoutAndRankOpt)
-
+        loadHooker(SuppressFold)
 
         loadHooker(BatteryIndicator)
         loadHooker(BatteryIndicatorStyle)

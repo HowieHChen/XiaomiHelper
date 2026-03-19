@@ -42,7 +42,7 @@ object HideCellularIcon : YukiBaseHooker() {
     private val hideSimOne = Prefs.getBoolean(Pref.Key.SystemUI.IconTuner.HIDE_SIM_ONE, false)
     private val hideSimTwo = Prefs.getBoolean(Pref.Key.SystemUI.IconTuner.HIDE_SIM_TWO, false)
 
-    private val hideSimJobMap = ConcurrentHashMap<Int, Pair<Any?, Any?>>()
+    private val hideSimJobMap = ConcurrentHashMap<Int, List<Any?>>()
 
     override fun onHook() {
         if (hideSimAuto || hideSimOne || hideSimTwo) {
@@ -75,9 +75,8 @@ object HideCellularIcon : YukiBaseHooker() {
                         val subId = subscriptionId?.copy()?.of(this.instance)?.get<Int>()
                         val slotIndex = subId?.let { SubscriptionManager.getSlotIndex(it) }
                         if (hideSimAuto && subId != null) {
-                            hideSimJobMap[subId]?.let {
-                                cancelJob(it.first)
-                                cancelJob(it.second)
+                            hideSimJobMap[subId]?.forEach {
+                                cancelJob(it)
                             }
                             val coroutineScope =
                                 this.args.firstOrNull { clzCoroutineScope?.isInstance(it) == true } ?: return@after

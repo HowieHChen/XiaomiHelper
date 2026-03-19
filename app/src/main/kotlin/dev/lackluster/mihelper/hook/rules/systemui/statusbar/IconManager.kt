@@ -32,6 +32,7 @@ import dev.lackluster.mihelper.utils.Prefs
 object IconManager : YukiBaseHooker() {
     private val iconPositionMode = Prefs.getInt(IconTuner.ICON_POSITION, 0)
     private val iconPositionAutoReorder = Prefs.getBoolean(IconTuner.ICON_POSITION_REORDER, false)
+    private val addStackedMobile = Prefs.getBoolean(IconTuner.ENABLE_STACKED_MOBILE_ICON, false)
     private val addCompoundIcon = Prefs.getInt(IconTuner.COMPOUND_ICON, 0) in 1..3
     private val leftContainer = Prefs.getInt(IconTuner.LEFT_CONTAINER, 0) != 0
     private val leftCompoundIcon = Prefs.getBoolean(IconTuner.LEFT_COMPOUND_ICON, false)
@@ -66,6 +67,20 @@ object IconManager : YukiBaseHooker() {
                     IconSlots.COMPOUND_ICON_STUB
                 )
             }
+            if (addStackedMobile) {
+                if (!slotsList.contains(IconSlots.STACKED_MOBILE_ICON)) {
+                    slotsList.add(
+                        slotsList.indexOf("mobile"),
+                        IconSlots.STACKED_MOBILE_ICON
+                    )
+                }
+                if (!slotsList.contains(IconSlots.STACKED_MOBILE_TYPE)) {
+                    slotsList.add(
+                        slotsList.indexOf(IconSlots.STACKED_MOBILE_ICON) + 1,
+                        IconSlots.STACKED_MOBILE_TYPE
+                    )
+                }
+            }
             if (leftContainer) {
                 slotsList.sortByDescending { it in leftSlots }
             }
@@ -89,14 +104,7 @@ object IconManager : YukiBaseHooker() {
         }.toList()
     }
     val leftBlockList by lazy {
-        finalSlots.toMutableList().apply {
-            removeAll(leftSlots)
-            leftExtraBlockedSlots.split(',', ' ', '，').forEach {
-                if (!contains(it)) {
-                    add(it)
-                }
-            }
-        }.toList()
+        getLeftBlockList(finalSlots.toList())
     }
 
     override fun onHook() {
@@ -114,8 +122,8 @@ object IconManager : YukiBaseHooker() {
         mapOf(
             IconSlots.STACKED_MOBILE_ICON to IconTuner.STACKED_MOBILE_ICON,
             IconSlots.STACKED_MOBILE_TYPE to IconTuner.STACKED_MOBILE_TYPE,
-            "mobile" to IconTuner.MOBILE,
-            "demo_mobile" to IconTuner.MOBILE,
+//            "mobile" to IconTuner.MOBILE,
+//            "demo_mobile" to IconTuner.MOBILE,
             "no_sim" to IconTuner.NO_SIM,
             "airplane" to IconTuner.AIRPLANE,
             "wifi" to IconTuner.WIFI,
@@ -224,5 +232,16 @@ object IconManager : YukiBaseHooker() {
             }
             else -> return
         }
+    }
+
+    fun getLeftBlockList(allIcons: List<String>): List<String> {
+        return allIcons.toMutableList().apply {
+            removeAll(leftSlots)
+            leftExtraBlockedSlots.split(',', ' ', '，').forEach {
+                if (!contains(it)) {
+                    add(it)
+                }
+            }
+        }.toList()
     }
 }

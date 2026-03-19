@@ -1,5 +1,6 @@
 package dev.lackluster.mihelper.ui.page
 
+import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.PaddingValues
@@ -13,6 +14,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
+import com.highcapable.yukihookapi.hook.log.YLog
 import dev.lackluster.hyperx.compose.activity.SafeSP
 import dev.lackluster.hyperx.compose.base.BasePage
 import dev.lackluster.hyperx.compose.base.BasePageDefaults
@@ -24,12 +26,18 @@ import dev.lackluster.hyperx.compose.preference.SeekBarPreference
 import dev.lackluster.hyperx.compose.preference.SwitchPreference
 import dev.lackluster.hyperx.compose.preference.ValuePosition
 import dev.lackluster.mihelper.R
+import dev.lackluster.mihelper.data.Constants.VARIABLE_FONT_DEFAULT_PATH
+import dev.lackluster.mihelper.data.Constants.VARIABLE_FONT_MOBILE_TYPE_REAL_FILE_NAME
+import dev.lackluster.mihelper.data.Constants.VARIABLE_FONT_REAL_FILE_PATH
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.data.Scope
 import dev.lackluster.mihelper.ui.MainActivity
 import dev.lackluster.mihelper.ui.component.RebootMenuItem
 import dev.lackluster.mihelper.ui.component.itemPreferenceGroup
+import dev.lackluster.mihelper.utils.ShellUtils
+import java.io.File
 
+@SuppressLint("LocalContextGetResourceValueCall")
 @Composable
 fun StackedMobileTunerPage(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
     val context = LocalContext.current
@@ -38,6 +46,12 @@ fun StackedMobileTunerPage(navController: NavController, adjustPadding: PaddingV
         DropDownEntry(stringResource(R.string.stacked_icon_style_miui)),
         DropDownEntry(stringResource(R.string.stacked_icon_style_ios)),
         DropDownEntry(stringResource(R.string.stacked_icon_style_custom)),
+    )
+    val dropdownEntriesTypeFont = listOf(
+        DropDownEntry(stringResource(R.string.stacked_type_font_default)),
+        DropDownEntry(stringResource(R.string.stacked_type_font_custom)),
+        DropDownEntry(stringResource(R.string.stacked_type_font_misans)),
+        DropDownEntry(stringResource(R.string.stacked_type_font_sfpro)),
     )
 
     var spValueIconStyleSingle by remember { mutableIntStateOf(
@@ -55,8 +69,11 @@ fun StackedMobileTunerPage(navController: NavController, adjustPadding: PaddingV
     var spValueAlphaError by remember { mutableFloatStateOf(
         SafeSP.getFloat(Pref.Key.SystemUI.IconTuner.STACKED_MOBILE_ICON_ALPHA_ERROR, 0.2f)
     ) }
-    var spValueMobileTypeFW by remember { mutableStateOf(
-        SafeSP.getBoolean(Pref.Key.SystemUI.FontWeight.STACKED_MOBILE_TYPE, false)
+    var spValueMobileTypeFont by remember { mutableIntStateOf(
+        SafeSP.getInt(Pref.Key.SystemUI.FontWeight.STACKED_MOBILE_TYPE_FONT, 0)
+    ) }
+    var spValueMobileTypeWidthCondensedVal by remember { mutableIntStateOf(
+        SafeSP.getInt(Pref.Key.SystemUI.FontWeight.STACKED_MOBILE_TYPE_WIDTH_CONDENSED, 80)
     ) }
     var spValueMobileTypeFWVal by remember { mutableIntStateOf(
         SafeSP.getInt(Pref.Key.SystemUI.FontWeight.STACKED_MOBILE_TYPE_VAL, 660)
@@ -69,6 +86,9 @@ fun StackedMobileTunerPage(navController: NavController, adjustPadding: PaddingV
     ) }
     var spValueTypeSize by remember { mutableFloatStateOf(
         SafeSP.getFloat(Pref.Key.SystemUI.IconTuner.STACKED_MOBILE_TYPE_SIZE, 14.0f)
+    ) }
+    var spValueTypeVerticalOffset by remember { mutableFloatStateOf(
+        SafeSP.getFloat(Pref.Key.SystemUI.IconTuner.STACKED_MOBILE_TYPE_VERTICAL_OFFSET, 0.0f)
     ) }
     var spValueTypePaddingStart by remember { mutableFloatStateOf(
         SafeSP.getFloat(Pref.Key.SystemUI.IconTuner.STACKED_MOBILE_TYPE_PADDING_START_VAL, 2.0f)
@@ -217,11 +237,76 @@ fun StackedMobileTunerPage(navController: NavController, adjustPadding: PaddingV
                 key = Pref.Key.SystemUI.IconTuner.STACKED_MOBILE_TYPE_HIDE_WIFI,
                 defValue = true
             ) { spValueTypeHideWhenWifi = it }
-            SwitchPreference(
-                title = stringResource(R.string.icon_detail_cellular_fw_type),
-                key = Pref.Key.SystemUI.FontWeight.STACKED_MOBILE_TYPE
-            ) { spValueMobileTypeFW = it }
-            AnimatedVisibility(spValueMobileTypeFW) {
+            DropDownPreference(
+                title = stringResource(R.string.stacked_type_font),
+                summary = stringResource(R.string.stacked_type_font_tips),
+                entries = dropdownEntriesTypeFont,
+                key = Pref.Key.SystemUI.FontWeight.STACKED_MOBILE_TYPE_FONT
+            ) {
+                spValueMobileTypeFont = it
+            }
+            AnimatedVisibility(spValueMobileTypeFont == 1) {
+                EditTextPreference(
+                    title = stringResource(R.string.font_general_path),
+                    key = Pref.Key.SystemUI.FontWeight.STACKED_MOBILE_TYPE_FONT_PATH_REAL,
+                    defValue = VARIABLE_FONT_DEFAULT_PATH,
+                    dataType = EditTextDataType.STRING,
+                    dialogMessage = stringResource(R.string.font_general_path_tips),
+                    isValueValid = { path ->
+                        (path as? String)?.let {
+                            val file = File(it)
+                            file.exists() && file.isFile
+                        } ?: false
+                    },
+                    valuePosition = ValuePosition.SUMMARY_VIEW,
+                    onValueChange = { path, _ ->
+                        if (path == VARIABLE_FONT_DEFAULT_PATH) {
+                            SafeSP.putAny(Pref.Key.SystemUI.FontWeight.STACKED_MOBILE_TYPE_FONT_PATH_REAL, VARIABLE_FONT_DEFAULT_PATH)
+                            SafeSP.putAny(Pref.Key.SystemUI.FontWeight.STACKED_MOBILE_TYPE_FONT_PATH_INTERNAL, VARIABLE_FONT_DEFAULT_PATH)
+                        } else {
+                            val oriFilePath = File(path).absolutePath
+                            try {
+                                val newFilePath = "${VARIABLE_FONT_REAL_FILE_PATH}/${VARIABLE_FONT_MOBILE_TYPE_REAL_FILE_NAME}"
+                                ShellUtils.tryExec(
+                                    "cp -f $oriFilePath $newFilePath",
+                                    useRoot = true,
+                                    throwIfError = true
+                                )
+                                ShellUtils.tryExec(
+                                    "chmod 755 $newFilePath",
+                                    useRoot = true,
+                                    throwIfError = true
+                                )
+                                SafeSP.putAny(Pref.Key.SystemUI.FontWeight.STACKED_MOBILE_TYPE_FONT_PATH_INTERNAL, newFilePath)
+//                                FontFamilyCache.updateVfCustomPath()
+                            } catch (t: Throwable) {
+                                YLog.error("error", t)
+                                if (t.message?.trim()?.endsWith("Permission denied") == true) {
+                                    SafeSP.putAny(Pref.Key.SystemUI.FontWeight.STACKED_MOBILE_TYPE_FONT_PATH_INTERNAL, oriFilePath)
+                                    Toast.makeText(
+                                        context,
+                                        context.getString(R.string.font_hint_general_root),
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                } else {
+                                    SafeSP.putAny(Pref.Key.SystemUI.FontWeight.STACKED_MOBILE_TYPE_FONT_PATH_INTERNAL, VARIABLE_FONT_DEFAULT_PATH)
+                                }
+                            }
+                        }
+                    }
+                )
+            }
+            AnimatedVisibility(spValueMobileTypeFont == 2 || spValueMobileTypeFont == 3) {
+                SeekBarPreference(
+                    title = stringResource(R.string.stacked_type_font_width_condensed),
+                    key = Pref.Key.SystemUI.FontWeight.STACKED_MOBILE_TYPE_WIDTH_CONDENSED,
+                    defValue = 80,
+                    min = 10,
+                    max = 200,
+                    format = "%d%%"
+                ) { spValueMobileTypeWidthCondensedVal = it }
+            }
+            AnimatedVisibility(spValueMobileTypeFont != 0) {
                 SeekBarPreference(
                     title = stringResource(R.string.icon_detail_cellular_fw_type_weight),
                     key = Pref.Key.SystemUI.FontWeight.STACKED_MOBILE_TYPE_VAL,
@@ -239,6 +324,13 @@ fun StackedMobileTunerPage(navController: NavController, adjustPadding: PaddingV
                     (it as? Float ?: -1.0f) > 0.0f
                 }
             ) { _, value -> spValueTypeSize = value as? Float ?: 0.0f}
+            EditTextPreference(
+                title = stringResource(R.string.stacked_type_vertical_offset),
+                summary = stringResource(R.string.stacked_type_vertical_offset_tips),
+                key = Pref.Key.SystemUI.IconTuner.STACKED_MOBILE_TYPE_VERTICAL_OFFSET,
+                defValue = 0.0f,
+                dataType = EditTextDataType.FLOAT
+            ) { _, value -> spValueTypeVerticalOffset = value as Float }
             EditTextPreference(
                 title = stringResource(R.string.icon_detail_battery_padding_start),
                 key = Pref.Key.SystemUI.IconTuner.STACKED_MOBILE_TYPE_PADDING_START_VAL,

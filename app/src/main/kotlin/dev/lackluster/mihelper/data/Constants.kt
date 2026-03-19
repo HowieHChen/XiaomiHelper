@@ -23,6 +23,7 @@ object Constants {
 
     const val VARIABLE_FONT_REAL_FILE_PATH = "/data/system/fonts"
     const val VARIABLE_FONT_REAL_FILE_NAME = "hyper_helper_vf_real.ttf"
+    const val VARIABLE_FONT_MOBILE_TYPE_REAL_FILE_NAME = "hyper_helper_vf_mobile_type_real.ttf"
     const val VARIABLE_FONT_DEFAULT_PATH = "/system/fonts/MiSansVF.ttf"
 
     object BatteryIndicator {

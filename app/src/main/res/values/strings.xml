@@ -244,6 +244,8 @@
     <string name="systemui_notif_redirect_dialog_positive_default">Channel settings</string>
     <string name="systemui_notif_disable_whitelist">Disable notification whitelist</string>
     <string name="systemui_notif_disable_whitelist_tips">Too many notifications may cause lag on the lock screen</string>
+    <string name="systemui_notif_suppress_fold">Disable notification folding</string>
+    <string name="systemui_notif_suppress_fold_tips">Prevent the system from grouping notifications into \"More notifications\"</string>
     <string name="systemui_notif_freeform">Allow most notifications to open in a small window</string>
     <string name="systemui_notif_freeform_tips">Pull down notifications to open small windows. Some notifications pushed via Mi Push may not be supported.</string>
     <string name="systemui_notif_clock_color_fix">Fix clock color anomaly in animation</string>
@@ -939,7 +941,16 @@
     <string name="stacked_type_hide_disconnect">Hide when not connected</string>
     <string name="stacked_type_hide_disconnect_tips">Hide the icon when mobile data is off or no data connection can be established</string>
     <string name="stacked_type_hide_wifi">Hide when WLAN is available</string>
+    <string name="stacked_type_font" translatable="false">@string/page_status_bar_font</string>
+    <string name="stacked_type_font_tips">4G+, 5G+, 5GA, LTE texts will use condensed style with MiSans or SF Pro</string>
+    <string name="stacked_type_font_default" translatable="false">@string/common_default</string>
+    <string name="stacked_type_font_custom" translatable="false">@string/common_custom</string>
+    <string name="stacked_type_font_misans" translatable="false">MiSans</string>
+    <string name="stacked_type_font_sfpro" translatable="false">SF Pro</string>
+    <string name="stacked_type_font_width_condensed">Condensed font width</string>
     <string name="stacked_type_size">Font size (mobile network type icon)</string>
+    <string name="stacked_type_vertical_offset">Vertical offset</string>
+    <string name="stacked_type_vertical_offset_tips">Control the vertical offset of the icon. Positive values move it downward, negative values move it upward.</string>
     <!-- HomeRefactorPage -->
     <string name="home_refactor_blur">Blur effect</string>
     <string name="home_refactor_blur_radius">Blur radius</string>

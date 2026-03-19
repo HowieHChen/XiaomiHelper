@@ -245,8 +245,12 @@ object Pref {
                 const val BATTERY_PERCENTAGE_OUT_VAL = "sb_font_bat_pct_out_weight"
                 const val BATTERY_PERCENTAGE_MARK = "sb_font_bat_pct_mark"
                 const val BATTERY_PERCENTAGE_MARK_VAL = "sb_font_bat_pct_mark_weight"
-                const val STACKED_MOBILE_TYPE = "sb_font_stacked_type_single"
+//                const val STACKED_MOBILE_TYPE = "sb_font_stacked_type_single"
+                const val STACKED_MOBILE_TYPE_FONT = "sb_font_stacked_type_font"
+                const val STACKED_MOBILE_TYPE_FONT_PATH_INTERNAL = "sb_font_stacked_type_path_app"
+                const val STACKED_MOBILE_TYPE_FONT_PATH_REAL = "sb_font_stacked_type_path_real"
                 const val STACKED_MOBILE_TYPE_VAL = "sb_font_stacked_type_single_weight"
+                const val STACKED_MOBILE_TYPE_WIDTH_CONDENSED = "sb_font_stacked_type_width_condensed"
             }
             object IconTuner {
                 const val IGNORE_SYS_SETTINGS = "statusbar_ignore_sys_hide"
@@ -298,6 +302,7 @@ object Pref {
                 const val STACKED_MOBILE_TYPE_HIDE_WIFI = "icon_tuner_stacked_type_hide_wifi"
                 const val STACKED_MOBILE_TYPE_PADDING_START_VAL = "icon_tuner_stacked_type_padding_left_val"
                 const val STACKED_MOBILE_TYPE_PADDING_END_VAL = "icon_tuner_stacked_type_padding_right_val"
+                const val STACKED_MOBILE_TYPE_VERTICAL_OFFSET = "icon_tuner_stacked_type_v_offset"
 
                 const val ICON_POSITION = "icon_tuner_position"
                 const val ICON_POSITION_VAL = "icon_tuner_position_val"
@@ -380,6 +385,7 @@ object Pref {
                 const val LR_OPT_HIDE_SECTION_HEADER ="systemui_notif_lr_opt_hide_header"
                 const val LR_OPT_HIDE_SECTION_GAP ="systemui_notif_lr_opt_hide_gap"
                 const val LR_OPT_RERANK ="systemui_notif_lr_rerank"
+                const val SUPPRESS_FOLD = "systemui_notif_suppress_fold"
             }
             object MediaControl {
                 const val UNLOCK_ACTION = "media_unlock_action"
