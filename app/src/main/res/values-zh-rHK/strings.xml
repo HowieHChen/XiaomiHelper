@@ -833,4 +833,10 @@
     <string name="stacked_type_hide_disconnect_tips">當移動數據關閉或無法建立數據連接時隱藏圖示</string>
     <string name="stacked_type_hide_wifi">WLAN 可用時隱藏</string>
     <string name="stacked_type_size">移動網絡類型字體大小</string>
+    <string name="systemui_notif_suppress_fold">停用通知折疊</string>
+    <string name="systemui_notif_suppress_fold_tips">阻止系統將通知收納進“更多通知”</string>
+    <string name="stacked_type_font_tips">使用 MiSans 或 SF Pro 時，4G+、5G+、5GA、LTE 文本將顯示為窄體</string>
+    <string name="stacked_type_font_width_condensed">窄體字寬度</string>
+    <string name="stacked_type_vertical_offset">垂直偏移</string>
+    <string name="stacked_type_vertical_offset_tips">控制圖示的垂直偏移量。正值向下移動圖示，負值向上移動圖示。</string>
 </resources>
