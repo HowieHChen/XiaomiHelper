@@ -27,7 +27,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
@@ -50,8 +49,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEachIndexed
 import androidx.navigation.NavController
-import dev.chrisbanes.haze.HazeStyle
-import dev.chrisbanes.haze.HazeTint
 import dev.lackluster.hyperx.compose.activity.SafeSP
 import dev.lackluster.hyperx.compose.base.BasePageDefaults
 import dev.lackluster.hyperx.compose.base.HazeScaffold
@@ -117,9 +114,7 @@ fun UITestPage(navController: NavController, adjustPadding: PaddingValues, mode:
     val showFPSMonitor = remember { mutableStateOf(true) }
     var targetPage by remember { mutableIntStateOf(0) }
 
-    val isTopPopupExpanded = remember { mutableStateOf(false) }
     val showTopPopup = remember { mutableStateOf(false) }
-    val isBottomPopupExpanded = remember { mutableStateOf(false) }
     val showBottomPopup = remember { mutableStateOf(false) }
 
     data class NavItem(val label: String, val icon: ImageVector)
@@ -176,33 +171,29 @@ fun UITestPage(navController: NavController, adjustPadding: PaddingValues, mode:
                     }
                 },
                 actions = {
-                    if (isTopPopupExpanded.value) {
-                        SuperListPopup(
-                            show = showTopPopup.value,
-                            popupPositionProvider = ListPopupDefaults.ContextMenuPositionProvider,
-                            alignment = PopupPositionProvider.Align.TopEnd,
-                            onDismissRequest = {
-                                isTopPopupExpanded.value = false
-                            }
-                        ) {
-                            ListPopupColumn {
-                                items.take(3).forEachIndexed { index, navigationItem ->
-                                    DropdownImpl(
-                                        text = navigationItem.label,
-                                        optionSize = 3,
-                                        isSelected = false,
-                                        onSelectedIndexChange = {
-                                            targetPage = index
-                                            Toast.makeText(context, "$it clicked", Toast.LENGTH_SHORT).show()
-                                            showTopPopup.value = false
-                                            isTopPopupExpanded.value = false
-                                        },
-                                        index = index
-                                    )
-                                }
+                    SuperListPopup(
+                        show = showTopPopup.value,
+                        popupPositionProvider = ListPopupDefaults.ContextMenuPositionProvider,
+                        alignment = PopupPositionProvider.Align.TopEnd,
+                        onDismissRequest = {
+                            showTopPopup.value = false
+                        }
+                    ) {
+                        ListPopupColumn {
+                            items.take(3).forEachIndexed { index, navigationItem ->
+                                DropdownImpl(
+                                    text = navigationItem.label,
+                                    optionSize = 3,
+                                    isSelected = false,
+                                    onSelectedIndexChange = {
+                                        targetPage = index
+                                        Toast.makeText(context, "$it clicked", Toast.LENGTH_SHORT).show()
+                                        showTopPopup.value = false
+                                    },
+                                    index = index
+                                )
                             }
                         }
-                        showTopPopup.value = true
                     }
                     IconButton(
                         modifier = Modifier
@@ -210,7 +201,7 @@ fun UITestPage(navController: NavController, adjustPadding: PaddingValues, mode:
                             .padding(end = 21.dp)
                             .size(40.dp),
                         onClick = {
-                            isTopPopupExpanded.value = true
+                            showTopPopup.value = true
                             hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                         }
                     ) {
@@ -230,35 +221,31 @@ fun UITestPage(navController: NavController, adjustPadding: PaddingValues, mode:
                 enter = fadeIn() + expandVertically(),
                 exit = fadeOut() + shrinkVertically()
             ) {
-                if (isBottomPopupExpanded.value) {
-                    SuperListPopup(
-                        show = showBottomPopup.value,
-                        popupPositionProvider = ListPopupDefaults.ContextMenuPositionProvider,
-                        alignment = PopupPositionProvider.Align.BottomEnd,
-                        onDismissRequest = {
-                            showBottomPopup.value = false
-                            isBottomPopupExpanded.value = false
-                        }
-                    ) {
-                        ListPopupColumn {
-                            items.take(3).fastForEachIndexed { index, navigationItem ->
-                                DropdownImpl(
-                                    text = navigationItem.label,
-                                    optionSize = 3,
-                                    isSelected = items[index] == items[targetPage],
-                                    onSelectedIndexChange = {
-                                        targetPage = index
-                                        Toast.makeText(context, "$it clicked", Toast.LENGTH_SHORT).show()
-                                        showBottomPopup.value = false
-                                        isBottomPopupExpanded.value = false
-                                    },
-                                    index = index,
-                                )
-                            }
+                SuperListPopup(
+                    show = showBottomPopup.value,
+                    popupPositionProvider = ListPopupDefaults.ContextMenuPositionProvider,
+                    alignment = PopupPositionProvider.Align.BottomEnd,
+                    onDismissRequest = {
+                        showBottomPopup.value = false
+                    }
+                ) {
+                    ListPopupColumn {
+                        items.take(3).fastForEachIndexed { index, navigationItem ->
+                            DropdownImpl(
+                                text = navigationItem.label,
+                                optionSize = 3,
+                                isSelected = items[index] == items[targetPage],
+                                onSelectedIndexChange = {
+                                    targetPage = index
+                                    Toast.makeText(context, "$it clicked", Toast.LENGTH_SHORT).show()
+                                    showBottomPopup.value = false
+                                },
+                                index = index,
+                            )
                         }
                     }
-                    showBottomPopup.value = true
                 }
+
                 NavigationBar(
                     color = MiuixTheme.colorScheme.surface.copy(
                         if (configBlurBottomBar.value) 0f else 1f
