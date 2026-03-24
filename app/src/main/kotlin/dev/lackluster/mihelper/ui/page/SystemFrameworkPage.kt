@@ -12,18 +12,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.intl.Locale
-import androidx.navigation.NavController
+import dev.lackluster.hyperx.compose.navigation.Navigator
 import dev.lackluster.hyperx.compose.activity.SafeSP
 import dev.lackluster.hyperx.compose.base.AlertDialog
 import dev.lackluster.hyperx.compose.base.BasePage
 import dev.lackluster.hyperx.compose.base.BasePageDefaults
-import dev.lackluster.hyperx.compose.navigation.navigateTo
 import dev.lackluster.hyperx.compose.preference.EditTextDialog
+import dev.lackluster.mihelper.ui.sheet.FontScaleBottomSheet
 import dev.lackluster.hyperx.compose.preference.PreferenceGroup
 import dev.lackluster.hyperx.compose.preference.SwitchPreference
 import dev.lackluster.hyperx.compose.preference.TextPreference
 import dev.lackluster.mihelper.R
-import dev.lackluster.mihelper.data.Pages
 import dev.lackluster.mihelper.ui.MainActivity
 import dev.lackluster.mihelper.ui.component.RebootMenuItem
 import dev.lackluster.mihelper.data.Pref
@@ -31,13 +30,14 @@ import dev.lackluster.mihelper.data.Scope
 import dev.lackluster.mihelper.utils.ShellUtils
 
 @Composable
-fun SystemFrameworkPage(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
+fun SystemFrameworkPage(navigator: Navigator, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
     val context = LocalContext.current
 
     var checkFontScale by remember { mutableStateOf(false) }
     var currentFontScale by remember { mutableFloatStateOf(0.0f) }
     val dialogFontScaleFailedVisibility = remember { mutableStateOf(false) }
     val dialogFontScaleVisibility = remember { mutableStateOf(false) }
+    val fontScaleBottomSheetVisibility = remember { mutableStateOf(false) }
 
     LaunchedEffect(checkFontScale) {
         try {
@@ -64,7 +64,7 @@ fun SystemFrameworkPage(navController: NavController, adjustPadding: PaddingValu
     }
 
     BasePage(
-        navController,
+        navigator,
         adjustPadding,
         stringResource(R.string.page_android),
         MainActivity.blurEnabled,
@@ -101,7 +101,7 @@ fun SystemFrameworkPage(navController: NavController, adjustPadding: PaddingValu
                         }
                     )
                 ) {
-                    navController.navigateTo(Pages.DIALOG_FONT_SCALE)
+                    fontScaleBottomSheetVisibility.value = true
                 }
             }
         }
@@ -139,6 +139,7 @@ fun SystemFrameworkPage(navController: NavController, adjustPadding: PaddingValu
         title = stringResource(R.string.dialog_error),
         message = stringResource(R.string.android_display_temp_font_scale_fail_msg)
     )
+    FontScaleBottomSheet(show = fontScaleBottomSheetVisibility)
     EditTextDialog(
         visibility = dialogFontScaleVisibility,
         title = stringResource(R.string.android_display_temp_font_scale),

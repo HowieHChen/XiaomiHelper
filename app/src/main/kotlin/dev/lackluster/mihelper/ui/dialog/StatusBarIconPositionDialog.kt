@@ -36,7 +36,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import androidx.navigation.NavController
+import dev.lackluster.hyperx.compose.navigation.Navigator
 import dev.lackluster.hyperx.compose.activity.SafeSP
 import dev.lackluster.hyperx.compose.base.BasePageDefaults
 import dev.lackluster.hyperx.compose.base.Card
@@ -74,7 +74,7 @@ private const val LIST_INDEX_OFFSET = 1
 
 @Composable
 fun StatusBarIconPositionDialog(
-    navController: NavController,
+    navigator: Navigator,
     adjustPadding: PaddingValues,
     mode: BasePageDefaults.Mode
 ) {
@@ -105,7 +105,7 @@ fun StatusBarIconPositionDialog(
     }
     val currentOnNegativeButton = remember {
         {
-            navController.popBackStack()
+            navigator.pop()
         }
     }
     val currentOnPositiveButton = remember {
@@ -115,7 +115,7 @@ fun StatusBarIconPositionDialog(
             }.toSet().let {
                 SafeSP.putStringSet(Pref.Key.SystemUI.IconTuner.ICON_POSITION_VAL, it)
             }
-            navController.popBackStack()
+            navigator.pop()
         }
     }
 

@@ -32,7 +32,7 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
+import dev.lackluster.hyperx.compose.navigation.Navigator
 import dev.lackluster.hyperx.compose.activity.SafeSP
 import dev.lackluster.hyperx.compose.base.BasePageDefaults
 import dev.lackluster.hyperx.compose.base.HazeScaffold
@@ -55,7 +55,7 @@ import top.yukonga.miuix.kmp.utils.scrollEndHaptic
 
 @Composable
 fun MediaActionResizePage(
-    navController: NavController,
+    navigator: Navigator,
     adjustPadding: PaddingValues,
     title: String,
     mode: BasePageDefaults.Mode = BasePageDefaults.Mode.FULL,
@@ -66,7 +66,7 @@ fun MediaActionResizePage(
                 .padding(start = 21.dp)
                 .size(40.dp),
             onClick = {
-                navController.popBackStack()
+                navigator.pop()
             }
         ) {
             Icon(
@@ -99,7 +99,7 @@ fun MediaActionResizePage(
 
     val configBlurTopBar = remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.App.HAZE_BLUR, true)) }
 
-    LaunchedEffect(key1 = navController) {
+    LaunchedEffect(key1 = navigator) {
         viewModel.search = ""
         if (viewModel.appList.isEmpty()) {
             viewModel.fetchAppList(context)

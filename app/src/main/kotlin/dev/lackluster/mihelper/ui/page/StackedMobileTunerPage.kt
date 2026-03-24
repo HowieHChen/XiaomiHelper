@@ -13,7 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
+import dev.lackluster.hyperx.compose.navigation.Navigator
 import com.highcapable.yukihookapi.hook.log.YLog
 import dev.lackluster.hyperx.compose.activity.SafeSP
 import dev.lackluster.hyperx.compose.base.BasePage
@@ -39,7 +39,7 @@ import java.io.File
 
 @SuppressLint("LocalContextGetResourceValueCall")
 @Composable
-fun StackedMobileTunerPage(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
+fun StackedMobileTunerPage(navigator: Navigator, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
     val context = LocalContext.current
 
     val dropdownEntriesIconStyle = listOf(
@@ -98,7 +98,7 @@ fun StackedMobileTunerPage(navController: NavController, adjustPadding: PaddingV
     ) }
 
     BasePage(
-        navController,
+        navigator,
         adjustPadding,
         stringResource(R.string.page_status_bar_stacked_mobile),
         MainActivity.blurEnabled,

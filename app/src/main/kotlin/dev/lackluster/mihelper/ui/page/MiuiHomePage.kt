@@ -8,7 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
+import dev.lackluster.hyperx.compose.navigation.Navigator
 import dev.lackluster.hyperx.compose.activity.SafeSP
 import dev.lackluster.hyperx.compose.base.BasePage
 import dev.lackluster.hyperx.compose.base.BasePageDefaults
@@ -25,7 +25,7 @@ import dev.lackluster.mihelper.utils.Device
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 @Composable
-fun MiuiHomePage(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
+fun MiuiHomePage(navigator: Navigator, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
     var spValueQuickSwitch by remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.MiuiHome.QUICK_SWITCH)) }
     var spValueHideClearButton by remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.MiuiHome.RECENT_HIDE_CLEAR_BUTTON)) }
 
@@ -153,7 +153,7 @@ fun MiuiHomePage(navController: NavController, adjustPadding: PaddingValues, mod
     )
 
     BasePage(
-        navController,
+        navigator,
         adjustPadding,
         stringResource(R.string.page_miui_home),
         MainActivity.blurEnabled,

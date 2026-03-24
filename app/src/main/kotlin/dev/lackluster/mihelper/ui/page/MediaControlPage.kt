@@ -16,7 +16,7 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
+import dev.lackluster.hyperx.compose.navigation.Navigator
 import dev.lackluster.hyperx.compose.activity.SafeSP
 import dev.lackluster.hyperx.compose.base.BasePage
 import dev.lackluster.hyperx.compose.base.BasePageDefaults
@@ -38,7 +38,7 @@ import dev.lackluster.mihelper.ui.component.itemAnimated
 import dev.lackluster.mihelper.ui.component.itemPreferenceGroup
 
 @Composable
-fun MediaControlPage(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode, isDynamicIsland: Boolean) {
+fun MediaControlPage(navigator: Navigator, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode, isDynamicIsland: Boolean) {
     val hapticFeedback = LocalHapticFeedback.current
     var hintCloseAdvancedTextures by remember { mutableStateOf(
         SafeSP.getBoolean(Pref.Key.Hints.MEDIA_ADVANCED_TEXTURES, false)
@@ -159,7 +159,7 @@ fun MediaControlPage(navController: NavController, adjustPadding: PaddingValues,
     ) }
 
     BasePage(
-        navController,
+        navigator,
         adjustPadding,
         stringResource(R.string.page_media_control_style),
         MainActivity.blurEnabled,

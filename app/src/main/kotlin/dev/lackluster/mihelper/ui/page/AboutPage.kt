@@ -32,7 +32,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.toColorInt
-import androidx.navigation.NavController
+import dev.lackluster.hyperx.compose.navigation.Navigator
 import dev.lackluster.hyperx.compose.base.BasePage
 import dev.lackluster.hyperx.compose.base.BasePageDefaults
 import dev.lackluster.hyperx.compose.base.IconSize
@@ -51,16 +51,15 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 import androidx.core.net.toUri
 import dev.lackluster.hyperx.compose.base.Card
 import dev.lackluster.hyperx.compose.base.CardDefaults
-import dev.lackluster.hyperx.compose.navigation.navigateTo
-import dev.lackluster.mihelper.data.Pages
+import dev.lackluster.mihelper.data.Route
 import kotlin.random.Random
 
 @Composable
-fun AboutPage(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
+fun AboutPage(navigator: Navigator, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
     val context = LocalContext.current
     
     BasePage(
-        navController,
+        navigator,
         adjustPadding,
         stringResource(R.string.page_about),
         MainActivity.blurEnabled,
@@ -244,11 +243,11 @@ fun AboutPage(navController: NavController, adjustPadding: PaddingValues, mode: 
                 TextPreference(
                     title = stringResource(R.string.page_dev_ui_test)
                 ) {
-                    navController.navigateTo(
+                    navigator.push(
                         if (Random(System.currentTimeMillis()).nextInt(100) < 50)
-                            Pages.DEV_UI_TEST
+                            Route.DevUITest
                         else
-                            Pages.DEV_UI_TEST2
+                            Route.DevUITest2
                     )
                 }
             }

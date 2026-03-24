@@ -14,19 +14,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import dev.lackluster.hyperx.compose.base.AlertDialog
 import dev.lackluster.hyperx.compose.base.AlertDialogMode
 import dev.lackluster.hyperx.compose.base.BasePage
 import dev.lackluster.hyperx.compose.base.BasePageDefaults
 import dev.lackluster.hyperx.compose.base.ImageIcon
-import dev.lackluster.hyperx.compose.navigation.navigateTo
-import dev.lackluster.hyperx.compose.navigation.navigateWithPopup
+import dev.lackluster.hyperx.compose.navigation.HyperXRoute
+import dev.lackluster.hyperx.compose.navigation.Navigator
 import dev.lackluster.hyperx.compose.preference.PreferenceGroup
 import dev.lackluster.hyperx.compose.preference.TextPreference
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.data.Constants
-import dev.lackluster.mihelper.data.Pages
+import dev.lackluster.mihelper.data.Route
 import dev.lackluster.mihelper.ui.MainActivity
 import dev.lackluster.mihelper.utils.Device
 import dev.lackluster.mihelper.utils.ShellUtils
@@ -42,7 +41,7 @@ import top.yukonga.miuix.kmp.icon.extended.More
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 @Composable
-fun MainPage(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
+fun MainPage(navigator: Navigator, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
     val context = LocalContext.current
 
     val showTopPopup = remember { mutableStateOf(false) }
@@ -53,7 +52,7 @@ fun MainPage(navController: NavController, adjustPadding: PaddingValues, mode: B
     )
 
     BasePage(
-        navController,
+        navigator,
         adjustPadding,
         stringResource(R.string.page_main),
         MainActivity.blurEnabled,
@@ -80,7 +79,8 @@ fun MainPage(navController: NavController, adjustPadding: PaddingValues, mode: B
                             onSelectedIndexChange = {
                                 when (it) {
                                     0 -> {
-                                        navController.navigateWithPopup(Pages.MENU)
+                                        navigator.popUntil { it is HyperXRoute.Main || it is HyperXRoute.Empty }
+                                        navigator.push(Route.Menu)
                                     }
 
                                     1 -> {
@@ -132,7 +132,8 @@ fun MainPage(navController: NavController, adjustPadding: PaddingValues, mode: B
                     icon = ImageIcon(iconRes = R.drawable.ic_header_hyper_helper_gray),
                     title = stringResource(R.string.page_module)
                 ) {
-                    navController.navigateWithPopup(Pages.MODULE_SETTINGS)
+                    navigator.popUntil { it is HyperXRoute.Main || it is HyperXRoute.Empty }
+                    navigator.push(Route.ModuleSettings)
                 }
             }
         }
@@ -142,37 +143,43 @@ fun MainPage(navController: NavController, adjustPadding: PaddingValues, mode: B
                     icon = ImageIcon(iconRes = R.drawable.ic_header_systemui),
                     title = stringResource(R.string.page_systemui)
                 ) {
-                    navController.navigateWithPopup(Pages.SYSTEM_UI)
+                    navigator.popUntil { it is HyperXRoute.Main || it is HyperXRoute.Empty }
+                    navigator.push(Route.SystemUI)
                 }
                 TextPreference(
                     icon = ImageIcon(iconRes = R.drawable.ic_header_android_green),
                     title = stringResource(R.string.page_android)
                 ) {
-                    navController.navigateWithPopup(Pages.SYSTEM_FRAMEWORK)
+                    navigator.popUntil { it is HyperXRoute.Main || it is HyperXRoute.Empty }
+                    navigator.push(Route.SystemFramework)
                 }
                 TextPreference(
                     icon = ImageIcon(iconRes = R.drawable.ic_header_home),
                     title = stringResource(R.string.page_miui_home)
                 ) {
-                    navController.navigateWithPopup(Pages.MIUI_HOME)
+                    navigator.popUntil { it is HyperXRoute.Main || it is HyperXRoute.Empty }
+                    navigator.push(Route.MiuiHome)
                 }
                 TextPreference(
                     icon = ImageIcon(iconRes = R.drawable.ic_header_cleaner),
                     title = stringResource(R.string.page_cleaner)
                 ) {
-                    navController.navigateWithPopup(Pages.CLEAN_MASTER)
+                    navigator.popUntil { it is HyperXRoute.Main || it is HyperXRoute.Empty }
+                    navigator.push(Route.CleanMaster)
                 }
                 TextPreference(
                     icon = ImageIcon(iconRes = R.drawable.ic_header_security_center),
                     title = stringResource(if (Device.isPad) R.string.page_security_center_pad else R.string.page_security_center)
                 ) {
-                    navController.navigateWithPopup(Pages.SECURITY_CENTER)
+                    navigator.popUntil { it is HyperXRoute.Main || it is HyperXRoute.Empty }
+                    navigator.push(Route.SecurityCenter)
                 }
                 TextPreference(
                     icon = ImageIcon(iconRes = R.drawable.ic_header_others),
                     title = stringResource(R.string.page_others)
                 ) {
-                    navController.navigateWithPopup(Pages.OTHERS)
+                    navigator.popUntil { it is HyperXRoute.Main || it is HyperXRoute.Empty }
+                    navigator.push(Route.Others)
                 }
             }
         }
@@ -184,7 +191,8 @@ fun MainPage(navController: NavController, adjustPadding: PaddingValues, mode: B
                     icon = ImageIcon(iconRes = R.drawable.ic_header_about),
                     title = stringResource(R.string.page_about)
                 ) {
-                    navController.navigateWithPopup(Pages.ABOUT)
+                    navigator.popUntil { it is HyperXRoute.Main || it is HyperXRoute.Empty }
+                    navigator.push(Route.About)
                 }
             }
         }
@@ -211,7 +219,7 @@ fun MainPage(navController: NavController, adjustPadding: PaddingValues, mode: B
         positiveText = stringResource(R.string.button_enable)
     ) {
         dialogDisabledVisibility.value = false
-        navController.navigateTo(Pages.MODULE_SETTINGS)
+        navigator.push(Route.ModuleSettings)
     }
     AlertDialog(
         visibility = dialogInactiveVisibility,

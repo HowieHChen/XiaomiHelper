@@ -12,13 +12,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
+import dev.lackluster.hyperx.compose.navigation.Navigator
 import dev.lackluster.hyperx.compose.activity.SafeSP
 import dev.lackluster.hyperx.compose.base.BasePage
 import dev.lackluster.hyperx.compose.base.BasePageDefaults
 import dev.lackluster.hyperx.compose.base.ImageIcon
 import dev.lackluster.hyperx.compose.component.Hint
-import dev.lackluster.hyperx.compose.navigation.navigateTo
 import dev.lackluster.hyperx.compose.preference.DropDownEntry
 import dev.lackluster.hyperx.compose.preference.DropDownPreference
 import dev.lackluster.hyperx.compose.preference.EditTextDataType
@@ -30,7 +29,7 @@ import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.data.Constants.IconSlots
 import dev.lackluster.mihelper.data.Constants.COMPOUND_ICON_PRIORITY_STR
 import dev.lackluster.mihelper.data.Constants.COMPOUND_ICON_REAL_SLOTS
-import dev.lackluster.mihelper.data.Pages
+import dev.lackluster.mihelper.data.Route
 import dev.lackluster.mihelper.ui.MainActivity
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.data.Scope
@@ -39,7 +38,7 @@ import dev.lackluster.mihelper.ui.component.itemAnimated
 import dev.lackluster.mihelper.ui.component.itemPreferenceGroup
 
 @Composable
-fun IconTunerPage(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
+fun IconTunerPage(navigator: Navigator, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
     val dropdownEntriesAdvVisible = listOf(
         DropDownEntry(stringResource(R.string.icon_tuner_hide_selection_default)),
         DropDownEntry(stringResource(R.string.icon_tuner_hide_selection_show_all)),
@@ -75,7 +74,7 @@ fun IconTunerPage(navController: NavController, adjustPadding: PaddingValues, mo
     ) }
 
     BasePage(
-        navController,
+        navigator,
         adjustPadding,
         stringResource(R.string.page_status_bar_icon_tuner),
         MainActivity.blurEnabled,
@@ -115,7 +114,7 @@ fun IconTunerPage(navController: NavController, adjustPadding: PaddingValues, mo
             TextPreference(
                 title = stringResource(R.string.icon_tuner_general_detail)
             ) {
-                navController.navigateTo(Pages.ICON_DETAIL)
+                navigator.push(Route.IconDetail)
             }
             DropDownPreference(
                 title = stringResource(R.string.icon_tuner_general_order),
@@ -131,7 +130,7 @@ fun IconTunerPage(navController: NavController, adjustPadding: PaddingValues, mo
                 TextPreference(
                     title = stringResource(R.string.icon_tuner_general_order_custom_entry)
                 ) {
-                    navController.navigateTo(Pages.DIALOG_STATUS_BAR_ICON_POSITION)
+                    navigator.push(Route.DialogStatusBarIconPosition)
                 }
             }
             SwitchPreference(
@@ -169,7 +168,7 @@ fun IconTunerPage(navController: NavController, adjustPadding: PaddingValues, mo
                     TextPreference(
                         title = stringResource(R.string.icon_tuner_stacked_mobile_custom_entry)
                     ) {
-                        navController.navigateTo(Pages.STACKED_MOBILE_TUNER)
+                        navigator.push(Route.StackedMobileTuner)
                     }
                 }
             }

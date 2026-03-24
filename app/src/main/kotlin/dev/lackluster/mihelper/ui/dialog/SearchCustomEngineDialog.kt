@@ -19,7 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.content.edit
-import androidx.navigation.NavController
+import dev.lackluster.hyperx.compose.navigation.Navigator
 import dev.lackluster.hyperx.compose.activity.SafeSP
 import dev.lackluster.hyperx.compose.base.BasePageDefaults
 import dev.lackluster.hyperx.compose.component.FullScreenDialog
@@ -34,7 +34,7 @@ import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 @Composable
-fun SearchCustomEngineDialog(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
+fun SearchCustomEngineDialog(navigator: Navigator, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
     val context = LocalContext.current
     var customSearchEngine by remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.Search.CUSTOM_SEARCH_ENGINE)) }
     val channelNo = remember { mutableStateOf("") }
@@ -64,7 +64,7 @@ fun SearchCustomEngineDialog(navController: NavController, adjustPadding: Paddin
     }
 
     FullScreenDialog(
-        navController,
+        navigator,
         adjustPadding,
         stringResource(R.string.others_search_custom_search_engine),
         MainActivity.blurEnabled,
@@ -108,12 +108,12 @@ fun SearchCustomEngineDialog(navController: NavController, adjustPadding: Paddin
                     }.let {
                         SafeSP.putAny(Pref.Key.Search.CUSTOM_SEARCH_ENGINE_ENTITY, it)
                     }
-                    navController.popBackStack()
+                    navigator.pop()
                 } else {
                     Toast.makeText(context, errorMSg.toString(), Toast.LENGTH_SHORT).show()
                 }
             } else {
-                navController.popBackStack()
+                navigator.pop()
             }
         }
     ) {

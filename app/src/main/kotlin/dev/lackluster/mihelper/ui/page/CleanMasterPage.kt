@@ -12,12 +12,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
+import dev.lackluster.hyperx.compose.navigation.Navigator
 import dev.lackluster.hyperx.compose.activity.SafeSP
 import dev.lackluster.hyperx.compose.base.BasePage
 import dev.lackluster.hyperx.compose.base.BasePageDefaults
 import dev.lackluster.hyperx.compose.component.Hint
-import dev.lackluster.hyperx.compose.navigation.navigateTo
 import dev.lackluster.hyperx.compose.preference.DropDownEntry
 import dev.lackluster.hyperx.compose.preference.DropDownPreference
 import dev.lackluster.hyperx.compose.preference.EditTextDataType
@@ -27,8 +26,8 @@ import dev.lackluster.hyperx.compose.preference.SwitchPreference
 import dev.lackluster.hyperx.compose.preference.TextPreference
 import dev.lackluster.hyperx.compose.preference.ValuePosition
 import dev.lackluster.mihelper.R
-import dev.lackluster.mihelper.data.Pages
 import dev.lackluster.mihelper.ui.MainActivity
+import dev.lackluster.mihelper.ui.sheet.MarketFilterTabBottomSheet
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.data.Scope
 import dev.lackluster.mihelper.data.Version
@@ -37,8 +36,9 @@ import dev.lackluster.mihelper.utils.factory.jumpToAppDetailsSettings
 import top.yukonga.miuix.kmp.basic.SmallTitle
 
 @Composable
-fun CleanMasterPage(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
+fun CleanMasterPage(navigator: Navigator, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
     val context = LocalContext.current
+    val marketFilterTabBottomSheetVisibility = remember { mutableStateOf(false) }
     var visibilityCustomInstallSource by remember { mutableStateOf(SafeSP.getInt(Pref.Key.PackageInstaller.INSTALL_SOURCE) == 3) }
 
     val dropdownEntriesCustomInstallSource = listOf(
@@ -49,7 +49,7 @@ fun CleanMasterPage(navController: NavController, adjustPadding: PaddingValues, 
     )
 
     BasePage(
-        navController,
+        navigator,
         adjustPadding,
         stringResource(R.string.page_cleaner),
         MainActivity.blurEnabled,
@@ -263,7 +263,7 @@ fun CleanMasterPage(navController: NavController, adjustPadding: PaddingValues, 
                         }
                     )
                 ) {
-                    navController.navigateTo(Pages.DIALOG_MARKET_FILTER_TAB)
+                    marketFilterTabBottomSheetVisibility.value = true
                 }
             }
         }
@@ -402,4 +402,5 @@ fun CleanMasterPage(navController: NavController, adjustPadding: PaddingValues, 
             }
         }
     }
+    MarketFilterTabBottomSheet(show = marketFilterTabBottomSheetVisibility)
 }

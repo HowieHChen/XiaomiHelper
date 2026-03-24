@@ -16,15 +16,13 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.navigation3.runtime.NavEntry
 import dev.lackluster.hyperx.compose.activity.HyperXActivity
 import dev.lackluster.hyperx.compose.activity.SafeSP
 import dev.lackluster.hyperx.compose.base.HyperXApp
-import dev.lackluster.hyperx.compose.navigation.miuixComposable
 import dev.lackluster.mihelper.R
-import dev.lackluster.mihelper.data.Pages
 import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.ui.dialog.FontScaleDialog
-import dev.lackluster.mihelper.ui.dialog.MarketFilterTabDialog
+import dev.lackluster.mihelper.data.Route
 import dev.lackluster.mihelper.ui.dialog.SearchCustomEngineDialog
 import dev.lackluster.mihelper.ui.dialog.StatusBarIconPositionDialog
 import dev.lackluster.mihelper.ui.page.AboutPage
@@ -70,8 +68,8 @@ class MainActivity : HyperXActivity() {
     override fun AppContent() {
         HyperXApp(
             autoSplitView = splitEnabled,
-            mainPageContent = { navController, adjustPadding, mode ->
-                MainPage(navController, adjustPadding, mode)
+            mainPageContent = { navigator, adjustPadding, mode ->
+                MainPage(navigator, adjustPadding, mode)
             },
             emptyPageContent = {
                 Box(
@@ -105,31 +103,32 @@ class MainActivity : HyperXActivity() {
                     )
                 }
             },
-            otherPageBuilder = { navController, adjustPadding, mode ->
-                miuixComposable(Pages.MODULE_SETTINGS) { ModuleSettingsPage(navController, adjustPadding, mode) }
-                miuixComposable(Pages.SYSTEM_UI) { SystemUIPage(navController, adjustPadding, mode) }
-                miuixComposable(Pages.SYSTEM_FRAMEWORK) { SystemFrameworkPage(navController, adjustPadding, mode) }
-                miuixComposable(Pages.MIUI_HOME) { MiuiHomePage(navController, adjustPadding, mode) }
-                miuixComposable(Pages.CLEAN_MASTER) { CleanMasterPage(navController, adjustPadding, mode) }
-                miuixComposable(Pages.SECURITY_CENTER) { SecurityCenterPage(navController, adjustPadding, mode) }
-                miuixComposable(Pages.OTHERS) { OthersPage(navController, adjustPadding, mode) }
-                miuixComposable(Pages.ABOUT) { AboutPage(navController, adjustPadding, mode) }
-
-                miuixComposable(Pages.MENU) { MenuPage(navController, adjustPadding, mode) }
-                miuixComposable(Pages.DEV_UI_TEST) { UITestPage(navController, adjustPadding, mode) }
-                miuixComposable(Pages.STATUS_BAR_CLOCK) { StatusBarClockPage(navController, adjustPadding, mode) }
-                miuixComposable(Pages.STATUS_BAR_FONT) { StatusBarFontPage(navController, adjustPadding, mode) }
-                miuixComposable(Pages.ICON_TUNER) { IconTunerPage(navController, adjustPadding, mode) }
-                miuixComposable(Pages.ICON_DETAIL) { IconDetailPage(navController, adjustPadding, mode) }
-                miuixComposable(Pages.MEDIA_CONTROL) { MediaControlPage(navController, adjustPadding, mode, false) }
-                miuixComposable(Pages.ISLAND_MEDIA_CONTROL) { MediaControlPage(navController, adjustPadding, mode, true) }
-                miuixComposable(Pages.STACKED_MOBILE_TUNER) { StackedMobileTunerPage(navController, adjustPadding, mode) }
-
-                miuixComposable(Pages.DIALOG_MARKET_FILTER_TAB) { MarketFilterTabDialog(navController, adjustPadding, mode) }
-                miuixComposable(Pages.DIALOG_SEARCH_CUSTOM_ENGINE) { SearchCustomEngineDialog(navController, adjustPadding, mode) }
-                miuixComposable(Pages.DIALOG_FONT_SCALE) { FontScaleDialog(navController, adjustPadding, mode) }
-                miuixComposable(Pages.DIALOG_STATUS_BAR_ICON_POSITION) { StatusBarIconPositionDialog(navController, adjustPadding, mode) }
-                miuixComposable(Pages.DEV_UI_TEST2) { MediaActionResizePage(navController, adjustPadding, "MediaActionResizePage", mode = mode) }
+            otherPageEntryProvider = { key, navigator, adjustPadding, mode ->
+                NavEntry(key) {
+                    when (key) {
+                        is Route.ModuleSettings -> ModuleSettingsPage(navigator, adjustPadding, mode)
+                        is Route.SystemUI -> SystemUIPage(navigator, adjustPadding, mode)
+                        is Route.SystemFramework -> SystemFrameworkPage(navigator, adjustPadding, mode)
+                        is Route.MiuiHome -> MiuiHomePage(navigator, adjustPadding, mode)
+                        is Route.CleanMaster -> CleanMasterPage(navigator, adjustPadding, mode)
+                        is Route.SecurityCenter -> SecurityCenterPage(navigator, adjustPadding, mode)
+                        is Route.Others -> OthersPage(navigator, adjustPadding, mode)
+                        is Route.About -> AboutPage(navigator, adjustPadding, mode)
+                        is Route.Menu -> MenuPage(navigator, adjustPadding, mode)
+                        is Route.DevUITest -> UITestPage(navigator, adjustPadding, mode)
+                        is Route.StatusBarClock -> StatusBarClockPage(navigator, adjustPadding, mode)
+                        is Route.StatusBarFont -> StatusBarFontPage(navigator, adjustPadding, mode)
+                        is Route.IconTuner -> IconTunerPage(navigator, adjustPadding, mode)
+                        is Route.IconDetail -> IconDetailPage(navigator, adjustPadding, mode)
+                        is Route.MediaControl -> MediaControlPage(navigator, adjustPadding, mode, false)
+                        is Route.IslandMediaControl -> MediaControlPage(navigator, adjustPadding, mode, true)
+                        is Route.StackedMobileTuner -> StackedMobileTunerPage(navigator, adjustPadding, mode)
+                        is Route.DialogSearchCustomEngine -> SearchCustomEngineDialog(navigator, adjustPadding, mode)
+                        is Route.DialogStatusBarIconPosition -> StatusBarIconPositionDialog(navigator, adjustPadding, mode)
+                        is Route.DevUITest2 -> MediaActionResizePage(navigator, adjustPadding, "MediaActionResizePage", mode = mode)
+                        else -> {}
+                    }
+                }
             }
         )
     }
