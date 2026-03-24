@@ -33,9 +33,9 @@ fun MenuPage(navController: NavController, adjustPadding: PaddingValues, mode: B
         adjustPadding,
         stringResource(R.string.page_menu),
         MainActivity.blurEnabled,
-        MainActivity.blurTintAlphaLight,
-        MainActivity.blurTintAlphaDark,
-        mode
+        mode,
+        blurTintAlphaLight = MainActivity.blurTintAlphaLight,
+        blurTintAlphaDark = MainActivity.blurTintAlphaDark,
     ) {
         item {
             PreferenceGroup(

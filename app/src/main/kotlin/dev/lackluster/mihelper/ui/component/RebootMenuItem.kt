@@ -20,7 +20,7 @@ import dev.lackluster.mihelper.utils.ShellUtils
 import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.IconButton
 import top.yukonga.miuix.kmp.icon.MiuixIcons
-import top.yukonga.miuix.kmp.icon.icons.useful.Reboot
+import top.yukonga.miuix.kmp.icon.extended.Refresh
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 @Composable
@@ -39,7 +39,7 @@ fun RebootMenuItem(
     ) {
         Icon(
             modifier = Modifier.size(26.dp),
-            imageVector = MiuixIcons.Useful.Reboot,
+            imageVector = MiuixIcons.Refresh,
             contentDescription = "Reboot app",
             tint = MiuixTheme.colorScheme.onSurfaceSecondary,
         )

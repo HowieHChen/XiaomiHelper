@@ -13,35 +13,32 @@ import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableFloatState
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import dev.chrisbanes.haze.HazeStyle
-import dev.chrisbanes.haze.HazeTint
+import dev.lackluster.hyperx.compose.activity.SafeSP
 import dev.lackluster.hyperx.compose.base.BasePageDefaults
 import dev.lackluster.hyperx.compose.base.HazeScaffold
 import dev.lackluster.hyperx.compose.preference.SwitchPreference
 import dev.lackluster.hyperx.compose.viewmodel.AppListViewModel
+import dev.lackluster.mihelper.data.Pref
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.IconButton
@@ -51,9 +48,8 @@ import top.yukonga.miuix.kmp.basic.TopAppBar
 import top.yukonga.miuix.kmp.basic.rememberPullToRefreshState
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
 import top.yukonga.miuix.kmp.icon.MiuixIcons
-import top.yukonga.miuix.kmp.icon.icons.useful.Back
+import top.yukonga.miuix.kmp.icon.extended.Back
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.getWindowSize
 import top.yukonga.miuix.kmp.utils.overScrollVertical
 import top.yukonga.miuix.kmp.utils.scrollEndHaptic
 
@@ -62,9 +58,6 @@ fun MediaActionResizePage(
     navController: NavController,
     adjustPadding: PaddingValues,
     title: String,
-    blurEnabled: MutableState<Boolean> = mutableStateOf(true),
-    blurTintAlphaLight: MutableFloatState = mutableFloatStateOf(0.6f),
-    blurTintAlphaDark: MutableFloatState = mutableFloatStateOf(0.5f),
     mode: BasePageDefaults.Mode = BasePageDefaults.Mode.FULL,
     navigationIcon: @Composable (padding: PaddingValues) -> Unit = { padding ->
         IconButton(
@@ -78,7 +71,7 @@ fun MediaActionResizePage(
         ) {
             Icon(
                 modifier = Modifier.size(26.dp),
-                imageVector = MiuixIcons.Useful.Back,
+                imageVector = MiuixIcons.Back,
                 contentDescription = "Back",
                 tint = MiuixTheme.colorScheme.onSurfaceSecondary
             )
@@ -90,20 +83,9 @@ fun MediaActionResizePage(
     val viewModel = viewModel<AppListViewModel>()
     val scope = rememberCoroutineScope()
 
-    val topAppBarBackground = MiuixTheme.colorScheme.background
     val scrollBehavior = MiuixScrollBehavior(rememberTopAppBarState())
     val listState = rememberLazyListState()
-    val topBarBlurState by remember {
-        derivedStateOf {
-            blurEnabled.value &&
-                    scrollBehavior.state.collapsedFraction >= 1.0f &&
-                    (listState.isScrollInProgress || listState.firstVisibleItemIndex > 0 || listState.firstVisibleItemScrollOffset > 12)
-        }
-    }
-    val topBarBlurTintAlpha = remember { mutableFloatStateOf(
-        if (topAppBarBackground.luminance() >= 0.5f) blurTintAlphaLight.floatValue
-        else blurTintAlphaDark.floatValue
-    ) }
+
     val layoutDirection = LocalLayoutDirection.current
     val systemBarInsets = WindowInsets.systemBars.add(WindowInsets.displayCutout).only(WindowInsetsSides.Horizontal).asPaddingValues()
     val navigationIconPadding = PaddingValues.Absolute(
@@ -114,6 +96,8 @@ fun MediaActionResizePage(
     )
     var isRefreshing by remember { mutableStateOf(false) }
     val pullToRefreshState = rememberPullToRefreshState()
+
+    val configBlurTopBar = remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.App.HAZE_BLUR, true)) }
 
     LaunchedEffect(key1 = navController) {
         viewModel.search = ""
@@ -136,11 +120,7 @@ fun MediaActionResizePage(
         modifier = Modifier.fillMaxSize(),
         topBar = { contentPadding ->
             TopAppBar(
-                modifier = Modifier
-                    .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top)),
-                color = topAppBarBackground.copy(
-                    if (topBarBlurState) 0f else 1f
-                ),
+                color = if (configBlurTopBar.value) Color.Transparent else MiuixTheme.colorScheme.surface,
                 title = title,
                 scrollBehavior = scrollBehavior,
                 navigationIcon = { navigationIcon.invoke(navigationIconPadding) },
@@ -149,14 +129,7 @@ fun MediaActionResizePage(
                 horizontalPadding = 28.dp + contentPadding.calculateLeftPadding(LocalLayoutDirection.current)
             )
         },
-        blurTopBar = blurEnabled.value,
-        hazeStyle = HazeStyle(
-            blurRadius = 66.dp,
-            backgroundColor = topAppBarBackground,
-            tint = HazeTint(
-                topAppBarBackground.copy(alpha = topBarBlurTintAlpha.floatValue),
-            )
-        ),
+        blurTopBar = configBlurTopBar.value,
         adjustPadding = adjustPadding,
     ) { paddingValues ->
         PullToRefresh(
@@ -172,10 +145,10 @@ fun MediaActionResizePage(
                     .overScrollVertical()
                     .nestedScroll(scrollBehavior.nestedScrollConnection)
                     .scrollEndHaptic()
-                    .height(getWindowSize().height.dp),
+                    .height(with(LocalDensity.current) { LocalWindowInfo.current.containerSize.height.toDp() }),
                 state = listState,
                 contentPadding = paddingValues,
-                overscrollEffect = null
+                overscrollEffect = null,
             ) {
                 items(viewModel.appList, key = { it.packageName + it.uid }) { app ->
                     SwitchPreference(

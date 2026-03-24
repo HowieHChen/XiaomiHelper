@@ -61,7 +61,7 @@ import androidx.core.graphics.toColorInt
 import dev.lackluster.hyperx.compose.base.Card
 import dev.lackluster.mihelper.R
 import top.yukonga.miuix.kmp.basic.Text
-import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
+import top.yukonga.miuix.kmp.theme.miuixShape
 import kotlin.math.max
 import kotlin.math.min
 
@@ -111,7 +111,7 @@ fun MediaControlCard(
             .height(dimensionResource(R.dimen.media_session_height_expanded))
             .padding(horizontal = 12.dp)
             .padding(bottom = 8.dp, top = 8.dp),
-        shape = if (isDynamicIsland) G2RoundedCornerShape(30.dp) else G2RoundedCornerShape(20.dp)
+        shape = if (isDynamicIsland) miuixShape(30.dp) else miuixShape(20.dp)
     ) {
         val backgroundColor: Color
         val textPrimaryColor: Color
@@ -288,7 +288,7 @@ fun MediaControlCard(
                     .size(52.5.dp)
                     .graphicsLayer(
                         clip = true,
-                        shape = G2RoundedCornerShape(10.dp),
+                        shape = miuixShape(10.dp),
                         shadowElevation = if (albumShadow) 32f else 0f
                     ),
                 painter = painterResource(R.drawable.media_bg_ori),

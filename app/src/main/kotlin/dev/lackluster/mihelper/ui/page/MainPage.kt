@@ -25,20 +25,20 @@ import dev.lackluster.hyperx.compose.navigation.navigateWithPopup
 import dev.lackluster.hyperx.compose.preference.PreferenceGroup
 import dev.lackluster.hyperx.compose.preference.TextPreference
 import dev.lackluster.mihelper.R
-import dev.lackluster.mihelper.ui.MainActivity
 import dev.lackluster.mihelper.data.Constants
 import dev.lackluster.mihelper.data.Pages
+import dev.lackluster.mihelper.ui.MainActivity
 import dev.lackluster.mihelper.utils.Device
 import dev.lackluster.mihelper.utils.ShellUtils
+import top.yukonga.miuix.kmp.basic.DropdownImpl
 import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.IconButton
-import top.yukonga.miuix.kmp.basic.ListPopup
 import top.yukonga.miuix.kmp.basic.ListPopupColumn
 import top.yukonga.miuix.kmp.basic.ListPopupDefaults
 import top.yukonga.miuix.kmp.basic.PopupPositionProvider
-import top.yukonga.miuix.kmp.extra.DropdownImpl
+import top.yukonga.miuix.kmp.extra.SuperListPopup
 import top.yukonga.miuix.kmp.icon.MiuixIcons
-import top.yukonga.miuix.kmp.icon.icons.useful.ImmersionMore
+import top.yukonga.miuix.kmp.icon.extended.More
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 @Composable
@@ -57,16 +57,16 @@ fun MainPage(navController: NavController, adjustPadding: PaddingValues, mode: B
         adjustPadding,
         stringResource(R.string.page_main),
         MainActivity.blurEnabled,
-        MainActivity.blurTintAlphaLight,
-        MainActivity.blurTintAlphaDark,
         mode,
+        blurTintAlphaLight = MainActivity.blurTintAlphaLight,
+        blurTintAlphaDark = MainActivity.blurTintAlphaDark,
         navigationIcon = {},
         actions = { padding ->
             val hapticFeedback = LocalHapticFeedback.current
-            ListPopup(
-                show = showTopPopup,
+            SuperListPopup(
+                show = showTopPopup.value,
                 popupPositionProvider = ListPopupDefaults.ContextMenuPositionProvider,
-                alignment = PopupPositionProvider.Align.TopRight,
+                alignment = PopupPositionProvider.Align.TopEnd,
                 onDismissRequest = {
                     showTopPopup.value = false
                 }
@@ -78,10 +78,11 @@ fun MainPage(navController: NavController, adjustPadding: PaddingValues, mode: B
                             optionSize = contextMenuItems.size,
                             isSelected = false,
                             onSelectedIndexChange = {
-                                when(it) {
+                                when (it) {
                                     0 -> {
                                         navController.navigateWithPopup(Pages.MENU)
                                     }
+
                                     1 -> {
                                         try {
                                             ShellUtils.tryExec(
@@ -89,7 +90,7 @@ fun MainPage(navController: NavController, adjustPadding: PaddingValues, mode: B
                                                 useRoot = true,
                                                 throwIfError = true
                                             )
-                                        } catch (tout : Throwable) {
+                                        } catch (tout: Throwable) {
                                             makeText(
                                                 context,
                                                 tout.message,
@@ -106,7 +107,10 @@ fun MainPage(navController: NavController, adjustPadding: PaddingValues, mode: B
                 }
             }
             IconButton(
-                modifier = Modifier.padding(padding).padding(end = 21.dp).size(40.dp),
+                modifier = Modifier
+                    .padding(padding)
+                    .padding(end = 21.dp)
+                    .size(40.dp),
                 onClick = {
                     showTopPopup.value = true
                     hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -115,7 +119,7 @@ fun MainPage(navController: NavController, adjustPadding: PaddingValues, mode: B
             ) {
                 Icon(
                     modifier = Modifier.size(26.dp),
-                    imageVector = MiuixIcons.Useful.ImmersionMore,
+                    imageVector = MiuixIcons.More,
                     contentDescription = "Menu",
                     tint = MiuixTheme.colorScheme.onSurfaceSecondary
                 )
@@ -224,7 +228,7 @@ fun MainPage(navController: NavController, adjustPadding: PaddingValues, mode: B
                 useRoot = true,
                 throwIfError = true
             )
-        } catch (tout : Throwable) {
+        } catch (tout: Throwable) {
             makeText(
                 context,
                 tout.message,

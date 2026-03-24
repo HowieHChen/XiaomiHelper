@@ -50,9 +50,9 @@ fun StatusBarFontPage(navController: NavController, adjustPadding: PaddingValues
         adjustPadding,
         stringResource(R.string.page_status_bar_font),
         MainActivity.blurEnabled,
-        MainActivity.blurTintAlphaLight,
-        MainActivity.blurTintAlphaDark,
-        mode
+        mode,
+        blurTintAlphaLight = MainActivity.blurTintAlphaLight,
+        blurTintAlphaDark = MainActivity.blurTintAlphaDark,
     ) {
         itemPreferenceGroup(
             key = "FONT_GENERAL",

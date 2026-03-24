@@ -79,9 +79,9 @@ fun IconTunerPage(navController: NavController, adjustPadding: PaddingValues, mo
         adjustPadding,
         stringResource(R.string.page_status_bar_icon_tuner),
         MainActivity.blurEnabled,
-        MainActivity.blurTintAlphaLight,
-        MainActivity.blurTintAlphaDark,
         mode,
+        blurTintAlphaLight = MainActivity.blurTintAlphaLight,
+        blurTintAlphaDark = MainActivity.blurTintAlphaDark,
         actions = {
             RebootMenuItem(
                 stringResource(R.string.scope_systemui),

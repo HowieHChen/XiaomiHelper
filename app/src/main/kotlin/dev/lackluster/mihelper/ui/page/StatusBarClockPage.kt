@@ -54,9 +54,9 @@ fun StatusBarClockPage(navController: NavController, adjustPadding: PaddingValue
         adjustPadding,
         stringResource(R.string.page_status_bar_clock),
         MainActivity.blurEnabled,
-        MainActivity.blurTintAlphaLight,
-        MainActivity.blurTintAlphaDark,
         mode,
+        blurTintAlphaLight = MainActivity.blurTintAlphaLight,
+        blurTintAlphaDark = MainActivity.blurTintAlphaDark,
         actions = {
             RebootMenuItem(
                 stringResource(R.string.scope_systemui),

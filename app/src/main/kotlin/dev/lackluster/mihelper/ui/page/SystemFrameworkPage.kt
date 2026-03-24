@@ -68,9 +68,9 @@ fun SystemFrameworkPage(navController: NavController, adjustPadding: PaddingValu
         adjustPadding,
         stringResource(R.string.page_android),
         MainActivity.blurEnabled,
-        MainActivity.blurTintAlphaLight,
-        MainActivity.blurTintAlphaDark,
         mode,
+        blurTintAlphaLight = MainActivity.blurTintAlphaLight,
+        blurTintAlphaDark = MainActivity.blurTintAlphaDark,
         actions = {
             RebootMenuItem(
                 stringResource(R.string.scope_android),

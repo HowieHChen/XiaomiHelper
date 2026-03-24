@@ -53,9 +53,9 @@ fun CleanMasterPage(navController: NavController, adjustPadding: PaddingValues, 
         adjustPadding,
         stringResource(R.string.page_cleaner),
         MainActivity.blurEnabled,
-        MainActivity.blurTintAlphaLight,
-        MainActivity.blurTintAlphaDark,
-        mode
+        mode,
+        blurTintAlphaLight = MainActivity.blurTintAlphaLight,
+        blurTintAlphaDark = MainActivity.blurTintAlphaDark,
     ) {
         item {
             SmallTitle(

@@ -46,9 +46,9 @@ fun SecurityCenterPage(navController: NavController, adjustPadding: PaddingValue
         adjustPadding,
         securityCenter,
         MainActivity.blurEnabled,
-        MainActivity.blurTintAlphaLight,
-        MainActivity.blurTintAlphaDark,
-        mode
+        mode,
+        blurTintAlphaLight = MainActivity.blurTintAlphaLight,
+        blurTintAlphaDark = MainActivity.blurTintAlphaDark,
     ) {
         item {
             PreferenceGroup(

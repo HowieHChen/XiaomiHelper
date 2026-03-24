@@ -102,9 +102,9 @@ fun StackedMobileTunerPage(navController: NavController, adjustPadding: PaddingV
         adjustPadding,
         stringResource(R.string.page_status_bar_stacked_mobile),
         MainActivity.blurEnabled,
-        MainActivity.blurTintAlphaLight,
-        MainActivity.blurTintAlphaDark,
         mode,
+        blurTintAlphaLight = MainActivity.blurTintAlphaLight,
+        blurTintAlphaDark = MainActivity.blurTintAlphaDark,
         actions = {
             RebootMenuItem(
                 stringResource(R.string.scope_systemui),

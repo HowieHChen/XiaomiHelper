@@ -1,5 +1,6 @@
 package dev.lackluster.mihelper.ui.dialog
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -16,29 +17,26 @@ import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
-import dev.chrisbanes.haze.HazeStyle
-import dev.chrisbanes.haze.HazeTint
 import dev.lackluster.hyperx.compose.activity.SafeSP
 import dev.lackluster.hyperx.compose.base.BasePageDefaults
 import dev.lackluster.hyperx.compose.base.Card
@@ -53,7 +51,7 @@ import dev.lackluster.mihelper.data.Constants
 import dev.lackluster.mihelper.data.Constants.IconSlots.COMPOUND_ICON_STUB
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.data.StatusBarIconSlotWrap
-import dev.lackluster.mihelper.ui.MainActivity
+import dev.lackluster.mihelper.ui.MainActivity.Companion.blurEnabled
 import dev.lackluster.mihelper.ui.util.DraggableItem
 import dev.lackluster.mihelper.ui.util.dragContainer
 import dev.lackluster.mihelper.ui.util.rememberDragDropState
@@ -65,18 +63,21 @@ import top.yukonga.miuix.kmp.basic.SmallTitle
 import top.yukonga.miuix.kmp.basic.TopAppBar
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
 import top.yukonga.miuix.kmp.icon.MiuixIcons
-import top.yukonga.miuix.kmp.icon.icons.basic.ArrowUpDownIntegrated
+import top.yukonga.miuix.kmp.icon.basic.ArrowUpDown
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.BackHandler
-import top.yukonga.miuix.kmp.utils.G2RoundedCornerShape
-import top.yukonga.miuix.kmp.utils.getWindowSize
+import top.yukonga.miuix.kmp.theme.miuixShape
+import top.yukonga.miuix.kmp.theme.miuixUnevenShape
 import top.yukonga.miuix.kmp.utils.overScrollVertical
 import top.yukonga.miuix.kmp.utils.scrollEndHaptic
 
 private const val LIST_INDEX_OFFSET = 1
 
 @Composable
-fun StatusBarIconPositionDialog(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
+fun StatusBarIconPositionDialog(
+    navController: NavController,
+    adjustPadding: PaddingValues,
+    mode: BasePageDefaults.Mode
+) {
     val addCompoundIcon = SafeSP.getInt(Pref.Key.SystemUI.IconTuner.COMPOUND_ICON, 0) in 1..3
 
     val slots = remember {
@@ -125,35 +126,19 @@ fun StatusBarIconPositionDialog(navController: NavController, adjustPadding: Pad
             val toI = (toIndex - LIST_INDEX_OFFSET).coerceAtLeast(0)
             slots.apply { add(toI, removeAt(fromI)) }
         }
-    val firstCardShape = remember {
-        G2RoundedCornerShape(16.dp, 16.dp, 0.dp, 0.dp)
-    }
+    val firstCardShape = miuixUnevenShape(16.dp, 16.dp, 0.dp, 0.dp)
     val middleCardShape = remember {
         RectangleShape
     }
-    val lastCardShape = remember {
-        G2RoundedCornerShape(0.dp, 0.dp, 16.dp, 16.dp)
-    }
-    val elevatedShape = remember {
-        G2RoundedCornerShape(16.dp)
-    }
+    val lastCardShape = miuixUnevenShape(0.dp, 0.dp, 16.dp, 16.dp)
+    val elevatedShape = miuixShape(16.dp)
 
     BackHandler(enabled = true) {
         currentOnNegativeButton.invoke()
     }
-    val topAppBarBackground = MiuixTheme.colorScheme.background
+
     val scrollBehavior = MiuixScrollBehavior(rememberTopAppBarState())
-    val topBarBlurState by remember {
-        derivedStateOf {
-            MainActivity.blurEnabled.value &&
-                    scrollBehavior.state.collapsedFraction >= 1.0f &&
-                    (listState.isScrollInProgress || listState.firstVisibleItemIndex > 0 || listState.firstVisibleItemScrollOffset > 12)
-        }
-    }
-    val topBarBlurTintAlpha = remember { mutableFloatStateOf(
-        if (topAppBarBackground.luminance() >= 0.5f) MainActivity.blurTintAlphaLight.floatValue
-        else MainActivity.blurTintAlphaDark.floatValue
-    ) }
+
     val layoutDirection = LocalLayoutDirection.current
     val systemBarInsets = WindowInsets.systemBars.add(WindowInsets.displayCutout).only(WindowInsetsSides.Horizontal).asPaddingValues()
     val navigationIconPadding = PaddingValues.Absolute(
@@ -166,12 +151,8 @@ fun StatusBarIconPositionDialog(navController: NavController, adjustPadding: Pad
         modifier = Modifier.fillMaxSize(),
         topBar = { contentPadding ->
             TopAppBar(
-                modifier = Modifier
-                    .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top)),
-                color = topAppBarBackground.copy(
-                    if (topBarBlurState) 0f else 1f
-                ),
                 title = stringResource(R.string.page_status_bar_icon_order),
+                color = if (blurEnabled.value) Color.Transparent else MiuixTheme.colorScheme.surface,
                 scrollBehavior = scrollBehavior,
                 navigationIcon = {
                     IconButton(
@@ -213,14 +194,7 @@ fun StatusBarIconPositionDialog(navController: NavController, adjustPadding: Pad
                 horizontalPadding = 28.dp + contentPadding.calculateLeftPadding(LocalLayoutDirection.current)
             )
         },
-        blurTopBar = MainActivity.blurEnabled.value,
-        hazeStyle = HazeStyle(
-            blurRadius = 66.dp,
-            backgroundColor = topAppBarBackground,
-            tint = HazeTint(
-                topAppBarBackground.copy(alpha = topBarBlurTintAlpha.floatValue),
-            )
-        ),
+        blurTopBar = blurEnabled.value,
         adjustPadding = adjustPadding,
     ) { paddingValues ->
         LazyColumn(
@@ -229,8 +203,8 @@ fun StatusBarIconPositionDialog(navController: NavController, adjustPadding: Pad
                 .overScrollVertical()
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
                 .scrollEndHaptic()
-                .height(getWindowSize().height.dp)
-                .background(MiuixTheme.colorScheme.background),
+                .height(with(LocalDensity.current) { LocalWindowInfo.current.containerSize.height.toDp() })
+                .background(MiuixTheme.colorScheme.surface),
             state = listState,
             contentPadding = paddingValues
         ) {
@@ -300,7 +274,7 @@ fun DraggableIcon(data: StatusBarIconSlotWrap) {
     BasicComponent(
         insideMargin = PaddingValues(16.dp),
         title = data.labelResId.takeIf { it > 0 }?.let { stringResource(it) } ?: "<${data.slot}>",
-        leftAction = {
+        startAction = {
             Image(
                 modifier = Modifier
                     .padding(end = 16.dp)
@@ -309,12 +283,12 @@ fun DraggableIcon(data: StatusBarIconSlotWrap) {
                 contentDescription = null
             )
         },
-        rightActions = {
+        endActions = {
             Image(
                 modifier = Modifier
                     .padding(start = 8.dp)
                     .size(10.dp, 16.dp),
-                imageVector = MiuixIcons.Basic.ArrowUpDownIntegrated,
+                imageVector = MiuixIcons.Basic.ArrowUpDown,
                 contentDescription = null,
                 colorFilter = ColorFilter.tint(RightActionDefaults.rightActionColors().color(enabled)),
             )

@@ -64,9 +64,9 @@ fun AboutPage(navController: NavController, adjustPadding: PaddingValues, mode: 
         adjustPadding,
         stringResource(R.string.page_about),
         MainActivity.blurEnabled,
-        MainActivity.blurTintAlphaLight,
-        MainActivity.blurTintAlphaDark,
-        mode
+        mode,
+        blurTintAlphaLight = MainActivity.blurTintAlphaLight,
+        blurTintAlphaDark = MainActivity.blurTintAlphaDark,
     ) {
         item {
             AdaptiveHeaderCard(

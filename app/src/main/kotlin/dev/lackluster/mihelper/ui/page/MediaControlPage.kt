@@ -163,9 +163,9 @@ fun MediaControlPage(navController: NavController, adjustPadding: PaddingValues,
         adjustPadding,
         stringResource(R.string.page_media_control_style),
         MainActivity.blurEnabled,
-        MainActivity.blurTintAlphaLight,
-        MainActivity.blurTintAlphaDark,
         mode,
+        blurTintAlphaLight = MainActivity.blurTintAlphaLight,
+        blurTintAlphaDark = MainActivity.blurTintAlphaDark,
         actions = {
             RebootMenuItem(
                 stringResource(R.string.scope_systemui),
