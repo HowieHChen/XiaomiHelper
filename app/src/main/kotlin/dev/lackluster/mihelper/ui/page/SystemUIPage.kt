@@ -9,11 +9,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
+import dev.lackluster.hyperx.compose.navigation.Navigator
 import dev.lackluster.hyperx.compose.activity.SafeSP
 import dev.lackluster.hyperx.compose.base.BasePage
 import dev.lackluster.hyperx.compose.base.BasePageDefaults
-import dev.lackluster.hyperx.compose.navigation.navigateTo
+import dev.lackluster.mihelper.data.Route
 import dev.lackluster.hyperx.compose.preference.DropDownEntry
 import dev.lackluster.hyperx.compose.preference.DropDownPreference
 import dev.lackluster.hyperx.compose.preference.EditTextDataType
@@ -25,12 +25,11 @@ import dev.lackluster.hyperx.compose.preference.TextPreference
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.ui.MainActivity
 import dev.lackluster.mihelper.ui.component.RebootMenuItem
-import dev.lackluster.mihelper.data.Pages
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.data.Scope
 
 @Composable
-fun SystemUIPage(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
+fun SystemUIPage(navigator: Navigator, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
     val expandNotificationsEntries = listOf(
         DropDownEntry(
             title = stringResource(R.string.systemui_notif_expand_notif_def),
@@ -79,13 +78,13 @@ fun SystemUIPage(navController: NavController, adjustPadding: PaddingValues, mod
     ) }
 
     BasePage(
-        navController,
+        navigator,
         adjustPadding,
         stringResource(R.string.page_systemui),
         MainActivity.blurEnabled,
-        MainActivity.blurTintAlphaLight,
-        MainActivity.blurTintAlphaDark,
         mode,
+        blurTintAlphaLight = MainActivity.blurTintAlphaLight,
+        blurTintAlphaDark = MainActivity.blurTintAlphaDark,
         actions = {
             RebootMenuItem(
                 stringResource(R.string.scope_systemui),
@@ -102,12 +101,12 @@ fun SystemUIPage(navController: NavController, adjustPadding: PaddingValues, mod
                 TextPreference(
                     title = stringResource(R.string.systemui_statusbar_font)
                 ) {
-                    navController.navigateTo(Pages.STATUS_BAR_FONT)
+                    navigator.push(Route.StatusBarFont)
                 }
                 TextPreference(
                     title = stringResource(R.string.systemui_statusbar_clock)
                 ) {
-                    navController.navigateTo(Pages.STATUS_BAR_CLOCK)
+                    navigator.push(Route.StatusBarClock)
                 }
                 SwitchPreference(
                     title = stringResource(R.string.systemui_statusbar_notif_count),
@@ -130,7 +129,7 @@ fun SystemUIPage(navController: NavController, adjustPadding: PaddingValues, mod
                 TextPreference(
                     title = stringResource(R.string.systemui_statusbar_icon)
                 ) {
-                    navController.navigateTo(Pages.ICON_TUNER)
+                    navigator.push(Route.IconTuner)
                 }
                 SwitchPreference(
                     title = stringResource(R.string.systemui_statusbar_tap_to_sleep),
@@ -267,7 +266,7 @@ fun SystemUIPage(navController: NavController, adjustPadding: PaddingValues, mod
                     title = stringResource(R.string.systemui_notif_media_control_style),
                     summary = stringResource(R.string.systemui_notif_media_control_style_tips)
                 ) {
-                    navController.navigateTo(Pages.MEDIA_CONTROL)
+                    navigator.push(Route.MediaControl)
                 }
             }
         }
@@ -279,7 +278,7 @@ fun SystemUIPage(navController: NavController, adjustPadding: PaddingValues, mod
                     title = stringResource(R.string.systemui_di_media_control_style),
                     summary = stringResource(R.string.systemui_di_media_control_style_tips)
                 ) {
-                    navController.navigateTo(Pages.ISLAND_MEDIA_CONTROL)
+                    navigator.push(Route.IslandMediaControl)
                 }
                 SwitchPreference(
                     title = stringResource(R.string.systemui_di_disable_whitelist),

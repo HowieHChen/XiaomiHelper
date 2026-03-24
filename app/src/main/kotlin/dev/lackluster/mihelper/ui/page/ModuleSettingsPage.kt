@@ -17,7 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
+import dev.lackluster.hyperx.compose.navigation.Navigator
 import dev.lackluster.hyperx.compose.activity.SafeSP
 import dev.lackluster.hyperx.compose.base.AlertDialog
 import dev.lackluster.hyperx.compose.base.AlertDialogMode
@@ -28,23 +28,23 @@ import dev.lackluster.hyperx.compose.preference.DropDownPreference
 import dev.lackluster.hyperx.compose.preference.EditTextDataType
 import dev.lackluster.hyperx.compose.preference.EditTextPreference
 import dev.lackluster.hyperx.compose.preference.PreferenceGroup
+import dev.lackluster.hyperx.compose.preference.SeekBarPreference
 import dev.lackluster.hyperx.compose.preference.SwitchPreference
 import dev.lackluster.hyperx.compose.preference.TextPreference
 import dev.lackluster.mihelper.BuildConfig
 import dev.lackluster.mihelper.R
-import dev.lackluster.mihelper.ui.MainActivity
 import dev.lackluster.mihelper.data.Pref.Key.App
 import dev.lackluster.mihelper.data.Pref.Key.Module
+import dev.lackluster.mihelper.ui.MainActivity
 import dev.lackluster.mihelper.utils.BackupUtils
 import dev.lackluster.mihelper.utils.BackupUtils.BACKUP_FILE_PREFIX
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import kotlin.math.roundToInt
 
 @Composable
-fun ModuleSettingsPage(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
+fun ModuleSettingsPage(navigator: Navigator, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
     val context = LocalContext.current
-    
+
     val dropdownEntriesEntryIcon = listOf(
         DropDownEntry(iconRes = R.drawable.ic_header_hyper_helper_gray, title = stringResource(R.string.module_settings_icon_style_default)),
         DropDownEntry(iconRes = R.drawable.ic_header_android_green, title = stringResource(R.string.module_settings_icon_style_android)),
@@ -99,13 +99,13 @@ fun ModuleSettingsPage(navController: NavController, adjustPadding: PaddingValue
     val resetResult = remember { mutableStateOf(false) }
 
     BasePage(
-        navController,
+        navigator,
         adjustPadding,
         stringResource(R.string.page_module),
         MainActivity.blurEnabled,
-        MainActivity.blurTintAlphaLight,
-        MainActivity.blurTintAlphaDark,
-        mode
+        mode,
+        blurTintAlphaLight = MainActivity.blurTintAlphaLight,
+        blurTintAlphaDark = MainActivity.blurTintAlphaDark,
     ) {
         item {
             PreferenceGroup(
@@ -152,7 +152,7 @@ fun ModuleSettingsPage(navController: NavController, adjustPadding: PaddingValue
                 ) {
                     visibilityShowInSettings = it
                 }
-                AnimatedVisibility (
+                AnimatedVisibility(
                     visible = visibilityShowInSettings
                 ) {
                     Column {
@@ -173,7 +173,7 @@ fun ModuleSettingsPage(navController: NavController, adjustPadding: PaddingValue
                         ) {
                             visibilityCustomEntryName = (it == 2)
                         }
-                        AnimatedVisibility (
+                        AnimatedVisibility(
                             visible = visibilityCustomEntryName
                         ) {
                             EditTextPreference(
@@ -201,34 +201,28 @@ fun ModuleSettingsPage(navController: NavController, adjustPadding: PaddingValue
                     visible = MainActivity.blurEnabled.value
                 ) {
                     Column {
-                        EditTextPreference(
+                        SeekBarPreference(
                             title = stringResource(R.string.module_ui_blur_tint_alpha_light),
                             key = App.HAZE_TINT_ALPHA_LIGHT,
-                            defValue = (MainActivity.blurTintAlphaLight.floatValue * 100).roundToInt().coerceIn(0..100),
-                            dataType = EditTextDataType.INT,
-                            dialogMessage = stringResource(R.string.module_ui_blur_tint_alpha_tips),
-                            isValueValid = {
-                                (it as? Int) in (0..100)
-                            }
-                        ) { _, newValue ->
-                            (newValue as? Int)?.let {
+                            defValue = 80,
+                            min = 0,
+                            max = 100,
+                            format = "%d%%",
+                            onValueChange = {
                                 MainActivity.blurTintAlphaLight.floatValue = it / 100f
                             }
-                        }
-                        EditTextPreference(
+                        )
+                        SeekBarPreference(
                             title = stringResource(R.string.module_ui_blur_tint_alpha_dark),
                             key = App.HAZE_TINT_ALPHA_DARK,
-                            defValue = (MainActivity.blurTintAlphaDark.floatValue * 100).roundToInt().coerceIn(0..100),
-                            dataType = EditTextDataType.INT,
-                            dialogMessage = stringResource(R.string.module_ui_blur_tint_alpha_tips),
-                            isValueValid = {
-                                (it as? Int) in (0..100)
-                            }
-                        ) { _, newValue ->
-                            (newValue as? Int)?.let {
+                            defValue = 70,
+                            min = 0,
+                            max = 100,
+                            format = "%d%%",
+                            onValueChange = {
                                 MainActivity.blurTintAlphaDark.floatValue = it / 100f
                             }
-                        }
+                        )
                     }
                 }
                 SwitchPreference(
@@ -303,11 +297,13 @@ private fun BackAndRestoreResultDialog(
                 titleId = R.string.dialog_done
                 msgId = R.string.module_backup_success
             }
+
             BackupUtils.READ_DOCUMENT_CODE -> {
                 BackupUtils.handleRestore(context, uri)
                 titleId = R.string.dialog_done
                 msgId = R.string.module_restore_success
             }
+
             else -> return
         }
     } catch (t: Throwable) {
@@ -316,6 +312,7 @@ private fun BackAndRestoreResultDialog(
             BackupUtils.WRITE_DOCUMENT_CODE -> {
                 msgId = R.string.module_backup_failure
             }
+
             BackupUtils.READ_DOCUMENT_CODE -> {
                 msgId = R.string.module_restore_failure
             }

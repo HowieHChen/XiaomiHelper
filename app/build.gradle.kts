@@ -70,12 +70,14 @@ android {
     val ksPWD = properties.getProperty("KEYSTORE_PWD") ?: System.getenv("KEYSTORE_PWD")
     val kAlias = properties.getProperty("KEY_ALIAS") ?: System.getenv("KEY_ALIAS")
     val kPWD = properties.getProperty("KEY_PWD") ?: System.getenv("KEY_PWD")
-    signingConfigs {
-        register("release") {
-            storeFile = file(ksPath)
-            storePassword = ksPWD
-            keyAlias =kAlias
-            keyPassword = kPWD
+    if (ksPath != null) {
+        signingConfigs {
+            register("release") {
+                storeFile = file(ksPath)
+                storePassword = ksPWD
+                keyAlias = kAlias
+                keyPassword = kPWD
+            }
         }
     }
     buildTypes {
@@ -83,7 +85,9 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            signingConfig = signingConfigs.getByName("release")
+            if (ksPath != null) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
     }
 }

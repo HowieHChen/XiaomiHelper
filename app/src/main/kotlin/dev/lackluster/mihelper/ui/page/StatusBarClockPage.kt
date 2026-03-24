@@ -9,7 +9,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
+import dev.lackluster.hyperx.compose.navigation.Navigator
 import dev.lackluster.hyperx.compose.activity.SafeSP
 import dev.lackluster.hyperx.compose.base.BasePage
 import dev.lackluster.hyperx.compose.base.BasePageDefaults
@@ -26,7 +26,7 @@ import dev.lackluster.mihelper.ui.component.itemPreferenceGroup
 import dev.lackluster.mihelper.utils.Device
 
 @Composable
-fun StatusBarClockPage(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
+fun StatusBarClockPage(navigator: Navigator, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
     var spValueLayoutCustom by remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.SystemUI.StatusBar.CLOCK_PADDING_HORIZON)) }
     var spValueGeekMode by remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.SystemUI.StatusBar.CLOCK_GEEK)) }
     var clockFW by remember { mutableStateOf(
@@ -50,13 +50,13 @@ fun StatusBarClockPage(navController: NavController, adjustPadding: PaddingValue
     val defClockFWVal = if (Device.isPad) 460 else 500
 
     BasePage(
-        navController,
+        navigator,
         adjustPadding,
         stringResource(R.string.page_status_bar_clock),
         MainActivity.blurEnabled,
-        MainActivity.blurTintAlphaLight,
-        MainActivity.blurTintAlphaDark,
         mode,
+        blurTintAlphaLight = MainActivity.blurTintAlphaLight,
+        blurTintAlphaDark = MainActivity.blurTintAlphaDark,
         actions = {
             RebootMenuItem(
                 stringResource(R.string.scope_systemui),

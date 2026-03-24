@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.add
 import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.captionBar
 import androidx.compose.foundation.layout.captionBarPadding
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,15 +21,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
@@ -41,97 +37,93 @@ import androidx.compose.runtime.withFrameMillis
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEachIndexed
-import androidx.navigation.NavController
-import dev.chrisbanes.haze.HazeStyle
-import dev.chrisbanes.haze.HazeTint
+import dev.lackluster.hyperx.compose.navigation.Navigator
 import dev.lackluster.hyperx.compose.activity.SafeSP
 import dev.lackluster.hyperx.compose.base.BasePageDefaults
-import dev.lackluster.mihelper.R
+import dev.lackluster.hyperx.compose.base.HazeScaffold
+import dev.lackluster.hyperx.compose.base.IconSize
+import dev.lackluster.hyperx.compose.base.ImageIcon
 import dev.lackluster.hyperx.compose.preference.DropDownEntry
 import dev.lackluster.hyperx.compose.preference.DropDownMode
 import dev.lackluster.hyperx.compose.preference.DropDownPreference
 import dev.lackluster.hyperx.compose.preference.EditTextDataType
 import dev.lackluster.hyperx.compose.preference.EditTextPreference
-import dev.lackluster.hyperx.compose.base.HazeScaffold
-import dev.lackluster.hyperx.compose.preference.TextPreference
-import dev.lackluster.hyperx.compose.base.IconSize
-import dev.lackluster.hyperx.compose.base.ImageIcon
 import dev.lackluster.hyperx.compose.preference.PreferenceGroup
 import dev.lackluster.hyperx.compose.preference.SeekBarPreference
 import dev.lackluster.hyperx.compose.preference.SwitchPreference
+import dev.lackluster.hyperx.compose.preference.TextPreference
 import dev.lackluster.hyperx.compose.preference.ValuePosition
+import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.data.Pref
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import top.yukonga.miuix.kmp.basic.DropdownImpl
 import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.IconButton
-import top.yukonga.miuix.kmp.basic.ListPopup
 import top.yukonga.miuix.kmp.basic.ListPopupColumn
 import top.yukonga.miuix.kmp.basic.ListPopupDefaults
 import top.yukonga.miuix.kmp.basic.MiuixScrollBehavior
 import top.yukonga.miuix.kmp.basic.NavigationBar
-import top.yukonga.miuix.kmp.basic.NavigationItem
+import top.yukonga.miuix.kmp.basic.NavigationBarItem
 import top.yukonga.miuix.kmp.basic.PopupPositionProvider
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.basic.TopAppBar
 import top.yukonga.miuix.kmp.basic.rememberTopAppBarState
-import top.yukonga.miuix.kmp.extra.DropdownImpl
+import top.yukonga.miuix.kmp.extra.SuperListPopup
 import top.yukonga.miuix.kmp.icon.MiuixIcons
-import top.yukonga.miuix.kmp.icon.icons.useful.Back
-import top.yukonga.miuix.kmp.icon.icons.useful.ImmersionMore
-import top.yukonga.miuix.kmp.icon.icons.useful.Info
-import top.yukonga.miuix.kmp.icon.icons.useful.More
-import top.yukonga.miuix.kmp.icon.icons.useful.NavigatorSwitch
-import top.yukonga.miuix.kmp.icon.icons.useful.Settings
+import top.yukonga.miuix.kmp.icon.extended.Back
+import top.yukonga.miuix.kmp.icon.extended.Info
+import top.yukonga.miuix.kmp.icon.extended.More
+import top.yukonga.miuix.kmp.icon.extended.Settings
+import top.yukonga.miuix.kmp.icon.extended.VerticalSplit
 import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.utils.getWindowSize
 import top.yukonga.miuix.kmp.utils.overScrollVertical
 import top.yukonga.miuix.kmp.utils.scrollEndHaptic
 
 @Composable
-fun UITestPage(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
+fun UITestPage(navigator: Navigator, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
     val context = LocalContext.current
 
-    val blurTintColor = MiuixTheme.colorScheme.background
+    val blurTintColor = MiuixTheme.colorScheme.surface
     val configBlurTopBar = remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.App.HAZE_BLUR, true)) }
     val configBlurBottomBar = remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.App.HAZE_BLUR, true)) }
-    val configBlurAlpha = remember { mutableIntStateOf(
-        if (blurTintColor.luminance() >= 0.5)
-            SafeSP.getInt(Pref.Key.App.HAZE_TINT_ALPHA_LIGHT, 60)
-        else
-            SafeSP.getInt(Pref.Key.App.HAZE_TINT_ALPHA_DARK, 50)
-    ) }
+    val configBlurAlpha = remember {
+        mutableIntStateOf(
+            if (blurTintColor.luminance() >= 0.5)
+                SafeSP.getInt(Pref.Key.App.HAZE_TINT_ALPHA_LIGHT, 70)
+            else
+                SafeSP.getInt(Pref.Key.App.HAZE_TINT_ALPHA_DARK, 60)
+        )
+    }
 
     val scrollBehavior = MiuixScrollBehavior(rememberTopAppBarState())
     val listState = rememberLazyListState()
-    val topBarBlurState by remember {
-        derivedStateOf {
-            configBlurTopBar.value &&
-                    scrollBehavior.state.collapsedFraction >= 1.0f &&
-                    (listState.isScrollInProgress || listState.firstVisibleItemIndex > 0 || listState.firstVisibleItemScrollOffset > 10)
-        }
-    }
+
     val showBottomBar = remember { mutableStateOf(false) }
     val showFPSMonitor = remember { mutableStateOf(true) }
     var targetPage by remember { mutableIntStateOf(0) }
 
-    val isTopPopupExpanded = remember { mutableStateOf(false) }
     val showTopPopup = remember { mutableStateOf(false) }
-    val isBottomPopupExpanded = remember { mutableStateOf(false) }
     val showBottomPopup = remember { mutableStateOf(false) }
+
+    data class NavItem(val label: String, val icon: ImageVector)
+
     val items = listOf(
-        NavigationItem("HomePage", MiuixIcons.Useful.NavigatorSwitch),
-        NavigationItem("DropDown", MiuixIcons.Useful.Info),
-        NavigationItem("Settings", MiuixIcons.Useful.Settings),
-        NavigationItem("More", MiuixIcons.Useful.More)
+        NavItem("HomePage", MiuixIcons.VerticalSplit),
+        NavItem("DropDown", MiuixIcons.Info),
+        NavItem("Settings", MiuixIcons.Settings),
+        NavItem("More", MiuixIcons.More)
     )
 
     val dropdownEntries = listOf(
@@ -142,13 +134,7 @@ fun UITestPage(navController: NavController, adjustPadding: PaddingValues, mode:
         DropDownEntry(stringResource(R.string.module_settings_icon_color_purple), "456", R.drawable.ic_color_purple),
         DropDownEntry(stringResource(R.string.module_settings_icon_color_yellow), "789", R.drawable.ic_color_yellow)
     )
-    val hazeStyle = HazeStyle(
-        blurRadius = 66.dp,
-        backgroundColor = blurTintColor,
-        tint = HazeTint(
-            blurTintColor.copy(alpha = configBlurAlpha.intValue / 100f),
-        ),
-    )
+
     val hapticFeedback = LocalHapticFeedback.current
     val layoutDirection = LocalLayoutDirection.current
     val systemBarInsets = WindowInsets.systemBars.add(WindowInsets.displayCutout).only(WindowInsetsSides.Horizontal).asPaddingValues()
@@ -163,67 +149,64 @@ fun UITestPage(navController: NavController, adjustPadding: PaddingValues, mode:
         modifier = Modifier.fillMaxSize(),
         topBar = { contentPadding ->
             TopAppBar(
-                modifier = Modifier
-                    .windowInsetsPadding(WindowInsets.statusBars.only(WindowInsetsSides.Top))
-                    .windowInsetsPadding(WindowInsets.captionBar.only(WindowInsetsSides.Top)),
-                color = MiuixTheme.colorScheme.background.copy(
-                    if (topBarBlurState) 0f else 1f
-                ),
+                color = if (configBlurTopBar.value) Color.Transparent else MiuixTheme.colorScheme.surface,
                 title = stringResource(R.string.page_dev_ui_test),
                 scrollBehavior = scrollBehavior,
                 navigationIcon = {
                     IconButton(
-                        modifier = Modifier.padding(navigationIconPadding).padding(start = 21.dp).size(40.dp),
+                        modifier = Modifier
+                            .padding(navigationIconPadding)
+                            .padding(start = 21.dp)
+                            .size(40.dp),
                         onClick = {
-                            navController.popBackStack()
+                            navigator.pop()
                         }
                     ) {
                         Icon(
                             modifier = Modifier.size(26.dp),
-                            imageVector = MiuixIcons.Useful.Back,
+                            imageVector = MiuixIcons.Back,
                             contentDescription = "Back",
                             tint = MiuixTheme.colorScheme.onSurfaceSecondary
                         )
                     }
                 },
                 actions = {
-                    if (isTopPopupExpanded.value) {
-                        ListPopup(
-                            show = showTopPopup,
-                            popupPositionProvider = ListPopupDefaults.ContextMenuPositionProvider,
-                            alignment = PopupPositionProvider.Align.TopRight,
-                            onDismissRequest = {
-                                isTopPopupExpanded.value = false
-                            }
-                        ) {
-                            ListPopupColumn {
-                                items.take(3).forEachIndexed { index, navigationItem ->
-                                    DropdownImpl(
-                                        text = navigationItem.label,
-                                        optionSize = 3,
-                                        isSelected = false,
-                                        onSelectedIndexChange = {
-                                            targetPage = index
-                                            Toast.makeText(context, "$it clicked", Toast.LENGTH_SHORT).show()
-                                            showTopPopup.value = false
-                                            isTopPopupExpanded.value = false
-                                        },
-                                        index = index
-                                    )
-                                }
+                    SuperListPopup(
+                        show = showTopPopup.value,
+                        popupPositionProvider = ListPopupDefaults.ContextMenuPositionProvider,
+                        alignment = PopupPositionProvider.Align.TopEnd,
+                        onDismissRequest = {
+                            showTopPopup.value = false
+                        }
+                    ) {
+                        ListPopupColumn {
+                            items.take(3).forEachIndexed { index, navigationItem ->
+                                DropdownImpl(
+                                    text = navigationItem.label,
+                                    optionSize = 3,
+                                    isSelected = false,
+                                    onSelectedIndexChange = {
+                                        targetPage = index
+                                        Toast.makeText(context, "$it clicked", Toast.LENGTH_SHORT).show()
+                                        showTopPopup.value = false
+                                    },
+                                    index = index
+                                )
                             }
                         }
-                        showTopPopup.value = true
                     }
                     IconButton(
-                        modifier = Modifier.padding(actionsPadding).padding(end = 21.dp).size(40.dp),
+                        modifier = Modifier
+                            .padding(actionsPadding)
+                            .padding(end = 21.dp)
+                            .size(40.dp),
                         onClick = {
-                            isTopPopupExpanded.value = true
+                            showTopPopup.value = true
                             hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                         }
                     ) {
                         Icon(
-                            imageVector = MiuixIcons.Useful.ImmersionMore,
+                            imageVector = MiuixIcons.More,
                             contentDescription = "Menu"
                         )
                     }
@@ -238,65 +221,67 @@ fun UITestPage(navController: NavController, adjustPadding: PaddingValues, mode:
                 enter = fadeIn() + expandVertically(),
                 exit = fadeOut() + shrinkVertically()
             ) {
-                if (isBottomPopupExpanded.value) {
-                    ListPopup(
-                        show = showBottomPopup,
-                        popupPositionProvider = ListPopupDefaults.ContextMenuPositionProvider,
-                        alignment = PopupPositionProvider.Align.BottomRight,
-                        onDismissRequest = {
-                            showBottomPopup.value = false
-                            isBottomPopupExpanded.value = false
-                        }
-                    ) {
-                        ListPopupColumn {
-                            items.take(3).fastForEachIndexed { index, navigationItem ->
-                                DropdownImpl(
-                                    text = navigationItem.label,
-                                    optionSize = 3,
-                                    isSelected = items[index] == items[targetPage],
-                                    onSelectedIndexChange = {
-                                        targetPage = index
-                                        Toast.makeText(context, "$it clicked", Toast.LENGTH_SHORT).show()
-                                        showBottomPopup.value = false
-                                        isBottomPopupExpanded.value = false
-                                    },
-                                    index = index
-                                )
-                            }
+                SuperListPopup(
+                    show = showBottomPopup.value,
+                    popupPositionProvider = ListPopupDefaults.ContextMenuPositionProvider,
+                    alignment = PopupPositionProvider.Align.BottomEnd,
+                    onDismissRequest = {
+                        showBottomPopup.value = false
+                    }
+                ) {
+                    ListPopupColumn {
+                        items.take(3).fastForEachIndexed { index, navigationItem ->
+                            DropdownImpl(
+                                text = navigationItem.label,
+                                optionSize = 3,
+                                isSelected = items[index] == items[targetPage],
+                                onSelectedIndexChange = {
+                                    targetPage = index
+                                    Toast.makeText(context, "$it clicked", Toast.LENGTH_SHORT).show()
+                                    showBottomPopup.value = false
+                                },
+                                index = index,
+                            )
                         }
                     }
-                    showBottomPopup.value = true
                 }
+
                 NavigationBar(
-                    color = MiuixTheme.colorScheme.background.copy(
+                    color = MiuixTheme.colorScheme.surface.copy(
                         if (configBlurBottomBar.value) 0f else 1f
                     ),
-                    items = items,
-                    selected = targetPage,
-                    onClick = { index ->
-                        if (index in 0..2) {
-                            targetPage = index
-                            Toast.makeText(context, "Page $index clicked", Toast.LENGTH_SHORT).show()
-                        } else {
-                            showBottomPopup.value = true
-                            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                        }
+                ) {
+                    items.forEachIndexed { index, item ->
+                        NavigationBarItem(
+                            selected = targetPage == index,
+                            onClick = {
+                                if (index in 0..2) {
+                                    targetPage = index
+                                    Toast.makeText(context, "Page $index clicked", Toast.LENGTH_SHORT).show()
+                                } else {
+                                    showBottomPopup.value = true
+                                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                }
+                            },
+                            icon = item.icon,
+                            label = item.label,
+                        )
                     }
-                )
+                }
             }
         },
         adjustPadding = adjustPadding,
         blurTopBar = configBlurTopBar.value,
         blurBottomBar = configBlurBottomBar.value,
-        hazeStyle = hazeStyle
+        blurTintAlpha = configBlurAlpha.intValue / 100f,
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier
                 .overScrollVertical()
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
                 .scrollEndHaptic()
-                .height(getWindowSize().height.dp)
-                .background(MiuixTheme.colorScheme.background),
+                .height(with(LocalDensity.current) { LocalWindowInfo.current.containerSize.height.toDp() })
+                .background(MiuixTheme.colorScheme.surface),
             state = listState,
             contentPadding = paddingValues
         ) {
@@ -319,7 +304,7 @@ fun UITestPage(navController: NavController, adjustPadding: PaddingValues, mode:
                     }
                     SwitchPreference(
                         title = "Enable TopAppBar blur",
-                        summary = "Blur state: $topBarBlurState",
+                        summary = "Blur state: ${configBlurTopBar.value}",
                         defValue = configBlurTopBar.value
                     ) {
                         configBlurTopBar.value = it
@@ -410,7 +395,7 @@ fun UITestPage(navController: NavController, adjustPadding: PaddingValues, mode:
                         title = "DropdownPreference",
                         summary = "Summary",
                         entries = dropdownEntries,
-                        mode = DropDownMode.AlwaysOnRight
+                        mode = DropDownMode.Popup
                     )
                     SeekBarPreference(
                         icon = ImageIcon(
@@ -470,7 +455,7 @@ fun UITestPage(navController: NavController, adjustPadding: PaddingValues, mode:
                         title = "DropdownPreference",
                         summary = "Summary",
                         entries = dropdownEntries,
-                        mode = DropDownMode.AlwaysOnRight
+                        mode = DropDownMode.Popup
                     )
                 }
             }
@@ -491,14 +476,7 @@ fun UITestPage(navController: NavController, adjustPadding: PaddingValues, mode:
                         title = "DropdownPreference 1",
                         summary = "Normal mode",
                         entries = dropdownEntries,
-                        mode =  DropDownMode.Normal
-                    )
-                    DropDownPreference(
-                        title = "DropdownPreference 2",
-                        summary = "AlwaysOnRight mode",
-                        entries = dropdownEntries,
-                        mode =  DropDownMode.AlwaysOnRight,
-                        showValue = false
+                        mode = DropDownMode.Popup
                     )
                     DropDownPreference(
                         title = "DropdownPreference 3",

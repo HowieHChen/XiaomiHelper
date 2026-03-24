@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
+import dev.lackluster.hyperx.compose.navigation.Navigator
 import com.highcapable.yukihookapi.hook.log.YLog
 import dev.lackluster.hyperx.compose.activity.SafeSP
 import dev.lackluster.hyperx.compose.base.BasePage
@@ -37,7 +37,7 @@ import dev.lackluster.mihelper.utils.ShellUtils
 import java.io.File
 
 @Composable
-fun StatusBarFontPage(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
+fun StatusBarFontPage(navigator: Navigator, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
     val context = LocalContext.current
 
     var spValueCarrierFont by remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.SystemUI.FontWeight.LOCK_SCREEN_CARRIER)) }
@@ -46,13 +46,13 @@ fun StatusBarFontPage(navController: NavController, adjustPadding: PaddingValues
     ) }
 
     BasePage(
-        navController,
+        navigator,
         adjustPadding,
         stringResource(R.string.page_status_bar_font),
         MainActivity.blurEnabled,
-        MainActivity.blurTintAlphaLight,
-        MainActivity.blurTintAlphaDark,
-        mode
+        mode,
+        blurTintAlphaLight = MainActivity.blurTintAlphaLight,
+        blurTintAlphaDark = MainActivity.blurTintAlphaDark,
     ) {
         itemPreferenceGroup(
             key = "FONT_GENERAL",

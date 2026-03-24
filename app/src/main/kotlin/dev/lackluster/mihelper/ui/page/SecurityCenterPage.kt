@@ -8,7 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
+import dev.lackluster.hyperx.compose.navigation.Navigator
 import dev.lackluster.hyperx.compose.activity.SafeSP
 import dev.lackluster.hyperx.compose.base.BasePage
 import dev.lackluster.hyperx.compose.base.BasePageDefaults
@@ -22,7 +22,7 @@ import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.Device
 
 @Composable
-fun SecurityCenterPage(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
+fun SecurityCenterPage(navigator: Navigator, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
     var visibilityShowSystem by remember { mutableStateOf(SafeSP.getBoolean(Pref.Key.SecurityCenter.SHOW_SCREEN_BATTERY)) }
 
     val securityCenter = if (Device.isPad) stringResource(R.string.page_security_center_pad) else stringResource(R.string.page_security_center)
@@ -42,13 +42,13 @@ fun SecurityCenterPage(navController: NavController, adjustPadding: PaddingValue
     )
 
     BasePage(
-        navController,
+        navigator,
         adjustPadding,
         securityCenter,
         MainActivity.blurEnabled,
-        MainActivity.blurTintAlphaLight,
-        MainActivity.blurTintAlphaDark,
-        mode
+        mode,
+        blurTintAlphaLight = MainActivity.blurTintAlphaLight,
+        blurTintAlphaDark = MainActivity.blurTintAlphaDark,
     ) {
         item {
             PreferenceGroup(

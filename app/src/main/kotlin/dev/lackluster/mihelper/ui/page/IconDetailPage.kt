@@ -21,7 +21,7 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
+import dev.lackluster.hyperx.compose.navigation.Navigator
 import dev.lackluster.hyperx.compose.activity.SafeSP
 import dev.lackluster.hyperx.compose.base.BasePage
 import dev.lackluster.hyperx.compose.base.BasePageDefaults
@@ -51,7 +51,7 @@ import dev.lackluster.mihelper.ui.component.scaleDp
 import top.yukonga.miuix.kmp.basic.Card
 
 @Composable
-fun IconDetailPage(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
+fun IconDetailPage(navigator: Navigator, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
     val hapticFeedback = LocalHapticFeedback.current
 
     val tabRowItems = listOf(
@@ -276,13 +276,13 @@ fun IconDetailPage(navController: NavController, adjustPadding: PaddingValues, m
     ) }
 
     BasePage(
-        navController,
+        navigator,
         adjustPadding,
         stringResource(R.string.page_status_bar_icon_detail),
         MainActivity.blurEnabled,
-        MainActivity.blurTintAlphaLight,
-        MainActivity.blurTintAlphaDark,
         mode,
+        blurTintAlphaLight = MainActivity.blurTintAlphaLight,
+        blurTintAlphaDark = MainActivity.blurTintAlphaDark,
         actions = {
             RebootMenuItem(
                 stringResource(R.string.scope_systemui),

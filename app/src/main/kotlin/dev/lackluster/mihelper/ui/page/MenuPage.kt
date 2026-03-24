@@ -8,7 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
+import dev.lackluster.hyperx.compose.navigation.Navigator
 import dev.lackluster.hyperx.compose.base.AlertDialog
 import dev.lackluster.hyperx.compose.base.AlertDialogMode
 import dev.lackluster.hyperx.compose.base.BasePage
@@ -20,7 +20,7 @@ import dev.lackluster.mihelper.ui.MainActivity
 import dev.lackluster.mihelper.utils.ShellUtils
 
 @Composable
-fun MenuPage(navController: NavController, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
+fun MenuPage(navigator: Navigator, adjustPadding: PaddingValues, mode: BasePageDefaults.Mode) {
     val context = LocalContext.current
     
     val dialogRebootSystem = remember { mutableStateOf(false) }
@@ -29,13 +29,13 @@ fun MenuPage(navController: NavController, adjustPadding: PaddingValues, mode: B
     val dialogRebootLauncher = remember { mutableStateOf(false) }
     
     BasePage(
-        navController,
+        navigator,
         adjustPadding,
         stringResource(R.string.page_menu),
         MainActivity.blurEnabled,
-        MainActivity.blurTintAlphaLight,
-        MainActivity.blurTintAlphaDark,
-        mode
+        mode,
+        blurTintAlphaLight = MainActivity.blurTintAlphaLight,
+        blurTintAlphaDark = MainActivity.blurTintAlphaDark,
     ) {
         item {
             PreferenceGroup(

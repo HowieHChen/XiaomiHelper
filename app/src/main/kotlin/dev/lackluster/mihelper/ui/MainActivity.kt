@@ -16,35 +16,33 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.navigation3.runtime.NavEntry
 import dev.lackluster.hyperx.compose.activity.HyperXActivity
 import dev.lackluster.hyperx.compose.activity.SafeSP
 import dev.lackluster.hyperx.compose.base.HyperXApp
-import dev.lackluster.hyperx.compose.navigation.miuixComposable
 import dev.lackluster.mihelper.R
+import dev.lackluster.mihelper.data.Pref
+import dev.lackluster.mihelper.data.Route
 import dev.lackluster.mihelper.ui.dialog.SearchCustomEngineDialog
+import dev.lackluster.mihelper.ui.dialog.StatusBarIconPositionDialog
 import dev.lackluster.mihelper.ui.page.AboutPage
 import dev.lackluster.mihelper.ui.page.CleanMasterPage
+import dev.lackluster.mihelper.ui.page.IconDetailPage
 import dev.lackluster.mihelper.ui.page.IconTunerPage
 import dev.lackluster.mihelper.ui.page.MainPage
+import dev.lackluster.mihelper.ui.page.MediaActionResizePage
 import dev.lackluster.mihelper.ui.page.MediaControlPage
 import dev.lackluster.mihelper.ui.page.MenuPage
 import dev.lackluster.mihelper.ui.page.MiuiHomePage
 import dev.lackluster.mihelper.ui.page.ModuleSettingsPage
 import dev.lackluster.mihelper.ui.page.OthersPage
 import dev.lackluster.mihelper.ui.page.SecurityCenterPage
+import dev.lackluster.mihelper.ui.page.StackedMobileTunerPage
 import dev.lackluster.mihelper.ui.page.StatusBarClockPage
 import dev.lackluster.mihelper.ui.page.StatusBarFontPage
 import dev.lackluster.mihelper.ui.page.SystemFrameworkPage
 import dev.lackluster.mihelper.ui.page.SystemUIPage
 import dev.lackluster.mihelper.ui.page.UITestPage
-import dev.lackluster.mihelper.data.Pages
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.ui.dialog.FontScaleDialog
-import dev.lackluster.mihelper.ui.dialog.MarketFilterTabDialog
-import dev.lackluster.mihelper.ui.dialog.StatusBarIconPositionDialog
-import dev.lackluster.mihelper.ui.page.MediaActionResizePage
-import dev.lackluster.mihelper.ui.page.IconDetailPage
-import dev.lackluster.mihelper.ui.page.StackedMobileTunerPage
 import dev.lackluster.mihelper.utils.Device
 import dev.lackluster.mihelper.utils.ShellUtils
 import dev.lackluster.mihelper.utils.factory.getSP
@@ -55,8 +53,8 @@ class MainActivity : HyperXActivity() {
         val moduleActive: MutableState<Boolean> = mutableStateOf(false)
         val moduleEnabled: MutableState<Boolean> = mutableStateOf(false)
         val blurEnabled: MutableState<Boolean> = mutableStateOf(true)
-        val blurTintAlphaLight: MutableFloatState = mutableFloatStateOf(0.6f)
-        val blurTintAlphaDark: MutableFloatState = mutableFloatStateOf(0.5f)
+        val blurTintAlphaLight: MutableFloatState = mutableFloatStateOf(0.8f)
+        val blurTintAlphaDark: MutableFloatState = mutableFloatStateOf(0.7f)
         val splitEnabled: MutableState<Boolean> = mutableStateOf(Device.isPad)
         val rootGranted: MutableState<Boolean> = mutableStateOf(false)
     }
@@ -70,8 +68,8 @@ class MainActivity : HyperXActivity() {
     override fun AppContent() {
         HyperXApp(
             autoSplitView = splitEnabled,
-            mainPageContent = { navController, adjustPadding, mode ->
-                MainPage(navController, adjustPadding, mode)
+            mainPageContent = { navigator, adjustPadding, mode ->
+                MainPage(navigator, adjustPadding, mode)
             },
             emptyPageContent = {
                 Box(
@@ -84,8 +82,7 @@ class MainActivity : HyperXActivity() {
                         if (it.luminance() >= 0.5f) {
                             foregroundColor = it.copy(alpha = 0.2f)
                             backgroundColor = it.copy(alpha = 0.12f)
-                        }
-                        else {
+                        } else {
                             foregroundColor = it.copy(alpha = 0.1f)
                             backgroundColor = it.copy(alpha = 0.06f)
                         }
@@ -106,31 +103,32 @@ class MainActivity : HyperXActivity() {
                     )
                 }
             },
-            otherPageBuilder = { navController, adjustPadding, mode ->
-                miuixComposable(Pages.MODULE_SETTINGS) { ModuleSettingsPage(navController, adjustPadding, mode) }
-                miuixComposable(Pages.SYSTEM_UI) { SystemUIPage(navController, adjustPadding, mode)}
-                miuixComposable(Pages.SYSTEM_FRAMEWORK) { SystemFrameworkPage(navController, adjustPadding, mode) }
-                miuixComposable(Pages.MIUI_HOME) { MiuiHomePage(navController, adjustPadding, mode) }
-                miuixComposable(Pages.CLEAN_MASTER) { CleanMasterPage(navController, adjustPadding, mode) }
-                miuixComposable(Pages.SECURITY_CENTER) { SecurityCenterPage(navController, adjustPadding, mode) }
-                miuixComposable(Pages.OTHERS) { OthersPage(navController, adjustPadding, mode) }
-                miuixComposable(Pages.ABOUT) { AboutPage(navController, adjustPadding, mode) }
-
-                miuixComposable(Pages.MENU) { MenuPage(navController, adjustPadding, mode) }
-                miuixComposable(Pages.DEV_UI_TEST) { UITestPage(navController, adjustPadding, mode) }
-                miuixComposable(Pages.STATUS_BAR_CLOCK) { StatusBarClockPage(navController, adjustPadding, mode) }
-                miuixComposable(Pages.STATUS_BAR_FONT) { StatusBarFontPage(navController, adjustPadding, mode) }
-                miuixComposable(Pages.ICON_TUNER) { IconTunerPage(navController, adjustPadding, mode) }
-                miuixComposable(Pages.ICON_DETAIL) { IconDetailPage(navController, adjustPadding, mode) }
-                miuixComposable(Pages.MEDIA_CONTROL) { MediaControlPage(navController, adjustPadding, mode, false) }
-                miuixComposable(Pages.ISLAND_MEDIA_CONTROL) { MediaControlPage(navController, adjustPadding, mode, true) }
-                miuixComposable(Pages.STACKED_MOBILE_TUNER) { StackedMobileTunerPage(navController, adjustPadding, mode) }
-
-                miuixComposable(Pages.DIALOG_MARKET_FILTER_TAB) { MarketFilterTabDialog(navController, adjustPadding, mode) }
-                miuixComposable(Pages.DIALOG_SEARCH_CUSTOM_ENGINE) { SearchCustomEngineDialog(navController, adjustPadding, mode) }
-                miuixComposable(Pages.DIALOG_FONT_SCALE) { FontScaleDialog(navController, adjustPadding, mode) }
-                miuixComposable(Pages.DIALOG_STATUS_BAR_ICON_POSITION) { StatusBarIconPositionDialog(navController, adjustPadding, mode) }
-                miuixComposable(Pages.DEV_UI_TEST2) { MediaActionResizePage(navController, adjustPadding, "MediaActionResizePage", mode = mode) }
+            otherPageEntryProvider = { key, navigator, adjustPadding, mode ->
+                NavEntry(key) {
+                    when (key) {
+                        is Route.ModuleSettings -> ModuleSettingsPage(navigator, adjustPadding, mode)
+                        is Route.SystemUI -> SystemUIPage(navigator, adjustPadding, mode)
+                        is Route.SystemFramework -> SystemFrameworkPage(navigator, adjustPadding, mode)
+                        is Route.MiuiHome -> MiuiHomePage(navigator, adjustPadding, mode)
+                        is Route.CleanMaster -> CleanMasterPage(navigator, adjustPadding, mode)
+                        is Route.SecurityCenter -> SecurityCenterPage(navigator, adjustPadding, mode)
+                        is Route.Others -> OthersPage(navigator, adjustPadding, mode)
+                        is Route.About -> AboutPage(navigator, adjustPadding, mode)
+                        is Route.Menu -> MenuPage(navigator, adjustPadding, mode)
+                        is Route.DevUITest -> UITestPage(navigator, adjustPadding, mode)
+                        is Route.StatusBarClock -> StatusBarClockPage(navigator, adjustPadding, mode)
+                        is Route.StatusBarFont -> StatusBarFontPage(navigator, adjustPadding, mode)
+                        is Route.IconTuner -> IconTunerPage(navigator, adjustPadding, mode)
+                        is Route.IconDetail -> IconDetailPage(navigator, adjustPadding, mode)
+                        is Route.MediaControl -> MediaControlPage(navigator, adjustPadding, mode, false)
+                        is Route.IslandMediaControl -> MediaControlPage(navigator, adjustPadding, mode, true)
+                        is Route.StackedMobileTuner -> StackedMobileTunerPage(navigator, adjustPadding, mode)
+                        is Route.DialogSearchCustomEngine -> SearchCustomEngineDialog(navigator, adjustPadding, mode)
+                        is Route.DialogStatusBarIconPosition -> StatusBarIconPositionDialog(navigator, adjustPadding, mode)
+                        is Route.DevUITest2 -> MediaActionResizePage(navigator, adjustPadding, "MediaActionResizePage", mode = mode)
+                        else -> {}
+                    }
+                }
             }
         )
     }
@@ -142,10 +140,8 @@ class MainActivity : HyperXActivity() {
             moduleActive.value = true
             moduleEnabled.value = SafeSP.getBoolean(Pref.Key.Module.ENABLED, false)
             blurEnabled.value = SafeSP.getBoolean(Pref.Key.App.HAZE_BLUR, true)
-            blurTintAlphaLight.floatValue =
-                SafeSP.getInt(Pref.Key.App.HAZE_TINT_ALPHA_LIGHT, 60) / 100f
-            blurTintAlphaDark.floatValue =
-                SafeSP.getInt(Pref.Key.App.HAZE_TINT_ALPHA_LIGHT, 50) / 100f
+            blurTintAlphaLight.floatValue = SafeSP.getInt(Pref.Key.App.HAZE_TINT_ALPHA_LIGHT, 80) / 100f
+            blurTintAlphaDark.floatValue = SafeSP.getInt(Pref.Key.App.HAZE_TINT_ALPHA_DARK, 70) / 100f
             splitEnabled.value = SafeSP.getBoolean(Pref.Key.App.SPLIT_VIEW, Device.isPad)
             rootGranted.value = if (!SafeSP.getBoolean(Pref.Key.App.SKIP_ROOT_CHECK, false)) {
                 try {
@@ -164,8 +160,8 @@ class MainActivity : HyperXActivity() {
             moduleActive.value = false
             moduleEnabled.value = false
             blurEnabled.value = true
-            blurTintAlphaLight.floatValue = 0.6f
-            blurTintAlphaDark.floatValue = 0.5f
+            blurTintAlphaLight.floatValue = 0.8f
+            blurTintAlphaDark.floatValue = 0.7f
             splitEnabled.value = Device.isPad
         }
     }
@@ -189,7 +185,7 @@ class MainActivity : HyperXActivity() {
                 val hidePercentageSymbol = SafeSP.getBoolean(Pref.OldKey.SystemUI.IconTurner.HIDE_BATTERY_PERCENT_SYMBOL, false)
                 val uniPercentageSymbolSize = SafeSP.getBoolean(Pref.OldKey.SystemUI.IconTurner.CHANGE_BATTERY_PERCENT_SYMBOL, false)
                 val newValue =
-                    if (hidePercentageSymbol)  2
+                    if (hidePercentageSymbol) 2
                     else if (uniPercentageSymbolSize) 1
                     else 0
                 SafeSP.putAny(Pref.Key.SystemUI.IconTuner.BATTERY_PERCENT_MARK_STYLE, newValue)
