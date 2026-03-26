@@ -31,7 +31,7 @@ import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzMa
 import java.util.function.Consumer
 import kotlin.getValue
 
-object Flow {
+object FlowCompat {
     private val metCollectFlow by lazy {
         clzJavaAdapterKt?.resolve()?.optional(true)?.firstMethodOrNull {
             name = "collectFlow"

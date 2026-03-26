@@ -24,19 +24,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import dev.lackluster.hyperx.compose.activity.SafeSP
+import dev.lackluster.hyperx.compose.base.CardDefaults
 import dev.lackluster.hyperx.compose.component.Hint
 import dev.lackluster.hyperx.compose.icon.ImmersionClose
 import dev.lackluster.hyperx.compose.icon.ImmersionConfirm
 import dev.lackluster.hyperx.compose.preference.EditTextDataType
 import dev.lackluster.hyperx.compose.preference.EditTextPreference
-import dev.lackluster.hyperx.compose.preference.PreferenceGroup
 import dev.lackluster.hyperx.compose.preference.SwitchPreference
 import dev.lackluster.hyperx.compose.preference.TextPreference
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.data.Pref
+import dev.lackluster.mihelper.ui.component.itemAnimated
+import dev.lackluster.mihelper.ui.component.itemPreferenceGroup
 import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.IconButton
-import top.yukonga.miuix.kmp.basic.SmallTitle
 import top.yukonga.miuix.kmp.extra.SuperBottomSheet
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.theme.LocalDismissState
@@ -143,130 +144,134 @@ fun FontScaleBottomSheet(
             show.value = false
         },
         insideMargin = DpSize(0.dp, 12.dp),
-        backgroundColor = MiuixTheme.colorScheme.surface,
     ) {
+        val cardColor = CardDefaults.cardColors(
+            containerColor = MiuixTheme.colorScheme.secondaryContainer
+        )
         LazyColumn {
-            item {
-                PreferenceGroup {
-                    SwitchPreference(
-                        title = stringResource(R.string.android_display_font_scale),
-                        summary = stringResource(R.string.android_display_font_scale_reboot),
-                        defValue = fontScaleEnabled
-                    ) {
-                        fontScaleEnabled = it
-                    }
-                    TextPreference(
-                        title = stringResource(R.string.android_display_font_settings),
-                        summary = stringResource(R.string.android_display_font_settings_tips)
-                    ) {
-                        context.startActivity(
-                            Intent(Intent.ACTION_VIEW).apply {
-                                setClassName("com.android.settings", "com.android.settings.Settings\$PageLayoutActivity")
-                                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                            }
-                        )
-                    }
+            itemPreferenceGroup(
+                key = "FONT_GENERAL",
+                cardColor = cardColor
+            ) {
+                SwitchPreference(
+                    title = stringResource(R.string.android_display_font_scale),
+                    summary = stringResource(R.string.android_display_font_scale_reboot),
+                    defValue = fontScaleEnabled
+                ) {
+                    fontScaleEnabled = it
+                }
+                TextPreference(
+                    title = stringResource(R.string.android_display_font_settings),
+                    summary = stringResource(R.string.android_display_font_settings_tips)
+                ) {
+                    context.startActivity(
+                        Intent(Intent.ACTION_VIEW).apply {
+                            setClassName("com.android.settings", $$"com.android.settings.Settings$PageLayoutActivity"
+                            )
+                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        }
+                    )
                 }
             }
-            item {
-                SmallTitle(
-                    text = stringResource(R.string.android_display_font_scale_value),
-                    modifier = Modifier.padding(top = 6.dp),
-                )
+            itemPreferenceGroup(
+                key = "FONT_RATIO",
+                titleResId = R.string.android_display_font_scale_value,
+                cardColor = cardColor,
+                last = true
+            ) {
+                EditTextPreference(
+                    title = stringResource(R.string.android_display_font_scale_small),
+                    summary = "[0.50f, 1.00f)",
+                    value = fontScaleSmall,
+                    dataType = EditTextDataType.FLOAT,
+                    dialogMessage = stringResource(R.string.android_display_font_scale_msg, 0.5f, 1.0f),
+                    isValueValid = {
+                        (it as? Float ?: 0.0f) in 0.5f..<1.0f
+                    }
+                ) { _, value ->
+                    if (value is Float) fontScaleSmall = value
+                }
+                EditTextPreference(
+                    title = stringResource(R.string.android_display_font_scale_medium),
+                    summary = "[0.90f, 1.10f)",
+                    value = fontScaleMedium,
+                    dataType = EditTextDataType.FLOAT,
+                    dialogMessage = stringResource(R.string.android_display_font_scale_msg, 0.9f, 1.1f),
+                    isValueValid = {
+                        (it as? Float ?: 0.0f) in 0.9f..<1.1f
+                    }
+                ) { _, value ->
+                    if (value is Float) fontScaleMedium = value
+                }
+                EditTextPreference(
+                    title = stringResource(R.string.android_display_font_scale_large),
+                    summary = "[1.00f, 1.25f)",
+                    value = fontScaleLarge,
+                    dataType = EditTextDataType.FLOAT,
+                    dialogMessage = stringResource(R.string.android_display_font_scale_msg, 1.0f, 1.25f),
+                    isValueValid = {
+                        (it as? Float ?: 0.0f) in 1.0f..<1.25f
+                    }
+                ) { _, value ->
+                    if (value is Float) fontScaleLarge = value
+                }
+                EditTextPreference(
+                    title = stringResource(R.string.android_display_font_scale_huge),
+                    summary = "[1.10f, 1.45f)",
+                    value = fontScaleHuge,
+                    dataType = EditTextDataType.FLOAT,
+                    dialogMessage = stringResource(R.string.android_display_font_scale_msg, 1.1f, 1.45f),
+                    isValueValid = {
+                        (it as? Float ?: 0.0f) in 1.1f..<1.45f
+                    }
+                ) { _, value ->
+                    if (value is Float) fontScaleHuge = value
+                }
+                EditTextPreference(
+                    title = stringResource(R.string.android_display_font_scale_godzilla),
+                    summary = "[1.25f, 1.70f)",
+                    value = fontScaleGodzilla,
+                    dataType = EditTextDataType.FLOAT,
+                    dialogMessage = stringResource(R.string.android_display_font_scale_msg, 1.25f, 1.7f),
+                    isValueValid = {
+                        (it as? Float ?: 0.0f) in 1.25f..<1.7f
+                    }
+                ) { _, value ->
+                    if (value is Float) fontScaleGodzilla = value
+                }
+                EditTextPreference(
+                    title = stringResource(R.string.android_display_font_scale_170),
+                    summary = "[1.45f, 2.00f)",
+                    value = fontScale170,
+                    dataType = EditTextDataType.FLOAT,
+                    dialogMessage = stringResource(R.string.android_display_font_scale_msg, 1.45f, 2.0f),
+                    isValueValid = {
+                        (it as? Float ?: 0.0f) in 1.45f..<2.0f
+                    }
+                ) { _, value ->
+                    if (value is Float) fontScale170 = value
+                }
+                EditTextPreference(
+                    title = stringResource(R.string.android_display_font_scale_200),
+                    summary = "[1.70f, 2.50f)",
+                    value = fontScale200,
+                    dataType = EditTextDataType.FLOAT,
+                    dialogMessage = stringResource(R.string.android_display_font_scale_msg, 1.7f, 2.5f),
+                    isValueValid = {
+                        (it as? Float ?: 0.0f) in 1.7f..<2.5f
+                    }
+                ) { _, value ->
+                    if (value is Float) fontScale200 = value
+                }
+            }
+            itemAnimated(
+                key = "FONT_SCALE_HINT",
+            ) {
                 Hint(
-                    modifier = Modifier
-                        .padding(horizontal = 12.dp)
-                        .padding(bottom = 6.dp),
-                    text = stringResource(R.string.android_display_font_scale_hint)
+                    modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 0.dp, bottom = 12.dp),
+                    text = stringResource(R.string.android_display_font_scale_hint),
+                    closeable = true
                 )
-                PreferenceGroup {
-                    EditTextPreference(
-                        title = stringResource(R.string.android_display_font_scale_small),
-                        summary = "[0.50f, 1.00f)",
-                        defValue = fontScaleSmall,
-                        dataType = EditTextDataType.FLOAT,
-                        dialogMessage = stringResource(R.string.android_display_font_scale_msg, 0.5f, 1.0f),
-                        isValueValid = {
-                            (it as? Float ?: 0.0f) in 0.5f..<1.0f
-                        }
-                    ) { _, value ->
-                        if (value is Float) fontScaleSmall = value
-                    }
-                    EditTextPreference(
-                        title = stringResource(R.string.android_display_font_scale_medium),
-                        summary = "[0.90f, 1.10f)",
-                        defValue = fontScaleMedium,
-                        dataType = EditTextDataType.FLOAT,
-                        dialogMessage = stringResource(R.string.android_display_font_scale_msg, 0.9f, 1.1f),
-                        isValueValid = {
-                            (it as? Float ?: 0.0f) in 0.9f..<1.1f
-                        }
-                    ) { _, value ->
-                        if (value is Float) fontScaleMedium = value
-                    }
-                    EditTextPreference(
-                        title = stringResource(R.string.android_display_font_scale_large),
-                        summary = "[1.00f, 1.25f)",
-                        defValue = fontScaleLarge,
-                        dataType = EditTextDataType.FLOAT,
-                        dialogMessage = stringResource(R.string.android_display_font_scale_msg, 1.0f, 1.25f),
-                        isValueValid = {
-                            (it as? Float ?: 0.0f) in 1.0f..<1.25f
-                        }
-                    ) { _, value ->
-                        if (value is Float) fontScaleLarge = value
-                    }
-                    EditTextPreference(
-                        title = stringResource(R.string.android_display_font_scale_huge),
-                        summary = "[1.10f, 1.45f)",
-                        defValue = fontScaleHuge,
-                        dataType = EditTextDataType.FLOAT,
-                        dialogMessage = stringResource(R.string.android_display_font_scale_msg, 1.1f, 1.45f),
-                        isValueValid = {
-                            (it as? Float ?: 0.0f) in 1.1f..<1.45f
-                        }
-                    ) { _, value ->
-                        if (value is Float) fontScaleHuge = value
-                    }
-                    EditTextPreference(
-                        title = stringResource(R.string.android_display_font_scale_godzilla),
-                        summary = "[1.25f, 1.70f)",
-                        defValue = fontScaleGodzilla,
-                        dataType = EditTextDataType.FLOAT,
-                        dialogMessage = stringResource(R.string.android_display_font_scale_msg, 1.25f, 1.7f),
-                        isValueValid = {
-                            (it as? Float ?: 0.0f) in 1.25f..<1.7f
-                        }
-                    ) { _, value ->
-                        if (value is Float) fontScaleGodzilla = value
-                    }
-                    EditTextPreference(
-                        title = stringResource(R.string.android_display_font_scale_170),
-                        summary = "[1.45f, 2.00f)",
-                        defValue = fontScale170,
-                        dataType = EditTextDataType.FLOAT,
-                        dialogMessage = stringResource(R.string.android_display_font_scale_msg, 1.45f, 2.0f),
-                        isValueValid = {
-                            (it as? Float ?: 0.0f) in 1.45f..<2.0f
-                        }
-                    ) { _, value ->
-                        if (value is Float) fontScale170 = value
-                    }
-                    EditTextPreference(
-                        title = stringResource(R.string.android_display_font_scale_200),
-                        summary = "[1.70f, 2.50f)",
-                        defValue = fontScale200,
-                        dataType = EditTextDataType.FLOAT,
-                        dialogMessage = stringResource(R.string.android_display_font_scale_msg, 1.7f, 2.5f),
-                        isValueValid = {
-                            (it as? Float ?: 0.0f) in 1.7f..<2.5f
-                        }
-                    ) { _, value ->
-                        if (value is Float) fontScale200 = value
-                    }
-                }
-            }
-            item {
                 Spacer(modifier = Modifier.height(WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + 12.dp))
             }
         }

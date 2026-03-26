@@ -60,6 +60,7 @@ object ResourcesUtils : YukiBaseHooker() {
     var stat_sys_signal_0 = 0
     var notification_icon_area = 0
     var status_bar_view_state_tag = 0
+    var status_bar_icon_height = 0
     // Media control panel
     var notification_element_blend_shade_colors = 0
     var notification_element_blend_colors = 0
@@ -132,6 +133,7 @@ object ResourcesUtils : YukiBaseHooker() {
                     stat_sys_signal_0 = this.getResID("stat_sys_signal_0", "drawable", PKG_NAME)
                     notification_icon_area = this.getResID("notification_icon_area", "id", PKG_NAME)
                     status_bar_view_state_tag = this.getResID("status_bar_view_state_tag", "id", PKG_NAME)
+                    status_bar_icon_height = this.getResID("status_bar_icon_height", "dimen", PKG_NAME)
                     notification_element_blend_shade_colors = this.getResID("notification_element_blend_shade_colors", "array", PKG_NAME)
                     notification_element_blend_colors = this.getResID("notification_element_blend_colors", "array", PKG_NAME)
                     notification_item_bg_radius = this.getResID("notification_item_bg_radius", "dimen", PKG_NAME)

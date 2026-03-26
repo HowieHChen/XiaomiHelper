@@ -245,12 +245,36 @@ object Pref {
                 const val BATTERY_PERCENTAGE_OUT_VAL = "sb_font_bat_pct_out_weight"
                 const val BATTERY_PERCENTAGE_MARK = "sb_font_bat_pct_mark"
                 const val BATTERY_PERCENTAGE_MARK_VAL = "sb_font_bat_pct_mark_weight"
-//                const val STACKED_MOBILE_TYPE = "sb_font_stacked_type_single"
-                const val STACKED_MOBILE_TYPE_FONT = "sb_font_stacked_type_font"
-                const val STACKED_MOBILE_TYPE_FONT_PATH_INTERNAL = "sb_font_stacked_type_path_app"
-                const val STACKED_MOBILE_TYPE_FONT_PATH_REAL = "sb_font_stacked_type_path_real"
-                const val STACKED_MOBILE_TYPE_VAL = "sb_font_stacked_type_single_weight"
-                const val STACKED_MOBILE_TYPE_WIDTH_CONDENSED = "sb_font_stacked_type_width_condensed"
+            }
+            object StackedMobile {
+                const val ENABLED = "icon_tuner_stacked_enabled"
+
+                const val SIGNAL_SVG_SINGLE = "icon_tuner_stacked_icon_svg_single"
+                const val SIGNAL_SVG_SINGLE_VAL = "icon_tuner_stacked_icon_svg_single_val"
+                const val SIGNAL_SVG_STACKED = "icon_tuner_stacked_icon_svg_stacked"
+                const val SIGNAL_SVG_STACKED_VAL = "icon_tuner_stacked_icon_svg_stacked_val"
+                const val SIGNAL_ALPHA_FG = "icon_tuner_stacked_icon_alpha_fg"
+                const val SIGNAL_ALPHA_BG = "icon_tuner_stacked_icon_alpha_bg"
+                const val SIGNAL_ALPHA_ERROR = "icon_tuner_stacked_icon_alpha_error"
+
+                const val TYPE_FONT_MODE = "sb_font_stacked_type_font"
+                const val TYPE_FONT_PATH_INTERNAL = "sb_font_stacked_type_path_app"
+                const val TYPE_FONT_PATH_REAL = "sb_font_stacked_type_path_real"
+                const val TYPE_WIDTH_CONDENSED = "sb_font_stacked_type_width_condensed"
+
+                const val LARGE_TYPE_HIDE_WHEN_DISCONNECT = "icon_tuner_stacked_type_hide_disconnect"
+                const val LARGE_TYPE_HIDE_WHEN_WIFI = "icon_tuner_stacked_type_hide_wifi"
+                const val LARGE_TYPE_SIZE = "icon_tuner_stacked_type_size_val"
+                const val LARGE_TYPE_FONT_WEIGHT = "sb_font_stacked_type_single_weight"
+                const val LARGE_TYPE_PADDING_START_VAL = "icon_tuner_stacked_type_padding_left_val"
+                const val LARGE_TYPE_PADDING_END_VAL = "icon_tuner_stacked_type_padding_right_val"
+                const val LARGE_TYPE_VERTICAL_OFFSET = "icon_tuner_stacked_type_v_offset"
+
+                const val SMALL_TYPE_SHOW_ON_STACKED = "stacked_s_type_show_stacked"
+                const val SMALL_TYPE_SHOW_ON_SINGLE = "stacked_s_type_show_single"
+                const val SMALL_TYPE_SHOW_ROAMING = "stacked_s_type_roaming"
+                const val SMALL_TYPE_SIZE = "stacked_s_type_size"
+                const val SMALL_TYPE_FONT_WEIGHT = "stacked_s_type_weight_val"
             }
             object IconTuner {
                 const val IGNORE_SYS_SETTINGS = "statusbar_ignore_sys_hide"
@@ -289,21 +313,6 @@ object Pref {
                 const val BATTERY_PADDING_START_VAL = "icon_tuner_battery_padding_start_val"
                 const val BATTERY_PADDING_END_VAL = "icon_tuner_battery_padding_end_val"
 
-                const val ENABLE_STACKED_MOBILE_ICON = "icon_tuner_stacked_enabled"
-                const val STACKED_MOBILE_ICON_SVG_SINGLE = "icon_tuner_stacked_icon_svg_single"
-                const val STACKED_MOBILE_ICON_SVG_SINGLE_VAL = "icon_tuner_stacked_icon_svg_single_val"
-                const val STACKED_MOBILE_ICON_SVG_STACKED = "icon_tuner_stacked_icon_svg_stacked"
-                const val STACKED_MOBILE_ICON_SVG_STACKED_VAL = "icon_tuner_stacked_icon_svg_stacked_val"
-                const val STACKED_MOBILE_ICON_ALPHA_FG = "icon_tuner_stacked_icon_alpha_fg"
-                const val STACKED_MOBILE_ICON_ALPHA_BG = "icon_tuner_stacked_icon_alpha_bg"
-                const val STACKED_MOBILE_ICON_ALPHA_ERROR = "icon_tuner_stacked_icon_alpha_error"
-                const val STACKED_MOBILE_TYPE_SIZE = "icon_tuner_stacked_type_size_val"
-                const val STACKED_MOBILE_TYPE_HIDE_DISCONNECT = "icon_tuner_stacked_type_hide_disconnect"
-                const val STACKED_MOBILE_TYPE_HIDE_WIFI = "icon_tuner_stacked_type_hide_wifi"
-                const val STACKED_MOBILE_TYPE_PADDING_START_VAL = "icon_tuner_stacked_type_padding_left_val"
-                const val STACKED_MOBILE_TYPE_PADDING_END_VAL = "icon_tuner_stacked_type_padding_right_val"
-                const val STACKED_MOBILE_TYPE_VERTICAL_OFFSET = "icon_tuner_stacked_type_v_offset"
-
                 const val ICON_POSITION = "icon_tuner_position"
                 const val ICON_POSITION_VAL = "icon_tuner_position_val"
                 const val ICON_POSITION_REORDER = "icon_tuner_position_reorder"
@@ -314,6 +323,8 @@ object Pref {
 
                 const val STACKED_MOBILE_ICON = "icon_tuner_slot_stacked_icon"
                 const val STACKED_MOBILE_TYPE = "icon_tuner_slot_stacked_type"
+                const val SINGLE_MOBILE_SIM1 = "icon_tuner_slot_single_sim1"
+                const val SINGLE_MOBILE_SIM2 = "icon_tuner_slot_single_sim2"
                 const val MOBILE = "icon_tuner_slot_mobile"
                 const val NO_SIM = "icon_tuner_slot_no_sim"
                 const val AIRPLANE = "icon_tuner_slot_airplane"
@@ -620,6 +631,8 @@ object Pref {
             const val CLOCK_GEEK_FORMAT_DATE_TIME = "M d E"
             const val CLOCK_GEEK_FORMAT_CC_DATE = "M d E"
             const val CLOCK_GEEK_FORMAT_HORIZON_TIME = "H:mm M d E"
+
+            const val CELLULAR_TYPE_LIST = ",G,E,3G,H,H+,4G,4G+,,LTE,5G,5G,5G+,5GA,5G"
         }
     }
 }

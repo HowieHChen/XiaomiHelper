@@ -26,13 +26,15 @@ import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import dev.lackluster.mihelper.data.Constants
 import dev.lackluster.mihelper.data.Constants.COMPOUND_ICON_REAL_SLOTS
 import dev.lackluster.mihelper.data.Constants.IconSlots
+import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.data.Pref.Key.SystemUI.IconTuner
 import dev.lackluster.mihelper.utils.Prefs
+import kotlin.collections.listOf
 
 object IconManager : YukiBaseHooker() {
     private val iconPositionMode = Prefs.getInt(IconTuner.ICON_POSITION, 0)
     private val iconPositionAutoReorder = Prefs.getBoolean(IconTuner.ICON_POSITION_REORDER, false)
-    private val addStackedMobile = Prefs.getBoolean(IconTuner.ENABLE_STACKED_MOBILE_ICON, false)
+    private val addStackedMobile = Prefs.getBoolean(Pref.Key.SystemUI.StackedMobile.ENABLED, false)
     private val addCompoundIcon = Prefs.getInt(IconTuner.COMPOUND_ICON, 0) in 1..3
     private val leftContainer = Prefs.getInt(IconTuner.LEFT_CONTAINER, 0) != 0
     private val leftCompoundIcon = Prefs.getBoolean(IconTuner.LEFT_COMPOUND_ICON, false)
@@ -69,15 +71,14 @@ object IconManager : YukiBaseHooker() {
             }
             if (addStackedMobile) {
                 if (!slotsList.contains(IconSlots.STACKED_MOBILE_ICON)) {
-                    slotsList.add(
+                    slotsList.addAll(
                         slotsList.indexOf("mobile"),
-                        IconSlots.STACKED_MOBILE_ICON
-                    )
-                }
-                if (!slotsList.contains(IconSlots.STACKED_MOBILE_TYPE)) {
-                    slotsList.add(
-                        slotsList.indexOf(IconSlots.STACKED_MOBILE_ICON) + 1,
-                        IconSlots.STACKED_MOBILE_TYPE
+                        listOf(
+                            IconSlots.STACKED_MOBILE_TYPE,
+                            IconSlots.STACKED_MOBILE_ICON,
+                            IconSlots.SINGLE_MOBILE_SIM1,
+                            IconSlots.SINGLE_MOBILE_SIM2,
+                        )
                     )
                 }
             }
@@ -109,19 +110,17 @@ object IconManager : YukiBaseHooker() {
 
     override fun onHook() {
         val clzMiuiIconManagerUtils = "com.android.systemui.statusbar.phone.MiuiIconManagerUtils".toClassOrNull()
-        val rightBlockList = clzMiuiIconManagerUtils?.resolve()?.firstFieldOrNull {
+        val fldRightBlockList = clzMiuiIconManagerUtils?.resolve()?.firstFieldOrNull {
             name = "RIGHT_BLOCK_LIST"
             modifiers(Modifiers.STATIC)
         }
-        val controlCenterBlockList = clzMiuiIconManagerUtils?.resolve()?.firstFieldOrNull {
+        val fldControlCenterBlockList = clzMiuiIconManagerUtils?.resolve()?.firstFieldOrNull {
             name = "CONTROL_CENTER_BLOCK_LIST"
             modifiers(Modifiers.STATIC)
         }
-        val listStatusBar = rightBlockList?.copy()?.get<List<String>>()?.toMutableList() ?: return
-        val listControlCenter = controlCenterBlockList?.copy()?.get<List<String>>()?.toMutableList() ?: return
+        val statusBarBlockList = fldRightBlockList?.copy()?.get<List<String>>()?.toMutableList() ?: return
+        val controlCenterBlockList = fldControlCenterBlockList?.copy()?.get<List<String>>()?.toMutableList() ?: return
         mapOf(
-            IconSlots.STACKED_MOBILE_ICON to IconTuner.STACKED_MOBILE_ICON,
-            IconSlots.STACKED_MOBILE_TYPE to IconTuner.STACKED_MOBILE_TYPE,
 //            "mobile" to IconTuner.MOBILE,
 //            "demo_mobile" to IconTuner.MOBILE,
             "no_sim" to IconTuner.NO_SIM,
@@ -159,8 +158,8 @@ object IconManager : YukiBaseHooker() {
             handleIcon(
                 Prefs.getInt(key, 0),
                 slot,
-                listStatusBar,
-                listControlCenter
+                statusBarBlockList,
+                controlCenterBlockList
             )
         }
         if (addCompoundIcon) {
@@ -174,20 +173,35 @@ object IconManager : YukiBaseHooker() {
                 handleIcon(
                     Prefs.getInt(key, 0),
                     slot,
-                    listStatusBar,
-                    listControlCenter
+                    statusBarBlockList,
+                    controlCenterBlockList
+                )
+            }
+        }
+        if (addStackedMobile) {
+            mapOf(
+                IconSlots.STACKED_MOBILE_ICON to IconTuner.STACKED_MOBILE_ICON,
+                IconSlots.STACKED_MOBILE_TYPE to IconTuner.STACKED_MOBILE_TYPE,
+                IconSlots.SINGLE_MOBILE_SIM1 to IconTuner.SINGLE_MOBILE_SIM1,
+                IconSlots.SINGLE_MOBILE_SIM2 to IconTuner.SINGLE_MOBILE_SIM2,
+            ).forEach { (slot, key) ->
+                handleIcon(
+                    Prefs.getInt(key, 0),
+                    slot,
+                    statusBarBlockList,
+                    controlCenterBlockList
                 )
             }
         }
         if (leftContainer) {
             leftSlots.forEach {
-                if (!listStatusBar.contains(it)) {
-                    listStatusBar.add(it)
+                if (!statusBarBlockList.contains(it)) {
+                    statusBarBlockList.add(it)
                 }
             }
         }
-        rightBlockList.copy().set(listStatusBar)
-        controlCenterBlockList.copy().set(listControlCenter)
+        fldRightBlockList.copy().set(statusBarBlockList)
+        fldControlCenterBlockList.copy().set(controlCenterBlockList)
         if (iconPositionMode != 0 || addCompoundIcon || iconPositionAutoReorder) {
             "com.android.systemui.statusbar.phone.ui.StatusBarIconList".toClassOrNull()?.apply {
                 resolve().firstConstructorOrNull {
@@ -196,8 +210,14 @@ object IconManager : YukiBaseHooker() {
                     before {
                         this.args(0).set(
                             if (iconPositionAutoReorder) {
+                                val stackedMobileSlots = listOf(
+                                    IconSlots.STACKED_MOBILE_TYPE,
+                                    IconSlots.STACKED_MOBILE_ICON,
+                                    IconSlots.SINGLE_MOBILE_SIM1,
+                                    IconSlots.SINGLE_MOBILE_SIM2,
+                                )
                                 finalSlots.sortedBy {
-                                    it !in listStatusBar
+                                    (it !in statusBarBlockList) || (it in stackedMobileSlots)
                                 }.toTypedArray()
                             } else {
                                 finalSlots

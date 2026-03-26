@@ -13,10 +13,11 @@ import dev.lackluster.mihelper.BuildConfig
 import dev.lackluster.mihelper.data.Constants
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils
+import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.status_bar_icon_height
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzStatusBarIconControllerImpl
-import dev.lackluster.mihelper.hook.rules.systemui.compat.Flow
-import dev.lackluster.mihelper.hook.rules.systemui.compat.Flow.collectFlow
+import dev.lackluster.mihelper.hook.rules.systemui.compat.FlowCompat
+import dev.lackluster.mihelper.hook.rules.systemui.compat.FlowCompat.collectFlow
 import dev.lackluster.mihelper.hook.rules.systemui.compat.IconControllerCompat
 import dev.lackluster.mihelper.hook.rules.systemui.compat.MutableStateFlowCompat
 import dev.lackluster.mihelper.hook.rules.systemui.compat.ReadonlyStateFlowCompat
@@ -27,27 +28,13 @@ import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.roundToInt
 
 object StackedMobileIcon : YukiBaseHooker() {
-    private val enabled = Prefs.getBoolean(Pref.Key.SystemUI.IconTuner.ENABLE_STACKED_MOBILE_ICON, false)
-    // MobileType
-    private val typeHideWhenDisconnect = Prefs.getBoolean(Pref.Key.SystemUI.IconTuner.STACKED_MOBILE_TYPE_HIDE_DISCONNECT, true)
-    private val typeHideWhenWifi = Prefs.getBoolean(Pref.Key.SystemUI.IconTuner.STACKED_MOBILE_TYPE_HIDE_WIFI, true)
+    private val enabled = Prefs.getBoolean(Pref.Key.SystemUI.StackedMobile.ENABLED, false)
 
     private val simCacheMap = HashMap<Int, SimPipelineCache>()
     private val flowJobs = mutableListOf<Any?>()
 
-    private var relayJobSim1Signal: Any? = null
-    private var relayJobSim1NetType: Any? = null
-    private var relayJobSim2Signal: Any? = null
-    private var relayJobSim2NetType: Any? = null
-
-    private val proxySim1Signal by lazy { MutableStateFlowCompat(-2) } // -2表示未插卡，-1无服务，0-4正常
-    private val proxySim1NetType by lazy { MutableStateFlowCompat("") }
-
-    private val proxySim2Signal by lazy { MutableStateFlowCompat(-2) } // -2表示未插卡，-1无服务，0-4正常
-    private val proxySim2NetType by lazy { MutableStateFlowCompat("") }
-
-    private val proxyStackedSignal by lazy { MutableStateFlowCompat("") } // 信号图标 Key
-    private val proxyStackedNetType by lazy { MutableStateFlowCompat("") } // 网络类型文本
+    private var relaySim1ConnectionInfo: Any? = null
+    private var relaySim2ConnectionInfo: Any? = null
 
     val clzMiuiMobileIconVMImpl by lazy {
         "com.android.systemui.statusbar.pipeline.mobile.ui.viewmodel.MiuiMobileIconVMImpl".toClassOrNull()
@@ -84,6 +71,11 @@ object StackedMobileIcon : YukiBaseHooker() {
     private val metIsInService by lazy {
         clzMobileIconInteractor?.resolve()?.firstMethodOrNull {
             name = "isInService"
+        }?.self?.apply { makeAccessible() }
+    }
+    private val metIsRoaming by lazy {
+        clzMobileIconInteractor?.resolve()?.firstMethodOrNull {
+            name = "isRoaming"
         }?.self?.apply { makeAccessible() }
     }
 
@@ -193,19 +185,20 @@ object StackedMobileIcon : YukiBaseHooker() {
             }?.hook {
                 after {
                     val slot = fldSlot?.get(this.instance) as? String ?: return@after
-                    if (
-                        slot == Constants.IconSlots.STACKED_MOBILE_TYPE ||
-                        slot == Constants.IconSlots.STACKED_MOBILE_ICON
-                    ) {
-                        val iconView = this.instance<ImageView>()
-                        metGetTint?.invoke<Int>(
-                            this.args(0).list<Any?>(),
-                            iconView,
-                            this.args(2).int()
-                        )?.let { tint ->
+                    when (slot) {
+                        Constants.IconSlots.STACKED_MOBILE_TYPE, Constants.IconSlots.STACKED_MOBILE_ICON,
+                        Constants.IconSlots.SINGLE_MOBILE_SIM1, Constants.IconSlots.SINGLE_MOBILE_SIM2,
+                            -> {
+                            val iconView = this.instance<ImageView>()
+                            metGetTint?.invoke<Int>(
+                                this.args(0).list<Any?>(),
+                                iconView,
+                                this.args(2).int()
+                            )?.let { tint ->
 //                            iconView.imageTintList = ColorStateList.valueOf(tint)
-                            iconView.setColorFilter(tint, PorterDuff.Mode.SRC_IN)
-                            metSetDecorColor?.invoke(iconView, tint)
+                                iconView.setColorFilter(tint, PorterDuff.Mode.SRC_IN)
+                                metSetDecorColor?.invoke(iconView, tint)
+                            }
                         }
                     }
                 }
@@ -226,71 +219,53 @@ object StackedMobileIcon : YukiBaseHooker() {
                     val iconController = fldIconController?.get(this.instance) ?: return@after
                     val coroutineScope = fldScope?.get(this.instance) ?: return@after
                     val context = fldContext?.get(iconController) as? Context ?: return@after
-                    // 刷新信号图标
-                    val renderSignalUI = { mobileIconKey: String? ->
-                        val icon = mobileIconKey?.takeIf { it.isNotEmpty() }?.let { key ->
-                            StackedMobileIconCache.getSignalIcon(context, key)
-                        }
+                    // 刷新图标通用方法
+                    val renderIcon = { slot: String, state: CellularIconState ->
+                        val icon = CellularIconRenderEngine.getIcon(context, state)
                         if (icon != null) {
-                            updateMobileIcon(iconController, Constants.IconSlots.STACKED_MOBILE_ICON, icon)
-                            IconControllerCompat.setIconVisibility(
-                                iconController,
-                                Constants.IconSlots.STACKED_MOBILE_ICON,
-                                true
-                            )
+                            updateMobileIcon(iconController, slot, icon)
+                            IconControllerCompat.setIconVisibility(iconController, slot, true)
                         } else {
-                            IconControllerCompat.setIconVisibility(
-                                iconController,
-                                Constants.IconSlots.STACKED_MOBILE_ICON,
-                                false
-                            )
-                        }
-                    }
-                    // 刷新网络类型
-                    val renderNetTypeUI = { mobileTypeStr: String? ->
-                        val icon = mobileTypeStr?.takeIf { it.isNotEmpty() }?.let { key ->
-                            StackedMobileIconCache.getTypeIcon(context, key)
-                        }
-                        if (icon != null) {
-                            updateMobileIcon(iconController, Constants.IconSlots.STACKED_MOBILE_TYPE, icon)
-                            IconControllerCompat.setIconVisibility(
-                                iconController,
-                                Constants.IconSlots.STACKED_MOBILE_TYPE,
-                                true
-                            )
-                        } else {
-                            IconControllerCompat.setIconVisibility(
-                                iconController,
-                                Constants.IconSlots.STACKED_MOBILE_TYPE,
-                                false
-                            )
+                            IconControllerCompat.setIconVisibility(iconController, slot, false)
                         }
                     }
                     // 初始化图标缓存
                     HostExecutor.execute(
                         tag = "PRELOAD_STACKED_MOBILE_SVG",
                         backgroundTask = {
-                            StackedMobileIconCache.preload(context.applicationContext) // 随便返回一个非 null 的值，触发 onResult
+                            CellularIconRenderEngine.preload(context.applicationContext, status_bar_icon_height)
                         },
-                        runOnMain = true, // 解析完切回主线程
+                        runOnMain = true,
                         onResult = {
                             // 数据在图标就绪前到达，补一次刷新
-                            renderSignalUI(proxyStackedSignal.getValue())
-                            renderNetTypeUI(proxyStackedNetType.getValue())
+                            CellularIconInteractor.proxyStackedSignal.getValue()?.let { it1 ->
+                                renderIcon(Constants.IconSlots.STACKED_MOBILE_ICON, it1)
+                            }
+                            CellularIconInteractor.proxyStandaloneNetType.getValue()?.let { it1 ->
+                                renderIcon(Constants.IconSlots.STACKED_MOBILE_TYPE, it1)
+                            }
+                            CellularIconInteractor.proxySim1Signal.getValue()?.let { it1 ->
+                                renderIcon(Constants.IconSlots.SINGLE_MOBILE_SIM1, it1)
+                            }
+                            CellularIconInteractor.proxySim2Signal.getValue()?.let { it1 ->
+                                renderIcon(Constants.IconSlots.SINGLE_MOBILE_SIM2, it1)
+                            }
+
                         }
                     )
-                    proxyStackedSignal.collectFlow(coroutineScope) { mobileIconKey ->
-                        YLog.info("proxyStackedSignal $mobileIconKey")
-                        renderSignalUI(mobileIconKey)
-                    }.let {
-                        flowJobs.add(it)
-                    }
-                    proxyStackedNetType.collectFlow(coroutineScope) { mobileTypeStr ->
-                        YLog.info("proxyStackedNetType $mobileTypeStr")
-                        renderNetTypeUI(mobileTypeStr)
-                    }.let {
-                        flowJobs.add(it)
-                    }
+                    // 启动刷新图标的 Flow
+                    CellularIconInteractor.proxyStackedSignal.collectFlow(coroutineScope) {
+                        renderIcon(Constants.IconSlots.STACKED_MOBILE_ICON, it)
+                    }.let { flowJobs.add(it) }
+                    CellularIconInteractor.proxyStandaloneNetType.collectFlow(coroutineScope) {
+                        renderIcon(Constants.IconSlots.STACKED_MOBILE_TYPE, it)
+                    }.let { flowJobs.add(it) }
+                    CellularIconInteractor.proxySim1Signal.collectFlow(coroutineScope) {
+                        renderIcon(Constants.IconSlots.SINGLE_MOBILE_SIM1, it)
+                    }.let { flowJobs.add(it) }
+                    CellularIconInteractor.proxySim2Signal.collectFlow(coroutineScope) {
+                        renderIcon(Constants.IconSlots.SINGLE_MOBILE_SIM2, it)
+                    }.let { flowJobs.add(it) }
                 }
             }
         }
@@ -330,46 +305,20 @@ object StackedMobileIcon : YukiBaseHooker() {
                         }
                     } ?: return@after
                     val defaultDataSubId = fldInteractor?.copy()?.of(this.instance)?.get()?.let {
-                        metGetDefaultDataSubId?.invoke(it)
+                        metGetDefaultDataSubId?.invoke(it)?.let { it1 ->
+                            ReadonlyStateFlowCompat<Int>().of(it1)
+                        }
                     } ?: return@after
+                    // 初始化 CellularIconInteractor
+                    CellularIconInteractor.start(coroutineScope)
+                    // CellularIconInteractor 内的全局变量
+                    isAirplaneMode.collectFlow(coroutineScope) {
+                        CellularIconInteractor.isAirplaneMode.setValue(it)
+                    }.let { flowJobs.add(it) }
+                    defaultDataSubId.collectFlow(coroutineScope) {
+                        CellularIconInteractor.defaultDataSubId.setValue(it)
+                    }.let { flowJobs.add(it) }
                     // 双卡数据合并规则
-                    Flow.combineFlows(
-                        scope = coroutineScope,
-                        src1 = proxySim1Signal, defValue1 = -2,
-                        src2 = proxySim2Signal, defValue2 = -2,
-                        src3 = isAirplaneMode, defValue3 = false,
-                        dst = proxyStackedSignal
-                    ) { signal1, signal2, airplaneMode ->
-                        if (airplaneMode || (signal1 == -2 && signal2 == -2)) {
-                            ""
-                        } else if (signal1 == -2) {
-                            signal2.toString()
-                        } else if (signal2 == -2) {
-                            signal1.toString()
-                        } else {
-                            "${signal1}_${signal2}"
-                        }
-                    }.let {
-                        flowJobs.addAll(it)
-                    }
-                    Flow.combineFlows(
-                        scope = coroutineScope,
-                        src1 = proxySim1NetType,
-                        defValue1 = "",
-                        src2 = proxySim2NetType,
-                        defValue2 = "",
-                        src3 = isAirplaneMode,
-                        defValue3 = false,
-                        dst = proxyStackedNetType
-                    ) { type1, type2, airplaneMode ->
-                        if (airplaneMode || (type1.isEmpty() && type2.isEmpty())) {
-                            ""
-                        } else {
-                            type1.ifEmpty { type2 }
-                        }
-                    }.let {
-                        flowJobs.addAll(it)
-                    }
                     mobileSubViewModels.collectFlow(coroutineScope) { vms ->
                         val subIds = vms.mapNotNull {
                             it?.let { it1 -> fldSubscriptionId?.get(it1) } as? Int
@@ -392,32 +341,30 @@ object StackedMobileIcon : YukiBaseHooker() {
                                 val showName = fldShowName?.get(miuiMobileIconVMImpl) ?: return@forEach
                                 val miuiInteractor = fldIconInteractor?.get(miuiMobileIconVMImpl) ?: return@forEach
                                 val originInteractor = fldOriginIconInteractor?.get(miuiMobileIconVMImpl) ?: return@forEach
-                                simCacheMap[subId] = SimPipelineCache(subId, coroutineScope, defaultDataSubId, showName, miuiInteractor, originInteractor)
+                                simCacheMap[subId] = SimPipelineCache(subId, coroutineScope, showName, miuiInteractor, originInteractor)
                             }
                         }
                         // 3. 动态路由：把缓存池里的数据“接线”到固定的 Proxy 流
                         val subId1 = subIds.getOrNull(0)
                         val subId2 = subIds.getOrNull(1)
 
-                        Flow.cancelJob(relayJobSim1Signal)
-                        Flow.cancelJob(relayJobSim1NetType)
+                        FlowCompat.cancelJob(relaySim1ConnectionInfo)
                         if (subId1 != null && simCacheMap[subId1] != null) {
                             val cache1 = simCacheMap[subId1]!!
-                            relayJobSim1Signal = cache1.signalLevelResult.collectFlow(coroutineScope) { proxySim1Signal.setValue(it) }
-                            relayJobSim1NetType = cache1.mobileTypeResult.collectFlow(coroutineScope) { proxySim1NetType.setValue(it) }
+                            cache1.simConnectionInfo.collectFlow(coroutineScope) {
+                                CellularIconInteractor.sim1ConnectionInfo.setValue(it)
+                            }.let { relaySim1ConnectionInfo = it }
                         } else {
-                            proxySim1Signal.setValue(-2)
-                            proxySim1NetType.setValue("")
+                            CellularIconInteractor.sim1ConnectionInfo.setValue(defSimConnectionInfo)
                         }
-                        Flow.cancelJob(relayJobSim2Signal)
-                        Flow.cancelJob(relayJobSim2NetType)
+                        FlowCompat.cancelJob(relaySim2ConnectionInfo)
                         if (subId2 != null && simCacheMap[subId2] != null) {
                             val cache2 = simCacheMap[subId2]!!
-                            relayJobSim2Signal = cache2.signalLevelResult.collectFlow(coroutineScope) { proxySim2Signal.setValue(it) }
-                            relayJobSim2NetType = cache2.mobileTypeResult.collectFlow(coroutineScope) { proxySim2NetType.setValue(it) }
+                            cache2.simConnectionInfo.collectFlow(coroutineScope) {
+                                CellularIconInteractor.sim2ConnectionInfo.setValue(it)
+                            }?.let { relaySim2ConnectionInfo = it }
                         } else {
-                            proxySim2Signal.setValue(-2)
-                            proxySim2NetType.setValue("")
+                            CellularIconInteractor.sim2ConnectionInfo.setValue(defSimConnectionInfo)
                         }
                     }.let {
                         flowJobs.add(it)
@@ -455,91 +402,70 @@ object StackedMobileIcon : YukiBaseHooker() {
     class SimPipelineCache(
         val subId: Int,
         coroutineScope: Any,
-        defaultDataSubIdFlow: Any,
         mobileTypeNameFlow: Any,
         miuiInteractor: Any,
         originInteractor: Any,
     ) {
-        val signalLevelResult = MutableStateFlowCompat(-2)  // -2: 未插卡; -1: 异常/无服务; 0-4: 重映射后的信号强度
-        val mobileTypeResult = MutableStateFlowCompat("")   // 空串: 不显示; 非空串: 当前的网络类型文本
+        val simConnectionInfo = MutableStateFlowCompat(defSimConnectionInfo)
 
         private val jobs = mutableListOf<Any?>()
 
         init {
-            val signalLevelIcon = metGetSignalLevelIcon?.invoke(originInteractor)?.let { ReadonlyStateFlowCompat<Any?>().of(it) }
-            val isInService = metIsInService?.invoke(originInteractor)?.let { ReadonlyStateFlowCompat<Boolean>().of(it) }
-            // 信号图标
-            if (signalLevelIcon != null && isInService != null) {
-                Flow.combineFlows(
-                    scope = coroutineScope,
-                    src1 = signalLevelIcon,
-                    defValue1 = null,
-                    src2 = isInService,
-                    defValue2 = false,
-                    dst = signalLevelResult
-                ) { signalIconModel, inService ->
-                    if (!inService || signalIconModel == null || clzSignalIconModelCellular?.isInstance(
-                            signalIconModel
-                        ) != true
-                    ) {
-                        return@combineFlows -1
-                    }
-                    val levelNow = fldLevel?.getInt(signalIconModel)
-                    val levelAll = fldNumberOfLevels?.getInt(signalIconModel)
-                    if (levelNow == null || levelAll == null) {
-                        return@combineFlows -1
-                    }
-                    return@combineFlows if (levelNow <= 0 || levelAll <= 0) {
-                        0
-                    } else if (levelNow >= levelAll) {
-                        4
-                    } else {
-                        ((levelNow * 4.0f) / levelAll).roundToInt()
-                    }
-                }.let {
-                    jobs.addAll(it)
-                }
-            }
-            val defaultDataSubId = defaultDataSubIdFlow.let { ReadonlyStateFlowCompat<Int>().of(it) }
-            val isDataConnected = metIsDataConnected?.invoke(originInteractor)?.let { ReadonlyStateFlowCompat<Boolean>().of(it) }
+            // CellularIconInteractor 内的全局变量
             val wifiAvailable = fldWifiAvailable?.get(miuiInteractor)?.let { ReadonlyStateFlowCompat<Boolean>().of(it) }
+            wifiAvailable?.collectFlow(coroutineScope) {
+                CellularIconInteractor.isWifiAvailable.setValue(it)
+            }?.let { jobs.add(it) }
+            // 组装 SimConnectionInfo
             val mobileTypeName = mobileTypeNameFlow.let { ReadonlyStateFlowCompat<String>().of(it) }
-            // 网络类型
-            if (isDataConnected != null && isInService != null && wifiAvailable != null) {
-                Flow.combineFlows(
+            val signalLevelIcon = metGetSignalLevelIcon?.invoke(originInteractor)?.let { ReadonlyStateFlowCompat<Any?>().of(it) }
+            val isDataConnected = metIsDataConnected?.invoke(originInteractor)?.let { ReadonlyStateFlowCompat<Boolean>().of(it) }
+            val isInService = metIsInService?.invoke(originInteractor)?.let { ReadonlyStateFlowCompat<Boolean>().of(it) }
+            val isRoaming = metIsRoaming?.invoke(originInteractor)?.let { ReadonlyStateFlowCompat<Boolean>().of(it) }
+            if (signalLevelIcon != null && isDataConnected != null && isInService != null && isRoaming != null) {
+                FlowCompat.combineFlows(
                     scope = coroutineScope,
-                    src1 = defaultDataSubId,
-                    defValue1 = -1,
-                    src2 = isDataConnected,
-                    defValue2 = false,
-                    src3 = isInService,
-                    defValue3 = false,
-                    src4 = wifiAvailable,
-                    defValue4 = false,
-                    src5 = mobileTypeName,
-                    defValue5 = "",
-                    dst = mobileTypeResult
-                ) { defDataSubId, connected, inService, wifi, typeName ->
-                    YLog.info("subId $subId defDataSubId $defDataSubId connected $connected inService $inService wifi $wifi typeName $typeName")
-                    if (defDataSubId != subId || !inService) {
-                        return@combineFlows ""
+                    src1 = mobileTypeName,  defValue1 = "",
+                    src2 = signalLevelIcon, defValue2 = null,
+                    src3 = isDataConnected, defValue3 = false,
+                    src4 = isInService,     defValue4 = false,
+                    src5 = isRoaming,       defValue5 = false,
+                    dst = simConnectionInfo
+                ) { typeName, signalIconModel, connected, inService, roaming ->
+                    val signalLevel: SignalLevel
+                    if (signalIconModel == null || clzSignalIconModelCellular?.isInstance(signalIconModel) != true) {
+                        signalLevel = SignalLevel.NO_SERVICE
+                    } else if (!inService) {
+                        signalLevel = SignalLevel.NO_SERVICE
+                    } else {
+                        val levelNow = fldLevel?.getInt(signalIconModel)
+                        val levelAll = fldNumberOfLevels?.getInt(signalIconModel)
+                        signalLevel = if (levelNow == null || levelAll == null) {
+                            SignalLevel.NO_SERVICE
+                        } else if (levelNow <= 0 || levelAll <= 0) {
+                            SignalLevel(0)
+                        } else if (levelNow >= levelAll) {
+                            SignalLevel(4)
+                        } else {
+                            SignalLevel(
+                                ((levelNow * SignalLevel.MAX_LEVEL.value) / levelAll.toFloat()).roundToInt()
+                            )
+                        }
                     }
-                    if (
-                        (!connected && typeHideWhenDisconnect) ||
-                        (wifi && typeHideWhenWifi)
-                    ) {
-                        return@combineFlows ""
-                    }
-                    return@combineFlows typeName
-                }.let {
-                    jobs.addAll(it)
-                }
+                    SimConnectionInfo(
+                        subId = subId,
+                        signalLevel = signalLevel,
+                        networkType = typeName,
+                        isRoaming = roaming,
+                        isDataConnected = connected
+                    )
+                }.let { jobs.addAll(it) }
             }
         }
 
         fun destroy() {
             jobs.forEach { job ->
-                Flow.cancelJob(job)
+                FlowCompat.cancelJob(job)
             }
             jobs.clear()
         }

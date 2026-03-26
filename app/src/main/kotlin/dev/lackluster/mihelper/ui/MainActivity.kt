@@ -5,6 +5,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableFloatState
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableFloatStateOf
@@ -15,7 +17,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.NavEntry
 import dev.lackluster.hyperx.compose.activity.HyperXActivity
 import dev.lackluster.hyperx.compose.activity.SafeSP
@@ -37,12 +41,13 @@ import dev.lackluster.mihelper.ui.page.MiuiHomePage
 import dev.lackluster.mihelper.ui.page.ModuleSettingsPage
 import dev.lackluster.mihelper.ui.page.OthersPage
 import dev.lackluster.mihelper.ui.page.SecurityCenterPage
-import dev.lackluster.mihelper.ui.page.StackedMobileTunerPage
 import dev.lackluster.mihelper.ui.page.StatusBarClockPage
 import dev.lackluster.mihelper.ui.page.StatusBarFontPage
 import dev.lackluster.mihelper.ui.page.SystemFrameworkPage
 import dev.lackluster.mihelper.ui.page.SystemUIPage
 import dev.lackluster.mihelper.ui.page.UITestPage
+import dev.lackluster.mihelper.ui.provider.LocalStackedMobileViewModel
+import dev.lackluster.mihelper.ui.viewmodel.StackedMobileIconViewModel
 import dev.lackluster.mihelper.utils.Device
 import dev.lackluster.mihelper.utils.ShellUtils
 import dev.lackluster.mihelper.utils.factory.getSP
@@ -66,71 +71,81 @@ class MainActivity : HyperXActivity() {
 
     @Composable
     override fun AppContent() {
-        HyperXApp(
-            autoSplitView = splitEnabled,
-            mainPageContent = { navigator, adjustPadding, mode ->
-                MainPage(navigator, adjustPadding, mode)
-            },
-            emptyPageContent = {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    val foregroundColor: Color
-                    val backgroundColor: Color
-                    MiuixTheme.colorScheme.onBackground.let {
-                        if (it.luminance() >= 0.5f) {
-                            foregroundColor = it.copy(alpha = 0.2f)
-                            backgroundColor = it.copy(alpha = 0.12f)
-                        } else {
-                            foregroundColor = it.copy(alpha = 0.1f)
-                            backgroundColor = it.copy(alpha = 0.06f)
+        val stackedMobileIconVM: StackedMobileIconViewModel = viewModel()
+        val appContext = LocalContext.current.applicationContext
+
+        LaunchedEffect(Unit) {
+            stackedMobileIconVM.preload(appContext)
+        }
+
+        CompositionLocalProvider(
+            LocalStackedMobileViewModel provides stackedMobileIconVM
+        ) {
+            HyperXApp(
+                autoSplitView = splitEnabled,
+                mainPageContent = { navigator, adjustPadding, mode ->
+                    MainPage(navigator, adjustPadding, mode)
+                },
+                emptyPageContent = {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        val foregroundColor: Color
+                        val backgroundColor: Color
+                        MiuixTheme.colorScheme.onBackground.let {
+                            if (it.luminance() >= 0.5f) {
+                                foregroundColor = it.copy(alpha = 0.2f)
+                                backgroundColor = it.copy(alpha = 0.12f)
+                            } else {
+                                foregroundColor = it.copy(alpha = 0.1f)
+                                backgroundColor = it.copy(alpha = 0.06f)
+                            }
+                        }
+                        Image(
+                            modifier = Modifier.fillMaxSize(),
+                            painter = painterResource(R.drawable.empty_page_background),
+                            contentDescription = null,
+                            colorFilter = ColorFilter.tint(backgroundColor),
+                            contentScale = ContentScale.Crop
+                        )
+                        Image(
+                            modifier = Modifier.fillMaxSize(),
+                            painter = painterResource(R.drawable.empty_page_foreground),
+                            contentDescription = null,
+                            colorFilter = ColorFilter.tint(foregroundColor),
+                            contentScale = ContentScale.Inside
+                        )
+                    }
+                },
+                otherPageEntryProvider = { key, navigator, adjustPadding, mode ->
+                    NavEntry(key) {
+                        when (key) {
+                            is Route.ModuleSettings -> ModuleSettingsPage(navigator, adjustPadding, mode)
+                            is Route.SystemUI -> SystemUIPage(navigator, adjustPadding, mode)
+                            is Route.SystemFramework -> SystemFrameworkPage(navigator, adjustPadding, mode)
+                            is Route.MiuiHome -> MiuiHomePage(navigator, adjustPadding, mode)
+                            is Route.CleanMaster -> CleanMasterPage(navigator, adjustPadding, mode)
+                            is Route.SecurityCenter -> SecurityCenterPage(navigator, adjustPadding, mode)
+                            is Route.Others -> OthersPage(navigator, adjustPadding, mode)
+                            is Route.About -> AboutPage(navigator, adjustPadding, mode)
+                            is Route.Menu -> MenuPage(navigator, adjustPadding, mode)
+                            is Route.DevUITest -> UITestPage(navigator, adjustPadding, mode)
+                            is Route.StatusBarClock -> StatusBarClockPage(navigator, adjustPadding, mode)
+                            is Route.StatusBarFont -> StatusBarFontPage(navigator, adjustPadding, mode)
+                            is Route.IconTuner -> IconTunerPage(navigator, adjustPadding, mode)
+                            is Route.IconDetail -> IconDetailPage(navigator, adjustPadding, mode)
+                            is Route.MediaControl -> MediaControlPage(navigator, adjustPadding, mode, false)
+                            is Route.IslandMediaControl -> MediaControlPage(navigator, adjustPadding, mode, true)
+                            is Route.DialogSearchCustomEngine -> SearchCustomEngineDialog(navigator, adjustPadding, mode)
+                            is Route.DialogStatusBarIconPosition -> StatusBarIconPositionDialog(navigator, adjustPadding, mode)
+                            is Route.DevUITest2 -> MediaActionResizePage(navigator, adjustPadding, "MediaActionResizePage", mode = mode)
+                            else -> {}
                         }
                     }
-                    Image(
-                        modifier = Modifier.fillMaxSize(),
-                        painter = painterResource(R.drawable.empty_page_background),
-                        contentDescription = null,
-                        colorFilter = ColorFilter.tint(backgroundColor),
-                        contentScale = ContentScale.Crop
-                    )
-                    Image(
-                        modifier = Modifier.fillMaxSize(),
-                        painter = painterResource(R.drawable.empty_page_foreground),
-                        contentDescription = null,
-                        colorFilter = ColorFilter.tint(foregroundColor),
-                        contentScale = ContentScale.Inside
-                    )
                 }
-            },
-            otherPageEntryProvider = { key, navigator, adjustPadding, mode ->
-                NavEntry(key) {
-                    when (key) {
-                        is Route.ModuleSettings -> ModuleSettingsPage(navigator, adjustPadding, mode)
-                        is Route.SystemUI -> SystemUIPage(navigator, adjustPadding, mode)
-                        is Route.SystemFramework -> SystemFrameworkPage(navigator, adjustPadding, mode)
-                        is Route.MiuiHome -> MiuiHomePage(navigator, adjustPadding, mode)
-                        is Route.CleanMaster -> CleanMasterPage(navigator, adjustPadding, mode)
-                        is Route.SecurityCenter -> SecurityCenterPage(navigator, adjustPadding, mode)
-                        is Route.Others -> OthersPage(navigator, adjustPadding, mode)
-                        is Route.About -> AboutPage(navigator, adjustPadding, mode)
-                        is Route.Menu -> MenuPage(navigator, adjustPadding, mode)
-                        is Route.DevUITest -> UITestPage(navigator, adjustPadding, mode)
-                        is Route.StatusBarClock -> StatusBarClockPage(navigator, adjustPadding, mode)
-                        is Route.StatusBarFont -> StatusBarFontPage(navigator, adjustPadding, mode)
-                        is Route.IconTuner -> IconTunerPage(navigator, adjustPadding, mode)
-                        is Route.IconDetail -> IconDetailPage(navigator, adjustPadding, mode)
-                        is Route.MediaControl -> MediaControlPage(navigator, adjustPadding, mode, false)
-                        is Route.IslandMediaControl -> MediaControlPage(navigator, adjustPadding, mode, true)
-                        is Route.StackedMobileTuner -> StackedMobileTunerPage(navigator, adjustPadding, mode)
-                        is Route.DialogSearchCustomEngine -> SearchCustomEngineDialog(navigator, adjustPadding, mode)
-                        is Route.DialogStatusBarIconPosition -> StatusBarIconPositionDialog(navigator, adjustPadding, mode)
-                        is Route.DevUITest2 -> MediaActionResizePage(navigator, adjustPadding, "MediaActionResizePage", mode = mode)
-                        else -> {}
-                    }
-                }
-            }
-        )
+            )
+        }
     }
 
     private fun initAndCheck() {

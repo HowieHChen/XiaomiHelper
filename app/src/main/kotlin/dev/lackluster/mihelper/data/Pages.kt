@@ -21,8 +21,6 @@ sealed interface Route : NavKey {
     @Serializable data object IconDetail : Route
     @Serializable data object MediaControl : Route
     @Serializable data object IslandMediaControl : Route
-    @Serializable data object StackedMobileTuner : Route
-
     @Serializable data object DevUITest : Route
     @Serializable data object DevUITest2 : Route
 

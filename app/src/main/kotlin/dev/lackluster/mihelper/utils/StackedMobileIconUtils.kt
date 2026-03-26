@@ -1,9 +1,11 @@
 package dev.lackluster.mihelper.utils
 
 import android.graphics.Picture
+import android.graphics.PointF
 import com.caverock.androidsvg.RenderOptions
 import com.caverock.androidsvg.SVG
 import com.caverock.androidsvg.SVGParseException
+import com.caverock.androidsvg.SvgAnchorExtractor
 import com.highcapable.yukihookapi.hook.log.YLog
 
 object StackedMobileIconUtils {
@@ -31,6 +33,7 @@ object StackedMobileIconUtils {
             for (sim1Level in signalRange) {
                 for (sim2Level in signalRange) {
                     val cssBuilder = StringBuilder()
+                    cssBuilder.append("#type_container { display: none !important; } ")
                     appendCssForSignal(cssBuilder, "signal_1", sim1Level, alphaFilled, alphaBackground, alphaError)
                     appendCssForSignal(cssBuilder, "signal_2", sim2Level, alphaFilled, alphaBackground, alphaError)
                     val renderOptions = RenderOptions().css(cssBuilder.toString())
@@ -67,6 +70,7 @@ object StackedMobileIconUtils {
             val signalRange = -1..4
             for (level in signalRange) {
                 val cssBuilder = StringBuilder()
+                cssBuilder.append("#type_container { display: none !important; } ")
                 appendCssForSignal(cssBuilder, "signal", level, alphaFilled, alphaBackground, alphaError)
                 val renderOptions = RenderOptions().css(cssBuilder.toString())
                 val picture = baseSvg.renderToPicture(renderOptions)
@@ -78,6 +82,20 @@ object StackedMobileIconUtils {
             YLog.error(e)
             return false
         }
+    }
+
+    fun extractTypeContainerBounds(svgString: String): PointF? {
+        if (!svgString.contains("type_container")) return null
+
+        try {
+            // 交给 AndroidSVG 去构建对象树
+            val svg = SVG.getFromString(svgString)
+            // 调用我们的伪装类，直接拿百分比！
+            return SvgAnchorExtractor.extractCenterPercent(svg)
+        } catch (e: Exception) {
+            YLog.error(e)
+        }
+        return null
     }
 
     fun appendCssForSignal(

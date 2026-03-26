@@ -701,7 +701,12 @@
     <string name="icon_tuner_stacked_mobile">Enable dual‑row signal icon</string>
     <string name="icon_tuner_stacked_mobile_tips">Adds new combined signal icon and network type icon</string>
     <string name="icon_tuner_stacked_mobile_icon">Dual‑row signal icon</string>
-    <string name="icon_tuner_stacked_mobile_type">Mobile network type icon</string>
+    <string name="icon_tuner_stacked_mobile_icon_tips">Falls back to single‑row when only one SIM is used</string>
+    <string name="icon_tuner_stacked_mobile_type">Standalone network type</string>
+    <string name="icon_tuner_stacked_mobile_type_tips">Network type of the data SIM card</string>
+    <string name="icon_tuner_single_mobile_sim1">Custom SIM 1 signal icon</string>
+    <string name="icon_tuner_single_mobile_sim2">Custom SIM 2 signal icon</string>
+    <string name="icon_tuner_single_mobile_summary">Newly added icon, not system‑provided</string>
     <string name="icon_tuner_stacked_mobile_custom_entry" translatable="false">@string/page_status_bar_stacked_mobile</string>
     <string name="icon_tuner_hint_stacked_mobile">Please go to the \"Icon customizer\" page to manually hide the original SIM 1 and SIM 2 signal icons. You can also adjust the relative position of the new icons through \"Customize icon order\".</string>
     <string name="ui_title_icon_tuner_network">Network</string>
@@ -766,6 +771,7 @@
     <string name="ui_title_icon_detail_font_weight">Font weight</string>
     <string name="ui_title_icon_detail_other" translatable="false">@string/common_others</string>
     <!-- IconDetailPage - Mobile network -->
+    <string name="ui_title_icon_detail_cellular_general" translatable="false">@string/common_general</string>
     <string name="icon_detail_cellular_hide_sim_auto">Smart signal icon hiding</string>
     <string name="icon_detail_cellular_hide_sim_auto_tips">Follows the \"Data SIM\" setting and only shows the signal icon for the data SIM</string>
     <string name="icon_detail_cellular_hide_sim_one">Hide SIM 1 signal icon</string>
@@ -793,6 +799,45 @@
     <string name="icon_detail_cellular_hide_volte">Hide VoLTE icon</string>
     <string name="icon_detail_cellular_hide_volte_no_service">Hide VoLTE no-service icon</string>
     <string name="icon_detail_cellular_hide_speech_hd">Hide Speech HD icon</string>
+    <!-- IconDetailPage - Stacked mobile -->
+    <string name="ui_title_icon_detail_stacked_general" translatable="false">@string/common_general</string>
+    <string name="ui_title_icon_detail_stacked_signal">Signal icon</string>
+    <string name="icon_detail_stacked_signal_style_single">Signal icon style (single SIM)</string>
+    <string name="icon_detail_stacked_signal_style_single_val">Customize single‑SIM signal icon</string>
+    <string name="icon_detail_stacked_signal_style_single_msg">Paste SVG code containing the four IDs  signal_1, signal_2, signal_3, and signal_4.   Here, signal_2 represents the second signal bar. When the current signal strength is 2 bars, signal_1 and signal_2 will be filled using Fill opacity, while signal_3 and signal_4 will be filled using Background opacity.</string>
+    <string name="icon_detail_stacked_signal_style_stacked">Signal icon style (dual SIM)</string>
+    <string name="icon_detail_stacked_signal_style_stacked_val">Customize dual‑SIM signal icon</string>
+    <string name="icon_detail_stacked_signal_style_stacked_msg">Paste SVG code containing the eight IDs \nsignal_1_1, signal_1_2, signal_1_3, signal_1_4, \nsignal_2_1, signal_2_2, signal_2_3, and signal_2_4. \n\nHere, signal_1_2 represents the second signal bar of SIM 1. When SIM 1 has 2 bars and SIM 2 has 1 bar, signal_1_1, signal_1_2, and signal_2_1 will be filled using Fill opacity, while signal_1_3, signal_1_4, signal_2_2, signal_2_3, and signal_2_4 will be filled using Background opacity.</string>
+    <string name="icon_detail_stacked_signal_style_miui" translatable="false">HyperOS</string>
+    <string name="icon_detail_stacked_signal_style_ios" translatable="false">iOS</string>
+    <string name="icon_detail_stacked_signal_style_custom" translatable="false">@string/common_custom</string>
+    <string name="icon_detail_stacked_signal_alpha_fg">Fill opacity</string>
+    <string name="icon_detail_stacked_signal_alpha_bg">Background opacity</string>
+    <string name="icon_detail_stacked_signal_alpha_error">No service opacity</string>
+    <string name="ui_title_icon_detail_stacked_type">Mobile network type icon</string>
+    <string name="icon_detail_stacked_type_font" translatable="false">@string/page_status_bar_font</string>
+    <string name="icon_detail_stacked_type_font_tips">4G+, 5G+, 5GA, LTE texts will use condensed style with MiSans or SF Pro</string>
+    <string name="icon_detail_stacked_type_font_default" translatable="false">@string/common_default</string>
+    <string name="icon_detail_stacked_type_font_custom" translatable="false">@string/common_custom</string>
+    <string name="icon_detail_stacked_type_font_misans" translatable="false">MiSans</string>
+    <string name="icon_detail_stacked_type_font_sfpro" translatable="false">SF Pro</string>
+    <string name="icon_detail_stacked_type_font_width_condensed">Condensed font width</string>
+    <string name="ui_title_icon_detail_stacked_small_type">Integrated network type</string>
+    <string name="icon_detail_stacked_small_type_show_single">Show on single‑SIM signal icon</string>
+    <string name="icon_detail_stacked_small_type_show_stacked">Show on dual‑SIM signal icon</string>
+    <string name="icon_detail_stacked_small_type_show_tips">The icon\'s SVG code must include a rect with id \"type_container\" in order to be displayed</string>
+    <string name="icon_detail_stacked_small_type_roaming">Show roaming status</string>
+    <string name="icon_detail_stacked_small_type_size">Font size (Integrated network type)</string>
+    <string name="icon_detail_stacked_small_type_weight">Font weight (Integrated network type)</string>
+    <string name="ui_title_icon_detail_stacked_large_type" translatable="false">@string/icon_tuner_stacked_mobile_type</string>
+    <string name="icon_detail_stacked_large_type_hide_disconnect">Hide when not connected</string>
+    <string name="icon_detail_stacked_large_type_hide_disconnect_tips">Hide the icon when mobile data is off or no data connection can be established</string>
+    <string name="icon_detail_stacked_large_type_hide_wifi">Hide when WLAN is available</string>
+    <string name="icon_detail_stacked_large_type_size">Font size (Standalone network type)</string>
+    <string name="icon_detail_stacked_large_type_weight">Font weight (Standalone network type)</string>
+    <string name="icon_detail_stacked_large_type_vertical_offset">Vertical offset</string>
+    <string name="icon_detail_stacked_large_type_vertical_offset_tips">Control the vertical offset of the icon. Positive values move it downward, negative values move it upward.</string>
+
     <!-- IconDetailPage - WLAN -->
     <string name="icon_detail_wifi_hide_standard">Hide WLAN standard</string>
     <string name="icon_detail_wifi_hide_activity">Hide WLAN activity</string>
@@ -924,33 +969,10 @@
     <string name="media_hint_ambient_lighting">The ambient light effect requires high performance and resource usage, which may cause issues such as device overheating. Please enable with caution. If any problems occur, it is recommended to disable this feature.</string>
     <string name="media_hint_advanced_textures">Since Advanced textures have been set as the default background for media controls, the corresponding option has been removed. If you need to adjust the effects of Advanced textures, use a Magisk module or the system theme to modify the blur parameters.</string>
     <!-- StackedMobileTunerPage -->
-    <string name="ui_title_stacked_icon" translatable="false">@string/icon_tuner_stacked_mobile_icon</string>
-    <string name="stacked_icon_style_single">Signal icon style (single SIM)</string>
-    <string name="stacked_icon_style_single_val">Customize single‑SIM signal icon</string>
-    <string name="stacked_icon_style_single_msg">Paste SVG code containing the four IDs \nsignal_1, signal_2, signal_3, and signal_4. \n\nHere, signal_2 represents the second signal bar. When the current signal strength is 2 bars, signal_1 and signal_2 will be filled using Fill opacity, while signal_3 and signal_4 will be filled using Background opacity.</string>
-    <string name="stacked_icon_style_stacked">Signal icon style (dual SIM)</string>
-    <string name="stacked_icon_style_stacked_val">Customize dual‑SIM signal icon</string>
-    <string name="stacked_icon_style_stacked_msg">Paste SVG code containing the eight IDs \nsignal_1_1, signal_1_2, signal_1_3, signal_1_4, \nsignal_2_1, signal_2_2, signal_2_3, and signal_2_4. \n\nHere, signal_1_2 represents the second signal bar of SIM 1. When SIM 1 has 2 bars and SIM 2 has 1 bar, signal_1_1, signal_1_2, and signal_2_1 will be filled using Fill opacity, while signal_1_3, signal_1_4, signal_2_2, signal_2_3, and signal_2_4 will be filled using Background opacity.</string>
-    <string name="stacked_icon_style_miui" translatable="false">HyperOS</string>
-    <string name="stacked_icon_style_ios" translatable="false">iOS</string>
-    <string name="stacked_icon_style_custom" translatable="false">@string/common_custom</string>
-    <string name="stacked_icon_alpha_fg">Fill opacity</string>
-    <string name="stacked_icon_alpha_bg">Background opacity</string>
-    <string name="stacked_icon_alpha_error">No service opacity</string>
-    <string name="ui_title_stacked_type" translatable="false">@string/icon_tuner_stacked_mobile_type</string>
-    <string name="stacked_type_hide_disconnect">Hide when not connected</string>
-    <string name="stacked_type_hide_disconnect_tips">Hide the icon when mobile data is off or no data connection can be established</string>
-    <string name="stacked_type_hide_wifi">Hide when WLAN is available</string>
-    <string name="stacked_type_font" translatable="false">@string/page_status_bar_font</string>
-    <string name="stacked_type_font_tips">4G+, 5G+, 5GA, LTE texts will use condensed style with MiSans or SF Pro</string>
-    <string name="stacked_type_font_default" translatable="false">@string/common_default</string>
-    <string name="stacked_type_font_custom" translatable="false">@string/common_custom</string>
-    <string name="stacked_type_font_misans" translatable="false">MiSans</string>
-    <string name="stacked_type_font_sfpro" translatable="false">SF Pro</string>
-    <string name="stacked_type_font_width_condensed">Condensed font width</string>
-    <string name="stacked_type_size">Font size (mobile network type icon)</string>
-    <string name="stacked_type_vertical_offset">Vertical offset</string>
-    <string name="stacked_type_vertical_offset_tips">Control the vertical offset of the icon. Positive values move it downward, negative values move it upward.</string>
+    <string name="ui_title_stacked_icon">Signal icon</string>
+
+    <string name="ui_title_stacked_type" translatable="false">@string/ui_title_icon_detail_stacked_type</string>
+
     <!-- HomeRefactorPage -->
     <string name="home_refactor_blur">Blur effect</string>
     <string name="home_refactor_blur_radius">Blur radius</string>

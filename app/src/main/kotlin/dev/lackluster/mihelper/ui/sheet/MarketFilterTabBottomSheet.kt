@@ -22,13 +22,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import dev.lackluster.hyperx.compose.activity.SafeSP
+import dev.lackluster.hyperx.compose.base.CardDefaults
 import dev.lackluster.hyperx.compose.icon.ImmersionClose
 import dev.lackluster.hyperx.compose.icon.ImmersionConfirm
 import dev.lackluster.hyperx.compose.preference.CheckboxPreference
-import dev.lackluster.hyperx.compose.preference.PreferenceGroup
 import dev.lackluster.hyperx.compose.preference.SwitchPreference
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.data.Pref
+import dev.lackluster.mihelper.ui.component.itemAnimated
+import dev.lackluster.mihelper.ui.component.itemPreferenceGroup
 import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.IconButton
 import top.yukonga.miuix.kmp.extra.SuperBottomSheet
@@ -119,88 +121,91 @@ fun MarketFilterTabBottomSheet(
             show.value = false
         },
         insideMargin = DpSize(0.dp, 12.dp),
-        backgroundColor = MiuixTheme.colorScheme.surface,
     ) {
+        val cardColor = CardDefaults.cardColors(
+            containerColor = MiuixTheme.colorScheme.secondaryContainer
+        )
         LazyColumn {
-            item {
-                PreferenceGroup(
-                    first = true,
-                    title = stringResource(R.string.common_general)
+            itemPreferenceGroup(
+                key = "GENERAL",
+                titleResId = R.string.common_general,
+                cardColor = cardColor
+            ) {
+                SwitchPreference(
+                    title = stringResource(R.string.cleaner_market_filter_tab),
+                    summary = stringResource(R.string.cleaner_market_filter_tab_tips),
+                    defValue = spValueFilterTab
                 ) {
-                    SwitchPreference(
-                        title = stringResource(R.string.cleaner_market_filter_tab),
-                        summary = stringResource(R.string.cleaner_market_filter_tab_tips),
-                        defValue = spValueFilterTab
-                    ) {
-                        spValueFilterTab = it
-                    }
-                    SwitchPreference(
-                        title = stringResource(R.string.cleaner_market_filter_unknown_tabs),
-                        summary = stringResource(R.string.cleaner_market_filter_unknown_tabs_tips),
-                        defValue = spValueFilterTabOthers
-                    ) {
-                        spValueFilterTabOthers = it
-                    }
-                    SwitchPreference(
-                        title = stringResource(R.string.cleaner_market_ignore_restrict),
-                        defValue = spValueIgnoreRestrict
-                    ) {
-                        spValueIgnoreRestrict = it
-                    }
+                    spValueFilterTab = it
+                }
+                SwitchPreference(
+                    title = stringResource(R.string.cleaner_market_filter_unknown_tabs),
+                    summary = stringResource(R.string.cleaner_market_filter_unknown_tabs_tips),
+                    defValue = spValueFilterTabOthers
+                ) {
+                    spValueFilterTabOthers = it
+                }
+                SwitchPreference(
+                    title = stringResource(R.string.cleaner_market_ignore_restrict),
+                    defValue = spValueIgnoreRestrict
+                ) {
+                    spValueIgnoreRestrict = it
                 }
             }
-            item {
-                PreferenceGroup(
-                    last = true,
-                    title = stringResource(R.string.cleaner_market_visible_tabs)
+            itemPreferenceGroup(
+                key = "TABS",
+                last = true,
+                titleResId = R.string.cleaner_market_visible_tabs,
+                cardColor = cardColor
+            ) {
+                CheckboxPreference(
+                    title = stringResource(R.string.cleaner_market_tab_home),
+                    defValue = showTabHome,
+                    enabled = spValueIgnoreRestrict
                 ) {
-                    CheckboxPreference(
-                        title = stringResource(R.string.cleaner_market_tab_home),
-                        defValue = showTabHome,
-                        enabled = spValueIgnoreRestrict
-                    ) {
-                        showTabHome = it
-                    }
-                    CheckboxPreference(
-                        title = stringResource(R.string.cleaner_market_tab_game),
-                        defValue = showTabGame
-                    ) {
-                        showTabGame = it
-                    }
-                    CheckboxPreference(
-                        title = stringResource(R.string.cleaner_market_tab_rank),
-                        defValue = showTabRank
-                    ) {
-                        showTabRank = it
-                    }
-                    CheckboxPreference(
-                        title = stringResource(R.string.cleaner_market_tab_agent),
-                        defValue = showTabAgent
-                    ) {
-                        showTabAgent = it
-                    }
-                    CheckboxPreference(
-                        title = stringResource(R.string.cleaner_market_tab_app_assemble),
-                        defValue = showTabAppAssemble
-                    ) {
-                        showTabAppAssemble = it
-                    }
-                    CheckboxPreference(
-                        title = stringResource(R.string.cleaner_market_tab_mini_game),
-                        defValue = showTabMiniGame
-                    ) {
-                        showTabMiniGame = it
-                    }
-                    CheckboxPreference(
-                        title = stringResource(R.string.cleaner_market_tab_mine),
-                        defValue = showTabMine,
-                        enabled = spValueIgnoreRestrict
-                    ) {
-                        showTabMine = it
-                    }
+                    showTabHome = it
+                }
+                CheckboxPreference(
+                    title = stringResource(R.string.cleaner_market_tab_game),
+                    defValue = showTabGame
+                ) {
+                    showTabGame = it
+                }
+                CheckboxPreference(
+                    title = stringResource(R.string.cleaner_market_tab_rank),
+                    defValue = showTabRank
+                ) {
+                    showTabRank = it
+                }
+                CheckboxPreference(
+                    title = stringResource(R.string.cleaner_market_tab_agent),
+                    defValue = showTabAgent
+                ) {
+                    showTabAgent = it
+                }
+                CheckboxPreference(
+                    title = stringResource(R.string.cleaner_market_tab_app_assemble),
+                    defValue = showTabAppAssemble
+                ) {
+                    showTabAppAssemble = it
+                }
+                CheckboxPreference(
+                    title = stringResource(R.string.cleaner_market_tab_mini_game),
+                    defValue = showTabMiniGame
+                ) {
+                    showTabMiniGame = it
+                }
+                CheckboxPreference(
+                    title = stringResource(R.string.cleaner_market_tab_mine),
+                    defValue = showTabMine,
+                    enabled = spValueIgnoreRestrict
+                ) {
+                    showTabMine = it
                 }
             }
-            item {
+            itemAnimated(
+                key = "NAVIGATION_BAR_PADDING"
+            ) {
                 Spacer(modifier = Modifier.height(WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + 12.dp))
             }
         }

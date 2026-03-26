@@ -325,6 +325,7 @@ fun UITestPage(navigator: Navigator, adjustPadding: PaddingValues, mode: BasePag
                     ) {
                         SeekBarPreference(
                             title = "Tint alpha",
+                            value = configBlurAlpha.intValue,
                             defValue = configBlurAlpha.intValue,
                             min = 0,
                             max = 100,
@@ -404,6 +405,7 @@ fun UITestPage(navigator: Navigator, adjustPadding: PaddingValues, mode: BasePag
                             cornerRadius = 8.dp
                         ),
                         title = "SeekBarPreference",
+                        key = null,
                         defValue = 10,
                         min = 0,
                         max = 20,
@@ -413,6 +415,7 @@ fun UITestPage(navigator: Navigator, adjustPadding: PaddingValues, mode: BasePag
                         icon = ImageIcon(iconRes = R.drawable.ic_header_security_center),
                         title = "EditTextPreference 5",
                         summary = "STRING",
+                        key = null,
                         defValue = "string",
                         dataType = EditTextDataType.STRING,
                         dialogMessage = "STRING",
@@ -486,6 +489,7 @@ fun UITestPage(navigator: Navigator, adjustPadding: PaddingValues, mode: BasePag
                     )
                     SeekBarPreference(
                         title = "SeekBarPreference 1",
+                        key = null,
                         defValue = 0,
                         min = 0,
                         max = 15
@@ -493,6 +497,7 @@ fun UITestPage(navigator: Navigator, adjustPadding: PaddingValues, mode: BasePag
                     EditTextPreference(
                         title = "EditTextPreference 1",
                         summary = "BOOLEAN",
+                        key = null,
                         defValue = true,
                         dataType = EditTextDataType.BOOLEAN,
                         dialogMessage = "true/false"
@@ -500,6 +505,7 @@ fun UITestPage(navigator: Navigator, adjustPadding: PaddingValues, mode: BasePag
                     EditTextPreference(
                         title = "EditTextPreference 2",
                         summary = "INT",
+                        key = null,
                         defValue = 10,
                         dataType = EditTextDataType.INT,
                         dialogMessage = "10 <= value <= 20",
@@ -510,6 +516,7 @@ fun UITestPage(navigator: Navigator, adjustPadding: PaddingValues, mode: BasePag
                     EditTextPreference(
                         title = "EditTextPreference 3",
                         summary = "LONG",
+                        key = null,
                         defValue = 100L,
                         dataType = EditTextDataType.LONG,
                         dialogMessage = "100 <= value <= 200",
@@ -520,6 +527,7 @@ fun UITestPage(navigator: Navigator, adjustPadding: PaddingValues, mode: BasePag
                     EditTextPreference(
                         title = "EditTextPreference 4",
                         summary = "FLOAT",
+                        key = null,
                         defValue = 1.0f,
                         dataType = EditTextDataType.FLOAT,
                         dialogMessage = "-1.0f <= value <= 1.0f",
@@ -530,12 +538,14 @@ fun UITestPage(navigator: Navigator, adjustPadding: PaddingValues, mode: BasePag
                     EditTextPreference(
                         title = "EditTextPreference 5",
                         summary = "STRING",
+                        key = null,
                         defValue = "string",
                         dataType = EditTextDataType.STRING,
                         dialogMessage = "STRING",
                     )
                     EditTextPreference(
                         title = "EditTextPreference 6",
+                        key = null,
                         defValue = "string",
                         dataType = EditTextDataType.STRING,
                         dialogMessage = "STRING",

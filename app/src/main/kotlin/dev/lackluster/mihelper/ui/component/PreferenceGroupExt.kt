@@ -16,9 +16,8 @@ import dev.lackluster.hyperx.compose.base.CardDefaults
 import dev.lackluster.hyperx.compose.preference.PreferenceGroup
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
-
 fun LazyListScope.itemPreferenceGroup(
-    key: Any? = null,
+    key: Any,
     titleResId: Int? = null,
     first: Boolean = false,
     last: Boolean = false,
@@ -28,9 +27,7 @@ fun LazyListScope.itemPreferenceGroup(
     content: @Composable ColumnScope.() -> Unit
 ) {
     if (visible) {
-        item(
-            key = key ?: (titleResId.hashCode() + content.hashCode())
-        ) {
+        item(key = key) {
             Column(
                 modifier = Modifier.animateItem(
                     fadeInSpec = spring(stiffness = Spring.StiffnessMediumLow),
@@ -55,15 +52,12 @@ fun LazyListScope.itemPreferenceGroup(
 }
 
 fun LazyListScope.itemAnimated(
-    key: Any? = null,
-    titleResId: Int? = null,
+    key: Any,
     visible: Boolean = true,
     content: @Composable ColumnScope.() -> Unit
 ) {
     if (visible) {
-        item(
-            key = key ?: (titleResId.hashCode() + content.hashCode())
-        ) {
+        item(key = key) {
             Column(
                 modifier = Modifier.animateItem(
                     fadeInSpec = spring(stiffness = Spring.StiffnessMediumLow),

@@ -26,8 +26,8 @@ import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzCoroutineScope
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.readonlyStateFlowFalse
-import dev.lackluster.mihelper.hook.rules.systemui.compat.Flow.cancelJob
-import dev.lackluster.mihelper.hook.rules.systemui.compat.Flow.combineFlows
+import dev.lackluster.mihelper.hook.rules.systemui.compat.FlowCompat.cancelJob
+import dev.lackluster.mihelper.hook.rules.systemui.compat.FlowCompat.combineFlows
 import dev.lackluster.mihelper.hook.rules.systemui.compat.MutableStateFlowCompat
 import dev.lackluster.mihelper.hook.rules.systemui.compat.ReadonlyStateFlowCompat
 import dev.lackluster.mihelper.utils.Prefs
@@ -38,9 +38,10 @@ import java.util.concurrent.ConcurrentHashMap
 object HideCellularIcon : YukiBaseHooker() {
     private const val KEY_DEF_DATA_CONFIG_FLOW = "KEY_DEF_DATA_CONFIG_FLOW"
 
-    private val hideSimAuto = Prefs.getBoolean(Pref.Key.SystemUI.IconTuner.HIDE_SIM_AUTO, false)
-    private val hideSimOne = Prefs.getBoolean(Pref.Key.SystemUI.IconTuner.HIDE_SIM_ONE, false)
-    private val hideSimTwo = Prefs.getBoolean(Pref.Key.SystemUI.IconTuner.HIDE_SIM_TWO, false)
+    private val enableStackedMobile = Prefs.getBoolean(Pref.Key.SystemUI.StackedMobile.ENABLED, false)
+    private val hideSimAuto = Prefs.getBoolean(Pref.Key.SystemUI.IconTuner.HIDE_SIM_AUTO, false) && !enableStackedMobile
+    private val hideSimOne = Prefs.getBoolean(Pref.Key.SystemUI.IconTuner.HIDE_SIM_ONE, false) || enableStackedMobile
+    private val hideSimTwo = Prefs.getBoolean(Pref.Key.SystemUI.IconTuner.HIDE_SIM_TWO, false) || enableStackedMobile
 
     private val hideSimJobMap = ConcurrentHashMap<Int, List<Any?>>()
 
