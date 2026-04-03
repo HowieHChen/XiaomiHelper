@@ -837,4 +837,18 @@
     <string name="icon_detail_stacked_type_font_width_condensed">窄體字寬度</string>
     <string name="icon_detail_stacked_large_type_vertical_offset">垂直偏移</string>
     <string name="icon_detail_stacked_large_type_vertical_offset_tips">控制圖示的垂直偏移量。正值向下移動圖示，負值向上移動圖示。</string>
+    <string name="icon_tuner_stacked_mobile_icon_tips">只有一張 SIM 卡時將回退到單行顯示模式</string>
+    <string name="icon_tuner_stacked_mobile_type_tips">數據 SIM 卡的移動網絡類型</string>
+    <string name="icon_tuner_single_mobile_sim1">自訂 SIM 卡 1 訊號圖示</string>
+    <string name="icon_tuner_single_mobile_sim2">自訂 SIM 卡 2 訊號圖示</string>
+    <string name="icon_tuner_single_mobile_summary">這不是指系統圖示，而是新增加的圖示</string>
+    <string name="ui_title_icon_detail_stacked_signal">訊號圖示</string>
+    <string name="ui_title_icon_detail_stacked_small_type">集成移動網絡類型圖示</string>
+    <string name="icon_detail_stacked_small_type_show_single">在單卡訊號圖示上顯示</string>
+    <string name="icon_detail_stacked_small_type_show_stacked">在雙卡訊號圖示上顯示</string>
+    <string name="icon_detail_stacked_small_type_show_tips">圖示的 SVG 代碼必須包含一個 id 為“type_container”的矩形才能顯示</string>
+    <string name="icon_detail_stacked_small_type_roaming">顯示漫遊訊息</string>
+    <string name="icon_detail_stacked_small_type_size">集成移動網絡類型字體大小</string>
+    <string name="icon_detail_stacked_small_type_weight">集成移動網絡類型字體粗細</string>
+    <string name="icon_detail_stacked_large_type_weight">獨立移動網絡類型字體粗細</string>
 </resources>
