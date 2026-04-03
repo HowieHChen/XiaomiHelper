@@ -5,20 +5,13 @@ import sys
 import html
 
 def format_html_caption(text):
-    """
-    Converts basic Markdown (like ``` code blocks) into Telegram-supported HTML.
-    This completely avoids MarkdownV2 parsing errors which cause the server
-    to abruptly disconnect the upload connection, resulting in curl error 26.
-    """
     if not text:
         return ""
     parts = text.split('```')
     for i in range(len(parts)):
         if i % 2 == 1:
-            # Inside the code block
             parts[i] = f'<pre>{html.escape(parts[i].strip())}</pre>'
         else:
-            # Outside the code block
             parts[i] = html.escape(parts[i])
     return "".join(parts)
 
@@ -33,7 +26,7 @@ def get_apk(base_dir):
 
 def send_document(bot_token, channel_id, file_path, caption=""):
     cmd = [
-        'curl', '-s',
+        'curl', '-sS',  # Changed from -s to -sS to show error details
         f'[https://api.telegram.org/bot](https://api.telegram.org/bot){bot_token}/sendDocument',
         '-F', f'chat_id={channel_id}',
         '-F', f'document=@{file_path}',
@@ -50,22 +43,22 @@ def send_document(bot_token, channel_id, file_path, caption=""):
             print(f"INFO: Sent successfully: {os.path.basename(file_path)}")
     except subprocess.CalledProcessError as e:
         print(f"ERROR: Send failed (exit code {e.returncode})")
-        print(f"ERROR Details: {e.stderr}")
+        print(f"ERROR Details: {e.stderr.strip()}")
 
 def main():
-    bot_token = os.environ.get('BOT_TOKEN')
-    channel_id = os.environ.get('CHANNEL_ID')
-    raw_caption = os.environ.get('COMMIT_MESSAGE', 'No changelog provided')
+    # Added .strip() to remove any accidental whitespaces or hidden newlines from Secrets
+    bot_token = os.environ.get('BOT_TOKEN', '').strip()
+    channel_id = os.environ.get('CHANNEL_ID', '').strip()
+    raw_caption = os.environ.get('COMMIT_MESSAGE', 'No changelog provided').strip()
 
     if not bot_token or not channel_id:
         print("ERROR: Invalid BOT_TOKEN or CHANNEL_ID")
         sys.exit(1)
 
-    # Convert the raw markdown to safe HTML to prevent parsing aborts
     safe_caption = format_html_caption(raw_caption)
 
-    max_single_size = 50 * 1024 * 1024  # 50MB
-    max_request_size = 49 * 1024 * 1024 # 49MB (leaving room for multipart headers/JSON overhead)
+    max_single_size = 50 * 1024 * 1024
+    max_request_size = 49 * 1024 * 1024
 
     paths = {
         'release': get_apk('./app/build/outputs/apk/release'),
@@ -108,7 +101,7 @@ def main():
             {"type": "document", "media": "attach://debug"}
         ]
         cmd = [
-            'curl', '-s',
+            'curl', '-sS',  # Changed from -s to -sS
             f'[https://api.telegram.org/bot](https://api.telegram.org/bot){bot_token}/sendMediaGroup',
             '-F', f'chat_id={channel_id}',
             '-F', f'media={json.dumps(media)}',
@@ -123,9 +116,8 @@ def main():
                 print("INFO: MediaGroup sent successfully")
         except subprocess.CalledProcessError as e:
             print(f"ERROR: Send MediaGroup failed (exit code {e.returncode})")
-            print(f"ERROR Details: {e.stderr}")
+            print(f"ERROR Details: {e.stderr.strip()}")
 
-            # Fallback mechanism
             print("INFO: Falling back to single file upload for Release package...")
             if 'release' in valid_uploads:
                 send_document(bot_token, channel_id, valid_uploads['release'], safe_caption)
