@@ -1,29 +1,30 @@
 package dev.lackluster.mihelper.data
 
+import android.os.Parcelable
 import androidx.navigation3.runtime.NavKey
+import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed interface Route : NavKey {
-    @Serializable data object ModuleSettings : Route
-    @Serializable data object SystemUI : Route
-    @Serializable data object SystemFramework : Route
-    @Serializable data object MiuiHome : Route
-    @Serializable data object CleanMaster : Route
-    @Serializable data object SecurityCenter : Route
-    @Serializable data object Others : Route
-    @Serializable data object About : Route
+sealed interface Route : NavKey, Parcelable {
+    @Serializable @Parcelize data object ModuleSettings : Route
+    @Serializable @Parcelize data object SystemUI : Route
+    @Serializable @Parcelize data object SystemFramework : Route
+    @Serializable @Parcelize data object MiuiHome : Route
+    @Serializable @Parcelize data object CleanMaster : Route
+    @Serializable @Parcelize data object SecurityCenter : Route
+    @Serializable @Parcelize data object Others : Route
+    @Serializable @Parcelize data object About : Route
 
-    @Serializable data object Menu : Route
-    @Serializable data object StatusBarClock : Route
-    @Serializable data object StatusBarFont : Route
-    @Serializable data object IconTuner : Route
-    @Serializable data object IconDetail : Route
-    @Serializable data object MediaControl : Route
-    @Serializable data object IslandMediaControl : Route
-    @Serializable data object DevUITest : Route
-    @Serializable data object DevUITest2 : Route
+    @Serializable @Parcelize data object Menu : Route
+    @Serializable @Parcelize data object StatusBarClock : Route
+    @Serializable @Parcelize data object StatusBarFont : Route
+    @Serializable @Parcelize data object IconTuner : Route
+    @Serializable @Parcelize data object IconDetail : Route
+    @Serializable @Parcelize data object NotifMediaControl : Route
+    @Serializable @Parcelize data object IslandMediaControl : Route
+    @Serializable @Parcelize data object DevUITest : Route
+    @Serializable @Parcelize data object DevUITest2 : Route
 
-    @Serializable data object DialogSearchCustomEngine : Route
-    @Serializable data object DialogStatusBarIconPosition : Route
+    @Serializable @Parcelize data object StatusBarIconPosition : Route
 }

@@ -251,8 +251,10 @@ object Pref {
 
                 const val SIGNAL_SVG_SINGLE = "icon_tuner_stacked_icon_svg_single"
                 const val SIGNAL_SVG_SINGLE_VAL = "icon_tuner_stacked_icon_svg_single_val"
+                const val SIGNAL_SVG_SINGLE_NAME = "icon_tuner_stacked_icon_svg_single_name"
                 const val SIGNAL_SVG_STACKED = "icon_tuner_stacked_icon_svg_stacked"
                 const val SIGNAL_SVG_STACKED_VAL = "icon_tuner_stacked_icon_svg_stacked_val"
+                const val SIGNAL_SVG_STACKED_NAME = "icon_tuner_stacked_icon_svg_stacked_name"
                 const val SIGNAL_ALPHA_FG = "icon_tuner_stacked_icon_alpha_fg"
                 const val SIGNAL_ALPHA_BG = "icon_tuner_stacked_icon_alpha_bg"
                 const val SIGNAL_ALPHA_ERROR = "icon_tuner_stacked_icon_alpha_error"

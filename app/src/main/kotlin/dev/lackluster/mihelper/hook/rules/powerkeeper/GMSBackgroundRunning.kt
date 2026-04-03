@@ -12,6 +12,13 @@ object GMSBackgroundRunning : YukiBaseHooker() {
     override fun onHook() {
         hasEnable(Pref.Key.PowerKeeper.GMS_BG_RUNNING) {
             "com.miui.powerkeeper.utils.GmsObserver".toClassOrNull()?.apply {
+                resolve().optional(true).firstMethodOrNull {
+                    name = "updateGoogleReletivesWakelock"
+                }?.hook {
+                    before {
+                        this.args(0).setFalse()
+                    }
+                }
                 resolve().firstMethodOrNull {
                     name = "isGmsControlEnabled"
                 }?.hook {

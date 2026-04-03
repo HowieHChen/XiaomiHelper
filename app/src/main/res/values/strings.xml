@@ -127,33 +127,24 @@
     <!-- AboutPage -->
     <string name="about_jump_error_toast">Some strange errors have occurred</string>
     <string name="about_easter_egg_toast">You clicked and nothing happened</string>
-    <string name="about_easter_egg_url" translatable="false">https://www.bilibili.com/video/BV1Xa4y1D7G3</string>
     <string name="about_hyperx_compose">This app is made by HyperX Compose</string>
     <string name="about_hyperx_compose_tips">HyperX Compose is a shared Compose UI library for Android based on Miuix</string>
-    <string name="about_hyperx_compose_url" translatable="false">https://github.com/HowieHChen/hyperx-compose</string>
     <string name="about_miuix">This app is made by Miuix</string>
     <string name="about_miuix_tips">Miuix is a shared UI library for Compose Multiplatform</string>
-    <string name="about_miuix_url" translatable="false">https://github.com/miuix-kotlin-multiplatform/miuix</string>
     <string name="about_yuki">This app is made by YukiHookAPI</string>
     <string name="about_yuki_tips">Learn more https://github.com/HighCapable/YuKiHookAPI</string>
-    <string name="about_yuki_url" translatable="false">https://github.com/HighCapable/YuKiHookAPI</string>
     <string name="ui_title_about_developer">Developer</string>
     <string name="about_author" translatable="false">HowieHChen</string>
     <string name="about_author_tips">No profile or signature</string>
-    <string name="about_author_url" translatable="false">https://github.com/HowieHChen</string>
     <string name="ui_title_about_others" translatable="false">@string/common_others</string>
     <string name="about_translate">Translate</string>
     <string name="about_translate_tips">Help us translate the app into your language</string>
-    <string name="about_translate_url" translatable="false">https://hosted.weblate.org/engage/hyper-helper/</string>
     <string name="about_donate">Donate</string>
     <string name="about_donate_tips">Buy me a coffee</string>
-    <string name="about_donate_url" translatable="false">https://github.com/HowieHChen/XiaomiHelper/blob/master/DONATE.md</string>
     <string name="about_repository">Source code</string>
     <string name="about_repository_tips">GitHub repository</string>
-    <string name="about_repository_url" translatable="false">https://github.com/HowieHChen/XiaomiHelper</string>
     <string name="about_telegram">Telegram channel</string>
     <string name="about_telegram_tips">Join the Telegram channel to give feedback and get internal updates.</string>
-    <string name="about_telegram_url" translatable="false">https://t.me/lackluster_stuff</string>
     <string name="ui_title_about_reference">References</string>
     <string name="ui_title_about_dev_options">Developer options</string>
     <!-- ModuleSettingsPage -->
@@ -203,12 +194,13 @@
     <string name="module_reset_failure">Reset failed.</string>
     <string name="module_unknown_failure">Unknown error</string>
     <!-- SystemUIPage -->
-    <string name="ui_title_systemui_status_bar">Status bar</string>
+    <string name="ui_title_systemui_statusbar">Status bar</string>
+    <string name="systemui_statusbar_font" translatable="false">@string/page_status_bar_font</string>
     <string name="systemui_statusbar_clock" translatable="false">@string/page_status_bar_clock</string>
+    <string name="systemui_statusbar_icon_tuner" translatable="false">@string/page_status_bar_icon_tuner</string>
+    <string name="systemui_statusbar_icon_detail" translatable="false">@string/page_status_bar_icon_detail</string>
     <string name="systemui_statusbar_notif_count">Customize the maximum number of notifications to display</string>
     <string name="systemui_statusbar_notif_count_icon">Maximum number of status bar notification icons</string>
-    <string name="systemui_statusbar_icon" translatable="false">@string/page_status_bar_icon_tuner</string>
-    <string name="systemui_statusbar_font" translatable="false">@string/page_status_bar_font</string>
     <string name="systemui_statusbar_tap_to_sleep" translatable="false">@string/common_tap_sleep</string>
     <string name="systemui_statusbar_region_sampling">Region sampling</string>
     <string name="systemui_statusbar_region_sampling_tips">Samples the status bar area and adjusts light/dark mode based on background color</string>
@@ -366,6 +358,8 @@
     <string name="home_minus_fold_style">Overlapped mode</string>
     <string name="home_minus_page_minus_blur" translatable="false">@string/page_minus_blur</string>
     <string name="home_minus_blur">Enable blur for background</string>
+    <string name="ui_title_home_cleaner" translatable="false">@string/page_cleaner</string>
+    <string name="home_cleaner_remove_report">Remove the \"Report\" button from the uninstall app pop-up window</string>
     <string name="ui_title_home_others" translatable="false">@string/common_others</string>
     <string name="home_others_dock_remove_num_limit">Remove the icon limit from the dock</string>
     <string name="home_others_always_show_clock">Always show time in status bar</string>
@@ -381,20 +375,12 @@
     <string name="home_others_force_color_scheme_minus">Personal assistant color</string>
     <string name="home_others_force_color_scheme_minus_tips">Specify the color of the status bar text and icons for the Personal assistant (ignore wallpaper color). Requires enabling \"Disable Smart dark\" on the System UI page.</string>
     <!-- CleanMasterPage -->
-    <string name="ui_title_cleaner_compatibility">Compatibility</string>
     <string name="cleaner_compatibility_tips">Most of the features on this page are designed for users located in Chinese mainland.\nPlease note that music-related features are exclusive to users with music membership accounts.\nWe recommend using the app versions below, which have been tested and verified for compatibility.</string>
-    <string name="ui_title_cleaner_ad_blocker">Ad blocker</string>
-    <string name="cleaner_ad_blocker_market" translatable="false">@string/scope_market</string>
-    <string name="cleaner_ad_blocker_mms" translatable="false">@string/scope_mms</string>
-    <string name="cleaner_ad_blocker_music" translatable="false">@string/scope_music</string>
-    <string name="cleaner_ad_blocker_theme" translatable="false">@string/scope_themes</string>
-    <string name="ui_title_cleaner_skip_splash">Disable Home screen</string>
-    <string name="cleaner_skip_splash_tips">It should also disable ads on the Home screen (no guarantees)</string>
-    <string name="ui_title_cleaner_privacy">Privacy</string>
-    <string name="cleaner_privacy_block_upload_app">Block uploading of installed apps list</string>
-    <string name="cleaner_privacy_block_upload_app_tips" translatable="false">@string/scope_guard_provider</string>
-    <string name="cleaner_privacy_block_ul_app_info">Block uploading of information about the app when it\'s installed</string>
-    <string name="cleaner_privacy_block_ul_app_info_tips" translatable="false">@string/scope_package_installer</string>
+    <string name="cleaner_common_ad_blocker">Ad blocker</string>
+    <string name="cleaner_common_restart_app">Restart %1$s</string>
+    <string name="cleaner_common_version_info">Validated version: %1$s\nInstalled version: %2$s</string>
+    <string name="cleaner_common_skip_splash">Disable Home screen</string>
+    <string name="cleaner_common_skip_splash_tips">It should also disable ads on the Home screen (no guarantees)</string>
     <string name="ui_title_cleaner_browser" translatable="false">@string/scope_browser</string>
     <string name="cleaner_browser_show_sug_switch">Restore Search Highlights setting</string>
     <string name="cleaner_browser_show_sug_switch_tips">Displays the hidden Search Highlights toggle in search settings. Turning it off disables extra recommendations such as apps, videos, and novels on the search page.</string>
@@ -402,13 +388,16 @@
     <string name="cleaner_browser_hide_homepage_topbar_tips">Hide the top bar of the simplified start page, which includes settings and mode toggle buttons.</string>
     <string name="cleaner_browser_block_dialog">Block promotional dialogs</string>
     <string name="cleaner_browser_block_dialog_tips">Block promotional dialogs such as widget recommendation dialogs</string>
+    <string name="cleaner_browser_debug_mode">Enable debug mode</string>
+    <string name="cleaner_browser_debug_mode_tips">Forces debug mode to be enabled. Only works with older versions of browsers.</string>
+    <string name="cleaner_browser_switch_env">Switch internal address</string>
+    <string name="cleaner_browser_switch_env_tips">Use the pre-release environment. It may be possible to remove some of the ads. It may not be possible to use settings such as customized search engine, so please finish setting before turning it on!</string>
+    <string name="cleaner_browser_disable_update">Disable update check</string>
     <string name="ui_title_cleaner_download" translatable="false">@string/scope_download</string>
     <string name="cleaner_downloadui_hide_xl">Hide Xunlei icons and text</string>
     <string name="cleaner_download_fuck_xl">Block creation of .xlDownload folder</string>
     <string name="ui_title_cleaner_incallui" translatable="false">@string/scope_in_call_ui</string>
     <string name="cleaner_incallui_hide_crbt">Hide CRBT (Coloring Ring Back Tone)</string>
-    <string name="ui_title_cleaner_home" translatable="false">@string/scope_miui_home</string>
-    <string name="cleaner_home_remove_report">Remove the \"Report\" button from the uninstall app pop-up window</string>
     <string name="ui_title_cleaner_market" translatable="false">@string/scope_market</string>
     <string name="cleaner_market_block_update_dailog">Block update push dialog</string>
     <string name="cleaner_market_block_update_dailog_tips">Block the dialog that prompts you to turn on update push, when update push is turned off and the update button is clicked.</string>
@@ -434,6 +423,7 @@
     <string name="cleaner_market_filter_tab_warning">Warning: there are currently fewer than two visible tabs, which may cause UI abnormalities!</string>
     <string name="ui_title_cleaner_milink" translatable="false">@string/scope_mi_link</string>
     <string name="cleaner_milink_fuck_hpplay">Block creation of hpplay folders</string>
+    <string name="ui_title_cleaner_mms" translatable="false">@string/scope_mms</string>
     <string name="ui_title_cleaner_music" translatable="false">@string/scope_music</string>
     <string name="cleaner_music_hide_karaoke">Hide karaoke</string>
     <string name="cleaner_music_hide_karaoke_tips">Remove the karaoke from the top tab on the home page</string>
@@ -452,6 +442,7 @@
     <string name="cleaner_package_skip_risk_check">Disable the monitoring of risks</string>
     <string name="cleaner_package_no_network">Disguise as no network</string>
     <string name="cleaner_package_no_count_check">Disable frequently installed app check</string>
+    <string name="cleaner_package_block_upload_app_info">Block uploading of information about the app when it\'s installed</string>
     <string name="cleaner_package_install_source">Custom install source</string>
     <string name="cleaner_package_install_source_tips">Ignore the system app installation restrictions by disguising the installation source as a system app.</string>
     <string name="cleaner_package_install_source_disabled" translatable="false">@string/common_disabled</string>
@@ -459,19 +450,8 @@
     <string name="cleaner_package_install_source_market" translatable="false">@string/scope_market</string>
     <string name="cleaner_package_install_source_custom" translatable="false">@string/common_custom</string>
     <string name="cleaner_package_custom_install_source">Package name of the install source</string>
-    <string name="ui_title_cleaner_security" translatable="false">@string/scope_security_center</string>
-    <string name="ui_title_cleaner_security_pad" translatable="false">@string/scope_security_center_pad</string>
-    <string name="cleaner_security_lock_score">Disable health check optimization</string>
-    <string name="cleaner_security_lock_score_tips">Lock the security score to 100 and disable the \"Optimize\" button</string>
-    <string name="cleaner_security_hide_red_dot">Hide red alert dots</string>
-    <string name="cleaner_security_hide_red_dot_tips">Hide the red alert dots on Home screen grid icons</string>
-    <string name="cleaner_security_hide_home_rec">Hide recommended function</string>
-    <string name="cleaner_security_hide_home_rec_tips">Hide the recommend function banner below the function grid</string>
-    <string name="cleaner_security_hide_home_common">Hide commonly used functions</string>
-    <string name="cleaner_security_hide_home_popular">Hide popular functions</string>
-    <string name="cleaner_security_hide_home_popular_tips">Hide popular function recommendations at the bottom of the page</string>
-    <string name="cleaner_security_disable_risk_app_notif">Disable \"Malicious app found\" notifications</string>
-    <string name="cleaner_security_remove_report">Remove the \"Report\" button from the app info page</string>
+    <string name="ui_title_cleaner_remote" translatable="false">@string/scope_remote_controller</string>
+    <string name="ui_title_cleaner_themes" translatable="false">@string/scope_themes</string>
     <!-- SystemFrameworkPage -->
     <string name="ui_title_android_display">Display</string>
     <string name="android_display_temp_font_scale">Temporary font scale</string>
@@ -537,9 +517,24 @@
     <string name="security_security_bubble_restriction">Remove bubble notification app restrictions</string>
     <string name="security_security_system_app_wifi">Allow management Wi-Fi permissions for system apps</string>
     <string name="security_security_icon_open">Tap the icon in the app info to launch the app</string>
+    <string name="security_security_disable_risk_app_notif">Disable \"Malicious app found\" notifications</string>
+    <string name="ui_title_security_cleaner" translatable="false">@string/page_cleaner</string>
+    <string name="security_cleaner_skip_splash" translatable="false">@string/cleaner_common_skip_splash</string>
+    <string name="security_cleaner_skip_splash_tips" translatable="false">@string/cleaner_common_skip_splash_tips</string>
+    <string name="security_cleaner_lock_score">Disable health check optimization</string>
+    <string name="security_cleaner_lock_score_tips">Lock the security score to 100 and disable the \"Optimize\" button</string>
+    <string name="security_cleaner_hide_red_dot">Hide red alert dots</string>
+    <string name="security_cleaner_hide_red_dot_tips">Hide the red alert dots on Home screen grid icons</string>
+    <string name="security_cleaner_hide_home_rec">Hide recommended function</string>
+    <string name="security_cleaner_hide_home_rec_tips">Hide the recommend function banner below the function grid</string>
+    <string name="security_cleaner_hide_home_common">Hide commonly used functions</string>
+    <string name="security_cleaner_hide_home_popular">Hide popular functions</string>
+    <string name="security_cleaner_hide_home_popular_tips">Hide popular function recommendations at the bottom of the page</string>
+    <string name="security_cleaner_remove_report">Remove the \"Report\" button from the app info page</string>
     <string name="ui_title_security_power" translatable="false">@string/scope_power_keeper</string>
     <string name="ui_title_security_guard" translatable="false">@string/scope_guard_provider</string>
-    <string name="security_guard_env_check">Disable environment check</string>
+    <string name="security_guard_block_env_check">Disable environment check</string>
+    <string name="security_guard_block_upload_app">Block uploading of installed apps list</string>
     <string name="ui_title_lbe" translatable="false">@string/scope_lbe</string>
     <string name="security_lbe_block_remove_auto_start">Block removal of auto-start permission</string>
     <string name="security_lbe_block_remove_auto_start_tips">Prevents the system from removing the auto-start permission from apps</string>
@@ -562,12 +557,6 @@
     <string name="ui_title_others_aiengine" translatable="false">@string/scope_ai_engine</string>
     <string name="others_aiengine_copy_link_island_browser">Open copied URL with any browser</string>
     <string name="others_aiengine_copy_link_island_browser_tips">After copying a URL and clicking the Dynamic Island, it can be opened with any browser (instead of only Xiaomi Browser)</string>
-    <string name="ui_title_others_browser" translatable="false">@string/scope_browser</string>
-    <string name="others_browser_debug_mode">Enable debug mode</string>
-    <string name="others_browser_debug_mode_tips">Forces debug mode to be enabled. Only works with older versions of browsers.</string>
-    <string name="others_browser_switch_env">Switch internal address</string>
-    <string name="others_browser_switch_env_tips">Use the pre-release environment. It may be possible to remove some of the ads. It may not be possible to use settings such as customized search engine, so please finish setting before turning it on!</string>
-    <string name="others_browser_disable_update">Disable update check</string>
     <string name="ui_title_others_gallery" translatable="false">@string/scope_gallery</string>
     <string name="others_gallery_unlimited_crop">Unlimited image cropping</string>
     <string name="others_gallery_path_optim">Optimize recognition of directories</string>
@@ -672,7 +661,13 @@
     <string name="ui_title_font_general" translatable="false">@string/common_general</string>
     <string name="font_hint_path">All custom font weight features (not limited to the options below) will load the variable font file specified by this path. Unless you know what you are doing and understand the possible consequences, do not modify it. \n\nIf you want to change the font without altering the weight, enable the corresponding custom font weight preference but keep the weight set to Default.</string>
     <string name="font_general_path">Font file path</string>
-    <string name="font_general_path_tips">Unless you know what you are doing and understand the possible consequences, do not modify it.\n\nPlease use variable fonts.</string>
+    <string name="font_general_path_tips">Unless you know what you are doing and understand the possible consequences, do not modify it.  Please use variable fonts.</string>
+    <string name="font_general_path_file" translatable="false">@string/icon_detail_stacked_signal_style_val_file</string>
+    <string name="font_general_path_path">Import from path</string>
+    <string name="font_general_path_success">Font file imported successfully</string>
+    <string name="font_general_path_failure">File does not exist or cannot be accessed. Please check the file and Root permissions!</string>
+    <string name="font_general_path_reset" translatable="false">@string/icon_tuner_position_reset_default</string>
+    <string name="font_general_path_reset_msg">Reset to \"/system/fonts/MiSansVF.ttf\"? This cannot be undone.</string>
     <string name="font_hint_general_root">Fonts require root access to take effect automatically after reboot. Otherwise, you need to unlock the device and restart the system UI for the changes to apply.</string>
     <string name="ui_title_font_weight" translatable="false">@string/ui_title_icon_detail_font_weight</string>
     <string name="font_weight_lockscreen_carrier">Customize font weight (Lock screen carrier label)</string>
@@ -717,6 +712,7 @@
     <string name="icon_tuner_network_hotspot">Hotspot</string>
     <string name="icon_tuner_network_vpn">VPN</string>
     <string name="icon_tuner_network_net_speed">Connection speed</string>
+    <string name="icon_tuner_network_warning">Warning: Hiding this icon may cause status bar icons to display abnormally!</string>
     <string name="ui_title_icon_tuner_connectivity">Connectivity</string>
     <string name="icon_tuner_connect_bluetooth">Bluetooth</string>
     <string name="icon_tuner_connect_bluetooth_battery">Bluetooth device battery</string>
@@ -808,6 +804,8 @@
     <string name="icon_detail_stacked_signal_style_stacked">Signal icon style (dual SIM)</string>
     <string name="icon_detail_stacked_signal_style_stacked_val">Customize dual‑SIM signal icon</string>
     <string name="icon_detail_stacked_signal_style_stacked_msg">Paste SVG code containing the eight IDs \nsignal_1_1, signal_1_2, signal_1_3, signal_1_4, \nsignal_2_1, signal_2_2, signal_2_3, and signal_2_4. \n\nHere, signal_1_2 represents the second signal bar of SIM 1. When SIM 1 has 2 bars and SIM 2 has 1 bar, signal_1_1, signal_1_2, and signal_2_1 will be filled using Fill opacity, while signal_1_3, signal_1_4, signal_2_2, signal_2_3, and signal_2_4 will be filled using Background opacity.</string>
+    <string name="icon_detail_stacked_signal_style_val_file">Import from file</string>
+    <string name="icon_detail_stacked_signal_style_val_clipboard">Import from clipboard</string>
     <string name="icon_detail_stacked_signal_style_miui" translatable="false">HyperOS</string>
     <string name="icon_detail_stacked_signal_style_ios" translatable="false">iOS</string>
     <string name="icon_detail_stacked_signal_style_custom" translatable="false">@string/common_custom</string>

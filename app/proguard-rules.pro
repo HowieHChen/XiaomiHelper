@@ -41,7 +41,14 @@
     *** inflate(android.view.LayoutInflater);
 }
 
--keep class dev.lackluster.mihelper.ui.MainActivity
+-keep class dev.lackluster.mihelper.app.MainActivity
 -keep class dev.lackluster.mihelper.hook.HookEntry
 
 -dontwarn java.lang.reflect.AnnotatedType
+
+-keepnames class dev.lackluster.mihelper.app.repository.** { *; }
+-keepnames class dev.lackluster.mihelper.app.screen.**.*ViewModel { *; }
+
+-keepnames class org.koin.** { *; }
+-keepattributes *Annotation*
+-keepattributes Signature

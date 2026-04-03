@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.kotlin.ksp)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
+    id("kotlin-parcelize")
 }
 
 kotlin {
@@ -17,7 +18,8 @@ kotlin {
         freeCompilerArgs.addAll(listOf(
             "-Xno-param-assertions",
             "-Xno-call-assertions",
-            "-Xno-receiver-assertions"
+            "-Xno-receiver-assertions",
+            "-Xannotation-default-target=param-property"
         ))
     }
 }
@@ -101,11 +103,13 @@ dependencies {
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.ui)
+    implementation(libs.koin.androidx.compose)
 
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.dexkit)
     implementation(project(mapOf("path" to ":hyperx-compose")))
     implementation(libs.android.svg)
+    implementation(libs.libsu.core)
 
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.constraintlayout)

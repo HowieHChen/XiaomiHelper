@@ -4,6 +4,7 @@ import com.highcapable.kavaref.KavaRef.Companion.asResolver
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import dev.lackluster.mihelper.data.Pref
+import dev.lackluster.mihelper.data.model.SearchEngineItem
 import dev.lackluster.mihelper.utils.DexKit
 import dev.lackluster.mihelper.utils.Prefs
 import dev.lackluster.mihelper.utils.factory.hasEnable

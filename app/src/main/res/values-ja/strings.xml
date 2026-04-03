@@ -130,7 +130,7 @@
     <string name="module_reset_failure">リセットに失敗しました。</string>
     <string name="module_unknown_failure">不明なエラー</string>
     <!-- SystemUIPage -->
-    <string name="ui_title_systemui_status_bar">ステータスバー</string>
+    <string name="ui_title_systemui_statusbar">ステータスバー</string>
     <string name="systemui_statusbar_notif_count">通知の最大表示数をカスタマイズする</string>
     <string name="systemui_statusbar_notif_count_icon">ステータスバー通知アイコンの最大数</string>
     <string name="ui_title_systemui_lock_screen">ロック画面</string>
@@ -208,19 +208,18 @@
     <string name="home_others_fake_premium">ハイエンドモデルに偽装する</string>
     <string name="home_others_fake_premium_tips">モデルによる一部機能の制限を撤廃します</string>
     <!-- CleanMasterPage -->
-    <string name="ui_title_cleaner_ad_blocker">広告ブロッカー</string>
-    <string name="ui_title_cleaner_privacy">プライバシー</string>
-    <string name="cleaner_privacy_block_upload_app">インストール済みのアプリ一覧のアップロードをブロックする</string>
-    <string name="cleaner_privacy_block_ul_app_info">アプリをインストール時の情報のアップロードをブロックする</string>
+    <string name="cleaner_common_ad_blocker">広告ブロッカー</string>
+    <string name="security_guard_block_upload_app">インストール済みのアプリ一覧のアップロードをブロックする</string>
+    <string name="cleaner_package_block_upload_app_info">アプリをインストール時の情報のアップロードをブロックする</string>
     <string name="cleaner_package_remove_element">冗長な機能を無効化して関連する要素を削除します</string>
     <string name="cleaner_package_skip_risk_check">リスクの監視を禁止する</string>
     <string name="cleaner_package_no_count_check">頻繁にインストールされるアプリのチェックを無効化する</string>
-    <string name="cleaner_security_lock_score">セキュリティスコアを固定する</string>
-    <string name="cleaner_security_lock_score_tips">セキュリティスコアを100に固定して「最適化」ボタンを無効化します</string>
-    <string name="cleaner_security_disable_risk_app_notif">「悪意のあるアプリが見つかりました」の通知を無効化する</string>
-    <string name="cleaner_security_remove_report">アプリ情報のページから「報告」ボタンを削除する</string>
+    <string name="security_cleaner_lock_score">セキュリティスコアを固定する</string>
+    <string name="security_cleaner_lock_score_tips">セキュリティスコアを100に固定して「最適化」ボタンを無効化します</string>
+    <string name="security_security_disable_risk_app_notif">「悪意のあるアプリが見つかりました」の通知を無効化する</string>
+    <string name="security_cleaner_remove_report">アプリ情報のページから「報告」ボタンを削除する</string>
     <string name="cleaner_incallui_hide_crbt">CRBTを非表示にする (カラーリングバックトーン)</string>
-    <string name="cleaner_home_remove_report">アプリのアンインストールのポップアップウィンドウから「報告」ボタンを削除する</string>
+    <string name="home_cleaner_remove_report">アプリのアンインストールのポップアップウィンドウから「報告」ボタンを削除する</string>
     <!-- SystemFrameworkPage -->
     <string name="ui_title_android_freeform">フローティングウィンドウ</string>
     <string name="android_freeform_restriction">すべてのアプリをスモールウィンドウモードにする</string>
@@ -264,11 +263,11 @@
     <string name="interconnection_mishare_no_auto_off">Mi シェアの自動オフを無効化する</string>
     <string name="others_mimirror_all_app">すべてのアプリを別のデバイスで開く事を可能にする</string>
     <!-- OthersPage -->
-    <string name="others_browser_debug_mode">デバッグモードを有効化する</string>
-    <string name="others_browser_debug_mode_tips">デバッグモードを強制的に有効化します。古いバージョンのブラウザーのみで動作します</string>
-    <string name="others_browser_switch_env">内部アドレスのスイッチ</string>
-    <string name="others_browser_switch_env_tips">プレリリース環境で使用してください。一部の広告を削除できる場合があります。検索エンジンのカスタマイズなどの設定ができなくなる可能性があるため、設定を済ませてからオンにしてください！</string>
-    <string name="others_browser_disable_update">アップデートの確認を無効化する</string>
+    <string name="cleaner_browser_debug_mode">デバッグモードを有効化する</string>
+    <string name="cleaner_browser_debug_mode_tips">デバッグモードを強制的に有効化します。古いバージョンのブラウザーのみで動作します</string>
+    <string name="cleaner_browser_switch_env">内部アドレスのスイッチ</string>
+    <string name="cleaner_browser_switch_env_tips">プレリリース環境で使用してください。一部の広告を削除できる場合があります。検索エンジンのカスタマイズなどの設定ができなくなる可能性があるため、設定を済ませてからオンにしてください！</string>
+    <string name="cleaner_browser_disable_update">アップデートの確認を無効化する</string>
     <string name="cleaner_download_fuck_xl">「.xlDownload」フォルダの作成をブロックする</string>
     <string name="others_gallery_unlimited_crop">無制限の画像のトリミング</string>
     <string name="others_gallery_path_optim">ディレクトリの認識を最適化する</string>

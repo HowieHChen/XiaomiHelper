@@ -169,7 +169,7 @@
     <string name="module_reset_failure">Falha ao redefinir.</string>
     <string name="module_unknown_failure">Erro desconhecido</string>
     <!-- SystemUIPage -->
-    <string name="ui_title_systemui_status_bar">Barra de status</string>
+    <string name="ui_title_systemui_statusbar">Barra de status</string>
     <string name="systemui_statusbar_notif_count">Personalizar número máximo de notificações a serem exibidas</string>
     <string name="systemui_statusbar_notif_count_icon">Número máximo de ícones de notificação na barra de status</string>
     <string name="ui_title_systemui_lock_screen">Tela de bloqueio</string>
@@ -291,20 +291,18 @@
     <string name="home_others_force_color_scheme_minus">Cor do Assistente</string>
     <string name="home_others_force_color_scheme_minus_tips">Especifique a cor do texto da barra de status e dos ícones do Assistente (ignore a cor do plano de fundo). Requer a ativação de \"Desativar Escuro inteligente\" na página UI do Sistema.</string>
     <!-- CleanMasterPage -->
-    <string name="ui_title_cleaner_compatibility">Compatibilidade</string>
     <string name="cleaner_compatibility_tips">A maior parte dos recursos desta página foi desenvolvida para usuários localizados no Continente Chinês.\nObserve que os recursos relacionados à música são exclusivos para usuários com contas de assinatura de serviços de música.\nRecomendamos o uso das versões do app abaixo, que foram testadas e verificadas quanto à compatibilidade.</string>
-    <string name="ui_title_cleaner_ad_blocker">Bloqueador de anúncios</string>
-    <string name="ui_title_cleaner_skip_splash">Desativar Tela inicial</string>
-    <string name="cleaner_skip_splash_tips">Também deve desativar os anúncios na Tela inicial (sem garantias)</string>
-    <string name="ui_title_cleaner_privacy">Privacidade</string>
-    <string name="cleaner_privacy_block_upload_app">Impedir upload automático da lista de apps instalados</string>
-    <string name="cleaner_privacy_block_ul_app_info">Impedir upload de informações sobre o app quando ele estiver instalado</string>
+    <string name="cleaner_common_ad_blocker">Bloqueador de anúncios</string>
+    <string name="cleaner_common_skip_splash">Desativar Tela inicial</string>
+    <string name="cleaner_common_skip_splash_tips">Também deve desativar os anúncios na Tela inicial (sem garantias)</string>
+    <string name="security_guard_block_upload_app">Impedir upload automático da lista de apps instalados</string>
+    <string name="cleaner_package_block_upload_app_info">Impedir upload de informações sobre o app quando ele estiver instalado</string>
     <string name="cleaner_browser_hide_homepage_topbar">Ocultar barra superior da página inicial</string>
     <string name="cleaner_browser_hide_homepage_topbar_tips">Oculte a barra superior da página inicial simplificada, que inclui configurações e botões de alternância de modo.</string>
     <string name="cleaner_downloadui_hide_xl">Ocultar ícones e texto da Xunlei</string>
     <string name="cleaner_download_fuck_xl">Bloquear a criação da pasta .xlDownload</string>
     <string name="cleaner_incallui_hide_crbt">Ocultar tom de toque colorido personalizado</string>
-    <string name="cleaner_home_remove_report">Remover botão \"Denunciar\" da janela pop-up de desinstalação do app</string>
+    <string name="home_cleaner_remove_report">Remover botão \"Denunciar\" da janela pop-up de desinstalação do app</string>
     <string name="cleaner_market_block_update_dailog">Bloquear caixa de diálogo push de atualização</string>
     <string name="cleaner_market_block_update_dailog_tips">Bloqueie a caixa de diálogo que solicita que você ative o push de atualização, quando o push de atualização estiver desativado e o botão de atualização for clicado.</string>
     <string name="cleaner_market_hide_app_security">Ocultar segurança do app</string>
@@ -344,17 +342,17 @@
     <string name="cleaner_package_install_source_tips">Ignore as restrições de instalação de apps do sistema disfarçando a fonte de instalação como um app do sistema.</string>
     <string name="cleaner_package_install_source_file">Arquivos</string>
     <string name="cleaner_package_custom_install_source">Nome do pacote da fonte de instalação</string>
-    <string name="cleaner_security_lock_score">Desativar otimização de verificação de saúde</string>
-    <string name="cleaner_security_lock_score_tips">Bloqueie a pontuação de segurança em 100 e desative o botão Otimizar</string>
-    <string name="cleaner_security_hide_red_dot">Ocultar os pontos de alerta vermelhos</string>
-    <string name="cleaner_security_hide_red_dot_tips">Oculte os pontos de alerta vermelhos nos ícones da grade da Tela inicial</string>
-    <string name="cleaner_security_hide_home_rec">Ocultar função recomendada</string>
-    <string name="cleaner_security_hide_home_rec_tips">Oculte o banner de função recomendada abaixo da grade de funções</string>
-    <string name="cleaner_security_hide_home_common">Ocultar funções comumente usadas</string>
-    <string name="cleaner_security_hide_home_popular">Ocultar funções populares</string>
-    <string name="cleaner_security_hide_home_popular_tips">Oculte as recomendações de funções populares na parte inferior da página</string>
-    <string name="cleaner_security_disable_risk_app_notif">Desativar notificações de \"App malicioso encontrado\"</string>
-    <string name="cleaner_security_remove_report">Remover botão \"Denunciar\" da página de informações do app</string>
+    <string name="security_cleaner_lock_score">Desativar otimização de verificação de saúde</string>
+    <string name="security_cleaner_lock_score_tips">Bloqueie a pontuação de segurança em 100 e desative o botão Otimizar</string>
+    <string name="security_cleaner_hide_red_dot">Ocultar os pontos de alerta vermelhos</string>
+    <string name="security_cleaner_hide_red_dot_tips">Oculte os pontos de alerta vermelhos nos ícones da grade da Tela inicial</string>
+    <string name="security_cleaner_hide_home_rec">Ocultar função recomendada</string>
+    <string name="security_cleaner_hide_home_rec_tips">Oculte o banner de função recomendada abaixo da grade de funções</string>
+    <string name="security_cleaner_hide_home_common">Ocultar funções comumente usadas</string>
+    <string name="security_cleaner_hide_home_popular">Ocultar funções populares</string>
+    <string name="security_cleaner_hide_home_popular_tips">Oculte as recomendações de funções populares na parte inferior da página</string>
+    <string name="security_security_disable_risk_app_notif">Desativar notificações de \"App malicioso encontrado\"</string>
+    <string name="security_cleaner_remove_report">Remover botão \"Denunciar\" da página de informações do app</string>
     <!-- SystemFrameworkPage -->
     <string name="ui_title_android_display">Tela</string>
     <string name="android_display_temp_font_scale">Tamanho da fonte temporária</string>
@@ -412,7 +410,7 @@
     <string name="security_security_bubble_restriction">Remover restrições do app de conversas em bolhas</string>
     <string name="security_security_system_app_wifi">Permitir permissões de gerenciamento de Wi-Fi para apps do sistema</string>
     <string name="security_security_icon_open">Tocar no ícone nas informações do app para iniciá-lo</string>
-    <string name="security_guard_env_check">Desativar verificação de ambiente</string>
+    <string name="security_guard_block_env_check">Desativar verificação de ambiente</string>
     <string name="security_lbe_block_remove_auto_start">Bloquear remoção da permissão de início automático</string>
     <string name="security_lbe_block_remove_auto_start_tips">Impede que o sistema remova a permissão de início automático de apps</string>
     <string name="security_lbe_clipboard_toast">Usar dica para mostrar prompts de leitura da área de transferência</string>
@@ -431,11 +429,11 @@
     <string name="others_mimirror_enhance_continue">Permitir que mais apps sejam transferidos</string>
     <string name="others_mimirror_enhance_continue_tips">Alguns apps ainda não podem ser abertos em outros dispositivos devido à lista de permissões integrada. Para transferir mais apps, ative este recurso. Ela exige a geração de um arquivo de cache no diretório do app hospedeiro, o que pode causar um atraso caso o cache não esteja disponível. Além disso, o dispositivo receptor também precisará ter o app instalado e esse recurso ativado.</string>
     <!-- OthersPage -->
-    <string name="others_browser_debug_mode">Ativar ambiente de depuração</string>
-    <string name="others_browser_debug_mode_tips">Force a ativação do ambiente de depuração. Funciona apenas com versões mais antigas do navegador.</string>
-    <string name="others_browser_switch_env">Mudar endereço interno</string>
-    <string name="others_browser_switch_env_tips">Use o ambiente de pré-lançamento. Pode ser possível remover alguns dos anúncios. Pode não ser possível usar as configurações como mecanismo de pesquisa personalizado, portanto, conclua a configuração antes de ativá-lo!</string>
-    <string name="others_browser_disable_update">Desativar verificação de atualização</string>
+    <string name="cleaner_browser_debug_mode">Ativar ambiente de depuração</string>
+    <string name="cleaner_browser_debug_mode_tips">Force a ativação do ambiente de depuração. Funciona apenas com versões mais antigas do navegador.</string>
+    <string name="cleaner_browser_switch_env">Mudar endereço interno</string>
+    <string name="cleaner_browser_switch_env_tips">Use o ambiente de pré-lançamento. Pode ser possível remover alguns dos anúncios. Pode não ser possível usar as configurações como mecanismo de pesquisa personalizado, portanto, conclua a configuração antes de ativá-lo!</string>
+    <string name="cleaner_browser_disable_update">Desativar verificação de atualização</string>
     <string name="others_gallery_unlimited_crop">Corte ilimitado de imagens</string>
     <string name="others_gallery_path_optim">Otimizar reconhecimento de diretórios</string>
     <string name="others_gallery_path_optim_tips">Reconheça imagens em \"Pictures/Screenshots\" como capturas de tela e vídeos em \"Movies/ScreenRecorder\" como gravações de tela e exibi-los nos álbuns correspondentes.</string>

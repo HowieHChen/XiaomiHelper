@@ -36,7 +36,7 @@ import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.log.YLog
 import dev.lackluster.mihelper.BuildConfig
 import dev.lackluster.mihelper.R
-import dev.lackluster.mihelper.ui.MainActivity
+import dev.lackluster.mihelper.app.MainActivity
 import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.utils.Device
 import dev.lackluster.mihelper.utils.Prefs

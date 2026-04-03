@@ -1,5 +1,6 @@
 package dev.lackluster.mihelper.data
 
+import androidx.annotation.DrawableRes
 import dev.lackluster.mihelper.R
 
 object Contributors {
@@ -14,6 +15,6 @@ object Contributors {
 data class Contributor(
     val name: String,
     val bio: String,
-    val avatarResId: Int,
+    @DrawableRes val avatarResId: Int,
     val link: String
 )

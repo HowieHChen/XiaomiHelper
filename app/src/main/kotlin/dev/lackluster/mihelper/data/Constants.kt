@@ -1,6 +1,7 @@
 package dev.lackluster.mihelper.data
 
 import dev.lackluster.mihelper.R
+import dev.lackluster.mihelper.data.model.StatusBarIconSlotWrap
 
 object Constants {
     const val CMD_LSPOSED = "am broadcast -a android.telephony.action.SECRET_CODE -d android_secret_code://5776733 android"
@@ -11,6 +12,8 @@ object Constants {
     const val ACTION_SCREENSHOT = "android.intent.action.CAPTURE_SCREENSHOT"
     const val ACTION_HOME = ACTION_PREFIX + "SYSTEM_ACTION_HOME"
     const val ACTION_RECENTS = ACTION_PREFIX + "SYSTEM_ACTION_RECENTS"
+
+    const val BACKUP_FILE_PREFIX = "hyper_helper_backup_"
 
     const val UI_MODE_TYPE_SCALE_EXTRAL_SMALL = 10 // 0.9f
     const val UI_MODE_TYPE_SCALE_SMALL = 12 // 0.9f
@@ -25,6 +28,11 @@ object Constants {
     const val VARIABLE_FONT_REAL_FILE_NAME = "hyper_helper_vf_real.ttf"
     const val VARIABLE_FONT_MOBILE_TYPE_REAL_FILE_NAME = "hyper_helper_vf_mobile_type_real.ttf"
     const val VARIABLE_FONT_DEFAULT_PATH = "/system/fonts/MiSansVF.ttf"
+
+    const val VARIABLE_FONT_MI_SANS_CONDENSED_PATH = "fonts/MiSansCondensed-Subset.ttf"
+    const val VARIABLE_FONT_SF_PRO_PATH = "fonts/SFPro-Subset.ttf"
+
+    const val CELLULAR_TYPE_LIST = ",G,E,3G,H,H+,4G,4G+,,LTE,5G,5G,5G+,5GA,5G"
 
     object BatteryIndicator {
         const val STYLE_DEFAULT = 0
@@ -56,6 +64,8 @@ object Constants {
         const val ZEN = "zen"
         const val VOLUME = "volume"
 
+        const val DEMO_MOBILE = "demo_mobile"
+
         const val COMPOUND_ICON_STUB = "compound_stub"
         const val COMPOUND_ICON_REAL_LOCATION = "compound_location"
         const val COMPOUND_ICON_REAL_ALARM_CLOCK = "compound_alarm_clock"
@@ -75,7 +85,7 @@ object Constants {
         IconSlots.ALARM_CLOCK, "vpn", "ethernet", "handle_battery", "bluetooth", "bluetooth_handsfree_battery",
         "hotspot", "sound_box_group", "stereo", "sound_box_screen", "sound_box", "wireless_headset",
         "zen", "volume", "dist_compute", "camera", "glasses", "car", "tv", "pc", "pad", "phone",
-        "hd", "airplane", "mobile", "demo_mobile", IconSlots.SINGLE_MOBILE_SIM1, IconSlots.SINGLE_MOBILE_SIM2,
+        "hd", "airplane", "mobile", IconSlots.DEMO_MOBILE, IconSlots.SINGLE_MOBILE_SIM1, IconSlots.SINGLE_MOBILE_SIM2,
         IconSlots.STACKED_MOBILE_ICON, IconSlots.STACKED_MOBILE_TYPE, "no_sim", "wifi", "demo_wifi",
     )
 
@@ -85,63 +95,215 @@ object Constants {
         IconSlots.ALARM_CLOCK, "vpn", "ethernet", "handle_battery", "bluetooth", "bluetooth_handsfree_battery",
         "hotspot", "sound_box_group", "stereo", "sound_box_screen", "sound_box", "wireless_headset",
         "zen", "volume", "dist_compute", "camera", "glasses", "car", "tv", "pc", "pad", "phone",
-        "wifi", "demo_wifi", "hd", "airplane", "mobile", "demo_mobile", IconSlots.SINGLE_MOBILE_SIM1, IconSlots.SINGLE_MOBILE_SIM2,
+        "wifi", "demo_wifi", "hd", "airplane", "mobile", IconSlots.DEMO_MOBILE, IconSlots.SINGLE_MOBILE_SIM1, IconSlots.SINGLE_MOBILE_SIM2,
         IconSlots.STACKED_MOBILE_ICON, IconSlots.STACKED_MOBILE_TYPE, "no_sim",
     )
 
 
     val STATUS_BAR_ICON_SLOT_MAP = mutableMapOf(
         "handle" to StatusBarIconSlotWrap("handle", R.drawable.ic_stat_sys_unknown, 0),
-        "network_speed" to StatusBarIconSlotWrap("network_speed", R.drawable.ic_stat_sys_net_speed, R.string.icon_tuner_network_net_speed),
+        "network_speed" to StatusBarIconSlotWrap(
+            "network_speed",
+            R.drawable.ic_stat_sys_net_speed,
+            R.string.icon_tuner_network_net_speed
+        ),
         "mute" to StatusBarIconSlotWrap("mute", R.drawable.ic_stat_sys_unknown, 0),
         "micphone" to StatusBarIconSlotWrap("micphone", R.drawable.ic_stat_sys_micphone, 0),
-        "headset" to StatusBarIconSlotWrap("headset", R.drawable.ic_stat_sys_headset, R.string.icon_tuner_connect_headset),
+        "headset" to StatusBarIconSlotWrap(
+            "headset",
+            R.drawable.ic_stat_sys_headset,
+            R.string.icon_tuner_connect_headset
+        ),
         "mikey" to StatusBarIconSlotWrap("mikey", R.drawable.ic_stat_sys_unknown, 0),
         "privacy_mode" to StatusBarIconSlotWrap("privacy_mode", R.drawable.ic_stat_sys_unknown, 0),
-        "nfc" to StatusBarIconSlotWrap("nfc", R.drawable.ic_stat_sys_nfc, R.string.icon_tuner_connect_nfc),
+        "nfc" to StatusBarIconSlotWrap(
+            "nfc",
+            R.drawable.ic_stat_sys_nfc,
+            R.string.icon_tuner_connect_nfc
+        ),
         "gps" to StatusBarIconSlotWrap("gps", R.drawable.ic_stat_sys_unknown, 0),
         "missed_call" to StatusBarIconSlotWrap("missed_call", R.drawable.ic_stat_sys_unknown, 0),
-        "managed_profile" to StatusBarIconSlotWrap("managed_profile", R.drawable.ic_stat_sys_managed_profile, 0),
-        "second_space" to StatusBarIconSlotWrap("second_space", R.drawable.ic_stat_sys_second_space, R.string.icon_tuner_other_second_space),
+        "managed_profile" to StatusBarIconSlotWrap(
+            "managed_profile",
+            R.drawable.ic_stat_sys_managed_profile,
+            0
+        ),
+        "second_space" to StatusBarIconSlotWrap(
+            "second_space",
+            R.drawable.ic_stat_sys_second_space,
+            R.string.icon_tuner_other_second_space
+        ),
         "ime" to StatusBarIconSlotWrap("ime", R.drawable.ic_stat_sys_unknown, 0),
         "cast" to StatusBarIconSlotWrap("cast", R.drawable.ic_stat_sys_unknown, 0),
-        IconSlots.LOCATION to StatusBarIconSlotWrap(IconSlots.LOCATION, R.drawable.ic_stat_sys_location, R.string.icon_tuner_connect_location),
+        IconSlots.LOCATION to StatusBarIconSlotWrap(
+            IconSlots.LOCATION,
+            R.drawable.ic_stat_sys_location,
+            R.string.icon_tuner_connect_location
+        ),
         "stealth" to StatusBarIconSlotWrap("stealth", R.drawable.ic_stat_sys_stealth, 0),
         "tty" to StatusBarIconSlotWrap("tty", R.drawable.ic_stat_sys_tty, 0),
-        IconSlots.ALARM_CLOCK to StatusBarIconSlotWrap(IconSlots.ALARM_CLOCK, R.drawable.ic_stat_sys_alarm_clock, R.string.icon_tuner_other_alarm),
-        "vpn" to StatusBarIconSlotWrap("vpn", R.drawable.ic_stat_sys_vpn, R.string.icon_tuner_network_vpn),
+        IconSlots.ALARM_CLOCK to StatusBarIconSlotWrap(
+            IconSlots.ALARM_CLOCK,
+            R.drawable.ic_stat_sys_alarm_clock,
+            R.string.icon_tuner_other_alarm
+        ),
+        "vpn" to StatusBarIconSlotWrap(
+            "vpn",
+            R.drawable.ic_stat_sys_vpn,
+            R.string.icon_tuner_network_vpn
+        ),
         "ethernet" to StatusBarIconSlotWrap("ethernet", R.drawable.ic_stat_sys_unknown, 0),
-        "handle_battery" to StatusBarIconSlotWrap("handle_battery", R.drawable.ic_stat_sys_handle_battery, R.string.icon_tuner_connect_handle_battery),
-        "bluetooth" to StatusBarIconSlotWrap("bluetooth", R.drawable.ic_stat_sys_bluetooth, R.string.icon_tuner_connect_bluetooth),
-        "bluetooth_handsfree_battery" to StatusBarIconSlotWrap("bluetooth_handsfree_battery", R.drawable.ic_stat_sys_bluetooth_handsfree_battery, R.string.icon_tuner_connect_bluetooth_battery),
-        "hotspot" to StatusBarIconSlotWrap("hotspot", R.drawable.ic_stat_sys_hotspot, R.string.icon_tuner_network_hotspot),
-        "sound_box_group" to StatusBarIconSlotWrap("sound_box_group", R.drawable.ic_stat_sys_sound_box_group, R.string.icon_tuner_device_sound_box_group),
-        "stereo" to StatusBarIconSlotWrap("stereo", R.drawable.ic_stat_sys_stereo, R.string.icon_tuner_device_stereo),
-        "sound_box_screen" to StatusBarIconSlotWrap("sound_box_screen", R.drawable.ic_stat_sys_sound_box_screen, R.string.icon_tuner_device_sound_box_screen),
-        "sound_box" to StatusBarIconSlotWrap("sound_box", R.drawable.ic_stat_sys_sound_box, R.string.icon_tuner_device_sound_box),
-        "wireless_headset" to StatusBarIconSlotWrap("wireless_headset", R.drawable.ic_stat_sys_wireless_headset, R.string.icon_tuner_device_wireless_headset),
-        IconSlots.ZEN to StatusBarIconSlotWrap(IconSlots.ZEN, R.drawable.ic_stat_sys_zen, R.string.icon_tuner_other_zen),
-        IconSlots.VOLUME to StatusBarIconSlotWrap(IconSlots.VOLUME, R.drawable.ic_stat_sys_volume, R.string.icon_tuner_other_volume),
-        "dist_compute" to StatusBarIconSlotWrap("dist_compute", R.drawable.ic_stat_sys_dist_compute, R.string.icon_tuner_device_dist_compute),
-        "camera" to StatusBarIconSlotWrap("camera", R.drawable.ic_stat_sys_camera, R.string.icon_tuner_device_camera),
-        "glasses" to StatusBarIconSlotWrap("glasses", R.drawable.ic_stat_sys_glasses, R.string.icon_tuner_device_glasses),
-        "car" to StatusBarIconSlotWrap("car", R.drawable.ic_stat_sys_car, R.string.icon_tuner_device_car),
-        "tv" to StatusBarIconSlotWrap("tv", R.drawable.ic_stat_sys_tv, R.string.icon_tuner_device_tv),
-        "pc" to StatusBarIconSlotWrap("pc", R.drawable.ic_stat_sys_pc, R.string.icon_tuner_device_pc),
-        "pad" to StatusBarIconSlotWrap("pad", R.drawable.ic_stat_sys_pad, R.string.icon_tuner_device_pad),
-        "phone" to StatusBarIconSlotWrap("phone", R.drawable.ic_stat_sys_phone, R.string.icon_tuner_device_phone),
+        "handle_battery" to StatusBarIconSlotWrap(
+            "handle_battery",
+            R.drawable.ic_stat_sys_handle_battery,
+            R.string.icon_tuner_connect_handle_battery
+        ),
+        "bluetooth" to StatusBarIconSlotWrap(
+            "bluetooth",
+            R.drawable.ic_stat_sys_bluetooth,
+            R.string.icon_tuner_connect_bluetooth
+        ),
+        "bluetooth_handsfree_battery" to StatusBarIconSlotWrap(
+            "bluetooth_handsfree_battery",
+            R.drawable.ic_stat_sys_bluetooth_handsfree_battery,
+            R.string.icon_tuner_connect_bluetooth_battery
+        ),
+        "hotspot" to StatusBarIconSlotWrap(
+            "hotspot",
+            R.drawable.ic_stat_sys_hotspot,
+            R.string.icon_tuner_network_hotspot
+        ),
+        "sound_box_group" to StatusBarIconSlotWrap(
+            "sound_box_group",
+            R.drawable.ic_stat_sys_sound_box_group,
+            R.string.icon_tuner_device_sound_box_group
+        ),
+        "stereo" to StatusBarIconSlotWrap(
+            "stereo",
+            R.drawable.ic_stat_sys_stereo,
+            R.string.icon_tuner_device_stereo
+        ),
+        "sound_box_screen" to StatusBarIconSlotWrap(
+            "sound_box_screen",
+            R.drawable.ic_stat_sys_sound_box_screen,
+            R.string.icon_tuner_device_sound_box_screen
+        ),
+        "sound_box" to StatusBarIconSlotWrap(
+            "sound_box",
+            R.drawable.ic_stat_sys_sound_box,
+            R.string.icon_tuner_device_sound_box
+        ),
+        "wireless_headset" to StatusBarIconSlotWrap(
+            "wireless_headset",
+            R.drawable.ic_stat_sys_wireless_headset,
+            R.string.icon_tuner_device_wireless_headset
+        ),
+        IconSlots.ZEN to StatusBarIconSlotWrap(
+            IconSlots.ZEN,
+            R.drawable.ic_stat_sys_zen,
+            R.string.icon_tuner_other_zen
+        ),
+        IconSlots.VOLUME to StatusBarIconSlotWrap(
+            IconSlots.VOLUME,
+            R.drawable.ic_stat_sys_volume,
+            R.string.icon_tuner_other_volume
+        ),
+        "dist_compute" to StatusBarIconSlotWrap(
+            "dist_compute",
+            R.drawable.ic_stat_sys_dist_compute,
+            R.string.icon_tuner_device_dist_compute
+        ),
+        "camera" to StatusBarIconSlotWrap(
+            "camera",
+            R.drawable.ic_stat_sys_camera,
+            R.string.icon_tuner_device_camera
+        ),
+        "glasses" to StatusBarIconSlotWrap(
+            "glasses",
+            R.drawable.ic_stat_sys_glasses,
+            R.string.icon_tuner_device_glasses
+        ),
+        "car" to StatusBarIconSlotWrap(
+            "car",
+            R.drawable.ic_stat_sys_car,
+            R.string.icon_tuner_device_car
+        ),
+        "tv" to StatusBarIconSlotWrap(
+            "tv",
+            R.drawable.ic_stat_sys_tv,
+            R.string.icon_tuner_device_tv
+        ),
+        "pc" to StatusBarIconSlotWrap(
+            "pc",
+            R.drawable.ic_stat_sys_pc,
+            R.string.icon_tuner_device_pc
+        ),
+        "pad" to StatusBarIconSlotWrap(
+            "pad",
+            R.drawable.ic_stat_sys_pad,
+            R.string.icon_tuner_device_pad
+        ),
+        "phone" to StatusBarIconSlotWrap(
+            "phone",
+            R.drawable.ic_stat_sys_phone,
+            R.string.icon_tuner_device_phone
+        ),
         "hd" to StatusBarIconSlotWrap("hd", R.drawable.ic_stat_sys_unknown, 0),
-        "airplane" to StatusBarIconSlotWrap("airplane", R.drawable.ic_stat_sys_airplane, R.string.icon_tuner_network_airplane),
-        "mobile" to StatusBarIconSlotWrap("mobile", R.drawable.ic_stat_sys_mobile, R.string.icon_tuner_network_mobile),
-        "demo_mobile" to StatusBarIconSlotWrap("demo_mobile", R.drawable.ic_stat_sys_mobile, R.string.icon_tuner_position_demo_mobile),
-        "no_sim" to StatusBarIconSlotWrap("no_sim", R.drawable.ic_stat_sys_no_sim, R.string.icon_tuner_network_no_sim),
-        "wifi" to StatusBarIconSlotWrap("wifi", R.drawable.ic_stat_sys_wifi, R.string.icon_tuner_network_wifi),
-        "demo_wifi" to StatusBarIconSlotWrap("demo_wifi", R.drawable.ic_stat_sys_wifi, R.string.icon_tuner_position_demo_wifi),
-        IconSlots.COMPOUND_ICON_STUB to StatusBarIconSlotWrap(IconSlots.COMPOUND_ICON_STUB, R.drawable.ic_stat_sys_compound, R.string.icon_tuner_compound_icon),
-        IconSlots.STACKED_MOBILE_ICON to StatusBarIconSlotWrap(IconSlots.STACKED_MOBILE_ICON, R.drawable.ic_stat_sys_stacked_icon, R.string.icon_tuner_stacked_mobile_icon),
-        IconSlots.STACKED_MOBILE_TYPE to StatusBarIconSlotWrap(IconSlots.STACKED_MOBILE_TYPE, R.drawable.ic_stat_sys_stacked_type, R.string.ui_title_icon_detail_stacked_type),
-        IconSlots.SINGLE_MOBILE_SIM1 to StatusBarIconSlotWrap(IconSlots.SINGLE_MOBILE_SIM1, R.drawable.ic_stat_sys_single_sim1, R.string.icon_tuner_single_mobile_sim1),
-        IconSlots.SINGLE_MOBILE_SIM2 to StatusBarIconSlotWrap(IconSlots.SINGLE_MOBILE_SIM2, R.drawable.ic_stat_sys_single_sim2, R.string.icon_tuner_single_mobile_sim2),
+        "airplane" to StatusBarIconSlotWrap(
+            "airplane",
+            R.drawable.ic_stat_sys_airplane,
+            R.string.icon_tuner_network_airplane
+        ),
+        "mobile" to StatusBarIconSlotWrap(
+            "mobile",
+            R.drawable.ic_stat_sys_mobile,
+            R.string.icon_tuner_network_mobile
+        ),
+        IconSlots.DEMO_MOBILE to StatusBarIconSlotWrap(
+            IconSlots.DEMO_MOBILE,
+            R.drawable.ic_stat_sys_mobile,
+            R.string.icon_tuner_position_demo_mobile
+        ),
+        "no_sim" to StatusBarIconSlotWrap(
+            "no_sim",
+            R.drawable.ic_stat_sys_no_sim,
+            R.string.icon_tuner_network_no_sim
+        ),
+        "wifi" to StatusBarIconSlotWrap(
+            "wifi",
+            R.drawable.ic_stat_sys_wifi,
+            R.string.icon_tuner_network_wifi
+        ),
+        "demo_wifi" to StatusBarIconSlotWrap(
+            "demo_wifi",
+            R.drawable.ic_stat_sys_wifi,
+            R.string.icon_tuner_position_demo_wifi
+        ),
+        IconSlots.COMPOUND_ICON_STUB to StatusBarIconSlotWrap(
+            IconSlots.COMPOUND_ICON_STUB,
+            R.drawable.ic_stat_sys_compound,
+            R.string.icon_tuner_compound_icon
+        ),
+        IconSlots.STACKED_MOBILE_ICON to StatusBarIconSlotWrap(
+            IconSlots.STACKED_MOBILE_ICON,
+            R.drawable.ic_stat_sys_stacked_icon,
+            R.string.icon_tuner_stacked_mobile_icon
+        ),
+        IconSlots.STACKED_MOBILE_TYPE to StatusBarIconSlotWrap(
+            IconSlots.STACKED_MOBILE_TYPE,
+            R.drawable.ic_stat_sys_stacked_type,
+            R.string.ui_title_icon_detail_stacked_type
+        ),
+        IconSlots.SINGLE_MOBILE_SIM1 to StatusBarIconSlotWrap(
+            IconSlots.SINGLE_MOBILE_SIM1,
+            R.drawable.ic_stat_sys_single_sim1,
+            R.string.icon_tuner_single_mobile_sim1
+        ),
+        IconSlots.SINGLE_MOBILE_SIM2 to StatusBarIconSlotWrap(
+            IconSlots.SINGLE_MOBILE_SIM2,
+            R.drawable.ic_stat_sys_single_sim2,
+            R.string.icon_tuner_single_mobile_sim2
+        ),
     )
 
     enum class MediaControlSpKey {
@@ -257,7 +419,7 @@ object Constants {
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="stat_sys_signal_single_miui"><path id="signal_4" d="M14.918 5.02774C14.918 4.65864 14.918 4.47409 14.9898 4.33311C15.053 4.20911 15.1538 4.10828 15.2778 4.0451C15.4188 3.97327 15.6033 3.97327 15.9724 3.97327H16.3435C16.7126 3.97327 16.8971 3.97327 17.0381 4.0451C17.1621 4.10828 17.263 4.20911 17.3261 4.33311C17.398 4.47409 17.398 4.65864 17.398 5.02774V14.9721C17.398 15.3412 17.398 15.5258 17.3261 15.6668C17.263 15.7908 17.1621 15.8916 17.0381 15.9548C16.8971 16.0266 16.7126 16.0266 16.3435 16.0266H15.9724C15.6033 16.0266 15.4188 16.0266 15.2778 15.9548C15.1538 15.8916 15.053 15.7908 14.9898 15.6668C14.918 15.5258 14.918 15.3412 14.918 14.9721V5.02774Z" fill="white"/><path id="signal_3" d="M10.6665 7.7211C10.6665 7.352 10.6665 7.16745 10.7383 7.02647C10.8015 6.90246 10.9023 6.80164 11.0264 6.73846C11.1673 6.66663 11.3519 6.66663 11.721 6.66663H12.092C12.4611 6.66663 12.6457 6.66663 12.7867 6.73846C12.9107 6.80164 13.0115 6.90246 13.0747 7.02647C13.1465 7.16745 13.1465 7.352 13.1465 7.7211V14.9721C13.1465 15.3413 13.1465 15.5258 13.0747 15.6668C13.0115 15.7908 12.9107 15.8916 12.7867 15.9548C12.6457 16.0266 12.4611 16.0266 12.092 16.0266H11.721C11.3519 16.0266 11.1673 16.0266 11.0264 15.9548C10.9023 15.8916 10.8015 15.7908 10.7383 15.6668C10.6665 15.5258 10.6665 15.3413 10.6665 14.9721V7.7211Z" fill="white"/><path id="signal_2" d="M6.41162 10.8183C6.41162 10.4492 6.41162 10.2646 6.48345 10.1236C6.54664 9.99963 6.64746 9.89881 6.77147 9.83563C6.91245 9.76379 7.097 9.76379 7.4661 9.76379H7.83714C8.20625 9.76379 8.3908 9.76379 8.53177 9.83563C8.65578 9.89881 8.7566 9.99963 8.81979 10.1236C8.89162 10.2646 8.89162 10.4492 8.89162 10.8183V14.9722C8.89162 15.3413 8.89162 15.5258 8.81979 15.6668C8.7566 15.7908 8.65578 15.8916 8.53177 15.9548C8.3908 16.0267 8.20625 16.0267 7.83715 16.0267H7.4661C7.097 16.0267 6.91245 16.0267 6.77147 15.9548C6.64746 15.8916 6.54664 15.7908 6.48345 15.6668C6.41162 15.5258 6.41162 15.3413 6.41162 14.9722V10.8183Z" fill="white"/><path id="signal_1" d="M2.16016 13.085C2.16016 12.7159 2.16016 12.5313 2.23199 12.3904C2.29517 12.2664 2.39599 12.1655 2.52 12.1023C2.66098 12.0305 2.84553 12.0305 3.21463 12.0305H3.58568C3.95478 12.0305 4.13933 12.0305 4.28031 12.1023C4.40432 12.1655 4.50514 12.2664 4.56832 12.3904C4.64016 12.5313 4.64016 12.7159 4.64016 13.085V14.9684C4.64016 15.3375 4.64016 15.5221 4.56832 15.6631C4.50514 15.7871 4.40432 15.8879 4.28031 15.9511C4.13933 16.0229 3.95478 16.0229 3.58568 16.0229H3.21463C2.84553 16.0229 2.66098 16.0229 2.52 15.9511C2.39599 15.8879 2.29517 15.7871 2.23199 15.6631C2.16016 15.5221 2.16016 15.3375 2.16016 14.9684V13.085Z" fill="white"/><rect id="type_container" x="0.799805" y="3.80005" width="2" height="2" fill="white"/></g></svg>
     """
     const val STACKED_MOBILE_ICON_STACKED_MIUI = """
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="stat_sys_signal_stacked_miui"><path id="signal_2_4" d="M14.918 14.3764C14.918 14.0073 14.918 13.8227 14.9898 13.6817C15.053 13.5577 15.1538 13.4569 15.2778 13.3937C15.4188 13.3219 15.6033 13.3219 15.9724 13.3219H16.3435C16.7126 13.3219 16.8971 13.3219 17.0381 13.3937C17.1621 13.4569 17.263 13.5577 17.3261 13.6817C17.398 13.8227 17.398 14.0073 17.398 14.3764V14.9722C17.398 15.3413 17.398 15.5258 17.3261 15.6668C17.263 15.7908 17.1621 15.8916 17.0381 15.9548C16.8971 16.0267 16.7126 16.0267 16.3435 16.0267H15.9724C15.6033 16.0267 15.4188 16.0267 15.2778 15.9548C15.1538 15.8916 15.053 15.7908 14.9898 15.6668C14.918 15.5258 14.918 15.3413 14.918 14.9722V14.3764Z" fill="white"/><path id="signal_2_3" d="M10.6665 14.3764C10.6665 14.0073 10.6665 13.8227 10.7383 13.6817C10.8015 13.5577 10.9023 13.4569 11.0264 13.3937C11.1673 13.3219 11.3519 13.3219 11.721 13.3219H12.092C12.4611 13.3219 12.6457 13.3219 12.7867 13.3937C12.9107 13.4569 13.0115 13.5577 13.0747 13.6817C13.1465 13.8227 13.1465 14.0073 13.1465 14.3764V14.9722C13.1465 15.3413 13.1465 15.5258 13.0747 15.6668C13.0115 15.7908 12.9107 15.8916 12.7867 15.9548C12.6457 16.0267 12.4611 16.0267 12.092 16.0267H11.721C11.3519 16.0267 11.1673 16.0267 11.0264 15.9548C10.9023 15.8916 10.8015 15.7908 10.7383 15.6668C10.6665 15.5258 10.6665 15.3413 10.6665 14.9722V14.3764Z" fill="white"/><path id="signal_2_2" d="M6.41162 14.3764C6.41162 14.0073 6.41162 13.8227 6.48345 13.6817C6.54664 13.5577 6.64746 13.4569 6.77147 13.3937C6.91245 13.3219 7.097 13.3219 7.4661 13.3219H7.83714C8.20625 13.3219 8.3908 13.3219 8.53177 13.3937C8.65578 13.4569 8.7566 13.5577 8.81979 13.6817C8.89162 13.8227 8.89162 14.0073 8.89162 14.3764V14.9722C8.89162 15.3413 8.89162 15.5258 8.81979 15.6668C8.7566 15.7908 8.65578 15.8916 8.53177 15.9548C8.3908 16.0267 8.20625 16.0267 7.83715 16.0267H7.4661C7.097 16.0267 6.91245 16.0267 6.77147 15.9548C6.64746 15.8916 6.54664 15.7908 6.48345 15.6668C6.41162 15.5258 6.41162 15.3413 6.41162 14.9722V14.3764Z" fill="white"/><path id="signal_2_1" d="M2.16016 14.3764C2.16016 14.0073 2.16016 13.8227 2.23199 13.6817C2.29517 13.5577 2.39599 13.4569 2.52 13.3937C2.66098 13.3219 2.84553 13.3219 3.21463 13.3219H3.58568C3.95478 13.3219 4.13933 13.3219 4.28031 13.3937C4.40432 13.4569 4.50514 13.5577 4.56832 13.6817C4.64016 13.8227 4.64016 14.0073 4.64016 14.3764V14.9722C4.64016 15.3413 4.64016 15.5258 4.56832 15.6668C4.50514 15.7908 4.40432 15.8916 4.28031 15.9548C4.13933 16.0267 3.95478 16.0267 3.58568 16.0267H3.21463C2.84553 16.0267 2.66098 16.0267 2.52 15.9548C2.39599 15.8916 2.29517 15.7908 2.23199 15.6668C2.16016 15.5258 2.16016 15.3413 2.16016 14.9722V14.3764Z" fill="white"/><path id="signal_1_4" d="M14.918 5.02774C14.918 4.65864 14.918 4.47409 14.9898 4.33311C15.053 4.20911 15.1538 4.10828 15.2778 4.0451C15.4188 3.97327 15.6033 3.97327 15.9724 3.97327H16.3435C16.7126 3.97327 16.8971 3.97327 17.0381 4.0451C17.1621 4.10828 17.263 4.20911 17.3261 4.33311C17.398 4.47409 17.398 4.65864 17.398 5.02774V10.915C17.398 11.2841 17.398 11.4686 17.3261 11.6096C17.263 11.7336 17.1621 11.8344 17.0381 11.8976C16.8971 11.9694 16.7126 11.9694 16.3435 11.9694H15.9724C15.6033 11.9694 15.4188 11.9694 15.2778 11.8976C15.1538 11.8344 15.053 11.7336 14.9898 11.6096C14.918 11.4686 14.918 11.2841 14.918 10.915V5.02774Z" fill="white"/><path id="signal_1_3" d="M10.6665 6.81461C10.6665 6.44551 10.6665 6.26096 10.7383 6.11998C10.8015 5.99597 10.9023 5.89515 11.0264 5.83196C11.1673 5.76013 11.3519 5.76013 11.721 5.76013H12.092C12.4611 5.76013 12.6457 5.76013 12.7867 5.83196C12.9107 5.89515 13.0115 5.99597 13.0747 6.11998C13.1465 6.26096 13.1465 6.44551 13.1465 6.81461V10.9151C13.1465 11.2842 13.1465 11.4687 13.0747 11.6097C13.0115 11.7337 12.9107 11.8345 12.7867 11.8977C12.6457 11.9695 12.4611 11.9695 12.092 11.9695H11.721C11.3519 11.9695 11.1673 11.9695 11.0264 11.8977C10.9023 11.8345 10.8015 11.7337 10.7383 11.6097C10.6665 11.4687 10.6665 11.2842 10.6665 10.9151V6.81461Z" fill="white"/><path id="signal_1_2" d="M6.41162 8.86917C6.41162 8.50007 6.41162 8.31552 6.48345 8.17454C6.54664 8.05054 6.64746 7.94971 6.77147 7.88653C6.91245 7.8147 7.097 7.8147 7.4661 7.8147H7.83714C8.20625 7.8147 8.3908 7.8147 8.53177 7.88653C8.65578 7.94971 8.7566 8.05054 8.81979 8.17454C8.89162 8.31552 8.89162 8.50007 8.89162 8.86917V10.915C8.89162 11.2841 8.89162 11.4686 8.81979 11.6096C8.7566 11.7336 8.65578 11.8345 8.53177 11.8976C8.3908 11.9695 8.20625 11.9695 7.83715 11.9695H7.4661C7.097 11.9695 6.91245 11.9695 6.77147 11.8976C6.64746 11.8345 6.54664 11.7336 6.48345 11.6096C6.41162 11.4686 6.41162 11.2841 6.41162 10.915V8.86917Z" fill="white"/><path id="signal_1_1" d="M2.16016 10.345C2.16016 9.96871 2.16016 9.78057 2.23199 9.63686C2.29517 9.51044 2.39599 9.40766 2.52 9.34325C2.66098 9.27002 2.84553 9.27002 3.21463 9.27002H3.58568C3.95478 9.27002 4.13933 9.27002 4.28031 9.34325C4.40432 9.40766 4.50514 9.51044 4.56832 9.63686C4.64016 9.78057 4.64016 9.96871 4.64016 10.345V10.8951C4.64016 11.2713 4.64016 11.4595 4.56832 11.6032C4.50514 11.7296 4.40432 11.8324 4.28031 11.8968C4.13933 11.97 3.95478 11.97 3.58568 11.97H3.21463C2.84553 11.97 2.66098 11.97 2.52 11.8968C2.39599 11.8324 2.29517 11.7296 2.23199 11.6032C2.16016 11.4595 2.16016 11.2713 2.16016 10.8951V10.345Z" fill="white"/><rect id="type_container" x="0.799805" y="3.80005" width="2" height="2" fill="white"/></g></svg>
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="stat_sys_signal_stacked_miui"><path id="signal_2_4" d="M14.918 14.3764C14.918 14.0073 14.918 13.8227 14.9898 13.6817C15.053 13.5577 15.1538 13.4569 15.2778 13.3937C15.4188 13.3219 15.6033 13.3219 15.9724 13.3219H16.3435C16.7126 13.3219 16.8971 13.3219 17.0381 13.3937C17.1621 13.4569 17.263 13.5577 17.3261 13.6817C17.398 13.8227 17.398 14.0073 17.398 14.3764V14.9722C17.398 15.3413 17.398 15.5258 17.3261 15.6668C17.263 15.7908 17.1621 15.8916 17.0381 15.9548C16.8971 16.0267 16.7126 16.0267 16.3435 16.0267H15.9724C15.6033 16.0267 15.4188 16.0267 15.2778 15.9548C15.1538 15.8916 15.053 15.7908 14.9898 15.6668C14.918 15.5258 14.918 15.3413 14.918 14.9722V14.3764Z" fill="white"/><path id="signal_2_3" d="M10.6665 14.3764C10.6665 14.0073 10.6665 13.8227 10.7383 13.6817C10.8015 13.5577 10.9023 13.4569 11.0264 13.3937C11.1673 13.3219 11.3519 13.3219 11.721 13.3219H12.092C12.4611 13.3219 12.6457 13.3219 12.7867 13.3937C12.9107 13.4569 13.0115 13.5577 13.0747 13.6817C13.1465 13.8227 13.1465 14.0073 13.1465 14.3764V14.9722C13.1465 15.3413 13.1465 15.5258 13.0747 15.6668C13.0115 15.7908 12.9107 15.8916 12.7867 15.9548C12.6457 16.0267 12.4611 16.0267 12.092 16.0267H11.721C11.3519 16.0267 11.1673 16.0267 11.0264 15.9548C10.9023 15.8916 10.8015 15.7908 10.7383 15.6668C10.6665 15.5258 10.6665 15.3413 10.6665 14.9722V14.3764Z" fill="white"/><path id="signal_2_2" d="M6.41162 14.3764C6.41162 14.0073 6.41162 13.8227 6.48345 13.6817C6.54664 13.5577 6.64746 13.4569 6.77147 13.3937C6.91245 13.3219 7.097 13.3219 7.4661 13.3219H7.83714C8.20625 13.3219 8.3908 13.3219 8.53177 13.3937C8.65578 13.4569 8.7566 13.5577 8.81979 13.6817C8.89162 13.8227 8.89162 14.0073 8.89162 14.3764V14.9722C8.89162 15.3413 8.89162 15.5258 8.81979 15.6668C8.7566 15.7908 8.65578 15.8916 8.53177 15.9548C8.3908 16.0267 8.20625 16.0267 7.83715 16.0267H7.4661C7.097 16.0267 6.91245 16.0267 6.77147 15.9548C6.64746 15.8916 6.54664 15.7908 6.48345 15.6668C6.41162 15.5258 6.41162 15.3413 6.41162 14.9722V14.3764Z" fill="white"/><path id="signal_2_1" d="M2.16016 14.3764C2.16016 14.0073 2.16016 13.8227 2.23199 13.6817C2.29517 13.5577 2.39599 13.4569 2.52 13.3937C2.66098 13.3219 2.84553 13.3219 3.21463 13.3219H3.58568C3.95478 13.3219 4.13933 13.3219 4.28031 13.3937C4.40432 13.4569 4.50514 13.5577 4.56832 13.6817C4.64016 13.8227 4.64016 14.0073 4.64016 14.3764V14.9722C4.64016 15.3413 4.64016 15.5258 4.56832 15.6668C4.50514 15.7908 4.40432 15.8916 4.28031 15.9548C4.13933 16.0267 3.95478 16.0267 3.58568 16.0267H3.21463C2.84553 16.0267 2.66098 16.0267 2.52 15.9548C2.39599 15.8916 2.29517 15.7908 2.23199 15.6668C2.16016 15.5258 2.16016 15.3413 2.16016 14.9722V14.3764Z" fill="white"/><path id="signal_1_4" d="M14.918 5.02774C14.918 4.65864 14.918 4.47409 14.9898 4.33311C15.053 4.20911 15.1538 4.10828 15.2778 4.0451C15.4188 3.97327 15.6033 3.97327 15.9724 3.97327H16.3435C16.7126 3.97327 16.8971 3.97327 17.0381 4.0451C17.1621 4.10828 17.263 4.20911 17.3261 4.33311C17.398 4.47409 17.398 4.65864 17.398 5.02774V10.915C17.398 11.2841 17.398 11.4686 17.3261 11.6096C17.263 11.7336 17.1621 11.8344 17.0381 11.8976C16.8971 11.9694 16.7126 11.9694 16.3435 11.9694H15.9724C15.6033 11.9694 15.4188 11.9694 15.2778 11.8976C15.1538 11.8344 15.053 11.7336 14.9898 11.6096C14.918 11.4686 14.918 11.2841 14.918 10.915V5.02774Z" fill="white"/><path id="signal_1_3" d="M10.6665 6.81461C10.6665 6.44551 10.6665 6.26096 10.7383 6.11998C10.8015 5.99597 10.9023 5.89515 11.0264 5.83196C11.1673 5.76013 11.3519 5.76013 11.721 5.76013H12.092C12.4611 5.76013 12.6457 5.76013 12.7867 5.83196C12.9107 5.89515 13.0115 5.99597 13.0747 6.11998C13.1465 6.26096 13.1465 6.44551 13.1465 6.81461V10.9151C13.1465 11.2842 13.1465 11.4687 13.0747 11.6097C13.0115 11.7337 12.9107 11.8345 12.7867 11.8977C12.6457 11.9695 12.4611 11.9695 12.092 11.9695H11.721C11.3519 11.9695 11.1673 11.9695 11.0264 11.8977C10.9023 11.8345 10.8015 11.7337 10.7383 11.6097C10.6665 11.4687 10.6665 11.2842 10.6665 10.9151V6.81461Z" fill="white"/><path id="signal_1_2" d="M6.41162 8.86917C6.41162 8.50007 6.41162 8.31552 6.48345 8.17454C6.54664 8.05054 6.64746 7.94971 6.77147 7.88653C6.91245 7.8147 7.097 7.8147 7.4661 7.8147H7.83714C8.20625 7.8147 8.3908 7.8147 8.53177 7.88653C8.65578 7.94971 8.7566 8.05054 8.81979 8.17454C8.89162 8.31552 8.89162 8.50007 8.89162 8.86917V10.915C8.89162 11.2841 8.89162 11.4686 8.81979 11.6096C8.7566 11.7336 8.65578 11.8345 8.53177 11.8976C8.3908 11.9695 8.20625 11.9695 7.83715 11.9695H7.4661C7.097 11.9695 6.91245 11.9695 6.77147 11.8976C6.64746 11.8345 6.54664 11.7336 6.48345 11.6096C6.41162 11.4686 6.41162 11.2841 6.41162 10.915V8.86917Z" fill="white"/><path id="signal_1_1" d="M2.16016 10.345C2.16016 9.96871 2.16016 9.78057 2.23199 9.63686C2.29517 9.51044 2.39599 9.40766 2.52 9.34325C2.66098 9.27002 2.84553 9.27002 3.21463 9.27002H3.58568C3.95478 9.27002 4.13933 9.27002 4.28031 9.34325C4.40432 9.40766 4.50514 9.51044 4.56832 9.63686C4.64016 9.78057 4.64016 9.96871 4.64016 10.345V10.8951C4.64016 11.2713 4.64016 11.4595 4.56832 11.6032C4.50514 11.7296 4.40432 11.8324 4.28031 11.8968C4.13933 11.97 3.95478 11.97 3.58568 11.97H3.21463C2.84553 11.97 2.66098 11.97 2.52 11.8968C2.39599 11.8324 2.29517 11.7296 2.23199 11.6032C2.16016 11.4595 2.16016 11.2713 2.16016 10.8951V10.345Z" fill="white"/><rect id="type_container" y="3.5" width="2" height="2" fill="white"/></g></svg>
     """
     const val STACKED_MOBILE_ICON_SINGLE_IOS = """
         <svg width="24" height="20" viewBox="0 0 24 20" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="stat_sys_signal_single_ios"><path id="signal_4" fill-rule="evenodd" clip-rule="evenodd" d="M21.5999 5.03307C21.5999 4.40002 21.1223 3.88684 20.5332 3.88684H19.4666C18.8775 3.88684 18.3999 4.40002 18.3999 5.03307V14.967C18.3999 15.6001 18.8775 16.1133 19.4666 16.1133H20.5332C21.1223 16.1133 21.5999 15.6001 21.5999 14.967V5.03307Z" fill="white"/><path id="signal_3" fill-rule="evenodd" clip-rule="evenodd" d="M14.1658 6.33215H15.2325C15.8216 6.33215 16.2991 6.85765 16.2991 7.50589V14.9395C16.2991 15.5878 15.8216 16.1133 15.2325 16.1133H14.1658C13.5767 16.1133 13.0991 15.5878 13.0991 14.9395V7.50589C13.0991 6.85765 13.5767 6.33215 14.1658 6.33215Z" fill="white"/><path id="signal_2" fill-rule="evenodd" clip-rule="evenodd" d="M9.83402 8.9812H8.76735C8.17825 8.9812 7.70068 9.51339 7.70068 10.1699V14.9246C7.70068 15.5811 8.17825 16.1133 8.76735 16.1133H9.83402C10.4231 16.1133 10.9007 15.5811 10.9007 14.9246V10.1699C10.9007 9.51339 10.4231 8.9812 9.83402 8.9812Z" fill="white"/><path id="signal_1" fill-rule="evenodd" clip-rule="evenodd" d="M4.53324 11.4265H3.46657C2.87747 11.4265 2.3999 11.9511 2.3999 12.5982V14.9416C2.3999 15.5887 2.87747 16.1133 3.46657 16.1133H4.53324C5.12234 16.1133 5.5999 15.5887 5.5999 14.9416V12.5982C5.5999 11.9511 5.12234 11.4265 4.53324 11.4265Z" fill="white"/></g></svg>
