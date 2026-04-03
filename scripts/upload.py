@@ -21,29 +21,50 @@ def get_apk(base_dir):
     for root, dirs, files in os.walk(base_dir):
         for f in files:
             if f.endswith('.apk'):
-                return os.path.join(root, f)
+                return os.path.abspath(os.path.join(root, f))
     return None
 
-def send_document(bot_token, channel_id, file_path, caption=""):
+def send_text_message(bot_token, channel_id, text):
+    if not text:
+        return
     cmd = [
-        'curl', '-sS',  # Changed from -s to -sS to show error details
-        f'https://api.telegram.org/bot{bot_token}/sendDocument',
-        '-F', f'chat_id={channel_id}',
-        '-F', f'document=@{file_path}',
-        '-F', 'parse_mode=HTML'
+        'curl', '-sS', '-g',
+        f'https://api.telegram.org/bot{bot_token}/sendMessage',
+        '-d', f'chat_id={channel_id}',
+        '-d', f'text={text}',
+        '-d', 'parse_mode=HTML'
     ]
-    if caption:
-        cmd.extend(['-F', f'caption={caption}'])
-
     try:
         res = subprocess.run(cmd, capture_output=True, text=True, check=True)
         if '"ok":false' in res.stdout:
-            print(f"ERROR: Telegram API rejected the request: {res.stdout}")
+            print(f"WARNING: Changelog message rejected: {res.stdout}")
         else:
-            print(f"INFO: Sent successfully: {os.path.basename(file_path)}")
+            print("INFO: Changelog message sent successfully.")
     except subprocess.CalledProcessError as e:
-        print(f"ERROR: Send failed (exit code {e.returncode})")
-        print(f"ERROR Details: {e.stderr.strip()}")
+        print(f"WARNING: Failed to send changelog message. {e.stderr.strip()}")
+
+def send_document(bot_token, channel_id, file_path):
+    print(f"INFO: Uploading pure APK file: {os.path.basename(file_path)}")
+    cmd = [
+        'curl', '-v', '-sS', '-g',
+        f'[https://api.telegram.org/bot](https://api.telegram.org/bot){bot_token}/sendDocument',
+        '-F', f'chat_id={channel_id}',
+        '-F', f'document=@{file_path}'
+    ]
+    try:
+        res = subprocess.run(cmd, capture_output=True, text=True, check=True)
+        if '"ok":false' in res.stdout:
+            print(f"ERROR: Telegram API rejected the file: {res.stdout}")
+            return False
+        else:
+            print(f"INFO: File uploaded successfully: {os.path.basename(file_path)}")
+            return True
+    except subprocess.CalledProcessError as e:
+        print(f"ERROR: File upload failed (exit code {e.returncode})")
+        print("--- START CURL DEBUG LOG ---")
+        print(e.stderr.strip())
+        print("--- END CURL DEBUG LOG ---")
+        return False
 
 def main():
     # Added .strip() to remove any accidental whitespaces or hidden newlines from Secrets
@@ -83,25 +104,18 @@ def main():
 
     print(f"INFO: Checking total file size for {list(valid_uploads.keys())}")
 
-    if len(valid_uploads) == 2:
-        total_size = os.path.getsize(valid_uploads['release']) + os.path.getsize(valid_uploads['debug'])
-        if total_size > max_request_size:
-            print(f"WARNING: Total file size ({total_size/1024/1024:.2f}MB) exceeds the 49MB safe upload limit")
-            print("INFO: Discarding debug package to ensure release package is uploaded")
-            del valid_uploads['debug']
-
-    print(f"INFO: Preparing to upload {list(valid_uploads.keys())}")
+    upload_success = False
 
     if len(valid_uploads) == 1:
         label = list(valid_uploads.keys())[0]
-        send_document(bot_token, channel_id, valid_uploads[label], safe_caption)
+        upload_success = send_document(bot_token, channel_id, valid_uploads[label])
     else:
         media = [
-            {"type": "document", "media": "attach://release", "parse_mode": "HTML", "caption": safe_caption},
+            {"type": "document", "media": "attach://release"},
             {"type": "document", "media": "attach://debug"}
         ]
         cmd = [
-            'curl', '-sS',  # Changed from -s to -sS
+            'curl', '-v', '-sS', '-g',
             f'https://api.telegram.org/bot{bot_token}/sendMediaGroup',
             '-F', f'chat_id={channel_id}',
             '-F', f'media={json.dumps(media)}',
@@ -111,16 +125,23 @@ def main():
         try:
             res = subprocess.run(cmd, capture_output=True, text=True, check=True)
             if '"ok":false' in res.stdout:
-                print(f"ERROR: Telegram API rejected the request: {res.stdout}")
+                print(f"ERROR: Telegram API rejected MediaGroup: {res.stdout}")
             else:
-                print("INFO: MediaGroup sent successfully")
+                print("INFO: MediaGroup uploaded successfully")
+                upload_success = True
         except subprocess.CalledProcessError as e:
             print(f"ERROR: Send MediaGroup failed (exit code {e.returncode})")
-            print(f"ERROR Details: {e.stderr.strip()}")
+            print("--- START CURL DEBUG LOG ---")
+            print(e.stderr.strip())
+            print("--- END CURL DEBUG LOG ---")
 
             print("INFO: Falling back to single file upload for Release package...")
             if 'release' in valid_uploads:
-                send_document(bot_token, channel_id, valid_uploads['release'], safe_caption)
+                upload_success = send_document(bot_token, channel_id, valid_uploads['release'])
+
+    if upload_success and safe_caption:
+        print("INFO: File uploaded. Now sending changelog message...")
+        send_text_message(bot_token, channel_id, safe_caption)
 
 if __name__ == '__main__':
     main()
