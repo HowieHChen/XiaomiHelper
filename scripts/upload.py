@@ -27,7 +27,7 @@ def get_apk(base_dir):
 def send_document(bot_token, channel_id, file_path, caption=""):
     cmd = [
         'curl', '-sS',  # Changed from -s to -sS to show error details
-        f'[https://api.telegram.org/bot](https://api.telegram.org/bot){bot_token}/sendDocument',
+        f'https://api.telegram.org/bot{bot_token}/sendDocument',
         '-F', f'chat_id={channel_id}',
         '-F', f'document=@{file_path}',
         '-F', 'parse_mode=HTML'
@@ -102,7 +102,7 @@ def main():
         ]
         cmd = [
             'curl', '-sS',  # Changed from -s to -sS
-            f'[https://api.telegram.org/bot](https://api.telegram.org/bot){bot_token}/sendMediaGroup',
+            f'https://api.telegram.org/bot{bot_token}/sendMediaGroup',
             '-F', f'chat_id={channel_id}',
             '-F', f'media={json.dumps(media)}',
             '-F', f'release=@{valid_uploads["release"]}',
