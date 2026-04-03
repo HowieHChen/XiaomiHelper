@@ -30,9 +30,9 @@ def send_text_message(bot_token, channel_id, text):
     cmd = [
         'curl', '-sS', '-g',
         f'https://api.telegram.org/bot{bot_token}/sendMessage',
-        '-d', f'chat_id={channel_id}',
-        '-d', f'text={text}',
-        '-d', 'parse_mode=HTML'
+        '--form-string', f'chat_id={channel_id}',
+        '--form-string', f'text={text}',
+        '--form-string', 'parse_mode=HTML'
     ]
     try:
         res = subprocess.run(cmd, capture_output=True, text=True, check=True)
@@ -47,8 +47,8 @@ def send_document(bot_token, channel_id, file_path):
     print(f"INFO: Uploading pure APK file: {os.path.basename(file_path)}")
     cmd = [
         'curl', '-v', '-sS', '-g',
-        f'[https://api.telegram.org/bot](https://api.telegram.org/bot){bot_token}/sendDocument',
-        '-F', f'chat_id={channel_id}',
+        f'https://api.telegram.org/bot{bot_token}/sendDocument',
+        '--form-string', f'chat_id={channel_id}',
         '-F', f'document=@{file_path}'
     ]
     try:
@@ -67,7 +67,6 @@ def send_document(bot_token, channel_id, file_path):
         return False
 
 def main():
-    # Added .strip() to remove any accidental whitespaces or hidden newlines from Secrets
     bot_token = os.environ.get('BOT_TOKEN', '').strip()
     channel_id = os.environ.get('CHANNEL_ID', '').strip()
     raw_caption = os.environ.get('COMMIT_MESSAGE', 'No changelog provided').strip()
@@ -104,6 +103,15 @@ def main():
 
     print(f"INFO: Checking total file size for {list(valid_uploads.keys())}")
 
+    if len(valid_uploads) == 2:
+        total_size = os.path.getsize(valid_uploads['release']) + os.path.getsize(valid_uploads['debug'])
+        if total_size > max_request_size:
+            print(f"WARNING: Total file size ({total_size/1024/1024:.2f}MB) exceeds the 49MB safe upload limit")
+            print("INFO: Discarding debug package to ensure release package is uploaded")
+            del valid_uploads['debug']
+
+    print(f"INFO: Preparing to upload {list(valid_uploads.keys())}")
+
     upload_success = False
 
     if len(valid_uploads) == 1:
@@ -117,8 +125,8 @@ def main():
         cmd = [
             'curl', '-v', '-sS', '-g',
             f'https://api.telegram.org/bot{bot_token}/sendMediaGroup',
-            '-F', f'chat_id={channel_id}',
-            '-F', f'media={json.dumps(media)}',
+            '--form-string', f'chat_id={channel_id}',
+            '--form-string', f'media={json.dumps(media)}',
             '-F', f'release=@{valid_uploads["release"]}',
             '-F', f'debug=@{valid_uploads["debug"]}'
         ]
