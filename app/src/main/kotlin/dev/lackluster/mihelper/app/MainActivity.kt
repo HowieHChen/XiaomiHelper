@@ -21,6 +21,7 @@ import dev.lackluster.mihelper.app.screen.system.SystemFrameworkPage
 import dev.lackluster.mihelper.app.state.GlobalUIViewModel
 import dev.lackluster.hyperx.ui.preference.core.LocalPreferenceActions
 import dev.lackluster.mihelper.app.provider.AppPreferenceActions
+import dev.lackluster.mihelper.app.screen.MenuPage
 import dev.lackluster.mihelper.app.screen.others.OthersPage
 import dev.lackluster.mihelper.app.screen.systemui.SystemUIPage
 import dev.lackluster.mihelper.app.screen.systemui.icon.detail.IconDetailPage
@@ -59,7 +60,7 @@ class MainActivity : HyperXActivity() {
                             is Route.SecurityCenter -> SecurityCenterPage()
                             is Route.Others -> OthersPage()
                             is Route.About -> AboutPage()
-//                            is Route.Menu -> MenuPage(navigator, adjustPadding, mode)
+                            is Route.Menu -> MenuPage()
 //                            is Route.DevUITest -> UITestPage(navigator, adjustPadding, mode)
                             is Route.StatusBarFont -> StatusBarFontPage()
                             is Route.StatusBarClock -> StatusBarClockPage()
