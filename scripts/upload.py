@@ -53,7 +53,7 @@ def main():
     for label, path in paths.items():
         if path:
             size = os.path.getsize(path)
-            if size <= max_size:
+            if size <= max_single_size:
                 valid_uploads[label] = path
             else:
                 print(f"WARNING: APK file for {label.capitalize()} exceeds 50MB ({size/1024/1024:.2f}MB) SKIPPED")
