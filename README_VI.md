@@ -13,33 +13,28 @@
 [![GitHub Release Date](https://img.shields.io/github/release-date/HowieHChen/XiaomiHelper?display_date=published_at&style=flat-square&labelColor=%23444444)](https://github.com/HowieHChen/XiaomiHelper/releases/latest)
 [![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/HowieHChen/XiaomiHelper/total?style=flat-square&labelColor=%23444444)](https://github.com/HowieHChen/XiaomiHelper/releases/latest)
 
-**简体中文** | [日本語](README_JP.md) | [English](README_EN-US.md) | [Português (Brasil)](README_PT-BR.md) | [Tiếng Việt](README_VI.md)
+[简体中文](README.md) | [日本語](README_JP.md) | [English](README_EN-US.md) | [Português (Brasil)](README_PT-BR.md) | **Tiếng Việt**
 
 </div>
 
-## 介绍
+## Giới thiệu
 
-HyperOS 的轻量级模块，专注于提升日常使用体验。  
-基于小米 15 Pro 的最新稳定版 HyperOS China 开发。  
+Một mô-đun nhẹ dành cho HyperOS, tập trung vào việc nâng cao trải nghiệm người dùng hàng ngày.
 
-加入 [Telegram 频道](https://t.me/lackluster_stuff) 以反馈问题并获取内部更新。
+Được phát triển dựa trên phiên bản ổn định mới nhất của HyperOS Trung Quốc dành cho Xiaomi 15 Pro.
 
-## 贡献翻译
+Hãy tham gia kênh [Telegram](https://t.me/lackluster_stuff) của chúng tôi để báo cáo sự cố và nhận thông tin cập nhật.
 
-我们使用了 Hosted Weblate 进行项目翻译同步，您可以在[这里](https://hosted.weblate.org/engage/hyper-helper/)为本项目贡献翻译。
-
-[![翻译状态](https://hosted.weblate.org/widget/hyper-helper/multi-auto.svg)](https://hosted.weblate.org/engage/hyper-helper/)
-
-## 仓库
+## Kho lưu trữ
 
 - [GitHub Repository](https://github.com/HowieHChen/XiaomiHelper)
 - [Xposed Module Repository](https://modules.lsposed.org/module/dev.lackluster.mihelper/)
 
-## 捐赠
+## Ủng hộ
 
-[请我喝杯咖啡](https://github.com/HowieHChen/XiaomiHelper/blob/master/DONATE.md)
+[Ủng hộ tác giả một ly cà phê](https://github.com/HowieHChen/XiaomiHelper/blob/master/DONATE.md)
 
-## 引用
+## Tài liệu tham khảo
 
 ##### GNU General Public License v3.0
 
