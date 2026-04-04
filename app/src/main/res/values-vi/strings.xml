@@ -1,57 +1,1005 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Hyper Helper</string>
-    <string name="xposed_desc">Làm cho HyperOS trở nên vĩ đại!</string>
-    <string name="about_module">Module này được xây dựng bằng YukiHookAPI. Tìm hiểu thêm tại https://github.com/HighCapable/YuKiHookAPI</string>
+    <string name="xposed_desc">Làm cho HyperOS tuyệt vời trở lại!</string>
+    <string name="about_module">Module này được tạo bởi YukiHookAPI. Tìm hiểu thêm https://github.com/HighCapable/YuKiHookAPI</string>
     <string name="common_default">Mặc định</string>
     <string name="common_current">Hiện tại</string>
     <string name="common_custom">Tuỳ chỉnh</string>
-    <string name="common_general">Tổng quan</string>
-    <string name="common_invalid_input">Nhập không hợp lệ</string>
+    <string name="common_general">Cài đặt chung</string>
+    <string name="common_invalid_input">Đầu vào không hợp lệ</string>
     <string name="common_range">Phạm vi</string>
     <string name="common_search">Tìm kiếm</string>
     <string name="common_others">Khác</string>
-    <string name="common_tap_sleep">Nhấn đúp vào vùng trống để khóa màn hình</string>
-    <string name="common_disabled">Tắt</string>
-    <string name="common_enabled">Bật</string>
-    <string name="common_on">Đã bật</string>
-    <string name="common_off">Đã tắt</string>
-    <string name="button_cancel">Huỷ bỏ</string>
+    <string name="common_tap_sleep">Nhấn đúp vào khoảng trống để khoá màn hình</string>
+    <string name="common_disabled">Vô hiệu hoá</string>
+    <string name="common_enabled">Kích hoạt</string>
+    <string name="common_on">Bật</string>
+    <string name="common_off">Tắt</string>
+    <string name="button_cancel">Huỷ</string>
     <string name="button_ok">OK</string>
     <string name="button_clear">Xoá</string>
-    <string name="button_enable">Cho phép</string>
-    <string name="button_disable">Tắt</string>
+    <string name="button_enable">Kích hoạt</string>
+    <string name="button_disable">Vô hiệu hoá</string>
     <string name="button_ignore">Bỏ qua</string>
-    <string name="dialog_done">Hoàn thành</string>
+    <string name="dialog_done">Xong</string>
     <string name="dialog_warning">Cảnh báo</string>
     <string name="dialog_error">Lỗi</string>
-    <string name="scope_ai_engine">Công cụ Xiaomi HyperAI</string>
-    <string name="page_dev_ui_test">Kiểm thử phần tử giao diện người dùng</string>
-    <string name="page_about">Giới thiệu về module</string>
-    <string name="page_menu">Trình đơn</string>
+    <string name="page_main" translatable="false">@string/app_name</string>
+    <string name="page_dev_ui_test">Kiểm tra phần tử UI</string>
+    <string name="page_about">Thông tin module</string>
+    <string name="page_menu">Menu</string>
+    <string name="page_virtual_media_control_style" translatable="false">@string/systemui_notif_media_control_style_tips</string>
+    <string name="page_virtual_home_refactor" translatable="false">@string/home_exclusive_refactor</string>
     <string name="page_module">Cài đặt module</string>
+    <string name="page_systemui" translatable="false">@string/scope_systemui</string>
     <string name="page_android">Android Framework</string>
+    <string name="page_miui_home" translatable="false">@string/scope_miui_home</string>
     <string name="page_cleaner">Trình dọn dẹp</string>
-    <string name="page_interconnection">Kết nối</string>
+    <string name="page_security_center" translatable="false">@string/scope_security_center</string>
+    <string name="page_security_center_pad" translatable="false">@string/scope_security_center_pad</string>
+    <string name="page_interconnection">Kết nối liên thông</string>
+    <string name="page_others" translatable="false">@string/common_others</string>
+    <string name="page_disable_fixed_orientation" translatable="false">@string/android_rotation_disable_fixed_orientation_scope</string>
     <string name="page_status_bar_clock">Đồng hồ</string>
-    <string name="page_status_bar_icon_tuner">Điều chỉnh biểu tượng</string>
-    <string name="page_status_bar_icon_detail">Tùy chỉnh biểu tượng</string>
-    <string name="page_status_bar_icon_order">Tùy chỉnh thứ tự biểu tượng</string>
-    <string name="page_status_bar_stacked_mobile">Tùy chỉnh cột sóng kép</string>
+    <string name="page_status_bar_icon_tuner">Chỉnh sửa biểu tượng</string>
+    <string name="page_status_bar_icon_detail">Tuỳ chỉnh biểu tượng</string>
+    <string name="page_status_bar_icon_order">Tuỳ chỉnh thứ tự biểu tượng</string>
+    <string name="page_status_bar_stacked_mobile">Tuỳ chỉnh tín hiệu mạng hàng kép</string>
     <string name="page_status_bar_font">Phông chữ</string>
     <string name="page_media_control_style">Kiểu điều khiển phương tiện</string>
-    <string name="page_minus_blur">Hiệu ứng làm mờ của trợ lý cá nhân</string>
+    <string name="page_home_refactor" translatable="false">@string/home_exclusive_refactor</string>
+    <string name="page_minus_blur">Hiệu ứng làm mờ của Trợ lý cá nhân</string>
+    <string name="scope_ai_engine">Xiaomi HyperAI Engine</string>
     <string name="scope_android">Hệ thống</string>
     <string name="scope_browser">Trình duyệt Mi</string>
-    <string name="scope_download">Quản lý tải xuống</string>
+    <string name="scope_download">Tải xuống</string>
     <string name="scope_gallery">Thư viện</string>
-    <string name="scope_guard_provider">Các thành phần bảo mật hệ thống</string>
-    <string name="scope_in_call_ui">Gọi điện</string>
+    <string name="scope_guard_provider">Thành phần bảo mật hệ thống</string>
+    <string name="scope_in_call_ui">Điện thoại</string>
     <string name="scope_joyose">Joyose</string>
-    <string name="scope_lbe">Quyền hạn</string>
+    <string name="scope_lbe">Quyền truy cập</string>
     <string name="scope_market">GetApps</string>
-    <string name="scope_mi_ai">Tiểu Ái</string>
-    <string name="scope_mi_link">Dịch vụ kết nối</string>
+    <string name="scope_mi_ai">Mi AI</string>
+    <string name="scope_mi_link">Dịch vụ kết nối liên thông</string>
     <string name="scope_mi_mirror">Dịch vụ kết nối thiết bị</string>
-    <string name="scope_mi_share">Truyền tập tin Xiaomi</string>
+    <string name="scope_mi_share">Xiaomi Share</string>
+    <string name="scope_mi_trust">MiTrustService</string>
+    <string name="scope_miui_home">Trình khởi chạy hệ thống</string>
+    <string name="scope_mms">Tin nhắn</string>
+    <string name="scope_music">Âm nhạc</string>
+    <string name="scope_package_installer">Trình cài đặt gói</string>
+    <string name="scope_power_keeper">Pin và hiệu suất</string>
+    <string name="scope_remote_controller">Mi Remote</string>
+    <string name="scope_screen_recorder">Quay phim màn hình</string>
+    <string name="scope_screenshot">Ảnh chụp màn hình</string>
+    <string name="scope_search">Tìm kiếm</string>
+    <string name="scope_security_center">Bảo mật</string>
+    <string name="scope_security_center_pad">@string/scope_security_center</string>
+    <string name="scope_settings">Cài đặt</string>
+    <string name="scope_systemui">Giao diện hệ thống</string>
+    <string name="scope_taplus">Taplus</string>
+    <string name="scope_themes">Chủ đề</string>
+    <string name="scope_updater">Trình cập nhật</string>
+    <string name="scope_weather">Thời tiết</string>
+    <string name="action_notifications">Ngăn thông báo</string>
+    <string name="action_quick_settings">Bảng cài đặt nhanh</string>
+    <string name="action_lock_screen">Tắt màn hình</string>
+    <string name="action_screenshot">Chụp ảnh màn hình</string>
+    <string name="action_home">Màn hình chính</string>
+    <string name="action_recents">Tổng quan (ứng dụng gần đây)</string>
+    <string name="action_recognize_screen">Nhận dạng màn hình</string>
+    <string name="action_xiaoai">Xiaomi Hyper XiaoAi</string>
+    <string name="action_floating_window">Cửa sổ nổi</string>
+    <string name="search_use_browser">Tìm kiếm bằng trình duyệt</string>
+    <string name="search_engine">Công cụ tìm kiếm</string>
+    <string name="search_engine_default">Mặc định</string>
+    <string name="search_engine_baidu">Baidu</string>
+    <string name="search_engine_sogou">Sogou</string>
+    <string name="search_engine_bing">Bing</string>
+    <string name="search_engine_google">Google</string>
+    <string name="search_engine_custom" translatable="false">@string/common_custom</string>
+    <string name="search_engine_custom_url">Công cụ tìm kiếm tuỳ chỉnh</string>
+    <string name="search_engine_custom_url_toast">URL phải chứa \"%s\"</string>
+    <string name="share_center">Xiaomi Smart Hub</string>
+    <string name="floating_window">Cửa sổ tự do (Freeform)</string>
+    <string name="new_task">Tác vụ mới</string>
+    <string name="main_module_inactive_dialog_lsposed" translatable="false">LSPosed</string>
+    <string name="main_module_inactive_tips">Module chưa được kích hoạt. Vui lòng kiểm tra phiên bản LSPosed và thông tin kích hoạt module, sau đó thử lại.</string>
+    <string name="main_module_disabled_tips">Module chưa được kích hoạt. Vui lòng bật module trong trang Cài đặt module.</string>
+    <string name="main_app_root_tips">Việc thiếu quyền root có thể ngăn một số tính năng hoạt động bình thường.</string>
+    <string name="ui_title_menu_reboot">Khởi động lại</string>
+    <string name="menu_reboot_system">Khởi động lại hệ thống</string>
+    <string name="menu_reboot_system_tips">Bạn có chắc chắn muốn khởi động lại hệ thống không?</string>
+    <string name="menu_reboot_scope">Khởi động lại tất cả phạm vi</string>
+    <string name="menu_reboot_scope_tips">Bạn có chắc chắn muốn khởi động lại tất cả các ứng dụng trong phạm vi không?</string>
+    <string name="menu_reboot_systemui">Khởi động lại System UI</string>
+    <string name="menu_reboot_systemui_tips">Bạn có chắc chắn muốn khởi động lại Giao diện hệ thống (System UI) không?</string>
+    <string name="menu_reboot_launcher">Khởi động lại Trình khởi chạy hệ thống</string>
+    <string name="menu_reboot_launcher_tips">Bạn có chắc chắn muốn khởi động lại Trình khởi chạy hệ thống không?</string>
+    <string name="menu_reboot_common_title">Khởi động lại %s</string>
+    <string name="menu_reboot_common_message">Bạn có chắc chắn muốn khởi động lại %s không?</string>
+    <string name="menu_reboot_error_toast">Khởi động lại thất bại! Vui lòng cấp quyền root cho ứng dụng này và thử lại.</string>
+    <string name="menu_reboot_done_toast">Tất cả các ứng dụng mục tiêu đã được khởi động lại</string>
+    <string name="ui_title_menu_others" translatable="false">@string/common_others</string>
+    <string name="menu_shortcut_lsposed" translatable="false">LSPosed</string>
+    <string name="about_jump_error_toast">Đã xảy ra một số lỗi không xác định</string>
+    <string name="about_easter_egg_toast">Bạn đã nhấn nhưng không có gì xảy ra</string>
+    <string name="about_hyperx_compose">Ứng dụng này được tạo bởi HyperX Compose</string>
+    <string name="about_hyperx_compose_tips">HyperX Compose là một thư viện Compose UI dùng chung cho Android dựa trên Miuix</string>
+    <string name="about_miuix">Ứng dụng này được tạo bởi Miuix</string>
+    <string name="about_miuix_tips">Miuix là một thư viện UI chia sẻ cho Compose Multiplatform</string>
+    <string name="about_yuki">Ứng dụng này được tạo bởi YukiHookAPI</string>
+    <string name="about_yuki_tips">Tìm hiểu thêm https://github.com/HighCapable/YuKiHookAPI</string>
+    <string name="ui_title_about_developer">Nhà phát triển</string>
+    <string name="about_author" translatable="false">HowieHChen</string>
+    <string name="about_author_tips">Không có hồ sơ hoặc chữ ký</string>
+    <string name="ui_title_about_others" translatable="false">@string/common_others</string>
+    <string name="about_translate">Dịch thuật</string>
+    <string name="about_translate_tips">Giúp chúng tôi dịch ứng dụng này sang ngôn ngữ của bạn</string>
+    <string name="about_donate">Quyên góp</string>
+    <string name="about_donate_tips">Mua cho tôi một ly cà phê</string>
+    <string name="about_repository">Mã nguồn</string>
+    <string name="about_repository_tips">Kho lưu trữ GitHub</string>
+    <string name="about_telegram">Kênh Telegram</string>
+    <string name="about_telegram_tips">Tham gia kênh Telegram để phản hồi và nhận các bản cập nhật nội bộ.</string>
+    <string name="ui_title_about_reference">Tài liệu tham khảo</string>
+    <string name="ui_title_about_dev_options">Tuỳ chọn nhà phát triển</string>
+    <string name="ui_title_module_general" translatable="false">@string/common_general</string>
+    <string name="module_main_switch">Kích hoạt module</string>
+    <string name="module_lite_mode">Chế độ thu gọn (Lite mode)</string>
+    <string name="module_lite_mode_tips">Chỉ tải các chức năng cốt lõi</string>
+    <string name="module_dexkit_cache">Lưu bộ nhớ đệm kết quả DexKit</string>
+    <string name="module_dexkit_cache_tips">Sử dụng bộ nhớ đệm giúp giảm tác động tiêu cực đến hiệu suất nhưng sẽ tạo ra tệp bộ nhớ đệm trong thư mục ứng dụng gốc. Khi tắt tính năng này, tệp bộ nhớ đệm sẽ bị xóa vào lần khởi động tiếp theo của ứng dụng gốc (nếu có).</string>
+    <string name="module_hide_icon">Ẩn biểu tượng ở Màn hình chính</string>
+    <string name="module_skip_root_check">Tắt kiểm tra quyền root</string>
+    <string name="module_skip_root_check_tips">Có hiệu lực sau khi khởi động lại ứng dụng</string>
+    <string name="module_show_in_settings">Hiển thị biểu tượng trong Cài đặt</string>
+    <string name="module_settings_icon_style">Kiểu biểu tượng trong Cài đặt</string>
+    <string name="module_settings_icon_style_default" translatable="false">@string/common_default</string>
+    <string name="module_settings_icon_style_android">Android</string>
+    <string name="module_settings_icon_color">Màu biểu tượng trong Cài đặt</string>
+    <string name="module_settings_icon_color_gray">Xám</string>
+    <string name="module_settings_icon_color_red">Đỏ</string>
+    <string name="module_settings_icon_color_green">Xanh lá</string>
+    <string name="module_settings_icon_color_blue">Xanh dương</string>
+    <string name="module_settings_icon_color_purple">Tím</string>
+    <string name="module_settings_icon_color_yellow">Vàng</string>
+    <string name="module_settings_name">Tên hiển thị trong Cài đặt</string>
+    <string name="module_settings_name_helper" translatable="false">Hyper Helper</string>
+    <string name="module_settings_name_advanced">Cài đặt nâng cao</string>
+    <string name="module_settings_name_custom" translatable="false">@string/common_custom</string>
+    <string name="module_settings_custom_name">Tiêu đề mục nhập tuỳ chỉnh</string>
+    <string name="ui_title_module_ui">Giao diện và hiển thị</string>
+    <string name="module_ui_blur">Hiệu ứng làm mờ</string>
+    <string name="module_ui_blur_tint_alpha_light">Độ mờ của màu phủ trong Chế độ sáng</string>
+    <string name="module_ui_blur_tint_alpha_dark">Độ mờ của màu phủ trong Chế độ tối</string>
+    <string name="module_ui_blur_tint_alpha_tips">Độ mờ phải là số nguyên từ 0 đến 100, trong đó 0 là giá trị đại diện cho độ trong suốt cao nhất.</string>
+    <string name="module_ui_split">Bố cục thích ứng</string>
+    <string name="module_ui_split_tips">Ứng dụng sẽ tự động chuyển sang bố cục chia đôi màn hình trên các thiết bị màn hình lớn hoặc xoay ngang</string>
+    <string name="ui_title_module_backup">Sao lưu &amp; khôi phục</string>
+    <string name="module_backup">Sao lưu tuỳ chọn module</string>
+    <string name="module_restore">Khôi phục tuỳ chọn module</string>
+    <string name="module_reset">Đặt lại tuỳ chọn module</string>
+    <string name="module_reset_warning">Đặt lại tất cả tuỳ chọn là thao tác không thể hoàn tác, vui lòng đảm bảo bạn đã sao lưu. \nBạn có muốn tiếp tục không?</string>
+    <string name="module_backup_success">Tất cả tuỳ chọn đã được xuất thành công ra tệp được chỉ định.</string>
+    <string name="module_backup_failure">Sao lưu thất bại.</string>
+    <string name="module_restore_success">Các tuỳ chọn đã được khôi phục từ tệp.</string>
+    <string name="module_restore_failure">Khôi phục thất bại. Vui lòng kiểm tra lại tệp sao lưu.</string>
+    <string name="module_restore_failure_spversion">Phiên bản tệp sao lưu không khớp (quá cao)</string>
+    <string name="module_reset_success">Tất cả tuỳ chọn đã được khôi phục về mặc định.</string>
+    <string name="module_reset_failure">Đặt lại thất bại.</string>
+    <string name="module_unknown_failure">Lỗi không xác định</string>
+    <string name="ui_title_systemui_statusbar">Thanh trạng thái</string>
+    <string name="systemui_statusbar_font" translatable="false">@string/page_status_bar_font</string>
+    <string name="systemui_statusbar_clock" translatable="false">@string/page_status_bar_clock</string>
+    <string name="systemui_statusbar_icon_tuner" translatable="false">@string/page_status_bar_icon_tuner</string>
+    <string name="systemui_statusbar_icon_detail" translatable="false">@string/page_status_bar_icon_detail</string>
+    <string name="systemui_statusbar_notif_count">Tuỳ chỉnh số lượng thông báo tối đa để hiển thị</string>
+    <string name="systemui_statusbar_notif_count_icon">Số lượng biểu tượng thông báo tối đa trên thanh trạng thái</string>
+    <string name="systemui_statusbar_tap_to_sleep" translatable="false">@string/common_tap_sleep</string>
+    <string name="systemui_statusbar_region_sampling">Lấy mẫu khu vực</string>
+    <string name="systemui_statusbar_region_sampling_tips">Lấy mẫu màu khu vực thanh trạng thái và tự động điều chỉnh chế độ sáng/tối dựa trên màu nền</string>
+    <string name="systemui_statusbar_region_sampling_def" translatable="false">@string/common_default</string>
+    <string name="systemui_statusbar_region_sampling_def_tips">Chỉ kích hoạt ở chế độ tối</string>
+    <string name="systemui_statusbar_region_sampling_enable">Bắt buộc kích hoạt</string>
+    <string name="systemui_statusbar_region_sampling_enable_tips">Luôn kích hoạt; điều này có thể gây ra hiện tượng nhấp nháy thường xuyên trên thanh trạng thái.</string>
+    <string name="systemui_statusbar_region_sampling_disable">Bắt buộc vô hiệu hoá</string>
+    <string name="systemui_statusbar_region_sampling_disable_tips">Luôn vô hiệu hoá; điều này có thể gây ra độ tương phản sai trên thanh trạng thái trong các ứng dụng có chế độ tối bắt buộc.</string>
+    <string name="ui_title_systemui_lock_screen">Màn hình khoá</string>
+    <string name="systemui_lock_hide_unlock_tip">Ẩn yêu cầu mở khoá ở cuối màn hình</string>
+    <string name="systemui_lock_hide_disturb">Ẩn thông báo thường trú của chế độ Không làm phiền (DND)</string>
+    <string name="systemui_lock_keep_notif">Giữ lại thông báo sau khi mở khoá</string>
+    <string name="systemui_lock_keep_notif_tips">Các thông báo sẽ luôn hiển thị trên Màn hình khoá cho đến khi bị xoá thủ công.</string>
+    <string name="systemui_lock_double_tap" translatable="false">@string/common_tap_sleep</string>
+    <string name="systemui_lock_block_editor">Tắt tính năng nhấn giữ để truy cập trình chỉnh sửa Màn hình khoá</string>
+    <string name="systemui_lock_block_editor_tips">Bạn có thể chỉnh sửa Màn hình khoá tại Cài đặt > Hình nền và cá nhân hoá</string>
+    <string name="systemui_lock_flashlight_on">Tự động bật đèn pin</string>
+    <string name="systemui_lock_flashlight_on_tips">Tự động bật đèn pin khi mở giao diện điều chỉnh đèn pin từ phím tắt trên Màn hình khoá.</string>
+    <string name="systemui_lock_keep_clock_container">Luôn hiển thị phần đầu của thanh trạng thái</string>
+    <string name="systemui_lock_keep_clock_container_tips">Luôn hiển thị phía bên trái của thanh trạng thái (hoặc bên phải với ngôn ngữ RTL), thường là khu vực chứa tên nhà mạng. Chế độ xem này bị ẩn theo mặc định khi ở Màn hình luôn bật (AOD).</string>
+    <string name="systemui_lock_hide_next_alarm">Ẩn báo thức tiếp theo</string>
+    <string name="systemui_lock_hide_next_alarm_tips">Ẩn chỉ báo thời gian của báo thức tiếp theo ở đầu thanh trạng thái</string>
+    <string name="systemui_lock_hide_carrier_one" translatable="false">@string/systemui_control_hide_carrier_one</string>
+    <string name="systemui_lock_hide_carrier_two" translatable="false">@string/systemui_control_hide_carrier_two</string>
+    <string name="systemui_lock_force_color_scheme_statusbar" translatable="false">@string/home_others_force_color_scheme_statusbar</string>
+    <string name="ui_title_systemui_notification_center">Ngăn thông báo</string>
+    <string name="systemui_notif_redirect_settings">Chuyển hướng cài đặt thông báo</string>
+    <string name="systemui_notif_redirect_settings_tips">Khi bạn mở cài đặt thông báo, hệ thống sẽ điều hướng bạn đến cài đặt của kênh thông báo tương ứng thay vì cài đặt thông báo của ứng dụng.</string>
+    <string name="systemui_notif_redirect_dialog">Hiển thị cửa sổ bật lên khi mở cài đặt thông báo</string>
+    <string name="systemui_notif_redirect_dialog_tips">Sử dụng cửa sổ bật lên (pop-up) để lựa chọn bật cài đặt thông báo của ứng dụng hay cài đặt của kênh thông báo</string>
+    <string name="systemui_notif_redirect_dialog_negative_default">Cài đặt ứng dụng</string>
+    <string name="systemui_notif_redirect_dialog_positive_default">Cài đặt kênh</string>
+    <string name="systemui_notif_disable_whitelist">Tắt danh sách trắng của thông báo</string>
+    <string name="systemui_notif_disable_whitelist_tips">Quá nhiều thông báo có thể gây giật lag trên Màn hình khoá</string>
+    <string name="systemui_notif_suppress_fold">Tắt tính năng gộp thông báo</string>
+    <string name="systemui_notif_suppress_fold_tips">Ngăn hệ thống gộp các thông báo lại thành \"Nhiều thông báo hơn\"</string>
+    <string name="systemui_notif_freeform">Cho phép mở hầu hết các thông báo trong cửa sổ nhỏ</string>
+    <string name="systemui_notif_freeform_tips">Vuốt xuống trên các thông báo để mở cửa sổ dạng tự do (Freeform). Một số thông báo được đẩy qua dịch vụ Mi Push có thể không được hỗ trợ.</string>
+    <string name="systemui_notif_clock_color_fix">Sửa lỗi sai màu đồng hồ trong hoạt ảnh</string>
+    <string name="systemui_notif_clock_color_fix_tips">Khắc phục sự bất thường về màu sắc trong hoạt ảnh thả xuống của đồng hồ khi sử dụng chủ đề</string>
+    <string name="systemui_notif_clock_anim">Bắt buộc bật hoạt ảnh chuyển tiếp của đồng hồ</string>
+    <string name="systemui_notif_clock_anim_tips">Cho phép hoạt ảnh chuyển tiếp của đồng hồ ở chế độ màn hình ngang</string>
+    <string name="systemui_notif_theme_blur">Cho phép bật Cấu trúc nâng cao (Advanced textures) khi sử dụng chủ đề</string>
+    <string name="systemui_notif_media_control_style" translatable="false">@string/page_media_control_style</string>
+    <string name="systemui_notif_media_control_style_tips">Tuỳ chỉnh kiểu của bảng điều khiển phương tiện trong Ngăn thông báo</string>
+    <string name="systemui_notif_expand_notif">Mở rộng thông báo</string>
+    <string name="systemui_notif_expand_notif_tips">Khuyến nghị nên sử dụng Lớp phủ (RRO Overlay) để thay đổi hành vi mở rộng thông báo</string>
+    <string name="systemui_notif_expand_notif_def" translatable="false">@string/common_default</string>
+    <string name="systemui_notif_expand_notif_def_tips">Không tự động mở rộng thông báo</string>
+    <string name="systemui_notif_expand_notif_first">Đầu tiên</string>
+    <string name="systemui_notif_expand_notif_first_tips">Tự động mở rộng thông báo đầu tiên nếu nó không thuộc nhóm nào</string>
+    <string name="systemui_notif_expand_notif_ungrouped">Không được nhóm</string>
+    <string name="systemui_notif_expand_notif_ungrouped_tips">Luôn mở rộng các thông báo không được nhóm</string>
+    <string name="systemui_notif_expand_ignore_focus">Bỏ qua thông báo Spotlight</string>
+    <string name="systemui_notif_expand_ignore_focus_tips">Bỏ qua các thông báo Spotlight khi mở rộng thông báo đầu tiên</string>
+    <string name="systemui_notif_lr_opt">Tối ưu hoá bố cục và xếp hạng</string>
+    <string name="systemui_notif_lr_opt_tips">Sửa đổi bố cục của danh sách thông báo và các quy tắc xếp hạng thông báo. Được khuyến nghị áp dụng khi sử dụng thông báo kiểu Android.</string>
+    <string name="systemui_notif_lr_hide_section_header">Ẩn tiêu đề phân vùng</string>
+    <string name="systemui_notif_lr_hide_section_header_tips">Khi có một thông báo dạng MessageStyle, nó thường được ghim lên trên cùng, và một dấu chấm nhỏ (tiêu đề phân vùng) sẽ xuất hiện bên dưới nó.</string>
+    <string name="systemui_notif_lr_hide_section_gap">Ẩn khoảng cách giữa các phân vùng</string>
+    <string name="systemui_notif_lr_hide_section_gap_tips">Khoảng cách giữa bảng điều khiển phương tiện và thông báo tiếp theo khác với khoảng cách giữa các thông báo thông thường khác do bảng điều khiển và các thông báo kia thuộc về các phân vùng riêng biệt, và hệ thống sẽ tự thêm khoảng cách bổ sung.</string>
+    <string name="systemui_notif_lr_rerank">Xếp hạng lại thông báo</string>
+    <string name="systemui_notif_lr_rerank_tips">Xếp hạng lại các thông báo và sắp xếp chúng theo trình tự sau: Bảng điều khiển phương tiện, Cảnh báo hệ thống, Thông báo Spotlight, Thông báo dạng MessageStyle, và các thông báo khác.</string>
+    <string name="systemui_notif_miuix_expand_btn">Nút mở rộng kiểu Miuix</string>
+    <string name="systemui_notif_miuix_expand_btn_tips">Thay thế nút mở rộng của thông báo kiểu Android bằng nút kiểu Miuix</string>
+    <string name="ui_title_systemui_dynamic_island">Dynamic Island</string>
+    <string name="systemui_di_media_control_style" translatable="false">@string/page_media_control_style</string>
+    <string name="systemui_di_media_control_style_tips">Tuỳ chỉnh kiểu bảng điều khiển phương tiện trên Dynamic Island</string>
+    <string name="systemui_di_disable_whitelist">Tắt danh sách trắng của Dynamic Island</string>
+    <string name="systemui_di_disable_whitelist_tips">Cho phép bất kỳ ứng dụng nào cũng có thể xuất hiện trên Dynamic Island</string>
+    <string name="systemui_di_disable_media_whitelist">Tắt danh sách trắng cửa sổ kéo xuống của điều khiển phương tiện</string>
+    <string name="systemui_di_disable_media_whitelist_tips">Cho phép mọi ứng dụng phát đa phương tiện mở trong cửa sổ nhỏ thông qua thao tác kéo xuống tại Dynamic Island</string>
+    <string name="ui_title_systemui_control_center">Trung tâm điều khiển</string>
+    <string name="systemui_control_hide_carrier_one">Ẩn tên nhà mạng cho thẻ SIM 1</string>
+    <string name="systemui_control_hide_carrier_two">Ẩn tên nhà mạng cho thẻ SIM 2</string>
+    <string name="systemui_control_hide_carrier_hd">Ẩn biểu tượng HD</string>
+    <string name="systemui_control_hide_carrier_hd_tips">Ẩn biểu tượng HD bên cạnh khu vực tên nhà mạng</string>
+    <string name="systemui_control_hide_edit">Ẩn nút chỉnh sửa</string>
+    <string name="ui_title_systemui_others" translatable="false">@string/common_others</string>
+    <string name="systemui_others_monet_overlay">Tuỳ chỉnh màu chủ đề</string>
+    <string name="systemui_others_monet_overlay_tips">Tuỳ chỉnh màu sắc chủ đề hệ thống thay vì phải lấy màu từ hình nền</string>
+    <string name="systemui_others_monet_color">Màu chủ đề</string>
+    <string name="systemui_others_monet_color_tips">Màu này sẽ ảnh hưởng đến tất cả các ứng dụng có sử dụng bảng màu động (Material You)</string>
+    <string name="systemui_others_monet_color_msg">Mã màu Hex phải bắt đầu bằng # \n(ví dụ: #FF123456, #FF00FF)</string>
+    <string name="ui_title_home_exclusive">Tính năng độc quyền</string>
+    <string name="home_exclusive_refactor">Hiệu ứng làm mờ nâng cao</string>
+    <string name="home_exclusive_refactor_tips">Những trải nghiệm tương tác hoàn toàn mới có thể phải đánh đổi bằng hiệu suất và mức tiêu thụ pin</string>
+    <string name="home_exclusive_refactor_dialog_title" translatable="false">@string/dialog_warning</string>
+    <string name="home_exclusive_refactor_dialog_msg">!!TÍNH NĂNG THỬ NGHIỆM!!\n\nTính năng này sẽ tái cấu trúc Trình khởi chạy dựa trên công nghệ Cấu trúc nâng cao (Advanced textures), vui lòng đảm bảo rằng thiết bị của bạn hỗ trợ Cấu trúc nâng cao.\n\nNếu bạn bật tính năng này, bạn sẽ phải đối mặt với các rủi ro bao gồm nhưng không giới hạn ở: tiêu hao pin, tụt khung hình, giật lag và thậm chí là văng ứng dụng (crash).\n\nHãy đảm bảo bạn không sử dụng trình khởi chạy đã bị chỉnh sửa (mod) và đã tắt mọi module khác có liên quan đến việc làm mờ và hoạt ảnh của trình khởi chạy.</string>
+    <string name="ui_title_home_gesture">Cử chỉ</string>
+    <string name="home_gesture_back_haptic">Phản hồi xúc giác cử chỉ quay lại</string>
+    <string name="home_gesture_back_haptic_default" translatable="false">@string/common_default</string>
+    <string name="home_gesture_back_haptic_default_tips">Thực hiện phản hồi xúc giác khi bắt đầu vuốt</string>
+    <string name="home_gesture_back_haptic_enhanced">Nâng cao</string>
+    <string name="home_gesture_back_haptic_enhanced_tips">Thực hiện phản hồi xúc giác ở cả khi bắt đầu và lúc kết thúc thao tác vuốt</string>
+    <string name="home_gesture_back_haptic_disabled" translatable="false">@string/common_disabled</string>
+    <string name="home_gesture_fix_predictive_back">Sửa lỗi khoảng cách vuốt của Quay lại dự đoán (Predictive back)</string>
+    <string name="home_gesture_fix_predictive_back_tips">HyperOS đã phá vỡ hành vi quay lại dự đoán, khiến yêu cầu về khoảng cách vuốt trở nên quá ngắn. Khi được bật, module sẽ khôi phục lại hành vi chuẩn của AOSP. Tùy chọn này chỉ có thể sửa lỗi liên quan đến tiến trình thao tác và không thể cứu vãn các trường hợp tính năng quay lại dự đoán bị hỏng hoàn toàn.</string>
+    <string name="home_gesture_quick_switch">Cử chỉ quay lại nâng cao</string>
+    <string name="home_gesture_quick_switch_tips">Trong cử chỉ quay lại, một thao tác vuốt dài hơn sẽ kích hoạt một chức năng cụ thể.</string>
+    <string name="home_gesture_quick_switch_left">Chức năng vuốt cạnh trái nâng cao</string>
+    <string name="home_gesture_quick_switch_right">Chức năng vuốt cạnh phải nâng cao</string>
+    <string name="home_gesture_quick_switch_previous_app">Ứng dụng trước đó</string>
+    <string name="home_gesture_line_long_press">Nhấn giữ vào thanh chỉ báo toàn màn hình</string>
+    <string name="home_gesture_line_long_press_tips">Nhấn giữ vào thanh chỉ báo toàn màn hình ở dưới đáy để kích hoạt một chức năng cụ thể.</string>
+    <string name="home_gesture_line_double_tap">Nhấn đúp vào thanh chỉ báo toàn màn hình</string>
+    <string name="home_gesture_line_double_tap_tips">Nhấn đúp vào thanh chỉ báo toàn màn hình ở dưới đáy để kích hoạt một chức năng cụ thể.</string>
+    <string name="ui_title_home_anim">Hoạt ảnh</string>
+    <string name="home_anim_unlock">Tối ưu hoá hoạt ảnh mở khoá</string>
+    <string name="home_anim_unlock_tips">Tối ưu hoá hoạt ảnh của biểu tượng lúc thiết bị mở khoá</string>
+    <string name="home_anim_zoom_sync">Đồng bộ hoá hiệu ứng thu phóng hình nền với việc khởi chạy ứng dụng</string>
+    <string name="home_anim_zoom_sync_tips">Ngăn chặn tình huống ứng dụng chưa được mở nhưng hình nền đã bị phóng to. Thao tác này sẽ làm việc khởi chạy ứng dụng trông có vẻ chậm hơn và không được khuyến khích bật.</string>
+    <string name="home_anim_icon_zoom">Tắt hoạt ảnh thu phóng khi nhấp vào biểu tượng</string>
+    <string name="home_anim_icon_darken">Tắt hoạt ảnh làm tối màu khi nhấp vào biểu tượng</string>
+    <string name="home_anim_folder_zoom">Tắt hoạt ảnh thu phóng khi nhấp vào thư mục</string>
+    <string name="home_anim_folder_icon_darken">Tắt hoạt ảnh làm tối màu khi nhấp vào biểu tượng bên trong thư mục</string>
+    <string name="ui_title_home_folder">Thư mục</string>
+    <string name="home_folder_adapt_icon_size">Kích thước biểu tượng thích ứng trong các thư mục lớn</string>
+    <string name="home_folder_adapt_icon_size_tips">Khi một thư mục lớn (3x3 hoặc 2x2) vừa được lấp đầy bởi các biểu tượng (số lượng đúng 9 hoặc 4), biểu tượng cuối cùng cũng sẽ hiển thị ở kích thước lớn.</string>
+    <string name="home_folder_layout_fix">Tận dụng tối đa toàn bộ chiều rộng của thư mục</string>
+    <string name="home_folder_layout_size">Số cột biểu tượng trong thư mục</string>
+    <string name="home_folder_advanced_textures" translatable="false">@string/systemui_notif_theme_blur</string>
+    <string name="ui_title_home_icon">Biểu tượng</string>
+    <string name="home_icon_unblock_google">Bỏ chặn biểu tượng cho các ứng dụng Google</string>
+    <string name="home_icon_perfect_icon">Bắt buộc kích hoạt biểu tượng hoàn hảo (Perfect icons)</string>
+    <string name="home_icon_perfect_icon_tips">Hạ thấp mức độ ưu tiên sẽ làm giảm quyền ưu tiên sử dụng bộ biểu tượng riêng của ứng dụng</string>
+    <string name="home_icon_corner4large">Bo góc đồng nhất cho các biểu tượng lớn</string>
+    <string name="home_icon_corner4large_tips">Các biểu tượng hình viên nang (capsule) sẽ trở thành biểu tượng hình chữ nhật bo góc</string>
+    <string name="ui_title_home_recent">Tác vụ gần đây</string>
+    <string name="home_recent_dismiss_anim">Sửa đổi hoạt ảnh của thẻ ứng dụng khi vuốt bỏ ở đa nhiệm</string>
+    <string name="home_recent_hide_status_bar">Ẩn thanh trạng thái</string>
+    <string name="home_recent_hide_status_bar_tips">Ẩn thanh trạng thái trong màn hình Tác vụ gần đây (Recents)</string>
+    <string name="home_recent_hide_clear_all">Ẩn nút Xóa tất cả</string>
+    <string name="home_recent_mem_info_clear">Nhấn giữ vào dòng thông tin bộ nhớ RAM để đóng tất cả ứng dụng</string>
+    <string name="home_recent_show_real_memory">Hiển thị mức sử dụng bộ nhớ RAM thực tế</string>
+    <string name="home_recent_wallpaper_darken">Dừng làm tối hình nền trong màn hình Tác vụ gần đây</string>
+    <string name="home_recent_wallpaper_darken_tips">Dừng việc tự động giảm độ sáng của hình nền khi vào chế độ xem Tác vụ gần đây</string>
+    <string name="home_recent_dock_time">Thời gian giữ để gọi thanh dock</string>
+    <string name="home_recent_dock_time_tips">Không khuyến khích đặt giá trị lớn hơn 1000 mili giây</string>
+    <string name="home_recent_docke_safe_height">Ngưỡng chiều cao để gọi thanh dock</string>
+    <string name="home_recent_docke_safe_height_tips">Thanh dock sẽ chỉ được gọi ra nếu chiều cao của thao tác trượt nhỏ hơn ngưỡng này</string>
+    <string name="ui_title_home_widget">Tiện ích (Widget)</string>
+    <string name="home_widget_anim">Thêm hoạt ảnh khởi động cho tất cả tiện ích</string>
+    <string name="home_widget_resizable">Cho phép thay đổi kích thước tất cả các tiện ích Android</string>
+    <string name="ui_title_home_shortcut">Phím tắt</string>
+    <string name="home_shortcut_freeform">Thêm phím tắt "Cửa sổ nổi"</string>
+    <string name="home_shortcut_instance">Thêm phím tắt "Đa bản sao"</string>
+    <string name="ui_title_home_personal_asist">Trợ lý cá nhân</string>
+    <string name="home_minus_blur_type">Nền Trợ lý cá nhân</string>
+    <string name="home_minus_blur_type_def" translatable="false">@string/common_default</string>
+    <string name="home_minus_blur_type_sys">Nền làm mờ cũ</string>
+    <string name="home_minus_blur_type_texture">Cấu trúc nâng cao (Advanced textures)</string>
+    <string name="home_minus_fold_style">Chế độ ghi đè (Overlapped)</string>
+    <string name="home_minus_page_minus_blur" translatable="false">@string/page_minus_blur</string>
+    <string name="home_minus_blur">Bật làm mờ cho nền</string>
+    <string name="ui_title_home_cleaner" translatable="false">@string/page_cleaner</string>
+    <string name="home_cleaner_remove_report">Xóa nút \"Báo cáo\" khỏi cửa sổ bật lên khi gỡ cài đặt ứng dụng</string>
+    <string name="ui_title_home_others" translatable="false">@string/common_others</string>
+    <string name="home_others_dock_remove_num_limit">Bỏ giới hạn số lượng biểu tượng trên thanh dock</string>
+    <string name="home_others_always_show_clock">Luôn hiển thị thời gian trên thanh trạng thái</string>
+    <string name="home_others_fake_premium">Giả trang thành thiết bị cao cấp</string>
+    <string name="home_others_fake_premium_tips">Xóa bỏ giới hạn thiết bị trên một số tính năng</string>
+    <string name="home_others_show_minus_setting">Khôi phục Cài đặt Trợ lý cá nhân</string>
+    <string name="home_others_hide_fake_navbar">Ẩn thanh chỉ báo toàn màn hình giả</string>
+    <string name="home_others_hide_fake_navbar_tips">Ẩn thanh chỉ báo toàn màn hình giả trên màn hình Tác vụ gần đây nằm ngang</string>
+    <string name="home_others_force_color_scheme_element">Màu nhãn ứng dụng</string>
+    <string name="home_others_force_color_scheme_element_tips">Chỉ định màu cho tiện ích và nhãn ứng dụng (bỏ qua màu hình nền)</string>
+    <string name="home_others_force_color_scheme_statusbar">Màu văn bản và biểu tượng thanh trạng thái</string>
+    <string name="home_others_force_color_scheme_statusbar_tips">Chỉ định màu sắc của văn bản và biểu tượng trên thanh trạng thái (bỏ qua màu hình nền). Yêu cầu bật \"Vô hiệu hoá Chế độ tối thông minh\" trên trang Giao diện hệ thống.</string>
+    <string name="home_others_force_color_scheme_minus">Màu Trợ lý cá nhân</string>
+    <string name="home_others_force_color_scheme_minus_tips">Chỉ định màu sắc của văn bản và biểu tượng trên thanh trạng thái cho Trợ lý cá nhân (bỏ qua màu hình nền). Yêu cầu bật \"Vô hiệu hoá Chế độ tối thông minh\" trên trang Giao diện hệ thống.</string>
+    <string name="cleaner_compatibility_tips">Phần lớn các tính năng trên trang này được thiết kế cho người dùng ở Trung Quốc đại lục.\nXin lưu ý rằng các tính năng liên quan đến âm nhạc là độc quyền cho người dùng có tài khoản thành viên âm nhạc.\nChúng tôi khuyên bạn nên sử dụng các phiên bản ứng dụng dưới đây, đã được kiểm tra và xác minh tính tương thích.</string>
+    <string name="cleaner_common_ad_blocker">Chặn quảng cáo</string>
+    <string name="cleaner_common_restart_app">Khởi động lại %1$s</string>
+    <string name="cleaner_common_version_info">Phiên bản đã xác minh: %1$s\nPhiên bản đã cài đặt: %2$s</string>
+    <string name="cleaner_common_skip_splash">Vô hiệu hóa Màn hình khởi chạy</string>
+    <string name="cleaner_common_skip_splash_tips">Nó cũng sẽ vô hiệu hóa các quảng cáo trên Màn hình khởi chạy (không đảm bảo 100%)</string>
+    <string name="ui_title_cleaner_browser" translatable="false">@string/scope_browser</string>
+    <string name="cleaner_browser_show_sug_switch">Khôi phục Cài đặt Từ khoá nổi bật</string>
+    <string name="cleaner_browser_show_sug_switch_tips">Hiển thị nút bật tắt ẩn Tìm kiếm Nổi bật trong cài đặt tìm kiếm. Tắt nó đi sẽ vô hiệu hoá các đề xuất bổ sung như ứng dụng, video, và tiểu thuyết trên trang tìm kiếm.</string>
+    <string name="cleaner_browser_hide_homepage_topbar">Ẩn thanh trên cùng của trang bắt đầu</string>
+    <string name="cleaner_browser_hide_homepage_topbar_tips">Ẩn thanh trên cùng của trang bắt đầu thu gọn, bao gồm nút cài đặt và nút chuyển đổi chế độ.</string>
+    <string name="cleaner_browser_block_dialog">Chặn các hộp thoại quảng cáo</string>
+    <string name="cleaner_browser_block_dialog_tips">Chặn các hộp thoại quảng cáo như hộp thoại đề xuất tiện ích (widget)</string>
+    <string name="cleaner_browser_debug_mode">Kích hoạt chế độ gỡ lỗi</string>
+    <string name="cleaner_browser_debug_mode_tips">Bắt buộc bật chế độ gỡ lỗi. Chỉ hoạt động với các phiên bản trình duyệt cũ.</string>
+    <string name="cleaner_browser_switch_env">Chuyển đổi địa chỉ nội bộ</string>
+    <string name="cleaner_browser_switch_env_tips">Sử dụng môi trường pre-release. Có khả năng loại bỏ một số quảng cáo. Tuy nhiên, nó có thể làm mất khả năng sử dụng các cài đặt như công cụ tìm kiếm tuỳ chỉnh, do đó vui lòng cài đặt xong mọi thứ trước khi bật tính năng này!</string>
+    <string name="cleaner_browser_disable_update">Tắt kiểm tra cập nhật</string>
+    <string name="ui_title_cleaner_download" translatable="false">@string/scope_download</string>
+    <string name="cleaner_downloadui_hide_xl">Ẩn biểu tượng và văn bản Xunlei</string>
+    <string name="cleaner_download_fuck_xl">Chặn việc tạo thư mục .xlDownload</string>
+    <string name="ui_title_cleaner_incallui" translatable="false">@string/scope_in_call_ui</string>
+    <string name="cleaner_incallui_hide_crbt">Ẩn Nhạc chờ (CRBT)</string>
+    <string name="ui_title_cleaner_market" translatable="false">@string/scope_market</string>
+    <string name="cleaner_market_block_update_dailog">Chặn hộp thoại thông báo đẩy cập nhật</string>
+    <string name="cleaner_market_block_update_dailog_tips">Chặn hộp thoại nhắc bạn bật thông báo đẩy cập nhật khi tính năng này đang tắt và nút cập nhật được nhấn.</string>
+    <string name="cleaner_market_hide_app_security">Ẩn phần bảo mật ứng dụng</string>
+    <string name="cleaner_market_hide_app_security_tips">Ẩn thẻ bảo mật ứng dụng trên trang cá nhân của tôi</string>
+    <string name="cleaner_market_bottom_tab_blur">Hiệu ứng làm mờ</string>
+    <string name="cleaner_market_bottom_tab_blur_tips">Bắt buộc bật hiệu ứng làm mờ trên thanh tab dưới cùng</string>
+    <string name="cleaner_market_disable_customize_icon">Vô hiệu hóa các biểu tượng ứng dụng tiếp thị</string>
+    <string name="cleaner_market_disable_customize_icon_tips">Vô hiệu hóa khả năng của GetApps trong việc thay thế các biểu tượng ứng dụng trên màn hình chính bằng các biểu tượng mang tính tiếp thị quảng cáo</string>
+    <string name="cleaner_market_filter_tab">Lọc các tab ở dưới cùng</string>
+    <string name="cleaner_market_filter_tab_tips">Ẩn các tab vô dụng (và các trang tương ứng)</string>
+    <string name="cleaner_market_ignore_restrict">Bỏ qua giới hạn đề xuất</string>
+    <string name="cleaner_market_filter_unknown_tabs">Lọc bỏ các tab không xác định</string>
+    <string name="cleaner_market_filter_unknown_tabs_tips">Lọc bỏ tất cả các tab không được hiển thị bên dưới</string>
+    <string name="cleaner_market_visible_tabs">Các tab hiển thị</string>
+    <string name="cleaner_market_tab_home">Trang chủ</string>
+    <string name="cleaner_market_tab_game">Trò chơi</string>
+    <string name="cleaner_market_tab_rank">Phổ biến</string>
+    <string name="cleaner_market_tab_agent">Đại lý</string>
+    <string name="cleaner_market_tab_app_assemble">Nguồn cấp ứng dụng/Video</string>
+    <string name="cleaner_market_tab_mini_game">Trò chơi nhỏ (Mini game)</string>
+    <string name="cleaner_market_tab_mine">Tài khoản</string>
+    <string name="cleaner_market_filter_tab_warning">Cảnh báo: hiện tại có ít hơn hai tab đang hiển thị, điều này có thể gây ra lỗi giao diện người dùng!</string>
+    <string name="ui_title_cleaner_milink" translatable="false">@string/scope_mi_link</string>
+    <string name="cleaner_milink_fuck_hpplay">Chặn việc tạo thư mục hpplay</string>
+    <string name="ui_title_cleaner_mms" translatable="false">@string/scope_mms</string>
+    <string name="ui_title_cleaner_music" translatable="false">@string/scope_music</string>
+    <string name="cleaner_music_hide_karaoke">Ẩn karaoke</string>
+    <string name="cleaner_music_hide_karaoke_tips">Xóa karaoke khỏi tab trên cùng trên trang chủ</string>
+    <string name="cleaner_music_hide_long_audio">Ẩn âm thanh dài</string>
+    <string name="cleaner_music_hide_long_audio_tips">Xóa âm thanh dài khỏi tab trên cùng trên trang chủ</string>
+    <string name="cleaner_music_hide_discover">Ẩn khám phá</string>
+    <string name="cleaner_music_hide_discover_tips">Xóa phần khám phá khỏi tab trên cùng trên trang chủ</string>
+    <string name="cleaner_music_hide_my_banner">Ẩn biểu ngữ trên trang của tôi</string>
+    <string name="cleaner_music_hide_my_rec_playlist">Ẩn các bài hát đề xuất trên trang của tôi</string>
+    <string name="cleaner_music_hide_fav_num">Ẩn số lượt thích bài hát</string>
+    <string name="cleaner_music_hide_fav_num_tips">Ẩn số lượng yêu thích được hiển thị trên các biểu tượng yêu thích. Có thể ảnh hưởng đến hiệu suất.</string>
+    <string name="cleaner_music_hide_listen_count">Ẩn số lượt nghe bài hát</string>
+    <string name="cleaner_music_hide_listen_count_tips">Ẩn số lượt nghe bài hát trên trang trình phát nhạc</string>
+    <string name="ui_title_cleaner_package" translatable="false">@string/scope_package_installer</string>
+    <string name="cleaner_package_remove_element">Tắt các tính năng dư thừa</string>
+    <string name="cleaner_package_skip_risk_check">Tắt giám sát rủi ro</string>
+    <string name="cleaner_package_no_network">Giả lập không có mạng</string>
+    <string name="cleaner_package_no_count_check">Tắt kiểm tra các ứng dụng được cài đặt thường xuyên</string>
+    <string name="cleaner_package_block_upload_app_info">Chặn tải lên thông tin về ứng dụng khi nó được cài đặt</string>
+    <string name="cleaner_package_install_source">Nguồn cài đặt tuỳ chỉnh</string>
+    <string name="cleaner_package_install_source_tips">Bỏ qua các hạn chế cài đặt ứng dụng của hệ thống bằng cách nguỵ trang nguồn cài đặt thành một ứng dụng hệ thống.</string>
+    <string name="cleaner_package_install_source_disabled" translatable="false">@string/common_disabled</string>
+    <string name="cleaner_package_install_source_file">Trình quản lý tệp</string>
+    <string name="cleaner_package_install_source_market" translatable="false">@string/scope_market</string>
+    <string name="cleaner_package_install_source_custom" translatable="false">@string/common_custom</string>
+    <string name="cleaner_package_custom_install_source">Tên gói (Package name) của nguồn cài đặt</string>
+    <string name="ui_title_cleaner_remote" translatable="false">@string/scope_remote_controller</string>
+    <string name="ui_title_cleaner_themes" translatable="false">@string/scope_themes</string>
+    <string name="ui_title_android_display">Hiển thị</string>
+    <string name="android_display_temp_font_scale">Tỷ lệ phông chữ tạm thời</string>
+    <string name="android_display_temp_font_scale_tips">Thay đổi có hiệu lực ngay lập tức, nhưng sẽ bị mất sau khi khởi động lại hệ thống.</string>
+    <string name="android_display_temp_font_scale_msg">Giá trị phải lớn hơn hoặc bằng 0.5 và nhỏ hơn 2.5</string>
+    <string name="android_display_temp_font_scale_fail_msg">Không thể kiểm tra/sửa đổi giá trị tỷ lệ phông chữ hiện tại. Vui lòng đảm bảo rằng giá trị được nhập nằm trong phạm vi hợp lệ và quyền root đã được cấp.</string>
+    <string name="android_display_font_scale">Tỷ lệ phông chữ vĩnh viễn</string>
+    <string name="android_display_font_scale_tips">Sửa đổi các giá trị tỷ lệ thực tế cho bảy tuỳ chọn kích thước phông chữ trong Cài đặt</string>
+    <string name="android_display_font_scale_reboot">Có hiệu lực sau khi khởi động lại</string>
+    <string name="android_display_font_settings">Cài đặt phông chữ</string>
+    <string name="android_display_font_settings_tips">Cài đặt hệ thống</string>
+    <string name="android_display_font_scale_value">Tỷ lệ phông chữ</string>
+    <string name="android_display_font_scale_hint">Sửa đổi tuỳ chọn kích thước phông chữ phù hợp dựa trên phạm vi của chúng và giá trị dự định của bạn, sau đó chọn tuỳ chọn tương ứng trong Cài đặt. \n\nĐảm bảo tất cả các tuỳ chọn đều có giá trị duy nhất theo thứ tự tăng dần. \n\nCác tuỳ chọn như \"170\", \"200\" hoặc những tuỳ chọn có giá trị trên 1.55 có thể bị hệ thống nhận dạng là phông chữ kích thước lớn và có thể ảnh hưởng đến bố cục.</string>
+    <string name="android_display_font_scale_warn_same">Tồn tại các giá trị trùng lặp</string>
+    <string name="android_display_font_scale_warn_disorder">Các giá trị không theo thứ tự tăng dần</string>
+    <string name="android_display_font_scale_msg">Giá trị phải lớn hơn hoặc bằng %1$.2f và nhỏ hơn %2$.2f</string>
+    <string name="android_display_font_scale_small">Nhỏ (90%)</string>
+    <string name="android_display_font_scale_medium">Vừa (100%)</string>
+    <string name="android_display_font_scale_large">Lớn (110%)</string>
+    <string name="android_display_font_scale_huge">Rất lớn (125%)</string>
+    <string name="android_display_font_scale_godzilla">Khổng lồ (145%)</string>
+    <string name="android_display_font_scale_170">170 (170%)</string>
+    <string name="android_display_font_scale_200">200 (200%)</string>
+    <string name="ui_title_android_freeform">Cửa sổ nổi</string>
+    <string name="android_freeform_restriction">Cho phép tất cả ứng dụng ở chế độ cửa sổ nhỏ</string>
+    <string name="android_freeform_restriction_tips">Bỏ qua danh sách đen của hệ thống và việc ứng dụng tự vô hiệu hoá cửa sổ nhỏ</string>
+    <string name="android_freeform_allow_more">Cho phép mở nhiều cửa sổ nổi hơn</string>
+    <string name="android_freeform_allow_more_tips">Sửa đổi số lượng cửa sổ nổi tối đa thành 255 để cho phép mở nhiều cửa sổ nổi cùng lúc hơn.</string>
+    <string name="android_freeform_multi_task">Cho phép mở nhiều bản sao của cùng một ứng dụng</string>
+    <string name="android_freeform_hide_topbar">Ẩn thanh điều khiển cửa sổ ở trên cùng</string>
+    <string name="ui_title_android_screen_rotation">Xoay màn hình</string>
+    <string name="android_rotation_switch_suggestions">Chuyển đổi trạng thái đề xuất xoay</string>
+    <string name="android_rotation_switch_suggestions_tips">Kiểm soát xem có hiển thị các đề xuất xoay màn hình hay không</string>
+    <string name="android_rotation_switch_suggestions_before_true">Hiện đang bị tắt. Bạn có chắc chắn muốn bật nó không?</string>
+    <string name="android_rotation_switch_suggestions_done_true">Đã bật đề xuất xoay</string>
+    <string name="android_rotation_switch_suggestions_before_false">Hiện đang được bật. Bạn có chắc chắn muốn tắt nó không?</string>
+    <string name="android_rotation_switch_suggestions_done_false">Đã tắt đề xuất xoay</string>
+    <string name="android_rotation_switch_suggestions_failed">Thất bại! Vui lòng cấp quyền root cho ứng dụng này và thử lại.</string>
+    <string name="android_rotation_disable_fixed_orientation">Vô hiệu hóa hướng cố định</string>
+    <string name="android_rotation_disable_fixed_orientation_tips">Tắt việc cố định hướng ở một số ứng dụng</string>
+    <string name="android_rotation_disable_fixed_orientation_scope">Phạm vi vô hiệu hoá hướng cố định</string>
+    <string name="android_rotation_disable_fixed_orientation_scope_tips">Có hiệu lực sau khi khởi động lại</string>
+    <string name="ui_title_android_others" translatable="false">@string/common_others</string>
+    <string name="android_others_wallpaper_scale">Tỷ lệ hình nền</string>
+    <string name="android_others_wallpaper_scale_tips">Ảnh hưởng đến hoạt ảnh thu phóng hình nền khi khởi chạy/thoát ứng dụng trên màn hình chính</string>
+    <string name="android_others_force_dark">Tắt danh sách trắng của chế độ Tối bắt buộc</string>
+    <string name="android_others_force_dark_tips">Giúp có thể kích hoạt tính năng chế độ Tối bắt buộc cho hầu hết các ứng dụng, ngoại trừ các ứng dụng hệ thống, v.v.</string>
+    <string name="ui_title_security_security" translatable="false">@string/scope_security_center</string>
+    <string name="ui_title_security_security_pad" translatable="false">@string/scope_security_center_pad</string>
+    <string name="security_security_skip_warning">Bỏ qua thời gian chờ trên các cảnh báo</string>
+    <string name="security_security_skip_warning_tips">Bỏ qua thời gian chờ khi sử dụng Gỡ lỗi USB, Nguồn không xác định và Trợ năng.</string>
+    <string name="security_security_skip_open_app">Quản lý khởi động chuỗi</string>
+    <string name="security_security_skip_open_app_tips">Xóa cửa sổ xác nhận chứa thông báo \"Cho phép XXX mở XXX\" khi mở các ứng dụng</string>
+    <string name="security_security_skip_open_app_default" translatable="false">@string/common_default</string>
+    <string name="security_security_skip_open_app_auto_approve">Tự động phê duyệt</string>
+    <string name="security_security_skip_open_app_auto_approve_tips">Tự động phê duyệt bằng cách nhấp vào \"Luôn cho phép\". Quá trình này có thể bị giật lag nhẹ. Nút chuyển đổi \"Cho phép khởi động chuỗi\" trong cài đặt hệ thống \"Quản lý khởi động chuỗi\" vẫn sẽ hoạt động bình thường.</string>
+    <string name="security_security_skip_open_app_disable">Tắt trình kiểm tra đường dẫn đánh thức</string>
+    <string name="security_security_skip_open_app_disable_tips">Các lần đánh thức và khởi chạy ứng dụng sẽ không được ghi lại và không thể xem trong \"Hồ sơ hành vi ứng dụng\". Tất cả các tùy chọn trong cài đặt hệ thống \"Quản lý khởi động chuỗi\" sẽ bị bỏ qua.</string>
+    <string name="security_security_screen_battery">Hiển thị mức sử dụng màn hình trong bảng xếp hạng tiêu thụ điện năng</string>
+    <string name="security_security_screen_battery_tips">Mức sử dụng pin của các ứng dụng bị ẩn theo mặc định cũng sẽ được hiển thị</string>
+    <string name="security_security_hide_screen_system">Hiển thị Hệ thống Android trong bảng xếp hạng tiêu thụ điện năng</string>
+    <string name="security_security_bubble_restriction">Xóa hạn chế đối với ứng dụng thông báo bong bóng</string>
+    <string name="security_security_system_app_wifi">Cho phép quyền quản lý Wi-Fi cho các ứng dụng hệ thống</string>
+    <string name="security_security_icon_open">Chạm vào biểu tượng trong phần Thông tin ứng dụng để mở ứng dụng</string>
+    <string name="security_security_disable_risk_app_notif">Tắt thông báo \"Phát hiện ứng dụng độc hại\"</string>
+    <string name="ui_title_security_cleaner" translatable="false">@string/page_cleaner</string>
+    <string name="security_cleaner_skip_splash" translatable="false">@string/cleaner_common_skip_splash</string>
+    <string name="security_cleaner_skip_splash_tips" translatable="false">@string/cleaner_common_skip_splash_tips</string>
+    <string name="security_cleaner_lock_score">Tắt tối ưu hóa kiểm tra sức khỏe</string>
+    <string name="security_cleaner_lock_score_tips">Khoá điểm bảo mật ở mức 100 và vô hiệu hoá nút \"Tối ưu hoá\"</string>
+    <string name="security_cleaner_hide_red_dot">Ẩn dấu chấm đỏ cảnh báo</string>
+    <string name="security_cleaner_hide_red_dot_tips">Ẩn các dấu chấm đỏ cảnh báo trên các biểu tượng ứng dụng ở màn hình chính</string>
+    <string name="security_cleaner_hide_home_rec">Ẩn chức năng đề xuất</string>
+    <string name="security_cleaner_hide_home_rec_tips">Ẩn biểu ngữ chức năng đề xuất bên dưới lưới các chức năng</string>
+    <string name="security_cleaner_hide_home_common">Ẩn các chức năng thường dùng</string>
+    <string name="security_cleaner_hide_home_popular">Ẩn các chức năng phổ biến</string>
+    <string name="security_cleaner_hide_home_popular_tips">Ẩn các đề xuất chức năng phổ biến ở cuối trang</string>
+    <string name="security_cleaner_remove_report">Xóa nút \"Báo cáo\" khỏi trang thông tin ứng dụng</string>
+    <string name="ui_title_security_power" translatable="false">@string/scope_power_keeper</string>
+    <string name="ui_title_security_guard" translatable="false">@string/scope_guard_provider</string>
+    <string name="security_guard_block_env_check">Tắt kiểm tra môi trường</string>
+    <string name="security_guard_block_upload_app">Chặn tải lên danh sách các ứng dụng đã cài đặt</string>
+    <string name="ui_title_lbe" translatable="false">@string/scope_lbe</string>
+    <string name="security_lbe_block_remove_auto_start">Chặn việc xóa quyền tự khởi động</string>
+    <string name="security_lbe_block_remove_auto_start_tips">Ngăn chặn hệ thống xóa quyền tự khởi động khỏi các ứng dụng</string>
+    <string name="security_lbe_clipboard_toast">Sử dụng Toast để hiển thị lời nhắc khi đọc bảng nhớ tạm</string>
+    <string name="security_lbe_clipboard_toast_tips">Sử dụng Toast cho phép bạn nhấp được vào phần tử nằm phía sau thông báo nhắc nhở</string>
+    <string name="ui_title_security_mi_trust_service" translatable="false">@string/scope_mi_trust</string>
+    <string name="mi_trust_disable_risk_check" translatable="false">@string/cleaner_package_skip_risk_check</string>
+    <string name="security_power_do_not_kill_app">Ngăn chặn tắt các ứng dụng chạy nền</string>
+    <string name="security_power_unlock_custom_refresh">Mở khóa các ứng dụng sử dụng tốc độ làm mới cao</string>
+    <string name="security_power_block_battery_whitelist">Ngăn khôi phục danh sách trắng tối ưu hóa pin</string>
+    <string name="security_power_gms_bg_running">Xóa hạn chế chạy ngầm đối với GMS</string>
+    <string name="security_power_gms_bg_running_tips">Nguỵ trang thành phiên bản hệ thống quốc tế, cho phép GMS chạy nền, ngăn kết nối FCM bị ngắt sau khi khoá màn hình.</string>
+    <string name="security_power_battery_optimization">Tối ưu hóa pin</string>
+    <string name="security_power_battery_optimization_tips">Mở trang tối ưu hoá pin (bị ẩn theo mặc định)</string>
+    <string name="security_power_battery_optimization_failed_toast">Mở thất bại, có thể hệ thống không hỗ trợ.</string>
+    <string name="ui_title_interconnection_mishare" translatable="false">@string/scope_mi_share</string>
+    <string name="interconnection_mishare_no_auto_off">Tắt tính năng tự động tắt của Xiaomi Share</string>
+    <string name="ui_title_others_aiengine" translatable="false">@string/scope_ai_engine</string>
+    <string name="others_aiengine_copy_link_island_browser">Mở URL đã sao chép bằng bất kỳ trình duyệt nào</string>
+    <string name="others_aiengine_copy_link_island_browser_tips">Sau khi sao chép URL và nhấp vào Dynamic Island, nó có thể được mở bằng bất kỳ trình duyệt nào (thay vì chỉ Trình duyệt Xiaomi)</string>
+    <string name="ui_title_others_gallery" translatable="false">@string/scope_gallery</string>
+    <string name="others_gallery_unlimited_crop">Cắt ảnh không giới hạn</string>
+    <string name="others_gallery_path_optim">Tối ưu hóa nhận dạng thư mục</string>
+    <string name="others_gallery_path_optim_tips">Nhận dạng ảnh trong \"Pictures/Screenshots\" là ảnh chụp màn hình và video trong \"Movies/ScreenRecorder\" là video quay màn hình, rồi hiển thị chúng trong các album tương ứng.</string>
+    <string name="ui_title_others_joyose" translatable="false">@string/scope_joyose</string>
+    <string name="others_joyose_no_cloud_control">Vô hiệu hóa Kiểm soát đám mây (Cloud control)</string>
+    <string name="ui_title_others_miai" translatable="false">@string/scope_mi_ai</string>
+    <string name="others_miai_hide_watermark">Ẩn hình mờ beta và AIGC</string>
+    <string name="ui_title_others_mimirror" translatable="false">@string/scope_mi_mirror</string>
+    <string name="others_mimirror_all_app">Tất cả ứng dụng đều có thể được mở trên một thiết bị khác</string>
+    <string name="others_mimirror_enhance_continue">Cho phép truyền nhiều ứng dụng hơn</string>
+    <string name="others_mimirror_enhance_continue_tips">Một số ứng dụng vẫn không thể mở trên thiết bị khác do danh sách trắng được tích hợp sẵn. Để chuyển được nhiều ứng dụng hơn, hãy bật tính năng này. Nó yêu cầu tạo tệp bộ nhớ đệm trong thư mục của ứng dụng gốc, việc này có thể gây ra độ trễ nếu bộ nhớ đệm không khả dụng. Ngoài ra, thiết bị nhận cũng cần cài đặt ứng dụng này và bật tính năng tương ứng.</string>
+    <string name="ui_title_others_package" translatable="false">@string/scope_package_installer</string>
+    <string name="others_package_update_system_app">Xóa giới hạn cài đặt ứng dụng hệ thống</string>
+    <string name="others_package_update_system_app_tips">Cho phép cài đặt ứng dụng hệ thống từ bất kỳ kênh nào không thuộc hệ thống</string>
+    <string name="others_package_more_info">Hiển thị thêm thông tin của gói</string>
+    <string name="ui_title_others_screen_recorder" translatable="false">@string/scope_screen_recorder</string>
+    <string name="others_screen_recorder_save_to_movies">Lưu vào thư mục chuẩn hóa</string>
+    <string name="others_screen_recorder_save_to_movies_tips">Lưu bản ghi vào \"Movies/ScreenRecorder\" thay vì \"DCIM/ScreenRecorder\"</string>
+    <string name="ui_title_others_screenshot" translatable="false">@string/scope_screenshot</string>
+    <string name="others_screenshot_save_as_png">Lưu hình ảnh ở định dạng PNG</string>
+    <string name="others_screenshot_save_to_picture">Lưu vào thư mục chuẩn hóa</string>
+    <string name="others_screenshot_save_to_picture_tips">Lưu ảnh chụp màn hình vào \"Pictures/Screenshots\" thay vì \"DCIM/Screenshots\"</string>
+    <string name="ui_title_others_search" translatable="false">@string/scope_search</string>
+    <string name="others_search_more_search_engines">Thêm tuỳ chọn công cụ tìm kiếm</string>
+    <string name="others_search_more_search_engines_tips">Thêm Bing và Google vào Tùy chọn Công cụ Tìm kiếm</string>
+    <string name="others_search_custom_search_engine">Thêm công cụ tìm kiếm tuỳ chỉnh</string>
+    <string name="others_search_custom_url">URL</string>
+    <string name="others_search_custom_search_url">URL tìm kiếm</string>
+    <string name="others_search_custom_search_url_tips">URL phải chứa \"{searchTerms}\" như một trình giữ chỗ cho từ khoá tìm kiếm</string>
+    <string name="others_search_custom_search_url_hint" translatable="false">https://example.com/search?q={searchTerms}</string>
+    <string name="others_search_custom_channel">Kênh</string>
+    <string name="others_search_custom_channel_tips">Để trống nếu không có trường hợp đặc biệt</string>
+    <string name="others_search_custom_icon">Biểu tượng</string>
+    <string name="others_search_custom_show_icon">Hiển thị biểu tượng</string>
+    <string name="others_search_custom_icon_url">Biểu tượng</string>
+    <string name="others_search_custom_icon_url_tips">URL hoặc Base64 (bắt đầu bằng \"data:image/png;base64,\")</string>
+    <string name="others_search_custom_icon_url_hint" translatable="false">https://example.com/search.png</string>
+    <string name="others_search_custom_title">Tiêu đề</string>
+    <string name="others_search_custom_title_hint" translatable="false">@string/others_search_custom_title</string>
+    <string name="others_search_custom_title_zh_cn">zh-CN</string>
+    <string name="others_search_custom_title_zh_tw">zh-TW</string>
+    <string name="others_search_custom_title_en_us">en-US</string>
+    <string name="others_search_custom_title_bo_cn">bo-CN</string>
+    <string name="others_search_custom_title_ug_cn">ug-CN</string>
+    <string name="others_search_custom_reset">Đặt lại</string>
+    <string name="ui_title_others_settings" translatable="false">@string/scope_settings</string>
+    <string name="others_settings_show_google">Hiển thị Cài đặt Google</string>
+    <string name="others_settings_cellular_debug">Gỡ lỗi mạng di động</string>
+    <string name="others_settings_unlock_voip_assistant">Mở khóa Trợ lý VoIP</string>
+    <string name="others_settings_unlock_net_mode">Mở khóa cài đặt loại mạng di động</string>
+    <string name="others_settings_unlock_taplus_for_pad">Mở khóa Taplus cho máy tính bảng</string>
+    <string name="others_settings_quick_per_overlay">Cấp quyền \"Hiển thị trên các ứng dụng khác\"</string>
+    <string name="others_settings_quick_per_install">Cấp quyền \"Cài đặt ứng dụng không xác định\"</string>
+    <string name="others_settings_quick_per_tips">Đi trực tiếp đến nút bật/tắt cấp quyền này cho một ứng dụng cụ thể, thay vì hiển thị danh sách các ứng dụng được liên kết với quyền này.</string>
+    <string name="ui_title_others_taplus" translatable="false">@string/scope_taplus</string>
+    <string name="ui_title_others_updater" translatable="false">@string/scope_updater</string>
+    <string name="others_updater_block_dialog">Chặn cửa sổ bật lên \"Tự động cài đặt?\"</string>
+    <string name="others_updater_disable_validation">Xóa xác minh OTA</string>
+    <string name="others_updater_disable_validation_tips">Chỉ hỗ trợ các thiết bị VAB, không bật trên các thiết bị không phải VAB!</string>
+    <string name="weather_card_color_default" translatable="false">@string/common_default</string>
+    <string name="weather_card_color_light">Bắt buộc sáng</string>
+    <string name="weather_card_color_dark">Bắt buộc tối</string>
+    <string name="ui_title_clock_general" translatable="false">@string/common_general</string>
+    <string name="clock_general_custom_layout">Tuỳ chỉnh khoảng đệm ngang của thời gian trên thanh trạng thái</string>
+    <string name="clock_general_padding_left">Khoảng đệm đầu</string>
+    <string name="clock_general_padding_right">Khoảng đệm cuối</string>
+    <string name="clock_general_geek">Chế độ Geek</string>
+    <string name="clock_font_tnum">Số liệu dạng bảng (Tabular numerals)</string>
+    <string name="clock_font_tnum_tips">Kích hoạt bộ số có kích thước bằng nhau, cho phép chúng dễ dàng được căn chỉnh giống như trong các bảng biểu.</string>
+    <string name="clock_easy_fixed_width">Chiều rộng TextView cố định</string>
+    <string name="clock_easy_fixed_width_tips">Cố định chiều rộng của TextView để các biểu tượng thông báo không liên tục thay đổi vị trí khi đồng hồ hiển thị giây.</string>
+    <string name="ui_title_clock_geek_mode">Chế độ Geek</string>
+    <string name="clock_geek_time_format_pattern_clock">Mẫu định dạng thời gian (thanh trạng thái)</string>
+    <string name="clock_geek_time_format_pattern_pad_clock">Mẫu định dạng ngày (thanh trạng thái)</string>
+    <string name="clock_geek_time_format_pattern_big_time">Mẫu định dạng thời gian (ngăn thông báo)</string>
+    <string name="clock_geek_time_format_pattern_date_time">Mẫu định dạng ngày (ngăn thông báo)</string>
+    <string name="clock_geek_time_format_pattern_cc_date">Mẫu định dạng ngày (trung tâm điều khiển)</string>
+    <string name="clock_geek_time_format_pattern_horizon">Mẫu định dạng ngày và giờ (ngăn thông báo, ngang)</string>
+    <string name="ui_title_clock_easy">Cài đặt dễ dàng</string>
+    <string name="clock_easy_show_ampm">Hiển thị AM/PM</string>
+    <string name="clock_easy_show_ampm_tips">Chỉ hợp lệ khi sử dụng định dạng đồng hồ 12 giờ</string>
+    <string name="clock_easy_show_leading_zero">Hiển thị số 0 ở đầu</string>
+    <string name="clock_easy_show_leading_zero_tips">Khuyến nghị bật khi sử dụng định dạng đồng hồ 24 giờ</string>
+    <string name="clock_easy_show_seconds">Hiển thị giây</string>
+    <string name="clock_easy_show_seconds_tips">Nó cũng sẽ làm cho thanh trạng thái được làm mới mỗi giây</string>
+    <string name="ui_title_clock_font_weight" translatable="false">@string/ui_title_icon_detail_font_weight</string>
+    <string name="clock_fw_clock">Tuỳ chỉnh độ đậm phông chữ (Đồng hồ thanh trạng thái)</string>
+    <string name="clock_fw_clock_weight">Độ đậm phông chữ (Đồng hồ thanh trạng thái)</string>
+    <string name="clock_fw_pad_clock">Tuỳ chỉnh độ đậm phông chữ (Ngày trên thanh trạng thái)</string>
+    <string name="clock_fw_pad_clock_weight">Độ đậm phông chữ (Ngày trên thanh trạng thái)</string>
+    <string name="clock_fw_big_time">Tuỳ chỉnh độ đậm phông chữ (Đồng hồ ngăn thông báo)</string>
+    <string name="clock_fw_big_time_weight">Độ đậm phông chữ (Đồng hồ ngăn thông báo)</string>
+    <string name="clock_fw_date_time">Tuỳ chỉnh độ đậm phông chữ (Ngày trong ngăn thông báo)</string>
+    <string name="clock_fw_date_time_weight">Độ đậm phông chữ (Ngày trong ngăn thông báo)</string>
+    <string name="clock_fw_cc_date">Tuỳ chỉnh độ đậm phông chữ (Ngày ở trung tâm điều khiển)</string>
+    <string name="clock_fw_cc_date_weight">Độ đậm phông chữ (Ngày ở trung tâm điều khiển)</string>
+    <string name="clock_fw_horizontal_time">Tuỳ chỉnh độ đậm phông chữ (Ngày &amp; đồng hồ ngăn thông báo ngang)</string>
+    <string name="clock_fw_horizontal_time_weight">Độ đậm phông chữ (Ngày &amp; đồng hồ ngăn thông báo ngang)</string>
+    <string name="ui_title_font_general" translatable="false">@string/common_general</string>
+    <string name="font_hint_path">Tất cả các tính năng tùy chỉnh độ đậm của phông chữ (không giới hạn ở các tùy chọn bên dưới) sẽ tải tệp phông chữ biến đổi được chỉ định bởi đường dẫn này. Trừ khi bạn biết mình đang làm gì và hiểu hậu quả có thể xảy ra, đừng sửa đổi nó. \n\nNếu bạn muốn thay đổi phông chữ mà không thay đổi độ đậm, hãy bật tùy chọn độ đậm phông chữ tùy chỉnh tương ứng nhưng giữ mức độ đậm ở chế độ Mặc định.</string>
+    <string name="font_general_path">Đường dẫn tệp phông chữ</string>
+    <string name="font_general_path_tips">Trừ khi bạn biết mình đang làm gì và hiểu hậu quả có thể xảy ra, đừng sửa đổi nó. Vui lòng sử dụng phông chữ biến thiên (variable fonts).</string>
+    <string name="font_general_path_file" translatable="false">@string/icon_detail_stacked_signal_style_val_file</string>
+    <string name="font_general_path_path">Nhập từ đường dẫn</string>
+    <string name="font_general_path_success">Đã nhập thành công tệp phông chữ</string>
+    <string name="font_general_path_failure">Tệp không tồn tại hoặc không thể truy cập được. Vui lòng kiểm tra tệp và Quyền Root!</string>
+    <string name="font_general_path_reset" translatable="false">@string/icon_tuner_position_reset_default</string>
+    <string name="font_general_path_reset_msg">Đặt lại thành \"/system/fonts/MiSansVF.ttf\"? Thao tác này không thể hoàn tác.</string>
+    <string name="font_hint_general_root">Phông chữ yêu cầu quyền root để tự động có hiệu lực sau khi khởi động lại. Nếu không, bạn cần phải mở khóa thiết bị và khởi động lại System UI để áp dụng thay đổi.</string>
+    <string name="ui_title_font_weight" translatable="false">@string/ui_title_icon_detail_font_weight</string>
+    <string name="font_weight_lockscreen_carrier">Tuỳ chỉnh độ đậm phông chữ (Tên nhà mạng ở màn hình khoá)</string>
+    <string name="font_weight_lockscreen_carrier_weight">Độ đậm phông chữ (Tên nhà mạng ở màn hình khoá)</string>
+    <string name="icon_tuner_hide_selection_default">Mặc định</string>
+    <string name="icon_tuner_hide_selection_show_all">Có thể nhìn thấy</string>
+    <string name="icon_tuner_hide_selection_show_statusbar">Hiển thị trên thanh trạng thái</string>
+    <string name="icon_tuner_hide_selection_show_qs">Hiển thị trong Trung tâm điều khiển</string>
+    <string name="icon_tuner_hide_selection_hidden">Vô hình</string>
+    <string name="icon_tuner_hide_mobile_wifi_warning">Khuyến cáo mạnh mẽ rằng đừng ẩn nó!</string>
+    <string name="ui_title_icon_tuner_general" translatable="false">@string/common_general</string>
+    <string name="icon_tuner_hint_ignore_sys_hide">Bắt đầu từ HyperOS 2.0.200, người dùng có thể kiểm soát việc hiển thị các biểu tượng trên thanh trạng thái trong trang \"Tuỳ chỉnh hiển thị biểu tượng\" ở mục Cài đặt. Tuy nhiên, tính năng này xung đột với các cài đặt trên trang này, gây ra những hành vi không mong muốn. Do đó, đặc biệt khuyến nghị bạn nên bật tuỳ chọn \"Bỏ qua cài đặt hệ thống\" bên dưới và quản lý tất cả các biểu tượng thanh trạng thái trực tiếp trên trang này.</string>
+    <string name="icon_tuner_general_ignore_sys_hide">Bỏ qua cài đặt hệ thống</string>
+    <string name="icon_tuner_general_ignore_sys_hide_tips">Bỏ qua cài đặt hệ thống cho \"Tuỳ chỉnh hiển thị biểu tượng\"</string>
+    <string name="icon_tuner_general_detail" translatable="false">@string/page_status_bar_icon_detail</string>
+    <string name="icon_tuner_general_order">Thứ tự biểu tượng</string>
+    <string name="icon_tuner_general_order_tips">Sửa đổi vị trí biểu tượng bằng cách sắp xếp lại thứ tự (index) của chúng trong danh sách hiển thị</string>
+    <string name="icon_tuner_general_order_default" translatable="false">@string/common_default</string>
+    <string name="icon_tuner_general_order_swap">Hoán đổi mạng di động và WLAN</string>
+    <string name="icon_tuner_general_order_custom" translatable="false">@string/common_custom</string>
+    <string name="icon_tuner_general_order_custom_entry" translatable="false">@string/page_status_bar_icon_order</string>
+    <string name="icon_tuner_general_auto_reorder">Tự động điều chỉnh thứ tự biểu tượng</string>
+    <string name="icon_tuner_general_auto_reorder_tips">Di chuyển các biểu tượng bị ẩn về phía trước để có hoạt ảnh mượt mà hơn</string>
+    <string name="ui_title_icon_tuner_stacked_mobile" translatable="false">@string/icon_tuner_stacked_mobile_icon</string>
+    <string name="icon_tuner_stacked_mobile">Kích hoạt biểu tượng tín hiệu hàng kép</string>
+    <string name="icon_tuner_stacked_mobile_tips">Thêm biểu tượng tín hiệu kết hợp và biểu tượng loại mạng mới</string>
+    <string name="icon_tuner_stacked_mobile_icon">Biểu tượng tín hiệu hàng kép</string>
+    <string name="icon_tuner_stacked_mobile_icon_tips">Chuyển về một hàng khi chỉ sử dụng một SIM</string>
+    <string name="icon_tuner_stacked_mobile_type">Loại mạng độc lập</string>
+    <string name="icon_tuner_stacked_mobile_type_tips">Loại mạng của thẻ SIM dữ liệu</string>
+    <string name="icon_tuner_single_mobile_sim1">Tuỳ chỉnh biểu tượng tín hiệu SIM 1</string>
+    <string name="icon_tuner_single_mobile_sim2">Tuỳ chỉnh biểu tượng tín hiệu SIM 2</string>
+    <string name="icon_tuner_single_mobile_summary">Biểu tượng mới được thêm vào, không phải do hệ thống cung cấp</string>
+    <string name="icon_tuner_stacked_mobile_custom_entry" translatable="false">@string/page_status_bar_stacked_mobile</string>
+    <string name="icon_tuner_hint_stacked_mobile">Vui lòng truy cập trang \"Tuỳ chỉnh biểu tượng\" để ẩn thủ công các biểu tượng tín hiệu SIM 1 và SIM 2 ban đầu. Bạn cũng có thể điều chỉnh vị trí tương đối của các biểu tượng mới thông qua \"Tuỳ chỉnh thứ tự biểu tượng\".</string>
+    <string name="ui_title_icon_tuner_network">Mạng lưới</string>
+    <string name="icon_tuner_network_mobile">Mạng di động</string>
+    <string name="icon_tuner_network_no_sim">Không có thẻ SIM</string>
+    <string name="icon_tuner_network_airplane">Chế độ Máy bay</string>
+    <string name="icon_tuner_network_wifi">WLAN (Wi-Fi)</string>
+    <string name="icon_tuner_network_hotspot">Điểm phát sóng (Hotspot)</string>
+    <string name="icon_tuner_network_vpn">VPN</string>
+    <string name="icon_tuner_network_net_speed">Tốc độ kết nối</string>
+    <string name="icon_tuner_network_warning">Cảnh báo: Ẩn biểu tượng này có thể khiến các biểu tượng trên thanh trạng thái hiển thị bất thường!</string>
+    <string name="ui_title_icon_tuner_connectivity">Kết nối</string>
+    <string name="icon_tuner_connect_bluetooth">Bluetooth</string>
+    <string name="icon_tuner_connect_bluetooth_battery">Pin thiết bị Bluetooth</string>
+    <string name="icon_tuner_connect_handle_battery">Pin báng cầm máy ảnh (Camera grip)</string>
+    <string name="icon_tuner_connect_nfc">NFC</string>
+    <string name="icon_tuner_connect_headset">Tai nghe</string>
+    <string name="icon_tuner_connect_location">Dịch vụ vị trí</string>
+    <string name="ui_title_icon_tuner_device">Thiết bị</string>
+    <string name="icon_tuner_device_wireless_headset">Tai nghe không dây</string>
+    <string name="icon_tuner_device_phone">Điện thoại</string>
+    <string name="icon_tuner_device_pad">Máy tính bảng</string>
+    <string name="icon_tuner_device_pc">Máy tính cá nhân</string>
+    <string name="icon_tuner_device_sound_box_group">Phát toàn nhà</string>
+    <string name="icon_tuner_device_stereo">Âm thanh Stereo</string>
+    <string name="icon_tuner_device_sound_box_screen">Loa có màn hình</string>
+    <string name="icon_tuner_device_sound_box">Loa</string>
+    <string name="icon_tuner_device_tv">TV</string>
+    <string name="icon_tuner_device_glasses">Kính thông minh</string>
+    <string name="icon_tuner_device_car">Xe hơi</string>
+    <string name="icon_tuner_device_camera">Máy ảnh</string>
+    <string name="icon_tuner_device_dist_compute">Hỗ trợ tính toán (Computing support)</string>
+    <string name="ui_title_icon_tuner_other" translatable="false">@string/common_others</string>
+    <string name="icon_tuner_other_alarm">Báo thức</string>
+    <string name="icon_tuner_other_zen">Không làm phiền (DND)</string>
+    <string name="icon_tuner_other_volume">Im lặng</string>
+    <string name="icon_tuner_other_second_space">Không gian thứ hai</string>
+    <string name="icon_tuner_other_hide_privacy">Ẩn thông báo quyền riêng tư</string>
+    <string name="icon_tuner_position_reset_default">Đặt lại về mặc định</string>
+    <string name="ui_title_icon_tuner_order" translatable="false">@string/page_status_bar_icon_order</string>
+    <string name="icon_tuner_position_demo_mobile">Mạng di động ở chế độ thử nghiệm</string>
+    <string name="icon_tuner_position_demo_wifi">WLAN ở chế độ thử nghiệm</string>
+    <string name="ui_title_icon_tuner_compound_icon" translatable="false">@string/icon_tuner_compound_icon</string>
+    <string name="icon_tuner_compound_icon">Biểu tượng kết hợp</string>
+    <string name="icon_tuner_compound_icon_tips">Hiển thị nhiều biểu tượng trạng thái trong một khoảng trống duy nhất theo quy tắc</string>
+    <string name="icon_tuner_compound_priority">Mức độ ưu tiên hiển thị</string>
+    <string name="icon_tuner_compound_priority_tips">Sử dụng dấu phẩy \",\" để phân tách các mục, được sắp xếp từ trái sang phải theo thứ tự ưu tiên giảm dần</string>
+    <string name="ui_title_icon_tuner_left_icon" translatable="false">@string/icon_tuner_left_icon</string>
+    <string name="icon_tuner_left_icon">Dời biểu tượng trạng thái về phần đầu</string>
+    <string name="icon_tuner_left_icon_tips">Di chuyển biểu tượng trạng thái đã chọn đến vị trí giữa thời gian và các biểu tượng thông báo</string>
+    <string name="icon_tuner_left_icon_disabled" translatable="false">@string/common_disabled</string>
+    <string name="icon_tuner_left_icon_unlocked">Chỉ khi đã mở khoá</string>
+    <string name="icon_tuner_left_icon_enabled" translatable="false">@string/common_enabled</string>
+    <string name="icon_tuner_left_extra_blocked_slots">Danh sách chặn bổ sung</string>
+    <string name="icon_tuner_left_extra_blocked_slots_tips">Chặn các biểu tượng thừa không mong muốn ở phía đầu thanh trạng thái</string>
+    <string name="icon_tuner_left_extra_blocked_slots_msg">Một số module có thể thêm các biểu tượng trạng thái tùy chỉnh bổ sung. Khi bật \"Dời biểu tượng trạng thái về phần đầu\", những biểu tượng phụ này có thể xuất hiện ở cả hai bên của thanh trạng thái. \n\nNhập tên slot (khoảng chứa) của các biểu tượng này vào đây để ngăn chúng xuất hiện ở phía đầu. Để nhập nhiều tên, hãy phân tách chúng bằng dấu phẩy (,) chẳng hạn như \"zen,volume\".</string>
+    <string name="icon_tuner_hint_left_icon_order">Xin lưu ý rằng thứ tự biểu tượng ở phía đầu sẽ là hình ảnh phản chiếu của thứ tự bạn đã thiết lập!</string>
+    <string name="ui_title_icon_detail_cellular">Mạng di động</string>
+    <string name="ui_title_icon_detail_wifi">WLAN</string>
+    <string name="ui_title_icon_detail_battery">Pin</string>
+    <string name="ui_title_icon_detail_net_speed">Tốc độ mạng</string>
+    <string name="ui_title_icon_detail_font_weight">Độ đậm phông chữ</string>
+    <string name="ui_title_icon_detail_other" translatable="false">@string/common_others</string>
+    <string name="ui_title_icon_detail_cellular_general" translatable="false">@string/common_general</string>
+    <string name="icon_detail_cellular_hide_sim_auto">Ẩn biểu tượng tín hiệu thông minh</string>
+    <string name="icon_detail_cellular_hide_sim_auto_tips">Tuân theo cài đặt \"SIM Dữ liệu\" và chỉ hiển thị biểu tượng tín hiệu cho SIM dữ liệu</string>
+    <string name="icon_detail_cellular_hide_sim_one">Ẩn biểu tượng tín hiệu SIM 1</string>
+    <string name="icon_detail_cellular_hide_sim_two">Ẩn biểu tượng tín hiệu SIM 2</string>
+    <string name="icon_detail_cellular_hide_activity">Ẩn hoạt động của mạng di động</string>
+    <string name="icon_detail_cellular_hide_type">Ẩn loại mạng di động</string>
+    <string name="icon_detail_cellular_hide_roam_global">Vô hiệu hóa hiển thị thông tin chuyển vùng</string>
+    <string name="icon_detail_cellular_hide_roam_global_tips">Loại bỏ biểu tượng trạng thái chuyển vùng để trông như không chuyển vùng</string>
+    <string name="icon_detail_cellular_hide_roam">Ẩn biểu tượng chuyển vùng</string>
+    <string name="icon_detail_cellular_hide_roam_small">Ẩn biểu tượng chuyển vùng nhỏ</string>
+    <string name="ui_title_icon_detail_cellular_type">Loại mạng di động</string>
+    <string name="icon_detail_cellular_single">Sử dụng biểu tượng loại mạng riêng biệt</string>
+    <string name="icon_detail_cellular_single_swap">Căn chỉnh biểu tượng loại mạng riêng biệt sang phải</string>
+    <string name="icon_detail_cellular_single_swap_tips">Hoán đổi vị trí của biểu tượng loại mạng riêng biệt và biểu tượng tín hiệu</string>
+    <string name="icon_detail_cellular_single_size">Tuỳ chỉnh kích thước phông chữ (biểu tượng loại mạng riêng biệt)</string>
+    <string name="icon_detail_cellular_single_size_value">Kích thước phông chữ (biểu tượng loại mạng riêng biệt)</string>
+    <string name="icon_detail_cellular_type_map">Tuỳ chỉnh văn bản loại mạng</string>
+    <string name="icon_detail_cellular_type_map_value">Văn bản loại mạng</string>
+    <string name="icon_detail_cellular_type_map_msg">Sử dụng dấu phẩy để phân tách các giá trị. \nNhập 1 mục để áp dụng cùng một văn bản cho tất cả các loại mạng, hoặc 15 mục để tuỳ chỉnh từng loại riêng biệt. \n\nTham khảo ánh xạ mặc định của hệ thống dưới đây:\n\n,G,E,3G,H,H+,4G,4G+,,LTE,5G,5G,5G+,5GA,5G</string>
+    <string name="icon_detail_cellular_fw_type">Tuỳ chỉnh độ đậm phông chữ (loại mạng di động)</string>
+    <string name="icon_detail_cellular_fw_type_weight">Độ đậm phông chữ (loại mạng di động)</string>
+    <string name="icon_detail_cellular_fw_type_single">Tuỳ chỉnh độ đậm phông chữ (biểu tượng loại mạng riêng biệt)</string>
+    <string name="icon_detail_cellular_fw_type_single_weight">Độ đậm phông chữ (biểu tượng loại mạng riêng biệt)</string>
+    <string name="icon_detail_cellular_hide_vowifi">Ẩn biểu tượng VoWiFi</string>
+    <string name="icon_detail_cellular_hide_volte">Ẩn biểu tượng VoLTE</string>
+    <string name="icon_detail_cellular_hide_volte_no_service">Ẩn biểu tượng VoLTE không có dịch vụ</string>
+    <string name="icon_detail_cellular_hide_speech_hd">Ẩn biểu tượng Speech HD</string>
+    <string name="ui_title_icon_detail_stacked_general" translatable="false">@string/common_general</string>
+    <string name="ui_title_icon_detail_stacked_signal">Biểu tượng tín hiệu</string>
+    <string name="icon_detail_stacked_signal_style_single">Kiểu biểu tượng tín hiệu (SIM đơn)</string>
+    <string name="icon_detail_stacked_signal_style_single_val">Tuỳ chỉnh biểu tượng tín hiệu SIM đơn</string>
+    <string name="icon_detail_stacked_signal_style_single_msg">Dán mã SVG chứa bốn ID signal_1, signal_2, signal_3, và signal_4. Ở đây, signal_2 đại diện cho vạch tín hiệu thứ hai. Khi cường độ tín hiệu hiện tại là 2 vạch, signal_1 và signal_2 sẽ được tô màu bằng Độ mờ nền đầy (Fill opacity), trong khi signal_3 và signal_4 sẽ được tô bằng Độ mờ nền gốc (Background opacity).</string>
+    <string name="icon_detail_stacked_signal_style_stacked">Kiểu biểu tượng tín hiệu (SIM kép)</string>
+    <string name="icon_detail_stacked_signal_style_stacked_val">Tuỳ chỉnh biểu tượng tín hiệu SIM kép</string>
+    <string name="icon_detail_stacked_signal_style_stacked_msg">Dán mã SVG chứa tám ID \nsignal_1_1, signal_1_2, signal_1_3, signal_1_4, \nsignal_2_1, signal_2_2, signal_2_3, và signal_2_4. \n\nỞ đây, signal_1_2 đại diện cho vạch tín hiệu thứ hai của SIM 1. Khi SIM 1 có 2 vạch và SIM 2 có 1 vạch, signal_1_1, signal_1_2, và signal_2_1 sẽ được tô màu bằng Độ mờ nền đầy, trong khi signal_1_3, signal_1_4, signal_2_2, signal_2_3, và signal_2_4 sẽ được tô bằng Độ mờ nền gốc.</string>
+    <string name="icon_detail_stacked_signal_style_val_file">Nhập từ tệp</string>
+    <string name="icon_detail_stacked_signal_style_val_clipboard">Nhập từ bộ nhớ tạm (clipboard)</string>
+    <string name="icon_detail_stacked_signal_style_miui" translatable="false">HyperOS</string>
+    <string name="icon_detail_stacked_signal_style_ios" translatable="false">iOS</string>
+    <string name="icon_detail_stacked_signal_style_custom" translatable="false">@string/common_custom</string>
+    <string name="icon_detail_stacked_signal_alpha_fg">Độ mờ phần đầy (Fill opacity)</string>
+    <string name="icon_detail_stacked_signal_alpha_bg">Độ mờ nền</string>
+    <string name="icon_detail_stacked_signal_alpha_error">Độ mờ khi không có dịch vụ</string>
+    <string name="ui_title_icon_detail_stacked_type">Biểu tượng loại mạng di động</string>
+    <string name="icon_detail_stacked_type_font" translatable="false">@string/page_status_bar_font</string>
+    <string name="icon_detail_stacked_type_font_tips">Các văn bản 4G+, 5G+, 5GA, LTE sẽ sử dụng kiểu nén (condensed) với MiSans hoặc SF Pro</string>
+    <string name="icon_detail_stacked_type_font_default" translatable="false">@string/common_default</string>
+    <string name="icon_detail_stacked_type_font_custom" translatable="false">@string/common_custom</string>
+    <string name="icon_detail_stacked_type_font_misans" translatable="false">MiSans</string>
+    <string name="icon_detail_stacked_type_font_sfpro" translatable="false">SF Pro</string>
+    <string name="icon_detail_stacked_type_font_width_condensed">Độ rộng phông chữ nén</string>
+    <string name="ui_title_icon_detail_stacked_small_type">Loại mạng được tích hợp</string>
+    <string name="icon_detail_stacked_small_type_show_single">Hiển thị trên biểu tượng tín hiệu SIM đơn</string>
+    <string name="icon_detail_stacked_small_type_show_stacked">Hiển thị trên biểu tượng tín hiệu SIM kép</string>
+    <string name="icon_detail_stacked_small_type_show_tips">Mã SVG của biểu tượng phải bao gồm một rect với id \"type_container\" để có thể được hiển thị</string>
+    <string name="icon_detail_stacked_small_type_roaming">Hiển thị trạng thái chuyển vùng</string>
+    <string name="icon_detail_stacked_small_type_size">Kích thước phông chữ (Loại mạng tích hợp)</string>
+    <string name="icon_detail_stacked_small_type_weight">Độ đậm phông chữ (Loại mạng tích hợp)</string>
+    <string name="ui_title_icon_detail_stacked_large_type" translatable="false">@string/icon_tuner_stacked_mobile_type</string>
+    <string name="icon_detail_stacked_large_type_hide_disconnect">Ẩn khi không được kết nối</string>
+    <string name="icon_detail_stacked_large_type_hide_disconnect_tips">Ẩn biểu tượng khi dữ liệu di động bị tắt hoặc không thể thiết lập kết nối dữ liệu</string>
+    <string name="icon_detail_stacked_large_type_hide_wifi">Ẩn khi có sẵn mạng WLAN</string>
+    <string name="icon_detail_stacked_large_type_size">Kích thước phông chữ (Loại mạng độc lập)</string>
+    <string name="icon_detail_stacked_large_type_weight">Độ đậm phông chữ (Loại mạng độc lập)</string>
+    <string name="icon_detail_stacked_large_type_vertical_offset">Độ lệch dọc</string>
+    <string name="icon_detail_stacked_large_type_vertical_offset_tips">Kiểm soát độ lệch dọc của biểu tượng. Giá trị dương di chuyển nó xuống dưới, giá trị âm di chuyển nó lên trên.</string>
+    <string name="icon_detail_wifi_hide_standard">Ẩn chuẩn WLAN</string>
+    <string name="icon_detail_wifi_hide_activity">Ẩn hoạt động WLAN</string>
+    <string name="icon_detail_wifi_right_activity">Căn chỉnh hoạt động WLAN sang phải</string>
+    <string name="icon_detail_wifi_hide_unavailable">Ẩn biểu tượng WLAN khi không khả dụng</string>
+    <string name="icon_detail_battery_bar_style">Chỉ báo pin (Thanh trạng thái)</string>
+    <string name="icon_detail_battery_cc_style">Chỉ báo pin (Trung tâm điều khiển)</string>
+    <string name="icon_detail_battery_style_default" translatable="false">@string/icon_tuner_hide_selection_default</string>
+    <string name="icon_detail_battery_style_default_tips">Tuân theo cài đặt hệ thống</string>
+    <string name="icon_detail_battery_style_icon_only">Chỉ biểu tượng</string>
+    <string name="icon_detail_battery_style_icon_only_tips">Biểu đồ</string>
+    <string name="icon_detail_battery_style_text_in">Phần trăm bên trong</string>
+    <string name="icon_detail_battery_style_text_in_tips">Phần trăm (bên trong biểu tượng)</string>
+    <string name="icon_detail_battery_style_line">Thanh trên cùng (Top bar)</string>
+    <string name="icon_detail_battery_style_line_tips">Quay lại chỉ biểu tượng nếu không được hỗ trợ</string>
+    <string name="icon_detail_battery_style_text_out">Phần trăm bên ngoài</string>
+    <string name="icon_detail_battery_style_text_out_tips">Phần trăm (kế bên biểu tượng)</string>
+    <string name="icon_detail_battery_style_text_only">Chỉ phần trăm</string>
+    <string name="icon_detail_battery_style_text_only_tips">Phần trăm (chỉ văn bản)</string>
+    <string name="icon_detail_battery_style_hidden" translatable="false">@string/icon_tuner_hide_selection_hidden</string>
+    <string name="icon_detail_battery_style_hidden_tips">Ẩn hoàn toàn (bao gồm cả biểu tượng sạc)</string>
+    <string name="icon_detail_battery_layout_custom">Tuỳ chỉnh khoảng đệm ngang của biểu tượng</string>
+    <string name="icon_detail_battery_padding_start">Khoảng đệm đầu</string>
+    <string name="icon_detail_battery_padding_end">Khoảng đệm cuối</string>
+    <string name="icon_detail_battery_hide_charge">Ẩn biểu tượng sạc</string>
+    <string name="icon_detail_battery_hide_charge_tips">Chỉ áp dụng cho các kiểu Phần trăm (bên trong biểu tượng) và Phần trăm (chỉ văn bản)</string>
+    <string name="ui_title_icon_detail_batter_percentage">Phần trăm</string>
+    <string name="icon_detail_battery_percent_mark_style">Kiểu ký hiệu phần trăm</string>
+    <string name="icon_detail_battery_percent_mark_style_default" translatable="false">@string/icon_tuner_hide_selection_default</string>
+    <string name="icon_detail_battery_percent_mark_style_uni">Khớp với kích thước số</string>
+    <string name="icon_detail_battery_percent_mark_style_hidden" translatable="false">@string/icon_tuner_hide_selection_hidden</string>
+    <string name="icon_detail_battery_percent_out_size">Tuỳ chỉnh kích thước phông chữ (Phần trăm bên ngoài)</string>
+    <string name="icon_detail_battery_percent_out_size_value">Kích thước phông chữ (Phần trăm bên ngoài)</string>
+    <string name="icon_detail_battery_percent_in_size">Tuỳ chỉnh kích thước phông chữ (Phần trăm bên trong)</string>
+    <string name="icon_detail_battery_percent_in_size_value">Kích thước phông chữ (Phần trăm bên trong)</string>
+    <string name="icon_detail_battery_fw_percent_out">Tuỳ chỉnh độ đậm phông chữ (Phần trăm bên ngoài)</string>
+    <string name="icon_detail_battery_fw_percent_out_weight">Độ đậm phông chữ (Phần trăm bên ngoài)</string>
+    <string name="icon_detail_battery_fw_percent_mark">Tuỳ chỉnh độ đậm phông chữ (Ký hiệu phần trăm)</string>
+    <string name="icon_detail_battery_fw_percent_mark_weight">Độ đậm phông chữ (Ký hiệu phần trăm)</string>
+    <string name="icon_detail_battery_fw_percent_in">Tuỳ chỉnh độ đậm phông chữ (Phần trăm bên trong)</string>
+    <string name="icon_detail_battery_fw_percent_in_weight">Độ đậm phông chữ (Phần trăm bên trong)</string>
+    <string name="icon_detail_net_speed_style">Kiểu tốc độ kết nối</string>
+    <string name="icon_detail_net_speed_style_default" translatable="false">@string/icon_tuner_hide_selection_default</string>
+    <string name="icon_detail_net_speed_style_separate">Phân chia (văn bản thuần tuý)</string>
+    <string name="icon_detail_net_speed_style_separate_arrow">Phân chia (mũi tên)</string>
+    <string name="icon_detail_net_speed_style_separate_tri_filled">Phân chia (tam giác đặc)</string>
+    <string name="icon_detail_net_speed_style_separate_tri_outline">Phân chia (tam giác thích ứng)</string>
+    <string name="icon_detail_net_speed_unit_style">Kiểu đơn vị tốc độ</string>
+    <string name="icon_detail_net_speed_unit_style_k" translatable="false">6.18K</string>
+    <string name="icon_detail_net_speed_unit_style_kb" translatable="false">6.18KB</string>
+    <string name="icon_detail_net_speed_unit_style_kbps" translatable="false">6.18KB/s</string>
+    <string name="icon_detail_net_speed_refresh">Làm mới mỗi giây</string>
+    <string name="icon_detail_net_speed_refresh_tips">Tính toán tốc độ kết nối mỗi giây thay vì mỗi bốn giây</string>
+    <string name="icon_detail_net_speed_fw_num">Tuỳ chỉnh độ đậm phông chữ (Số)</string>
+    <string name="icon_detail_net_speed_fw_num_weight">Độ đậm phông chữ (Số)</string>
+    <string name="icon_detail_net_speed_fw_unit">Tuỳ chỉnh độ đậm phông chữ (Đơn vị)</string>
+    <string name="icon_detail_net_speed_fw_unit_weight">Độ đậm phông chữ (Đơn vị)</string>
+    <string name="icon_detail_net_speed_fw_separate">Tuỳ chỉnh độ đậm phông chữ</string>
+    <string name="icon_detail_net_speed_fw_separate_weight">Độ đậm phông chữ</string>
+    <string name="ui_title_media_general" translatable="false">@string/common_general</string>
+    <string name="media_general_squiggly_progress">Sử dụng thanh tiến trình lượn sóng</string>
+    <string name="media_general_hide_app_icon">Ẩn biểu tượng ứng dụng</string>
+    <string name="ui_title_media_bg">Bối cảnh</string>
+    <string name="media_bg_custom">Kiểu nền</string>
+    <string name="media_bg_custom_default" translatable="false">@string/common_default</string>
+    <string name="media_bg_custom_art">Bìa album nghệ thuật</string>
+    <string name="media_bg_custom_blur">Bìa album mờ</string>
+    <string name="media_bg_custom_radial_gradient">Gradient hướng tâm</string>
+    <string name="media_bg_custom_linear_gradient">Gradient tuyến tính</string>
+    <string name="media_bg_ambient_light_default" translatable="false">@string/common_default</string>
+    <string name="media_bg_ambient_light_hidden" translatable="false">@string/common_disabled</string>
+    <string name="media_bg_ambient_light_custom" translatable="false">@string/common_custom</string>
+    <string name="media_bg_ambient_light">Hiệu ứng ánh sáng xung quanh</string>
+    <string name="media_bg_ambient_light_tips">Cung cấp hiệu ứng âm nhạc phát sáng tương tự như Dynamic Island. Khi bật, nên sử dụng ở Chế độ tối (Luôn tối).</string>
+    <string name="media_bg_always_dark">Chế độ luôn tối</string>
+    <string name="media_bg_always_dark_tips">Bỏ qua chế độ sáng/tối của hệ thống và luôn giữ bảng điều khiển phương tiện ở nền đen với chữ trắng.</string>
+    <string name="media_bg_ambient_light_opt">Tối ưu hoá việc lấy màu</string>
+    <string name="media_bg_ambient_light_opt_tips">Sử dụng hệ thống màu Monet Material 3 và áp dụng các màu sắc khác nhau trong chế độ sáng và tối.</string>
+    <string name="media_bg_color_anim">Hoạt ảnh màu sắc</string>
+    <string name="media_bg_color_anim_tips">Tính năng thử nghiệm. Sử dụng hoạt ảnh chuyển đổi khi thay đổi màu chữ.</string>
+    <string name="media_bg_blur_radius">Bán kính làm mờ</string>
+    <string name="media_bg_auto_color_reverse">Tự động đảo ngược màu</string>
+    <string name="ui_title_media_layout">Bố cục</string>
+    <string name="media_lyt_album">Ảnh bìa Album</string>
+    <string name="media_lyt_album_default" translatable="false">@string/common_default</string>
+    <string name="media_lyt_album_hide_app">Không có biểu tượng ứng dụng</string>
+    <string name="media_lyt_album_gone">Vô hình</string>
+    <string name="media_lyt_unlock_action">Hiển thị tất cả nút hành động</string>
+    <string name="media_lyt_unlock_action_tips">Tuỳ chọn này ảnh hưởng đến cả thông báo và Dynamic Island</string>
+    <string name="media_lyt_left_actions">Các nút hành động căn trái</string>
+    <string name="media_lyt_actions_order">Trình tự các nút hành động</string>
+    <string name="media_lyt_actions_order_default" translatable="false">@string/common_default</string>
+    <string name="media_lyt_actions_order_custom_right">Các nút tuỳ chỉnh ở bên phải</string>
+    <string name="media_lyt_actions_order_play_left">Nút phát ở ngoài cùng bên trái</string>
+    <string name="media_lyt_hide_time">Ẩn thời gian</string>
+    <string name="media_lyt_hide_time_tips">Ẩn thời gian đã trôi qua và tổng thời gian bên cạnh thanh tiến trình</string>
+    <string name="media_lyt_hide_seamless">Ẩn nút chuyển tiếp mượt mà (seamless)</string>
+    <string name="media_lyt_hide_seamless_tips">Ẩn nút chuyển đổi thiết bị ở góc trên cùng bên phải của bảng điều khiển phương tiện</string>
+    <string name="media_lyt_header_margin">Căn lề trên phần đầu (Header margin top)</string>
+    <string name="media_lyt_header_padding">Khoảng đệm phần đầu (Header padding)</string>
+    <string name="ui_title_media_elements">Phần tử</string>
+    <string name="media_elm_album_shadow">Đổ bóng bìa album</string>
+    <string name="media_elm_album_flip_anim">Hoạt ảnh lật bìa album</string>
+    <string name="media_elm_album_flip_anim_tips">Hoạt ảnh lật của bìa album khi chuyển bài hát.</string>
+    <string name="media_elm_text_size">Sửa đổi kích thước phông chữ của văn bản</string>
+    <string name="media_elm_text_size_title">Tiêu đề</string>
+    <string name="media_elm_text_size_artist">Nghệ sĩ</string>
+    <string name="media_elm_text_size_time">Thời gian</string>
+    <string name="media_elm_actions_resize">Ngăn các nút hành động bị thu phóng</string>
+    <string name="media_elm_actions_resize_tips">Hệ thống sẽ bắt buộc thu nhỏ các nút hành động tuỳ chỉnh, điều này có thể gây ra vấn đề. Tuy nhiên, việc ngăn hệ thống thu nhỏ có thể khiến các nút xuất hiện lớn hơn.</string>
+    <string name="media_elm_thumb_style">Kiểu nút kéo (Thumb)</string>
+    <string name="media_elm_thumb_style_default" translatable="false">@string/common_default</string>
+    <string name="media_elm_thumb_style_gone">Vô hình</string>
+    <string name="media_elm_thumb_style_vbar">Thanh dọc</string>
+    <string name="media_elm_fix_thumb_crop">Khắc phục lỗi cắt xén sai của nút kéo</string>
+    <string name="media_elm_fix_thumb_crop_tips">Đảm bảo rằng nút kéo hiển thị đầy đủ khi nó ở hai đầu của thanh tiến trình</string>
+    <string name="media_elm_prog_style">Kiểu thanh tiến trình</string>
+    <string name="media_elm_prog_style_default" translatable="false">@string/common_default</string>
+    <string name="media_elm_prog_style_custom" translatable="false">@string/common_custom</string>
+    <string name="media_elm_prog_style_squiggly">Lượn sóng</string>
+    <string name="media_elm_prog_width">Độ dày của thanh tiến trình</string>
+    <string name="media_elm_prog_round">Thanh tiến trình bo tròn</string>
+    <string name="media_elm_prog_comet">Thanh tiến trình Sao chổi (Comet)</string>
+    <string name="media_elm_prog_comet_tips">Một thanh tiến trình với hiệu ứng làm mờ độ trong suốt, giống như một ngôi sao chổi kéo theo một cái đuôi nhỏ.</string>
+    <string name="ui_title_media_others" translatable="false">@string/common_others</string>
+    <string name="media_hint_ambient_lighting">Hiệu ứng ánh sáng xung quanh yêu cầu hiệu suất cao và tiêu tốn tài nguyên, có thể gây ra các vấn đề như thiết bị quá nhiệt. Vui lòng bật nó với sự thận trọng. Nếu có bất kỳ sự cố nào xảy ra, bạn nên tắt tính năng này.</string>
+    <string name="media_hint_advanced_textures">Vì Cấu trúc nâng cao (Advanced textures) đã được đặt làm nền mặc định cho bảng điều khiển phương tiện, tùy chọn tương ứng đã bị xóa. Nếu bạn cần điều chỉnh hiệu ứng của Cấu trúc nâng cao, hãy sử dụng module Magisk hoặc chủ đề hệ thống để sửa đổi các thông số làm mờ.</string>
+    <string name="ui_title_stacked_icon">Biểu tượng tín hiệu</string>
+    <string name="ui_title_stacked_type" translatable="false">@string/ui_title_icon_detail_stacked_type</string>
+    <string name="home_refactor_blur">Hiệu ứng làm mờ</string>
+    <string name="home_refactor_blur_radius">Bán kính làm mờ</string>
+    <string name="home_refactor_blur_radius_tips">Giá trị càng lớn, hiệu ứng làm mờ càng tốt nhưng cũng tiêu tốn nhiều hiệu suất hơn.</string>
+    <string name="home_refactor_dim">Làm tối nền</string>
+    <string name="home_refactor_dim_tips">Thêm một lớp mặt nạ màu đen phủ lên trên lớp làm mờ</string>
+    <string name="home_refactor_dim_alpha">Độ mờ của mặt nạ dùng để làm tối</string>
+    <string name="home_refactor_dim_alpha_tips">Đặt 0 cho độ trong suốt, đặt 255 cho màu đen.</string>
+    <string name="home_refactor_anim_curve">Đường cong hoạt ảnh</string>
+    <string name="home_refactor_nonlinear_type">Loại đường cong hoạt ảnh</string>
+    <string name="home_refactor_nonlinear_type_non">Tuyến tính (Linear)</string>
+    <string name="home_refactor_nonlinear_type_dece">Chậm dần (Ease out)</string>
+    <string name="home_refactor_nonlinear_type_bezier">Đường cong Bezier khối (Cubic Bézier)</string>
+    <string name="home_refactor_nonlinear_params">Thông số hoạt ảnh</string>
+    <string name="home_refactor_nonlinear_dece_factor">Hệ số hoạt ảnh</string>
+    <string name="home_refactor_nonlinear_dece_factor_tips">Giá trị càng lớn thì tốc độ thay đổi ban đầu của hoạt ảnh càng lớn</string>
+    <string name="home_refactor_nonlinear_bezier_x1">Toạ độ X của điểm kiểm soát 1</string>
+    <string name="home_refactor_nonlinear_bezier_y1">Toạ độ Y của điểm kiểm soát 1</string>
+    <string name="home_refactor_nonlinear_bezier_x2">Toạ độ X của điểm kiểm soát 2</string>
+    <string name="home_refactor_nonlinear_bezier_y2">Toạ độ Y của điểm kiểm soát 2</string>
+    <string name="ui_title_home_refactor_main">Công tắc chính</string>
+    <string name="ui_title_home_refactor_general" translatable="false">@string/common_general</string>
+    <string name="home_refactor_extra_compatibility">Chế độ tương thích</string>
+    <string name="home_refactor_extra_compatibility_tips">Cố gắng tương thích với các module khác, nhưng tính tương thích không được đảm bảo. Không khuyến khích bật.</string>
+    <string name="home_refactor_walppaper_scale_sync" translatable="false">@string/home_anim_zoom_sync</string>
+    <string name="home_refactor_walppaper_scale_sync_tips">Hãy thử bật tuỳ chọn thu phóng hình nền khi nó hiển thị bất thường</string>
+    <string name="home_refactor_extra_fix">Các bản sửa lỗi bổ sung cho lỗi mất làm mờ</string>
+    <string name="home_refactor_extra_fix_tips">Bắt buộc thêm một hoạt ảnh để tránh hiện tượng làm mờ không xuất hiện kịp thời khi vuốt nhanh. Chỉ bật tùy chọn này nếu bạn nhận thấy lỗi này.</string>
+    <string name="home_refactor_fix_small_window">Các bản sửa lỗi bổ sung cho hoạt ảnh cửa sổ nhỏ</string>
+    <string name="home_refactor_fix_small_window_tips">Bắt buộc thêm một hoạt ảnh để tránh hiện tượng nhấp nháy khi kéo ứng dụng vào cửa sổ nhỏ, hiện tại chưa chắc có gây ra tác động tiêu cực nào không. Chỉ bật tùy chọn này nếu bạn thực sự để tâm đến lỗi đó.</string>
+    <string name="home_refactor_minus_blur" translatable="false">@string/page_minus_blur</string>
+    <string name="ui_title_home_refactor_apps">Hiệu ứng làm mờ các biểu tượng ứng dụng</string>
+    <string name="home_refactor_apps_tips">Dùng để làm mờ ứng dụng. Hiện tượng làm mờ xảy ra khi khởi chạy ứng dụng, đóng ứng dụng và khi đang ở trong chế độ xem các tác vụ gần đây (đa nhiệm).</string>
+    <string name="ui_title_home_refactor_folder">Hiệu ứng làm mờ nền thư mục</string>
+    <string name="home_refactor_folder_tips">Dùng để làm mờ hình nền khi mở một thư mục</string>
+    <string name="ui_title_home_refactor_wallpaper">Hiệu ứng làm mờ hình nền</string>
+    <string name="home_refactor_wallpaper_tips">Dùng để làm mờ hình nền. Hiện tượng làm mờ xảy ra khi ở chế độ chỉnh sửa.</string>
+    <string name="home_refactor_all_apps_bg">Sử dụng hiệu ứng làm mờ cho nền ngăn kéo ứng dụng (App drawer)</string>
+    <string name="home_refactor_all_apps_bg_tips">Làm mờ hình nền khi mở ngăn kéo ứng dụng</string>
+    <string name="ui_title_home_refactor_launch">Chế độ xem trình khởi chạy</string>
+    <string name="home_refactor_launch_tips">Kiểm soát chế độ xem trình khởi chạy phía sau chế độ xem các tác vụ gần đây (đa nhiệm).</string>
+    <string name="home_refactor_launch_show">Hiển thị chế độ xem trình khởi chạy</string>
+    <string name="home_refactor_launch_recents_tips">Hiển thị chế độ xem trình khởi chạy khi đang ở chế độ xem các tác vụ gần đây (đa nhiệm).</string>
+    <string name="home_refactor_launch_folder_tips">Hiển thị chế độ xem trình khởi chạy khi mở một thư mục.</string>
+    <string name="home_refactor_launch_minus_tips">Không ẩn chế độ xem trình khởi chạy khi đi đến Trợ lý cá nhân</string>
+    <string name="home_refactor_launch_show_tips">Không ẩn chế độ xem trình khởi chạy khi đang ở chế độ xem tác vụ gần đây</string>
+    <string name="home_refactor_launch_scale">Tỷ lệ thu phóng chế độ xem trình khởi chạy</string>
+    <string name="home_refactor_launch_scale_tips">Ảnh hưởng đến việc thu phóng của chế độ xem trình khởi chạy khi ở chế độ xem tác vụ gần đây</string>
+    <string name="home_refactor_launch_minus_mode_def" translatable="false">systemui_lock_carrier_text_default</string>
+    <string name="home_refactor_launch_minus_mode_visible" translatable="false">@string/icon_tuner_hide_selection_show_all</string>
+    <string name="home_refactor_launch_minus_mode_overlap">Ghi đè (Overlapping)</string>
+    <string name="ui_title_home_refactor_minus">Hiệu ứng làm mờ nền Trợ lý cá nhân</string>
+    <string name="home_refactor_minus_tips">Dùng để làm mờ toàn bộ chế độ xem trình khởi chạy. Hiện tượng làm mờ xảy ra khi đang ở trong Trợ lý cá nhân.</string>
+    <string name="home_refactor_minus_overlap_mode">Chế độ ghi đè Trợ lý cá nhân</string>
+    <string name="home_refactor_minus_overlap_mode_tips">Làm cho Trợ lý cá nhân lơ lửng phía trên trình khởi chạy</string>
+    <string name="home_refactor_launch_show_minus_tips">Không ẩn chế độ xem trình khởi chạy khi chuyển sang Trợ lý cá nhân</string>
 </resources>
