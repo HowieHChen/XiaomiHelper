@@ -13,7 +13,7 @@
 [![GitHub Release Date](https://img.shields.io/github/release-date/HowieHChen/XiaomiHelper?display_date=published_at&style=flat-square&labelColor=%23444444)](https://github.com/HowieHChen/XiaomiHelper/releases/latest)
 [![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/HowieHChen/XiaomiHelper/total?style=flat-square&labelColor=%23444444)](https://github.com/HowieHChen/XiaomiHelper/releases/latest)
 
-[简体中文](README.md) | [日本語](README_JP.md) | [English](README_EN-US.md) | **Português (Brasil)**
+[简体中文](README.md) | [日本語](README_JP.md) | [English](README_EN-US.md) | **Português (Brasil)** | [Tiếng Việt](README_VI.md)
 
 </div>
 
