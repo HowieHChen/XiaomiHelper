@@ -163,7 +163,7 @@ class StackedMobileRepository(
                 singleSVGName = repo.get(Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_SVG_SINGLE_NAME),
                 stackedStyle = repo.get(Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_SVG_STACKED),
                 stackedSVG = repo.get(Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_SVG_STACKED_VAL),
-                stackedSVGName = repo.get(Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_SVG_SINGLE_NAME),
+                stackedSVGName = repo.get(Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_SVG_STACKED_NAME),
                 alphaFg = repo.get(Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_ALPHA_FG),
                 alphaBg = repo.get(Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_ALPHA_BG),
                 alphaError = repo.get(Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_ALPHA_ERROR),
