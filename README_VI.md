@@ -17,7 +17,7 @@
 
 </div>
 
-## Introduction
+## Giới thiệu
 
 Một mô-đun nhẹ dành cho HyperOS, tập trung vào việc nâng cao trải nghiệm người dùng hàng ngày.
 
@@ -25,16 +25,16 @@ Một mô-đun nhẹ dành cho HyperOS, tập trung vào việc nâng cao trải
 
 Hãy tham gia kênh [Telegram](https://t.me/lackluster_stuff) của chúng tôi để báo cáo sự cố và nhận thông tin cập nhật.
 
-## Repository
+## Kho lưu trữ
 
 - [GitHub Repository](https://github.com/HowieHChen/XiaomiHelper)
 - [Xposed Module Repository](https://modules.lsposed.org/module/dev.lackluster.mihelper/)
 
-## Donate
+## Ủng hộ
 
 [Ủng hộ tác giả một ly cà phê](https://github.com/HowieHChen/XiaomiHelper/blob/master/DONATE.md)
 
-## References
+## Tài liệu tham khảo
 
 ##### GNU General Public License v3.0
 
