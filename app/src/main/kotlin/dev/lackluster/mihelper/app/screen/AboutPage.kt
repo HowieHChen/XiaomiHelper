@@ -238,23 +238,29 @@ private fun AboutPageContent(
         itemPreferenceGroup(
             titleRes = R.string.ui_title_about_developer,
         ) {
-            TextPreference(
-                icon = ImageIcon(
-                    source = R.mipmap.developer_howie.toImageSource(),
-                    size = IconSize.App,
-                    cornerRadius = 30.dp
-                ),
-                title = stringResource(R.string.about_author),
-                summary = stringResource(R.string.about_author_tips),
-                onClick = { onAction(AboutPageAction.OpenUrl("https://github.com/HowieHChen".toUiText())) }
-            )
-            for (contributor in Contributors.list) {
+            for (contributor in Contributors.developers) {
                 TextPreference(
-                    icon = ImageIcon(
-                        source = contributor.avatarResId.toImageSource(),
-                        size = IconSize.App,
-                        cornerRadius = 30.dp
-                    ),
+                    icon = contributor.avatarResId?.let { avatar ->
+                        ImageIcon(
+                            source = avatar.toImageSource(),
+                            size = IconSize.App,
+                            cornerRadius = 30.dp
+                        )
+                    },
+                    title = contributor.name,
+                    summary = contributor.bio,
+                    onClick = { onAction(AboutPageAction.OpenUrl(contributor.link.toUiText())) }
+                )
+            }
+            for (contributor in Contributors.translators) {
+                TextPreference(
+                    icon = contributor.avatarResId?.let { avatar ->
+                        ImageIcon(
+                            source = avatar.toImageSource(),
+                            size = IconSize.App,
+                            cornerRadius = 30.dp
+                        )
+                    },
                     title = contributor.name,
                     summary = contributor.bio,
                     onClick = { onAction(AboutPageAction.OpenUrl(contributor.link.toUiText())) }
