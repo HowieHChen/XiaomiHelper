@@ -55,7 +55,6 @@ fun MiuiHomePage() {
             RebootActionItem(
                 appName = stringResource(R.string.scope_miui_home),
                 appPkg = arrayOf(Scope.MIUI_HOME, Scope.PERSONAL_ASSIST),
-                horizontalPadding = it
             )
         }
     ) {

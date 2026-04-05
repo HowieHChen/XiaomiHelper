@@ -91,7 +91,6 @@ private fun SystemUIPageContent(
             RebootActionItem(
                 appName = stringResource(R.string.scope_systemui),
                 appPkg = arrayOf(Scope.SYSTEM_UI, Scope.SYSTEM_UI_PLUGIN),
-                horizontalPadding = it
             )
         }
     ) {

@@ -176,9 +176,9 @@ class StackedMobileRepository(
             small = SmallTypeState(
                 size = repo.get(Preferences.SystemUI.StatusBar.StackedMobile.SMALL_TYPE_SIZE),
                 weight = repo.get(Preferences.SystemUI.StatusBar.StackedMobile.SMALL_TYPE_FONT_WEIGHT),
-                showOnStacked =repo.get(Preferences.SystemUI.StatusBar.StackedMobile.SMALL_TYPE_SHOW_ON_STACKED),
-                showOnSingle =repo.get(Preferences.SystemUI.StatusBar.StackedMobile.SMALL_TYPE_SHOW_ON_SINGLE),
-                showRoaming =repo.get(Preferences.SystemUI.StatusBar.StackedMobile.SMALL_TYPE_SHOW_ROAMING),
+                showOnStacked = repo.get(Preferences.SystemUI.StatusBar.StackedMobile.SMALL_TYPE_SHOW_ON_STACKED),
+                showOnSingle = repo.get(Preferences.SystemUI.StatusBar.StackedMobile.SMALL_TYPE_SHOW_ON_SINGLE),
+                showRoaming = repo.get(Preferences.SystemUI.StatusBar.StackedMobile.SMALL_TYPE_SHOW_ROAMING),
             ),
             large = LargeTypeState(
                 size = repo.get(Preferences.SystemUI.StatusBar.StackedMobile.LARGE_TYPE_SIZE),
@@ -186,8 +186,8 @@ class StackedMobileRepository(
                 paddingStart = repo.get(Preferences.SystemUI.StatusBar.StackedMobile.LARGE_TYPE_PADDING_START_VAL),
                 paddingEnd = repo.get(Preferences.SystemUI.StatusBar.StackedMobile.LARGE_TYPE_PADDING_END_VAL),
                 verticalOffset = repo.get(Preferences.SystemUI.StatusBar.StackedMobile.LARGE_TYPE_VERTICAL_OFFSET),
-                hideWhenWifi =repo.get(Preferences.SystemUI.StatusBar.StackedMobile.LARGE_TYPE_HIDE_WHEN_WIFI),
-                hideWhenDisconnect =repo.get(Preferences.SystemUI.StatusBar.StackedMobile.LARGE_TYPE_HIDE_WHEN_DISCONNECT),
+                hideWhenWifi = repo.get(Preferences.SystemUI.StatusBar.StackedMobile.LARGE_TYPE_HIDE_WHEN_WIFI),
+                hideWhenDisconnect = repo.get(Preferences.SystemUI.StatusBar.StackedMobile.LARGE_TYPE_HIDE_WHEN_DISCONNECT),
             )
         )
     }

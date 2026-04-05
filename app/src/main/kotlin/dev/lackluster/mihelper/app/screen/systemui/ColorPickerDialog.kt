@@ -25,8 +25,8 @@ import top.yukonga.miuix.kmp.basic.ColorSpace
 import top.yukonga.miuix.kmp.basic.Text
 import top.yukonga.miuix.kmp.basic.TextButton
 import top.yukonga.miuix.kmp.basic.TextField
-import top.yukonga.miuix.kmp.extra.SuperDialog
 import androidx.core.graphics.toColorInt
+import top.yukonga.miuix.kmp.overlay.OverlayDialog
 
 @Composable
 fun ColorPickerDialog(
@@ -56,7 +56,7 @@ fun ColorPickerDialog(
         mutableStateOf(hexString)
     }
 
-    SuperDialog(
+    OverlayDialog(
         show = visible,
         title = title,
         summary = message,

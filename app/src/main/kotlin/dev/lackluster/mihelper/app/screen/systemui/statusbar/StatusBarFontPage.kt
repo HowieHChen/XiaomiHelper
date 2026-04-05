@@ -130,7 +130,6 @@ private fun StatusBarFontPageContent(
             RebootActionItem(
                 appName = stringResource(R.string.scope_systemui),
                 appPkg = arrayOf(Scope.SYSTEM_UI),
-                horizontalPadding = it
             )
         }
     ) {

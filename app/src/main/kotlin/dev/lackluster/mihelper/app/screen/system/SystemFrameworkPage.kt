@@ -123,7 +123,6 @@ private fun SystemFrameworkPageContent(
             RebootActionItem(
                 appName = stringResource(R.string.scope_android),
                 appPkg = arrayOf(Scope.ANDROID),
-                horizontalPadding = it
             )
         }
     ) {

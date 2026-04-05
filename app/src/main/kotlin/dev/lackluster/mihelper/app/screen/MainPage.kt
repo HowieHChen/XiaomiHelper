@@ -39,9 +39,9 @@ import top.yukonga.miuix.kmp.basic.IconButton
 import top.yukonga.miuix.kmp.basic.ListPopupColumn
 import top.yukonga.miuix.kmp.basic.ListPopupDefaults
 import top.yukonga.miuix.kmp.basic.PopupPositionProvider
-import top.yukonga.miuix.kmp.extra.SuperListPopup
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.extended.More
+import top.yukonga.miuix.kmp.overlay.OverlayListPopup
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 private sealed interface MainPageAction {
@@ -165,8 +165,8 @@ private fun MainPageContent(
     HyperXPage(
         title = stringResource(R.string.page_main),
         navigationIcon = {},
-        actions = { padding ->
-            SuperListPopup(
+        actions = {
+            OverlayListPopup(
                 show = showTopPopup.value,
                 popupPositionProvider = ListPopupDefaults.ContextMenuPositionProvider,
                 alignment = PopupPositionProvider.Align.TopEnd,
@@ -192,7 +192,6 @@ private fun MainPageContent(
             }
             IconButton(
                 modifier = Modifier
-                    .padding(padding)
                     .padding(end = 21.dp)
                     .size(40.dp),
                 onClick = {
