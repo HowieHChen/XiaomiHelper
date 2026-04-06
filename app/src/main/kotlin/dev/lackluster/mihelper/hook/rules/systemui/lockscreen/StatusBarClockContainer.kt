@@ -30,8 +30,13 @@ object StatusBarClockContainer : YukiBaseHooker() {
     override fun onHook() {
         hasEnable(Pref.Key.SystemUI.LockScreen.KEEP_CLOCK_CONTAINER) {
             clzMiuiKeyguardStatusBarView?.apply {
-                resolve().firstMethodOrNull {
+                resolve().optional().firstMethodOrNull {
                     name = "animateClockContainer"
+                }?.hook {
+                    intercept()
+                }
+                resolve().optional().firstMethodOrNull {
+                    name = "animateKeyguardLeftSideContainer"
                 }?.hook {
                     intercept()
                 }

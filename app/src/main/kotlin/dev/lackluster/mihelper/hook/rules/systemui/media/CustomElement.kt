@@ -94,7 +94,7 @@ object CustomElement : YukiBaseHooker() {
                     name = "startFlipAnimation"
                 }?.hook {
                     before {
-                        val onFlipListener = this.args(2).any()
+                        val onFlipListener = this.args.last()
                         if (onFlipListener != null && metOnFlip != null) {
                             metOnFlip.invoke(onFlipListener)
                             this.result = null

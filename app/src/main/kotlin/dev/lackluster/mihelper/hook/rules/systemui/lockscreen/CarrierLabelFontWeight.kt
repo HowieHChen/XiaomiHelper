@@ -71,7 +71,7 @@ object CarrierLabelFontWeight : YukiBaseHooker() {
                 }.hookAll {
                     after {
                         mCarrierLabel?.copy()?.of(this.instance)?.get<TextView>()?.typeface = typefaceLockScreenCarrierFW
-                        mCarrierTextLayout?.copy()?.of(this.instance)?.let {
+                        mCarrierTextLayout?.copy()?.of(this.instance)?.get()?.let {
                             listOfNotNull(
                                 fldLeftCarrierTextView?.copy()?.of(it)?.get(),
                                 fldRightCarrierTextView?.copy()?.of(it)?.get()

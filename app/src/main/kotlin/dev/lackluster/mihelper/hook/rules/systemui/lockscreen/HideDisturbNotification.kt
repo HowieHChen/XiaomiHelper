@@ -33,7 +33,9 @@ object HideDisturbNotification : YukiBaseHooker() {
                     name = "manuallyDismissed"
                 }
                 resolve().firstMethodOrNull {
-                    name = "updateVisibility"
+                    name {
+                        it.startsWith("updateVisibility")
+                    }
                 }?.hook {
                     before {
                         manuallyDismissed?.copy()?.of(this.instance)?.set(true)
