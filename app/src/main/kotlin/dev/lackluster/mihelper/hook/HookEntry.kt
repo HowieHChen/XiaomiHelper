@@ -48,7 +48,7 @@ class HookEntry : IYukiHookXposedInit {
     }
 
     override fun onHook() = encase {
-        hasEnable(Pref.Key.Module.ENABLED) {
+        hasEnable(Pref.Key.Module.ENABLED, default = true) {
             loadSystem(Android)
             loadApp(Scope.AI_ENGINE, AIEngine)
             loadApp(Scope.BROWSER, Browser)
