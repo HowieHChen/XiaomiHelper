@@ -823,6 +823,7 @@
     <string name="icon_detail_stacked_signal_alpha_fg">填充不透明度</string>
     <string name="icon_detail_stacked_signal_alpha_bg">背景不透明度</string>
     <string name="icon_detail_stacked_signal_alpha_error">无服务不透明度</string>
+    <string name="ui_title_icon_detail_stacked_visibility">图标可见性</string>
     <string name="ui_title_icon_detail_stacked_signal">信号图标</string>
     <string name="icon_detail_stacked_signal_style_single">单卡信号图标风格</string>
     <string name="icon_detail_stacked_signal_style_single_msg">粘贴包含下列四个 ID 的 SVG 代码：\nsignal_1、signal_2、signal_3 和 signal_4。\n\n其中，signal_2 代表第二个信号条。当信号强度为 2 格时，signal_1 和 signal_2 将使用填充不透明度填充，而 signal_3 和 signal_4 将使用背景不透明度填充。</string>

@@ -59,7 +59,7 @@ fun LazyListScope.stackedMobileTabContent(
 
     itemPreferenceGroup(
         key = "STACKED_GENERAL",
-        titleRes = R.string.ui_title_icon_detail_cellular_general,
+        titleRes = R.string.ui_title_icon_detail_stacked_visibility,
     ) {
         DropDownPreference(
             key = Preferences.SystemUI.StatusBar.StackedMobile.STACKED_MOBILE_ICON,

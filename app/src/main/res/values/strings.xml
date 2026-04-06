@@ -797,6 +797,7 @@
     <string name="icon_detail_cellular_hide_speech_hd">Hide Speech HD icon</string>
     <!-- IconDetailPage - Stacked mobile -->
     <string name="ui_title_icon_detail_stacked_general" translatable="false">@string/common_general</string>
+    <string name="ui_title_icon_detail_stacked_visibility">Icon visibility</string>
     <string name="ui_title_icon_detail_stacked_signal">Signal icon</string>
     <string name="icon_detail_stacked_signal_style_single">Signal icon style (single SIM)</string>
     <string name="icon_detail_stacked_signal_style_single_val">Customize single‑SIM signal icon</string>
