@@ -1,46 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Hyper Helper</string>
-    <string name="xposed_desc">Làm cho HyperOS tuyệt vời trở lại!</string>
+    <string name="xposed_desc">Làm cho HyperOS trở nên vĩ đại!</string>
     <string name="about_module">Module này được tạo bởi YukiHookAPI. Tìm hiểu thêm https://github.com/HighCapable/YuKiHookAPI</string>
     <string name="common_default">Mặc định</string>
     <string name="common_current">Hiện tại</string>
     <string name="common_custom">Tuỳ chỉnh</string>
     <string name="common_general">Cài đặt chung</string>
-    <string name="common_invalid_input">Đầu vào không hợp lệ</string>
+    <string name="common_invalid_input">Nhập sai</string>
     <string name="common_range">Phạm vi</string>
     <string name="common_search">Tìm kiếm</string>
     <string name="common_others">Khác</string>
     <string name="common_tap_sleep">Nhấn đúp vào khoảng trống để khoá màn hình</string>
-    <string name="common_disabled">Vô hiệu hoá</string>
-    <string name="common_enabled">Kích hoạt</string>
+    <string name="common_disabled">Tắt</string>
+    <string name="common_enabled">Bật</string>
     <string name="common_on">Bật</string>
     <string name="common_off">Tắt</string>
     <string name="button_cancel">Huỷ</string>
     <string name="button_ok">OK</string>
     <string name="button_clear">Xoá</string>
-    <string name="button_enable">Kích hoạt</string>
-    <string name="button_disable">Vô hiệu hoá</string>
+    <string name="button_enable">Bật</string>
+    <string name="button_disable">Tắt</string>
     <string name="button_ignore">Bỏ qua</string>
     <string name="dialog_done">Xong</string>
     <string name="dialog_warning">Cảnh báo</string>
     <string name="dialog_error">Lỗi</string>
-    <string name="page_main" translatable="false">@string/app_name</string>
+    <string name="page_main" translatable="false">\@string/app_name</string>
     <string name="page_dev_ui_test">Kiểm tra phần tử UI</string>
     <string name="page_about">Thông tin module</string>
     <string name="page_menu">Menu</string>
-    <string name="page_virtual_media_control_style" translatable="false">@string/systemui_notif_media_control_style_tips</string>
-    <string name="page_virtual_home_refactor" translatable="false">@string/home_exclusive_refactor</string>
+    <string name="page_virtual_media_control_style" translatable="false">\@string/systemui_notif_media_control_style_tips</string>
+    <string name="page_virtual_home_refactor" translatable="false">\@string/home_exclusive_refactor</string>
     <string name="page_module">Cài đặt module</string>
-    <string name="page_systemui" translatable="false">@string/scope_systemui</string>
+    <string name="page_systemui" translatable="false">\@string/scope_systemui</string>
     <string name="page_android">Android Framework</string>
-    <string name="page_miui_home" translatable="false">@string/scope_miui_home</string>
+    <string name="page_miui_home" translatable="false">\@string/scope_miui_home</string>
     <string name="page_cleaner">Trình dọn dẹp</string>
-    <string name="page_security_center" translatable="false">@string/scope_security_center</string>
-    <string name="page_security_center_pad" translatable="false">@string/scope_security_center_pad</string>
+    <string name="page_security_center" translatable="false">\@string/scope_security_center</string>
+    <string name="page_security_center_pad" translatable="false">\@string/scope_security_center_pad</string>
     <string name="page_interconnection">Kết nối liên thông</string>
-    <string name="page_others" translatable="false">@string/common_others</string>
-    <string name="page_disable_fixed_orientation" translatable="false">@string/android_rotation_disable_fixed_orientation_scope</string>
+    <string name="page_others" translatable="false">\@string/common_others</string>
+    <string name="page_disable_fixed_orientation" translatable="false">\@string/android_rotation_disable_fixed_orientation_scope</string>
     <string name="page_status_bar_clock">Đồng hồ</string>
     <string name="page_status_bar_icon_tuner">Chỉnh sửa biểu tượng</string>
     <string name="page_status_bar_icon_detail">Tuỳ chỉnh biểu tượng</string>
@@ -48,7 +48,7 @@
     <string name="page_status_bar_stacked_mobile">Tuỳ chỉnh tín hiệu mạng hàng kép</string>
     <string name="page_status_bar_font">Phông chữ</string>
     <string name="page_media_control_style">Kiểu điều khiển phương tiện</string>
-    <string name="page_home_refactor" translatable="false">@string/home_exclusive_refactor</string>
+    <string name="page_home_refactor" translatable="false">\@string/home_exclusive_refactor</string>
     <string name="page_minus_blur">Hiệu ứng làm mờ của Trợ lý cá nhân</string>
     <string name="scope_ai_engine">Xiaomi HyperAI Engine</string>
     <string name="scope_android">Hệ thống</string>
@@ -75,7 +75,7 @@
     <string name="scope_screenshot">Ảnh chụp màn hình</string>
     <string name="scope_search">Tìm kiếm</string>
     <string name="scope_security_center">Bảo mật</string>
-    <string name="scope_security_center_pad">@string/scope_security_center</string>
+    <string name="scope_security_center_pad">\@string/scope_security_center</string>
     <string name="scope_settings">Cài đặt</string>
     <string name="scope_systemui">Giao diện hệ thống</string>
     <string name="scope_taplus">Taplus</string>
@@ -98,8 +98,8 @@
     <string name="search_engine_sogou">Sogou</string>
     <string name="search_engine_bing">Bing</string>
     <string name="search_engine_google">Google</string>
-    <string name="search_engine_custom" translatable="false">@string/common_custom</string>
-    <string name="search_engine_custom_url">Công cụ tìm kiếm tuỳ chỉnh</string>
+    <string name="search_engine_custom" translatable="false">\@string/common_custom</string>
+    <string name="search_engine_custom_url">Tuỳ chỉnh công cụ tìm kiếm</string>
     <string name="search_engine_custom_url_toast">URL phải chứa \"%s\"</string>
     <string name="share_center">Xiaomi Smart Hub</string>
     <string name="floating_window">Cửa sổ tự do (Freeform)</string>
@@ -121,7 +121,7 @@
     <string name="menu_reboot_common_message">Bạn có chắc chắn muốn khởi động lại %s không?</string>
     <string name="menu_reboot_error_toast">Khởi động lại thất bại! Vui lòng cấp quyền root cho ứng dụng này và thử lại.</string>
     <string name="menu_reboot_done_toast">Tất cả các ứng dụng mục tiêu đã được khởi động lại</string>
-    <string name="ui_title_menu_others" translatable="false">@string/common_others</string>
+    <string name="ui_title_menu_others" translatable="false">\@string/common_others</string>
     <string name="menu_shortcut_lsposed" translatable="false">LSPosed</string>
     <string name="about_jump_error_toast">Đã xảy ra một số lỗi không xác định</string>
     <string name="about_easter_egg_toast">Bạn đã nhấn nhưng không có gì xảy ra</string>
@@ -134,7 +134,7 @@
     <string name="ui_title_about_developer">Nhà phát triển</string>
     <string name="about_author" translatable="false">HowieHChen</string>
     <string name="about_author_tips">Không có hồ sơ hoặc chữ ký</string>
-    <string name="ui_title_about_others" translatable="false">@string/common_others</string>
+    <string name="ui_title_about_others" translatable="false">\@string/common_others</string>
     <string name="about_translate">Dịch thuật</string>
     <string name="about_translate_tips">Giúp chúng tôi dịch ứng dụng này sang ngôn ngữ của bạn</string>
     <string name="about_donate">Quyên góp</string>
@@ -145,18 +145,18 @@
     <string name="about_telegram_tips">Tham gia kênh Telegram để phản hồi và nhận các bản cập nhật nội bộ.</string>
     <string name="ui_title_about_reference">Tài liệu tham khảo</string>
     <string name="ui_title_about_dev_options">Tuỳ chọn nhà phát triển</string>
-    <string name="ui_title_module_general" translatable="false">@string/common_general</string>
+    <string name="ui_title_module_general" translatable="false">\@string/common_general</string>
     <string name="module_main_switch">Kích hoạt module</string>
     <string name="module_lite_mode">Chế độ thu gọn (Lite mode)</string>
     <string name="module_lite_mode_tips">Chỉ tải các chức năng cốt lõi</string>
     <string name="module_dexkit_cache">Lưu bộ nhớ đệm kết quả DexKit</string>
     <string name="module_dexkit_cache_tips">Sử dụng bộ nhớ đệm giúp giảm tác động tiêu cực đến hiệu suất nhưng sẽ tạo ra tệp bộ nhớ đệm trong thư mục ứng dụng gốc. Khi tắt tính năng này, tệp bộ nhớ đệm sẽ bị xóa vào lần khởi động tiếp theo của ứng dụng gốc (nếu có).</string>
     <string name="module_hide_icon">Ẩn biểu tượng ở Màn hình chính</string>
-    <string name="module_skip_root_check">Tắt kiểm tra quyền root</string>
+    <string name="module_skip_root_check">Tắt kiểm tra root</string>
     <string name="module_skip_root_check_tips">Có hiệu lực sau khi khởi động lại ứng dụng</string>
     <string name="module_show_in_settings">Hiển thị biểu tượng trong Cài đặt</string>
     <string name="module_settings_icon_style">Kiểu biểu tượng trong Cài đặt</string>
-    <string name="module_settings_icon_style_default" translatable="false">@string/common_default</string>
+    <string name="module_settings_icon_style_default" translatable="false">\@string/common_default</string>
     <string name="module_settings_icon_style_android">Android</string>
     <string name="module_settings_icon_color">Màu biểu tượng trong Cài đặt</string>
     <string name="module_settings_icon_color_gray">Xám</string>
@@ -168,8 +168,8 @@
     <string name="module_settings_name">Tên hiển thị trong Cài đặt</string>
     <string name="module_settings_name_helper" translatable="false">Hyper Helper</string>
     <string name="module_settings_name_advanced">Cài đặt nâng cao</string>
-    <string name="module_settings_name_custom" translatable="false">@string/common_custom</string>
-    <string name="module_settings_custom_name">Tiêu đề mục nhập tuỳ chỉnh</string>
+    <string name="module_settings_name_custom" translatable="false">\@string/common_custom</string>
+    <string name="module_settings_custom_name">Nhập tiêu đề tuỳ chỉnh</string>
     <string name="ui_title_module_ui">Giao diện và hiển thị</string>
     <string name="module_ui_blur">Hiệu ứng làm mờ</string>
     <string name="module_ui_blur_tint_alpha_light">Độ mờ của màu phủ trong Chế độ sáng</string>
@@ -191,16 +191,16 @@
     <string name="module_reset_failure">Đặt lại thất bại.</string>
     <string name="module_unknown_failure">Lỗi không xác định</string>
     <string name="ui_title_systemui_statusbar">Thanh trạng thái</string>
-    <string name="systemui_statusbar_font" translatable="false">@string/page_status_bar_font</string>
-    <string name="systemui_statusbar_clock" translatable="false">@string/page_status_bar_clock</string>
-    <string name="systemui_statusbar_icon_tuner" translatable="false">@string/page_status_bar_icon_tuner</string>
-    <string name="systemui_statusbar_icon_detail" translatable="false">@string/page_status_bar_icon_detail</string>
+    <string name="systemui_statusbar_font" translatable="false">\@string/page_status_bar_font</string>
+    <string name="systemui_statusbar_clock" translatable="false">\@string/page_status_bar_clock</string>
+    <string name="systemui_statusbar_icon_tuner" translatable="false">\@string/page_status_bar_icon_tuner</string>
+    <string name="systemui_statusbar_icon_detail" translatable="false">\@string/page_status_bar_icon_detail</string>
     <string name="systemui_statusbar_notif_count">Tuỳ chỉnh số lượng thông báo tối đa để hiển thị</string>
     <string name="systemui_statusbar_notif_count_icon">Số lượng biểu tượng thông báo tối đa trên thanh trạng thái</string>
-    <string name="systemui_statusbar_tap_to_sleep" translatable="false">@string/common_tap_sleep</string>
+    <string name="systemui_statusbar_tap_to_sleep" translatable="false">\@string/common_tap_sleep</string>
     <string name="systemui_statusbar_region_sampling">Lấy mẫu khu vực</string>
     <string name="systemui_statusbar_region_sampling_tips">Lấy mẫu màu khu vực thanh trạng thái và tự động điều chỉnh chế độ sáng/tối dựa trên màu nền</string>
-    <string name="systemui_statusbar_region_sampling_def" translatable="false">@string/common_default</string>
+    <string name="systemui_statusbar_region_sampling_def" translatable="false">\@string/common_default</string>
     <string name="systemui_statusbar_region_sampling_def_tips">Chỉ kích hoạt ở chế độ tối</string>
     <string name="systemui_statusbar_region_sampling_enable">Bắt buộc kích hoạt</string>
     <string name="systemui_statusbar_region_sampling_enable_tips">Luôn kích hoạt; điều này có thể gây ra hiện tượng nhấp nháy thường xuyên trên thanh trạng thái.</string>
@@ -211,9 +211,9 @@
     <string name="systemui_lock_hide_disturb">Ẩn thông báo thường trú của chế độ Không làm phiền (DND)</string>
     <string name="systemui_lock_keep_notif">Giữ lại thông báo sau khi mở khoá</string>
     <string name="systemui_lock_keep_notif_tips">Các thông báo sẽ luôn hiển thị trên Màn hình khoá cho đến khi bị xoá thủ công.</string>
-    <string name="systemui_lock_double_tap" translatable="false">@string/common_tap_sleep</string>
+    <string name="systemui_lock_double_tap" translatable="false">\@string/common_tap_sleep</string>
     <string name="systemui_lock_block_editor">Tắt tính năng nhấn giữ để truy cập trình chỉnh sửa Màn hình khoá</string>
-    <string name="systemui_lock_block_editor_tips">Bạn có thể chỉnh sửa Màn hình khoá tại Cài đặt > Hình nền và cá nhân hoá</string>
+    <string name="systemui_lock_block_editor_tips">Bạn có thể chỉnh sửa Màn hình khoá tại Cài đặt &gt; Hình nền và cá nhân hoá</string>
     <string name="systemui_lock_flashlight_on">Tự động bật đèn pin</string>
     <string name="systemui_lock_flashlight_on_tips">Tự động bật đèn pin khi mở giao diện điều chỉnh đèn pin từ phím tắt trên Màn hình khoá.</string>
     <string name="systemui_lock_keep_clock_container">Luôn hiển thị phần đầu của thanh trạng thái</string>
