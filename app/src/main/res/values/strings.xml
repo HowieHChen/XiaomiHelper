@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">Hyper Helper</string>
     <string name="xposed_desc">Make HyperOS Great Again!</string>
-    <string name="about_module">This module is made by YukiHookAPI. Learn more https://github.com/HighCapable/YuKiHookAPI</string>
     <string name="common_default">Default</string>
     <string name="common_current">Current</string>
     <string name="common_custom">Custom</string>
@@ -29,7 +28,6 @@
     <string name="page_about">About module</string>
     <string name="page_menu">Menu</string>
     <string name="page_virtual_media_control_style" translatable="false">@string/systemui_notif_media_control_style_tips</string>
-    <string name="page_virtual_home_refactor" translatable="false">@string/home_exclusive_refactor</string>
     <string name="page_module">Module settings</string>
     <string name="page_systemui" translatable="false">@string/scope_systemui</string>
     <string name="page_android">Android Framework</string>
@@ -37,18 +35,13 @@
     <string name="page_cleaner">Clean master</string>
     <string name="page_security_center" translatable="false">@string/scope_security_center</string>
     <string name="page_security_center_pad" translatable="false">@string/scope_security_center_pad</string>
-    <string name="page_interconnection">Interconnectivity</string>
     <string name="page_others" translatable="false">@string/common_others</string>
-    <string name="page_disable_fixed_orientation" translatable="false">@string/android_rotation_disable_fixed_orientation_scope</string>
     <string name="page_status_bar_clock">Clock</string>
     <string name="page_status_bar_icon_tuner">Icon tuner</string>
     <string name="page_status_bar_icon_detail">Icon customizer</string>
     <string name="page_status_bar_icon_order">Customize icon order</string>
-    <string name="page_status_bar_stacked_mobile">Dual‑row signal customizer</string>
     <string name="page_status_bar_font">Font</string>
     <string name="page_media_control_style">Media control style</string>
-    <string name="page_home_refactor" translatable="false">@string/home_exclusive_refactor</string>
-    <string name="page_minus_blur">Blur effect of Personal assistant</string>
     <string name="scope_ai_engine">Xiaomi HyperAI Engine</string>
     <string name="scope_android">System</string>
     <string name="scope_browser">Mi Browser</string>
@@ -100,9 +93,6 @@
     <string name="search_engine_custom" translatable="false">@string/common_custom</string>
     <string name="search_engine_custom_url">Custom search engine</string>
     <string name="search_engine_custom_url_toast">The URL must contain \"%s\"</string>
-    <string name="share_center">Xiaomi Smart Hub</string>
-    <string name="floating_window">Freeform</string>
-    <string name="new_task">New task</string>
     <!-- MainPage -->
     <string name="main_module_inactive_dialog_lsposed" translatable="false">LSPosed</string>
     <string name="main_module_inactive_tips">The module isn\'t enabled. Please check the LSPosed version and module activation information and try again.</string>
@@ -122,7 +112,6 @@
     <string name="menu_reboot_common_message">Are you sure you want to reboot the %s?</string>
     <string name="menu_reboot_error_toast">Reboot failed! Please grant root permission to this app and try again.</string>
     <string name="menu_reboot_done_toast">All target apps have been restarted</string>
-    <string name="ui_title_menu_others" translatable="false">@string/common_others</string>
     <string name="menu_shortcut_lsposed" translatable="false">LSPosed</string>
     <!-- AboutPage -->
     <string name="about_jump_error_toast">Some strange errors have occurred</string>
@@ -134,8 +123,6 @@
     <string name="about_yuki">This app is made by YukiHookAPI</string>
     <string name="about_yuki_tips">Learn more https://github.com/HighCapable/YuKiHookAPI</string>
     <string name="ui_title_about_developer">Developer</string>
-    <string name="about_author" translatable="false">HowieHChen</string>
-    <string name="about_author_tips">No profile or signature</string>
     <string name="ui_title_about_others" translatable="false">@string/common_others</string>
     <string name="about_translate">Translate</string>
     <string name="about_translate_tips">Help us translate the app into your language</string>
@@ -146,12 +133,9 @@
     <string name="about_telegram">Telegram channel</string>
     <string name="about_telegram_tips">Join the Telegram channel to give feedback and get internal updates.</string>
     <string name="ui_title_about_reference">References</string>
-    <string name="ui_title_about_dev_options">Developer options</string>
     <!-- ModuleSettingsPage -->
     <string name="ui_title_module_general" translatable="false">@string/common_general</string>
     <string name="module_main_switch">Enable module</string>
-    <string name="module_lite_mode">Lite mode</string>
-    <string name="module_lite_mode_tips">Only load core functionality</string>
     <string name="module_dexkit_cache">Cache DexKit results</string>
     <string name="module_dexkit_cache_tips">Using caches reduces the negative impact on performance but generates a cache file in the host app directory. When this feature is turned off, the cache file will be cleared the next time the host app starts (if it exists).</string>
     <string name="module_hide_icon">Hide icon in Home screen</string>
@@ -177,7 +161,6 @@
     <string name="module_ui_blur">Blur effect</string>
     <string name="module_ui_blur_tint_alpha_light">Opacity of tinted colors in Light mode</string>
     <string name="module_ui_blur_tint_alpha_dark">Opacity of tinted colors in Dark mode</string>
-    <string name="module_ui_blur_tint_alpha_tips">Opacity should be an integer between 0 and 100, with 0 being the value that represents the highest transparency.</string>
     <string name="module_ui_split">Adaptive layouts</string>
     <string name="module_ui_split_tips">The app will automatically switch to a dual-panel layout on large-screen devices or landscape screens</string>
     <string name="ui_title_module_backup">Backup &amp; restore</string>
@@ -189,10 +172,8 @@
     <string name="module_backup_failure">Backup failed.</string>
     <string name="module_restore_success">Preferences have been restored from the file.</string>
     <string name="module_restore_failure">Restore failed. Please check the backup file.</string>
-    <string name="module_restore_failure_spversion">Backup file version mismatch (too high)</string>
     <string name="module_reset_success">All preferences have been restored to default settings.</string>
     <string name="module_reset_failure">Reset failed.</string>
-    <string name="module_unknown_failure">Unknown error</string>
     <!-- SystemUIPage -->
     <string name="ui_title_systemui_statusbar">Status bar</string>
     <string name="systemui_statusbar_font" translatable="false">@string/page_status_bar_font</string>
@@ -211,13 +192,10 @@
     <string name="systemui_statusbar_region_sampling_disable">Force disable</string>
     <string name="systemui_statusbar_region_sampling_disable_tips">Always disabled; may cause incorrect status bar contrast in apps with forced dark mode.</string>
     <string name="ui_title_systemui_lock_screen">Lock screen</string>
-    <string name="systemui_lock_hide_unlock_tip">Hide unlock request at the bottom of the screen</string>
     <string name="systemui_lock_hide_disturb">Hide Do Not Disturb mode resident notifications</string>
     <string name="systemui_lock_keep_notif">Keep notifications after unlocking</string>
     <string name="systemui_lock_keep_notif_tips">Notifications will always be displayed on the Lock screen until they\'re manually dismissed.</string>
     <string name="systemui_lock_double_tap" translatable="false">@string/common_tap_sleep</string>
-    <string name="systemui_lock_block_editor">Disable long press to access Lock screen editor</string>
-    <string name="systemui_lock_block_editor_tips">You can edit the Lock screen in Settings > Personalization</string>
     <string name="systemui_lock_flashlight_on">Turn on the flashlight automatically</string>
     <string name="systemui_lock_flashlight_on_tips">Automatically turn on the flashlight when opening the flashlight adjustment interface from the Lock screen shortcut.</string>
     <string name="systemui_lock_keep_clock_container">Always show the start of the status bar</string>
@@ -228,23 +206,12 @@
     <string name="systemui_lock_hide_carrier_two" translatable="false">@string/systemui_control_hide_carrier_two</string>
     <string name="systemui_lock_force_color_scheme_statusbar" translatable="false">@string/home_others_force_color_scheme_statusbar</string>
     <string name="ui_title_systemui_notification_center">Notification shade</string>
-    <string name="systemui_notif_redirect_settings">Redirect notification settings</string>
-    <string name="systemui_notif_redirect_settings_tips">When you open the notification settings, it navigates to the corresponding notification channel settings instead of the app notification settings.</string>
-    <string name="systemui_notif_redirect_dialog">Show pop-up when opening notification settings</string>
-    <string name="systemui_notif_redirect_dialog_tips">Use the pop-up window to choose whether to turn on the app notification settings or the notification channel settings</string>
-    <string name="systemui_notif_redirect_dialog_negative_default">App settings</string>
-    <string name="systemui_notif_redirect_dialog_positive_default">Channel settings</string>
     <string name="systemui_notif_disable_whitelist">Disable notification whitelist</string>
     <string name="systemui_notif_disable_whitelist_tips">Too many notifications may cause lag on the lock screen</string>
     <string name="systemui_notif_suppress_fold">Disable notification folding</string>
     <string name="systemui_notif_suppress_fold_tips">Prevent the system from grouping notifications into \"More notifications\"</string>
     <string name="systemui_notif_freeform">Allow most notifications to open in a small window</string>
     <string name="systemui_notif_freeform_tips">Pull down notifications to open small windows. Some notifications pushed via Mi Push may not be supported.</string>
-    <string name="systemui_notif_clock_color_fix">Fix clock color anomaly in animation</string>
-    <string name="systemui_notif_clock_color_fix_tips">Fix color anomaly in clock dropdown animation when using theme</string>
-    <string name="systemui_notif_clock_anim">Force enable the transition animation of the clock</string>
-    <string name="systemui_notif_clock_anim_tips">Allow clock transition animation in landscape</string>
-    <string name="systemui_notif_theme_blur">Allow Advanced textures to be enabled when using themes</string>
     <string name="systemui_notif_media_control_style" translatable="false">@string/page_media_control_style</string>
     <string name="systemui_notif_media_control_style_tips">Customize the style of the media control in the notification shade</string>
     <string name="systemui_notif_expand_notif">Expand notifications</string>
@@ -285,13 +252,7 @@
     <string name="systemui_others_monet_overlay_tips">Customize theme colors instead of fetching colors from system wallpaper</string>
     <string name="systemui_others_monet_color">Theme color</string>
     <string name="systemui_others_monet_color_tips">This color will affect all apps that use dynamic color schemes</string>
-    <string name="systemui_others_monet_color_msg">Hex color code starting with # \n(e.g. #FF123456, #FF00FF)</string>
     <!-- MiuiHomePage -->
-    <string name="ui_title_home_exclusive">Exclusive feature</string>
-    <string name="home_exclusive_refactor">Advanced blur effects</string>
-    <string name="home_exclusive_refactor_tips">New interactive experiences at the cost of performance and power consumption</string>
-    <string name="home_exclusive_refactor_dialog_title" translatable="false">@string/dialog_warning</string>
-    <string name="home_exclusive_refactor_dialog_msg">!!EXPERIMENTAL FEATURES!!\n\nThis feature refactors the launcher based on Advanced textures, please make sure your device supports Advanced textures.\n\nIf you turn it on, you will be exposed to risks including, but not limited to, power consumption, frame drops, jank, and even crashes.\n\nMake sure you aren\'t using a modified launcher and have disabled any other modules related to launcher blurring and animation.</string>
     <string name="ui_title_home_gesture">Gesture</string>
     <string name="home_gesture_back_haptic">Back gesture haptic feedback</string>
     <string name="home_gesture_back_haptic_default" translatable="false">@string/common_default</string>
@@ -301,20 +262,11 @@
     <string name="home_gesture_back_haptic_disabled" translatable="false">@string/common_disabled</string>
     <string name="home_gesture_fix_predictive_back">Fix predictive back progress error</string>
     <string name="home_gesture_fix_predictive_back_tips">HyperOS has broken the predictive back behavior, causing the swipe distance requirement to be too short. When enabled, it restores the AOSP behavior. This option can only fix the progress error of predictive back and cannot recover scenarios where predictive back is completely broken.</string>
-    <string name="home_gesture_quick_switch">Enhanced back gesture</string>
-    <string name="home_gesture_quick_switch_tips">In the back gesture, a long swipe will trigger a specific function.</string>
-    <string name="home_gesture_quick_switch_left">Left enhanced back gesture function</string>
-    <string name="home_gesture_quick_switch_right">Right enhanced back gesture function</string>
-    <string name="home_gesture_quick_switch_previous_app">Previous app</string>
     <string name="home_gesture_line_long_press">Long press on the full screen indicator</string>
     <string name="home_gesture_line_long_press_tips">Long press on the full screen indicator to trigger a specific function.</string>
     <string name="home_gesture_line_double_tap">Double tap on the full screen indicator</string>
     <string name="home_gesture_line_double_tap_tips">Double tap on the full screen indicator to trigger a specific function.</string>
     <string name="ui_title_home_anim">Animation</string>
-    <string name="home_anim_unlock">Optimize unlocking animation</string>
-    <string name="home_anim_unlock_tips">Optimize the animation of the icon when unlocking</string>
-    <string name="home_anim_zoom_sync">Synchronize wallpaper zoom with app launch</string>
-    <string name="home_anim_zoom_sync_tips">Prevents a situation where the app isn\'t launched but the wallpaper is zoomed. Will make the app launch look slower and isn\'t recommended to be enabled.</string>
     <string name="home_anim_icon_zoom">Disable zoom animation on icon click</string>
     <string name="home_anim_icon_darken">Disable dim animation on icon click</string>
     <string name="home_anim_folder_zoom">Disable zoom animation on folder click</string>
@@ -322,49 +274,15 @@
     <string name="ui_title_home_folder">Folder</string>
     <string name="home_folder_adapt_icon_size">Adaptive icon size in large folders</string>
     <string name="home_folder_adapt_icon_size_tips">When a large folder (3x3 or 2x2) is just filled with icons (number of 9 or 4), the last icon is also a large icon.</string>
-    <string name="home_folder_layout_fix">Utilizes the entire folder view width</string>
-    <string name="home_folder_layout_size">Number of columns of icons in the folder</string>
-    <string name="home_folder_advanced_textures" translatable="false">@string/systemui_notif_theme_blur</string>
-    <string name="ui_title_home_icon">Icon</string>
-    <string name="home_icon_unblock_google">Unblock icons for Google apps</string>
-    <string name="home_icon_perfect_icon">Force enable perfect icons</string>
-    <string name="home_icon_perfect_icon_tips">Lower the priority will lower the priority of using the app\'s own icons</string>
-    <string name="home_icon_corner4large">Uniform corner radius for large icons</string>
-    <string name="home_icon_corner4large_tips">Capsule shape icons will become rounded rectangle icons</string>
     <string name="ui_title_home_recent">Recent tasks</string>
     <string name="home_recent_dismiss_anim">Modify card animation when dismissing recent tasks</string>
-    <string name="home_recent_hide_status_bar">Hide the status bar</string>
-    <string name="home_recent_hide_status_bar_tips">Hide the status bar in Recents</string>
     <string name="home_recent_hide_clear_all">Hide Clear all button</string>
     <string name="home_recent_mem_info_clear">Long click on memory info to clear all</string>
     <string name="home_recent_show_real_memory">Show real memory usage</string>
-    <string name="home_recent_wallpaper_darken">Stop reducing the brightness of wallpaper</string>
-    <string name="home_recent_wallpaper_darken_tips">Stop the automatic reduction of the wallpaper\'s brightness when entering the recent tasks view</string>
-    <string name="home_recent_dock_time">Holding time for calling out the dock</string>
-    <string name="home_recent_dock_time_tips">Values greater than 1000 milliseconds are not recommended</string>
-    <string name="home_recent_docke_safe_height">Height threshold for calling out the dock</string>
-    <string name="home_recent_docke_safe_height_tips">The dock will only be called out if the height of the slide is less than this threshold</string>
-    <string name="ui_title_home_widget">Widget</string>
-    <string name="home_widget_anim">Add startup animation to all widgets</string>
-    <string name="home_widget_resizable">Make all Android widgets resizable</string>
-    <string name="ui_title_home_shortcut">Shortcut</string>
-    <string name="home_shortcut_freeform">Add "Floating window" shortcut</string>
-    <string name="home_shortcut_instance">Add "Multiple instance" shortcut</string>
-    <string name="ui_title_home_personal_asist">Personal assistant</string>
-    <string name="home_minus_blur_type">Personal assistant background</string>
-    <string name="home_minus_blur_type_def" translatable="false">@string/common_default</string>
-    <string name="home_minus_blur_type_sys">Legacy blurred background</string>
-    <string name="home_minus_blur_type_texture">Advanced textures</string>
-    <string name="home_minus_fold_style">Overlapped mode</string>
-    <string name="home_minus_page_minus_blur" translatable="false">@string/page_minus_blur</string>
-    <string name="home_minus_blur">Enable blur for background</string>
     <string name="ui_title_home_cleaner" translatable="false">@string/page_cleaner</string>
     <string name="home_cleaner_remove_report">Remove the \"Report\" button from the uninstall app pop-up window</string>
     <string name="ui_title_home_others" translatable="false">@string/common_others</string>
     <string name="home_others_dock_remove_num_limit">Remove the icon limit from the dock</string>
-    <string name="home_others_always_show_clock">Always show time in status bar</string>
-    <string name="home_others_fake_premium">Disguised as a high-end model</string>
-    <string name="home_others_fake_premium_tips">Remove model restrictions on some features</string>
     <string name="home_others_show_minus_setting">Restore Personal assistant settings</string>
     <string name="home_others_hide_fake_navbar">Hide the fake full screen indicator</string>
     <string name="home_others_hide_fake_navbar_tips">Hide the fake full screen indicator on the horizontal Recents screen</string>
@@ -375,7 +293,6 @@
     <string name="home_others_force_color_scheme_minus">Personal assistant color</string>
     <string name="home_others_force_color_scheme_minus_tips">Specify the color of the status bar text and icons for the Personal assistant (ignore wallpaper color). Requires enabling \"Disable Smart dark\" on the System UI page.</string>
     <!-- CleanMasterPage -->
-    <string name="cleaner_compatibility_tips">Most of the features on this page are designed for users located in Chinese mainland.\nPlease note that music-related features are exclusive to users with music membership accounts.\nWe recommend using the app versions below, which have been tested and verified for compatibility.</string>
     <string name="cleaner_common_ad_blocker">Ad blocker</string>
     <string name="cleaner_common_restart_app">Restart %1$s</string>
     <string name="cleaner_common_version_info">Validated version: %1$s\nInstalled version: %2$s</string>
@@ -480,28 +397,10 @@
     <string name="android_freeform_restriction_tips">Ignore system blacklists and software\'s own disabling of small windows</string>
     <string name="android_freeform_allow_more">Allow more floating windows</string>
     <string name="android_freeform_allow_more_tips">Modify the maximum number of floating to 255 to allow more floating windows to be open at the same time.</string>
-    <string name="android_freeform_multi_task">Allow multiple instances of the same app</string>
-    <string name="android_freeform_hide_topbar">Hide top window control bar</string>
-    <string name="ui_title_android_screen_rotation">Screen rotation</string>
-    <string name="android_rotation_switch_suggestions">Toggle rotation suggestions status</string>
-    <string name="android_rotation_switch_suggestions_tips">Controls whether rotation suggestions are displayed</string>
-    <string name="android_rotation_switch_suggestions_before_true">Currently disabled. Are you sure you want to enable it?</string>
-    <string name="android_rotation_switch_suggestions_done_true">Rotation suggestions enabled</string>
-    <string name="android_rotation_switch_suggestions_before_false">Currently enabled. Are you sure you want to disable it?</string>
-    <string name="android_rotation_switch_suggestions_done_false">Rotation suggestions disabled</string>
-    <string name="android_rotation_switch_suggestions_failed">Failed! Please grant root permission to this app and try again.</string>
-    <string name="android_rotation_disable_fixed_orientation">Disable fixed orientation</string>
-    <string name="android_rotation_disable_fixed_orientation_tips">Disable some apps fixed orientation</string>
-    <string name="android_rotation_disable_fixed_orientation_scope">Disable fixed orientation scope</string>
-    <string name="android_rotation_disable_fixed_orientation_scope_tips">Take effect after reboot</string>
     <string name="ui_title_android_others" translatable="false">@string/common_others</string>
-    <string name="android_others_wallpaper_scale">Wallpaper scale</string>
-    <string name="android_others_wallpaper_scale_tips">Affects the wallpaper zoom animation when launching/exiting apps on the desktop</string>
     <string name="android_others_force_dark">Disable whitelisting of forced Dark mode</string>
     <string name="android_others_force_dark_tips">Make it possible to enable the Forced dark mode feature for most apps, except for system apps, etc.</string>
     <!-- SecurityCenterPage -->
-    <string name="ui_title_security_security" translatable="false">@string/scope_security_center</string>
-    <string name="ui_title_security_security_pad" translatable="false">@string/scope_security_center_pad</string>
     <string name="security_security_skip_warning">Skip the wait time on warnings</string>
     <string name="security_security_skip_warning_tips">Skip wait times when using USB debugging, unknown sources, and accessibility.</string>
     <string name="security_security_skip_open_app">Chain start management</string>
@@ -542,44 +441,18 @@
     <string name="security_lbe_clipboard_toast_tips">Using toast allows the element behind the prompt to be clickable</string>
     <string name="ui_title_security_mi_trust_service" translatable="false">@string/scope_mi_trust</string>
     <string name="mi_trust_disable_risk_check" translatable="false">@string/cleaner_package_skip_risk_check</string>
-    <string name="security_power_do_not_kill_app">Prevent killing background apps</string>
     <string name="security_power_unlock_custom_refresh">Unlock Apps using high refresh rate</string>
     <string name="security_power_block_battery_whitelist">Prevent recovery of battery optimization whitelist</string>
     <string name="security_power_gms_bg_running">Remove restrictions on GMS background running</string>
     <string name="security_power_gms_bg_running_tips">Disguised as an international version of the system, it allows GMS to run in the background, preventing the FCM connection from being interrupted after locking the screen.</string>
-    <string name="security_power_battery_optimization">Battery optimization</string>
-    <string name="security_power_battery_optimization_tips">Open the battery optimization page that is hidden by default</string>
-    <string name="security_power_battery_optimization_failed_toast">Failed to open, probably not supported by the system.</string>
-    <!-- InterconnectionPage -->
-    <string name="ui_title_interconnection_mishare" translatable="false">@string/scope_mi_share</string>
-    <string name="interconnection_mishare_no_auto_off">Disable Xiaomi Share auto-off</string>
     <!-- OthersPage -->
     <string name="ui_title_others_aiengine" translatable="false">@string/scope_ai_engine</string>
     <string name="others_aiengine_copy_link_island_browser">Open copied URL with any browser</string>
     <string name="others_aiengine_copy_link_island_browser_tips">After copying a URL and clicking the Dynamic Island, it can be opened with any browser (instead of only Xiaomi Browser)</string>
-    <string name="ui_title_others_gallery" translatable="false">@string/scope_gallery</string>
-    <string name="others_gallery_unlimited_crop">Unlimited image cropping</string>
-    <string name="others_gallery_path_optim">Optimize recognition of directories</string>
-    <string name="others_gallery_path_optim_tips">Recognize images in \"Pictures/Screenshots\" as screenshots and videos in \"Movies/ScreenRecorder\" as screen recordings, and display them in the corresponding albums.</string>
-    <string name="ui_title_others_joyose" translatable="false">@string/scope_joyose</string>
-    <string name="others_joyose_no_cloud_control">Disable Cloud control</string>
     <string name="ui_title_others_miai" translatable="false">@string/scope_mi_ai</string>
     <string name="others_miai_hide_watermark">Hide beta and AIGC watermarks</string>
     <string name="ui_title_others_mimirror" translatable="false">@string/scope_mi_mirror</string>
     <string name="others_mimirror_all_app">All apps can be opened on another device</string>
-    <string name="others_mimirror_enhance_continue">Allow more apps to be transferred</string>
-    <string name="others_mimirror_enhance_continue_tips">Some apps still cannot be opened on other devices due to the built-in whitelist. To transfer more apps, enable this feature. It requires the generation of a cache file in the host app\'s directory, which may cause a delay if the cache is unavailable. Additionally, the receiving device will also need to have this app installed and this feature enabled.</string>
-    <string name="ui_title_others_package" translatable="false">@string/scope_package_installer</string>
-    <string name="others_package_update_system_app">Remove system app installation restrictions</string>
-    <string name="others_package_update_system_app_tips">Allow any non-system channel to install system apps</string>
-    <string name="others_package_more_info">Show more package information</string>
-    <string name="ui_title_others_screen_recorder" translatable="false">@string/scope_screen_recorder</string>
-    <string name="others_screen_recorder_save_to_movies">Save to a standardized directory</string>
-    <string name="others_screen_recorder_save_to_movies_tips">Save recording to \"Movies/ScreenRecorder\" instead of \"DCIM/ScreenRecorder\"</string>
-    <string name="ui_title_others_screenshot" translatable="false">@string/scope_screenshot</string>
-    <string name="others_screenshot_save_as_png">Saving images in PNG</string>
-    <string name="others_screenshot_save_to_picture">Save to a standardized directory</string>
-    <string name="others_screenshot_save_to_picture_tips">Save screenshots to \"Pictures/Screenshots\" instead of \"DCIM/Screenshots\"</string>
     <string name="ui_title_others_search" translatable="false">@string/scope_search</string>
     <string name="others_search_more_search_engines">Add more search engine options</string>
     <string name="others_search_more_search_engines_tips">Add Bing and Google to Search Engine Options</string>
@@ -606,8 +479,6 @@
     <string name="ui_title_others_settings" translatable="false">@string/scope_settings</string>
     <string name="others_settings_show_google">Show Google settings</string>
     <string name="others_settings_cellular_debug">Cellular network debugging</string>
-    <string name="others_settings_unlock_voip_assistant">Unlock VoIP Assistant</string>
-    <string name="others_settings_unlock_net_mode">Unlock mobile network type settings</string>
     <string name="others_settings_unlock_taplus_for_pad">Unlock Taplus for tablet</string>
     <string name="others_settings_quick_per_overlay">Grant the \"Display over other apps\" permission</string>
     <string name="others_settings_quick_per_install">Grant the \"Install unknown apps\" permission</string>
@@ -626,8 +497,6 @@
     <string name="clock_general_padding_left">Start padding</string>
     <string name="clock_general_padding_right">End padding</string>
     <string name="clock_general_geek">Geek mode</string>
-    <string name="clock_font_tnum">Tabular numerals</string>
-    <string name="clock_font_tnum_tips">Activating the set of figures where numbers are all of the same size, allowing them to be easily aligned like in tables.</string>
     <string name="clock_easy_fixed_width">Fixed TextView width</string>
     <string name="clock_easy_fixed_width_tips">Fixed the width of TextView so that the notification icons don\'t keep changing position when the clock displays seconds.</string>
     <string name="ui_title_clock_geek_mode">Geek mode</string>
@@ -692,7 +561,6 @@
     <string name="icon_tuner_general_order_custom_entry" translatable="false">@string/page_status_bar_icon_order</string>
     <string name="icon_tuner_general_auto_reorder">Auto adjust icon order</string>
     <string name="icon_tuner_general_auto_reorder_tips">Shift hidden icons forward for smoother animation</string>
-    <string name="ui_title_icon_tuner_stacked_mobile" translatable="false">@string/icon_tuner_stacked_mobile_icon</string>
     <string name="icon_tuner_stacked_mobile">Enable dual‑row signal icon</string>
     <string name="icon_tuner_stacked_mobile_tips">Adds new combined signal icon and network type icon</string>
     <string name="icon_tuner_stacked_mobile_icon">Dual‑row signal icon</string>
@@ -702,8 +570,6 @@
     <string name="icon_tuner_single_mobile_sim1">Custom SIM 1 signal icon</string>
     <string name="icon_tuner_single_mobile_sim2">Custom SIM 2 signal icon</string>
     <string name="icon_tuner_single_mobile_summary">Newly added icon, not system‑provided</string>
-    <string name="icon_tuner_stacked_mobile_custom_entry" translatable="false">@string/page_status_bar_stacked_mobile</string>
-    <string name="icon_tuner_hint_stacked_mobile">Please go to the \"Icon customizer\" page to manually hide the original SIM 1 and SIM 2 signal icons. You can also adjust the relative position of the new icons through \"Customize icon order\".</string>
     <string name="ui_title_icon_tuner_network">Network</string>
     <string name="icon_tuner_network_mobile">Mobile network</string>
     <string name="icon_tuner_network_no_sim">No SIM card</string>
@@ -758,7 +624,6 @@
     <string name="icon_tuner_left_extra_blocked_slots">Extra blocklist</string>
     <string name="icon_tuner_left_extra_blocked_slots_tips">Block unexpected extra icons on the start side of the status bar</string>
     <string name="icon_tuner_left_extra_blocked_slots_msg">Some modules may add extra custom status icons. When \"Shift status icon to start\" is enabled, these extra icons might appear on both sides of the status bar. \n\nEnter the slot names of these icons here to prevent them from appearing on the start side. To enter multiple names, separate them with commas (,) such as \"zen,volume\".</string>
-    <string name="icon_tuner_hint_left_icon_order">Please note that the icon order on the start side is the mirror of the order you set!</string>
     <!-- IconDetailPage -->
     <string name="ui_title_icon_detail_cellular">Cellular</string>
     <string name="ui_title_icon_detail_wifi">WLAN</string>
@@ -796,7 +661,6 @@
     <string name="icon_detail_cellular_hide_volte_no_service">Hide VoLTE no-service icon</string>
     <string name="icon_detail_cellular_hide_speech_hd">Hide Speech HD icon</string>
     <!-- IconDetailPage - Stacked mobile -->
-    <string name="ui_title_icon_detail_stacked_general" translatable="false">@string/common_general</string>
     <string name="ui_title_icon_detail_stacked_visibility">Icon visibility</string>
     <string name="ui_title_icon_detail_stacked_signal">Signal icon</string>
     <string name="icon_detail_stacked_signal_style_single">Signal icon style (single SIM)</string>
@@ -836,7 +700,6 @@
     <string name="icon_detail_stacked_large_type_weight">Font weight (Standalone network type)</string>
     <string name="icon_detail_stacked_large_type_vertical_offset">Vertical offset</string>
     <string name="icon_detail_stacked_large_type_vertical_offset_tips">Control the vertical offset of the icon. Positive values move it downward, negative values move it upward.</string>
-
     <!-- IconDetailPage - WLAN -->
     <string name="icon_detail_wifi_hide_standard">Hide WLAN standard</string>
     <string name="icon_detail_wifi_hide_activity">Hide WLAN activity</string>
@@ -899,9 +762,6 @@
     <string name="icon_detail_net_speed_fw_separate">Customize font weight</string>
     <string name="icon_detail_net_speed_fw_separate_weight">Font weight</string>
     <!-- MediaControlStylePage -->
-    <string name="ui_title_media_general" translatable="false">@string/common_general</string>
-    <string name="media_general_squiggly_progress">Use squiggly progress</string>
-    <string name="media_general_hide_app_icon">Hide app icons</string>
     <string name="ui_title_media_bg">Background</string>
     <string name="media_bg_custom">Background style</string>
     <string name="media_bg_custom_default" translatable="false">@string/common_default</string>
@@ -948,14 +808,10 @@
     <string name="media_elm_text_size_title">Title</string>
     <string name="media_elm_text_size_artist">Artist</string>
     <string name="media_elm_text_size_time">Time</string>
-    <string name="media_elm_actions_resize">Prevent action buttons from being scaled</string>
-    <string name="media_elm_actions_resize_tips">The system will forcefully scale down custom action buttons, which may cause problems. However, preventing the system from scaling may cause the buttons to appear larger.</string>
     <string name="media_elm_thumb_style">Thumb style</string>
     <string name="media_elm_thumb_style_default" translatable="false">@string/common_default</string>
     <string name="media_elm_thumb_style_gone">Invisible</string>
     <string name="media_elm_thumb_style_vbar">Vertical bar</string>
-    <string name="media_elm_fix_thumb_crop">Fix thumb incorrectly cropped</string>
-    <string name="media_elm_fix_thumb_crop_tips">Ensure that the thumb is fully visible when it\'s at either end of the progress bar</string>
     <string name="media_elm_prog_style">Progress bar style</string>
     <string name="media_elm_prog_style_default" translatable="false">@string/common_default</string>
     <string name="media_elm_prog_style_custom" translatable="false">@string/common_custom</string>
@@ -964,68 +820,6 @@
     <string name="media_elm_prog_round">Rounded progress bar</string>
     <string name="media_elm_prog_comet">Comet progress bar</string>
     <string name="media_elm_prog_comet_tips">A progress bar with a fading transparency effect, like a comet trailing a small tail.</string>
-    <string name="ui_title_media_others" translatable="false">@string/common_others</string>
     <string name="media_hint_ambient_lighting">The ambient light effect requires high performance and resource usage, which may cause issues such as device overheating. Please enable with caution. If any problems occur, it is recommended to disable this feature.</string>
     <string name="media_hint_advanced_textures">Since Advanced textures have been set as the default background for media controls, the corresponding option has been removed. If you need to adjust the effects of Advanced textures, use a Magisk module or the system theme to modify the blur parameters.</string>
-    <!-- StackedMobileTunerPage -->
-    <string name="ui_title_stacked_icon">Signal icon</string>
-
-    <string name="ui_title_stacked_type" translatable="false">@string/ui_title_icon_detail_stacked_type</string>
-
-    <!-- HomeRefactorPage -->
-    <string name="home_refactor_blur">Blur effect</string>
-    <string name="home_refactor_blur_radius">Blur radius</string>
-    <string name="home_refactor_blur_radius_tips">The larger the value, the better the blurring effect, but it also consumes more performance.</string>
-    <string name="home_refactor_dim">Dim the background</string>
-    <string name="home_refactor_dim_tips">Layer an additional black mask on top of the blur layer</string>
-    <string name="home_refactor_dim_alpha">Opacity of the mask used for dimming</string>
-    <string name="home_refactor_dim_alpha_tips">Set 0 for transparent, set 255 for black.</string>
-    <string name="home_refactor_anim_curve">Animation curve</string>
-    <string name="home_refactor_nonlinear_type">Animation curve type</string>
-    <string name="home_refactor_nonlinear_type_non">Linear</string>
-    <string name="home_refactor_nonlinear_type_dece">Ease out</string>
-    <string name="home_refactor_nonlinear_type_bezier">Cubic Bézier curves</string>
-    <string name="home_refactor_nonlinear_params">Animation parameters</string>
-    <string name="home_refactor_nonlinear_dece_factor">Animation factor</string>
-    <string name="home_refactor_nonlinear_dece_factor_tips">The larger the value the greater the initial rate of change of the animation</string>
-    <string name="home_refactor_nonlinear_bezier_x1">X-coordinate of control point 1</string>
-    <string name="home_refactor_nonlinear_bezier_y1">Y-coordinate of control point 1</string>
-    <string name="home_refactor_nonlinear_bezier_x2">X-coordinate of control point 2</string>
-    <string name="home_refactor_nonlinear_bezier_y2">Y-coordinate of control point 2</string>
-    <string name="ui_title_home_refactor_main">Main switch</string>
-    <string name="ui_title_home_refactor_general" translatable="false">@string/common_general</string>
-    <string name="home_refactor_extra_compatibility">Compatibility mode</string>
-    <string name="home_refactor_extra_compatibility_tips">Try to be compatible with other modules, but compatibility cannot be ensured. Not recommended to be enabled.</string>
-    <string name="home_refactor_walppaper_scale_sync" translatable="false">@string/home_anim_zoom_sync</string>
-    <string name="home_refactor_walppaper_scale_sync_tips">Try enabling wallpaper scaling when it appears abnormal</string>
-    <string name="home_refactor_extra_fix">Additional fixes for missing blur</string>
-    <string name="home_refactor_extra_fix_tips">Forces an animation to be added to avoid blurring not appearing in time on fast swipes. Enable this only if you notice this problem.</string>
-    <string name="home_refactor_fix_small_window">Additional fixes for small window animations</string>
-    <string name="home_refactor_fix_small_window_tips">Force an animation to be added to avoid flickering when dragging the app into a small window, not sure if this has a negative impact for now. Only enable this if you mind this a lot.</string>
-    <string name="home_refactor_minus_blur" translatable="false">@string/page_minus_blur</string>
-    <string name="ui_title_home_refactor_apps">Blur effect of app icons</string>
-    <string name="home_refactor_apps_tips">Used to blur the application. Blurring occurs when launching an app, closing an app, and when in the recent tasks view.</string>
-    <string name="ui_title_home_refactor_folder">Blur effect of folder background</string>
-    <string name="home_refactor_folder_tips">Used to blur the background when opening a folder</string>
-    <string name="ui_title_home_refactor_wallpaper">Blur effect of wallpaper</string>
-    <string name="home_refactor_wallpaper_tips">Used to blur the wallpaper. Blurring occurs while in edit mode.</string>
-    <string name="home_refactor_all_apps_bg">Use blur effect for app drawer background</string>
-    <string name="home_refactor_all_apps_bg_tips">Blur wallpaper when opening app drawer</string>
-    <string name="ui_title_home_refactor_launch">Launcher view</string>
-    <string name="home_refactor_launch_tips">Controls the launcher view behind the recent tasks view.</string>
-    <string name="home_refactor_launch_show">Show launcher view</string>
-    <string name="home_refactor_launch_recents_tips">Show launcher view when in the recent tasks view.</string>
-    <string name="home_refactor_launch_folder_tips">Show launcher view when opening a folder.</string>
-    <string name="home_refactor_launch_minus_tips">Don\'t hide the launcher view when going to the Personal assistant</string>
-    <string name="home_refactor_launch_show_tips">Don\'t hide the launcher view when in the recent tasks view</string>
-    <string name="home_refactor_launch_scale">Launcher view zoom ratio</string>
-    <string name="home_refactor_launch_scale_tips">Affects launcher view scaling in recent tasks view</string>
-    <string name="home_refactor_launch_minus_mode_def" translatable="false">systemui_lock_carrier_text_default</string>
-    <string name="home_refactor_launch_minus_mode_visible" translatable="false">@string/icon_tuner_hide_selection_show_all</string>
-    <string name="home_refactor_launch_minus_mode_overlap">Overlapping</string>
-    <string name="ui_title_home_refactor_minus">Blur effect of Personal assistant background</string>
-    <string name="home_refactor_minus_tips">Used to blur the entire launcher view. Blurring occurs when in the Personal assistant.</string>
-    <string name="home_refactor_minus_overlap_mode">Personal assistant overlap mode</string>
-    <string name="home_refactor_minus_overlap_mode_tips">Make the Personal assistant hover above the launcher</string>
-    <string name="home_refactor_launch_show_minus_tips">Don\'t hide the launcher view when going to the Personal assistant</string>
 </resources>
