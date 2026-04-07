@@ -45,8 +45,10 @@ android {
         applicationId = libs.versions.project.app.packageName.get()
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionName = libs.versions.project.app.versionName.get()
-        versionCode = libs.versions.project.app.versionCode.get().toInt()
+        val envVersionName = System.getenv("CI_VERSION_NAME") ?: libs.versions.project.app.versionName.get()
+        val envVersionCode = System.getenv("CI_VERSION_CODE")?.toIntOrNull() ?: libs.versions.project.app.versionCode.get().toInt()
+        versionName = envVersionName
+        versionCode = envVersionCode
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "BUILD_TIME", "\"" + SimpleDateFormat("yyyyMMddHHmmss").format(System.currentTimeMillis()) + "\"")
         ndk {
@@ -90,6 +92,10 @@ android {
             if (ksPath != null) {
                 signingConfig = signingConfigs.getByName("release")
             }
+        }
+        create("preview") {
+            initWith(getByName("release"))
+            matchingFallbacks += listOf("release")
         }
     }
 }

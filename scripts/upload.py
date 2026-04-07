@@ -65,8 +65,10 @@ def main():
     max_single_size = 50 * 1024 * 1024
     max_request_size = 49 * 1024 * 1024
 
+    main_build_type = os.environ.get('MAIN_BUILD_TYPE', 'release').strip()
+
     paths = {
-        'release': get_apk('./app/build/outputs/apk/release'),
+        main_build_type: get_apk(f'./app/build/outputs/apk/{main_build_type}'),
         'debug': get_apk('./app/build/outputs/apk/debug')
     }
 
@@ -89,10 +91,10 @@ def main():
     print(f"INFO: Checking total file size for {list(valid_uploads.keys())}")
 
     if len(valid_uploads) == 2:
-        total_size = os.path.getsize(valid_uploads['release']) + os.path.getsize(valid_uploads['debug'])
+        total_size = os.path.getsize(valid_uploads[main_build_type]) + os.path.getsize(valid_uploads['debug'])
         if total_size > max_request_size:
             print(f"WARNING: Total file size ({total_size/1024/1024:.2f}MB) exceeds the 49MB safe upload limit")
-            print("INFO: Discarding debug package to ensure release package is uploaded")
+            print(f"INFO: Discarding debug package to ensure {main_build_type} package is uploaded")
             del valid_uploads['debug']
 
     print(f"INFO: Preparing to upload {list(valid_uploads.keys())}")
@@ -102,7 +104,7 @@ def main():
         send_document(bot_token, channel_id, valid_uploads[label], safe_caption)
     else:
         media = [
-            {"type": "document", "media": "attach://release", "caption": safe_caption, "parse_mode": "HTML"},
+            {"type": "document", "media": f"attach://{main_build_type}", "caption": safe_caption, "parse_mode": "HTML"},
             {"type": "document", "media": "attach://debug"}
         ]
         cmd = [
@@ -110,7 +112,7 @@ def main():
             f'https://api.telegram.org/bot{bot_token}/sendMediaGroup',
             '--form-string', f'chat_id={channel_id}',
             '--form-string', f'media={json.dumps(media)}',
-            '-F', f'release=@{valid_uploads["release"]}',
+            '-F', f'{main_build_type}=@{valid_uploads[main_build_type]}',
             '-F', f'debug=@{valid_uploads["debug"]}'
         ]
         try:
@@ -125,9 +127,9 @@ def main():
             print(e.stderr.strip())
             print("--- END CURL DEBUG LOG ---")
 
-            print("INFO: Falling back to single file upload for Release package...")
-            if 'release' in valid_uploads:
-                send_document(bot_token, channel_id, valid_uploads['release'], safe_caption)
+            print(f"INFO: Falling back to single file upload for {main_build_type.capitalize()} package...")
+            if main_build_type in valid_uploads:
+                send_document(bot_token, channel_id, valid_uploads[main_build_type], safe_caption)
 
 if __name__ == '__main__':
     main()

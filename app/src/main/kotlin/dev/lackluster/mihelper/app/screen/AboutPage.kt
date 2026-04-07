@@ -206,7 +206,7 @@ private fun AboutPageContent(
                             )
                             Spacer(modifier = Modifier.heightIn(min = 12.dp))
                             Text(
-                                text = "$VERSION_NAME($VERSION_CODE)-$BUILD_TYPE",
+                                text = "$VERSION_NAME($VERSION_CODE)-${BUILD_TYPE.uppercase()}",
                                 fontSize = MiuixTheme.textStyles.body2.fontSize,
                                 color = Color.White.copy(alpha = 0.7f),
                             )

@@ -6,6 +6,12 @@ on:
       - 'v*'
     paths-ignore:
       - 'README**.md'
+  workflow_dispatch:
+    inputs:
+      version_code:
+        description: 'Release Version Code'
+        required: true
+        type: string
 jobs:
   build:
 
@@ -36,19 +42,41 @@ jobs:
     - name: Decode android signing key
       run: echo ${{ secrets.SIGNING_KEY }} | base64 -d > keystore.jks
 
+    - name: Prepare Version and Build Type
+      run: |
+        if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+          VC="${{ inputs.version_code }}"
+          YY=${VC:0:2}
+          MM=${VC:2:2}
+          VN="${YY}.${MM}"
+        
+          echo "CI_VERSION_CODE=$VC" >> $GITHUB_ENV
+          echo "CI_VERSION_NAME=$VN" >> $GITHUB_ENV
+          echo "BUILD_TASKS=assembleRelease" >> $GITHUB_ENV
+          echo "MAIN_BUILD_TYPE=release" >> $GITHUB_ENV
+          echo "INFO: Manual Release Mode - $VN ($VC)"
+        else
+          TAG_NAME=${GITHUB_REF#refs/tags/v}
+          VC=$TAG_NAME
+          YY=${VC:0:2}
+          MM=${VC:2:2}
+          X=${VC:4}
+          VN="${YY}.${MM}.${X}"
+        
+          echo "CI_VERSION_CODE=$VC" >> $GITHUB_ENV
+          echo "CI_VERSION_NAME=$VN" >> $GITHUB_ENV
+          echo "BUILD_TASKS=assembleDebug assemblePreview" >> $GITHUB_ENV
+          echo "MAIN_BUILD_TYPE=preview" >> $GITHUB_ENV
+          echo "INFO: Tag Preview Mode - $VN ($VC)"
+        fi
+
     - name: Build apks
-      run: ./gradlew assembleDebug && ./gradlew assembleRelease
+      run: ./gradlew ${{ env.BUILD_TASKS }}
       env:
         KEYSTORE_PATH: "../keystore.jks"
         KEYSTORE_PWD: ${{ secrets.KEYSTORE_PWD }}
         KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
         KEY_PWD: ${{ secrets.KEY_PWD }}
-        
-    - name: Upload artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: XiaomiHelper-arm64-v8a-${{ env.SHA7 }}
-        path: app/build/outputs/apk/release
 
     - name: Get tags
       id: tag
@@ -59,17 +87,21 @@ jobs:
       run: |
         {
           echo 'CHANGELOG<<EOF'
-          git log --oneline ${{ steps.tag.outputs.previousTag }}..${{ steps.tag.outputs.latestTag }}
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "Stable Release: ${{ env.CI_VERSION_NAME }}"
+          else
+            git log --oneline ${{ steps.tag.outputs.previousTag }}..${{ steps.tag.outputs.latestTag }}
+          fi
           echo EOF
         } >> "$GITHUB_ENV"
 
     - name: Post to Telegram ci channel
-      if: ${{ success() && github.event_name != 'pull_request' && github.ref_type == 'tag' }}
+      if: ${{ success() }}
       env:
         CHANNEL_ID: ${{ secrets.CHANNEL_ID }}
         BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
         COMMIT_MESSAGE: |+
-          Hyper Helper Insider Preview
+          Hyper Helper ${{ env.MAIN_BUILD_TYPE == 'preview' && 'Insider Preview' || 'Stable Release' }}
 
           ```
           ${{ env.CHANGELOG }}
