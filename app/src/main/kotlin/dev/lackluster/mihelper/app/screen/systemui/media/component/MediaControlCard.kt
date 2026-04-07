@@ -41,6 +41,10 @@ fun MediaControlCard(
     isIsland: Boolean = false,
     state: MediaControlState
 ) {
+    val cornerRadius =
+        if (isIsland) 30.dp
+        else if (state.background.notifCornerRadius) 24.dp
+        else 20.dp
     val backgroundStyle = state.background.style
     val blurRadius = state.background.blurRadius
     val allowReverse = state.background.allowReverse
@@ -72,7 +76,7 @@ fun MediaControlCard(
             .height(dimensionResource(R.dimen.media_session_height_expanded))
             .padding(horizontal = 12.dp)
             .padding(top = 12.dp, bottom = 6.dp),
-        shape = if (isIsland) miuixShape(30.dp) else miuixShape(20.dp)
+        shape = miuixShape(cornerRadius)
     ) {
         val backgroundColor: Color
         val textPrimaryColor: Color

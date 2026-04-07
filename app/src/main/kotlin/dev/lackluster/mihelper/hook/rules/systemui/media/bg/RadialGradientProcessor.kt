@@ -2,15 +2,14 @@ package dev.lackluster.mihelper.hook.rules.systemui.media.bg
 
 import android.content.Context
 import android.graphics.drawable.Drawable
-import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.hook.drawable.MediaControlBgDrawable
 import dev.lackluster.mihelper.hook.drawable.RadialGradientDrawable
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.toSquare
 import dev.lackluster.mihelper.hook.rules.systemui.media.data.MediaViewColorConfig
-import dev.lackluster.mihelper.utils.Prefs
 
-class RadialGradientProcessor : BgProcessor {
-    private val useAnim = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.USE_ANIM, true)
+class RadialGradientProcessor(
+    private val useAnim: Boolean = true
+) : BgProcessor {
 
     override fun convertToColorConfig(
         artwork: Drawable,

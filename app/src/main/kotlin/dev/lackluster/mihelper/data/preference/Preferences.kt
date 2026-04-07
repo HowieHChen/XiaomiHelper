@@ -559,6 +559,7 @@ object Preferences {
             }
 
             object NotifCenter {
+                val BG_NOTIF_CORNER = PreferenceKey("media_notif_corner_radius", false)
                 val BG_AMBIENT_LIGHT = PreferenceKey("media_ambient_light", false)
                 val BG_ALWAYS_DARK = PreferenceKey("media_always_dark", false)
 

@@ -39,12 +39,15 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.graphics.drawable.toDrawable
 import com.highcapable.kavaref.KavaRef.Companion.resolve
+import com.highcapable.kavaref.extension.makeAccessible
 import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import com.highcapable.yukihookapi.hook.log.YLog
 import dev.lackluster.mihelper.data.Pref
+import dev.lackluster.mihelper.data.Scope
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.media_bg
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.media_bg_view
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.media_control_bg_radius
+import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.notification_item_bg_radius
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzMiuiIslandMediaViewBinderImpl
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzMiuiMediaViewControllerImpl
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.getMediaViewHolderField
@@ -79,15 +82,30 @@ import dev.lackluster.mihelper.hook.rules.systemui.media.data.PlayerType
 import dev.lackluster.mihelper.utils.HostExecutor
 import dev.lackluster.mihelper.utils.Prefs
 import dev.lackluster.mihelper.utils.factory.getAdditionalInstanceField
+import dev.lackluster.mihelper.utils.factory.getResID
 import dev.lackluster.mihelper.utils.factory.setAdditionalInstanceField
 
 object CustomBackground : YukiBaseHooker() {
     private const val KEY_VIEW_HOLDER_WRAPPER = "KEY_VIEW_HOLDER_WRAPPER"
     // background: 0 -> Default; 1 -> Art; 2 -> Blurred cover; 3 -> AndroidNewStyle; 4 -> AndroidOldStyle;
     private val ncBackgroundStyle = Prefs.getInt(Pref.Key.SystemUI.MediaControl.BACKGROUND_STYLE, 0)
+    private val ncBackgroundAnim = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.USE_ANIM, true)
     private val diBackgroundStyle = Prefs.getInt(Pref.Key.DynamicIsland.MediaControl.BACKGROUND_STYLE, 0)
+    private val diBackgroundAnim = Prefs.getBoolean(Pref.Key.DynamicIsland.MediaControl.USE_ANIM, true)
+
     private var ncProcessor: BgProcessor? = null
     private var diProcessor: BgProcessor? = null
+
+    private val ncUseNotifCornerRadius = Prefs.getBoolean("media_notif_corner_radius", false)
+    private val ncOutlineProvider = object : ViewOutlineProvider() {
+        override fun getOutline(p0: View?, p1: Outline?) {
+            if (p0 == null) return
+            getNotifCenterCornerRadius(p0.context)?.let {
+                p1?.setRoundRect(0, 0, p0.width, p0.height, p0.context.resources.getDimension(it))
+                p0.clipToOutline = true
+            }
+        }
+    }
 
     private val ncPlayerConfig = PlayerConfig()
     private val diPlayerConfig = PlayerConfig()
@@ -108,18 +126,97 @@ object CustomBackground : YukiBaseHooker() {
         loadHooker(AlwaysDark)
         loadHooker(AmbientLight)
         loadHooker(FlipTinyScreen) // Not fully verified
+        onHookCornerRadius()
         if (ncBackgroundStyle !in 1..4 && diBackgroundStyle !in 1..4) return
         loadHooker(MediaControlBgFactory)
         onHookNotificationCenter()
         onHookDynamicIsland()
     }
 
+    private fun getNotifCenterCornerRadius(context: Context): Int? {
+        if (notification_item_bg_radius == 0 || media_control_bg_radius == 0) {
+            notification_item_bg_radius = context.getResID("notification_item_bg_radius", "dimen", Scope.SYSTEM_UI)
+            media_control_bg_radius = context.getResID("media_control_bg_radius", "dimen", Scope.SYSTEM_UI)
+        }
+        return (if (ncUseNotifCornerRadius) notification_item_bg_radius else media_control_bg_radius).takeIf { it != 0 }
+    }
+
+    private fun onHookCornerRadius() {
+        if (ncUseNotifCornerRadius) {
+            val clzNotifiFullAodController = "com.android.systemui.statusbar.notification.fullaod.NotifiFullAodController".toClassOrNull()
+            val fldMediaRadius = clzNotifiFullAodController?.resolve()?.firstFieldOrNull {
+                name = "mMediaRadius"
+            }
+            val fldContext = clzNotifiFullAodController?.resolve()?.firstFieldOrNull {
+                name = "mContext"
+            }
+            "com.android.systemui.statusbar.notification.fullaod.NotifiFullAodController_Factory".toClassOrNull()?.apply {
+                resolve().firstMethodOrNull {
+                    name = "newInstance"
+                }?.hook {
+                    after {
+                        val context = this.args(0).cast<Context>() ?: return@after
+                        val controller = this.result ?: return@after
+                        getNotifCenterCornerRadius(context)?.let {
+                            fldMediaRadius?.copy()?.of(controller)?.set(context.resources.getDimension(it))
+                        }
+                    }
+                }
+            }
+            "com.android.systemui.statusbar.notification.fullaod.NotifiFullAodController$3".toClassOrNull()?.apply {
+                val outer = resolve().firstFieldOrNull {
+                    name = "this$0"
+                }?.self?.apply { makeAccessible() }
+                resolve().firstMethodOrNull {
+                    name = "onDensityOrFontScaleChanged"
+                }?.hook {
+                    after {
+                        val controller = outer?.get(this.instance) ?: return@after
+                        val context = fldContext?.copy()?.of(controller)?.get<Context>() ?: return@after
+                        getNotifCenterCornerRadius(context)?.let {
+                            fldMediaRadius?.copy()?.of(controller)?.set(context.resources.getDimension(it))
+                        }
+                    }
+                }
+            }
+            $$"com.android.systemui.statusbar.notification.mediacontrol.MiuiMediaViewControllerImpl$mediaFullAodListener$1".toClassOrNull()?.apply {
+                val fldOuter = resolve().firstFieldOrNull {
+                    name = $$"this$0"
+                }?.self?.apply { makeAccessible() }
+                val fldHolder = clzMiuiMediaViewControllerImpl?.resolve()?.firstFieldOrNull {
+                    name = "holder"
+                }?.self?.apply { makeAccessible() }
+                resolve().firstMethodOrNull {
+                    name = "updateFullAodAnimState"
+                }?.hook {
+                    after {
+                        val outer = fldOuter?.get(this.instance) ?: return@after
+                        val holder = fldHolder?.get(outer) ?: return@after
+                        val mediaBg = getMediaViewHolderField("mediaBg", false)?.get(holder) as? ImageView ?: return@after
+                        mediaBg.outlineProvider = ncOutlineProvider
+                        mediaBg.clipToOutline = true
+                    }
+                }
+            }
+        }
+    }
+
     private fun onHookNotificationCenter() {
         ncProcessor = when (ncBackgroundStyle) {
-            1 -> CoverArtProcessor()
-            2 -> BlurredCoverProcessor()
-            3 -> RadialGradientProcessor()
-            4 -> LinearGradientProcessor()
+            1 -> CoverArtProcessor(
+                useAnim = ncBackgroundAnim
+            )
+            2 -> BlurredCoverProcessor(
+                blurRadius = Prefs.getInt(Pref.Key.SystemUI.MediaControl.BLUR_RADIUS, 10),
+                useAnim = ncBackgroundAnim
+            )
+            3 -> RadialGradientProcessor(
+                useAnim = ncBackgroundAnim
+            )
+            4 -> LinearGradientProcessor(
+                allowReverse = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.ALLOW_REVERSE, false),
+                useAnim = ncBackgroundAnim
+            )
             else -> return
         }
         clzMiuiMediaViewControllerImpl?.apply {
@@ -178,10 +275,20 @@ object CustomBackground : YukiBaseHooker() {
 
     private fun onHookDynamicIsland() {
         diProcessor = when (diBackgroundStyle) {
-            1 -> CoverArtProcessor()
-            2 -> BlurredCoverProcessor()
-            3 -> RadialGradientProcessor()
-            4 -> LinearGradientProcessor()
+            1 -> CoverArtProcessor(
+                useAnim = diBackgroundAnim
+            )
+            2 -> BlurredCoverProcessor(
+                blurRadius = Prefs.getInt(Pref.Key.DynamicIsland.MediaControl.BLUR_RADIUS, 10),
+                useAnim = diBackgroundAnim
+            )
+            3 -> RadialGradientProcessor(
+                useAnim = diBackgroundAnim
+            )
+            4 -> LinearGradientProcessor(
+                allowReverse = Prefs.getBoolean(Pref.Key.DynamicIsland.MediaControl.ALLOW_REVERSE, true),
+                useAnim = diBackgroundAnim
+            )
             else -> return
         }
         clzMiuiIslandMediaViewBinderImpl?.apply {
@@ -333,6 +440,12 @@ object CustomBackground : YukiBaseHooker() {
             }
         } else {
             mediaBg = getMediaViewHolderField("mediaBg", false)?.get(mMediaViewHolder) as? ImageView ?: return null
+            mediaBg.outlineProvider = ncOutlineProvider
+            mediaBg.clipToOutline = true
+            mediaBg.invalidateOutline()
+            if (ncBackgroundAnim) {
+                mediaBg.setLayerType(View.LAYER_TYPE_HARDWARE, null)
+            }
         }
 
         return MiuiMediaViewHolderWrapper(

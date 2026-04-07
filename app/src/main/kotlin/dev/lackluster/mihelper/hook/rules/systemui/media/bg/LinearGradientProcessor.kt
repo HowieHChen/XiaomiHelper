@@ -5,17 +5,16 @@ import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.scale
-import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.hook.drawable.LinearGradientDrawable
 import dev.lackluster.mihelper.hook.drawable.MediaControlBgDrawable
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.brightness
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.toSquare
 import dev.lackluster.mihelper.hook.rules.systemui.media.data.MediaViewColorConfig
-import dev.lackluster.mihelper.utils.Prefs
 
-class LinearGradientProcessor : BgProcessor {
-    private val allowReverse = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.ALLOW_REVERSE, false)
-    private val useAnim = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.USE_ANIM, true)
+class LinearGradientProcessor(
+    private val allowReverse: Boolean = false,
+    private val useAnim: Boolean = true,
+) : BgProcessor {
 
     override fun convertToColorConfig(
         artwork: Drawable,

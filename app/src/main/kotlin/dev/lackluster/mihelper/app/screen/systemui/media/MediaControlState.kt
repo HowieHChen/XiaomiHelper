@@ -11,8 +11,9 @@ data class MediaBackgroundState(
     val blurRadius: Int = 10,
     val allowReverse: Boolean = false,
     val ambientLightOpt: Boolean = false,
-    val colorAnim: Boolean = false,
+    val useAnim: Boolean = false,
 
+    val notifCornerRadius: Boolean = false,
     val ambientLight: Boolean = false,     // 整合了通知中心的开关和灵动岛的逻辑判断
     val ambientLightType: Int = 0,         // 灵动岛特有
     val alwaysDark: Boolean = false        // 通知中心特有

@@ -55,6 +55,12 @@ fun LazyListScope.backgroundTabContent(
             title = stringResource(R.string.media_bg_custom),
             options = styleOptions,
         )
+        if (!isIsland) {
+            SwitchPreference(
+                key = Preferences.SystemUI.MediaControl.NotifCenter.BG_NOTIF_CORNER,
+                title = stringResource(R.string.media_bg_use_notif_corner_radius),
+            )
+        }
     }
     itemPreferenceGroup(
         key = "BG_STYLE_0_EXT",
@@ -94,8 +100,8 @@ fun LazyListScope.backgroundTabContent(
     ) {
         SwitchPreference(
             key = Preferences.SystemUI.MediaControl.Shared.BG_COLOR_ANIM.get(isIsland),
-            title = stringResource(R.string.media_bg_color_anim),
-            summary = stringResource(R.string.media_bg_color_anim_tips),
+            title = stringResource(R.string.media_bg_use_anim),
+            summary = stringResource(R.string.media_bg_use_anim_tips),
         )
         AnimatedVisibility(state.style == 2) {
             SeekBarPreference(

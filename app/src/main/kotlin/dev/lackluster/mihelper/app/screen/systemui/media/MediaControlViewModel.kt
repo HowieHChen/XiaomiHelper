@@ -42,6 +42,7 @@ private val islandKeys = setOf(
 )
 
 private val normalKeys = setOf(
+    Preferences.SystemUI.MediaControl.NotifCenter.BG_NOTIF_CORNER,
     Preferences.SystemUI.MediaControl.NotifCenter.BG_AMBIENT_LIGHT,
     Preferences.SystemUI.MediaControl.NotifCenter.BG_ALWAYS_DARK,
     Preferences.SystemUI.MediaControl.NotifCenter.ELM_ALBUM_SHADOW,
@@ -97,6 +98,11 @@ class MediaControlViewModel(
     }
 
     private fun loadConfig(isIsland: Boolean): MediaControlState {
+        val useNotifCornerRadius = if (isIsland) {
+            false
+        } else {
+            repo.get(Preferences.SystemUI.MediaControl.NotifCenter.BG_NOTIF_CORNER)
+        }
         val ambientLight = if (isIsland) {
             repo.get(Preferences.SystemUI.MediaControl.DynamicIsland.BG_AMBIENT_LIGHT_TYPE) != 1
         } else {
@@ -112,8 +118,9 @@ class MediaControlViewModel(
             blurRadius = repo.get(Preferences.SystemUI.MediaControl.Shared.BG_BLUR_RADIUS.get(isIsland)),
             allowReverse = repo.get(Preferences.SystemUI.MediaControl.Shared.BG_ALLOW_REVERSE.get(isIsland)),
             ambientLightOpt = repo.get(Preferences.SystemUI.MediaControl.Shared.BG_AMBIENT_LIGHT_OPT.get(isIsland)),
-            colorAnim = repo.get(Preferences.SystemUI.MediaControl.Shared.BG_COLOR_ANIM.get(isIsland)),
+            useAnim = repo.get(Preferences.SystemUI.MediaControl.Shared.BG_COLOR_ANIM.get(isIsland)),
 
+            notifCornerRadius = useNotifCornerRadius,
             ambientLight = ambientLight,
             ambientLightType = ambientLightType,
             alwaysDark = if (isIsland) true else repo.get(Preferences.SystemUI.MediaControl.NotifCenter.BG_ALWAYS_DARK)

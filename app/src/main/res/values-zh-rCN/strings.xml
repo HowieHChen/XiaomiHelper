@@ -329,9 +329,8 @@
     <string name="media_bg_custom">背景风格</string>
     <string name="media_bg_always_dark_tips">忽略系统浅色/深色模式，保持媒体控件为黑色背景白色文字</string>
     <string name="media_bg_ambient_light_opt_tips">使用 Material 3 Monet 颜色系统，并在浅色和深色模式下应用不同的颜色</string>
-    <string name="media_bg_color_anim">颜色动画</string>
-    <string name="media_bg_color_anim_tips">使用动画更新文字颜色</string>
     <string name="media_bg_custom_linear_gradient">线性渐变</string>
+    <string name="media_bg_use_anim_tips">为颜色过渡和大小调整启用动画，可能影响性能！</string>
     <string name="media_bg_blur_radius">模糊半径</string>
     <string name="page_module">模块设置</string>
     <string name="media_bg_auto_color_reverse">自动反色</string>
@@ -691,4 +690,6 @@
     <string name="font_general_path_success">成功导入字体文件</string>
     <string name="font_general_path_failure">文件不存在或无法访问。请检查文件权限和Root权限！</string>
     <string name="font_general_path_path">从路径导入</string>
+    <string name="media_bg_use_anim">动画</string>
+    <string name="media_bg_use_notif_corner_radius">使用通知圆角半径</string>
 </resources>

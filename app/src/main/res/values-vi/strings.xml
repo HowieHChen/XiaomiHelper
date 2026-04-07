@@ -651,8 +651,6 @@
     <string name="media_bg_always_dark_tips">Bỏ qua chế độ sáng/tối của hệ thống và luôn giữ bảng điều khiển phương tiện ở nền đen với chữ trắng.</string>
     <string name="media_bg_ambient_light_opt">Tối ưu hoá việc lấy màu</string>
     <string name="media_bg_ambient_light_opt_tips">Sử dụng hệ thống màu Monet Material 3 và áp dụng các màu sắc khác nhau trong chế độ sáng và tối.</string>
-    <string name="media_bg_color_anim">Hoạt ảnh màu sắc</string>
-    <string name="media_bg_color_anim_tips">Tính năng thử nghiệm. Sử dụng hoạt ảnh chuyển đổi khi thay đổi màu chữ.</string>
     <string name="media_bg_blur_radius">Bán kính làm mờ</string>
     <string name="media_bg_auto_color_reverse">Tự động đảo ngược màu</string>
     <string name="ui_title_media_layout">Bố cục</string>

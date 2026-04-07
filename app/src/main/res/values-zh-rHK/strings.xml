@@ -588,8 +588,6 @@
     <string name="media_bg_always_dark_tips">忽略系統淺色/深色模式，保持媒體控件為黑色背景白色文字。</string>
     <string name="media_bg_ambient_light_opt">優化取色</string>
     <string name="media_bg_ambient_light_opt_tips">使用 Material 3 Monet 顏色系統，並在淺色同深色模式下應用不同的顏色。</string>
-    <string name="media_bg_color_anim">顏色動畫</string>
-    <string name="media_bg_color_anim_tips">使用動畫更新文字顏色。</string>
     <string name="media_bg_blur_radius">模糊半徑</string>
     <string name="media_bg_auto_color_reverse">自動反色</string>
     <string name="ui_title_media_layout">佈局</string>

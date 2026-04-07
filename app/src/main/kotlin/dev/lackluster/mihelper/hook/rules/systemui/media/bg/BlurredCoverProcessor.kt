@@ -7,19 +7,17 @@ import android.graphics.drawable.Drawable
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.drawable.toDrawable
-import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.hook.drawable.MediaControlBgDrawable
 import dev.lackluster.mihelper.hook.drawable.RadialMaskedDrawable
 import dev.lackluster.mihelper.hook.drawable.TransitionDrawable
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.hardwareBlur
 import dev.lackluster.mihelper.hook.rules.systemui.media.data.MediaViewColorConfig
-import dev.lackluster.mihelper.utils.Prefs
 import kotlin.math.max
 
-class BlurredCoverProcessor : BgProcessor {
-    private val blurRadius = Prefs.getInt(Pref.Key.SystemUI.MediaControl.BLUR_RADIUS, 10).coerceIn(1, 20)
-    private val useAnim = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.USE_ANIM, true)
-
+class BlurredCoverProcessor(
+    private val blurRadius: Int = 10,
+    private val useAnim: Boolean = true
+) : BgProcessor {
     override fun convertToColorConfig(
         artwork: Drawable,
         neutral1: List<Int>,
