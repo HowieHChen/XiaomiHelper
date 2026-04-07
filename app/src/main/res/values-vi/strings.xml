@@ -863,21 +863,7 @@
     <string name="home_refactor_minus_overlap_mode_tips">Làm cho Trợ lý cá nhân lơ lửng phía trên trình khởi chạy</string>
     <string name="home_refactor_launch_show_minus_tips">Không ẩn chế độ xem trình khởi chạy khi chuyển sang Trợ lý cá nhân</string>
     <string name="page_main" translatable="false">\@string/app_name</string>
-    <string name="page_virtual_media_control_style" translatable="false"></string>
-    <string name="page_virtual_home_refactor" translatable="false"></string>
-    <string name="page_systemui" translatable="false"></string>
-    <string name="page_miui_home" translatable="false"></string>
-    <string name="page_security_center" translatable="false"></string>
-    <string name="page_security_center_pad" translatable="false"></string>
-    <string name="page_others" translatable="false"></string>
-    <string name="page_disable_fixed_orientation" translatable="false"></string>
-    <string name="page_home_refactor" translatable="false"></string>
-    <string name="search_engine_custom" translatable="false"></string>
     <string name="main_module_inactive_dialog_lsposed" translatable="false">LSPosed</string>
-    <string name="ui_title_menu_others" translatable="false"></string>
     <string name="menu_shortcut_lsposed" translatable="false">LSPosed</string>
     <string name="about_author" translatable="false">HowieHChen</string>
-    <string name="ui_title_about_others" translatable="false"></string>
-    <string name="ui_title_module_general" translatable="false"></string>
-    <string name="module_settings_icon_style_default" translatable="false"></string>
 </resources>
