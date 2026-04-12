@@ -23,20 +23,22 @@
 package dev.lackluster.mihelper.hook.rules.android
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
 
-object AllowMoreFreeform : YukiBaseHooker() {
-    override fun onHook() {
-        hasEnable(Pref.Key.Android.ALLOW_MORE_FREEFORM) {
-            "com.android.server.wm.MiuiFreeFormStackDisplayStrategy".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
-                    name = "getMaxMiuiFreeFormStackCount"
-                }?.hook {
-                    replaceTo(255)
-                }
-            }
+object AllowMoreFreeform : StaticHooker() {
+    private val metGetMaxMiuiFreeFormStackCount by lazy {
+        "com.android.server.wm.MiuiFreeFormStackDisplayStrategy".toClassOrNull()?.resolve()?.firstMethodOrNull {
+            name = "getMaxMiuiFreeFormStackCount"
         }
+    }
+
+    override fun onInit() {
+        updateSelfState(Preferences.System.ALLOW_MORE_FREEFORM.get())
+    }
+
+    override fun onHook() {
+        metGetMaxMiuiFreeFormStackCount?.hook { result(255) }
     }
 }

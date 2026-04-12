@@ -21,13 +21,14 @@
 package dev.lackluster.mihelper.hook.rules.browser
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.DexKit
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.DexKit
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.ifTrue
 import org.luckypray.dexkit.query.enums.StringMatchType
 
-object SkipSplash : YukiBaseHooker() {
+object SkipSplash : StaticHooker() {
     private val thirdPartyLaunchAdMethod by lazy {
         DexKit.findMethodWithCache("skip_splash_third") {
             matcher {
@@ -60,25 +61,33 @@ object SkipSplash : YukiBaseHooker() {
         }
     }
 
+    override fun onInit() {
+        Preferences.Browser.SKIP_SPLASH.get().also { 
+            updateSelfState(it)
+        }.ifTrue {
+            thirdPartyLaunchAdMethod
+            iconLaunchAdMethod
+            supportPassive
+        }
+    }
+
     override fun onHook() {
-        hasEnable(Pref.Key.Browser.SKIP_SPLASH) {
-            if (appClassLoader == null) return@hasEnable
-            thirdPartyLaunchAdMethod?.getMethodInstance(appClassLoader!!)?.hook {
-                intercept()
+        thirdPartyLaunchAdMethod?.getMethodInstance(classLoader)?.hook {
+            result(null)
+        }
+        iconLaunchAdMethod?.getMethodInstance(classLoader)?.hook {
+            result(null)
+        }
+        supportPassive?.getMethodInstance(classLoader)?.hook {
+            result(false)
+        }
+        "com.android.browser.splash.SplashAdManager".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "inWhiteList"
+            }?.hook {
+                result(true)
             }
-            iconLaunchAdMethod?.getMethodInstance(appClassLoader!!)?.hook {
-                intercept()
-            }
-            supportPassive?.getMethodInstance(appClassLoader!!)?.hook {
-                replaceToFalse()
-            }
-            "com.android.browser.splash.SplashAdManager".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
-                    name = "inWhiteList"
-                }?.hook {
-                    replaceToTrue()
-                }
-            }
+        }
 //            "com.android.browser.xiangkan.AppDownloadHelper".toClass().apply {
 //                method {
 //                    name = "onLoadData"
@@ -86,6 +95,5 @@ object SkipSplash : YukiBaseHooker() {
 //                    intercept()
 //                }
 //            }
-        }
     }
 }

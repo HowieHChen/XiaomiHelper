@@ -22,16 +22,16 @@ package dev.lackluster.mihelper.hook.rules.packageinstaller
 
 import android.annotation.SuppressLint
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.DexKit
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.DexKit
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.ifTrue
+import dev.lackluster.mihelper.hook.utils.toTyped
 import org.luckypray.dexkit.query.enums.StringMatchType
 
-object AdBlocker : YukiBaseHooker() {
-    private val clzCloudParams by lazy {
-        "com.miui.packageInstaller.model.CloudParams".toClassOrNull()
-    }
+object AdBlocker : StaticHooker() {
+    private val clzCloudParams by "com.miui.packageInstaller.model.CloudParams".lazyClassOrNull()
     private val ctorCloudParams by lazy {
         clzCloudParams?.resolve()?.firstConstructor()
     }
@@ -46,7 +46,7 @@ object AdBlocker : YukiBaseHooker() {
         $$"com.miui.packageInstaller.model.CloudResult$Success".toClassOrNull()
             ?.resolve()?.firstConstructorOrNull {
                 parameters("com.miui.packageInstaller.model.CloudParams")
-            }
+            }?.toTyped()
     }
     private val adsEnableMethod by lazy {
         DexKit.findMethodWithCache("ads_enable") {
@@ -89,95 +89,103 @@ object AdBlocker : YukiBaseHooker() {
         }
     }
 
+    override fun onInit() {
+        Preferences.PackageInstaller.REMOVE_ELEMENT.get().also { 
+            updateSelfState(it)
+        }.ifTrue {
+            adsEnableMethod
+            appStoreRecommendMethod
+            isPersonalizedAdEnabledMethod
+            virusScanInstallMethod
+            metStartVirusScan
+            cloudParamsMethod
+        }
+    }
+
     @SuppressLint("DiscouragedApi")
     override fun onHook() {
-        hasEnable(Pref.Key.PackageInstaller.REMOVE_ELEMENT) {
-            if (appClassLoader == null) return@hasEnable
-            adsEnableMethod?.getMethodInstance(appClassLoader!!)?.hook {
-                replaceToFalse()
+        adsEnableMethod?.getMethodInstance(classLoader)?.hook {
+            result(false)
+        }
+        appStoreRecommendMethod?.getMethodInstance(classLoader)?.hook {
+            result(false)
+        }
+        isPersonalizedAdEnabledMethod?.getMethodInstance(classLoader)?.hook {
+            result(false)
+        }
+        virusScanInstallMethod?.getMethodInstance(classLoader)?.hook {
+            result(false)
+        }
+        metStartVirusScan?.getMethodInstance(classLoader)?.hook {
+            result(null)
+        }
+        cloudParamsMethod?.getMethodInstance(classLoader)?.hook {
+            val cloudParams = ctorCloudParams?.copy()?.create()
+            val cloudResult = cloudParams?.let { ctorCloudResultSuccess?.newInstance(it) }
+            if (cloudResult != null) {
+                result(cloudResult)
+            } else {
+                result(cloudParams)
             }
-            appStoreRecommendMethod?.getMethodInstance(appClassLoader!!)?.hook {
-                replaceToFalse()
+        }
+        clzCloudParams?.apply {
+            val installNotAllow = resolve().firstFieldOrNull {
+                name = "installNotAllow"
+            }?.toTyped<Boolean>()
+            val showSafeModeTip = resolve().firstFieldOrNull {
+                name = "showSafeModeTip"
+            }?.toTyped<Boolean>()
+            val showAdsBefore = resolve().firstFieldOrNull {
+                name = "showAdsBefore"
+            }?.toTyped<Boolean>()
+            val showAdsAfter = resolve().firstFieldOrNull {
+                name = "showAdsAfter"
+            }?.toTyped<Boolean>()
+            val useSystemAppRules = resolve().firstFieldOrNull {
+                name = "useSystemAppRules"
+            }?.toTyped<Boolean>()
+            val registrationStatus = resolve().firstFieldOrNull {
+                name = "registrationStatus"
+            }?.toTyped<Int>()
+            ctorCloudParams?.self?.hook {
+                val ori = proceed()
+                installNotAllow?.set(thisObject, false)
+                showSafeModeTip?.set(thisObject, false)
+                showAdsBefore?.set(thisObject, false)
+                showAdsAfter?.set(thisObject, false)
+                useSystemAppRules?.set(thisObject, true)
+                registrationStatus?.set(thisObject, 2)
+                result(ori)
             }
-            isPersonalizedAdEnabledMethod?.getMethodInstance(appClassLoader!!)?.hook {
-                replaceToFalse()
+            resolve().firstMethodOrNull {
+                name = "getAppRegisterScene"
+            }?.hook {
+                result("registered")
             }
-            virusScanInstallMethod?.getMethodInstance(appClassLoader!!)?.hook {
-                replaceToFalse()
+            resolve().firstMethodOrNull {
+                name = "isMarketApp"
+            }?.hook {
+                result(false)
             }
-            metStartVirusScan?.getMethodInstance(appClassLoader!!)?.hook {
-                intercept()
+            resolve().firstMethodOrNull {
+                name = "isMarketApp64NotInstallAllow"
+            }?.hook {
+                result(false)
             }
-            cloudParamsMethod?.getMethodInstance(appClassLoader!!)?.hook {
-                before {
-                    val cloudParams = ctorCloudParams?.copy()?.create() ?: return@before
-                    val cloudResult = ctorCloudResultSuccess?.copy()?.create(cloudParams)
-                    if (cloudResult != null) {
-                        this.result = cloudResult
-                    } else {
-                        this.result = cloudParams
-                    }
-                }
+            resolve().firstMethodOrNull {
+                name = "isProhibitInstalling"
+            }?.hook {
+                result(false)
             }
-            clzCloudParams?.apply {
-                val installNotAllow = resolve().firstFieldOrNull {
-                    name = "installNotAllow"
-                }
-                val showSafeModeTip = resolve().firstFieldOrNull {
-                    name = "showSafeModeTip"
-                }
-                val showAdsBefore = resolve().firstFieldOrNull {
-                    name = "showAdsBefore"
-                }
-                val showAdsAfter = resolve().firstFieldOrNull {
-                    name = "showAdsAfter"
-                }
-                val useSystemAppRules = resolve().firstFieldOrNull {
-                    name = "useSystemAppRules"
-                }
-                val registrationStatus = resolve().firstFieldOrNull {
-                    name = "registrationStatus"
-                }
-                ctorCloudParams?.copy()?.hook {
-                    after {
-                        installNotAllow?.copy()?.of(this.instance)?.set(false)
-                        showSafeModeTip?.copy()?.of(this.instance)?.set(false)
-                        showAdsBefore?.copy()?.of(this.instance)?.set(false)
-                        showAdsAfter?.copy()?.of(this.instance)?.set(false)
-                        useSystemAppRules?.copy()?.of(this.instance)?.set(true)
-                        registrationStatus?.copy()?.of(this.instance)?.set(2)
-                    }
-                }
-                resolve().firstMethodOrNull {
-                    name = "getAppRegisterScene"
-                }?.hook {
-                    replaceTo("registered")
-                }
-                resolve().firstMethodOrNull {
-                    name = "isMarketApp"
-                }?.hook {
-                    replaceToFalse()
-                }
-                resolve().firstMethodOrNull {
-                    name = "isMarketApp64NotInstallAllow"
-                }?.hook {
-                    replaceToFalse()
-                }
-                resolve().firstMethodOrNull {
-                    name = "isProhibitInstalling"
-                }?.hook {
-                    replaceToFalse()
-                }
-                resolve().firstMethodOrNull {
-                    name = "isNewUnregistered"
-                }?.hook {
-                    replaceToFalse()
-                }
-                resolve().firstMethodOrNull {
-                    name = "isUnrecorded"
-                }?.hook {
-                    replaceToFalse()
-                }
+            resolve().firstMethodOrNull {
+                name = "isNewUnregistered"
+            }?.hook {
+                result(false)
+            }
+            resolve().firstMethodOrNull {
+                name = "isUnrecorded"
+            }?.hook {
+                result(false)
             }
         }
     }

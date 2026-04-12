@@ -23,27 +23,29 @@
 package dev.lackluster.mihelper.hook.rules.remotecontroller
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
 
-object AdBlocker : YukiBaseHooker() {
+object AdBlocker : StaticHooker() {
+    override fun onInit() {
+        updateSelfState(Preferences.RemoteController.AD_BLOCKER.get())
+    }
+
     override fun onHook() {
-        hasEnable(Pref.Key.RemoteController.AD_BLOCKER) {
-            "com.xiaomi.mitv.phone.remotecontroller.common.activity.BaseActivity".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
-                    name = "setActionMark"
-                    parameterCount = 2
-                }?.hook {
-                    intercept()
-                }
+        "com.xiaomi.mitv.phone.remotecontroller.common.activity.BaseActivity".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "setActionMark"
+                parameterCount = 2
+            }?.hook {
+                result(null)
             }
-            "com.duokan.phone.remotecontroller.operation.SHBusinessManager".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
-                    name = "isUserClosedBanner"
-                }?.hook {
-                    replaceToTrue()
-                }
+        }
+        "com.duokan.phone.remotecontroller.operation.SHBusinessManager".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "isUserClosedBanner"
+            }?.hook {
+               result(true)
             }
         }
     }

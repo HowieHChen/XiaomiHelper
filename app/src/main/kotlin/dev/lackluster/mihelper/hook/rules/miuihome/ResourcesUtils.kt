@@ -20,42 +20,45 @@
 
 package dev.lackluster.mihelper.hook.rules.miuihome
 
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import dev.lackluster.mihelper.data.Scope
-import dev.lackluster.mihelper.utils.factory.getResID
+import dev.lackluster.mihelper.hook.base.ContextAwareHooker
+import dev.lackluster.mihelper.hook.base.ContextScope
 
-object ResourcesUtils : YukiBaseHooker() {
-    private const val PKG_NAME = Scope.MIUI_HOME
-    private var isInitialized = false
+object ResourcesUtils : ContextAwareHooker() {
+    override val targetPackage: String
+        get() = Scope.MIUI_HOME
+    
     var ic_task_small_window = 0
+        private set
     var ic_task_small_window_pad = 0
+        private set
     var ic_task_add_pair = 0
+        private set
     var start_new_window = 0
+        private set
     var small_window = 0
+        private set
     var accessibility_recent_task_memory_info = 0
+        private set
     var status_bar_recent_memory_giga = 0
+        private set
     var status_bar_recent_memory_info1 = 0
+        private set
     var status_bar_recent_memory_info2 = 0
+        private set
     var status_bar_recent_memory_mega = 0
+        private set
 
-    override fun onHook() {
-        onAppLifecycle {
-            onCreate {
-                if (!isInitialized) {
-                    if (this.resources == null) return@onCreate
-                    ic_task_small_window = this.getResID("ic_task_small_window", "drawable", PKG_NAME)
-                    ic_task_small_window_pad = this.getResID("ic_task_small_window_pad", "drawable", PKG_NAME)
-                    ic_task_add_pair = this.getResID("ic_task_add_pair", "drawable", PKG_NAME)
-                    start_new_window = this.getResID("start_new_window", "string", PKG_NAME)
-                    small_window = this.getResID("small_window", "string", PKG_NAME)
-                    accessibility_recent_task_memory_info = this.getResID("accessibility_recent_task_memory_info", "string", PKG_NAME)
-                    status_bar_recent_memory_giga = this.getResID("status_bar_recent_memory_giga", "string", PKG_NAME)
-                    status_bar_recent_memory_info1 = this.getResID("status_bar_recent_memory_info1", "string", PKG_NAME)
-                    status_bar_recent_memory_info2 = this.getResID("status_bar_recent_memory_info2", "string", PKG_NAME)
-                    status_bar_recent_memory_mega = this.getResID("status_bar_recent_memory_mega", "string", PKG_NAME)
-                    isInitialized = true
-                }
-            }
-        }
+    override fun ContextScope.onReady() {
+        ic_task_small_window = "ic_task_small_window".toDrawableId()
+        ic_task_small_window_pad = "ic_task_small_window_pad".toDrawableId()
+        ic_task_add_pair = "ic_task_add_pair".toDrawableId()
+        start_new_window = "start_new_window".toStringId()
+        small_window = "small_window".toStringId()
+        accessibility_recent_task_memory_info = "accessibility_recent_task_memory_info".toStringId()
+        status_bar_recent_memory_giga = "status_bar_recent_memory_giga".toStringId()
+        status_bar_recent_memory_info1 = "status_bar_recent_memory_info1".toStringId()
+        status_bar_recent_memory_info2 = "status_bar_recent_memory_info2".toStringId()
+        status_bar_recent_memory_mega = "status_bar_recent_memory_mega".toStringId()
     }
 }

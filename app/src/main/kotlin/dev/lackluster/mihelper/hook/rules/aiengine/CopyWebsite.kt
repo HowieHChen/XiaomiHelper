@@ -26,30 +26,43 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.net.toUri
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
 
-object CopyWebsite : YukiBaseHooker() {
-//    private const val SMART_PASS_WORD_XIAOMI_BROWSER = 11
+object CopyWebsite : StaticHooker() {
+    private const val SMART_PASS_WORD_XIAOMI_BROWSER = 11
+
+    override fun onInit() {
+        updateSelfState(Preferences.AiEngine.OPEN_LINK_WITH_CUSTOM_BROWSER.get())
+    }
 
     override fun onHook() {
-        hasEnable(Pref.Key.AIEngine.COPY_LINK_CUSTOM_BROWSER) {
-            "com.xiaomi.aicr.copydirect.util.SmartPasswordUtils".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
-                    name = "jumpToXiaoMiBrowser"
-                }?.hook {
-                    replaceUnit {
-                        val context = this.args(0).cast<Context>() ?: return@replaceUnit
-                        val url = this.args(1).cast<String>()?.let {
-                            if (it.startsWith("http://") || it.startsWith("https://")) it
-                            else "https://$it"
-                        } ?: return@replaceUnit
-                        Intent(Intent.ACTION_VIEW, url.toUri()).let { intent ->
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                            context.startActivity(intent)
-                        }
+        "com.xiaomi.aicr.copydirect.util.SmartPasswordUtils".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "jumpToXiaoMiBrowser"
+            }?.hook {
+                val context = getArg(0) as? Context
+                val url = getArg(1) as? String
+                if (context != null && url != null) {
+                    val wrappedUrl =
+                        if (url.startsWith("http://") || url.startsWith("https://")) url
+                        else "https://$url"
+                    Intent(Intent.ACTION_VIEW, wrappedUrl.toUri()).let { intent ->
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        context.startActivity(intent)
                     }
+                }
+                result(null)
+            }
+            resolve().firstMethodOrNull {
+                name = "isInstallForApp"
+            }?.hook {
+                val type = getArg(1) as? Int
+                if (type == SMART_PASS_WORD_XIAOMI_BROWSER) {
+                    result(true)
+                } else {
+                    result(proceed())
                 }
             }
         }

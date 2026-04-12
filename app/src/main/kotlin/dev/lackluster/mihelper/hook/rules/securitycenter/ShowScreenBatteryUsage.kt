@@ -20,20 +20,24 @@
 
 package dev.lackluster.mihelper.hook.rules.securitycenter
 
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.DexKit
-import dev.lackluster.mihelper.utils.Prefs
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.DexKit
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
+import dev.lackluster.mihelper.hook.utils.ifTrue
 import org.luckypray.dexkit.query.enums.StringMatchType
 
-object ShowScreenBatteryUsage : YukiBaseHooker() {
-    private val showSystem = Prefs.getBoolean(Pref.Key.SecurityCenter.SHOW_SYSTEM_BATTERY, false)
+object ShowScreenBatteryUsage : StaticHooker() {
+    private val showSystem by Preferences.SecurityCenter.BATTERY_SHOW_SYSTEM.lazyGet()
+    
     private val powerRankClass by lazy {
-        DexKit.dexKitBridge.findClass {
-            matcher {
-                addUsingString("not support screenPowerSplit", StringMatchType.Equals)
-                addUsingString("PowerRankHelperHolder", StringMatchType.Equals)
+        DexKit.withBridge {
+            findClass {
+                matcher {
+                    addUsingString("not support screenPowerSplit", StringMatchType.Equals)
+                    addUsingString("PowerRankHelperHolder", StringMatchType.Equals)
+                }
             }
         }
     }
@@ -58,19 +62,25 @@ object ShowScreenBatteryUsage : YukiBaseHooker() {
             searchClasses = powerRankClass
         }
     }
+
+    override fun onInit() {
+        Preferences.SecurityCenter.BATTERY_SHOW_SCREEN.get().also { 
+            updateSelfState(it)
+        }.ifTrue {
+            powerRankMethod1
+            powerRankMethod2
+        }
+    }
+    
     override fun onHook() {
-        hasEnable(Pref.Key.SecurityCenter.SHOW_SCREEN_BATTERY) {
-            if (appClassLoader == null) return@hasEnable
-            val powerRankMethod1Instance = powerRankMethod1?.getMethodInstance(appClassLoader!!) ?: return@hasEnable
-            powerRankMethod1Instance.hook {
-                replaceTo(!showSystem)
-            }
-            val powerRankMethod2Instance = powerRankMethod2.map { it.getMethodInstance(appClassLoader!!) }.toList()
-            powerRankMethod2Instance.forEach {
-                if (it != powerRankMethod1Instance) {
-                    it.hook {
-                        replaceToFalse()
-                    }
+        val powerRankMethod1Instance = powerRankMethod1?.getMethodInstance(classLoader)
+        powerRankMethod1Instance?.hook {
+            result(!showSystem)
+        }
+        powerRankMethod2.map { it.getMethodInstance(classLoader) }.forEach {
+            if (it != powerRankMethod1Instance) {
+                it.hook {
+                    result(false)
                 }
             }
         }

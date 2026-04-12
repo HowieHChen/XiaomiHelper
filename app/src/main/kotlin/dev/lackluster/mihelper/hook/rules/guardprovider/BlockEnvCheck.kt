@@ -20,14 +20,15 @@
 
 package dev.lackluster.mihelper.hook.rules.guardprovider
 
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.DexKit
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.DexKit
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.ifTrue
 import org.luckypray.dexkit.query.enums.StringMatchType
 import java.lang.reflect.Modifier
 
-object BlockEnvCheck : YukiBaseHooker() {
+object BlockEnvCheck : StaticHooker() {
     private val metCheckRoot by lazy {
         DexKit.findMethodWithCache("root_check") {
             matcher {
@@ -53,21 +54,28 @@ object BlockEnvCheck : YukiBaseHooker() {
                 paramCount = 0
                 modifiers(Modifier.STATIC)
             }
-            searchInClass(checkRootClass.mapNotNull { DexKit.dexKitBridge.getClassData(it.className) })
+            searchClasses = checkRootClass.mapNotNull { DexKit.withBridge { getClassData(it.className) } }
+        }
+    }
+
+    override fun onInit() {
+        Preferences.GuardProvider.BLOCK_ENV_CHECK.get().also {
+            updateSelfState(it)
+        }.ifTrue {
+            metCheckRoot
+            checkRootClass
+            metCheckSuFile
         }
     }
 
     override fun onHook() {
-        hasEnable(Pref.Key.GuardProvider.BLOCK_ENV_CHECK) {
-            if (appClassLoader == null) return@hasEnable
-            metCheckRoot?.getMethodInstance(appClassLoader!!)?.hook {
-                replaceToFalse()
-            }
-            metCheckSuFile.map {
-                it.getMethodInstance(appClassLoader!!)
-            }.hookAll {
-                replaceToFalse()
-            }
+        metCheckRoot?.getMethodInstance(classLoader)?.hook {
+            result(false)
+        }
+        metCheckSuFile.map {
+            it.getMethodInstance(classLoader)
+        }.hookAll {
+            result(false)
         }
     }
 }

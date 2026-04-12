@@ -4,7 +4,6 @@ import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.highcapable.yukihookapi.hook.log.YLog
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.app.repository.FontRepository
 import dev.lackluster.mihelper.app.repository.FontTarget
@@ -14,6 +13,7 @@ import dev.lackluster.mihelper.app.state.ViewState
 import dev.lackluster.mihelper.app.utils.getFileNameFromUri
 import dev.lackluster.mihelper.data.Constants
 import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.utils.MLog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -72,7 +72,7 @@ class StatusBarFontViewModel(
                     }
                     success
                 } catch (e: Exception) {
-                    YLog.error("importFontFromUri", e)
+                    MLog.e(e, "importFontFromUri")
                     false
                 } finally {
                     tempFile?.delete()
@@ -115,7 +115,7 @@ class StatusBarFontViewModel(
                     }
                     success
                 } catch (e: Exception) {
-                    YLog.error("applyFontFromPath", e)
+                    MLog.e(e, "applyFontFromPath")
                     false
                 }
             }

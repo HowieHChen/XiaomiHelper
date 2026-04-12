@@ -25,9 +25,8 @@ import android.widget.TextView
 import androidx.core.view.updatePaddingRelative
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.condition.type.Modifiers
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.data.Pref.Key.SystemUI.FontWeight
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.big_time
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.clock
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.date_time
@@ -36,43 +35,63 @@ import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.normal_control
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.pad_clock
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzMiuiClock
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.getTypeface
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
+import dev.lackluster.mihelper.hook.utils.toTyped
 import dev.lackluster.mihelper.utils.Device
-import dev.lackluster.mihelper.utils.Prefs
 import dev.lackluster.mihelper.utils.factory.dp
 import kotlin.math.abs
 
-object MiuiClockFontWeight : YukiBaseHooker() {
+object MiuiClockFontWeight : StaticHooker() {
     // Padding
-    private val valuePaddingStart = Prefs.getFloat(Pref.Key.SystemUI.StatusBar.CLOCK_PADDING_START_VAL, 0.0f)
-    private val valuePaddingEnd = Prefs.getFloat(Pref.Key.SystemUI.StatusBar.CLOCK_PADDING_END_VAL, 0.0f)
-    private val modifyPadding =
-        Prefs.getBoolean(Pref.Key.SystemUI.StatusBar.CLOCK_PADDING_HORIZON, false)
+    private val valuePaddingStart by Preferences.SystemUI.StatusBar.Clock.PADDING_START_VAL.lazyGet()
+    private val valuePaddingEnd by Preferences.SystemUI.StatusBar.Clock.PADDING_END_VAL.lazyGet()
+    private val modifyPadding by Preferences.SystemUI.StatusBar.Clock.CUSTOM_HORIZON_PADDING.lazyGet()
     // Font Weight
-    private val defFWVal = if (Device.isPad) 460 else 500
-    private val valueClockFW = Prefs.getInt(FontWeight.CLOCK_WEIGHT, defFWVal)
-    private val valuePadClockFW = Prefs.getInt(FontWeight.PAD_CLOCK_WEIGHT, defFWVal)
-    private val valueBigTimeFW = Prefs.getInt(FontWeight.BIG_TIME_WEIGHT, 305)
-    private val valueDateTimeFW = Prefs.getInt(FontWeight.DATE_TIME_WEIGHT, 400)
-    private val valueCCDateFW = Prefs.getInt(FontWeight.CC_DATE_WEIGHT, 400)
-    private val valueHorizontalTimeFW = Prefs.getInt(FontWeight.HORIZONTAL_TIME_WEIGHT, defFWVal)
-    private val modifyClockFW =
-        Prefs.getBoolean(FontWeight.CLOCK, false) && valueClockFW in 1..1000
-    private val modifyPadClockFW =
-        Prefs.getBoolean(FontWeight.PAD_CLOCK, false) && valuePadClockFW in 1..1000
-    private val modifyBigTimeFW =
-        Prefs.getBoolean(FontWeight.BIG_TIME, false) && valueBigTimeFW in 1..1000
-    private val modifyDateTimeFW =
-        Prefs.getBoolean(FontWeight.DATE_TIME, false) && valueDateTimeFW in 1..1000
-    private val modifyCCDateFW =
-        Prefs.getBoolean(FontWeight.CC_DATE, false) && valueCCDateFW in 1..1000
-    private val modifyHorizontalTimeFW =
-        Prefs.getBoolean(FontWeight.HORIZONTAL_TIME, false) && valueHorizontalTimeFW in 1..1000
-    private val realClockFW = if (modifyClockFW) valueClockFW else defFWVal
-    private val realPadClockFW = if (modifyClockFW) valuePadClockFW else defFWVal
-    private val realBigTimeFW = if (modifyBigTimeFW) valueBigTimeFW else 305
-    private val realDateTimeFW = if (modifyDateTimeFW) valueDateTimeFW else 400
-    private val realCCDateFW = if (modifyCCDateFW) valueCCDateFW else 400
-    private val realHorizontalTimeFW = if (modifyHorizontalTimeFW) valueHorizontalTimeFW else defFWVal
+    private val valueClockFW by Preferences.SystemUI.StatusBar.Font.CLOCK_WEIGHT.lazyGet()
+    private val valuePadClockFW by Preferences.SystemUI.StatusBar.Font.PAD_CLOCK_WEIGHT.lazyGet()
+    private val valueBigTimeFW by Preferences.SystemUI.StatusBar.Font.BIG_TIME_WEIGHT.lazyGet()
+    private val valueDateTimeFW by Preferences.SystemUI.StatusBar.Font.DATE_TIME_WEIGHT.lazyGet()
+    private val valueCCDateFW by Preferences.SystemUI.StatusBar.Font.CC_DATE_WEIGHT.lazyGet()
+    private val valueHorizontalTimeFW by Preferences.SystemUI.StatusBar.Font.HORIZONTAL_TIME_WEIGHT.lazyGet()
+    private val modifyClockFW by lazy {
+        Preferences.SystemUI.StatusBar.Font.CUSTOM_CLOCK.get() && valueClockFW in 1..1000
+    }
+    private val modifyPadClockFW by lazy {
+        Preferences.SystemUI.StatusBar.Font.CUSTOM_PAD_CLOCK.get() && valuePadClockFW in 1..1000
+    }
+    private val modifyBigTimeFW by lazy {
+        Preferences.SystemUI.StatusBar.Font.CUSTOM_BIG_TIME.get() && valueBigTimeFW in 1..1000
+    }
+    private val modifyDateTimeFW by lazy {
+        Preferences.SystemUI.StatusBar.Font.CUSTOM_DATE_TIME.get() && valueDateTimeFW in 1..1000
+    }
+    private val modifyCCDateFW by lazy {
+        Preferences.SystemUI.StatusBar.Font.CUSTOM_CC_DATE.get() && valueCCDateFW in 1..1000
+    }
+    private val modifyHorizontalTimeFW by lazy {
+        Preferences.SystemUI.StatusBar.Font.CUSTOM_HORIZONTAL_TIME.get() && valueHorizontalTimeFW in 1..1000
+    }
+
+    private val realClockFW by lazy {
+        if (modifyClockFW) valueClockFW else Preferences.SystemUI.StatusBar.Font.CLOCK_WEIGHT.default
+    }
+    private val realPadClockFW by lazy {
+        if (modifyPadClockFW) valuePadClockFW else Preferences.SystemUI.StatusBar.Font.PAD_CLOCK_WEIGHT.default
+    }
+    private val realBigTimeFW by lazy {
+        if (modifyBigTimeFW) valueBigTimeFW else Preferences.SystemUI.StatusBar.Font.BIG_TIME_WEIGHT.default
+    }
+    private val realDateTimeFW by lazy {
+        if (modifyDateTimeFW) valueDateTimeFW else Preferences.SystemUI.StatusBar.Font.DATE_TIME_WEIGHT.default
+    }
+    private val realCCDateFW by lazy {
+        if (modifyCCDateFW) valueCCDateFW else Preferences.SystemUI.StatusBar.Font.CC_DATE_WEIGHT.default
+    }
+    private val realHorizontalTimeFW by lazy {
+        if (modifyHorizontalTimeFW) valueHorizontalTimeFW else Preferences.SystemUI.StatusBar.Font.HORIZONTAL_TIME_WEIGHT.default
+    }
+
     private val typefaceClockFW by lazy {
         getTypeface(realClockFW)
     }
@@ -91,61 +110,56 @@ object MiuiClockFontWeight : YukiBaseHooker() {
     private val typefaceHorizontalTimeFW by lazy {
         getTypeface(realHorizontalTimeFW)
     }
-    private val needHookFontWeight =
+
+    private val needHookFontWeight by lazy {
         modifyClockFW || modifyPadClockFW || modifyBigTimeFW || modifyDateTimeFW || modifyCCDateFW || modifyHorizontalTimeFW
+    }
+
+    override fun onInit() {
+        updateSelfState(needHookFontWeight || modifyPadding)
+    }
 
     override fun onHook() {
-        if (!needHookFontWeight && !modifyPadding) return
         clzMiuiClock?.apply {
             resolve().firstConstructorOrNull {
                 parameterCount = 3
             }?.hook {
-                after {
-                    val textView = this.instance<TextView>()
-                    if (needHookFontWeight) {
-                        when (textView.id) {
-                            clock ->
-                                if (modifyClockFW) textView.typeface = typefaceClockFW
-                            pad_clock ->
-                                if (modifyPadClockFW) textView.typeface = typefacePadClockFW
-                            big_time ->
-                                if (modifyBigTimeFW) textView.typeface = typefaceBigTimeFW
-                            date_time ->
-                                if (modifyDateTimeFW) textView.typeface = typefaceDateTimeFW
-                            normal_control_center_date_view ->
-                                if (modifyCCDateFW) textView.typeface = typefaceCCDateFW
-                            horizontal_time ->
-                                if (modifyHorizontalTimeFW) textView.typeface = typefaceHorizontalTimeFW
-                        }
+                val ori = proceed()
+                val textView = thisObject as? TextView ?: return@hook result(ori)
+                if (needHookFontWeight) {
+                    when (textView.id) {
+                        clock -> if (modifyClockFW) textView.typeface = typefaceClockFW
+                        pad_clock -> if (modifyPadClockFW) textView.typeface = typefacePadClockFW
+                        big_time -> if (modifyBigTimeFW) textView.typeface = typefaceBigTimeFW
+                        date_time -> if (modifyDateTimeFW) textView.typeface = typefaceDateTimeFW
+                        normal_control_center_date_view -> if (modifyCCDateFW) textView.typeface = typefaceCCDateFW
+                        horizontal_time -> if (modifyHorizontalTimeFW) textView.typeface = typefaceHorizontalTimeFW
                     }
-                    if (modifyPadding) {
-                        if (Device.isPad) {
-                            when (textView.id) {
-                                clock -> {
-                                    textView.apply {
-                                        updatePaddingRelative(
-                                            start = valuePaddingStart.dp(context),
-                                        )
-                                    }
-                                }
-                                pad_clock -> {
-                                    textView.apply {
-                                        updatePaddingRelative(
-                                            end = valuePaddingEnd.dp(context),
-                                        )
-                                    }
+                }
+                if (modifyPadding) {
+                    if (Device.isPad) {
+                        when (textView.id) {
+                            clock -> {
+                                textView.apply {
+                                    updatePaddingRelative(start = valuePaddingStart.dp(context))
                                 }
                             }
-                        } else if (textView.id == clock) {
-                            textView.apply {
-                                updatePaddingRelative(
-                                    start = valuePaddingStart.dp(context),
-                                    end = valuePaddingEnd.dp(context),
-                                )
+                            pad_clock -> {
+                                textView.apply {
+                                    updatePaddingRelative(end = valuePaddingEnd.dp(context))
+                                }
                             }
+                        }
+                    } else if (textView.id == clock) {
+                        textView.apply {
+                            updatePaddingRelative(
+                                start = valuePaddingStart.dp(context),
+                                end = valuePaddingEnd.dp(context),
+                            )
                         }
                     }
                 }
+                result(ori)
             }
         }
         if (modifyClockFW || modifyBigTimeFW) {
@@ -153,17 +167,17 @@ object MiuiClockFontWeight : YukiBaseHooker() {
                 val typefaceBigTime = resolve().firstFieldOrNull {
                     name = "MI_PRO_TYPEFACE"
                     modifiers(Modifiers.STATIC)
-                } ?: return@apply
+                }?.toTyped<Typeface>()
                 val typefaceClock = resolve().firstFieldOrNull {
                     name = "sMiproTypeface"
                     modifiers(Modifiers.STATIC)
-                } ?: return@apply
+                }?.toTyped<Typeface>()
                 val typefaces = resolve().firstFieldOrNull {
                     name = "typefaces"
                     modifiers(Modifiers.STATIC)
-                } ?: return@apply
-                typefaceBigTime.copy().set(typefaceBigTimeFW)
-                typefaceClock.copy().set(typefaceClockFW)
+                }?.toTyped<List<Typeface>>()
+                typefaceBigTime?.set(null, typefaceBigTimeFW)
+                typefaceClock?.set(null, typefaceClockFW)
                 val sampleCount = abs(realBigTimeFW - realClockFW) / 10
                 val sampleStep = (realBigTimeFW - realClockFW) / sampleCount
                 val samples = ArrayList<Typeface>()
@@ -172,24 +186,24 @@ object MiuiClockFontWeight : YukiBaseHooker() {
                     samples.add(getTypeface(realClockFW + sampleStep * i))
                 }
                 samples.add(typefaceBigTimeFW)
-                typefaces.copy().set(samples)
+                typefaces?.set(null, samples)
             }
             "com.android.systemui.statusbar.policy.MiuiStatusBarClockController".toClassOrNull()?.apply {
                 val mClockListeners = resolve().firstFieldOrNull {
                     name = "mClockListeners"
-                }
+                }?.toTyped<List<*>>()
                 resolve().firstMethodOrNull {
                     name {
                         it.startsWith("onMiuiThemeChanged")
                     }
                 }?.hook {
-                    after {
-                        mClockListeners?.copy()?.of(this.instance)?.get<List<*>>()?.forEach { listener ->
-                            if (listener is TextView) {
-                                listener.typeface = typefaceClockFW
-                            }
+                    val ori = proceed()
+                    mClockListeners?.get(thisObject)?.forEach { listener ->
+                        if (listener is TextView) {
+                            listener.typeface = typefaceClockFW
                         }
                     }
+                    result(ori)
                 }
             }
         }
@@ -197,27 +211,27 @@ object MiuiClockFontWeight : YukiBaseHooker() {
             "com.android.systemui.qs.MiuiNotificationHeaderView".toClassOrNull()?.apply {
                 val mDateView = resolve().firstFieldOrNull {
                     name = "mDateView"
-                }
+                }?.toTyped<TextView>()
                 val usingMiPro = resolve().firstFieldOrNull {
                     name = "usingMiPro"
-                }
+                }?.toTyped<Boolean>()
                 val mBigTime = resolve().firstFieldOrNull {
                     name = "mBigTime"
-                }
+                }?.toTyped<TextView>()
                 resolve().firstMethodOrNull {
                     name {
                         it.startsWith("updateResources")
                     }
                 }?.hook {
-                    after {
-                        if (modifyDateTimeFW) {
-                            mDateView?.copy()?.of(this.instance)?.get<TextView>()?.typeface = typefaceDateTimeFW
-                        }
-                        if (modifyClockFW || modifyBigTimeFW) {
-                            usingMiPro?.copy()?.of(this.instance)?.set(true)
-                            mBigTime?.copy()?.of(this.instance)?.get<TextView>()?.typeface = typefaceBigTimeFW
-                        }
+                    val ori = proceed()
+                    if (modifyDateTimeFW) {
+                        mDateView?.get(thisObject)?.typeface = typefaceDateTimeFW
                     }
+                    if (modifyClockFW || modifyBigTimeFW) {
+                        usingMiPro?.set(thisObject, true)
+                        mBigTime?.get(thisObject)?.typeface = typefaceBigTimeFW
+                    }
+                    result(ori)
                 }
             }
         }
@@ -225,15 +239,15 @@ object MiuiClockFontWeight : YukiBaseHooker() {
             "com.android.systemui.controlcenter.shade.ControlCenterHeaderController".toClassOrNull()?.apply {
                 val dateView = resolve().firstFieldOrNull {
                     name = "dateView"
-                }
+                }?.toTyped<TextView>()
                 resolve().method {
                     name {
                         it == "onDensityOrFontScaleChanged" || it.startsWith("onMiuiThemeChanged")
                     }
                 }.hookAll {
-                    after {
-                        dateView?.copy()?.of(this.instance)?.get<TextView>()?.typeface = typefaceCCDateFW
-                    }
+                    val ori = proceed()
+                    dateView?.get(thisObject)?.typeface = typefaceCCDateFW
+                    result(ori)
                 }
             }
         }

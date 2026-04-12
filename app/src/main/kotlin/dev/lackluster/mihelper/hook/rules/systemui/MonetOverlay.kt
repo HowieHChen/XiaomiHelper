@@ -22,33 +22,34 @@
 
 package dev.lackluster.mihelper.hook.rules.systemui
 
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.Prefs
-import dev.lackluster.mihelper.utils.factory.hasEnable
 import androidx.core.graphics.toColorInt
 import com.highcapable.kavaref.KavaRef.Companion.resolve
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
 
-object MonetOverlay : YukiBaseHooker() {
+object MonetOverlay : StaticHooker() {
     private val overlayColor by lazy {
         try {
-            (Prefs.getString(Pref.Key.SystemUI.NotifCenter.MONET_OVERLAY_COLOR, "#FF3482FF") ?: "#FF3482FF").toColorInt()
+            Preferences.SystemUI.NotifCenter.MONET_OVERLAY_COLOR.get().toColorInt()
         } catch (_: Exception) {
             "#FF3482FF".toColorInt()
         }
     }
 
+    override fun onInit() {
+        updateSelfState(Preferences.SystemUI.NotifCenter.ENABLE_MONET_OVERLAY.get())
+    }
+
     override fun onHook() {
-        hasEnable(Pref.Key.SystemUI.NotifCenter.MONET_OVERLAY) {
-            "com.android.systemui.theme.ThemeOverlayController".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
-                    name = "createOverlays"
-                    parameters(Int::class)
-                }?.hook {
-                    before {
-                        this.args(0).set(overlayColor)
-                    }
-                }
+        "com.android.systemui.theme.ThemeOverlayController".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "createOverlays"
+                parameters(Int::class)
+            }?.hook {
+                val newArgs = args.toTypedArray()
+                newArgs[0] = overlayColor
+                result(proceed(newArgs))
             }
         }
     }

@@ -21,42 +21,44 @@
 package dev.lackluster.mihelper.hook.rules.music
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
 
-object SkipSplash : YukiBaseHooker() {
+object SkipSplash : StaticHooker() {
+    override fun onInit() {
+        updateSelfState(Preferences.Music.SKIP_SPLASH.get())
+    }
+
     override fun onHook() {
-        hasEnable(Pref.Key.Music.SKIP_SPLASH) {
-            val enableClass = "com.tencent.qqmusiclite.business.splashad.data.enums.Enable".toClassOrNull()
-            val disableVIP = if (enableClass?.isEnum == true) enableClass.enumConstants?.get(4) else null
-            if (disableVIP != null) {
-                "com.tencent.qqmusiclite.business.splashad.ams.AmsGlobal".toClassOrNull()?.apply {
-                    resolve().firstMethodOrNull {
-                        name = "isNeedAd"
-                    }?.hook {
-                        replaceTo(disableVIP)
-                    }
-                    resolve().firstMethodOrNull {
+        val enableClass = "com.tencent.qqmusiclite.business.splashad.data.enums.Enable".toClassOrNull()
+        val disableVIP = if (enableClass?.isEnum == true) enableClass.enumConstants?.get(4) else null
+        if (disableVIP != null) {
+            "com.tencent.qqmusiclite.business.splashad.ams.AmsGlobal".toClassOrNull()?.apply {
+                resolve().firstMethodOrNull {
+                    name = "isNeedAd"
+                }?.hook {
+                    result(disableVIP)
+                }
+                resolve().firstMethodOrNull {
                     name = "isNeedSplashAd"
-                    }?.hook {
-                        replaceTo(disableVIP)
-                    }
+                }?.hook {
+                    result(disableVIP)
                 }
-            } else {
-                "com.tencent.qqmusiclite.activity.MainActivity".toClassOrNull()?.apply {
-                    resolve().firstMethodOrNull {
-                        name = "checkColdSplash"
-                    }?.hook {
-                        intercept()
-                    }
+            }
+        } else {
+            "com.tencent.qqmusiclite.activity.MainActivity".toClassOrNull()?.apply {
+                resolve().firstMethodOrNull {
+                    name = "checkColdSplash"
+                }?.hook {
+                    result(null)
                 }
-                "com.tencent.qqmusiclite.business.splashad.ams.AmsGlobal".toClassOrNull()?.apply {
-                    resolve().firstMethodOrNull {
-                        name = "checkHotSplash"
-                    }?.hook {
-                        intercept()
-                    }
+            }
+            "com.tencent.qqmusiclite.business.splashad.ams.AmsGlobal".toClassOrNull()?.apply {
+                resolve().firstMethodOrNull {
+                    name = "checkHotSplash"
+                }?.hook {
+                    result(null)
                 }
             }
         }

@@ -55,7 +55,7 @@ Participe do nosso canal do [Telegram](https://t.me/lackluster_stuff) para relat
 
 - [「hyperx-compose」por HowieHChen](https://github.com/HowieHChen/hyperx-compose)
 - [「miuix」por miuix-kotlin-multiplatform](https://github.com/miuix-kotlin-multiplatform/miuix)
-- [「YukiHookAPI」por HighCapable](https://github.com/HighCapable/YukiHookAPI)
+- [「KavaRef」por HighCapable](https://github.com/HighCapable/KavaRef)
 - [「TinyPinyin」por hellokaton](https://github.com/hellokaton/TinyPinyin)
 
 #### Desconhecido

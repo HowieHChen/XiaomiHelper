@@ -33,8 +33,6 @@ import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintSet
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.condition.type.Modifiers
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.media_bg_view
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzMiuiIslandMediaViewBinderImpl
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzMiuiMediaViewControllerImpl
@@ -44,9 +42,9 @@ import dev.lackluster.mihelper.hook.rules.systemui.compat.ConstraintSetCompat.cl
 import dev.lackluster.mihelper.hook.rules.systemui.compat.ConstraintSetCompat.connect
 import dev.lackluster.mihelper.hook.rules.systemui.compat.ConstraintSetCompat.ctorConstraintSet
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.clzMediaData
-import dev.lackluster.mihelper.utils.Prefs
-import com.highcapable.yukihookapi.hook.log.YLog
-import dev.lackluster.mihelper.hook.drawable.AmbientLightDrawable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.rules.systemui.media.drawable.AmbientLightDrawable
 import dev.lackluster.mihelper.hook.rules.systemui.compat.PairCompat
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.ctorColorScheme
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.enumStyleContent
@@ -55,22 +53,24 @@ import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.f
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.getCachedWallpaperColor
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.releaseCachedWallpaperColor
 import dev.lackluster.mihelper.hook.rules.systemui.media.data.PlayerType
-import dev.lackluster.mihelper.utils.HostExecutor
-import dev.lackluster.mihelper.utils.factory.getAdditionalInstanceField
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
+import dev.lackluster.mihelper.hook.utils.e
+import dev.lackluster.mihelper.hook.utils.extraOf
+import dev.lackluster.mihelper.hook.utils.toTyped
+import dev.lackluster.mihelper.hook.utils.HostExecutor
 import dev.lackluster.mihelper.utils.factory.isSystemInDarkMode
-import dev.lackluster.mihelper.utils.factory.setAdditionalInstanceField
 
-object AmbientLight : YukiBaseHooker() {
-    private const val KEY_MEDIA_BG_VIEW = "KEY_MEDIA_BG_VIEW"
-    private const val KEY_MEDIA_BG_COLOR_LIGHT = "KEY_MEDIA_BG_COLOR_LIGHT"
-    private const val KEY_MEDIA_BG_COLOR_DARK = "KEY_MEDIA_BG_COLOR_DARK"
+internal object AmbientLight : StaticHooker() {
+    private var Any.mediaBgView by extraOf<ImageView>("KEY_MEDIA_BG_VIEW")
+    private var Any.lightMediaBgColor by extraOf<Int>("KEY_MEDIA_BG_COLOR_LIGHT")
+    private var Any.darkMediaBgColor by extraOf<Int>("KEY_MEDIA_BG_COLOR_DARK")
     // background: 0 -> Default; 1 -> Art; 2 -> Blurred cover; 3 -> AndroidNewStyle; 4 -> AndroidOldStyle;
-    private val ncBackgroundStyle = Prefs.getInt(Pref.Key.SystemUI.MediaControl.BACKGROUND_STYLE, 0)
-    private val diBackgroundStyle = Prefs.getInt(Pref.Key.DynamicIsland.MediaControl.BACKGROUND_STYLE, 0)
-    private val ncAmbientLight = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.AMBIENT_LIGHT, false)
-    private val diAmbientLightType = Prefs.getInt(Pref.Key.DynamicIsland.MediaControl.AMBIENT_LIGHT_TYPE, 0)
-    private val ncAmbientColorOpt = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.AMBIENT_LIGHT_OPT, false)
-    private val diAmbientColorOpt = Prefs.getBoolean(Pref.Key.DynamicIsland.MediaControl.AMBIENT_LIGHT_OPT, false)
+    private val ncBackgroundStyle by Preferences.SystemUI.MediaControl.Shared.BG_STYLE.get(false).lazyGet()
+    private val diBackgroundStyle by Preferences.SystemUI.MediaControl.Shared.BG_STYLE.get(true).lazyGet()
+    private val ncAmbientLight by Preferences.SystemUI.MediaControl.NotifCenter.BG_AMBIENT_LIGHT.lazyGet()
+    private val diAmbientLightType by Preferences.SystemUI.MediaControl.DynamicIsland.BG_AMBIENT_LIGHT_TYPE.lazyGet()
+    private val ncAmbientColorOpt by Preferences.SystemUI.MediaControl.Shared.BG_AMBIENT_LIGHT_OPT.get(false).lazyGet()
+    private val diAmbientColorOpt by Preferences.SystemUI.MediaControl.Shared.BG_AMBIENT_LIGHT_OPT.get(true).lazyGet()
 
     var ncCurrentPkgName = ""
     var ncIsArtworkBound = false
@@ -81,41 +81,43 @@ object AmbientLight : YukiBaseHooker() {
     private val fldIsPlaying by lazy {
         clzMediaData?.resolve()?.firstFieldOrNull {
             name = "isPlaying"
-        }?.self
+        }?.toTyped<Boolean>()
     }
-    private val clzMiPalette by lazy {
-        "miuix.mipalette.MiPalette".toClassOrNull()
-    }
+    private val clzMiPalette by "miuix.mipalette.MiPalette".lazyClassOrNull()
     private val metGetMainColorHCT by lazy {
         clzMiPalette?.resolve()?.firstMethodOrNull {
             name = "getMainColorHCT"
             parameters(Bitmap::class)
             modifiers(Modifiers.STATIC)
-        }?.self
+        }?.toTyped<Int>()
     }
     private val metDrawable2Bitmap by lazy {
         "com.miui.utils.DrawableUtils".toClassOrNull()?.resolve()?.firstMethodOrNull {
             name = "drawable2Bitmap"
             parameters(Drawable::class)
             modifiers(Modifiers.STATIC)
-        }?.self
+        }?.toTyped<Bitmap>()
     }
     val metAcquireApplicationIcon by lazy {
         "com.android.systemui.statusbar.notification.utils.NotificationUtil".toClassOrNull()?.resolve()?.firstMethodOrNull {
             name = "acquireApplicationIcon"
             parameterCount = 2
             modifiers(Modifiers.STATIC)
-        }?.self
+        }?.toTyped<Drawable>()
     }
     private val fldArtwork by lazy {
         clzMediaData?.resolve()?.firstFieldOrNull {
             name = "artwork"
-        }?.self
+        }?.toTyped<Icon>()
     }
     private val fldPackageName by lazy {
         clzMediaData?.resolve()?.firstFieldOrNull {
             name = "packageName"
-        }?.self
+        }?.toTyped<String>()
+    }
+
+    override fun onInit() {
+        updateSelfState(true)
     }
 
     override fun onHook() {
@@ -123,114 +125,119 @@ object AmbientLight : YukiBaseHooker() {
             clzMiuiMediaViewControllerImpl?.apply {
                 val fldContext = resolve().firstFieldOrNull {
                     name = "context"
-                }?.self
+                }?.toTyped<Context>()
                 val fldIsArtWorkUpdate = resolve().firstFieldOrNull {
                     name = "isArtWorkUpdate"
-                }?.self
+                }?.toTyped<Boolean>()
                 val fldHolder = resolve().firstFieldOrNull {
                     name = "holder"
-                }?.self
+                }?.toTyped<Any>()
                 val fldMediaData = resolve().firstFieldOrNull {
                     name = "mediaData"
-                }?.self
+                }?.toTyped<Any>()
                 val fldFullAodController = resolve().firstFieldOrNull {
                     name = "fullAodController"
-                }?.self
+                }?.toTyped<Any>()
                 val fldEnableFullAod = "com.android.systemui.statusbar.notification.fullaod.NotifiFullAodController".toClassOrNull()
                     ?.resolve()?.firstFieldOrNull {
                         name = "mEnableFullAod"
-                    }?.self
+                    }?.toTyped<Boolean>()
                 val metGet = "dagger.Lazy".toClassOrNull()?.resolve()?.firstMethodOrNull {
                     name = "get"
-                }?.self
+                }?.toTyped<Any>()
                 resolve().firstMethodOrNull {
                     name = "detach"
                 }?.hook {
-                    after {
-                        val holder = fldHolder?.get(this.instance) ?: return@after
+                    val ori = proceed()
+                    fldHolder?.get(thisObject)?.let { holder ->
                         (getNewMediaBgView(holder, false)?.drawable as? AmbientLightDrawable)?.stop()
-                        ncCurrentPkgName = ""
-                        ncIsArtworkBound = false
-                        releaseCachedWallpaperColor()
                     }
+                    ncCurrentPkgName = ""
+                    ncIsArtworkBound = false
+                    releaseCachedWallpaperColor()
+                    result(ori)
                 }
                 resolve().firstMethodOrNull {
                     name = "attach"
                 }?.hook {
-                    after {
-                        val controllerImpl = this.instance
-                        val holder = fldHolder?.get(controllerImpl) ?: return@after
+                    val ori = proceed()
+                    val controllerImpl = thisObject
+                    fldHolder?.get(controllerImpl)?.let { holder ->
                         getNewMediaBgView(holder, false)
                     }
+                    result(ori)
                 }
                 resolve().firstMethodOrNull {
                     name = "bindMediaData"
                 }?.hook {
-                    after {
-                        val mediaData = this.args(0).any() ?: return@after
-                        val packageName = fldPackageName?.get(mediaData) as? String ?: return@after
-                        val isArtWorkUpdate = fldIsArtWorkUpdate?.get(this.instance) == true || ncCurrentPkgName != packageName || !ncIsArtworkBound
+                    val ori = proceed()
+                    val mediaData = getArg(0)
+                    val packageName = fldPackageName?.get(mediaData)
+                    val isArtWorkUpdate = fldIsArtWorkUpdate?.get(thisObject) == true || ncCurrentPkgName != packageName || !ncIsArtworkBound
 
-                        val holder = fldHolder?.get(this.instance) ?: return@after
-                        val context = fldContext?.get(this.instance) as? Context ?: return@after
+                    val holder = fldHolder?.get(thisObject)
+                    val context = fldContext?.get(thisObject)
 
-                        if (isArtWorkUpdate) {
-                            val fullAodControllerLazy = fldFullAodController?.get(this.instance)
-                            val fullAodController = fullAodControllerLazy?.let { it1 -> metGet?.invoke(it1) }
-                            val enableFullAod = fldEnableFullAod?.get(fullAodController) == true
+                    if (mediaData == null || packageName == null || holder == null || context == null) {
+                        return@hook result(ori)
+                    }
 
-                            updateColor(context, mediaData, packageName, holder, PlayerType.NOTIFICATION_CANTER, context.isSystemInDarkMode || enableFullAod)
+                    if (isArtWorkUpdate) {
+                        val fullAodControllerLazy = fldFullAodController?.get(thisObject)
+                        val fullAodController = fullAodControllerLazy?.let { it1 -> metGet?.invoke(it1) }
+                        val enableFullAod = fldEnableFullAod?.get(fullAodController) ?: false
+
+                        updateColor(context, mediaData, packageName, holder, PlayerType.NOTIFICATION_CANTER, context.isSystemInDarkMode || enableFullAod)
+                    } else {
+                        val mediaBgView = getNewMediaBgView(holder, false)
+                        val ambientLightDrawable = mediaBgView?.drawable as? AmbientLightDrawable
+                        val isPlaying = fldIsPlaying?.get(mediaData) ?: false
+                        if (!inFullAod && isPlaying) {
+                            ambientLightDrawable?.resume()
                         } else {
-                            val mediaBgView = getNewMediaBgView(holder, false) ?: return@after
-                            val ambientLightDrawable = mediaBgView.drawable as? AmbientLightDrawable ?: return@after
-                            val isPlaying = fldIsPlaying?.get(mediaData) == true
-                            if (!inFullAod && isPlaying) {
-                                ambientLightDrawable.resume()
-                            } else {
-                                ambientLightDrawable.pause()
-                            }
+                            ambientLightDrawable?.pause()
                         }
                     }
+                    result(ori)
                 }
                 resolve().firstMethodOrNull {
                     name = "onFullAodStateChanged"
                 }?.hook {
-                    after {
-                        val holder = fldHolder?.get(this.instance) ?: return@after
-                        val ambientLightDrawable = getNewMediaBgView(holder, false)?.drawable as? AmbientLightDrawable ?: return@after
-                        val mediaData = fldMediaData?.get(this.instance) ?: return@after
-                        val toFullAod = this.args(0).boolean()
-                        if (toFullAod != inFullAod) {
-                            ambientLightDrawable.animateNextResize()
-                        }
-                        inFullAod = toFullAod
-                        val isPlaying = fldIsPlaying?.get(mediaData) == true
-                        if (!toFullAod && isPlaying) {
-                            ambientLightDrawable.resume()
-                        } else {
-                            ambientLightDrawable.pause()
-                        }
+                    val ori = proceed()
+                    val holder = fldHolder?.get(thisObject) ?: return@hook result(ori)
+                    val ambientLightDrawable = getNewMediaBgView(holder, false)?.drawable as? AmbientLightDrawable ?: return@hook result(ori)
+                    val mediaData = fldMediaData?.get(thisObject) ?: return@hook result(ori)
+                    val toFullAod = getArg(0) as? Boolean ?: false
+                    if (toFullAod != inFullAod) {
+                        ambientLightDrawable.animateNextResize()
                     }
+                    inFullAod = toFullAod
+                    val isPlaying = fldIsPlaying?.get(mediaData) ?: false
+                    if (!toFullAod && isPlaying) {
+                        ambientLightDrawable.resume()
+                    } else {
+                        ambientLightDrawable.pause()
+                    }
+                    result(ori)
                 }
                 resolve().firstMethodOrNull {
                     name = "updateForegroundColors"
                 }?.hook {
-                    before {
-                        val holder = fldHolder?.get(this.instance) ?: return@before
-                        val mediaBgView = getNewMediaBgView(holder, false)
-                        val ambientLightDrawable = mediaBgView?.drawable as? AmbientLightDrawable ?: return@before
-                        val context = fldContext?.get(this.instance) as? Context ?: return@before
-                        val fullAodControllerLazy = fldFullAodController?.get(this.instance)
-                        val fullAodController = fullAodControllerLazy?.let { it1 -> metGet?.invoke(it1) }
-                        val enableFullAod = fldEnableFullAod?.get(fullAodController) == true
-                        val isDark = enableFullAod || context.isSystemInDarkMode
-                        if (ncAmbientColorOpt) {
-                            val light = holder.getAdditionalInstanceField<Int>(KEY_MEDIA_BG_COLOR_LIGHT) ?: Color.TRANSPARENT
-                            val dark = holder.getAdditionalInstanceField<Int>(KEY_MEDIA_BG_COLOR_DARK) ?: Color.TRANSPARENT
-                            ambientLightDrawable.setGradientColor(if (isDark) dark else light, !mediaBgView.isShown)
-                        }
-                        ambientLightDrawable.setLightMode(!isDark)
+                    val holder = fldHolder?.get(thisObject) ?: return@hook result(proceed())
+                    val mediaBgView = getNewMediaBgView(holder, false)
+                    val ambientLightDrawable = mediaBgView?.drawable as? AmbientLightDrawable ?: return@hook result(proceed())
+                    val context = fldContext?.get(thisObject) ?: return@hook result(proceed())
+                    val fullAodControllerLazy = fldFullAodController?.get(thisObject)
+                    val fullAodController = fullAodControllerLazy?.let { it1 -> metGet?.invoke(it1) }
+                    val enableFullAod = fullAodController?.let { fldEnableFullAod?.get(it) } ?: false
+                    val isDark = enableFullAod || context.isSystemInDarkMode
+                    if (ncAmbientColorOpt) {
+                        val light = holder.lightMediaBgColor  ?: Color.TRANSPARENT
+                        val dark = holder.darkMediaBgColor ?: Color.TRANSPARENT
+                        ambientLightDrawable.setGradientColor(if (isDark) dark else light, !mediaBgView.isShown)
                     }
+                    ambientLightDrawable.setLightMode(!isDark)
+                    result(proceed())
                 }
             }
         }
@@ -238,125 +245,133 @@ object AmbientLight : YukiBaseHooker() {
             clzMiuiIslandMediaViewBinderImpl?.apply {
                 val fldContext = resolve().firstFieldOrNull {
                     name = "context"
-                }?.self
+                }?.toTyped<Context>()
                 val fldIsArtWorkUpdate = resolve().firstFieldOrNull {
                     name = "isArtWorkUpdate"
-                }?.self
+                }?.toTyped<Boolean>()
                 val fldHolder = resolve().firstFieldOrNull {
                     name = "holder"
-                }?.self
+                }?.toTyped<Any>()
                 val fldDummyHolder = resolve().firstFieldOrNull {
                     name = "dummyHolder"
-                }?.self
+                }?.toTyped<Any>()
                 val fldMediaBgTransYOffset = resolve().optional(true).firstFieldOrNull {
                     name = "mediaBgTransYOffset"
-                }?.self
+                }?.toTyped<Float>()
                 if (diAmbientLightType == 1) {
                     resolve().firstMethodOrNull {
                         name = "attach"
                     }?.hook {
-                        after {
-                            fldHolder?.get(this.instance)?.let { holder ->
-                                val mediaBgView = getMediaViewHolderField("mediaBgView", true)?.get(holder) as? View ?: return@let
-                                val parent = mediaBgView.parent as? ViewGroup ?: return@let
-                                parent.removeView(mediaBgView)
-                            }
-                            fldDummyHolder?.get(this.instance)?.let { holder ->
-                                val mediaBgView = getMediaViewHolderField("mediaBgView", true)?.get(holder) as? View ?: return@let
-                                val parent = mediaBgView.parent as? ViewGroup ?: return@let
-                                parent.removeView(mediaBgView)
-                            }
+                        val ori = proceed()
+                        fldHolder?.get(thisObject)?.let { holder ->
+                            val mediaBgView = getMediaViewHolderField("mediaBgView", true)?.get(holder) as? View ?: return@let
+                            val parent = mediaBgView.parent as? ViewGroup ?: return@let
+                            parent.removeView(mediaBgView)
                         }
+                        fldDummyHolder?.get(thisObject)?.let { holder ->
+                            val mediaBgView = getMediaViewHolderField("mediaBgView", true)?.get(holder) as? View ?: return@let
+                            val parent = mediaBgView.parent as? ViewGroup ?: return@let
+                            parent.removeView(mediaBgView)
+                        }
+                        result(ori)
                     }
                 } else {
                     resolve().firstMethodOrNull {
                         name = "detach"
                     }?.hook {
-                        after {
-                            val holder = fldHolder?.get(this.instance) ?: return@after
-                            val dummyHolder = fldDummyHolder?.get(this.instance) ?: return@after
+                        val ori = proceed()
+                        fldHolder?.get(thisObject)?.let { holder ->
                             (getNewMediaBgView(holder, true)?.drawable as? AmbientLightDrawable)?.stop()
-                            (getNewMediaBgView(dummyHolder, true)?.drawable as? AmbientLightDrawable)?.stop()
-                            diCurrentPkgName = ""
-                            diIsArtworkBound = false
-                            releaseCachedWallpaperColor()
                         }
+                        fldDummyHolder?.get(thisObject)?.let { dummyHolder ->
+                            (getNewMediaBgView(dummyHolder, true)?.drawable as? AmbientLightDrawable)?.stop()
+                        }
+                        diCurrentPkgName = ""
+                        diIsArtworkBound = false
+                        releaseCachedWallpaperColor()
+                        result(ori)
                     }
                     resolve().firstMethodOrNull {
                         name = "attach"
                     }?.hook {
-                        after {
-                            fldHolder?.get(this.instance)?.let { holder ->
-                                getNewMediaBgView(holder, true)
-                            }
-                            fldDummyHolder?.get(this.instance)?.let { holder ->
-                                getNewMediaBgView(holder, true)
-                            }
+                        val ori = proceed()
+                        fldHolder?.get(thisObject)?.let { holder ->
+                            getNewMediaBgView(holder, true)
                         }
+                        fldDummyHolder?.get(thisObject)?.let { holder ->
+                            getNewMediaBgView(holder, true)
+                        }
+                        result(ori)
                     }
                     resolve().firstMethodOrNull {
                         name = "bindMediaData"
                     }?.hook {
-                        after {
-                            val mediaData = this.args(0).any() ?: return@after
-                            val packageName = fldPackageName?.get(mediaData) as? String ?: return@after
-                            val isArtWorkUpdate = fldIsArtWorkUpdate?.get(this.instance) == true || diCurrentPkgName != packageName || !diIsArtworkBound
+                        val ori = proceed()
+                        val mediaData = getArg(0)
+                        val packageName = mediaData?.let { fldPackageName?.get(it) }
+                        val isArtWorkUpdate = fldIsArtWorkUpdate?.get(thisObject) == true || diCurrentPkgName != packageName || !diIsArtworkBound
 
-                            val holder = fldHolder?.get(this.instance) ?: return@after
-                            val dummyHolder = fldDummyHolder?.get(this.instance) ?: return@after
-                            val context = fldContext?.get(this.instance) as? Context ?: return@after
+                        val holder = fldHolder?.get(thisObject)
+                        val dummyHolder = fldDummyHolder?.get(thisObject)
+                        val context = fldContext?.get(thisObject)
 
-                            if (isArtWorkUpdate) {
-                                updateColor(context, mediaData, packageName, holder, PlayerType.DYNAMIC_ISLAND, true)
-                                updateColor(context, mediaData, packageName, dummyHolder, PlayerType.DUMMY_DYNAMIC_ISLAND, true)
+                        if (
+                            mediaData == null || packageName == null ||
+                            holder == null || dummyHolder == null || context == null
+                        ) {
+                            return@hook result(ori)
+                        }
+                        if (isArtWorkUpdate) {
+                            updateColor(context, mediaData, packageName, holder, PlayerType.DYNAMIC_ISLAND, true)
+                            updateColor(context, mediaData, packageName, dummyHolder, PlayerType.DUMMY_DYNAMIC_ISLAND, true)
+                        } else {
+                            val mediaBgView = getNewMediaBgView(holder, true)
+                            val dummyMediaBgView = getNewMediaBgView(dummyHolder, true)
+                            val ambientLightDrawable = mediaBgView?.drawable as? AmbientLightDrawable
+                            val dummyAmbientLightDrawable = dummyMediaBgView?.drawable as? AmbientLightDrawable
+                            val isPlaying = fldIsPlaying?.get(mediaData) ?: false
+                            if (isPlaying) {
+                                ambientLightDrawable?.resume()
+                                dummyAmbientLightDrawable?.resume()
                             } else {
-                                val mediaBgView = getNewMediaBgView(holder, true) ?: return@after
-                                val dummyMediaBgView = getNewMediaBgView(dummyHolder, true) ?: return@after
-                                val ambientLightDrawable = mediaBgView.drawable as? AmbientLightDrawable ?: return@after
-                                val dummyAmbientLightDrawable = dummyMediaBgView.drawable as? AmbientLightDrawable ?: return@after
-                                val isPlaying = fldIsPlaying?.get(mediaData) == true
-                                if (isPlaying) {
-                                    ambientLightDrawable.resume()
-                                    dummyAmbientLightDrawable.resume()
-                                } else {
-                                    ambientLightDrawable.pause()
-                                    dummyAmbientLightDrawable.pause()
-                                }
-                            }
-                            val mediaBgTransYOffset = fldMediaBgTransYOffset?.get(this.instance) as? Float
-                            if (mediaBgTransYOffset != null && mediaBgTransYOffset != 0.0f) {
-                                getNewMediaBgView(dummyHolder, true)?.translationY = mediaBgTransYOffset
+                                ambientLightDrawable?.pause()
+                                dummyAmbientLightDrawable?.pause()
                             }
                         }
+                        val mediaBgTransYOffset = fldMediaBgTransYOffset?.get(thisObject)
+                        if (mediaBgTransYOffset != null && mediaBgTransYOffset != 0.0f) {
+                            getNewMediaBgView(dummyHolder, true)?.translationY = mediaBgTransYOffset
+                        }
+                        result(ori)
                     }
                     $$"com.android.systemui.statusbar.notification.mediaisland.MiuiIslandMediaViewBinderImpl$attach$4$1".toClassOrNull()?.apply {
                         val fldHolder = resolve().firstFieldOrNull {
                             name = $$"$holder"
-                        }?.self
+                        }?.toTyped<Any>()
                         val fldDummyHolder = resolve().firstFieldOrNull {
                             name = $$"$dummyHolder"
-                        }?.self
+                        }?.toTyped<Any>()
                         resolve().firstMethodOrNull {
                             name = "emit"
                         }?.hook {
-                            after {
-                                val pair = this.args(0).any() ?: return@after
-                                val action = PairCompat.getFirst(pair) as? String ?: return@after
-                                val data = PairCompat.getSecond(pair) as? Bundle
-                                val mediaBgView = fldHolder?.get(this.instance)?.let { it1 -> getNewMediaBgView(it1, true) } ?: return@after
-                                val dummyMediaBgView = fldDummyHolder?.get(this.instance)?.let { it1 -> getNewMediaBgView(it1, true) } ?: return@after
-                                when (action) {
-                                    "pull_down_type_start" -> {
-                                        (mediaBgView.drawable as? AmbientLightDrawable)?.pause()
-                                    }
-                                    "pull_down_type_update" -> {
-                                        dummyMediaBgView.translationY = data?.getFloat("pull_down_action_offset_y", 0.0f) ?: 0.0f
-                                    }
-                                    "pull_down_type_finish" -> {
-                                        (mediaBgView.drawable as? AmbientLightDrawable)?.resume()
-                                    }
+                            val ori = proceed()
+                            val pair = getArg(0)
+                            val action = PairCompat.getFirst(pair) as? String
+                            val data = PairCompat.getSecond(pair) as? Bundle
+                            val mediaBgView = fldHolder?.get(thisObject)?.let { it1 -> getNewMediaBgView(it1, true) }
+                            val dummyMediaBgView = fldDummyHolder?.get(thisObject)?.let { it1 -> getNewMediaBgView(it1, true) }
+                            when (action) {
+                                "pull_down_type_start" -> {
+                                    (mediaBgView?.drawable as? AmbientLightDrawable)?.pause()
+                                }
+                                "pull_down_type_update" -> {
+                                    dummyMediaBgView?.translationY = data?.getFloat("pull_down_action_offset_y", 0.0f) ?: 0.0f
+                                }
+                                "pull_down_type_finish" -> {
+                                    (mediaBgView?.drawable as? AmbientLightDrawable)?.resume()
                                 }
                             }
+                            result(ori)
                         }
                     }
                 }
@@ -365,7 +380,7 @@ object AmbientLight : YukiBaseHooker() {
     }
 
     private fun getNewMediaBgView(mMediaViewHolder: Any, isDynamicIsland: Boolean): ImageView? {
-        val newMediaBgView = mMediaViewHolder.getAdditionalInstanceField<ImageView>(KEY_MEDIA_BG_VIEW)
+        val newMediaBgView = mMediaViewHolder.mediaBgView
         if (newMediaBgView?.drawable is AmbientLightDrawable) {
             return newMediaBgView
         } else {
@@ -397,14 +412,14 @@ object AmbientLight : YukiBaseHooker() {
             connect?.invoke(constraintSet, media_bg_view, ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT)
             connect?.invoke(constraintSet, media_bg_view, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
             applyTo?.invoke(constraintSet, parent)
-            mMediaViewHolder.setAdditionalInstanceField(KEY_MEDIA_BG_VIEW, musicBgView)
+            mMediaViewHolder.mediaBgView = musicBgView
             return musicBgView
         }
     }
 
     fun getMainColorHCT(drawable: Drawable): Int? {
         return metDrawable2Bitmap?.invoke(null, drawable)?.let { bitmap ->
-            metGetMainColorHCT?.invoke(null, bitmap) as? Int
+            metGetMainColorHCT?.invoke(null, bitmap)
         }
     }
 
@@ -412,7 +427,7 @@ object AmbientLight : YukiBaseHooker() {
         val isDynamicIsland = (type != PlayerType.NOTIFICATION_CANTER)
         val mediaBgView = getNewMediaBgView(holder, isDynamicIsland) ?: return
         val ambientLightDrawable = mediaBgView.drawable as? AmbientLightDrawable ?: return
-        val artwork = fldArtwork?.get(mediaData) as? Icon
+        val artwork = fldArtwork?.get(mediaData)
         val colorOpt = if (isDynamicIsland) diAmbientColorOpt else ncAmbientColorOpt
 
         HostExecutor.execute(
@@ -428,8 +443,8 @@ object AmbientLight : YukiBaseHooker() {
                         try {
                             val icon = context.packageManager.getApplicationIcon(pkgName)
                             mutableColorScheme = ctorColorScheme?.newInstance(WallpaperColors.fromDrawable(icon), true, enumStyleContent)?: throw Exception()
-                        } catch (_: Exception) {
-                            YLog.warn("application not found!")
+                        } catch (e: Exception) {
+                            e(e) { "application not found!" }
                             return@execute null
                         }
                     }
@@ -441,12 +456,12 @@ object AmbientLight : YukiBaseHooker() {
                     } else {
                         val light = accent1[4]
                         val dark = accent1[7]
-                        holder.setAdditionalInstanceField(KEY_MEDIA_BG_COLOR_LIGHT, light)
-                        holder.setAdditionalInstanceField(KEY_MEDIA_BG_COLOR_DARK, dark)
+                        holder.lightMediaBgColor = light
+                        holder.darkMediaBgColor = dark
                         mainColorHCT = if (isDark) dark else light
                     }
                 } else {
-                    val artWorkDrawable = (artwork?.loadDrawable(context) ?: (metAcquireApplicationIcon?.invoke(null, context, mediaData) as? Drawable)) ?: return@execute null
+                    val artWorkDrawable = (artwork?.loadDrawable(context) ?: metAcquireApplicationIcon?.invoke(null, context, mediaData)) ?: return@execute null
                     mainColorHCT = getMainColorHCT(artWorkDrawable) ?: Color.TRANSPARENT
                 }
                 return@execute mainColorHCT

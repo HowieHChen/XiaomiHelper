@@ -21,26 +21,29 @@
 package dev.lackluster.mihelper.hook.rules.systemui.lockscreen
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzMiuiKeyguardStatusBarView
-import dev.lackluster.mihelper.utils.Prefs
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
+import dev.lackluster.mihelper.hook.utils.toTyped
 
-object ForceColorScheme : YukiBaseHooker() {
-    private val forceColorScheme = Prefs.getInt(Pref.Key.SystemUI.LockScreen.FORCE_COLOR_STATUS_BAR, 0)
+object ForceColorScheme : StaticHooker() {
+    private val forceColorScheme by Preferences.SystemUI.LockScreen.FORCE_COLOR_STATUS_BAR.lazyGet()
+
+    override fun onInit() {
+        updateSelfState(forceColorScheme != 0)
+    }
 
     override fun onHook() {
-        if (forceColorScheme == 0) return
         clzMiuiKeyguardStatusBarView?.apply {
             val fldLightLockScreenWallpaper = resolve().firstFieldOrNull {
                 name = "mLightLockScreenWallpaper"
-            }
+            }?.toTyped<Boolean>()
             resolve().firstMethodOrNull {
                 name = "updateIconsAndTextColors"
             }?.hook {
-                before {
-                    fldLightLockScreenWallpaper?.copy()?.of(this.instance)?.set(forceColorScheme == 2)
-                }
+                fldLightLockScreenWallpaper?.set(thisObject, forceColorScheme == 2)
+                result(proceed())
             }
         }
     }

@@ -12,10 +12,12 @@ object Constants {
     const val ACTION_SCREENSHOT = "android.intent.action.CAPTURE_SCREENSHOT"
     const val ACTION_HOME = ACTION_PREFIX + "SYSTEM_ACTION_HOME"
     const val ACTION_RECENTS = ACTION_PREFIX + "SYSTEM_ACTION_RECENTS"
+    const val ACTION_FLOATING_WINDOW = ACTION_PREFIX + "SYSTEM_ACTION_FLOATING_WINDOW"
+    const val ACTION_SCROLL_TO_TOP = ACTION_PREFIX + "SYSTEM_ACTION_SCROLL_TOP"
 
     const val BACKUP_FILE_PREFIX = "hyper_helper_backup_"
 
-    const val UI_MODE_TYPE_SCALE_EXTRAL_SMALL = 10 // 0.9f
+    const val UI_MODE_TYPE_SCALE_EXTRA_SMALL = 10 // 0.9f
     const val UI_MODE_TYPE_SCALE_SMALL = 12 // 0.9f
     const val UI_MODE_TYPE_SCALE_MEDIUM = 13 // 1.0f
     const val UI_MODE_TYPE_SCALE_LARGE = 14 // 1.1f
@@ -305,106 +307,6 @@ object Constants {
             R.string.icon_tuner_single_mobile_sim2
         ),
     )
-
-    enum class MediaControlSpKey {
-        BACKGROUND_STYLE,
-        BLUR_RADIUS,
-        ALLOW_REVERSE,
-        AMBIENT_LIGHT_OPT,
-
-        LYT_ALBUM,
-        LYT_LEFT_ACTIONS,
-        LYT_ACTIONS_ORDER,
-        LYT_HIDE_TIME,
-        LYT_HIDE_SEAMLESS,
-        LYT_HEADER_MARGIN,
-        LYT_HEADER_PADDING,
-
-        ELM_TEXT_SIZE,
-        ELM_TITLE_SIZE,
-        ELM_ARTIST_SIZE,
-        ELM_TIME_SIZE,
-//        ELM_ACTIONS_RESIZE,
-        ELM_THUMB_STYLE,
-        ELM_PROGRESS_STYLE,
-        ELM_PROGRESS_WIDTH,
-        ELM_PROGRESS_ROUND,
-        ELM_PROGRESS_COMET,
-
-        FIX_THUMB_CROPPED,
-        USE_ANIM,
-    }
-
-    private val normalMediaControlSpKeyMap by lazy {
-        mapOf(
-            MediaControlSpKey.BACKGROUND_STYLE to Pref.Key.SystemUI.MediaControl.BACKGROUND_STYLE,
-            MediaControlSpKey.BLUR_RADIUS to Pref.Key.SystemUI.MediaControl.BLUR_RADIUS,
-            MediaControlSpKey.ALLOW_REVERSE to Pref.Key.SystemUI.MediaControl.ALLOW_REVERSE,
-            MediaControlSpKey.AMBIENT_LIGHT_OPT to Pref.Key.SystemUI.MediaControl.AMBIENT_LIGHT_OPT,
-
-            MediaControlSpKey.LYT_ALBUM to Pref.Key.SystemUI.MediaControl.LYT_ALBUM,
-            MediaControlSpKey.LYT_LEFT_ACTIONS to Pref.Key.SystemUI.MediaControl.LYT_LEFT_ACTIONS,
-            MediaControlSpKey.LYT_ACTIONS_ORDER to Pref.Key.SystemUI.MediaControl.LYT_ACTIONS_ORDER,
-            MediaControlSpKey.LYT_HIDE_TIME to Pref.Key.SystemUI.MediaControl.LYT_HIDE_TIME,
-            MediaControlSpKey.LYT_HIDE_SEAMLESS to Pref.Key.SystemUI.MediaControl.LYT_HIDE_SEAMLESS,
-            MediaControlSpKey.LYT_HEADER_MARGIN to Pref.Key.SystemUI.MediaControl.LYT_HEADER_MARGIN,
-            MediaControlSpKey.LYT_HEADER_PADDING to Pref.Key.SystemUI.MediaControl.LYT_HEADER_PADDING,
-
-            MediaControlSpKey.ELM_TEXT_SIZE to Pref.Key.SystemUI.MediaControl.ELM_TEXT_SIZE,
-            MediaControlSpKey.ELM_TITLE_SIZE to Pref.Key.SystemUI.MediaControl.ELM_TITLE_SIZE,
-            MediaControlSpKey.ELM_ARTIST_SIZE to Pref.Key.SystemUI.MediaControl.ELM_ARTIST_SIZE,
-            MediaControlSpKey.ELM_TIME_SIZE to Pref.Key.SystemUI.MediaControl.ELM_TIME_SIZE,
-//            MediaControlSpKey.ELM_ACTIONS_RESIZE to Pref.Key.SystemUI.MediaControl.ELM_ACTIONS_RESIZE,
-            MediaControlSpKey.ELM_THUMB_STYLE to Pref.Key.SystemUI.MediaControl.ELM_THUMB_STYLE,
-            MediaControlSpKey.ELM_PROGRESS_STYLE to Pref.Key.SystemUI.MediaControl.ELM_PROGRESS_STYLE,
-            MediaControlSpKey.ELM_PROGRESS_WIDTH to Pref.Key.SystemUI.MediaControl.ELM_PROGRESS_WIDTH,
-            MediaControlSpKey.ELM_PROGRESS_ROUND to Pref.Key.SystemUI.MediaControl.ELM_PROGRESS_ROUND,
-            MediaControlSpKey.ELM_PROGRESS_COMET to Pref.Key.SystemUI.MediaControl.ELM_PROGRESS_COMET,
-
-            MediaControlSpKey.FIX_THUMB_CROPPED to Pref.Key.SystemUI.MediaControl.FIX_THUMB_CROPPED,
-            MediaControlSpKey.USE_ANIM to Pref.Key.SystemUI.MediaControl.USE_ANIM,
-        )
-    }
-
-    private val islandMediaControlSpKeyMap by lazy {
-        mapOf(
-            MediaControlSpKey.BACKGROUND_STYLE to Pref.Key.DynamicIsland.MediaControl.BACKGROUND_STYLE,
-            MediaControlSpKey.BLUR_RADIUS to Pref.Key.DynamicIsland.MediaControl.BLUR_RADIUS,
-            MediaControlSpKey.ALLOW_REVERSE to Pref.Key.DynamicIsland.MediaControl.ALLOW_REVERSE,
-            MediaControlSpKey.AMBIENT_LIGHT_OPT to Pref.Key.DynamicIsland.MediaControl.AMBIENT_LIGHT_OPT,
-
-            MediaControlSpKey.LYT_ALBUM to Pref.Key.DynamicIsland.MediaControl.LYT_ALBUM,
-            MediaControlSpKey.LYT_LEFT_ACTIONS to Pref.Key.DynamicIsland.MediaControl.LYT_LEFT_ACTIONS,
-            MediaControlSpKey.LYT_ACTIONS_ORDER to Pref.Key.DynamicIsland.MediaControl.LYT_ACTIONS_ORDER,
-            MediaControlSpKey.LYT_HIDE_TIME to Pref.Key.DynamicIsland.MediaControl.LYT_HIDE_TIME,
-            MediaControlSpKey.LYT_HIDE_SEAMLESS to Pref.Key.DynamicIsland.MediaControl.LYT_HIDE_SEAMLESS,
-            MediaControlSpKey.LYT_HEADER_MARGIN to Pref.Key.DynamicIsland.MediaControl.LYT_HEADER_MARGIN,
-            MediaControlSpKey.LYT_HEADER_PADDING to Pref.Key.DynamicIsland.MediaControl.LYT_HEADER_PADDING,
-
-            MediaControlSpKey.ELM_TEXT_SIZE to Pref.Key.DynamicIsland.MediaControl.ELM_TEXT_SIZE,
-            MediaControlSpKey.ELM_TITLE_SIZE to Pref.Key.DynamicIsland.MediaControl.ELM_TITLE_SIZE,
-            MediaControlSpKey.ELM_ARTIST_SIZE to Pref.Key.DynamicIsland.MediaControl.ELM_ARTIST_SIZE,
-            MediaControlSpKey.ELM_TIME_SIZE to Pref.Key.DynamicIsland.MediaControl.ELM_TIME_SIZE,
-//            MediaControlSpKey.ELM_ACTIONS_RESIZE to Pref.Key.DynamicIsland.MediaControl.ELM_ACTIONS_RESIZE,
-            MediaControlSpKey.ELM_THUMB_STYLE to Pref.Key.DynamicIsland.MediaControl.ELM_THUMB_STYLE,
-            MediaControlSpKey.ELM_PROGRESS_STYLE to Pref.Key.DynamicIsland.MediaControl.ELM_PROGRESS_STYLE,
-            MediaControlSpKey.ELM_PROGRESS_WIDTH to Pref.Key.DynamicIsland.MediaControl.ELM_PROGRESS_WIDTH,
-            MediaControlSpKey.ELM_PROGRESS_ROUND to Pref.Key.DynamicIsland.MediaControl.ELM_PROGRESS_ROUND,
-            MediaControlSpKey.ELM_PROGRESS_COMET to Pref.Key.DynamicIsland.MediaControl.ELM_PROGRESS_COMET,
-
-            MediaControlSpKey.FIX_THUMB_CROPPED to Pref.Key.DynamicIsland.MediaControl.FIX_THUMB_CROPPED,
-            MediaControlSpKey.USE_ANIM to Pref.Key.DynamicIsland.MediaControl.USE_ANIM,
-        )
-    }
-
-    fun MediaControlSpKey.getKey(isDynamicIsland: Boolean): String {
-        return if (isDynamicIsland) {
-            islandMediaControlSpKeyMap.getOrDefault(this, "")
-        } else {
-            normalMediaControlSpKeyMap.getOrDefault(this, "")
-        }
-    }
-
 
     val COMPOUND_ICON_REAL_SLOTS = listOf(
         IconSlots.COMPOUND_ICON_REAL_LOCATION,

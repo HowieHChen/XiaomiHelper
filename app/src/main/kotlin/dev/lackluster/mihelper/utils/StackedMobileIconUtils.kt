@@ -6,7 +6,6 @@ import com.caverock.androidsvg.RenderOptions
 import com.caverock.androidsvg.SVG
 import com.caverock.androidsvg.SVGParseException
 import com.caverock.androidsvg.SvgAnchorExtractor
-import com.highcapable.yukihookapi.hook.log.YLog
 
 object StackedMobileIconUtils {
     fun generateStackedSignalPictures(
@@ -22,7 +21,7 @@ object StackedMobileIconUtils {
         ).forEach { id ->
             val regex = Regex("""id\s*=\s*['"]$id['"]""")
             if (!regex.containsMatchIn(stackedMobileSVGString)) {
-                YLog.error("SVG Validation failed: Missing required ID -> $id")
+                MLog.e { "SVG Validation failed: Missing required ID -> $id" }
                 return false
             }
         }
@@ -44,7 +43,7 @@ object StackedMobileIconUtils {
             }
             return true
         } catch (e: SVGParseException) {
-            YLog.error(e)
+            MLog.e(e)
             return false
         }
     }
@@ -61,7 +60,7 @@ object StackedMobileIconUtils {
         ).forEach{ id ->
             val regex = Regex("""id\s*=\s*['"]$id['"]""")
             if (!regex.containsMatchIn(singleMobileSVGString)) {
-                YLog.error("Single SVG Validation failed: Missing required ID -> $id")
+                MLog.e { "Single SVG Validation failed: Missing required ID -> $id" }
                 return false
             }
         }
@@ -79,7 +78,7 @@ object StackedMobileIconUtils {
             }
             return true
         } catch (e: SVGParseException) {
-            YLog.error(e)
+            MLog.e(e)
             return false
         }
     }
@@ -93,7 +92,7 @@ object StackedMobileIconUtils {
             // 调用我们的伪装类，直接拿百分比！
             return SvgAnchorExtractor.extractCenterPercent(svg)
         } catch (e: Exception) {
-            YLog.error(e)
+            MLog.e(e)
         }
         return null
     }

@@ -22,78 +22,38 @@ package dev.lackluster.mihelper.hook.rules.systemui.compat
 
 import android.graphics.Typeface
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import dev.lackluster.mihelper.data.Constants.VARIABLE_FONT_DEFAULT_PATH
-import dev.lackluster.mihelper.data.Pref.Key.SystemUI.FontWeight
-import dev.lackluster.mihelper.utils.Prefs
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
 import dev.lackluster.mihelper.utils.SystemProperties
 import java.io.File
 import java.lang.reflect.Field
 import java.util.concurrent.ConcurrentHashMap
 
-object CommonClassUtils : YukiBaseHooker() {
-    val clzMiuiClock by lazy {
-        "com.android.systemui.statusbar.views.MiuiClock".toClassOrNull()
-    }
-    val clzMiuiKeyguardStatusBarView by lazy {
-        "com.android.systemui.statusbar.phone.MiuiKeyguardStatusBarView".toClassOrNull()
-    }
-    val clzMiuiBatteryMeterView by lazy {
-        "com.android.systemui.statusbar.views.MiuiBatteryMeterView".toClassOrNull()
-    }
-    val clzStatusBarIconControllerImpl by lazy {
-        "com.android.systemui.statusbar.phone.ui.StatusBarIconControllerImpl".toClassOrNull()
-    }
-    val clzJavaAdapterKt by lazy {
-        "com.android.systemui.util.kotlin.JavaAdapterKt".toClassOrNull()
-    }
+object CommonClassUtils : StaticHooker() {
+    val clzMiuiClock by "com.android.systemui.statusbar.views.MiuiClock".lazyClassOrNull()
+    val clzMiuiKeyguardStatusBarView by "com.android.systemui.statusbar.phone.MiuiKeyguardStatusBarView".lazyClassOrNull()
+    val clzMiuiBatteryMeterView by "com.android.systemui.statusbar.views.MiuiBatteryMeterView".lazyClassOrNull()
+    val clzStatusBarIconControllerImpl by "com.android.systemui.statusbar.phone.ui.StatusBarIconControllerImpl".lazyClassOrNull()
+    val clzJavaAdapterKt by "com.android.systemui.util.kotlin.JavaAdapterKt".lazyClassOrNull()
 
-    val clzReadonlyStateFlow by lazy {
-        "kotlinx.coroutines.flow.ReadonlyStateFlow".toClassOrNull()
-    }
-    val clzStateFlowKt by lazy {
-        "kotlinx.coroutines.flow.StateFlowKt".toClassOrNull()
-    }
-    val clzMutableStateFlow by lazy {
-        "kotlinx.coroutines.flow.MutableStateFlow".toClassOrNull()
-    }
-    val clzStateFlowImpl by lazy {
-        "kotlinx.coroutines.flow.StateFlowImpl".toClassOrNull()
-    }
-    val clzMainDispatcherLoader by lazy {
-        "kotlinx.coroutines.internal.MainDispatcherLoader".toClassOrNull()
-    }
-    val clzCoroutineScope by lazy {
-        "kotlinx.coroutines.CoroutineScope".toClassOrNull()
-    }
-    val clzEmptyCoroutineContext by lazy {
-        "kotlin.coroutines.EmptyCoroutineContext".toClassOrNull()
-    }
-    val clzPair by lazy {
-        "kotlin.Pair".toClass()
-    }
-    val clzTriple by lazy {
-        "kotlin.Triple".toClass()
-    }
-    val clzJob by lazy {
-        "kotlinx.coroutines.Job".toClassOrNull()
-    }
+    val clzReadonlyStateFlow by "kotlinx.coroutines.flow.ReadonlyStateFlow".lazyClassOrNull()
+    val clzStateFlowKt by "kotlinx.coroutines.flow.StateFlowKt".lazyClassOrNull()
+    val clzMutableStateFlow by "kotlinx.coroutines.flow.MutableStateFlow".lazyClassOrNull()
+    val clzStateFlowImpl by "kotlinx.coroutines.flow.StateFlowImpl".lazyClassOrNull()
+    val clzMainDispatcherLoader by "kotlinx.coroutines.internal.MainDispatcherLoader".lazyClassOrNull()
+    val clzCoroutineScope by "kotlinx.coroutines.CoroutineScope".lazyClassOrNull()
+    val clzEmptyCoroutineContext by "kotlin.coroutines.EmptyCoroutineContext".lazyClassOrNull()
+    val clzPair by "kotlin.Pair".lazyClass()
+    val clzTriple by "kotlin.Triple".lazyClass()
+    val clzJob by "kotlinx.coroutines.Job".lazyClassOrNull()
 
-    val clzMiuiMediaViewControllerImpl by lazy {
-        "com.android.systemui.statusbar.notification.mediacontrol.MiuiMediaViewControllerImpl".toClassOrNull()
-    }
-    val clzMiuiMediaViewHolder by lazy {
-        "com.android.systemui.statusbar.notification.mediacontrol.MiuiMediaViewHolder".toClassOrNull()
-    }
-    val clzMiuiMediaNotificationControllerImpl by lazy {
-        "com.android.systemui.statusbar.notification.mediacontrol.MiuiMediaNotificationControllerImpl".toClassOrNull()
-    }
-    val clzMiuiIslandMediaViewBinderImpl by lazy {
-        "com.android.systemui.statusbar.notification.mediaisland.MiuiIslandMediaViewBinderImpl".toClassOrNull()
-    }
-    val clzMiuiIslandMediaViewHolder by lazy {
-        "com.android.systemui.statusbar.notification.mediaisland.MiuiIslandMediaViewHolder".toClassOrNull()
-    }
+    val clzMiuiMediaViewControllerImpl by "com.android.systemui.statusbar.notification.mediacontrol.MiuiMediaViewControllerImpl".lazyClassOrNull()
+    val clzMiuiMediaViewHolder by "com.android.systemui.statusbar.notification.mediacontrol.MiuiMediaViewHolder".lazyClassOrNull()
+    val clzMiuiMediaNotificationControllerImpl by "com.android.systemui.statusbar.notification.mediacontrol.MiuiMediaNotificationControllerImpl".lazyClassOrNull()
+    val clzMiuiIslandMediaViewBinderImpl by "com.android.systemui.statusbar.notification.mediaisland.MiuiIslandMediaViewBinderImpl".lazyClassOrNull()
+    val clzMiuiIslandMediaViewHolder by "com.android.systemui.statusbar.notification.mediaisland.MiuiIslandMediaViewHolder".lazyClassOrNull()
 
     val readonlyStateFlowFalse by lazy {
         MutableStateFlowCompat(false).toReadonlyStateFlow()
@@ -107,7 +67,7 @@ object CommonClassUtils : YukiBaseHooker() {
 
     val fontPath by lazy {
         val defaultPath = SystemProperties.get("ro.miui.ui.font.mi_font_path", VARIABLE_FONT_DEFAULT_PATH)
-        val prefPath = Prefs.getString(FontWeight.FONT_PATH_INTERNAL, defaultPath)
+        val prefPath = Preferences.SystemUI.StatusBar.Font.FONT_PATH_INTERNAL.get()
         val fontFile = File(prefPath)
         if (fontFile.exists() && fontFile.isFile && fontFile.canRead()) prefPath else defaultPath
     }
@@ -123,23 +83,25 @@ object CommonClassUtils : YukiBaseHooker() {
         mutableMapOf<String, Field?>()
     }
 
-    override fun onHook() {
-        loadHooker(ConstraintSetCompat)
+    override fun onInit() {
+        attach(ConstraintSetCompat, null)
         clzMiuiClock
         clzMiuiKeyguardStatusBarView
         clzMiuiBatteryMeterView
         clzStatusBarIconControllerImpl
+        clzJavaAdapterKt
+
         clzReadonlyStateFlow
         clzStateFlowKt
         clzMutableStateFlow
         clzStateFlowImpl
-        clzJavaAdapterKt
         clzCoroutineScope
         clzEmptyCoroutineContext
         clzMainDispatcherLoader
         clzPair
         clzTriple
         clzJob
+
         clzMiuiMediaViewControllerImpl
         clzMiuiMediaViewHolder
         clzMiuiMediaNotificationControllerImpl

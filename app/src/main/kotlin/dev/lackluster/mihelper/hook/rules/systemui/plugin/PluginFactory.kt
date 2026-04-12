@@ -27,49 +27,48 @@ package dev.lackluster.mihelper.hook.rules.systemui.plugin
 import android.content.ComponentName
 import android.content.Context
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.log.YLog
 import dev.lackluster.mihelper.data.Scope
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.d
+import dev.lackluster.mihelper.hook.utils.toTyped
 
-object PluginFactory : YukiBaseHooker() {
+object PluginFactory : StaticHooker() {
     private const val PACKAGE_NAME_PLUGIN = Scope.SYSTEM_UI_PLUGIN
     private const val CLASS_NAME_FOCUS_NOTIFICATION = "miui.systemui.notification.FocusNotificationPluginImpl"
     private const val CLASS_NAME_CONTROL_CENTER = "miui.systemui.controlcenter.MiuiControlCenter"
 
-    override fun onHook() {
+    override fun onInit() {
         $$"com.android.systemui.shared.plugins.PluginInstance$PluginFactory".toClassOrNull()?.apply {
             val fldComponentName = resolve().firstFieldOrNull {
                 name = "mComponentName"
-            }
+            }?.toTyped<ComponentName>()
             resolve().firstMethodOrNull {
                 name = "createPluginContext"
             }?.hook {
-                after {
-                    val context = this.result<Context>()
-                    val classLoader = context?.classLoader ?: return@after
-                    val componentName = fldComponentName?.copy()?.of(this.instance)?.get<ComponentName>()
-                    if (componentName?.packageName == PACKAGE_NAME_PLUGIN) {
-                        YLog.info(componentName.className)
-                        when (componentName.className) {
-                            CLASS_NAME_FOCUS_NOTIFICATION -> {
-                                listOf(
-                                    IslandWhitelist,
-                                ).forEach { hooker ->
-                                    hooker.appClassLoader = classLoader
-                                    loadHooker(hooker)
-                                }
+                val ori = proceed()
+                val context = ori as? Context
+                val classLoader = context?.classLoader ?: return@hook result(ori)
+                val componentName = fldComponentName?.get(thisObject)
+                if (componentName?.packageName == PACKAGE_NAME_PLUGIN) {
+                    d { "createPluginContext ${componentName.className}" }
+                    when (componentName.className) {
+                        CLASS_NAME_FOCUS_NOTIFICATION -> {
+                            listOf(
+                                IslandWhitelist,
+                            ).forEach { hooker ->
+                                attach(hooker, classLoader)
                             }
-                            CLASS_NAME_CONTROL_CENTER -> {
-                                listOf(
-                                    HideEditButton,
-                                ).forEach { hooker ->
-                                    hooker.appClassLoader = classLoader
-                                    loadHooker(hooker)
-                                }
+                        }
+                        CLASS_NAME_CONTROL_CENTER -> {
+                            listOf(
+                                HideEditButton,
+                            ).forEach { hooker ->
+                                attach(hooker, classLoader)
                             }
                         }
                     }
                 }
+                result(ori)
             }
         }
     }

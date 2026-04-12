@@ -24,81 +24,82 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.kavaref.extension.makeAccessible
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.Prefs
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
+import dev.lackluster.mihelper.hook.utils.toTyped
 
-object HideClearButton : YukiBaseHooker() {
-    private val memInfoClear = Prefs.getBoolean(Pref.Key.MiuiHome.RECENT_MEM_INFO_CLEAR, false)
+object HideClearButton : StaticHooker() {
+    private val memInfoClear by Preferences.MiuiHome.RECENT_MEM_INFO_CLEAR.lazyGet()
     private val clzRecentsContainer by lazy {
         "com.miui.home.recents.views.RecentsContainer".toClassOrNull()
     }
     private val metCleanInRecents by lazy {
         clzRecentsContainer?.resolve()?.firstMethodOrNull {
             name = "cleanInRecents"
-        }?.self?.apply { makeAccessible() }
+        }?.toTyped<Unit>()
     }
     private val metIsClearContainerVisible by lazy {
         clzRecentsContainer?.resolve()?.firstMethodOrNull {
             name = "isClearContainerVisible"
-        }?.self?.apply { makeAccessible() }
+        }?.toTyped<Boolean>()
+    }
+
+    override fun onInit() {
+        updateSelfState(Preferences.MiuiHome.HIDE_RECENT_CLEAR_BUTTON.get())
     }
 
     override fun onHook() {
-        hasEnable(Pref.Key.MiuiHome.RECENT_HIDE_CLEAR_BUTTON) {
-            clzRecentsContainer?.apply {
-                val fldClearAnimView = resolve().firstFieldOrNull {
-                    name = "mClearAnimView"
+        clzRecentsContainer?.apply {
+            val fldClearAnimView = resolve().firstFieldOrNull {
+                name = "mClearAnimView"
+            }?.toTyped<View>()
+            val fldTxtMemoryInfo1 = resolve().firstFieldOrNull {
+                name = "mTxtMemoryInfo1"
+            }?.toTyped<TextView>()
+            val fldTxtMemoryInfo2 = resolve().firstFieldOrNull {
+                name = "mTxtMemoryInfo2"
+            }?.toTyped<TextView>()
+            val fldSeparatorForMemoryInfo = resolve().firstFieldOrNull {
+                name = "mSeparatorForMemoryInfo"
+            }?.toTyped<View>()
+            val fldTxtMemoryContainer = resolve().firstFieldOrNull {
+                name = "mTxtMemoryContainer"
+            }?.toTyped<ViewGroup>()
+            resolve().firstMethodOrNull {
+                name = "onFinishInflate"
+            }?.hook {
+                val ori = proceed()
+                fldClearAnimView?.get(thisObject)?.apply {
+                    isClickable = false
+                    isLongClickable = false
+                    setOnClickListener(null)
+                    setOnLongClickListener(null)
+                    visibility = View.INVISIBLE
                 }
-                val fldTxtMemoryInfo1 = resolve().firstFieldOrNull {
-                    name = "mTxtMemoryInfo1"
-                }
-                val fldTxtMemoryInfo2 = resolve().firstFieldOrNull {
-                    name = "mTxtMemoryInfo2"
-                }
-                val fldSeparatorForMemoryInfo = resolve().firstFieldOrNull {
-                    name = "mSeparatorForMemoryInfo"
-                }
-                val fldTxtMemoryContainer = resolve().firstFieldOrNull {
-                    name = "mTxtMemoryContainer"
-                }
-                resolve().firstMethodOrNull {
-                    name = "onFinishInflate"
-                }?.hook {
-                    after {
-                        fldClearAnimView?.copy()?.of(this.instance)?.get<View>()?.apply {
-                            isClickable = false
-                            isLongClickable = false
-                            setOnClickListener(null)
-                            setOnLongClickListener(null)
-                            visibility = View.INVISIBLE
-                        }
-                        if (memInfoClear) {
-                            val instance = this.instance
-                            fldTxtMemoryInfo1?.copy()?.of(this.instance)?.get<TextView>()?.apply {
-                                isClickable = false
+                if (memInfoClear) {
+                    fldTxtMemoryInfo1?.get(thisObject)?.apply {
+                        isClickable = false
+                    }
+                    fldTxtMemoryInfo2?.get(thisObject)?.apply {
+                        isClickable = false
+                    }
+                    fldSeparatorForMemoryInfo?.get(thisObject)?.apply {
+                        isClickable = false
+                    }
+                    fldTxtMemoryContainer?.get(thisObject)?.apply {
+                        isLongClickable = true
+                        setOnLongClickListener {
+                            val isClearContainerVisible = metIsClearContainerVisible?.invoke(thisObject) ?: false
+                            if (isClearContainerVisible) {
+                                metCleanInRecents?.invoke(thisObject)
                             }
-                            fldTxtMemoryInfo2?.copy()?.of(this.instance)?.get<TextView>()?.apply {
-                                isClickable = false
-                            }
-                            fldSeparatorForMemoryInfo?.copy()?.of(this.instance)?.get<View>()?.apply {
-                                isClickable = false
-                            }
-                            fldTxtMemoryContainer?.copy()?.of(this.instance)?.get<ViewGroup>()?.apply {
-                                isLongClickable = true
-                                setOnLongClickListener {
-                                    val isClearContainerVisible = metIsClearContainerVisible?.invoke(instance) == true
-                                    if (isClearContainerVisible) {
-                                        metCleanInRecents?.invoke(instance)
-                                    }
-                                    true
-                                }
-                            }
+                            true
                         }
                     }
                 }
+                result(ori)
             }
         }
     }

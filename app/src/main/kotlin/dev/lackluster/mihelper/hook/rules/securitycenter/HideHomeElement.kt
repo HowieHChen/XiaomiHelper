@@ -21,14 +21,15 @@
 package dev.lackluster.mihelper.hook.rules.securitycenter
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.Prefs
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
 
-object HideHomeElement : YukiBaseHooker() {
-    private val hideRec = Prefs.getBoolean(Pref.Key.SecurityCenter.HIDE_HOME_REC, false)
-    private val hideCommon = Prefs.getBoolean(Pref.Key.SecurityCenter.HIDE_HOME_COMMON, false)
-    private val hidePopular = Prefs.getBoolean(Pref.Key.SecurityCenter.HIDE_HOME_POPULAR, false)
+object HideHomeElement : StaticHooker() {
+    private val hideRec by Preferences.SecurityCenter.HIDE_HOME_REC.lazyGet()
+    private val hideCommon by Preferences.SecurityCenter.HIDE_HOME_COMMON.lazyGet()
+    private val hidePopular by Preferences.SecurityCenter.HIDE_HOME_POPULAR.lazyGet()
+
     private val removeElements by lazy {
         mutableListOf<String>().apply {
             if (hideRec) {
@@ -45,33 +46,37 @@ object HideHomeElement : YukiBaseHooker() {
         }
     }
 
+    override fun onInit() {
+        updateSelfState(hideRec || hideCommon || hidePopular)
+    }
+
     override fun onHook() {
-        if (hideRec || hideCommon || hidePopular) {
-            "com.miui.common.card.CardViewRvAdapter".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
-                    name = "addAll"
-                    parameters("java.util.List")
-                }?.hook {
-                    before {
-                        this.args(0).list<Any>().filterNot {
-                            removeElements.contains(it.javaClass.name)
-                        }.toList().let {
-                            this.args(0).set(it)
-                        }
-                    }
+        "com.miui.common.card.CardViewRvAdapter".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "addAll"
+                parameters("java.util.List")
+            }?.hook {
+                val newArgs = args.toTypedArray()
+                val list = newArgs[0] as? List<*>
+                list?.filter {
+                    it != null && !removeElements.contains(it.javaClass.name)
+                }?.toList()?.let {
+                    newArgs[0] = it
                 }
-                resolve().firstMethodOrNull {
-                    name = "setModelList"
-                    parameters("java.util.ArrayList")
-                }?.hook {
-                    before {
-                        this.args(0).list<Any>().filterNot {
-                            removeElements.contains(it.javaClass.name)
-                        }.toMutableList().let {
-                            this.args(0).set(it)
-                        }
-                    }
+                result(proceed(newArgs))
+            }
+            resolve().firstMethodOrNull {
+                name = "setModelList"
+                parameters("java.util.ArrayList")
+            }?.hook {
+                val newArgs = args.toTypedArray()
+                val list = newArgs[0] as? List<*>
+                list?.filter {
+                    it != null && !removeElements.contains(it.javaClass.name)
+                }?.toMutableList()?.let {
+                    newArgs[0] = it
                 }
+                result(proceed(newArgs))
             }
         }
     }

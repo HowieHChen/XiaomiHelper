@@ -23,22 +23,25 @@
 package dev.lackluster.mihelper.hook.rules.updater
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
 
-object DisableValidation : YukiBaseHooker() {
+object DisableValidation : StaticHooker() {
+    override fun onInit() {
+        updateSelfState(Preferences.Updater.DISABLE_VALIDATION.get())
+    }
+
     override fun onHook() {
-        hasEnable(Pref.Key.Updater.DISABLE_VALIDATION) {
-            "miui.util.FeatureParser".toClassOrNull()?.resolve()?.firstMethodOrNull {
-                name = "hasFeature"
-                parameterCount = 2
-            }?.hook {
-                before {
-                    if (this.args(0).string() == "support_ota_validate") {
-                        this.result = false
-                    }
-                }
+        "miui.util.FeatureParser".toClassOrNull()?.resolve()?.firstMethodOrNull {
+            name = "hasFeature"
+            parameterCount = 2
+        }?.hook {
+            val key = getArg(0) as? String
+            if (key == "support_ota_validate") {
+                result(false)
+            } else {
+                result(proceed())
             }
         }
     }

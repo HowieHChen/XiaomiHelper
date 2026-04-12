@@ -95,6 +95,12 @@ class MediaControlViewModel(
                 }
             }
         }
+        viewModelScope.launch(Dispatchers.Default) {
+            repo.globalReloadEvent.collect {
+                _islandState.update { loadConfig(isIsland = true) }
+                _normalState.update { loadConfig(isIsland = false) }
+            }
+        }
     }
 
     private fun loadConfig(isIsland: Boolean): MediaControlState {

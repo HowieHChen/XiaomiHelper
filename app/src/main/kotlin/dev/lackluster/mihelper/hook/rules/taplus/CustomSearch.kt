@@ -23,15 +23,15 @@ package dev.lackluster.mihelper.hook.rules.taplus
 import android.content.Context
 import android.content.Intent
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.Prefs
-import dev.lackluster.mihelper.utils.factory.hasEnable
 import androidx.core.net.toUri
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
 
-object CustomSearch : YukiBaseHooker() {
-    private val searchEngine = Prefs.getInt(Pref.Key.Taplus.SEARCH_ENGINE, 0)
-    private val searchEngineUrl = Prefs.getString(Pref.Key.Taplus.SEARCH_URL, "")
+object CustomSearch : StaticHooker() {
+    private val searchEngine by Preferences.Taplus.SEARCH_ENGINE.lazyGet()
+    private val searchEngineUrl by Preferences.Taplus.CUSTOM_SEARCH_URL.lazyGet()
     private val searchUrlValues = arrayOf(
         "",
         "https://www.baidu.com/s?wd=%s",
@@ -39,36 +39,41 @@ object CustomSearch : YukiBaseHooker() {
         "https://www.bing.com/search?q=%s",
         "https://www.google.com/search?q=%s",
     )
+
+    override fun onInit() {
+        updateSelfState(Preferences.Taplus.SEARCH_USE_BROWSER.get())
+    }
+
     override fun onHook() {
-        hasEnable(Pref.Key.Taplus.SEARCH_USE_BROWSER) {
-            "com.miui.contentextension.utils.AppsUtils".toClassOrNull()?.resolve()?.firstMethodOrNull {
-                name = "openGlobalSearch"
-            }?.hook {
-                before {
-                    val context = this.args(0).cast<Context>() ?: return@before
-                    val queryString = this.args(1).cast<String>() ?: return@before
-                    var searchUrl =
-                        when (searchEngine) {
-                            in 1..4 -> searchUrlValues[searchEngine].replaceFirst("%s",queryString)
-                            5 -> searchEngineUrl?.replaceFirst("%s",queryString)
-                            else -> ""
-                        }
-                    val intent = Intent().apply {
-                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        "com.miui.contentextension.utils.AppsUtils".toClassOrNull()?.resolve()?.firstMethodOrNull {
+            name = "openGlobalSearch"
+        }?.hook {
+            val context = getArg(0) as? Context
+            val query = getArg(1) as? String
+            if (context != null && query != null) {
+                var searchUrl =
+                    when (searchEngine) {
+                        in 1..4 -> searchUrlValues[searchEngine].replaceFirst("%s",query)
+                        5 -> searchEngineUrl.replaceFirst("%s",query)
+                        else -> ""
                     }
-                    if (searchEngine == 0 || searchUrl.isNullOrBlank()) {
-                        intent.action = Intent.ACTION_WEB_SEARCH
-                        intent.putExtra("query", queryString)
-                    } else {
-                        if (!searchUrl.startsWith("https://") && !searchUrl.startsWith("http://")) {
-                            searchUrl = "https://$searchUrl"
-                        }
-                        intent.action = Intent.ACTION_VIEW
-                        intent.data = searchUrl.toUri()
-                    }
-                    context.startActivity(intent)
-                    this.result = null
+                val intent = Intent().apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 }
+                if (searchEngine == 0 || searchUrl.isBlank()) {
+                    intent.action = Intent.ACTION_WEB_SEARCH
+                    intent.putExtra("query", query)
+                } else {
+                    if (!searchUrl.startsWith("https://") && !searchUrl.startsWith("http://")) {
+                        searchUrl = "https://$searchUrl"
+                    }
+                    intent.action = Intent.ACTION_VIEW
+                    intent.data = searchUrl.toUri()
+                }
+                context.startActivity(intent)
+                result(null)
+            } else {
+                result(proceed())
             }
         }
     }

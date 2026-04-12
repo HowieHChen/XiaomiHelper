@@ -13,12 +13,13 @@ import android.text.TextPaint
 import android.util.LruCache
 import android.view.View
 import androidx.core.graphics.createBitmap
-import com.highcapable.yukihookapi.hook.log.YLog
 import dev.lackluster.mihelper.BuildConfig
 import dev.lackluster.mihelper.data.Constants
 import dev.lackluster.mihelper.data.Constants.VARIABLE_FONT_DEFAULT_PATH
-import dev.lackluster.mihelper.data.Pref.Key.SystemUI.StackedMobile
-import dev.lackluster.mihelper.utils.Prefs
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
+import dev.lackluster.mihelper.utils.MLog
 import dev.lackluster.mihelper.utils.StackedMobileIconUtils
 import dev.lackluster.mihelper.utils.SystemProperties
 import java.io.File
@@ -28,24 +29,34 @@ import kotlin.math.max
 import kotlin.math.min
 
 object CellularIconRenderEngine {
-    private val typeFontMode = Prefs.getInt(StackedMobile.TYPE_FONT_MODE, 0)
-    private val typeWidthCondensed = Prefs.getInt(StackedMobile.TYPE_WIDTH_CONDENSED, 80).coerceIn(10, 200)
+    private const val TAG = "CellularIconRenderEngine"
 
-    private val standaloneTypeSizeDp = Prefs.getFloat(StackedMobile.LARGE_TYPE_SIZE, 14.0f)
-    private val standaloneTypePaddingStartDp = Prefs.getFloat(StackedMobile.LARGE_TYPE_PADDING_START_VAL, 2.0f)
-    private val standaloneTypePaddingEndDp = Prefs.getFloat(StackedMobile.LARGE_TYPE_PADDING_END_VAL, 2.0f)
-    private val standaloneTypeVerticalOffsetDp = Prefs.getFloat(StackedMobile.LARGE_TYPE_VERTICAL_OFFSET, 0.0f)
-    private val standaloneTypeFontWeight = Prefs.getInt(StackedMobile.LARGE_TYPE_FONT_WEIGHT, 400).coerceIn(1..1000)
+    private val typeFontMode by Preferences.SystemUI.StatusBar.StackedMobile.TYPE_FONT_MODE.lazyGet()
+    private val typeWidthCondensed by lazy {
+        Preferences.SystemUI.StatusBar.StackedMobile.TYPE_WIDTH_CONDENSED.get().coerceIn(10, 200)
+    }
 
-    private val smallTypeSizeDp = Prefs.getFloat(StackedMobile.SMALL_TYPE_SIZE, 7.159973f)
-    private val smallTypeFontWeight = Prefs.getInt(StackedMobile.SMALL_TYPE_FONT_WEIGHT, 630).coerceIn(1..1000)
+    private val standaloneTypeSizeDp by Preferences.SystemUI.StatusBar.StackedMobile.LARGE_TYPE_SIZE.lazyGet()
+    private val standaloneTypePaddingStartDp by Preferences.SystemUI.StatusBar.StackedMobile.LARGE_TYPE_PADDING_START_VAL.lazyGet()
+    private val standaloneTypePaddingEndDp by Preferences.SystemUI.StatusBar.StackedMobile.LARGE_TYPE_PADDING_END_VAL.lazyGet()
+    private val standaloneTypeVerticalOffsetDp by Preferences.SystemUI.StatusBar.StackedMobile.LARGE_TYPE_VERTICAL_OFFSET.lazyGet()
+    private val standaloneTypeFontWeight by lazy {
+        Preferences.SystemUI.StatusBar.StackedMobile.LARGE_TYPE_FONT_WEIGHT.get().coerceIn(1..1000)
+    }
+
+    private val smallTypeSizeDp by Preferences.SystemUI.StatusBar.StackedMobile.SMALL_TYPE_SIZE.lazyGet()
+    private val smallTypeFontWeight by lazy {
+        Preferences.SystemUI.StatusBar.StackedMobile.SMALL_TYPE_FONT_WEIGHT.get().coerceIn(1..1000)
+    }
 
     private var typefaceStandaloneTypeNormal = Typeface.DEFAULT_BOLD
     private var typefaceStandaloneTypeCondensed = Typeface.DEFAULT_BOLD
     private var typefaceSmallTypeNormal = Typeface.DEFAULT_BOLD
     private var typefaceSmallTypeCondensed = Typeface.DEFAULT_BOLD
 
-    private var isStandaloneTypeAutoSpecialOpt = (typeFontMode == 2 || typeFontMode == 3)
+    private val isStandaloneTypeAutoSpecialOpt by lazy {
+        (typeFontMode == 2 || typeFontMode == 3)
+    }
 
     @Volatile
     var isPreloaded = false // 对外公开这个状态
@@ -116,7 +127,7 @@ object CellularIconRenderEngine {
         var fallbackToDefaultFont = false
         if (typeFontMode == 1) {
             val defaultPath = SystemProperties.get("ro.miui.ui.font.mi_font_path", VARIABLE_FONT_DEFAULT_PATH)
-            val prefPath = Prefs.getString(StackedMobile.TYPE_FONT_PATH_INTERNAL, defaultPath)
+            val prefPath = Preferences.SystemUI.StatusBar.StackedMobile.FONT_PATH_INTERNAL.get()
             val fontFile = File(prefPath)
             val finalPath = if (fontFile.exists() && fontFile.isFile && fontFile.canRead()) prefPath else defaultPath
             typefaceStandaloneTypeNormal = Typeface.Builder(finalPath).setFontVariationSettings("'wght' $standaloneTypeFontWeight").build()
@@ -139,7 +150,7 @@ object CellularIconRenderEngine {
                     .build()
             } catch (t: Throwable) {
                 fallbackToDefaultFont = true
-                YLog.warn(t)
+                MLog.e(TAG, t) { "Error occurred while retrieving built-in font resources" }
             }
         }
         if (fallbackToDefaultFont) {
@@ -150,30 +161,30 @@ object CellularIconRenderEngine {
 
     private fun initVectorPictures(): Boolean {
         val singleMobileSVGString = when (
-            Prefs.getInt(StackedMobile.SIGNAL_SVG_SINGLE, 0)
+            Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_SVG_SINGLE.get()
         ) {
             0 -> Constants.STACKED_MOBILE_ICON_SINGLE_MIUI
             1 -> Constants.STACKED_MOBILE_ICON_SINGLE_IOS
-            else -> Prefs.getString(
-                StackedMobile.SIGNAL_SVG_SINGLE_VAL,
-                Constants.STACKED_MOBILE_ICON_SINGLE_MIUI
-            ).takeIf { it.isNotBlank() } ?: Constants.STACKED_MOBILE_ICON_SINGLE_MIUI
+            else ->
+                Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_SVG_SINGLE_VAL.get().takeIf {
+                    it.isNotBlank()
+                } ?: Constants.STACKED_MOBILE_ICON_SINGLE_MIUI
         }
         val stackedMobileSVGString = when (
-            Prefs.getInt(StackedMobile.SIGNAL_SVG_STACKED, 0)
+            Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_SVG_STACKED.get()
         ) {
             0 -> Constants.STACKED_MOBILE_ICON_STACKED_MIUI
             1 -> Constants.STACKED_MOBILE_ICON_STACKED_IOS
-            else -> Prefs.getString(
-                StackedMobile.SIGNAL_SVG_STACKED_VAL,
-                Constants.STACKED_MOBILE_ICON_STACKED_MIUI
-            ).takeIf { it.isNotBlank() } ?: Constants.STACKED_MOBILE_ICON_STACKED_MIUI
+            else ->
+                Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_SVG_STACKED_VAL.get().takeIf {
+                    it.isNotBlank()
+                } ?: Constants.STACKED_MOBILE_ICON_STACKED_MIUI
         }
         singleTypeCenterPercent = StackedMobileIconUtils.extractTypeContainerBounds(singleMobileSVGString)
         stackedTypeCenterPercent = StackedMobileIconUtils.extractTypeContainerBounds(stackedMobileSVGString)
-        val alphaFilled = Prefs.getFloat(StackedMobile.SIGNAL_ALPHA_FG, 1.0f)
-        val alphaBackground = Prefs.getFloat(StackedMobile.SIGNAL_ALPHA_BG, 0.4f)
-        val alphaError = Prefs.getFloat(StackedMobile.SIGNAL_ALPHA_ERROR, 0.2f)
+        val alphaFilled = Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_ALPHA_FG.get()
+        val alphaBackground = Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_ALPHA_BG.get()
+        val alphaError = Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_ALPHA_ERROR.get()
         val done1 = StackedMobileIconUtils.generateSingleSignalPictures(
             singleMobileSVGString = singleMobileSVGString,
             pictureCache = vectorCache,

@@ -108,8 +108,8 @@
     <string name="about_hyperx_compose_tips">HyperX Compose 是一個基於 Miuix 的 Compose 組件庫，專爲 Android 平臺打造</string>
     <string name="about_miuix">此應用程式使用 Miuix 構建</string>
     <string name="about_miuix_tips">Miuix 是一個 Compose Multiplatform 的組件庫， 提供了一系列 小米澎湃OS 風格的組件</string>
-    <string name="about_yuki">此模組使用 YukiHookAPI 構建</string>
-    <string name="about_yuki_tips">了解更多 https://github.com/HighCapable/YuKiHookAPI</string>
+    <string name="about_kavaref">此模組使用 KavaRef 構建</string>
+    <string name="about_kavaref_tips">了解更多 https://github.com/HighCapable/KavaRef</string>
     <string name="ui_title_about_developer">開發人員</string>
     <string name="about_donate">捐款</string>
     <string name="about_donate_tips">請我飲杯咖啡</string>

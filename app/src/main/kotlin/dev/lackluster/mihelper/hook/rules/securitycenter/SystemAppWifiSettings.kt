@@ -21,16 +21,18 @@
 package dev.lackluster.mihelper.hook.rules.securitycenter
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.DexKit
-import dev.lackluster.mihelper.utils.factory.getAdditionalInstanceField
-import dev.lackluster.mihelper.utils.factory.hasEnable
-import dev.lackluster.mihelper.utils.factory.setAdditionalInstanceField
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.DexKit
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.extraOf
+import dev.lackluster.mihelper.hook.utils.ifTrue
+import dev.lackluster.mihelper.hook.utils.toTyped
 import org.luckypray.dexkit.query.enums.StringMatchType
 
-object SystemAppWifiSettings : YukiBaseHooker() {
-    private const val KEY_REAL_IS_SYSTEM_APP = "KEY_REAL_IS_SYSTEM_APP"
+object SystemAppWifiSettings : StaticHooker() {
+    private var Any.realIsSystemApp by extraOf("KEY_REAL_IS_SYSTEM_APP", false)
+
     private val method by lazy {
         DexKit.findMethodWithCache("system_app_wifi") {
             matcher {
@@ -41,43 +43,49 @@ object SystemAppWifiSettings : YukiBaseHooker() {
         }
     }
 
+    override fun onInit() {
+        Preferences.SecurityCenter.CTRL_SYSTEM_APP_WIFI.get().also {
+            updateSelfState(it)
+        }.ifTrue {
+            method
+        }
+    }
+
     override fun onHook() {
-        hasEnable(Pref.Key.SecurityCenter.CTRL_SYSTEM_APP_WIFI) {
-            if (appClassLoader == null) return@hasEnable
-            "com.miui.networkassistant.ui.fragment.ShowAppDetailFragment".toClassOrNull()?.apply {
-                val fldAppInfo = resolve().firstFieldOrNull {
-                    name = "mAppInfo"
+        "com.miui.networkassistant.ui.fragment.ShowAppDetailFragment".toClassOrNull()?.apply {
+            val fldAppInfo = resolve().firstFieldOrNull {
+                name = "mAppInfo"
+            }?.toTyped<Any>()
+            val fldIsSystemApp = "com.miui.networkassistant.model.AppInfo".toClassOrNull()
+                ?.resolve()?.firstFieldOrNull {
+                    name = "isSystemApp"
+                }?.toTyped<Boolean>()
+            resolve().firstMethodOrNull {
+                name = "initFirewallData"
+            }?.hook {
+                val appInfo = fldAppInfo?.get(thisObject)
+                val isSystemApp = appInfo?.let { fldIsSystemApp?.get(it) }
+                if (isSystemApp != null) {
+                    appInfo.realIsSystemApp = isSystemApp
+                    fldIsSystemApp?.set(appInfo, false)
                 }
-                val fldIsSystemApp = "com.miui.networkassistant.model.AppInfo".toClassOrNull()
-                    ?.resolve()?.firstFieldOrNull {
-                        name = "isSystemApp"
-                    }
-                resolve().firstMethodOrNull {
-                    name = "initFirewallData"
-                }?.hook {
-                    before {
-                        val appInfo = fldAppInfo?.copy()?.of(this.instance)?.get() ?: return@before
-                        val fieldIsSystemApp = fldIsSystemApp?.copy()?.of(appInfo) ?: return@before
-                        appInfo.setAdditionalInstanceField(KEY_REAL_IS_SYSTEM_APP, fieldIsSystemApp.get<Boolean>())
-                        fieldIsSystemApp.set(false)
-                    }
-                    after {
-                        val appInfo = fldAppInfo?.copy()?.of(this.instance)?.get() ?: return@after
-                        val realIsSystemApp = appInfo.getAdditionalInstanceField(KEY_REAL_IS_SYSTEM_APP) ?: false
-                        fldIsSystemApp?.copy()?.of(appInfo)?.set(realIsSystemApp)
-                    }
+                val ori = proceed()
+                if (isSystemApp != null) {
+                    val realIsSystem = appInfo.realIsSystemApp ?: false
+                    fldIsSystemApp?.set(appInfo, realIsSystem)
                 }
+                result(ori)
             }
-            "com.miui.networkassistant.service.FirewallService".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
-                    name = "setSystemAppWifiRuleAllow"
-                }?.hook {
-                    intercept()
-                }
+        }
+        "com.miui.networkassistant.service.FirewallService".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "setSystemAppWifiRuleAllow"
+            }?.hook {
+                result(null)
             }
-            method?.getMethodInstance(appClassLoader!!)?.hook {
-                replaceToTrue()
-            }
+        }
+        method?.getMethodInstance(classLoader)?.hook {
+            result(true)
         }
     }
 }

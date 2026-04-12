@@ -3,14 +3,9 @@
 package dev.lackluster.mihelper.utils.factory
 
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.app.Application
 import android.content.Context
-import android.content.SharedPreferences
 import android.content.res.Configuration
-import dev.lackluster.mihelper.utils.Prefs
-import de.robv.android.xposed.XposedHelpers
-
+import dev.lackluster.mihelper.utils.MLog
 
 /**
  * System dark mode is enabled or not
@@ -21,7 +16,7 @@ import de.robv.android.xposed.XposedHelpers
 val Context.isSystemInDarkMode get() = (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
 
 /**
- * System dark mode is disable or not
+ * System dark mode is disabled or not
  *
  * 系统深色模式是否没开启
  * @return [Boolean] Whether to enable / 是否开启
@@ -55,55 +50,15 @@ fun Number.dpFloat(context: Context) = toFloat() * context.resources.displayMetr
  */
 fun Number.px(context: Context) = (toFloat() / context.resources.displayMetrics.density).toInt()
 
-@SuppressLint("WorldReadableFiles")
-fun getSP(context: Context, prefName: String = Prefs.NAME): SharedPreferences {
-    return context.getSharedPreferences(prefName, Activity.MODE_WORLD_READABLE)
-}
 
 @SuppressLint("DiscouragedApi")
-fun Application.getResID(name: String, defType: String, pkg: String): Int {
-    return try {
-        this.resources.getIdentifier(name, defType, pkg)
-    } catch (t: Throwable) {
-        0
-    }
-}
-
-@SuppressLint("DiscouragedApi")
-fun Context.getResID(name: String, defType: String, pkg: String): Int {
-    return try {
-        this.resources.getIdentifier(name, defType, pkg)
-    } catch (t: Throwable) {
-        0
-    }
+fun Context.getResId(name: String, defType: String, pkg: String): Int {
+    return runCatching {
+        resources.getIdentifier(name, defType, pkg)
+    }.onFailure {
+        MLog.e { "Resource not found: $pkg:$defType/$name" }
+    }.getOrDefault(0)
 }
 
 fun Number.dp2sp(context: Context) =
     toFloat() * context.resources.displayMetrics.density / context.resources.displayMetrics.scaledDensity
-
-
-inline fun hasEnable(
-    key: String,
-    default: Boolean = false,
-    noinline extraCondition: (() -> Boolean)? = null,
-    crossinline block: () -> Unit
-) {
-    val conditionResult = if (extraCondition != null) extraCondition() else true
-    if (Prefs.getBoolean(key, default) && conditionResult) {
-        block()
-    }
-}
-
-fun Any.setAdditionalInstanceField(
-    fieldName: String,
-    value: Any?
-) {
-    XposedHelpers.setAdditionalInstanceField(this, fieldName, value)
-}
-
-inline fun <reified T: Any?> Any.getAdditionalInstanceField(
-    fieldName: String,
-    defValue: T? = null
-): T? {
-    return XposedHelpers.getAdditionalInstanceField(this, fieldName) as? T ?: defValue
-}

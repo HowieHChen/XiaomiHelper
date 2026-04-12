@@ -26,6 +26,11 @@ class IconPositionViewModel(
                 }
             }
         }
+        viewModelScope.launch(Dispatchers.Default) {
+            repo.globalReloadEvent.collect {
+                loadInitialSlots()
+            }
+        }
     }
 
     private fun loadInitialSlots() {

@@ -20,26 +20,21 @@
 
 package dev.lackluster.mihelper.hook.rules.packageinstaller
 
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import dev.lackluster.mihelper.data.Scope
-import dev.lackluster.mihelper.utils.factory.getResID
+import dev.lackluster.mihelper.hook.base.ContextAwareHooker
+import dev.lackluster.mihelper.hook.base.ContextScope
 
-object ResourcesUtils : YukiBaseHooker() {
-    private const val PKG_NAME = Scope.PACKAGE_INSTALLER
-    private var isInitialized = false
-    var feedback = 0
+object ResourcesUtils : ContextAwareHooker() {
+    var feedback: Int = 0
+        private set
     var dialog_install_source = 0
+        private set
 
-    override fun onHook() {
-        onAppLifecycle {
-            onCreate {
-                if (!isInitialized) {
-                    if (this.resources == null) return@onCreate
-                    feedback = this.getResID("feedback", "id", PKG_NAME)
-                    dialog_install_source = this.getResID("dialog_install_source", "string", PKG_NAME)
-                    isInitialized = true
-                }
-            }
-        }
+    override val targetPackage: String
+        get() = Scope.PACKAGE_INSTALLER
+
+    override fun ContextScope.onReady() {
+        feedback = "feedback".toId()
+        dialog_install_source = "dialog_install_source".toStringId()
     }
 }

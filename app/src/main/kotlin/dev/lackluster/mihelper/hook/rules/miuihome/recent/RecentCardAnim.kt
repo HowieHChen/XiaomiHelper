@@ -25,168 +25,172 @@ import android.view.View
 import android.view.animation.Interpolator
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.condition.type.Modifiers
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.toTyped
 import kotlin.math.abs
 
-object RecentCardAnim : YukiBaseHooker() {
+object RecentCardAnim : StaticHooker() {
     private val metGetScreenHeight by lazy {
         "com.miui.home.common.device.DeviceConfigs".toClassOrNull()?.resolve()?.firstMethodOrNull {
             name = "getScreenHeight"
             modifiers(Modifiers.STATIC)
-        }
+        }?.toTyped<Int>()
     }
     private val ctorPhysicBasedInterpolator by lazy {
         "com.miui.home.launcher.anim.PhysicBasedInterpolator".toClassOrNull()?.resolve()?.firstConstructorOrNull {
             parameterCount = 2
-        }
+        }?.toTyped()
+    }
+
+    override fun onInit() {
+        updateSelfState(Preferences.MiuiHome.OPT_RECENT_CARD_ANIM.get())
     }
 
     override fun onHook() {
-        hasEnable(Pref.Key.MiuiHome.RECENT_CARD_ANIM) {
-            "com.miui.home.recents.views.SwipeHelperForRecents".toClassOrNull()?.apply {
-                val mCurrView = resolve().firstFieldOrNull {
-                    name = "mCurrView"
-                }
-                resolve().firstMethodOrNull {
-                    name = "isScaleSmallEnoughForDismiss"
-                }?.hook {
-                    replaceAny {
-                        mCurrView?.copy()?.of(this.instance)?.get<View>()?.let {
-                            abs(it.translationY) > (it.measuredHeight * 0.8f)
-                        } ?: false
-                    }
-                }
+        "com.miui.home.recents.views.SwipeHelperForRecents".toClassOrNull()?.apply {
+            val mCurrView = resolve().firstFieldOrNull {
+                name = "mCurrView"
+            }?.toTyped<View>()
+            resolve().firstMethodOrNull {
+                name = "isScaleSmallEnoughForDismiss"
+            }?.hook {
+                val result = mCurrView?.get(thisObject)?.let {
+                    abs(it.translationY) > (it.measuredHeight * 0.8f)
+                } ?: false
+                result(result)
             }
-            "com.miui.home.recents.TaskStackViewLayoutStyleHorizontal".toClassOrNull()?.apply {
-                resolve().optional(true).firstMethodOrNull {
-                    name = "createSwipeAnimation"
-                    parameters(View::class, Float::class)
-                }?.hook {
-                    before {
-                        val view = this.args(0).cast<View>() ?: return@before
-                        createSwipeAnimation(view, 450L)?.let {
-                            this.result = it
-                        }
+        }
+        "com.miui.home.recents.TaskStackViewLayoutStyleHorizontal".toClassOrNull()?.apply {
+            resolve().optional(true).firstMethodOrNull {
+                name = "createSwipeAnimation"
+                parameters(View::class, Float::class)
+            }?.hook {
+                val view = getArg(0) as? View
+                if (view != null) {
+                    createSwipeAnimation(view, 450L)?.let {
+                        return@hook result(it)
                     }
                 }
-                resolve().optional(true).firstMethodOrNull {
-                    name = "createScaleDismissAnimation"
-                    parameters(View::class, Float::class)
-                }?.hook {
-                    before {
-                        val view = this.args(0).cast<View>() ?: return@before
-                        createSwipeAnimation(view, 450L)?.let {
-                            this.result = it
-                        }
-                    }
-                }
+                result(proceed())
             }
-            "com.miui.home.recents.TaskStackViewLayoutStyleStack".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
-                    name = "createSwipeAnimation"
-                }?.hook {
-                    before {
-                        val view = this.args(0).cast<View>() ?: return@before
-                        createSwipeAnimation(view, 550L)?.let {
-                            this.result = it
-                        }
+            resolve().optional(true).firstMethodOrNull {
+                name = "createScaleDismissAnimation"
+                parameters(View::class, Float::class)
+            }?.hook {
+                val view = getArg(0) as? View
+                if (view != null) {
+                    createSwipeAnimation(view, 450L)?.let {
+                        return@hook result(it)
                     }
                 }
-                resolve().firstMethodOrNull {
-                    name = "createCleanDismissAnimation"
-                }?.hook {
-                    before {
-                        val view = this.args(0).cast<View>() ?: return@before
-                        createSwipeAnimation(view, 550L)?.let {
-                            this.result = it
-                        }
-                    }
-                }
+                result(proceed())
             }
-            "com.miui.home.recents.views.VerticalSwipe".toClassOrNull()?.apply {
-                val mCanLockTaskView = resolve().firstFieldOrNull {
-                    name = "mCanLockTaskView"
-                }
-                val mCurAlpha = resolve().firstFieldOrNull {
-                    name = "mCurAlpha"
-                }
-                val mCurScale = resolve().firstFieldOrNull {
-                    name = "mCurScale"
-                }
-                val mCurTransY = resolve().firstFieldOrNull {
-                    name = "mCurTransY"
-                }
-                resolve().firstConstructor().hook {
-                    after {
-                        mCurAlpha?.copy()?.of(this.instance)?.set(1.0f)
-                        mCurScale?.copy()?.of(this.instance)?.set(1.0f)
+        }
+        "com.miui.home.recents.TaskStackViewLayoutStyleStack".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "createSwipeAnimation"
+            }?.hook {
+                val view = getArg(0) as? View
+                if (view != null) {
+                    createSwipeAnimation(view, 550L)?.let {
+                        return@hook result(it)
                     }
                 }
-                resolve().firstMethodOrNull {
-                    name = "calculate"
-                    parameters(Float::class)
-                }?.hook {
-                    replaceUnit {
-                        val f = this.args(0).float()
-                        val transY: Float
-                        if (f <= 0.0f) {
-                            transY = f
-                        } else {
-                            val canLockTaskView = mCanLockTaskView?.copy()?.of(this.instance)?.get<Boolean>() == true
-                            transY = f / if (canLockTaskView) 3.0f else 6.0f
-                        }
-                        mCurTransY?.copy()?.of(this.instance)?.set(transY)
-                    }
-                }
+                result(proceed())
             }
-            "com.miui.home.recents.views.VerticalSwipeForStack".toClassOrNull()?.apply {
-                val mCanLockTaskView = resolve().firstFieldOrNull {
-                    name = "mCanLockTaskView"
-                    superclass()
-                }
-                val mCurAlpha = resolve().firstFieldOrNull {
-                    name = "mCurAlpha"
-                    superclass()
-                }
-                val mCurScale = resolve().firstFieldOrNull {
-                    name = "mCurScale"
-                    superclass()
-                }
-                val mCurTransY = resolve().firstFieldOrNull {
-                    name = "mCurTransY"
-                    superclass()
-                }
-                resolve().firstConstructor().hook {
-                    after {
-                        mCurAlpha?.copy()?.of(this.instance)?.set(1.0f)
-                        mCurScale?.copy()?.of(this.instance)?.set(1.0f)
+            resolve().firstMethodOrNull {
+                name = "createCleanDismissAnimation"
+            }?.hook {
+                val view = getArg(0) as? View
+                if (view != null) {
+                    createSwipeAnimation(view, 550L)?.let {
+                        return@hook result(it)
                     }
                 }
-                resolve().firstMethodOrNull {
-                    name = "calculate"
-                    parameters(Float::class)
-                }?.hook {
-                    replaceUnit {
-                        val f = this.args(0).float()
-                        val transY: Float
-                        if (f <= 0.0f) {
-                            transY = f
-                        } else {
-                            val canLockTaskView = mCanLockTaskView?.copy()?.of(this.instance)?.get<Boolean>() == true
-                            transY = f / if (canLockTaskView) 3.0f else 6.0f
-                        }
-                        mCurTransY?.copy()?.of(this.instance)?.set(transY)
-                    }
+                result(proceed())
+            }
+        }
+        "com.miui.home.recents.views.VerticalSwipe".toClassOrNull()?.apply {
+            val mCanLockTaskView = resolve().firstFieldOrNull {
+                name = "mCanLockTaskView"
+            }?.toTyped<Boolean>()
+            val mCurAlpha = resolve().firstFieldOrNull {
+                name = "mCurAlpha"
+            }?.toTyped<Float>()
+            val mCurScale = resolve().firstFieldOrNull {
+                name = "mCurScale"
+            }?.toTyped<Float>()
+            val mCurTransY = resolve().firstFieldOrNull {
+                name = "mCurTransY"
+            }?.toTyped<Float>()
+            resolve().firstConstructor().hook {
+                val ori = proceed()
+                mCurAlpha?.set(thisObject, 1.0f)
+                mCurScale?.set(thisObject, 1.0f)
+                result(ori)
+            }
+            resolve().firstMethodOrNull {
+                name = "calculate"
+                parameters(Float::class)
+            }?.hook {
+                val f = getArg(0) as? Float ?: 0.0f
+                val transY: Float
+                if (f <= 0.0f) {
+                    transY = f
+                } else {
+                    val canLockTaskView = mCanLockTaskView?.get(thisObject) ?: false
+                    transY = f / if (canLockTaskView) 3.0f else 6.0f
                 }
+                mCurTransY?.set(thisObject, transY)
+                result(null)
+            }
+        }
+        "com.miui.home.recents.views.VerticalSwipeForStack".toClassOrNull()?.apply {
+            val mCanLockTaskView = resolve().firstFieldOrNull {
+                name = "mCanLockTaskView"
+                superclass()
+            }?.toTyped<Boolean>()
+            val mCurAlpha = resolve().firstFieldOrNull {
+                name = "mCurAlpha"
+                superclass()
+            }?.toTyped<Float>()
+            val mCurScale = resolve().firstFieldOrNull {
+                name = "mCurScale"
+                superclass()
+            }?.toTyped<Float>()
+            val mCurTransY = resolve().firstFieldOrNull {
+                name = "mCurTransY"
+                superclass()
+            }?.toTyped<Float>()
+            resolve().firstConstructor().hook {
+                val ori = proceed()
+                mCurAlpha?.set(thisObject, 1.0f)
+                mCurScale?.set(thisObject, 1.0f)
+                result(ori)
+            }
+            resolve().firstMethodOrNull {
+                name = "calculate"
+                parameters(Float::class)
+            }?.hook {
+                val f = getArg(0) as? Float ?: 0.0f
+                val transY: Float
+                if (f <= 0.0f) {
+                    transY = f
+                } else {
+                    val canLockTaskView = mCanLockTaskView?.get(thisObject) ?: false
+                    transY = f / if (canLockTaskView) 3.0f else 6.0f
+                }
+                mCurTransY?.set(thisObject, transY)
+                result(null)
             }
         }
     }
 
     private fun createSwipeAnimation(view: View, duration: Long): ObjectAnimator? {
-        val getScreenHeight = metGetScreenHeight?.copy()?.invoke<Int>()?.toFloat() ?: return null
-        val physicBasedInterpolator = ctorPhysicBasedInterpolator?.copy()?.createAsType<Interpolator>(0.72f, 0.72f) ?: return null
+        val getScreenHeight = metGetScreenHeight?.invoke(null)?.toFloat() ?: return null
+        val physicBasedInterpolator = ctorPhysicBasedInterpolator?.newInstance(0.72f, 0.72f) as? Interpolator ?: return null
         return ObjectAnimator.ofFloat(
             view,
             View.TRANSLATION_Y,

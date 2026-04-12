@@ -51,7 +51,7 @@ HyperOS専用の軽量なモジュールです! Xiaomi 12S ProとXiaomi Pad 6 Pr
 
 - [「hyperx-compose」by HowieHChen](https://github.com/HowieHChen/hyperx-compose)
 - [「miuix」by miuix-kotlin-multiplatform](https://github.com/miuix-kotlin-multiplatform/miuix)
-- [「YukiHookAPI」by HighCapable](https://github.com/HighCapable/YukiHookAPI)
+- [「KavaRef」by HighCapable](https://github.com/HighCapable/KavaRef)
 - [「TinyPinyin」by hellokaton](https://github.com/hellokaton/TinyPinyin)
 
 #### Unknown

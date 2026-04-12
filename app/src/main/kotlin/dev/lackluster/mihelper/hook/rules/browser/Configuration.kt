@@ -20,22 +20,27 @@
 
 package dev.lackluster.mihelper.hook.rules.browser
 
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.DexKit
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.DexKit
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
 import org.luckypray.dexkit.query.enums.StringMatchType
 
-object Configuration : YukiBaseHooker() {
+object Configuration : StaticHooker() {
+    private val showSugSwitch by Preferences.Browser.SHOW_SUG_SWITCH_ENTRY.lazyGet()
+    private val blockDialog by Preferences.Browser.BLOCK_DIALOG.lazyGet()
+    private val adBlocker by Preferences.Browser.AD_BLOCKER.lazyGet()
+
     private val clzConfigCenter by lazy {
-        DexKit.dexKitBridge.findClass {
-            matcher {
-                addUsingString("pref_ad_open_ad_more", StringMatchType.Equals)
-                addUsingString("ad_app_download_exit_switch", StringMatchType.Equals)
+        DexKit.withBridge {
+            findClass {
+                matcher {
+                    addUsingString("pref_ad_open_ad_more", StringMatchType.Equals)
+                    addUsingString("ad_app_download_exit_switch", StringMatchType.Equals)
+                }
             }
         }
     }
-
     private val metPrefShowSugSwitchView by lazy {
         DexKit.findMethodWithCache("pref_show_sug_switch_view") {
             matcher {
@@ -108,36 +113,53 @@ object Configuration : YukiBaseHooker() {
         }
     }
 
+    override fun onInit() {
+        updateSelfState(showSugSwitch || blockDialog || adBlocker)
+        if (showSugSwitch) {
+            metPrefShowSugSwitchView
+        }
+        if (blockDialog) {
+            metRecPopupCardSwitch
+            metPrefPushPopDialog
+        }
+        if (adBlocker) {
+            metDefaultPageRealRimeHotSpotSwitch
+            metDefaultPageGuessYouWantSwitch
+            metAdAppDownloadExitSwitch
+            metAdAppDownloadPushSwitch
+            metAdAppDownloadHomeSwitch
+        }
+    }
+
     override fun onHook() {
-        if (appClassLoader == null) return
-        hasEnable(Pref.Key.Browser.SHOW_SUG_SWITCH_VIEW) {
-            metPrefShowSugSwitchView?.getMethodInstance(appClassLoader!!)?.hook {
-                replaceToTrue()
+        if (showSugSwitch) {
+            metPrefShowSugSwitchView?.getMethodInstance(classLoader)?.hook {
+                result(true)
             }
         }
-        hasEnable(Pref.Key.Browser.BLOCK_DIALOG) {
-            metRecPopupCardSwitch?.getMethodInstance(appClassLoader!!)?.hook {
-                replaceToFalse()
+        if (blockDialog) {
+            metRecPopupCardSwitch?.getMethodInstance(classLoader)?.hook {
+                result(false)
             }
-            metPrefPushPopDialog?.getMethodInstance(appClassLoader!!)?.hook {
-                intercept()
+            metPrefPushPopDialog?.getMethodInstance(classLoader)?.hook {
+                result(null)
             }
         }
-        hasEnable(Pref.Key.Browser.AD_BLOCKER) {
-            metDefaultPageRealRimeHotSpotSwitch?.getMethodInstance(appClassLoader!!)?.hook {
-                replaceToFalse()
+        if (adBlocker) {
+            metDefaultPageRealRimeHotSpotSwitch?.getMethodInstance(classLoader)?.hook {
+                result(false)
             }
-            metDefaultPageGuessYouWantSwitch?.getMethodInstance(appClassLoader!!)?.hook {
-                replaceToFalse()
+            metDefaultPageGuessYouWantSwitch?.getMethodInstance(classLoader)?.hook {
+                result(false)
             }
-            metAdAppDownloadExitSwitch?.getMethodInstance(appClassLoader!!)?.hook {
-                replaceToFalse()
+            metAdAppDownloadExitSwitch?.getMethodInstance(classLoader)?.hook {
+                result(false)
             }
-            metAdAppDownloadPushSwitch?.getMethodInstance(appClassLoader!!)?.hook {
-                replaceToFalse()
+            metAdAppDownloadPushSwitch?.getMethodInstance(classLoader)?.hook {
+                result(false)
             }
-            metAdAppDownloadHomeSwitch?.getMethodInstance(appClassLoader!!)?.hook {
-                replaceToFalse()
+            metAdAppDownloadHomeSwitch?.getMethodInstance(classLoader)?.hook {
+                result(false)
             }
         }
     }

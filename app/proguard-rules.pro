@@ -52,3 +52,18 @@
 -keepnames class org.koin.** { *; }
 -keepattributes *Annotation*
 -keepattributes Signature
+
+# Xposed
+-adaptresourcefilecontents META-INF/xposed/java_init.list
+-keep,allowobfuscation,allowoptimization public class * extends io.github.libxposed.api.XposedModule {
+    public <init>(...);
+    public void onModuleLoaded(...);
+    public void onPackageLoaded(...);
+    public void onPackageReady(...);
+    public void onSystemServerStarting(...);
+}
+-keepclassmembers,allowoptimization class ** implements io.github.libxposed.api.XposedInterface$Hooker {
+    public *** intercept(...);
+}
+
+-keepnames class * extends dev.lackluster.mihelper.hook.base.BaseHooker

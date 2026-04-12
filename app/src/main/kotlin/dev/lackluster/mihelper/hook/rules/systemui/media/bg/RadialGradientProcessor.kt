@@ -2,8 +2,8 @@ package dev.lackluster.mihelper.hook.rules.systemui.media.bg
 
 import android.content.Context
 import android.graphics.drawable.Drawable
-import dev.lackluster.mihelper.hook.drawable.MediaControlBgDrawable
-import dev.lackluster.mihelper.hook.drawable.RadialGradientDrawable
+import dev.lackluster.mihelper.hook.rules.systemui.media.drawable.MediaControlBgDrawable
+import dev.lackluster.mihelper.hook.rules.systemui.media.drawable.RadialGradientDrawable
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.toSquare
 import dev.lackluster.mihelper.hook.rules.systemui.media.data.MediaViewColorConfig
 

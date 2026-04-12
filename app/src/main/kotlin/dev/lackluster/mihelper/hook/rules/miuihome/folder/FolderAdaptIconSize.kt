@@ -21,123 +21,119 @@
 package dev.lackluster.mihelper.hook.rules.miuihome.folder
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.toTyped
 
-object FolderAdaptIconSize : YukiBaseHooker() {
-    private val clzFolderIcon2x2 by lazy {
-        "com.miui.home.folder.FolderIcon2x2".toClassOrNull()
-    }
-    private val clzFolderInfo by lazy {
-        "com.miui.home.folder.FolderInfo".toClassOrNull()
-    }
-    private val clzBaseFolderIconPreviewContainer2X2 by lazy {
-        "com.miui.home.folder.BaseFolderIconPreviewContainer2X2".toClassOrNull()
-    }
-    private val clzFolderIconPreviewContainer2X2_4 by lazy {
-        "com.miui.home.folder.FolderIconPreviewContainer2X2_4".toClassOrNull()
-    }
-    private val clzFolderIconPreviewContainer2X2_9 by lazy {
-        "com.miui.home.folder.FolderIconPreviewContainer2X2_9".toClassOrNull()
+object FolderAdaptIconSize : StaticHooker() {
+    private val clzFolderIcon2x2 by "com.miui.home.folder.FolderIcon2x2".lazyClassOrNull()
+    private val clzFolderInfo by "com.miui.home.folder.FolderInfo".lazyClassOrNull()
+    private val clzBaseFolderIconPreviewContainer2X2 by "com.miui.home.folder.BaseFolderIconPreviewContainer2X2".lazyClassOrNull()
+    private val clzFolderIconPreviewContainer2X2_4 by "com.miui.home.folder.FolderIconPreviewContainer2X2_4".lazyClassOrNull()
+    private val clzFolderIconPreviewContainer2X2_9 by "com.miui.home.folder.FolderIconPreviewContainer2X2_9".lazyClassOrNull()
+
+    override fun onInit() {
+        updateSelfState(Preferences.MiuiHome.FOLDER_ADAPT_SIZE.get())
     }
 
     override fun onHook() {
-        hasEnable(Pref.Key.MiuiHome.FOLDER_ADAPT_SIZE) {
-            clzFolderIcon2x2?.apply {
-                val fldInfo = resolve().firstFieldOrNull {
-                    name = "mInfo"
-                    superclass()
-                }
-                val metGetMPreviewContainer = resolve().firstMethodOrNull {
-                    name = "getMPreviewContainer"
-                    superclass()
-                }
-                val metCount = clzFolderInfo?.resolve()?.firstMethodOrNull {
-                    name = "count"
-                }
-                val metGetMRealPvChildCount = clzBaseFolderIconPreviewContainer2X2?.resolve()?.firstMethodOrNull {
-                    name = "getMRealPvChildCount"
-                    superclass()
-                }
-                val metSetMItemsMaxCount = clzBaseFolderIconPreviewContainer2X2?.resolve()?.firstMethodOrNull {
-                    name = "setMItemsMaxCount"
-                    superclass()
-                }
-                resolve().firstMethodOrNull {
-                    name = "createOrRemoveView"
-                }?.hook {
-                    before {
-                        val info = fldInfo?.copy()?.of(this.instance)?.get()
-                        val container = metGetMPreviewContainer?.copy()?.of(this.instance)?.invoke()
-                        val infoCount = info?.let { it1 -> metCount?.copy()?.of(it1)?.invoke<Int>() }
-                        val realPvChildCount = container?.let { it1 -> metGetMRealPvChildCount?.copy()?.of(it1)?.invoke<Int>() }
-                        if (infoCount == realPvChildCount || infoCount == null || realPvChildCount == null) return@before
-                        val num = Character.getNumericValue(container::class.java.simpleName.last())
-                        if (realPvChildCount - num >= 3) {
-                            return@before
-                        }
-                        metSetMItemsMaxCount?.copy()?.of(container)?.invoke(
+        clzFolderIcon2x2?.apply {
+            val fldInfo = resolve().firstFieldOrNull {
+                name = "mInfo"
+                superclass()
+            }?.toTyped<Any>()
+            val metGetMPreviewContainer = resolve().firstMethodOrNull {
+                name = "getMPreviewContainer"
+                superclass()
+            }?.toTyped<Any>()
+            val metCount = clzFolderInfo?.resolve()?.firstMethodOrNull {
+                name = "count"
+            }?.toTyped<Int>()
+            val metGetMRealPvChildCount = clzBaseFolderIconPreviewContainer2X2?.resolve()?.firstMethodOrNull {
+                name = "getMRealPvChildCount"
+                superclass()
+            }?.toTyped<Int>()
+            val metSetMItemsMaxCount = clzBaseFolderIconPreviewContainer2X2?.resolve()?.firstMethodOrNull {
+                name = "setMItemsMaxCount"
+                superclass()
+            }?.toTyped<Unit>()
+            resolve().firstMethodOrNull {
+                name = "createOrRemoveView"
+            }?.hook {
+                val info = fldInfo?.get(thisObject)
+                val container = metGetMPreviewContainer?.invoke(thisObject)
+                val infoCount = info?.let { it1 -> metCount?.invoke(it1) }
+                val realPvChildCount = container?.let { it1 -> metGetMRealPvChildCount?.invoke(it1) }
+                if (infoCount != realPvChildCount && infoCount != null && realPvChildCount != null) {
+                    val num = Character.getNumericValue(container::class.java.simpleName.last())
+                    if (realPvChildCount - num < 3) {
+                        metSetMItemsMaxCount?.invoke(
+                            container,
                             if (infoCount <= num) num else num + 3
                         )
                     }
                 }
-                val metSetMLargeIconNum = resolve().firstMethodOrNull {
-                    name = "setMLargeIconNum"
-                    superclass()
-                }
-                resolve().firstMethodOrNull {
-                    name = "addItemOnclickListener"
-                }?.hook {
-                    before {
-                        val container = metGetMPreviewContainer?.copy()?.of(this.instance)?.invoke()
-                        val realPvChildCount = container?.let { it1 -> metGetMRealPvChildCount?.copy()?.of(it1)?.invoke<Int>() } ?: return@before
-                        val num = Character.getNumericValue(container::class.java.simpleName.last())
-                        metSetMLargeIconNum?.copy()?.of(this.instance)?.invoke(
-                            if (realPvChildCount <= num) num else num - 1
-                        )
-                    }
-                }
+                result(proceed())
             }
-            clzFolderIconPreviewContainer2X2_4?.apply {
-                val metGetMRealPvChildCount = resolve().firstMethodOrNull {
-                    name = "getMRealPvChildCount"
-                    superclass()
+            val metSetMLargeIconNum = resolve().firstMethodOrNull {
+                name = "setMLargeIconNum"
+                superclass()
+            }?.toTyped<Unit>()
+            resolve().firstMethodOrNull {
+                name = "addItemOnclickListener"
+            }?.hook {
+                val container = metGetMPreviewContainer?.invoke(thisObject)
+                container?.let { it1 -> metGetMRealPvChildCount?.invoke(it1) }?.let { realPvChildCount ->
+                    val num = Character.getNumericValue(container::class.java.simpleName.last())
+                    metSetMLargeIconNum?.invoke(
+                        thisObject,
+                        if (realPvChildCount <= num) num else num - 1
+                    )
                 }
-                val metSetMLargeIconNum = resolve().firstMethodOrNull {
-                    name = "setMLargeIconNum"
-                    superclass()
-                }
-                resolve().firstMethodOrNull {
-                    name = "preSetup2x2"
-                }?.hook {
-                    before {
-                        val realPvChildCount = metGetMRealPvChildCount?.copy()?.of(this.instance)?.invoke<Int>() ?: return@before
-                        metSetMLargeIconNum?.copy()?.of(this.instance)?.invoke(
-                            if (realPvChildCount <= 4) 4 else 3
-                        )
-                    }
-                }
+                result(proceed())
             }
-            clzFolderIconPreviewContainer2X2_9?.apply {
-                val metGetMRealPvChildCount = resolve().firstMethodOrNull {
-                    name = "getMRealPvChildCount"
-                    superclass()
+        }
+        clzFolderIconPreviewContainer2X2_4?.apply {
+            val metGetMRealPvChildCount = resolve().firstMethodOrNull {
+                name = "getMRealPvChildCount"
+                superclass()
+            }?.toTyped<Int>()
+            val metSetMLargeIconNum = resolve().firstMethodOrNull {
+                name = "setMLargeIconNum"
+                superclass()
+            }?.toTyped<Unit>()
+            resolve().firstMethodOrNull {
+                name = "preSetup2x2"
+            }?.hook {
+                metGetMRealPvChildCount?.invoke(thisObject)?.let { realPvChildCount ->
+                    metSetMLargeIconNum?.invoke(
+                        thisObject,
+                        if (realPvChildCount <= 4) 4 else 3
+                    )
                 }
-                val metSetMLargeIconNum = resolve().firstMethodOrNull {
-                    name = "setMLargeIconNum"
-                    superclass()
+                result(proceed())
+            }
+        }
+        clzFolderIconPreviewContainer2X2_9?.apply {
+            val metGetMRealPvChildCount = resolve().firstMethodOrNull {
+                name = "getMRealPvChildCount"
+                superclass()
+            }?.toTyped<Int>()
+            val metSetMLargeIconNum = resolve().firstMethodOrNull {
+                name = "setMLargeIconNum"
+                superclass()
+            }?.toTyped<Unit>()
+            resolve().firstMethodOrNull {
+                name = "preSetup2x2"
+            }?.hook {
+                metGetMRealPvChildCount?.invoke(thisObject)?.let { realPvChildCount ->
+                    metSetMLargeIconNum?.invoke(
+                        thisObject,
+                        if (realPvChildCount <= 9) 9 else 8
+                    )
                 }
-                resolve().firstMethodOrNull {
-                    name = "preSetup2x2"
-                }?.hook {
-                    before {
-                        val realPvChildCount = metGetMRealPvChildCount?.copy()?.of(this.instance)?.invoke<Int>() ?: return@before
-                        metSetMLargeIconNum?.copy()?.of(this.instance)?.invoke(
-                            if (realPvChildCount <= 9) 9 else 8
-                        )
-                    }
-                }
+                result(proceed())
             }
         }
     }

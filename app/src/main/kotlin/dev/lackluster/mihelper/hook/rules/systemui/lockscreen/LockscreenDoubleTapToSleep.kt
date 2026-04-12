@@ -22,73 +22,70 @@ package dev.lackluster.mihelper.hook.rules.systemui.lockscreen
 
 import android.app.KeyguardManager
 import android.content.Context
+import android.os.PowerManager
 import android.os.SystemClock
 import android.view.MotionEvent
 import android.view.View
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import de.robv.android.xposed.XposedHelpers
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.factory.getAdditionalInstanceField
-import dev.lackluster.mihelper.utils.factory.hasEnable
-import dev.lackluster.mihelper.utils.factory.setAdditionalInstanceField
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.extraOf
+import dev.lackluster.mihelper.hook.utils.toTyped
 import kotlin.math.abs
 
-object LockscreenDoubleTapToSleep : YukiBaseHooker() {
-    private const val KEY_CURRENT_TOUCH_TIME = "KEY_CURRENT_TOUCH_TIME"
-    private const val KEY_CURRENT_TOUCH_X = "KEY_CURRENT_TOUCH_X"
-    private const val KEY_CURRENT_TOUCH_Y = "KEY_CURRENT_TOUCH_Y"
+object LockscreenDoubleTapToSleep : StaticHooker() {
+    private var View.touchTime by extraOf<Long>("KEY_CURRENT_TOUCH_TIME")
+    private var View.touchX by extraOf<Float>("KEY_CURRENT_TOUCH_X")
+    private var View.touchY by extraOf<Float>("KEY_CURRENT_TOUCH_Y")
+
+    override fun onInit() {
+        updateSelfState(Preferences.SystemUI.LockScreen.DOUBLE_TAP_TO_SLEEP.get())
+    }
 
     override fun onHook() {
-        hasEnable(Pref.Key.SystemUI.LockScreen.DOUBLE_TAP_TO_SLEEP) {
-            "com.android.systemui.shade.NotificationsQuickSettingsContainer".toClass()
-                .resolve()
-                .firstMethodOrNull {
-                    name = "onFinishInflate"
-                }
-                ?.hook {
-                    before {
-                        val view = this.instance as View
-                        view.setAdditionalInstanceField(KEY_CURRENT_TOUCH_TIME, 0L)
-                        view.setAdditionalInstanceField(KEY_CURRENT_TOUCH_X, 0f)
-                        view.setAdditionalInstanceField(KEY_CURRENT_TOUCH_Y, 0f)
-                        view.setOnTouchListener { v, motionEvent ->
-                            if (motionEvent.action != MotionEvent.ACTION_DOWN) return@setOnTouchListener false
-                            var currentTouchTime = v.getAdditionalInstanceField(KEY_CURRENT_TOUCH_TIME, 0L) ?: 0L
-                            var currentTouchX = v.getAdditionalInstanceField(KEY_CURRENT_TOUCH_X, 0f) ?: 0f
-                            var currentTouchY = v.getAdditionalInstanceField(KEY_CURRENT_TOUCH_Y, 0f) ?: 0f
-                            val lastTouchTime = currentTouchTime
-                            val lastTouchX = currentTouchX
-                            val lastTouchY = currentTouchY
-
-                            currentTouchTime = System.currentTimeMillis()
-                            currentTouchX = motionEvent.x
-                            currentTouchY = motionEvent.y
-
-                            if (currentTouchTime - lastTouchTime < 250L
-                                && abs(currentTouchX - lastTouchX) < 100f
-                                && abs(currentTouchY - lastTouchY) < 100f
-                            ) {
-                                val keyguardMgr = v.context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
-                                if (keyguardMgr.isKeyguardLocked) {
-                                    XposedHelpers.callMethod(
-                                        v.context.getSystemService(Context.POWER_SERVICE),
-                                        "goToSleep",
-                                        SystemClock.uptimeMillis()
-                                    )
-                                }
-                                currentTouchTime = 0L
-                                currentTouchX = 0f
-                                currentTouchY = 0f
-                            }
-                            v.setAdditionalInstanceField(KEY_CURRENT_TOUCH_TIME, currentTouchTime)
-                            v.setAdditionalInstanceField(KEY_CURRENT_TOUCH_X, currentTouchX)
-                            v.setAdditionalInstanceField(KEY_CURRENT_TOUCH_Y, currentTouchY)
-                            v.performClick()
-                            return@setOnTouchListener false
-                        }
+        val clzNotificationsQuickSettingsContainer = "com.android.systemui.shade.NotificationsQuickSettingsContainer".toClass()
+        val metGoToSleep = PowerManager::class.resolve().firstMethodOrNull {
+            name = "goToSleep"
+            parameters(Long::class)
+        }?.toTyped<Unit>()
+        clzNotificationsQuickSettingsContainer.resolve().firstMethodOrNull {
+            name = "dispatchTouchEvent"
+        }?.hook {
+            val view = thisObject as? View
+            val event = getArg(0) as? MotionEvent
+            if (view == null || event == null) {
+                return@hook result(proceed())
+            }
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                var currentTouchTime = view.touchTime ?: 0L
+                var currentTouchX = view.touchX ?: 0f
+                var currentTouchY = view.touchY ?: 0f
+                val lastTouchTime = currentTouchTime
+                val lastTouchX = currentTouchX
+                val lastTouchY = currentTouchY
+                currentTouchTime = System.currentTimeMillis()
+                currentTouchX = event.x
+                currentTouchY = event.y
+                if (currentTouchTime - lastTouchTime < 250L
+                    && abs(currentTouchX - lastTouchX) < 100f
+                    && abs(currentTouchY - lastTouchY) < 100f
+                ) {
+                    val keyguardMgr = view.context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+                    val powerManager = view.context.getSystemService(Context.POWER_SERVICE) as PowerManager
+                    if (keyguardMgr.isKeyguardLocked) {
+                        metGoToSleep?.invoke(powerManager, SystemClock.uptimeMillis())
                     }
+                    view.touchTime = 0L
+                    view.touchX = 0f
+                    view.touchY = 0f
+                    return@hook result(true)
                 }
+                view.touchTime = currentTouchTime
+                view.touchX = currentTouchX
+                view.touchY = currentTouchY
+            }
+            result(proceed())
         }
     }
 }

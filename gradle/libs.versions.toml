@@ -1,31 +1,33 @@
 [versions]
+hiddenapibypass = "6.1"
 project-name = "XiaomiHelper"
 android-compileSdk = "37"
 android-minSdk = "35"
 android-targetSdk = "37"
 project-app-packageName = "dev.lackluster.mihelper"
-project-app-versionName = "26.03"
-project-app-versionCode = "26038"
+project-app-versionName = "26.04"
+project-app-versionCode = "26041"
 
 androidGradlePlugin = "9.1.0"
 kotlin = "2.3.20"
 ksp = "2.3.6"
-xposed = "82"
-yukihookapi = "1.3.1"
+libxposed-api = "101.0.1"
+libxposed-service = "101.0.0"
 kavaref-core = "1.0.2"
 kavaref-extension = "1.0.2"
-dexkit = "2.1.0"
-serialization-json = "1.10.0"
+dexkit = "2.2.0"
+serialization-json = "1.11.0"
 android-svg = "1.4"
 core = "5.3.0"
-koin-compose = "4.2.0"
+koin-compose = "4.2.1"
+lifecycleProcess = "2.10.0"
 
 [libraries]
+hiddenapibypass = { module = "org.lsposed.hiddenapibypass:hiddenapibypass", version.ref = "hiddenapibypass" }
+libxposed-api = { module = "io.github.libxposed:api", version.ref = "libxposed-api" }
+libxposed-service = { module = "io.github.libxposed:service", version.ref = "libxposed-service" }
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin-compose" }
 libsu-core = { module = "com.github.topjohnwu.libsu:core", version.ref = "core" }
-xposed-api = { group = "de.robv.android.xposed", name = "api", version.ref = "xposed" }
-yukihookapi-api = { group = "com.highcapable.yukihookapi", name = "api", version.ref = "yukihookapi" }
-yukihookapi-ksp-xposed = { group = "com.highcapable.yukihookapi", name = "ksp-xposed", version.ref = "yukihookapi" }
 kavaref-core = { module = "com.highcapable.kavaref:kavaref-core", version.ref = "kavaref-core" }
 kavaref-extension = { module = "com.highcapable.kavaref:kavaref-extension", version.ref = "kavaref-extension" }
 
@@ -44,6 +46,7 @@ androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version = "1.1
 androidx-test-junit = { group = "androidx.test.ext", name = "junit", version = "1.3.0" }
 androidx-test-espresso = { group = "androidx.test.espresso", name = "espresso-core", version = "3.7.0" }
 junit = { group = "junit", name = "junit", version = "4.13.2" }
+androidx-lifecycle-process = { group = "androidx.lifecycle", name = "lifecycle-process", version.ref = "lifecycleProcess" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }

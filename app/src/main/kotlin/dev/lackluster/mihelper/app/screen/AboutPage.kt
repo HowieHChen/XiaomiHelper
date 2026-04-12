@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -46,7 +48,9 @@ import dev.lackluster.mihelper.BuildConfig.BUILD_TYPE
 import dev.lackluster.mihelper.BuildConfig.VERSION_CODE
 import dev.lackluster.mihelper.BuildConfig.VERSION_NAME
 import dev.lackluster.mihelper.R
+import dev.lackluster.mihelper.app.state.AppEnvViewModel
 import dev.lackluster.mihelper.app.state.UiText
+import dev.lackluster.mihelper.app.state.XposedState
 import dev.lackluster.mihelper.app.utils.showToast
 import dev.lackluster.mihelper.app.utils.openUrl
 import dev.lackluster.mihelper.app.utils.toImageSource
@@ -54,6 +58,7 @@ import dev.lackluster.mihelper.app.utils.toUiText
 import dev.lackluster.mihelper.data.Contributors
 import dev.lackluster.mihelper.data.References
 import dev.lackluster.mihelper.data.Route
+import org.koin.androidx.compose.koinViewModel
 import top.yukonga.miuix.kmp.basic.DropdownImpl
 import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.IconButton
@@ -73,9 +78,13 @@ private sealed interface AboutPageAction {
 }
 
 @Composable
-fun AboutPage() {
+fun AboutPage(
+    envViewModel: AppEnvViewModel = koinViewModel()
+) {
     val context = LocalContext.current
     val navigator = LocalNavigator.current
+
+    val xposedState by envViewModel.xposedState.collectAsState()
 
     val onAction: (AboutPageAction) -> Unit = { action ->
         when (action) {
@@ -92,12 +101,14 @@ fun AboutPage() {
     }
 
     AboutPageContent(
+        xposedState = xposedState,
         onAction = onAction
     )
 }
 
 @Composable
 private fun AboutPageContent(
+    xposedState: XposedState,
     onAction: (AboutPageAction) -> Unit
 ) {
     val showTopPopup = remember { mutableStateOf(false) }
@@ -210,27 +221,33 @@ private fun AboutPageContent(
                                 fontSize = MiuixTheme.textStyles.body2.fontSize,
                                 color = Color.White.copy(alpha = 0.7f),
                             )
+                            Spacer(modifier = Modifier.heightIn(min = 4.dp))
+                            Text(
+                                text = xposedState.versionInfo,
+                                fontSize = MiuixTheme.textStyles.footnote2.fontSize,
+                                color = Color.White.copy(alpha = 0.5f),
+                            )
                         }
                     }
                 },
                 infoCardContent = {
                     TextPreference(
-                        icon = ImageIcon(source = R.mipmap.hyperx.toImageSource(), size = IconSize.App),
+                        icon = ImageIcon(source = R.mipmap.lib_hyperx.toImageSource(), size = IconSize.App),
                         title = stringResource(R.string.about_hyperx_compose),
                         summary = stringResource(R.string.about_hyperx_compose_tips),
                         onClick = { onAction(AboutPageAction.OpenUrl("https://github.com/HowieHChen/hyperx-compose".toUiText())) }
                     )
                     TextPreference(
-                        icon = ImageIcon(source = R.mipmap.miuix.toImageSource(), size = IconSize.App),
+                        icon = ImageIcon(source = R.mipmap.lib_miuix.toImageSource(), size = IconSize.App),
                         title = stringResource(R.string.about_miuix),
                         summary = stringResource(R.string.about_miuix_tips),
                         onClick = { onAction(AboutPageAction.OpenUrl("https://github.com/miuix-kotlin-multiplatform/miuix".toUiText())) }
                     )
                     TextPreference(
-                        icon = ImageIcon(source = R.mipmap.ic_yukihookapi.toImageSource(), size = IconSize.App),
-                        title = stringResource(R.string.about_yuki),
-                        summary = stringResource(R.string.about_yuki_tips),
-                        onClick = { onAction(AboutPageAction.OpenUrl("https://github.com/HighCapable/YuKiHookAPI".toUiText())) }
+                        icon = ImageIcon(source = R.mipmap.lib_kavaref.toImageSource(), size = IconSize.App),
+                        title = stringResource(R.string.about_kavaref),
+                        summary = stringResource(R.string.about_kavaref_tips),
+                        onClick = { onAction(AboutPageAction.OpenUrl("https://github.com/HighCapable/KavaRef".toUiText())) }
                     )
                 }
             )

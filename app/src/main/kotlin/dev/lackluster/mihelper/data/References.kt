@@ -15,7 +15,7 @@ object References {
         Reference("hosizoraru/StarVoyager", "GPL-3.0", "https://github.com/hosizoraru/StarVoyager"),
         Reference("MonwF/customiuizer", "GPL-3.0", "https://github.com/MonwF/customiuizer"),
         Reference("ReChronoRain/HyperCeiler", "AGPL-3.0", "https://github.com/ReChronoRain/HyperCeiler"),
-        Reference("HighCapable/YukiHookAPI", "Apache-2.0", "https://github.com/HighCapable/YukiHookAPI"),
+        Reference("HighCapable/KavaRef", "Apache-2.0", "https://github.com/HighCapable/KavaRef"),
         Reference("hellokaton/TinyPinyin", "Apache-2.0", "https://github.com/hellokaton/TinyPinyin"),
         Reference("kooritea/fcmfix", "Unknown", "https://github.com/kooritea/fcmfix")
     )

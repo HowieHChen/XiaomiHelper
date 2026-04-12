@@ -25,49 +25,53 @@ package dev.lackluster.mihelper.hook.rules.milink
 
 import android.content.Context
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
 import java.io.File
+import androidx.core.content.edit
 
-object FuckHpplay : YukiBaseHooker() {
+object FuckHpplay : StaticHooker() {
+    override fun onInit() {
+        updateSelfState(Preferences.MiLink.FUCK_HPPLAY.get())
+    }
+
     override fun onHook() {
-        hasEnable(Pref.Key.MiLink.FUCK_HPPLAY) {
-            "com.xiaomi.aivsbluetoothsdk.utils.FileUtil".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
-                    name = "splicingFilePath"
-                    parameters(String::class, String::class, String::class, String::class)
-                }?.hook {
-                    before {
-                        val rootDir = this.args(0).string()
-                        if (rootDir.startsWith("com.milink.service")) {
-                            this.args(0).set("MIUI${File.separator}AIVS${File.separator}${rootDir}")
+        "com.xiaomi.aivsbluetoothsdk.utils.FileUtil".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "splicingFilePath"
+                parameters(String::class, String::class, String::class, String::class)
+            }?.hook {
+                val newArgs = args.toTypedArray()
+                val rootDir = newArgs[0] as? String ?: ""
+                if (rootDir.startsWith("com.milink.service")) {
+                    newArgs[0] = "MIUI${File.separator}AIVS${File.separator}${rootDir}"
+                }
+                result(proceed(newArgs))
+            }
+        }
+        "com.hpplay.common.utils.ContextPath".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "initDirs"
+            }?.hook {
+                val context = getArg(0) as? Context
+                if (context != null) {
+                    @Suppress("DEPRECATION")
+                    android.preference.PreferenceManager.getDefaultSharedPreferences(context)
+                        .edit {
+                            putBoolean("key_sdcard_dir_enable", false)
                         }
-                    }
                 }
+                result(proceed())
             }
-            "com.hpplay.common.utils.ContextPath".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
-                    name = "initDirs"
-                }?.hook {
-                    before {
-                        val context = this.args(0).cast<Context>() ?: return@before
-                        @Suppress("DEPRECATION")
-                        android.preference.PreferenceManager.getDefaultSharedPreferences(context)
-                            .edit()
-                            .putBoolean("key_sdcard_dir_enable", false)
-                            .apply()
-                    }
-                }
-            }
-            "com.hpplay.sdk.source.api.LelinkSourceSDK".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
-                    name = "enableSDCard"
-                }?.hook {
-                    before {
-                        this.args(0).setFalse()
-                    }
-                }
+        }
+        "com.hpplay.sdk.source.api.LelinkSourceSDK".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "enableSDCard"
+            }?.hook {
+                val newArgs = args.toTypedArray()
+                newArgs[0] = false
+                result(proceed(newArgs))
             }
         }
     }

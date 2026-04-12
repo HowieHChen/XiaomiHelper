@@ -20,13 +20,14 @@
 
 package dev.lackluster.mihelper.hook.rules.mimirror
 
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.DexKit
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.DexKit
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.ifTrue
 import org.luckypray.dexkit.query.enums.StringMatchType
 
-object ContinueTasks : YukiBaseHooker() {
+object ContinueTasks : StaticHooker() {
     private val subScreen by lazy {
         DexKit.findMethodWithCache("pref_all_app_sub_screen") {
             matcher {
@@ -36,12 +37,17 @@ object ContinueTasks : YukiBaseHooker() {
         }
     }
 
+    override fun onInit() {
+        Preferences.MiMirror.CONTINUE_ALL_TASKS.get().also {
+            updateSelfState(it)
+        }.ifTrue {
+            subScreen
+        }
+    }
+
     override fun onHook() {
-        hasEnable(Pref.Key.MiMirror.CONTINUE_ALL_TASKS) {
-            if (appClassLoader == null) return@hasEnable
-            subScreen?.getMethodInstance(appClassLoader!!)?.hook {
-                replaceToTrue()
-            }
+        subScreen?.getMethodInstance(classLoader)?.hook {
+            result(true)
         }
     }
 }

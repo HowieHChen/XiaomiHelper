@@ -1,13 +1,14 @@
 package dev.lackluster.mihelper.hook.rules.securitycenter
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.DexKit
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.DexKit
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.ifTrue
 import org.luckypray.dexkit.query.enums.StringMatchType
 
-object SkipSplash : YukiBaseHooker() {
+object SkipSplash : StaticHooker() {
     private val clzScreenAdUtils by lazy {
         DexKit.findClassWithCache("screen_ad_utils") {
             matcher {
@@ -17,24 +18,29 @@ object SkipSplash : YukiBaseHooker() {
         }
     }
 
+    override fun onInit() {
+        Preferences.SecurityCenter.SKIP_SPLASH.get().also {
+            updateSelfState(it)
+        }.ifTrue {
+            clzScreenAdUtils
+        }
+    }
+
     override fun onHook() {
-        hasEnable(Pref.Key.SecurityCenter.SKIP_SPLASH) {
-            if (appClassLoader == null) return@hasEnable
-            clzScreenAdUtils?.getInstance(appClassLoader!!)?.apply {
-                resolve().firstMethodOrNull {
-                    parameterCount = 2
-                    returnType = Boolean::class
-                }?.hook {
-                    replaceToTrue()
-                }
-                resolve().firstMethodOrNull {
-                    parameterCount = 3
-                    returnType = Void.TYPE
-                }?.hook {
-                    before {
-                        this.args(2).setTrue()
-                    }
-                }
+        clzScreenAdUtils?.getInstance(classLoader)?.apply {
+            resolve().firstMethodOrNull {
+                parameterCount = 2
+                returnType = Boolean::class
+            }?.hook {
+                result(true)
+            }
+            resolve().firstMethodOrNull {
+                parameterCount = 3
+                returnType = Void.TYPE
+            }?.hook {
+                val newArgs = args.toTypedArray()
+                newArgs[2] = true
+                result(proceed(newArgs))
             }
         }
     }

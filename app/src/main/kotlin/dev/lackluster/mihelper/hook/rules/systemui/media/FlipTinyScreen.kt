@@ -4,7 +4,6 @@ import android.app.WallpaperColors
 import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.graphics.drawable.Icon
 import android.view.LayoutInflater
 import android.view.View
@@ -13,11 +12,9 @@ import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintSet
 import com.highcapable.kavaref.KavaRef.Companion.asResolver
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.kavaref.extension.makeAccessible
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.log.YLog
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.hook.drawable.AmbientLightDrawable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.rules.systemui.media.drawable.AmbientLightDrawable
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.media_bg_view
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.tiny_media_session_view
 import dev.lackluster.mihelper.hook.rules.systemui.compat.ConstraintSetCompat.applyTo
@@ -33,31 +30,28 @@ import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.f
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.fldTonalPaletteAllShades
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.getCachedWallpaperColor
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.releaseCachedWallpaperColor
-import dev.lackluster.mihelper.utils.HostExecutor
-import dev.lackluster.mihelper.utils.Prefs
-import dev.lackluster.mihelper.utils.factory.getAdditionalInstanceField
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
+import dev.lackluster.mihelper.hook.utils.e
+import dev.lackluster.mihelper.hook.utils.extraOf
+import dev.lackluster.mihelper.hook.utils.toTyped
+import dev.lackluster.mihelper.hook.utils.HostExecutor
 import dev.lackluster.mihelper.utils.factory.isSystemInDarkMode
-import dev.lackluster.mihelper.utils.factory.setAdditionalInstanceField
 
-object FlipTinyScreen : YukiBaseHooker() {
-    private const val KEY_MEDIA_BG_VIEW = "KEY_MEDIA_BG_VIEW"
-    private const val KEY_MEDIA_BG_COLOR_LIGHT = "KEY_MEDIA_BG_COLOR_LIGHT"
-    private const val KEY_MEDIA_BG_COLOR_DARK = "KEY_MEDIA_BG_COLOR_DARK"
+object FlipTinyScreen : StaticHooker() {
+    private var Any.mediaBgView by extraOf<ImageView>("KEY_MEDIA_BG_VIEW")
+    private var Any.lightMediaBgColor by extraOf<Int>("KEY_MEDIA_BG_COLOR_LIGHT")
+    private var Any.darkMediaBgColor by extraOf<Int>("KEY_MEDIA_BG_COLOR_DARK")
     // background: 0 -> Default; 1 -> Art; 2 -> Blurred cover; 3 -> AndroidNewStyle; 4 -> AndroidOldStyle;
-    private val ncBackgroundStyle = Prefs.getInt(Pref.Key.SystemUI.MediaControl.BACKGROUND_STYLE, 0)
-    private val ncAmbientLight = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.AMBIENT_LIGHT, false)
-    private val ncAmbientColorOpt = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.AMBIENT_LIGHT_OPT, false)
-    private val ncAlwaysDark = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.ALWAYS_DARK, false)
-
+    private val ncBackgroundStyle by Preferences.SystemUI.MediaControl.Shared.BG_STYLE.get(false).lazyGet()
+    private val ncAmbientLight by Preferences.SystemUI.MediaControl.NotifCenter.BG_AMBIENT_LIGHT.lazyGet()
+    private val ncAmbientColorOpt by Preferences.SystemUI.MediaControl.Shared.BG_AMBIENT_LIGHT_OPT.get(false).lazyGet()
+    private val ncAlwaysDark by Preferences.SystemUI.MediaControl.NotifCenter.BG_ALWAYS_DARK.lazyGet()
+    
     var ncCurrentPkgName = ""
     var ncIsArtworkBound = false
 
-    private val clzFlipRowAdapter by lazy {
-        "com.android.notification.tinypanel.FlipRowAdapter".toClassOrNull()
-    }
-    private val clzFlipMediaRowHolder by lazy {
-        "com.android.notification.tinypanel.FlipMediaRowHolder".toClassOrNull()
-    }
+    private val clzFlipRowAdapter by "com.android.notification.tinypanel.FlipRowAdapter".lazyClassOrNull()
+    private val clzFlipMediaRowHolder by "com.android.notification.tinypanel.FlipMediaRowHolder".lazyClassOrNull()
     private val ctorFlipMediaRowHolder by lazy {
         clzFlipMediaRowHolder?.resolve()?.firstConstructorOrNull {
             parameterCount = 1
@@ -66,28 +60,32 @@ object FlipTinyScreen : YukiBaseHooker() {
     private val fldMediaBg by lazy {
         clzFlipMediaRowHolder?.resolve()?.firstFieldOrNull {
             name = "mMediaBg"
-        }?.self?.apply { makeAccessible() }
+        }?.toTyped<View>()
     }
     private val fldItemView by lazy {
         clzFlipMediaRowHolder?.resolve()?.firstFieldOrNull {
             name = "mItemView"
             superclass()
-        }?.self?.apply { makeAccessible() }
+        }?.toTyped<View>()
     }
     private val fldIsPlaying by lazy {
         clzMediaData?.resolve()?.firstFieldOrNull {
             name = "isPlaying"
-        }?.self
+        }?.toTyped<Boolean>()
     }
     private val fldArtwork by lazy {
         clzMediaData?.resolve()?.firstFieldOrNull {
             name = "artwork"
-        }?.self
+        }?.toTyped<Icon>()
     }
     private val fldPackageName by lazy {
         clzMediaData?.resolve()?.firstFieldOrNull {
             name = "packageName"
-        }?.self
+        }?.toTyped<String>()
+    }
+
+    override fun onInit() {
+        updateSelfState(clzFlipMediaRowHolder != null && clzFlipRowAdapter != null)
     }
 
     override fun onHook() {
@@ -95,59 +93,65 @@ object FlipTinyScreen : YukiBaseHooker() {
             clzFlipMediaRowHolder?.apply {
                 val fldIsArtWorkUpdate = resolve().firstFieldOrNull {
                     name = "mIsArtWorkUpdate"
-                }?.self?.apply { makeAccessible() }
+                }?.toTyped<Boolean>()
                 val fldMediaData = resolve().firstFieldOrNull {
                     name = "mMediaData"
-                }?.self?.apply { makeAccessible() }
+                }?.toTyped<Any>()
                 resolve().firstConstructor().hook {
-                    after {
-                        val holder = this.instance
-                        getNewMediaBgView(holder)
-                    }
+                    val ori = proceed()
+                    getNewMediaBgView(thisObject)
+                    result(ori)
                 }
                 resolve().firstMethodOrNull {
                     name = "setButton"
                 }?.hook {
-                    after {
-                        val mediaData = fldMediaData?.get(this.instance) ?: return@after
-                        val packageName = fldPackageName?.get(mediaData) as? String ?: return@after
-                        val isArtWorkUpdate = fldIsArtWorkUpdate?.get(this.instance) == true || ncCurrentPkgName != packageName || !ncIsArtworkBound
+                    val ori = proceed()
+                    val mediaData = fldMediaData?.get(thisObject)
+                    val packageName = fldPackageName?.get(mediaData)
+                    val isArtWorkUpdate = fldIsArtWorkUpdate?.get(thisObject) == true || ncCurrentPkgName != packageName || !ncIsArtworkBound
 
-                        val holder = this.instance
-                        val itemView = fldItemView?.get(holder) as? View
-                        val context = itemView?.context ?: return@after
+                    val holder = thisObject
+                    val itemView = fldItemView?.get(holder)
+                    val context = itemView?.context
 
-                        if (isArtWorkUpdate) {
-                            updateColor(context, mediaData, packageName, holder, ncAlwaysDark || context.isSystemInDarkMode)
+                    if (context == null || mediaData == null || packageName == null) {
+                        return@hook result(ori)
+                    }
+
+                    if (isArtWorkUpdate) {
+                        updateColor(context, mediaData, packageName, holder, ncAlwaysDark || context.isSystemInDarkMode)
+                    } else {
+                        val mediaBgView = getNewMediaBgView(holder)
+                        val ambientLightDrawable = mediaBgView?.drawable as? AmbientLightDrawable
+                        val isPlaying = fldIsPlaying?.get(mediaData) == true
+                        if (isPlaying) {
+                            ambientLightDrawable?.resume()
                         } else {
-                            val mediaBgView = getNewMediaBgView(holder) ?: return@after
-                            val ambientLightDrawable = mediaBgView.drawable as? AmbientLightDrawable ?: return@after
-                            val isPlaying = fldIsPlaying?.get(mediaData) == true
-                            if (isPlaying) {
-                                ambientLightDrawable.resume()
-                            } else {
-                                ambientLightDrawable.pause()
-                            }
+                            ambientLightDrawable?.pause()
                         }
                     }
+                    result(ori)
                 }
                 resolve().firstMethodOrNull {
                     name = "setForegroundColors"
                 }?.hook {
-                    after {
-                        val holder = this.instance
-                        val mediaBgView = getNewMediaBgView(holder)
-                        val ambientLightDrawable = mediaBgView?.drawable as? AmbientLightDrawable ?: return@after
-                        val itemView = fldItemView?.get(holder) as? View
-                        val context = itemView?.context ?: return@after
-                        val isDark = context.isSystemInDarkMode
-                        if (ncAmbientColorOpt) {
-                            val light = holder.getAdditionalInstanceField<Int>(KEY_MEDIA_BG_COLOR_LIGHT) ?: Color.TRANSPARENT
-                            val dark = holder.getAdditionalInstanceField<Int>(KEY_MEDIA_BG_COLOR_DARK) ?: Color.TRANSPARENT
-                            ambientLightDrawable.setGradientColor(if (isDark) dark else light, !mediaBgView.isShown)
-                        }
-                        ambientLightDrawable.setLightMode(!isDark)
+                    val ori = proceed()
+                    val holder = thisObject
+                    val mediaBgView = getNewMediaBgView(holder)
+                    val ambientLightDrawable = mediaBgView?.drawable as? AmbientLightDrawable
+                    val itemView = fldItemView?.get(holder)
+                    val context = itemView?.context
+                    if (ambientLightDrawable == null || context == null) {
+                        return@hook result(ori)
                     }
+                    val isDark = context.isSystemInDarkMode
+                    if (ncAmbientColorOpt) {
+                        val light = holder.lightMediaBgColor ?: Color.TRANSPARENT
+                        val dark = holder.darkMediaBgColor ?: Color.TRANSPARENT
+                        ambientLightDrawable.setGradientColor(if (isDark) dark else light, !mediaBgView.isShown)
+                    }
+                    ambientLightDrawable.setLightMode(!isDark)
+                    result(ori)
                 }
             }
             clzFlipRowAdapter?.apply {
@@ -161,15 +165,15 @@ object FlipTinyScreen : YukiBaseHooker() {
                 resolve().firstMethodOrNull {
                     name = "onViewDetachedFromWindow"
                 }?.hook {
-                    after {
-                        val holder = this.args(0).any()
-                        if (holder != null && clzFlipMediaRowHolder?.isInstance(holder) == true) {
-                            (getNewMediaBgView(holder)?.drawable as? AmbientLightDrawable)?.stop()
-                            ncCurrentPkgName = ""
-                            ncIsArtworkBound = false
-                            releaseCachedWallpaperColor()
-                        }
+                    val ori = proceed()
+                    val holder = getArg(0)
+                    if (holder != null && clzFlipMediaRowHolder?.isInstance(holder) == true) {
+                        (getNewMediaBgView(holder)?.drawable as? AmbientLightDrawable)?.stop()
+                        ncCurrentPkgName = ""
+                        ncIsArtworkBound = false
+                        releaseCachedWallpaperColor()
                     }
+                    result(ori)
                 }
             }
         }
@@ -178,18 +182,18 @@ object FlipTinyScreen : YukiBaseHooker() {
                 resolve().firstMethodOrNull {
                     name = "onCreateViewHolder"
                 }?.hook {
-                    before {
-                        if (this.args(1).int() == 4) {
-                            val parent = this.args(0).cast<ViewGroup>()
-                            val context = parent?.context ?: return@before
-                            val oriConfiguration = context.resources.configuration
-                            val configuration = Configuration(oriConfiguration).apply {
-                                uiMode = (oriConfiguration.uiMode and Configuration.UI_MODE_NIGHT_MASK.inv()) or Configuration.UI_MODE_NIGHT_YES
-                            }
-                            val wrappedContext = context.createConfigurationContext(configuration)
-                            val view = LayoutInflater.from(wrappedContext).inflate(tiny_media_session_view, parent, false)
-                            this.result = ctorFlipMediaRowHolder?.create(view)
+                    val parent = getArg(0) as? ViewGroup
+                    if (parent != null && getArg(1) == 4) {
+                        val context = parent.context
+                        val oriConfiguration = context.resources.configuration
+                        val configuration = Configuration(oriConfiguration).apply {
+                            uiMode = (oriConfiguration.uiMode and Configuration.UI_MODE_NIGHT_MASK.inv()) or Configuration.UI_MODE_NIGHT_YES
                         }
+                        val wrappedContext = context.createConfigurationContext(configuration)
+                        val view = LayoutInflater.from(wrappedContext).inflate(tiny_media_session_view, parent, false)
+                        result(ctorFlipMediaRowHolder?.create(view))
+                    } else {
+                        result(proceed())
                     }
                 }
             }
@@ -197,10 +201,10 @@ object FlipTinyScreen : YukiBaseHooker() {
                 resolve().firstMethodOrNull {
                     name = "setForegroundColors"
                 }?.hook {
-                    before {
-                        val holder = this.instance
-                        val itemView = fldItemView?.get(holder) as? View
-                        val context = itemView?.context ?: return@before
+                    val holder = thisObject
+                    val itemView = fldItemView?.get(holder)
+                    val context = itemView?.context
+                    if (context != null) {
                         val oriConfiguration = context.resources.configuration
                         val configuration = Configuration(oriConfiguration).apply {
                             uiMode = (oriConfiguration.uiMode and Configuration.UI_MODE_NIGHT_MASK.inv()) or Configuration.UI_MODE_NIGHT_YES
@@ -210,14 +214,15 @@ object FlipTinyScreen : YukiBaseHooker() {
                             name = "mContext"
                         }?.set(wrappedContext)
                     }
+                    result(proceed())
                 }
                 resolve().firstMethodOrNull {
                     name = "setPlayerBg"
                 }?.hook {
-                    before {
-                        val holder = this.instance
-                        val itemView = fldItemView?.get(holder) as? View
-                        val context = itemView?.context ?: return@before
+                    val holder = thisObject
+                    val itemView = fldItemView?.get(holder)
+                    val context = itemView?.context
+                    if (context != null) {
                         val oriConfiguration = context.resources.configuration
                         val configuration = Configuration(oriConfiguration).apply {
                             uiMode = (oriConfiguration.uiMode and Configuration.UI_MODE_NIGHT_MASK.inv()) or Configuration.UI_MODE_NIGHT_YES
@@ -227,17 +232,18 @@ object FlipTinyScreen : YukiBaseHooker() {
                             name = "mContext"
                         }?.set(wrappedContext)
                     }
+                    result(proceed())
                 }
             }
         }
     }
 
     private fun getNewMediaBgView(mMediaViewHolder: Any): ImageView? {
-        val newMediaBgView = mMediaViewHolder.getAdditionalInstanceField<ImageView>(KEY_MEDIA_BG_VIEW)
+        val newMediaBgView = mMediaViewHolder.mediaBgView
         if (newMediaBgView?.drawable is AmbientLightDrawable) {
             return newMediaBgView
         } else {
-            val mediaBg = fldMediaBg?.get(mMediaViewHolder) as? View
+            val mediaBg = fldMediaBg?.get(mMediaViewHolder)
             val parent = mediaBg?.parent as? ViewGroup ?: return null
             val index = (parent.indexOfChild(mediaBg) + 1).coerceIn(0, parent.childCount)
             val ambientLightDrawable = AmbientLightDrawable().apply {
@@ -258,7 +264,7 @@ object FlipTinyScreen : YukiBaseHooker() {
             connect?.invoke(constraintSet, media_bg_view, ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT)
             connect?.invoke(constraintSet, media_bg_view, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
             applyTo?.invoke(constraintSet, parent)
-            mMediaViewHolder.setAdditionalInstanceField(KEY_MEDIA_BG_VIEW, musicBgView)
+            mMediaViewHolder.mediaBgView = musicBgView
             return musicBgView
         }
     }
@@ -266,7 +272,7 @@ object FlipTinyScreen : YukiBaseHooker() {
     private fun updateColor(context: Context, mediaData: Any, pkgName: String, holder: Any, isDark: Boolean) {
         val mediaBgView = getNewMediaBgView(holder) ?: return
         val ambientLightDrawable = mediaBgView.drawable as? AmbientLightDrawable ?: return
-        val artwork = fldArtwork?.get(mediaData) as? Icon
+        val artwork = fldArtwork?.get(mediaData)
         val colorOpt = ncAmbientColorOpt
 
         HostExecutor.execute(
@@ -282,8 +288,8 @@ object FlipTinyScreen : YukiBaseHooker() {
                         try {
                             val icon = context.packageManager.getApplicationIcon(pkgName)
                             mutableColorScheme = ctorColorScheme?.newInstance(WallpaperColors.fromDrawable(icon), true, enumStyleContent)?: throw Exception()
-                        } catch (_: Exception) {
-                            YLog.warn("application not found!")
+                        } catch (e: Exception) {
+                            e(e) { "application not found!" }
                             return@execute null
                         }
                     }
@@ -293,12 +299,12 @@ object FlipTinyScreen : YukiBaseHooker() {
                     } else {
                         val light = accent1[4]
                         val dark = accent1[7]
-                        holder.setAdditionalInstanceField(KEY_MEDIA_BG_COLOR_LIGHT, light)
-                        holder.setAdditionalInstanceField(KEY_MEDIA_BG_COLOR_DARK, dark)
+                        holder.lightMediaBgColor = light
+                        holder.darkMediaBgColor = dark
                         mainColorHCT = if (isDark) dark else light
                     }
                 } else {
-                    val artWorkDrawable = (artwork?.loadDrawable(context) ?: (metAcquireApplicationIcon?.invoke(null, context, mediaData) as? Drawable)) ?: return@execute null
+                    val artWorkDrawable = (artwork?.loadDrawable(context) ?: metAcquireApplicationIcon?.invoke(null, context, mediaData)) ?: return@execute null
                     mainColorHCT = getMainColorHCT(artWorkDrawable) ?: Color.TRANSPARENT
                 }
                 return@execute mainColorHCT

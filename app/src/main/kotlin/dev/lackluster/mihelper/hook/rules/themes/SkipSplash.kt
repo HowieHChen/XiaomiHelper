@@ -20,13 +20,14 @@
 
 package dev.lackluster.mihelper.hook.rules.themes
 
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.DexKit
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.DexKit
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.ifTrue
 import org.luckypray.dexkit.query.enums.StringMatchType
 
-object SkipSplash : YukiBaseHooker() {
+object SkipSplash : StaticHooker() {
     private val tryAdSplashMethod by lazy {
         DexKit.findMethodWithCache("try_ad_splash") {
             matcher {
@@ -37,12 +38,17 @@ object SkipSplash : YukiBaseHooker() {
         }
     }
 
+    override fun onInit() {
+        Preferences.Themes.SKIP_SPLASH.get().also {
+            updateSelfState(it)
+        }.ifTrue {
+            tryAdSplashMethod
+        }
+    }
+
     override fun onHook() {
-        hasEnable(Pref.Key.Themes.SKIP_SPLASH) {
-            if (appClassLoader == null) return@hasEnable
-            tryAdSplashMethod?.getMethodInstance(appClassLoader!!)?.hook {
-                intercept()
-            }
+        tryAdSplashMethod?.getMethodInstance(classLoader)?.hook {
+            result(null)
         }
     }
 }

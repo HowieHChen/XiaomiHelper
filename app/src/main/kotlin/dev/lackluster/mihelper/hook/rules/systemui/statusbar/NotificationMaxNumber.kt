@@ -21,29 +21,38 @@
 package dev.lackluster.mihelper.hook.rules.systemui.statusbar
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
 import dev.lackluster.mihelper.hook.rules.systemui.compat.MutableStateFlowCompat
-import dev.lackluster.mihelper.utils.Prefs
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
+import dev.lackluster.mihelper.hook.utils.toTyped
 
 
-object NotificationMaxNumber : YukiBaseHooker() {
-    private val maxIcon = Prefs.getInt(Pref.Key.SystemUI.StatusBar.NOTIFICATION_COUNT_ICON, 3)
+object NotificationMaxNumber : StaticHooker() {
+    private val internalMaxIconFlow by lazy {
+        MutableStateFlowCompat(3)
+    }
+
+    override fun onInit() {
+        updateSelfState(Preferences.SystemUI.StatusBar.ENABLE_NOTIF_MAX_COUNT.get())
+        Preferences.SystemUI.StatusBar.NOTIF_MAX_COUNT.observe {
+            internalMaxIconFlow.setValue(it)
+        }
+    }
 
     override fun onHook() {
-        hasEnable(Pref.Key.SystemUI.StatusBar.NOTIFICATION_COUNT) {
-            "com.android.systemui.statusbar.policy.NotificationIconObserver".toClassOrNull()?.apply {
-                val maxIconFlow = resolve().firstFieldOrNull {
-                    name = "maxIconFlow"
-                }
-                resolve().firstConstructorOrNull()?.hook {
-                    after {
-                        maxIconFlow?.copy()?.of(this.instance)?.set(
-                            MutableStateFlowCompat(maxIcon).toReadonlyStateFlow()
-                        )
-                    }
-                }
+        "com.android.systemui.statusbar.policy.NotificationIconObserver".toClassOrNull()?.apply {
+            val maxIconFlow = resolve().firstFieldOrNull {
+                name = "maxIconFlow"
+            }?.toTyped<Any>()
+            resolve().firstConstructorOrNull()?.hook {
+                val ori = proceed()
+                maxIconFlow?.set(
+                    thisObject,
+                    internalMaxIconFlow.toReadonlyStateFlow()
+                )
+                result(ori)
             }
         }
     }

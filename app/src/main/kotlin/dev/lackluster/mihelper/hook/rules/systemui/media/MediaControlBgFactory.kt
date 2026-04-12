@@ -41,25 +41,22 @@ import androidx.core.graphics.drawable.toDrawable
 import androidx.core.graphics.get
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.condition.type.Modifiers
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
+import dev.lackluster.mihelper.hook.base.StaticHooker
 import dev.lackluster.mihelper.hook.rules.systemui.media.data.MediaViewColorConfig
+import dev.lackluster.mihelper.hook.utils.toTyped
 import java.util.WeakHashMap
 import kotlin.math.max
 import kotlin.math.min
 
-object MediaControlBgFactory : YukiBaseHooker() {
+internal object MediaControlBgFactory : StaticHooker() {
     val defaultColorConfig = MediaViewColorConfig(
         Color.WHITE,
         Color.WHITE,
         Color.BLACK,
         Color.BLACK
     )
-    val clzMediaData by lazy {
-        "com.android.systemui.media.controls.shared.model.MediaData".toClassOrNull()
-    }
-    private val clzColorScheme by lazy {
-        "com.android.systemui.monet.ColorScheme".toClass()
-    }
+    val clzMediaData by "com.android.systemui.media.controls.shared.model.MediaData".lazyClassOrNull()
+    private val clzColorScheme by "com.android.systemui.monet.ColorScheme".lazyClass()
     val ctorColorScheme by lazy {
         clzColorScheme.resolve().firstConstructorOrNull {
             parameterCount = 3
@@ -69,32 +66,32 @@ object MediaControlBgFactory : YukiBaseHooker() {
     val fldTonalPaletteAllShades by lazy {
         "com.android.systemui.monet.TonalPalette".toClass().resolve().firstFieldOrNull {
             name = "allShades"
-        }?.self
+        }?.toTyped<List<Int?>>()
     }
     val fldColorSchemeNeutral1 by lazy {
         clzColorScheme.resolve().firstFieldOrNull {
             name = "mNeutral1"
-        }?.self
+        }?.toTyped<Any>()
     }
     val fldColorSchemeNeutral2 by lazy {
         clzColorScheme.resolve().firstFieldOrNull {
             name = "mNeutral2"
-        }?.self
+        }?.toTyped<Any>()
     }
     val fldColorSchemeAccent1 by lazy {
         clzColorScheme.resolve().firstFieldOrNull {
             name = "mAccent1"
-        }?.self
+        }?.toTyped<Any>()
     }
     val fldColorSchemeAccent2 by lazy {
         clzColorScheme.resolve().firstFieldOrNull {
             name = "mAccent2"
-        }?.self
+        }?.toTyped<Any>()
     }
     val fldColorSchemeAccent3 by lazy {
         clzColorScheme.resolve().firstFieldOrNull {
             name = "mAccent3"
-        }?.self
+        }?.toTyped<Any>()
     }
     val enumStyleContent by lazy {
         "com.android.systemui.monet.Style".toClass().resolve().firstMethodOrNull {
@@ -107,14 +104,12 @@ object MediaControlBgFactory : YukiBaseHooker() {
     private val metIconGetBitmap by lazy {
         Icon::class.resolve().firstMethodOrNull {
             name = "getBitmap"
-        }?.self?.apply {
-            isAccessible = true
-        }
+        }?.toTyped<Bitmap>()
     }
 
     private val artworkColorMap = WeakHashMap<Icon, WallpaperColors>()
 
-    override fun onHook() {
+    override fun onInit() {
         clzColorScheme
         ctorColorScheme
         fldTonalPaletteAllShades

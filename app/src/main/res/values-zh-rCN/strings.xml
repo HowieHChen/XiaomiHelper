@@ -10,7 +10,7 @@
     <string name="module_dexkit_cache_tips">使用缓存可减少对性能的负面影响，但会在宿主应用程序目录下生成一个缓存文件。关闭该功能后，缓存文件（如果存在）会在下一次宿主应用启动时被清除。</string>
     <string name="module_hide_icon">隐藏桌面图标</string>
     <string name="scope_taplus">传送门</string>
-    <string name="main_app_root_tips">缺少 root 权限会导致某些功能无法正常运行。</string>
+    <string name="main_app_root_tips">缺少 root 权限会导致某些功能无法正常运行</string>
     <string name="ui_title_menu_reboot">重启</string>
     <string name="menu_reboot_system">重启系统</string>
     <string name="menu_reboot_scope">重启全部作用域</string>
@@ -39,6 +39,7 @@
     <string name="action_recents">最近任务</string>
     <string name="action_xiaoai">超级小爱</string>
     <string name="action_floating_window">迷你小窗</string>
+    <string name="action_scroll_to_top">滚动到顶部</string>
     <string name="search_use_browser">使用浏览器搜索</string>
     <string name="search_engine">搜索引擎</string>
     <string name="search_engine_default">默认</string>
@@ -69,7 +70,7 @@
     <string name="security_cleaner_lock_score">锁定安全得分</string>
     <string name="security_cleaner_lock_score_tips">将安全得分锁定为100分，并禁用“优化”按钮</string>
     <string name="security_power_unlock_custom_refresh">自定义高刷新率应用</string>
-    <string name="security_power_gms_bg_running_tips">伪装成国际版系统，允许 GMS 在后台运行，防止 FCM 连接在锁屏后被中断。</string>
+    <string name="security_power_gms_bg_running_tips">伪装成国际版系统，允许 GMS 在后台运行，防止 FCM 连接在锁屏后被中断</string>
     <string name="scope_miui_home">桌面</string>
     <string name="home_others_dock_remove_num_limit">移除 Dock 的图标数量限制</string>
     <string name="common_tap_sleep">双击空白处锁屏</string>
@@ -181,7 +182,7 @@
     <string name="systemui_control_hide_carrier_one">隐藏 SIM 卡 1 的运营商标签</string>
     <string name="systemui_control_hide_carrier_two">隐藏 SIM 卡 2 的运营商标签</string>
     <string name="icon_tuner_network_net_speed">实时网速</string>
-    <string name="clock_easy_fixed_width_tips">固定 TextView 的宽度，使时钟显示秒数时通知图标的位置不会不断变化。</string>
+    <string name="clock_easy_fixed_width_tips">固定 TextView 的宽度，使时钟显示秒数时通知图标的位置不会不断变化</string>
     <string name="font_weight_lockscreen_carrier">自定义锁屏运营商标签字重</string>
     <string name="font_weight_lockscreen_carrier_weight">锁屏运营商标签字重</string>
     <string name="icon_tuner_hide_selection_default">默认</string>
@@ -236,14 +237,14 @@
     <string name="others_updater_block_dialog">屏蔽“开启智能更新”弹窗</string>
     <string name="others_updater_disable_validation">移除 OTA 验证</string>
     <string name="others_updater_disable_validation_tips">仅支持 VAB 设备，非 VAB 设备请勿开启！</string>
-    <string name="about_yuki_tips">了解更多 https://github.com/HighCapable/YuKiHookAPI</string>
+    <string name="about_kavaref_tips">了解更多 https://github.com/HighCapable/KavaRef</string>
     <string name="about_repository_tips">Github 仓库</string>
     <string name="about_jump_error_toast">发生了一些奇怪的错误</string>
     <string name="about_easter_egg_toast">你点了一下，然后什么都没有发生</string>
     <string name="ui_title_about_developer">开发者</string>
     <string name="about_repository">源代码</string>
     <string name="ui_title_about_reference">引用</string>
-    <string name="about_yuki">此模块使用 YukiHookAPI 构建</string>
+    <string name="about_kavaref">此模块基于 KavaRef</string>
     <string name="search_engine_custom_url_toast">URL 必须包含\"%s\"</string>
     <string name="clock_easy_show_ampm">显示上午/下午</string>
     <string name="clock_easy_show_leading_zero">显示前导0</string>
@@ -276,6 +277,7 @@
     <string name="scope_mi_trust">MiTrustService</string>
     <string name="scope_themes">主题壁纸</string>
     <string name="module_skip_root_check_tips">重启应用后生效</string>
+    <string name="module_debug_tips">启用后将打印调试日志。立即生效。请仅在需要时启用！</string>
     <string name="module_show_in_settings">在设置中显示入口</string>
     <string name="module_settings_icon_style">设置入口图标风格</string>
     <string name="module_settings_icon_style_android">安卓</string>
@@ -302,9 +304,9 @@
     <string name="home_gesture_fix_predictive_back_tips">HyperOS 破坏了预测性返回功能，导致所需的滑动距离过短。启用此选项后，将恢复 AOSP 的行为。此选项只能修复预测性返回的进度错误，无法处理预测性返回功能完全失效的情况。</string>
     <string name="home_anim_icon_zoom">禁用点击图标时的缩放动画</string>
     <string name="home_anim_icon_darken">禁用点击图标时的黑色遮罩</string>
-    <string name="home_others_force_color_scheme_statusbar_tips">指定状态栏文本和图标的颜色（忽略壁纸颜色）。需要在“系统界面”页面启用“禁用智能深色”。</string>
+    <string name="home_others_force_color_scheme_statusbar_tips">指定状态栏文本和图标的颜色（忽略壁纸颜色）</string>
     <string name="home_others_force_color_scheme_minus">负一屏颜色</string>
-    <string name="home_others_force_color_scheme_minus_tips">指定负一屏状态栏文本和图标的颜色（忽略壁纸颜色）。需要在“系统界面”页面启用“禁用智能深色”。</string>
+    <string name="home_others_force_color_scheme_minus_tips">指定负一屏状态栏文本和图标的颜色（忽略壁纸颜色）</string>
     <string name="cleaner_common_ad_blocker">屏蔽广告</string>
     <string name="cleaner_package_block_upload_app_info">阻止安装时上传应用信息</string>
     <string name="cleaner_package_remove_element">禁用多余的功能并移除相关界面</string>
@@ -348,18 +350,18 @@
     <string name="ui_title_module_ui">界面和显示</string>
     <string name="module_ui_blur">模糊效果</string>
     <string name="module_ui_split">自适应布局</string>
-    <string name="about_miuix">此应用使用 Miuix 构建</string>
-    <string name="about_miuix_tips">Miuix 是一个 Compose Multiplatform 的组件库，提供了一系列 小米澎湃OS 风格的组件。</string>
+    <string name="about_miuix">此应用基于 Miuix</string>
+    <string name="about_miuix_tips">Miuix 是一个 Compose Multiplatform 的组件库，提供了一系列 小米澎湃OS 风格的组件</string>
     <string name="module_skip_root_check">禁用 root 权限检查</string>
     <string name="module_ui_blur_tint_alpha_light">浅色模式着色不透明度</string>
     <string name="module_ui_blur_tint_alpha_dark">深色模式着色不透明度</string>
-    <string name="about_hyperx_compose">此应用使用 HyperX Compose 构建</string>
-    <string name="about_hyperx_compose_tips">HyperX Compose 是一个基于 Miuix 的 Compose 组件库，专为 Android 平台打造。</string>
+    <string name="about_hyperx_compose">此应用基于 HyperX Compose</string>
+    <string name="about_hyperx_compose_tips">HyperX Compose 是一个基于 Miuix 的 Compose 组件库，专为 Android 平台打造</string>
     <string name="cleaner_common_version_info">已验证版本：%1$s\n已安装版本：%2$s</string>
     <string name="cleaner_common_skip_splash">禁用启动屏幕</string>
     <string name="cleaner_common_skip_splash_tips">理论上还会禁用启动屏幕上的广告（无法保证）</string>
     <string name="cleaner_package_install_source">自定义安装源</string>
-    <string name="cleaner_package_install_source_tips">通过将安装源伪装成系统应用程序，绕过系统应用程序安装限制。</string>
+    <string name="cleaner_package_install_source_tips">通过将安装源伪装成系统应用程序，绕过系统应用程序安装限制</string>
     <string name="cleaner_package_install_source_file">文件管理</string>
     <string name="cleaner_package_custom_install_source">安装源包名</string>
     <string name="cleaner_market_block_update_dailog">屏蔽更新推送弹窗</string>
@@ -481,7 +483,7 @@
     <string name="cleaner_common_restart_app">重启%1$s</string>
     <string name="others_settings_quick_per_overlay">快捷授予“显示在其它应用的上层”权限</string>
     <string name="others_settings_quick_per_install">快捷授予“安装未知应用”权限</string>
-    <string name="others_settings_quick_per_tips">直接跳转到授予此权限给特定应用程序的开关，而不是与该权限关联的应用程序列表。</string>
+    <string name="others_settings_quick_per_tips">直接跳转到授予此权限给特定应用程序的开关，而不是与该权限关联的应用程序列表</string>
     <string name="icon_tuner_hint_ignore_sys_hide">从 HyperOS 2.0.200 版本开始，用户可以在“设置”中的“图标显示自定义”页面控制状态栏图标是否允许显示。此功能与本页面上的设置存在冲突，并可能导致意外行为。强烈建议启用下方的“忽略系统设置”选项，并在本页面上管理所有状态栏图标。</string>
     <string name="icon_tuner_general_ignore_sys_hide">忽略系统设置</string>
     <string name="android_display_font_scale_reboot">重启后生效</string>
@@ -537,7 +539,7 @@
     <string name="systemui_notif_expand_ignore_focus_tips">展开第一个通知时忽略焦点通知</string>
     <string name="systemui_notif_lr_hide_section_header_tips">当有对话通知（MessageStyle）时，它通常会被置顶，并且在它的下方会显示一个小圆点（节标题）</string>
     <string name="systemui_notif_lr_hide_section_gap">隐藏节间距</string>
-    <string name="systemui_notif_lr_hide_section_gap_tips">媒体控制面板和下一个通知之间的间距与其他通知之间的间距不同，因为媒体面板和其他通知属于不同的节，系统添加了额外的节间距。</string>
+    <string name="systemui_notif_lr_hide_section_gap_tips">媒体控制面板和下一个通知之间的间距与其他通知之间的间距不同，因为媒体面板和其他通知属于不同的节，系统添加了额外的节间距</string>
     <string name="systemui_notif_lr_opt_tips">修改通知列表的布局和通知的排序规则。建议在使用 Android 风格通知时使用。</string>
     <string name="systemui_notif_lr_hide_section_header">隐藏节标题</string>
     <string name="systemui_notif_lr_opt">优化布局和排序</string>
@@ -577,6 +579,7 @@
     <string name="icon_detail_cellular_type_map">自定义移动网络类型文本</string>
     <string name="icon_detail_cellular_type_map_value">移动网络类型文本</string>
     <string name="icon_tuner_device_dist_compute">算力共享</string>
+    <string name="systemui_statusbar_gesture_double_tap_tips">双击状态栏空白区域触发特定功能</string>
     <string name="systemui_statusbar_region_sampling">区域采样</string>
     <string name="systemui_statusbar_region_sampling_def_tips">仅深色模式启用</string>
     <string name="systemui_statusbar_region_sampling_tips">对状态栏区域进行采样，并根据背景颜色调整深浅色模式</string>
@@ -692,4 +695,8 @@
     <string name="font_general_path_path">从路径导入</string>
     <string name="media_bg_use_anim">动画</string>
     <string name="media_bg_use_notif_corner_radius">使用通知圆角半径</string>
+    <string name="module_debug">调试模式</string>
+    <string name="systemui_statusbar_gesture_single_tap_tips">单击状态栏空白区域触发特定功能</string>
+    <string name="systemui_statusbar_gesture_double_tap">双击空白区域</string>
+    <string name="systemui_statusbar_gesture_single_tap">单击空白区域</string>
 </resources>

@@ -21,22 +21,24 @@
 package dev.lackluster.mihelper.hook.rules.incallui
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
 
-object HideCRBT : YukiBaseHooker() {
+object HideCRBT : StaticHooker() {
+    override fun onInit() {
+        updateSelfState(Preferences.InCallUI.HIDE_CRBT.get())
+    }
+
     override fun onHook() {
-        hasEnable(Pref.Key.InCallUI.HIDE_CRBT) {
-            "com.android.incallui.Call".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
-                    name = "setPlayingVideoCrbt"
-                }?.hook {
-                    before {
-                        this.args(0).set(0)
-                        this.args(1).setFalse()
-                    }
-                }
+        "com.android.incallui.Call".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "setPlayingVideoCrbt"
+            }?.hook {
+                val newArgs = args.toTypedArray()
+                newArgs[0] = 0
+                newArgs[1] = false
+                result(proceed(newArgs))
             }
         }
     }

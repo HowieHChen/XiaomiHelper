@@ -1,36 +1,37 @@
 package dev.lackluster.mihelper.hook.rules.systemui.notif
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.log.YLog
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.w
 
-object SuppressFold : YukiBaseHooker() {
+object SuppressFold : StaticHooker() {
+    override fun onInit() {
+        updateSelfState(Preferences.SystemUI.NotifCenter.SUPPRESS_FOLD_NOTIF.get())
+    }
+
     override fun onHook() {
-        hasEnable (Pref.Key.SystemUI.NotifCenter.SUPPRESS_FOLD) {
-            "com.miui.systemui.notification.MiuiBaseNotifUtil".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
-                    name = "shouldSuppressFold"
-                }?.hook {
-                    replaceToTrue()
-                }
+        "com.miui.systemui.notification.MiuiBaseNotifUtil".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "shouldSuppressFold"
+            }?.hook {
+                result(true)
             }
-            "com.android.systemui.statusbar.notification.utils.NotificationUtil".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
-                    name = "shouldIgnoreEntry"
-                }?.hook {
-                    replaceToTrue()
+        }
+        "com.android.systemui.statusbar.notification.utils.NotificationUtil".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "shouldIgnoreEntry"
+            }?.hook {
+                result(true)
+            }
+            resolve().firstMethodOrNull {
+                name = "setFold"
+            }?.hook {
+                if (getArg(1) as? Boolean != false) {
+                    w { "setFold isFold ${getArg(1)} ${getArg(0)}" }
                 }
-                resolve().firstMethodOrNull {
-                    name = "setFold"
-                }?.hook {
-                    before {
-                        if (this.args(1).boolean()) {
-                            YLog.info("setFold isFold ${this.args(1).boolean()} ${this.args(0).any()}")
-                        }
-                    }
-                }
+                result(proceed())
             }
         }
     }

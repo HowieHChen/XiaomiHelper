@@ -20,88 +20,82 @@
 
 package dev.lackluster.mihelper.hook.rules.android
 
-import com.highcapable.kavaref.KavaRef.Companion.asResolver
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.condition.type.Modifiers
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.toTyped
 
-object RemoveFreeformRestriction : YukiBaseHooker() {
+object RemoveFreeformRestriction : StaticHooker() {
+    override fun onInit() {
+        updateSelfState(Preferences.System.DISABLE_FREEFORM_RESTRICT.get())
+    }
+
     override fun onHook() {
-        hasEnable(Pref.Key.Android.DISABLE_FREEFORM_RESTRICT) {
-            "android.app.ActivityTaskManager".toClassOrNull()?.apply {
+        "android.app.ActivityTaskManager".toClassOrNull()?.apply {
+            resolve().optional().firstMethodOrNull {
+                name = "supportsSplitScreen"
+            }?.hook { result(true) }
+        }
+        "com.android.server.wm.Task".toClassOrNull()?.apply {
+            resolve().optional().method {
+                name = "isResizeable"
+            }.hookAll { result(true) }
+        }
+        "com.android.server.wm.ActivityTaskManagerService".toClassOrNull()?.apply {
+            val fldDevEnableNonResizableMultiWindow = resolve().firstFieldOrNull {
+                name = "mDevEnableNonResizableMultiWindow"
+            }?.toTyped<Boolean>()
+            resolve().optional().firstMethodOrNull {
+                name = "retrieveSettings"
+            }?.hook {
+                val ori = proceed()
+                fldDevEnableNonResizableMultiWindow?.set(thisObject, true)
+                result(ori)
+            }
+        }
+        $$"com.android.server.wm.WindowManagerService$SettingsObserver".toClassOrNull()?.apply {
+            resolve().optional().firstMethodOrNull {
+                name = "updateDevEnableNonResizableMultiWindow"
+            }?.hook { result(null) }
+        }
+        "android.util.MiuiMultiWindowAdapter".toClassOrNull()?.apply {
+            val emptyList = mutableListOf<String>()
+            for (fieldName in setOf(
+                "FREEFORM_BLACK_LIST",
+                "ABNORMAL_FREEFORM_BLACK_LIST",
+                "START_FROM_FREEFORM_BLACK_LIST_ACTIVITY",
+                "FOREGROUND_PIN_APP_BLACK_LIST",
+            )) {
+                resolve().optional().firstFieldOrNull {
+                    name = fieldName
+                    modifiers(Modifiers.STATIC)
+                }?.set(emptyList)
+            }
+            for (methodName in setOf(
+                "getFreeformBlackList",
+                "getFreeformBlackListFromCloud",
+                "getAbnormalFreeformBlackList",
+                "getAbnormalFreeformBlackListFromCloud",
+                "getStartFromFreeformBlackList",
+                "getStartFromFreeformBlackListFromCloud",
+                "getForegroundPinAppBlackList",
+                "getForegroundPinAppBlackListFromCloud",
+            )) {
                 resolve().optional().firstMethodOrNull {
-                    name = "supportsSplitScreen"
-                }?.hook {
-                    replaceToTrue()
-                }
+                    name = methodName
+                }?.hook { result(emptyList) }
             }
-            "com.android.server.wm.Task".toClassOrNull()?.apply {
-                resolve().optional().method {
-                    name = "isResizeable"
-                }.hookAll {
-                    replaceToTrue()
-                }
-            }
-            "com.android.server.wm.ActivityTaskManagerService".toClassOrNull()?.apply {
+        }
+        "android.util.MiuiMultiWindowUtils".toClassOrNull()?.apply {
+            for (methodName in setOf(
+                "isForceResizeable",
+                "supportFreeform"
+            )) {
                 resolve().optional().firstMethodOrNull {
-                    name = "retrieveSettings"
-                }?.hook {
-                    after {
-                        this.instance.asResolver().firstFieldOrNull {
-                            name = "mDevEnableNonResizableMultiWindow"
-                        }?.set(true)
-                    }
-                }
-            }
-            "com.android.server.wm.WindowManagerService\$SettingsObserver".toClassOrNull()?.apply {
-                resolve().optional().firstMethodOrNull {
-                    name = "updateDevEnableNonResizableMultiWindow"
-                }?.hook {
-                    intercept()
-                }
-            }
-            "android.util.MiuiMultiWindowAdapter".toClassOrNull()?.apply {
-                for (fieldName in setOf(
-                    "FREEFORM_BLACK_LIST",
-                    "ABNORMAL_FREEFORM_BLACK_LIST",
-                    "START_FROM_FREEFORM_BLACK_LIST_ACTIVITY",
-                    "FOREGROUND_PIN_APP_BLACK_LIST",
-                )) {
-                    resolve().optional().firstFieldOrNull {
-                        name = fieldName
-                        modifiers(Modifiers.STATIC)
-                    }?.set(mutableListOf<String>())
-                }
-                for (methodName in setOf(
-                    "getFreeformBlackList",
-                    "getFreeformBlackListFromCloud",
-                    "getAbnormalFreeformBlackList",
-                    "getAbnormalFreeformBlackListFromCloud",
-                    "getStartFromFreeformBlackList",
-                    "getStartFromFreeformBlackListFromCloud",
-                    "getForegroundPinAppBlackList",
-                    "getForegroundPinAppBlackListFromCloud",
-                )) {
-                    resolve().optional().firstMethodOrNull {
-                        name = methodName
-                    }?.hook {
-                        replaceTo(mutableListOf<String>())
-                    }
-                }
-            }
-            "android.util.MiuiMultiWindowUtils".toClassOrNull()?.apply {
-                for (methodName in setOf(
-                    "isForceResizeable",
-                    "supportFreeform"
-                )) {
-                    resolve().optional().firstMethodOrNull {
-                        name = methodName
-                    }?.hook {
-                        replaceToTrue()
-                    }
-                }
+                    name = methodName
+                }?.hook { result(true) }
             }
         }
     }

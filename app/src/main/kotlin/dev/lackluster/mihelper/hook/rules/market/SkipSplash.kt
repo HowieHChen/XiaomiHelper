@@ -21,31 +21,33 @@
 package dev.lackluster.mihelper.hook.rules.market
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
 
-object SkipSplash : YukiBaseHooker() {
+object SkipSplash : StaticHooker() {
+    override fun onInit() {
+        updateSelfState(Preferences.Market.SKIP_SPLASH.get())
+    }
+
     override fun onHook() {
-        hasEnable(Pref.Key.Market.SKIP_SPLASH) {
-            "com.xiaomi.market.ui.splash.SplashManager".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
-                    name = "tryAdSplash"
-                }?.hook {
-                    intercept()
-                }
-                resolve().firstMethodOrNull {
-                    name = "trySplashWhenApplicationForeground"
-                }?.hook {
-                    intercept()
-                }
+        "com.xiaomi.market.ui.splash.SplashManager".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "tryAdSplash"
+            }?.hook {
+                result(null)
             }
-            "com.xiaomi.market.business_ui.main.MarketTabActivity".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
-                    name = "trySplash"
-                }?.hook {
-                    intercept()
-                }
+            resolve().firstMethodOrNull {
+                name = "trySplashWhenApplicationForeground"
+            }?.hook {
+                result(null)
+            }
+        }
+        "com.xiaomi.market.business_ui.main.MarketTabActivity".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "trySplash"
+            }?.hook {
+                result(null)
             }
         }
     }

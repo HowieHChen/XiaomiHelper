@@ -122,7 +122,7 @@ private fun SystemFrameworkPageContent(
         actions = {
             RebootActionItem(
                 appName = stringResource(R.string.scope_android),
-                appPkg = arrayOf(Scope.ANDROID),
+                appPkg = arrayOf(Scope.SYSTEM),
             )
         }
     ) {

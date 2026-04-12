@@ -99,6 +99,11 @@ class StackedMobileRepository(
             }
         }
         repositoryScope.launch(Dispatchers.Default) {
+            repo.globalReloadEvent.collect {
+                _configState.update { loadInitialConfig() }
+            }
+        }
+        repositoryScope.launch(Dispatchers.Default) {
             _configState.map { it.signal }
                 .distinctUntilChanged()
                 .collect { signalConfig ->

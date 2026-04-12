@@ -108,8 +108,8 @@
     <string name="about_hyperx_compose_tips">HyperX Compose é uma biblioteca Compose UI compartilhada para Android baseada em Miuix</string>
     <string name="about_miuix">Este app foi feito por Miuix</string>
     <string name="about_miuix_tips">Miuix é uma biblioteca de UI compartilhada para Compose Multiplatform</string>
-    <string name="about_yuki">Este app foi feito por YukiHookAPI</string>
-    <string name="about_yuki_tips">Saiba mais em https://github.com/HighCapable/YuKiHookAPI</string>
+    <string name="about_kavaref">Este app foi feito por KavaRef</string>
+    <string name="about_kavaref_tips">Saiba mais em https://github.com/HighCapable/KavaRef</string>
     <string name="ui_title_about_developer">Desenvolvedor</string>
     <string name="about_donate">Doar</string>
     <string name="about_donate_tips">Me compre um café</string>

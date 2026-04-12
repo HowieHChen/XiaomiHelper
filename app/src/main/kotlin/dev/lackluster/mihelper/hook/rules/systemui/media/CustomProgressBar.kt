@@ -32,38 +32,47 @@ import android.widget.TextView
 import androidx.core.view.updateMargins
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.condition.type.Modifiers
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzMiuiIslandMediaViewBinderImpl
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzMiuiIslandMediaViewHolder
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzMiuiMediaViewControllerImpl
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzMiuiMediaViewHolder
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.getMediaViewHolderField
-import dev.lackluster.mihelper.hook.view.CometSeekBar
-import dev.lackluster.mihelper.hook.view.SquigglySeekBar
-import dev.lackluster.mihelper.hook.view.ThumbStyle
-import dev.lackluster.mihelper.utils.Prefs
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
+import dev.lackluster.mihelper.hook.rules.systemui.media.view.CometSeekBar
+import dev.lackluster.mihelper.hook.rules.systemui.media.view.SquigglySeekBar
+import dev.lackluster.mihelper.hook.rules.systemui.media.view.ThumbStyle
+import dev.lackluster.mihelper.hook.utils.extraOf
+import dev.lackluster.mihelper.hook.utils.toTyped
 import dev.lackluster.mihelper.utils.factory.dp
 import dev.lackluster.mihelper.utils.factory.dpFloat
-import dev.lackluster.mihelper.utils.factory.getAdditionalInstanceField
 import dev.lackluster.mihelper.utils.factory.isSystemInDarkMode
-import dev.lackluster.mihelper.utils.factory.setAdditionalInstanceField
 
-object CustomProgressBar : YukiBaseHooker() {
-    const val KEY_REAL_PROGRESS_BAR = "KEY_REAL_PROGRESS_BAR"
+internal object CustomProgressBar : StaticHooker() {
+    var Any.realSeekBar by extraOf<SeekBar>("KEY_REAL_PROGRESS_BAR")
 
-    private val ncThumbStyle = Prefs.getInt(Pref.Key.SystemUI.MediaControl.ELM_THUMB_STYLE, 0)
-    private val ncProgressStyle = Prefs.getInt(Pref.Key.SystemUI.MediaControl.ELM_PROGRESS_STYLE, 0)
-    private val ncProgressWidth = Prefs.getFloat(Pref.Key.SystemUI.MediaControl.ELM_PROGRESS_WIDTH, 6.0f)
-    private val ncProgressRound = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.ELM_PROGRESS_ROUND, false) && ncProgressStyle == 1
-    private val ncProgressComet = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.ELM_PROGRESS_COMET, false) && ncProgressStyle == 1
+    private val ncThumbStyle by Preferences.SystemUI.MediaControl.Shared.ELM_THUMB_STYLE.get(false).lazyGet()
+    private val ncProgressStyle by Preferences.SystemUI.MediaControl.Shared.ELM_PROGRESS_STYLE.get(false).lazyGet()
+    private val ncProgressWidth by Preferences.SystemUI.MediaControl.Shared.ELM_PROGRESS_WIDTH.get(false).lazyGet()
+    private val ncProgressRound by lazy {
+        Preferences.SystemUI.MediaControl.Shared.ELM_PROGRESS_ROUND.get(false).get() && ncProgressStyle == 1
+    }
+    private val ncProgressComet by lazy {
+        Preferences.SystemUI.MediaControl.Shared.ELM_PROGRESS_COMET.get(false).get() && ncProgressStyle == 1
+    }
 
-    private val diThumbStyle = Prefs.getInt(Pref.Key.DynamicIsland.MediaControl.ELM_THUMB_STYLE, 0)
-    private val diProgressStyle = Prefs.getInt(Pref.Key.DynamicIsland.MediaControl.ELM_PROGRESS_STYLE, 0)
-    private val diProgressWidth = Prefs.getFloat(Pref.Key.DynamicIsland.MediaControl.ELM_PROGRESS_WIDTH, 6.0f)
-    private val diProgressRound = Prefs.getBoolean(Pref.Key.DynamicIsland.MediaControl.ELM_PROGRESS_ROUND, false) && diProgressStyle == 1
-    private val diProgressComet = Prefs.getBoolean(Pref.Key.DynamicIsland.MediaControl.ELM_PROGRESS_COMET, false) && diProgressStyle == 1
+    private val diThumbStyle by Preferences.SystemUI.MediaControl.Shared.ELM_THUMB_STYLE.get(true).lazyGet()
+    private val diProgressStyle by Preferences.SystemUI.MediaControl.Shared.ELM_PROGRESS_STYLE.get(true).lazyGet()
+    private val diProgressWidth by Preferences.SystemUI.MediaControl.Shared.ELM_PROGRESS_WIDTH.get(true).lazyGet()
+    private val diProgressRound by lazy {
+        Preferences.SystemUI.MediaControl.Shared.ELM_PROGRESS_ROUND.get(true).get() && diProgressStyle == 1
+    }
+    private val diProgressComet by lazy {
+        Preferences.SystemUI.MediaControl.Shared.ELM_PROGRESS_COMET.get(true).get() && diProgressStyle == 1
+    }
 
     private val ncCustomThumbStyle by lazy {
         when (ncThumbStyle) {
@@ -80,67 +89,60 @@ object CustomProgressBar : YukiBaseHooker() {
         }
     }
 
-    private val clzHyperProgressSeekBar by lazy {
-        "miuix.miuixbasewidget.widget.HyperProgressSeekBar".toClassOrNull()
-    }
-    private val clzSeekBarObserver by lazy {
-        $$"com.android.systemui.statusbar.notification.mediacontrol.MiuiMediaViewControllerImpl$seekBarObserver$1".toClassOrNull()
-    }
-    private val clzProgress by lazy {
-        $$"com.android.systemui.media.controls.ui.viewmodel.SeekBarViewModel$Progress".toClassOrNull()
-    }
-    private val clzSeekBarViewModel by lazy {
-        "com.android.systemui.media.controls.ui.viewmodel.SeekBarViewModel".toClassOrNull()
-    }
+    private val clzHyperProgressSeekBar by "miuix.miuixbasewidget.widget.HyperProgressSeekBar".lazyClassOrNull()
+    private val clzSeekBarObserver by $$"com.android.systemui.statusbar.notification.mediacontrol.MiuiMediaViewControllerImpl$seekBarObserver$1".lazyClassOrNull()
+    private val clzProgress by $$"com.android.systemui.media.controls.ui.viewmodel.SeekBarViewModel$Progress".lazyClassOrNull()
+    private val clzSeekBarViewModel by "com.android.systemui.media.controls.ui.viewmodel.SeekBarViewModel".lazyClassOrNull()
+
     private val fldProgressSeekBarMinHeight by lazy {
         clzHyperProgressSeekBar?.resolve()?.firstFieldOrNull {
             name = "mProgressSeekBarMinHeight"
-        }
+        }?.toTyped<Int>()
     }
     private val fldProgressHeight by lazy {
         clzHyperProgressSeekBar?.resolve()?.firstFieldOrNull {
             name = "mProgressHeight"
-        }
+        }?.toTyped<Int>()
     }
     private val fldListening by lazy {
         clzProgress?.resolve()?.firstFieldOrNull {
             name = "listening"
-        }?.self
+        }?.toTyped<Boolean>()
     }
     private val fldSeekAvailable by lazy {
         clzProgress?.resolve()?.firstFieldOrNull {
             name = "seekAvailable"
-        }?.self
+        }?.toTyped<Boolean>()
     }
     private val fldPlaying by lazy {
         clzProgress?.resolve()?.firstFieldOrNull {
             name = "playing"
-        }?.self
+        }?.toTyped<Boolean>()
     }
     private val fldScrubbing by lazy {
         clzProgress?.resolve()?.firstFieldOrNull {
             name = "scrubbing"
-        }?.self
+        }?.toTyped<Boolean>()
     }
     private val fldEnabled by lazy {
         clzProgress?.resolve()?.firstFieldOrNull {
             name = "enabled"
-        }?.self
+        }?.toTyped<Boolean>()
     }
     private val fldDuration by lazy {
         clzProgress?.resolve()?.firstFieldOrNull {
             name = "duration"
-        }?.self
+        }?.toTyped<Int>()
     }
     private val fldElapsedTime by lazy {
         clzProgress?.resolve()?.firstFieldOrNull {
             name = "elapsedTime"
-        }?.self
+        }?.toTyped<Int?>()
     }
     private val fldFalsingManager by lazy {
         clzSeekBarViewModel?.resolve()?.firstFieldOrNull {
             name = "falsingManager"
-        }?.self
+        }?.toTyped<Any>()
     }
     private val ctorSeekBarChangeListener by lazy {
         $$"com.android.systemui.media.controls.ui.viewmodel.SeekBarViewModel$SeekBarChangeListener".toClassOrNull()
@@ -149,22 +151,26 @@ object CustomProgressBar : YukiBaseHooker() {
             }
     }
     private val ncElapsedTimeView by lazy {
-        getMediaViewHolderField("elapsedTimeView", false)
+        getMediaViewHolderField("elapsedTimeView", false)?.toTyped<TextView>()
     }
     private val ncTotalTimeView by lazy {
-        getMediaViewHolderField("totalTimeView", false)
+        getMediaViewHolderField("totalTimeView", false)?.toTyped<TextView>()
     }
     private val ncSeekBar by lazy {
-        getMediaViewHolderField("seekBar", false)
+        getMediaViewHolderField("seekBar", false)?.toTyped<SeekBar>()
     }
     private val diElapsedTimeView by lazy {
-        getMediaViewHolderField("elapsedTimeView", true)
+        getMediaViewHolderField("elapsedTimeView", true)?.toTyped<TextView>()
     }
     private val diTotalTimeView by lazy {
-        getMediaViewHolderField("totalTimeView", true)
+        getMediaViewHolderField("totalTimeView", true)?.toTyped<TextView>()
     }
     private val diSeekBar by lazy {
-        getMediaViewHolderField("seekBar", true)
+        getMediaViewHolderField("seekBar", true)?.toTyped<SeekBar>()
+    }
+
+    override fun onInit() {
+        updateSelfState(true)
     }
 
     override fun onHook() {
@@ -172,110 +178,124 @@ object CustomProgressBar : YukiBaseHooker() {
             if (clzHyperProgressSeekBar != null) {
                 clzMiuiMediaViewHolder?.apply {
                     resolve().firstConstructor().hook {
-                        after {
-                            val seekBar = ncSeekBar?.get(this.instance) as? SeekBar ?: return@after
-                            if (clzHyperProgressSeekBar?.isInstance(seekBar) == true) {
-                                val context = seekBar.context
-                                var height = ncProgressWidth.dp(context)
-                                if (height % 2 != 0) {
-                                    height -= 1
-                                }
-                                fldProgressSeekBarMinHeight?.copy()?.of(seekBar)?.set(height)
-                                fldProgressHeight?.copy()?.of(seekBar)?.set(height)
+                        val ori = proceed()
+                        val seekBar = ncSeekBar?.get(thisObject)
+                        if (seekBar != null && clzHyperProgressSeekBar?.isInstance(seekBar) == true) {
+                            val context = seekBar.context
+                            var height = ncProgressWidth.dp(context)
+                            if (height % 2 != 0) {
+                                height -= 1
                             }
+                            fldProgressSeekBarMinHeight?.set(seekBar, height)
+                            fldProgressHeight?.set(seekBar, height)
                         }
+                        result(ori)
                     }
                 }
             }
         } else {
             clzMiuiMediaViewHolder?.apply {
                 resolve().firstConstructor().hook {
-                    after {
-                        getRealSeekBar(this.instance, false)
-                    }
+                    val ori = proceed()
+                    getRealSeekBar(thisObject, false)
+                    result(ori)
                 }
             }
             clzSeekBarObserver?.apply {
                 val fldOuter = resolve().firstFieldOrNull {
                     name = "this$0"
-                }?.self
+                }?.toTyped<Any>()
                 val fldHolder = clzMiuiMediaViewControllerImpl?.resolve()?.firstFieldOrNull {
                     name = "holder"
-                }?.self
+                }?.toTyped<Any>()
                 resolve().firstMethodOrNull {
                     name = "onChanged"
                 }?.hook {
-                    before {
-                        val mediaViewHolder = fldHolder?.get(fldOuter?.get(this.instance)) ?: return@before
-                        val vmProgress = this.args(0).any() ?: return@before
+                    val mediaViewHolder = fldOuter?.get(thisObject)?.let {
+                        fldHolder?.get(it)
+                    }
+                    val vmProgress = getArg(0)
+                    if (mediaViewHolder != null && vmProgress != null) {
                         onProgressChanged(mediaViewHolder, vmProgress, false)
-                        this.result = null
+                        result(null)
+                    } else {
+                        result(proceed())
                     }
                 }
             }
             clzMiuiMediaViewControllerImpl?.apply {
                 val fldContext = resolve().firstFieldOrNull {
                     name = "context"
-                }?.self
+                }?.toTyped<Context>()
                 val fldHolder = resolve().firstFieldOrNull {
                     name = "holder"
-                }?.self
+                }?.toTyped<Any>()
                 val fldSeekBarViewModel = resolve().firstFieldOrNull {
                     name = "seekBarViewModel"
-                }?.self
+                }?.toTyped<Any>()
                 val fldFullAodController = resolve().firstFieldOrNull {
                     name = "fullAodController"
-                }?.self
+                }?.toTyped<Any>()
                 val fldEnableFullAod = "com.android.systemui.statusbar.notification.fullaod.NotifiFullAodController".toClassOrNull()
                     ?.resolve()?.firstFieldOrNull {
                         name = "mEnableFullAod"
-                    }?.self
+                    }?.toTyped<Boolean>()
                 val metGet = "dagger.Lazy".toClassOrNull()?.resolve()?.firstMethodOrNull {
                     name = "get"
-                }?.self
+                }?.toTyped<Any>()
                 resolve().firstMethodOrNull {
                     name = "detach"
                 }?.hook {
-                    after {
-                        val mediaViewHolder = fldHolder?.get(this.instance) ?: return@after
+                    val ori = proceed()
+                    val mediaViewHolder = fldHolder?.get(thisObject)
+                    if (mediaViewHolder != null) {
                         getRealSeekBar(mediaViewHolder, false)?.setOnSeekBarChangeListener(null)
                     }
+                    result(ori)
                 }
                 resolve().firstMethodOrNull {
                     name = "attach"
                 }?.hook {
-                    after {
-                        val mediaViewHolder = fldHolder?.get(this.instance) ?: return@after
-                        val seekBarViewModel = fldSeekBarViewModel?.get(this.instance) ?: return@after
-                        val falsingManager = fldFalsingManager?.get(seekBarViewModel)
+                    val ori = proceed()
+                    val mediaViewHolder = fldHolder?.get(thisObject)
+                    val seekBarViewModel = fldSeekBarViewModel?.get(thisObject)
+                    val falsingManager = seekBarViewModel?.let {
+                        fldFalsingManager?.get(it)
+                    }
+                    if (mediaViewHolder != null && seekBarViewModel != null && falsingManager != null) {
                         ctorSeekBarChangeListener?.createAsType<SeekBar.OnSeekBarChangeListener>(seekBarViewModel, falsingManager)?.let {
                             getRealSeekBar(mediaViewHolder, false)?.setOnSeekBarChangeListener(it)
                         }
                     }
+                    result(ori)
                 }
                 resolve().firstMethodOrNull {
                     name = "onFullAodStateChanged"
                 }?.hook {
-                    after {
-                        val mediaViewHolder = fldHolder?.get(this.instance) ?: return@after
-                        val toFullAod = this.args(0).boolean()
+                    val ori = proceed()
+                    val mediaViewHolder = fldHolder?.get(thisObject)
+                    val toFullAod = getArg(0) as? Boolean
+                    if (mediaViewHolder != null && toFullAod != null) {
                         getRealSeekBar(mediaViewHolder, false)?.visibility = if (toFullAod) View.GONE else View.VISIBLE
                     }
+                    result(ori)
                 }
                 resolve().firstMethodOrNull {
                     name = "updateForegroundColors"
                 }?.hook {
-                    after {
-                        val mediaViewHolder = fldHolder?.get(this.instance) ?: return@after
-                        val context = fldContext?.get(this.instance) as? Context ?: return@after
-                        val fullAodControllerLazy = fldFullAodController?.get(this.instance)
-                        val fullAodController = fullAodControllerLazy?.let { it1 -> metGet?.invoke(it1) }
-                        val enableFullAod = fldEnableFullAod?.get(fullAodController) == true
+                    val ori = proceed()
+                    val mediaViewHolder = fldHolder?.get(thisObject)
+                    val context = fldContext?.get(thisObject)
+                    val fullAodControllerLazy = fldFullAodController?.get(thisObject)
+                    val fullAodController = fullAodControllerLazy?.let { it1 -> metGet?.invoke(it1) }
+                    if (mediaViewHolder != null && context != null && fullAodController != null) {
+                        val enableFullAod = fldEnableFullAod?.get(fullAodController) ?: false
                         val isDark = enableFullAod || context.isSystemInDarkMode
                         getRealSeekBar(mediaViewHolder, false)?.progressTintList = ColorStateList.valueOf(
                             if (isDark) Color.WHITE else Color.BLACK
                         )
                     }
+                    result(ori)
                 }
             }
         }
@@ -283,39 +303,39 @@ object CustomProgressBar : YukiBaseHooker() {
             if (clzHyperProgressSeekBar != null) {
                 clzMiuiIslandMediaViewHolder?.apply {
                     resolve().firstConstructor().hook {
-                        after {
-                            val seekBar = diSeekBar?.get(this.instance) as? SeekBar ?: return@after
-                            if (clzHyperProgressSeekBar?.isInstance(seekBar) == true) {
-                                val context = seekBar.context
-                                var height = diProgressWidth.dp(context)
-                                if (height % 2 != 0) {
-                                    height -= 1
-                                }
-                                fldProgressSeekBarMinHeight?.copy()?.of(seekBar)?.set(height)
-                                fldProgressHeight?.copy()?.of(seekBar)?.set(height)
+                        val ori = proceed()
+                        val seekBar = diSeekBar?.get(thisObject)
+                        if (seekBar != null && clzHyperProgressSeekBar?.isInstance(seekBar) == true) {
+                            val context = seekBar.context
+                            var height = diProgressWidth.dp(context)
+                            if (height % 2 != 0) {
+                                height -= 1
                             }
+                            fldProgressSeekBarMinHeight?.set(seekBar, height)
+                            fldProgressHeight?.set(seekBar, height)
                         }
+                        result(ori)
                     }
                 }
             }
         } else {
             clzMiuiIslandMediaViewHolder?.apply {
                 resolve().firstConstructor().hook {
-                    after {
-                        getRealSeekBar(this.instance, true)
-                    }
+                    val ori = proceed()
+                    getRealSeekBar(thisObject, true)
+                    result(ori)
                 }
             }
             clzMiuiIslandMediaViewBinderImpl?.apply {
                 val fldHolder = resolve().firstFieldOrNull {
                     name = "holder"
-                }?.self
+                }?.toTyped<Any>()
                 val fldDummyHolder = resolve().firstFieldOrNull {
                     name = "dummyHolder"
-                }?.self
+                }?.toTyped<Any>()
                 val fldSeekBarViewModel = resolve().firstFieldOrNull {
                     name = "seekBarViewModel"
-                }?.self
+                }?.toTyped<Any>()
                 resolve().firstMethodOrNull {
                     name {
                         it.contains("seekBarChanged")
@@ -323,31 +343,36 @@ object CustomProgressBar : YukiBaseHooker() {
                     modifiers(Modifiers.STATIC)
                     parameterCount = 3
                 }?.hook {
-                    before {
-                        val mediaViewHolder = this.args(2).any() ?: return@before
-                        val vmProgress = this.args(1).any() ?: return@before
+                    val mediaViewHolder = getArg(2)
+                    val vmProgress = getArg(1)
+                    if (mediaViewHolder != null && vmProgress != null) {
                         onProgressChanged(mediaViewHolder, vmProgress, true)
-                        this.result = null
+                        result(null)
+                    } else {
+                        result(proceed())
                     }
                 }
                 resolve().firstMethodOrNull {
                     name = "detach"
                 }?.hook {
-                    after {
-                        val mediaViewHolder = fldHolder?.get(this.instance) ?: return@after
-                        val dummyMediaViewHolder = fldDummyHolder?.get(this.instance) ?: return@after
+                    val ori = proceed()
+                    fldHolder?.get(thisObject)?.let { mediaViewHolder ->
                         getRealSeekBar(mediaViewHolder, true)?.setOnSeekBarChangeListener(null)
+                    }
+                    fldDummyHolder?.get(thisObject)?.let { dummyMediaViewHolder ->
                         getRealSeekBar(dummyMediaViewHolder, true)?.setOnSeekBarChangeListener(null)
                     }
+                    result(ori)
                 }
                 resolve().firstMethodOrNull {
                     name = "attach"
                 }?.hook {
-                    after {
-                        val mediaViewHolder = fldHolder?.get(this.instance) ?: return@after
-                        val dummyMediaViewHolder = fldDummyHolder?.get(this.instance) ?: return@after
-                        val seekBarViewModel = fldSeekBarViewModel?.get(this.instance) ?: return@after
-                        val falsingManager = fldFalsingManager?.get(seekBarViewModel)
+                    val ori = proceed()
+                    val mediaViewHolder = fldHolder?.get(thisObject)
+                    val dummyMediaViewHolder = fldDummyHolder?.get(thisObject)
+                    val seekBarViewModel = fldSeekBarViewModel?.get(thisObject)
+                    val falsingManager = seekBarViewModel?.let { fldFalsingManager?.get(it) }
+                    if (mediaViewHolder != null && dummyMediaViewHolder != null && falsingManager != null) {
                         ctorSeekBarChangeListener?.createAsType<SeekBar.OnSeekBarChangeListener>(seekBarViewModel, falsingManager)?.let {
                             getRealSeekBar(mediaViewHolder, true)?.setOnSeekBarChangeListener(it)
                         }
@@ -355,6 +380,7 @@ object CustomProgressBar : YukiBaseHooker() {
                             getRealSeekBar(dummyMediaViewHolder, true)?.setOnSeekBarChangeListener(it)
                         }
                     }
+                    result(ori)
                 }
             }
         }
@@ -365,15 +391,15 @@ object CustomProgressBar : YukiBaseHooker() {
         val seekBar = getRealSeekBar(mediaViewHolder, isDynamicIsland) ?: return
         val fieldElapsedTimeView = if (isDynamicIsland) diElapsedTimeView else ncElapsedTimeView
         val fieldTotalTimeView = if (isDynamicIsland) diTotalTimeView else ncTotalTimeView
-        val elapsedTimeView = fieldElapsedTimeView?.get(mediaViewHolder) as? TextView
-        val totalTimeView = fieldTotalTimeView?.get(mediaViewHolder) as? TextView
+        val elapsedTimeView = fieldElapsedTimeView?.get(mediaViewHolder)
+        val totalTimeView = fieldTotalTimeView?.get(mediaViewHolder)
         val listening = fldListening?.get(vmProgress) == true
         val seekAvailable = fldSeekAvailable?.get(vmProgress) == true
         val playing = fldPlaying?.get(vmProgress) == true
         val scrubbing = fldScrubbing?.get(vmProgress) == true
         val enabled = fldEnabled?.get(vmProgress) == true
-        val duration = fldDuration?.get(vmProgress) as? Int ?: 0
-        val elapsedTime = fldElapsedTime?.get(vmProgress) as? Int
+        val duration = fldDuration?.get(vmProgress) ?: 0
+        val elapsedTime = fldElapsedTime?.get(vmProgress)
         if (enabled) {
             totalTimeView?.text = DateUtils.formatElapsedTime(duration / 1000L)
             seekBar.isEnabled = seekAvailable
@@ -403,12 +429,12 @@ object CustomProgressBar : YukiBaseHooker() {
     }
 
     private fun getRealSeekBar(mediaViewHolder: Any, isDynamicIsland: Boolean): SeekBar? {
-        mediaViewHolder.getAdditionalInstanceField<SeekBar>(KEY_REAL_PROGRESS_BAR)?.let {
+        mediaViewHolder.realSeekBar?.let {
             return it
         }
         val style = if (isDynamicIsland) diProgressStyle else ncProgressStyle
         val fldSeekBar = if (isDynamicIsland) diSeekBar else ncSeekBar
-        val seekBar = (fldSeekBar?.get(mediaViewHolder) as? SeekBar)
+        val seekBar = fldSeekBar?.get(mediaViewHolder)
         val parent = seekBar?.parent as? ViewGroup ?: return null
         val context = seekBar.context
         val index = (parent.indexOfChild(seekBar) + 1).coerceIn(0, parent.childCount)
@@ -440,7 +466,7 @@ object CustomProgressBar : YukiBaseHooker() {
         }
         parent.addView(realSeekBar, index)
         parent.removeView(seekBar)
-        mediaViewHolder.setAdditionalInstanceField(KEY_REAL_PROGRESS_BAR, realSeekBar)
+        mediaViewHolder.realSeekBar = realSeekBar
         return realSeekBar
     }
 }

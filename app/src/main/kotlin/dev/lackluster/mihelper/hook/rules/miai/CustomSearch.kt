@@ -21,15 +21,16 @@
 package dev.lackluster.mihelper.hook.rules.miai
 
 import android.content.Intent
-import android.net.Uri
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.DexKit
-import dev.lackluster.mihelper.utils.Prefs
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.DexKit
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
+import dev.lackluster.mihelper.hook.utils.ifTrue
 import org.luckypray.dexkit.query.enums.StringMatchType
+import androidx.core.net.toUri
 
-object CustomSearch : YukiBaseHooker() {
+object CustomSearch : StaticHooker() {
     private val openBrowser by lazy {
         DexKit.findMethodWithCache("open_browser") {
             matcher {
@@ -38,8 +39,8 @@ object CustomSearch : YukiBaseHooker() {
             }
         }
     }
-    private val searchEngine = Prefs.getInt(Pref.Key.MiAi.SEARCH_ENGINE, 0)
-    private val searchEngineUrl = Prefs.getString(Pref.Key.MiAi.SEARCH_URL, "")
+    private val searchEngine by Preferences.MiAi.SEARCH_ENGINE.lazyGet()
+    private val searchEngineUrl by Preferences.MiAi.CUSTOM_SEARCH_URL.lazyGet()
     private val searchUrlValues = arrayOf(
         "",
         "https://www.baidu.com/s?wd=%s",
@@ -50,42 +51,52 @@ object CustomSearch : YukiBaseHooker() {
     private val queryStringRegex by lazy {
         Regex(pattern = "https://.*?&word=(.*?)&bd_ck=")
     }
+
+    override fun onInit() {
+        Preferences.MiAi.SEARCH_USE_BROWSER.get().also {
+            updateSelfState(it)
+        }.ifTrue {
+            openBrowser
+        }
+    }
+
     override fun onHook() {
-        hasEnable(Pref.Key.MiAi.SEARCH_USE_BROWSER) {
-            if (appClassLoader == null) return@hasEnable
-            openBrowser?.getMethodInstance(appClassLoader!!)?.hook {
-                before {
-                    if (this.args(1).string() == "activity" && this.args(3).string() == "com.android.browser") {
-                        val intent = this.args(0).any() as Intent
-                        val queryString = queryStringRegex.find(intent.dataString.toString())?.groupValues?.get(1)
-                        if (queryString.isNullOrBlank()) {
-                            return@before
-                        }
-                        var searchUrl =
-                            when (searchEngine) {
-                                in 1..4 -> searchUrlValues[searchEngine].replaceFirst("%s",queryString)
-                                5 -> searchEngineUrl?.replaceFirst("%s",queryString)
-                                else -> ""
-                            }
-                        val newIntent = Intent()
-                        newIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                        if (searchEngine == 0 || searchUrl.isNullOrBlank()) {
-                            newIntent.action = Intent.ACTION_WEB_SEARCH
-                            newIntent.putExtra("query", queryString)
-                        }
-                        else {
-                            if (!searchUrl.startsWith("https://") && !searchUrl.startsWith("http://")) {
-                                searchUrl = "https://$searchUrl"
-                            }
-                            newIntent.action = Intent.ACTION_VIEW
-                            newIntent.data = Uri.parse(searchUrl)
-                        }
-                        val intentUri = newIntent.toUri(Intent.URI_INTENT_SCHEME)
-                        this.args(0).set(newIntent)
-                        this.args(2).set(intentUri)
-                        // this.args(3).set("")
-                    }
+        openBrowser?.getMethodInstance(classLoader)?.hook {
+            val intent = getArg(0) as? Intent
+            if (
+                (getArg(1) as? String)== "activity" &&
+                (getArg(3) as? String) == "com.android.browser" &&
+                intent != null
+            ) {
+                val queryString = queryStringRegex.find(intent.dataString.toString())?.groupValues?.get(1)
+                if (queryString.isNullOrBlank()) {
+                    return@hook result(proceed())
                 }
+                var searchUrl =
+                    when (searchEngine) {
+                        in 1..4 -> searchUrlValues[searchEngine].replaceFirst("%s",queryString)
+                        5 -> searchEngineUrl.replaceFirst("%s",queryString)
+                        else -> ""
+                    }
+                val newIntent = Intent()
+                newIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                if (searchEngine == 0 || searchUrl.isBlank()) {
+                    newIntent.action = Intent.ACTION_WEB_SEARCH
+                    newIntent.putExtra("query", queryString)
+                } else {
+                    if (!searchUrl.startsWith("https://") && !searchUrl.startsWith("http://")) {
+                        searchUrl = "https://$searchUrl"
+                    }
+                    newIntent.action = Intent.ACTION_VIEW
+                    newIntent.data = searchUrl.toUri()
+                }
+                val intentUri = newIntent.toUri(Intent.URI_INTENT_SCHEME)
+                val newArgs = args.toTypedArray()
+                newArgs[0] = newIntent
+                newArgs[2] = intentUri
+                result(proceed(newArgs))
+            } else {
+                result(proceed())
             }
         }
     }

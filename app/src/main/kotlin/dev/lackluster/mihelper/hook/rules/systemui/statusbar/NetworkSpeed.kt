@@ -31,23 +31,26 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.extension.isSubclassOf
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import de.robv.android.xposed.XposedHelpers
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.data.Pref.Key.SystemUI.FontWeight
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.TextAppearance_StatusBar_NetWorkSpeedNumber
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.kilobyte_per_second
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.megabyte_per_second
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.getTypeface
-import dev.lackluster.mihelper.utils.Prefs
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
+import dev.lackluster.mihelper.hook.utils.extraOf
+import dev.lackluster.mihelper.hook.utils.toTyped
 import dev.lackluster.mihelper.utils.factory.dpFloat
 
-object NetworkSpeed : YukiBaseHooker() {
-    private const val KEY_UP_BYTES = "KEY_UP_BYTES"
-    private const val KEY_DOWN_BYTES = "KEY_DOWN_BYTES"
-    private val mode = Prefs.getInt(Pref.Key.SystemUI.IconTuner.NET_SPEED_MODE, 0)
-    private val refreshPerSecond = Prefs.getBoolean(Pref.Key.SystemUI.IconTuner.NET_SPEED_REFRESH, false)
-    private val unitMode = Prefs.getInt(Pref.Key.SystemUI.IconTuner.NET_SPEED_UNIT_MODE, 0)
+object NetworkSpeed : StaticHooker() {
+    private var Any.upBytes by extraOf("KEY_UP_BYTES", 0L)
+    private var Any.downBytes by extraOf("KEY_DOWN_BYTES", 0L)
+
+    private val mode by Preferences.SystemUI.StatusBar.IconDetail.NET_SPEED_MODE.lazyGet()
+    private val refreshPerSecond by Preferences.SystemUI.StatusBar.IconDetail.NET_SPEED_REFRESH.lazyGet()
+    private val unitMode by Preferences.SystemUI.StatusBar.IconDetail.NET_SPEED_UNIT_MODE.lazyGet()
+
     private val measureText by lazy {
         StringBuilder().apply {
             append("0.00")
@@ -68,15 +71,19 @@ object NetworkSpeed : YukiBaseHooker() {
         }.toString()
     }
 
-    private val valueNetSpeedFW = Prefs.getInt(FontWeight.NET_SPEED_NUMBER_VAL, 630)
-    private val valueNetUnitFW = Prefs.getInt(FontWeight.NET_SPEED_UNIT_VAL, 630)
-    private val valueNetSeparateFW = Prefs.getInt(FontWeight.NET_SPEED_SEPARATE_VAL, 630)
-    private val modifyNetSpeedNumberFW =
-        mode == 0 && Prefs.getBoolean(FontWeight.NET_SPEED_NUMBER, false) && valueNetSpeedFW in 1..1000
-    private val modifyNetSpeedUnitFW =
-        mode == 0 && Prefs.getBoolean(FontWeight.NET_SPEED_UNIT, false) && valueNetUnitFW in 1..1000
-    private val modifyNetSpeedSeparateFW =
-        mode != 0 && Prefs.getBoolean(FontWeight.NET_SPEED_SEPARATE, false) && valueNetSeparateFW in 1..1000
+    private val valueNetSpeedFW by Preferences.SystemUI.StatusBar.Font.NET_SPEED_NUMBER_WEIGHT.lazyGet()
+    private val valueNetUnitFW by Preferences.SystemUI.StatusBar.Font.NET_SPEED_UNIT_WEIGHT.lazyGet()
+    private val valueNetSeparateFW by Preferences.SystemUI.StatusBar.Font.NET_SPEED_SEPARATE_WEIGHT.lazyGet()
+    private val modifyNetSpeedNumberFW by lazy {
+        mode == 0 && Preferences.SystemUI.StatusBar.Font.CUSTOM_NET_SPEED_NUMBER.get() && valueNetSpeedFW in 1..1000
+    }
+    private val modifyNetSpeedUnitFW by lazy {
+        mode == 0 && Preferences.SystemUI.StatusBar.Font.CUSTOM_NET_SPEED_UNIT.get() && valueNetUnitFW in 1..1000
+    }
+    private val modifyNetSpeedSeparateFW by lazy {
+        mode != 0 && Preferences.SystemUI.StatusBar.Font.CUSTOM_NET_SPEED_SEPARATE.get() && valueNetSeparateFW in 1..1000
+    }
+
     private val typefaceNetSpeedNumberFW by lazy {
         getTypeface(valueNetSpeedFW)
     }
@@ -87,83 +94,86 @@ object NetworkSpeed : YukiBaseHooker() {
         getTypeface(valueNetSeparateFW)
     }
 
+    override fun onInit() {
+        updateSelfState(mode != 0 || refreshPerSecond || modifyNetSpeedNumberFW || modifyNetSpeedUnitFW)
+    }
+
     override fun onHook() {
-        if (mode == 0 && !refreshPerSecond && !modifyNetSpeedNumberFW && !modifyNetSpeedUnitFW) return
         if (mode != 0 || modifyNetSpeedNumberFW || modifyNetSpeedUnitFW) {
             "com.android.systemui.statusbar.views.NetworkSpeedView".toClassOrNull()?.apply {
                 val mNetworkSpeedNumberText = resolve().firstFieldOrNull {
                     name = "mNetworkSpeedNumberText"
-                }
+                }?.toTyped<TextView>()
                 val mNetworkSpeedUnitText = resolve().firstFieldOrNull {
                     name = "mNetworkSpeedUnitText"
-                }
+                }?.toTyped<TextView>()
                 resolve().firstMethodOrNull {
                     name {
                         it.contains("updateResources")
                     }
                 }?.hook {
-                    after {
-                        val networkSpeedNumberText = mNetworkSpeedNumberText?.copy()?.of(this.instance)?.get<TextView>() ?: return@after
-                        val networkSpeedUnitText = mNetworkSpeedUnitText?.copy()?.of(this.instance)?.get<TextView>() ?: return@after
-                        if (mode == 0) {
-                            if (modifyNetSpeedNumberFW) {
-                                networkSpeedNumberText.typeface = typefaceNetSpeedNumberFW
-                            }
-                            if (modifyNetSpeedUnitFW) {
-                                networkSpeedUnitText.typeface = typefaceNetSpeedUnitFW
-                            }
-                        } else {
-                            val translationY = 4.dpFloat(this.instance<View>().context)
-                            val lp = FrameLayout.LayoutParams(
-                                FrameLayout.LayoutParams.WRAP_CONTENT,
-                                FrameLayout.LayoutParams.WRAP_CONTENT
-                            ).apply {
-                                gravity = Gravity.CENTER_VERTICAL or Gravity.END
-                            }
-                            networkSpeedNumberText.setTextAppearance(TextAppearance_StatusBar_NetWorkSpeedNumber)
-                            networkSpeedNumberText.translationY = -translationY
-                            networkSpeedNumberText.layoutParams = lp
-                            networkSpeedUnitText.setTextAppearance(TextAppearance_StatusBar_NetWorkSpeedNumber)
-                            networkSpeedUnitText.translationY = translationY
-                            networkSpeedUnitText.layoutParams = lp
-                            if (modifyNetSpeedSeparateFW) {
-                                networkSpeedNumberText.typeface = typefaceNetSpeedSeparateFW
-                                networkSpeedUnitText.typeface = typefaceNetSpeedSeparateFW
-                            }
+                    val ori = proceed()
+                    val context = (thisObject as? View)?.context
+                    val networkSpeedNumberText = mNetworkSpeedNumberText?.get(thisObject)
+                    val networkSpeedUnitText = mNetworkSpeedUnitText?.get(thisObject)
+                    if (context == null || networkSpeedNumberText == null || networkSpeedUnitText == null) {
+                        return@hook result(ori)
+                    }
+                    if (mode == 0) {
+                        if (modifyNetSpeedNumberFW) {
+                            networkSpeedNumberText.typeface = typefaceNetSpeedNumberFW
+                        }
+                        if (modifyNetSpeedUnitFW) {
+                            networkSpeedUnitText.typeface = typefaceNetSpeedUnitFW
+                        }
+                    } else {
+                        val translationY = 4.dpFloat(context)
+                        val lp = FrameLayout.LayoutParams(
+                            FrameLayout.LayoutParams.WRAP_CONTENT,
+                            FrameLayout.LayoutParams.WRAP_CONTENT
+                        ).apply {
+                            gravity = Gravity.CENTER_VERTICAL or Gravity.END
+                        }
+                        networkSpeedNumberText.setTextAppearance(TextAppearance_StatusBar_NetWorkSpeedNumber)
+                        networkSpeedNumberText.translationY = -translationY
+                        networkSpeedNumberText.layoutParams = lp
+                        networkSpeedUnitText.setTextAppearance(TextAppearance_StatusBar_NetWorkSpeedNumber)
+                        networkSpeedUnitText.translationY = translationY
+                        networkSpeedUnitText.layoutParams = lp
+                        if (modifyNetSpeedSeparateFW) {
+                            networkSpeedNumberText.typeface = typefaceNetSpeedSeparateFW
+                            networkSpeedUnitText.typeface = typefaceNetSpeedSeparateFW
                         }
                     }
+                    result(ori)
                 }
                 if (mode != 0) {
                     val mEmptyWidth = resolve().firstFieldOrNull {
                         name = "mEmptyWidth"
-                    }
+                    }?.toTyped<Int>()
                     resolve().firstMethodOrNull {
                         name = "getNetworkSpeedWidth"
                     }?.hook {
-                        before {
-                            val view = this.instance<View>()
-                            if (view.width != view.paddingStart + view.paddingEnd) {
-                                this.result = view.width
-                                return@before
-                            }
-                            val emptyWidth = mEmptyWidth?.copy()?.of(this.instance)?.get<Int>() ?: -1
-                            if (emptyWidth != -1) {
-                                this.result = emptyWidth
-                                return@before
-                            }
-                            val networkSpeedNumberText = mNetworkSpeedNumberText?.copy()?.of(this.instance)?.get<TextView>()
-                            val networkSpeedUnitText = mNetworkSpeedUnitText?.copy()?.of(this.instance)?.get<TextView>()
-                            var finalWidth = 0
-                            networkSpeedNumberText?.paint?.let {
-                                finalWidth = it.measureText(measureText).toInt()
-                            }
-                            networkSpeedUnitText?.paint?.let {
-                                finalWidth = maxOf(finalWidth, it.measureText(measureText).toInt())
-                            }
-                            finalWidth += view.paddingStart + view.paddingEnd
-                            mEmptyWidth?.copy()?.of(this.instance)?.set(finalWidth)
-                            this.result = finalWidth
+                        val view = thisObject as? View ?: return@hook result(proceed())
+                        if (view.width != view.paddingStart + view.paddingEnd) {
+                            return@hook result(view.width)
                         }
+                        val emptyWidth = mEmptyWidth?.get(thisObject) ?: -1
+                        if (emptyWidth != -1) {
+                            return@hook result(emptyWidth)
+                        }
+                        val networkSpeedNumberText = mNetworkSpeedNumberText?.get(thisObject)
+                        val networkSpeedUnitText = mNetworkSpeedUnitText?.get(thisObject)
+                        var finalWidth = 0
+                        networkSpeedNumberText?.paint?.let {
+                            finalWidth = it.measureText(measureText).toInt()
+                        }
+                        networkSpeedUnitText?.paint?.let {
+                            finalWidth = maxOf(finalWidth, it.measureText(measureText).toInt())
+                        }
+                        finalWidth += view.paddingStart + view.paddingEnd
+                        mEmptyWidth?.set(thisObject, finalWidth)
+                        result(finalWidth)
                     }
                 }
             }
@@ -172,19 +182,19 @@ object NetworkSpeed : YukiBaseHooker() {
             "com.android.systemui.statusbar.policy.NetworkSpeedController".toClassOrNull()?.apply {
                 val mBgHandler = resolve().firstFieldOrNull {
                     name = "mBgHandler"
-                }
+                }?.toTyped<Handler>()
                 val mHandler = resolve().firstFieldOrNull {
                     name = "mHandler"
-                }
+                }?.toTyped<Handler>()
                 val mLastTime = resolve().firstFieldOrNull {
                     name = "mLastTime"
-                }
+                }?.toTyped<Long>()
                 val mContext = resolve().firstFieldOrNull {
                     name = "mContext"
-                }
+                }?.toTyped<Context>()
                 val updateText = resolve().firstMethodOrNull {
                     name = "updateText"
-                }
+                }?.toTyped<Unit>()
                 var clzHandler: Class<Any>? = null
                 for (i in 1..9) {
                     val handler = "com.android.systemui.statusbar.policy.NetworkSpeedController$${i}".toClassOrNull()
@@ -196,85 +206,91 @@ object NetworkSpeed : YukiBaseHooker() {
                 clzHandler?.apply {
                     val r8ClassId = resolve().firstFieldOrNull {
                         type(Int::class)
-                    }
+                    }?.toTyped<Int>()
                     val instance = resolve().firstFieldOrNull {
                         type("com.android.systemui.statusbar.policy.NetworkSpeedController")
-                    }
+                    }?.toTyped<Any>()
                     val postDelayed = if (refreshPerSecond) 1000L else 4000L
                     resolve().firstMethodOrNull {
                         name = "handleMessage"
                     }?.hook {
-                        before {
-                            val obtainMessage = this.args(0).cast<Message>()
-                            val classId = r8ClassId?.copy()?.of(this.instance)?.get<Int>()
-                            val controller = instance?.copy()?.of(this.instance)?.get() ?: return@before
-                            if (classId == 1 && obtainMessage?.what == 200001) {
-                                val handler = mHandler?.copy()?.of(controller)?.get<Handler>() ?: return@before
-                                val bgHandler = mBgHandler?.copy()?.of(controller)?.get<Handler>() ?: return@before
-                                val message = handler.obtainMessage(100004)
-                                val currentTimeMillis = System.currentTimeMillis()
-                                val upload = TrafficStats.getTotalTxBytes() - TrafficStats.getTxBytes("lo")
-                                val download = TrafficStats.getTotalRxBytes() - TrafficStats.getRxBytes("lo")
-                                val lastTime = mLastTime?.copy()?.of(controller)?.get<Long>() ?: 0L
-                                var uploadSpeed = 0L
-                                var downloadSpeed = 0L
-                                if (lastTime != 0L && currentTimeMillis > lastTime) {
-                                    val uploadBytes = (XposedHelpers.getAdditionalInstanceField(controller, KEY_UP_BYTES) as? Long) ?: 0L
-                                    if (uploadBytes != 0L && upload != 0L && upload > uploadBytes) {
-                                        uploadSpeed = ((upload - uploadBytes) * 1000) / (currentTimeMillis - lastTime)
-                                    }
-                                    val downloadBytes = (XposedHelpers.getAdditionalInstanceField(controller, KEY_DOWN_BYTES) as? Long) ?: 0L
-                                    if (downloadBytes != 0L && download != 0L && download > downloadBytes) {
-                                        downloadSpeed = ((download - downloadBytes) * 1000) / (currentTimeMillis - lastTime)
-                                    }
-                                }
-                                mLastTime?.copy()?.of(controller)?.set(currentTimeMillis)
-                                XposedHelpers.setAdditionalInstanceField(controller, KEY_UP_BYTES, upload)
-                                XposedHelpers.setAdditionalInstanceField(controller, KEY_DOWN_BYTES, download)
-                                message.obj = Pair(uploadSpeed, downloadSpeed)
-                                message.sendToTarget()
-                                bgHandler.removeMessages(200001)
-                                bgHandler.sendEmptyMessageDelayed(200001, postDelayed)
-                                this.result = null
+                        val obtainMessage = getArg(0) as? Message
+                        val classId = r8ClassId?.get(thisObject)
+                        val controller = instance?.get(thisObject) ?: return@hook result(proceed())
+                        if (classId == 1 && obtainMessage?.what == 200001) {
+                            val handler = mHandler?.get(controller)
+                            val bgHandler = mBgHandler?.get(controller)
+                            if (handler == null || bgHandler == null) {
+                                return@hook result(proceed())
                             }
-                            if (classId == 0 && obtainMessage?.what == 100004) {
-                                if (
-                                    obtainMessage.obj is Pair<*, *> &&
-                                    (obtainMessage.obj as Pair<*, *>).first is Long &&
-                                    (obtainMessage.obj as Pair<*, *>).second is Long
-                                ) {
-                                    val uploadSpeed = (obtainMessage.obj as Pair<*, *>).first as Long
-                                    val downloadSpeed = (obtainMessage.obj as Pair<*, *>).second as Long
-                                    if (mode != 0) {
-                                        updateText?.copy()?.of(controller)?.invoke(arrayOf(
-                                            formatSpeed(uploadSpeed / 1024.0f, true),
-                                            formatSpeed(downloadSpeed / 1024.0f, false),
-                                        ))
-                                    } else  {
-                                        var number = (uploadSpeed + downloadSpeed) / 1024.0f
-                                        val stringResId: Int
-                                        if (number > 999.0f) {
-                                            number /= 1024.0f
-                                            stringResId = megabyte_per_second
-                                        } else {
-                                            stringResId = kilobyte_per_second
-                                        }
-                                        val unitStr = mContext?.copy()?.of(controller)?.get<Context>()?.getString(stringResId)
-                                        val speedStr: String = if (number < 10.0f) {
-                                            "%.2f".format(number)
-                                        } else if (number < 100.0f) {
-                                            "%.1f".format(number)
-                                        } else {
-                                            "%.0f".format(number)
-                                        }
-                                        updateText?.copy()?.of(controller)?.invoke(
-                                            arrayOf(speedStr, unitStr)
-                                        )
-                                    }
+                            val message = handler.obtainMessage(100004)
+                            val currentTimeMillis = System.currentTimeMillis()
+                            val upload = TrafficStats.getTotalTxBytes() - TrafficStats.getTxBytes("lo")
+                            val download = TrafficStats.getTotalRxBytes() - TrafficStats.getRxBytes("lo")
+                            val lastTime = mLastTime?.get(controller) ?: 0L
+                            var uploadSpeed = 0L
+                            var downloadSpeed = 0L
+                            if (lastTime != 0L && currentTimeMillis > lastTime) {
+                                val uploadBytes = controller.upBytes ?: 0L
+                                if (uploadBytes != 0L && upload != 0L && upload > uploadBytes) {
+                                    uploadSpeed = ((upload - uploadBytes) * 1000) / (currentTimeMillis - lastTime)
                                 }
-                                this.result = null
+                                val downloadBytes = controller.downBytes ?: 0L
+                                if (downloadBytes != 0L && download != 0L && download > downloadBytes) {
+                                    downloadSpeed = ((download - downloadBytes) * 1000) / (currentTimeMillis - lastTime)
+                                }
                             }
+                            mLastTime?.set(controller, currentTimeMillis)
+                            controller.upBytes = upload
+                            controller.downBytes = download
+                            message.obj = Pair(uploadSpeed, downloadSpeed)
+                            message.sendToTarget()
+                            bgHandler.removeMessages(200001)
+                            bgHandler.sendEmptyMessageDelayed(200001, postDelayed)
+                            return@hook result(null)
                         }
+                        if (classId == 0 && obtainMessage?.what == 100004) {
+                            if (
+                                obtainMessage.obj is Pair<*, *> &&
+                                (obtainMessage.obj as Pair<*, *>).first is Long &&
+                                (obtainMessage.obj as Pair<*, *>).second is Long
+                            ) {
+                                val uploadSpeed = (obtainMessage.obj as Pair<*, *>).first as Long
+                                val downloadSpeed = (obtainMessage.obj as Pair<*, *>).second as Long
+                                if (mode != 0) {
+                                    updateText?.invoke(
+                                        controller,
+                                        arrayOf(
+                                            formatSpeed(uploadSpeed / 1024.0f, true),
+                                            formatSpeed(downloadSpeed / 1024.0f, false)
+                                        )
+                                    )
+                                } else  {
+                                    var number = (uploadSpeed + downloadSpeed) / 1024.0f
+                                    val stringResId: Int
+                                    if (number > 999.0f) {
+                                        number /= 1024.0f
+                                        stringResId = megabyte_per_second
+                                    } else {
+                                        stringResId = kilobyte_per_second
+                                    }
+                                    val unitStr = mContext?.get(controller)?.getString(stringResId)
+                                    val speedStr: String = if (number < 10.0f) {
+                                        "%.2f".format(number)
+                                    } else if (number < 100.0f) {
+                                        "%.1f".format(number)
+                                    } else {
+                                        "%.0f".format(number)
+                                    }
+                                    updateText?.invoke(
+                                        controller,
+                                        arrayOf(speedStr, unitStr)
+                                    )
+                                }
+                            }
+                            return@hook result(null)
+                        }
+                        return@hook result(proceed())
                     }
                 }
             }

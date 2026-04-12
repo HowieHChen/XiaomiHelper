@@ -23,17 +23,18 @@ package dev.lackluster.mihelper.hook.rules.securitycenter
 import android.app.Activity
 import android.os.Message
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.DexKit
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.DexKit
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.ifTrue
+import dev.lackluster.mihelper.hook.utils.toTyped
 import org.luckypray.dexkit.query.enums.StringMatchType
 import java.lang.reflect.Modifier
 
-object LockScore : YukiBaseHooker() {
-    private val scanJobServiceClass by lazy {
-        "com.miui.securityscan.job.ScanJobService".toClassOrNull()
-    }
+object LockScore : StaticHooker() {
+    private val scanJobServiceClass by "com.miui.securityscan.job.ScanJobService".lazyClassOrNull()
+    
     private val queueIdleClass by lazy {
         DexKit.findClassWithCache("lock_score_queue") {
             matcher {
@@ -51,7 +52,7 @@ object LockScore : YukiBaseHooker() {
         }
     }
     private val mainFragment by lazy {
-        DexKit.dexKitBridge.getClassData("com.miui.securityscan.MainFragment")
+        DexKit.withBridge { getClassData("com.miui.securityscan.MainFragment") }
     }
     private val onRestartSetTextMethod by lazy {
         DexKit.findMethodsWithCache("lock_score_restart") {
@@ -62,7 +63,7 @@ object LockScore : YukiBaseHooker() {
                     name = "setActionButtonText"
                 }
             }
-            searchClasses = mainFragment?.let { listOf(it) }
+            searchClasses = listOfNotNull(mainFragment)
         }
     }
     private val redundantScanMethod1 by lazy {
@@ -74,7 +75,7 @@ object LockScore : YukiBaseHooker() {
                 addUsingString("incremental_scan_fg", StringMatchType.Equals)
                 addUsingString("scan", StringMatchType.Equals)
             }
-            searchClasses = mainFragment?.let { listOf(it) }
+            searchClasses = listOfNotNull(mainFragment)
         }
     }
     private val redundantScanMethod2 by lazy {
@@ -90,7 +91,7 @@ object LockScore : YukiBaseHooker() {
         }
     }
     private val scoreManagerClass by lazy {
-        DexKit.dexKitBridge.getClassData("com.miui.securityscan.scanner.ScoreManager")
+        DexKit.withBridge { getClassData("com.miui.securityscan.scanner.ScoreManager") }
     }
     private val getCacheMinusScoreMethod by lazy {
         DexKit.findMethodWithCache("lock_score_cache_minus") {
@@ -101,7 +102,7 @@ object LockScore : YukiBaseHooker() {
                 addUsingNumber(0x1499700)
                 addUsingNumber(0xf731400)
             }
-            searchClasses = scoreManagerClass?.let { listOf(it) }
+            searchClasses = listOfNotNull(scoreManagerClass)
         }
     }
     private val getMinusScoreMethod by lazy {
@@ -110,7 +111,7 @@ object LockScore : YukiBaseHooker() {
                 returnType = "int"
                 addUsingString("getMinusPredictScore", StringMatchType.StartsWith)
             }
-            searchClasses = scoreManagerClass?.let { listOf(it) }
+            searchClasses = listOfNotNull(scoreManagerClass)
         }
     }
     private val onExitDialogMethod by lazy {
@@ -128,7 +129,7 @@ object LockScore : YukiBaseHooker() {
                     name = "removeCallbacksAndMessages"
                 }
             }
-            searchClasses = mainFragment?.let { listOf(it) }
+            searchClasses = listOfNotNull(mainFragment)
         }
     }
     private val getScoreInSecurity by lazy {
@@ -148,68 +149,80 @@ object LockScore : YukiBaseHooker() {
         }
     }
 
+    override fun onInit() {
+        Preferences.SecurityCenter.LOCK_SCORE.get().also { 
+            updateSelfState(it)
+        }.ifTrue {
+            queueIdleClass
+            scanRunnableMethod
+            redundantScanMethod1
+            redundantScanMethod2
+            getCacheMinusScoreMethod
+            getMinusScoreMethod
+            onRestartSetTextMethod
+            onExitDialogMethod
+            getScoreInSecurity
+            setScoreInSecurity
+        }
+    }
+
     override fun onHook() {
-        hasEnable(Pref.Key.SecurityCenter.LOCK_SCORE) {
-            if (appClassLoader == null) return@hasEnable
-            scanJobServiceClass?.apply {
-                resolve().firstMethodOrNull {
-                    name = "onStartJob"
-                }?.hook {
-                    replaceToFalse()
-                }
+        scanJobServiceClass?.apply {
+            resolve().firstMethodOrNull {
+                name = "onStartJob"
+            }?.hook {
+                result(false)
             }
-            queueIdleClass?.getInstance(appClassLoader!!)?.apply {
-                resolve().firstMethodOrNull {
-                    name = "queueIdle"
-                }?.hook {
-                    intercept()
-                }
+        }
+        queueIdleClass?.getInstance(classLoader)?.apply {
+            resolve().firstMethodOrNull {
+                name = "queueIdle"
+            }?.hook {
+                result(null)
             }
-            scanRunnableMethod?.getMethodInstance(appClassLoader!!)?.hook {
-                intercept()
+        }
+        scanRunnableMethod?.getMethodInstance(classLoader)?.hook {
+            result(null)
+        }
+        redundantScanMethod1?.getMethodInstance(classLoader)?.hook {
+            result(null)
+        }
+        redundantScanMethod2?.getMethodInstance(classLoader)?.hook {
+            val message = getArg(0) as? Message
+            if (message?.what == 801) {
+                result(null)
+            } else {
+                result(proceed())
             }
-            redundantScanMethod1?.getMethodInstance(appClassLoader!!)?.hook {
-                intercept()
+        }
+        getCacheMinusScoreMethod?.getMethodInstance(classLoader)?.hook {
+            result(0)
+        }
+        getMinusScoreMethod?.getMethodInstance(classLoader)?.hook {
+            result(0)
+        }
+        onRestartSetTextMethod.filter {
+            it != redundantScanMethod1
+        }.map {
+            it.getMethodInstance(classLoader)
+        }.hookAll {
+            result(null)
+        }
+        onExitDialogMethod?.getMethodInstance(classLoader)?.apply {
+            val getActivity = this.declaringClass.resolve().firstMethodOrNull {
+                name = "getActivity"
+                superclass()
+            }?.toTyped<Activity>()
+            hook {
+                getActivity?.invoke(thisObject)?.finish()
+                result(null)
             }
-            redundantScanMethod2?.getMethodInstance(appClassLoader!!)?.hook {
-                before {
-                    val message = this.args(0).cast<Message>() ?: return@before
-                    if (message.what == 801) {
-                        this.result = null
-                    }
-                }
-            }
-            getCacheMinusScoreMethod?.getMethodInstance(appClassLoader!!)?.hook {
-                replaceTo(0)
-            }
-            getMinusScoreMethod?.getMethodInstance(appClassLoader!!)?.hook {
-                replaceTo(0)
-            }
-            onRestartSetTextMethod.filter {
-                it != redundantScanMethod1
-            }.forEach {
-                it.getMethodInstance(appClassLoader!!).hook {
-                    intercept()
-                }
-            }
-            onExitDialogMethod?.getMethodInstance(appClassLoader!!)?.apply {
-                val getActivity = this.declaringClass.resolve().firstMethodOrNull {
-                    name = "getActivity"
-                    superclass()
-                }?.self
-                hook {
-                    before {
-                        (getActivity?.invoke(this.instance) as? Activity)?.finish()
-                        this.result = null
-                    }
-                }
-            }
-            getScoreInSecurity?.getMethodInstance(appClassLoader!!)?.hook {
-                replaceTo(100)
-            }
-            setScoreInSecurity?.getMethodInstance(appClassLoader!!)?.hook {
-                intercept()
-            }
+        }
+        getScoreInSecurity?.getMethodInstance(classLoader)?.hook {
+            result(100)
+        }
+        setScoreInSecurity?.getMethodInstance(classLoader)?.hook {
+            result(null)
         }
     }
 }

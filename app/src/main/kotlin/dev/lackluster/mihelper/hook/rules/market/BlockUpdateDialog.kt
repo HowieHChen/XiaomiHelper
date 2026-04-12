@@ -21,33 +21,35 @@
 package dev.lackluster.mihelper.hook.rules.market
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
 
-object BlockUpdateDialog : YukiBaseHooker() {
+object BlockUpdateDialog : StaticHooker() {
+    override fun onInit() {
+        updateSelfState(Preferences.Market.BLOCK_UPDATE_DIALOG.get())
+    }
+
     override fun onHook() {
-        hasEnable(Pref.Key.Market.BLOCK_UPDATE_DIALOG) {
-            "com.xiaomi.market.ui.UpdateListFragment".toClassOrNull()?.apply {
-                resolve().optional().firstMethodOrNull {
-                    name = "tryShowDialog"
-                }?.hook {
-                    intercept()
-                }
+        "com.xiaomi.market.ui.UpdateListFragment".toClassOrNull()?.apply {
+            resolve().optional().firstMethodOrNull {
+                name = "tryShowDialog"
+            }?.hook {
+                result(null)
             }
-            "com.xiaomi.market.ui.update.UpdatePushDialogManager".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
-                    name = "tryShowDialog"
-                }?.hook {
-                    intercept()
-                }
+        }
+        "com.xiaomi.market.ui.update.UpdatePushDialogManager".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "tryShowDialog"
+            }?.hook {
+                result(null)
             }
-            "com.xiaomi.market.ui.UpdateListRvAdapter".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
-                    name = "shouldAddAutoUpdateItem"
-                }?.hook {
-                    replaceToFalse()
-                }
+        }
+        "com.xiaomi.market.ui.UpdateListRvAdapter".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "shouldAddAutoUpdateItem"
+            }?.hook {
+                result(false)
             }
         }
     }

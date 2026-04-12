@@ -21,13 +21,14 @@
 package dev.lackluster.mihelper.hook.rules.guardprovider
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.DexKit
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.DexKit
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.ifTrue
 import org.luckypray.dexkit.query.enums.StringMatchType
 
-object BlockUploadAppList : YukiBaseHooker() {
+object BlockUploadAppList : StaticHooker() {
     private val detect by lazy {
         DexKit.findMethodWithCache("get_all_un_system_apps") {
             matcher {
@@ -38,19 +39,24 @@ object BlockUploadAppList : YukiBaseHooker() {
         }
     }
 
+    override fun onInit() {
+        Preferences.GuardProvider.BLOCK_UPLOAD_APP.get().also {
+            updateSelfState(it)
+        }.ifTrue {
+            detect
+        }
+    }
+
     override fun onHook() {
-        hasEnable(Pref.Key.GuardProvider.BLOCK_UPLOAD_APP) {
-            if (appClassLoader == null) return@hasEnable
-            detect?.getMethodInstance(appClassLoader!!)?.hook {
-                replaceTo(null)
-            }
-            "com.miui.guardprovider.manager.SecurityService".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
-                    parameterCount = 0
-                    returnType(Boolean::class)
-                }?.hook {
-                    replaceToTrue()
-                }
+        detect?.getMethodInstance(classLoader)?.hook {
+            result(null)
+        }
+        "com.miui.guardprovider.manager.SecurityService".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                parameterCount = 0
+                returnType(Boolean::class)
+            }?.hook {
+                result(true)
             }
         }
     }

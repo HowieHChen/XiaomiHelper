@@ -6,7 +6,6 @@ import android.net.Uri
 import android.provider.OpenableColumns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.highcapable.yukihookapi.hook.log.YLog
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.app.repository.FontMode
 import dev.lackluster.mihelper.app.repository.FontRepository
@@ -16,6 +15,7 @@ import dev.lackluster.mihelper.app.repository.StackedMobileRepository
 import dev.lackluster.mihelper.app.utils.toUiText
 import dev.lackluster.mihelper.data.Constants
 import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.utils.MLog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -91,7 +91,7 @@ class StackedMobileViewModel(
                     }
                     success
                 } catch (e: Exception) {
-                    YLog.error("StackedMobile importFontFromUri error", e)
+                    MLog.e(e, "StackedMobile importFontFromUri error")
                     false
                 } finally {
                     tempFile?.delete()
@@ -144,7 +144,7 @@ class StackedMobileViewModel(
                         inputStream.bufferedReader().readText()
                     }
                 } catch (e: Exception) {
-                    YLog.error("读取 SVG 文件异常", e)
+                    MLog.e(e, "读取 SVG 文件异常")
                     null
                 }
                 Pair(name, content)
@@ -263,7 +263,7 @@ class StackedMobileViewModel(
                         result = cursor.getString(cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME))
                     }
                 } catch (t: Throwable) {
-                    YLog.error(t)
+                    MLog.e(t)
                 }
             }
         }

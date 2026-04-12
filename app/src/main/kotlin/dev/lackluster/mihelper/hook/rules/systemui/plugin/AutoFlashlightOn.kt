@@ -23,47 +23,48 @@ package dev.lackluster.mihelper.hook.rules.systemui.plugin
 import android.app.Activity
 import android.view.View
 import androidx.core.view.postDelayed
-import com.highcapable.kavaref.KavaRef.Companion.asResolver
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.toTyped
 
-object AutoFlashlightOn : YukiBaseHooker() {
+object AutoFlashlightOn : StaticHooker() {
     private val operateFlashlight by lazy {
-        "miui.systemui.flashlight.MiFlashlightManager".toClassOrNull()
-            ?.resolve()
-            ?.firstMethodOrNull {
+        "miui.systemui.flashlight.MiFlashlightManager".toClassOrNull()?.resolve()?.firstMethodOrNull {
                 name = "asyncOperate"
-            }
-            ?.self
+            }?.toTyped<Unit>()
+    }
+
+    override fun onInit() {
+        updateSelfState(Preferences.SystemUI.Plugin.LOCKSCREEN_AUTO_FLASH_ON.get())
     }
 
     override fun onHook() {
-        hasEnable(Pref.Key.SystemUI.Plugin.AUTO_FLASH_ON) {
-            "miui.systemui.flashlight.MiFlashlightActivity".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
-                    name = "onCreate"
-                    superclass()
-                }?.hook {
-                    after {
-                        val activity = this.instance<Activity>()
-                        val fromKeyguard = activity.intent.getBooleanExtra("from_keyguard_shortcut", false)
-                        if (fromKeyguard) {
-                            val flashlightManager = this.instance.asResolver().firstFieldOrNull {
-                                name = "flashlightManager"
-                            }?.get() ?: return@after
-                            val miFlashlightLayout = this.instance.asResolver().firstMethodOrNull {
-                                name = "getFlashlightLayout"
-                            }?.invoke<View>() ?: return@after
-                            operateFlashlight?.let { method ->
-                                miFlashlightLayout.postDelayed(700) {
-                                    method.invoke(flashlightManager, true, null)
-                                }
-                            }
+        "miui.systemui.flashlight.MiFlashlightActivity".toClassOrNull()?.apply {
+            val fldFlashlightManager = resolve().firstFieldOrNull {
+                name = "flashlightManager"
+            }?.toTyped<Any>()
+            val metGetFlashlightLayout = resolve().firstMethodOrNull {
+                name = "getFlashlightLayout"
+            }?.toTyped<View>()
+            resolve().firstMethodOrNull {
+                name = "onCreate"
+                superclass()
+            }?.hook {
+                val ori = proceed()
+                val activity = thisObject as? Activity
+                val fromKeyguard = activity?.intent?.getBooleanExtra("from_keyguard_shortcut", false) != false
+                if (fromKeyguard) {
+                    val flashlightManager = fldFlashlightManager?.get(thisObject)
+                    val miFlashlightLayout = metGetFlashlightLayout?.invoke(thisObject)
+                    if (operateFlashlight != null && flashlightManager != null && miFlashlightLayout != null) {
+                        miFlashlightLayout.postDelayed(700) {
+                            operateFlashlight?.invoke(flashlightManager, true, null)
                         }
                     }
                 }
+                result(ori)
             }
         }
     }

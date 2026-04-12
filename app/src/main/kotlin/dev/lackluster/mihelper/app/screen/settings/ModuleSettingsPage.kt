@@ -186,7 +186,7 @@ private fun ModuleSettingsPageContent(
             SwitchPreference(
                 title = stringResource(R.string.module_main_switch),
                 checked = envState.isModuleEnabled,
-                onCheckedChange = { settingsActions.update(Preferences.App.MODULE_ENABLED, it) }
+                onCheckedChange = { settingsActions.update(Preferences.Module.MODULE_ENABLED, it) }
             )
             SwitchPreference(
                 key = Preferences.Module.DEX_KIT_CACHE,
@@ -198,6 +198,11 @@ private fun ModuleSettingsPageContent(
                 summary = stringResource(R.string.module_skip_root_check_tips),
                 checked = envState.isRootIgnored,
                 onCheckedChange = { settingsActions.update(Preferences.App.SKIP_ROOT_CHECK, it) }
+            )
+            SwitchPreference(
+                key = Preferences.Module.DEBUG,
+                title = stringResource(R.string.module_debug),
+                summary = stringResource(R.string.module_debug_tips)
             )
             SwitchPreference(
                 title = stringResource(R.string.module_hide_icon),

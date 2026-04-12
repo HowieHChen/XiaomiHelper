@@ -25,33 +25,37 @@ import android.util.TypedValue
 import android.view.ViewGroup
 import android.widget.TextView
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.log.YLog
-import dev.lackluster.mihelper.data.Pref
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.mobile_signal_container
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.mobile_type_single
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.getTypeface
-import dev.lackluster.mihelper.utils.Prefs
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
+import dev.lackluster.mihelper.hook.utils.e
+import dev.lackluster.mihelper.hook.utils.toTyped
 
-object CellularTypeIcon : YukiBaseHooker() {
-    private val typeSingle = Prefs.getBoolean(Pref.Key.SystemUI.IconTuner.CELLULAR_TYPE_SINGLE, false)
-    private val swapTypeIcon = Prefs.getBoolean(Pref.Key.SystemUI.IconTuner.CELLULAR_TYPE_SINGLE_SWAP, false)
-    private val typeCustom = Prefs.getBoolean(Pref.Key.SystemUI.IconTuner.CELLULAR_TYPE_CUSTOM, false)
-    private val typeCustomVal = Prefs.getString(Pref.Key.SystemUI.IconTuner.CELLULAR_TYPE_CUSTOM_VAL, "")
-    private val valueTypeSingleSize = Prefs.getFloat(Pref.Key.SystemUI.IconTuner.CELLULAR_TYPE_SINGLE_SIZE_VAL, 14.0f)
-    private val modifyTypeSingleSize =
-        Prefs.getBoolean(Pref.Key.SystemUI.IconTuner.CELLULAR_TYPE_SINGLE_SIZE, false) && valueTypeSingleSize > 0.0f
-    // Font Weight
-    private val valueTypeFW = Prefs.getInt(Pref.Key.SystemUI.FontWeight.CELLULAR_TYPE_VAL, 660)
-    private val valueTypeSingleFW = Prefs.getInt(Pref.Key.SystemUI.FontWeight.CELLULAR_TYPE_SINGLE_VAL, 400)
-    private val modifyTypeFW =
-        Prefs.getBoolean(Pref.Key.SystemUI.FontWeight.CELLULAR_TYPE, false) && valueTypeFW in 1..1000
-    private val modifyTypeSingleFW =
-        Prefs.getBoolean(Pref.Key.SystemUI.FontWeight.CELLULAR_TYPE_SINGLE, false) && valueTypeSingleFW in 1..1000
-
-    private val clzMiuiMobileIconBinder by lazy {
-        "com.android.systemui.statusbar.pipeline.mobile.ui.binder.MiuiMobileIconBinder".toClassOrNull()
+object CellularTypeIcon : StaticHooker() {
+    private val typeSingle by Preferences.SystemUI.StatusBar.IconDetail.USE_CELLULAR_TYPE_SINGLE.lazyGet()
+    private val swapTypeIcon by Preferences.SystemUI.StatusBar.IconDetail.CELLULAR_TYPE_SINGLE_SWAP_INDEX.lazyGet()
+    private val typeCustom by Preferences.SystemUI.StatusBar.IconDetail.CUSTOM_CELLULAR_TYPE_LIST.lazyGet()
+    private val typeCustomVal by Preferences.SystemUI.StatusBar.IconDetail.CELLULAR_TYPE_LIST_VAL.lazyGet()
+    // Text size
+    private val valueTypeSingleSize by Preferences.SystemUI.StatusBar.IconDetail.CELLULAR_TYPE_SINGLE_SIZE_VAL.lazyGet()
+    private val modifyTypeSingleSize by lazy {
+        Preferences.SystemUI.StatusBar.IconDetail.CUSTOM_CELLULAR_TYPE_SINGLE_SIZE.get() && valueTypeSingleSize > 0.0f
     }
+    // Font weight
+    private val valueTypeFW by Preferences.SystemUI.StatusBar.Font.CELLULAR_TYPE_WEIGHT.lazyGet()
+    private val valueTypeSingleFW by Preferences.SystemUI.StatusBar.Font.CELLULAR_TYPE_SINGLE_WEIGHT.lazyGet()
+    private val modifyTypeFW by lazy {
+        Preferences.SystemUI.StatusBar.Font.CUSTOM_CELLULAR_TYPE.get() && valueTypeFW in 1..1000
+    }
+    private val modifyTypeSingleFW by lazy {
+        Preferences.SystemUI.StatusBar.Font.CUSTOM_CELLULAR_TYPE_SINGLE.get() && valueTypeSingleFW in 1..1000
+    }
+
+    private val clzMiuiMobileIconBinder by "com.android.systemui.statusbar.pipeline.mobile.ui.binder.MiuiMobileIconBinder".lazyClassOrNull()
     private val typefaceTypeFW by lazy {
         getTypeface(valueTypeFW)
     }
@@ -59,32 +63,39 @@ object CellularTypeIcon : YukiBaseHooker() {
         getTypeface(valueTypeSingleFW)
     }
 
+    override fun onInit() {
+        updateSelfState(true)
+    }
+
     override fun onHook() {
         if (typeSingle || typeCustom) {
             $$"com.miui.interfaces.IOperatorCustomizedPolicy$OperatorConfig".toClassOrNull()?.apply {
                 val showMobileDataTypeSingle = resolve().firstFieldOrNull {
                     name = "showMobileDataTypeSingle"
-                }
+                }?.toTyped<Boolean>()
                 val mobileTypeName = resolve().firstFieldOrNull {
                     name = "mobileTypeName"
-                }
+                }?.toTyped<List<*>>()
                 resolve().firstConstructor().hook {
-                    after {
-                        val config = this.instance
-                        if (typeSingle) {
-                            showMobileDataTypeSingle?.copy()?.of(config)?.set(true)
-                        }
-                        if (typeCustom && !typeCustomVal.isNullOrBlank()) {
-                            val typeList = typeCustomVal.split(',')
-                            if (typeList.size == 1 && typeList[0].isNotBlank()) {
-                                mobileTypeName?.copy()?.of(config)?.set(
-                                    List(15) { typeList[0] }
-                                )
-                            } else if (typeList.size == 15) {
-                                mobileTypeName?.copy()?.of(config)?.set(typeList)
-                            }
+                    val ori = proceed()
+                    if (typeSingle) {
+                        showMobileDataTypeSingle?.set(thisObject, true)
+                    }
+                    if (typeCustom && typeCustomVal.isNotBlank()) {
+                        val typeList = typeCustomVal.split(',')
+                        if (typeList.size == 1 && typeList[0].isNotBlank()) {
+                            mobileTypeName?.set(
+                                thisObject,
+                                List(15) { typeList[0] }
+                            )
+                        } else if (typeList.size == 15) {
+                            mobileTypeName?.set(
+                                thisObject,
+                                typeList
+                            )
                         }
                     }
+                    result(ori)
                 }
             }
         }
@@ -92,26 +103,26 @@ object CellularTypeIcon : YukiBaseHooker() {
             "com.miui.systemui.statusbar.views.MobileTypeDrawable".toClassOrNull()?.apply {
                 val mMobileTypeTextPaint = resolve().firstFieldOrNull {
                     name = "mMobileTypeTextPaint"
-                }
+                }?.toTyped<Paint>()
                 val mMobileTypePlusPaint = resolve().firstFieldOrNull {
                     name = "mMobileTypePlusPaint"
-                }
+                }?.toTyped<Paint>()
                 resolve().firstConstructor().hook {
-                    after {
-                        mMobileTypeTextPaint?.copy()?.of(this.instance)?.get<Paint>()?.typeface = typefaceTypeFW
-                        mMobileTypePlusPaint?.copy()?.of(this.instance)?.get<Paint>()?.typeface = typefaceTypeFW
-                    }
+                    val ori = proceed()
+                    mMobileTypeTextPaint?.get(thisObject)?.typeface = typefaceTypeFW
+                    mMobileTypePlusPaint?.get(thisObject)?.typeface = typefaceTypeFW
+                    result(ori)
                 }
                 resolve().firstMethodOrNull {
                     name = "setMiuiStatusBarTypeface"
                 }?.hook {
-                    before {
-                        val paints = this.args(0).array<Paint>()
-                        for (paint in paints) {
-                            paint.typeface = typefaceTypeFW
+                    val paint = getArg(0) as? Array<*>
+                    paint?.forEach {
+                        if (it is Paint) {
+                            it.typeface = typefaceTypeFW
                         }
-                        this.result = null
                     }
+                    result(null)
                 }
             }
         }
@@ -122,29 +133,28 @@ object CellularTypeIcon : YukiBaseHooker() {
             clzMiuiMobileIconBinder?.resolve()?.firstMethodOrNull {
                 name = "bind"
             }?.hook {
-                before {
-                    val viewGroup = this.args(0).cast<ViewGroup>() ?: return@before
-                    val mobileTypeSingle = viewGroup.findViewById<TextView>(mobile_type_single) ?: return@before
-                    val mobileSignalContainer = viewGroup.findViewById<ViewGroup>(mobile_signal_container) ?: return@before
-                    val parent = mobileTypeSingle.parent
-                    if (
-                        swapTypeIcon && parent is ViewGroup &&
-                        mobileTypeSingle.parent == mobileSignalContainer.parent
-                    ) {
-                        val singleTypeIndex = parent.indexOfChild(mobileTypeSingle)
-                        val containerIndex = parent.indexOfChild(mobileSignalContainer)
-                        parent.removeView(mobileTypeSingle)
-                        parent.removeView(mobileSignalContainer)
-                        parent.addView(mobileSignalContainer, singleTypeIndex)
-                        parent.addView(mobileTypeSingle, containerIndex)
-                    }
-                    if (modifyTypeSingleSize) {
-                        mobileTypeSingle.setTextSize(TypedValue.COMPLEX_UNIT_DIP, valueTypeSingleSize)
-                    }
-                    if (modifyTypeSingleFW) {
-                        mobileTypeSingle.typeface = typefaceTypeSingleFW
-                    }
+                val viewGroup = getArg(0) as? ViewGroup
+                val mobileTypeSingle = viewGroup?.findViewById<TextView>(mobile_type_single)
+                val mobileSignalContainer = viewGroup?.findViewById<ViewGroup>(mobile_signal_container)
+                val parent = mobileTypeSingle?.parent
+                if (
+                    swapTypeIcon && parent is ViewGroup &&
+                    mobileTypeSingle.parent == mobileSignalContainer?.parent
+                ) {
+                    val singleTypeIndex = parent.indexOfChild(mobileTypeSingle)
+                    val containerIndex = parent.indexOfChild(mobileSignalContainer)
+                    parent.removeView(mobileTypeSingle)
+                    parent.removeView(mobileSignalContainer)
+                    parent.addView(mobileSignalContainer, singleTypeIndex)
+                    parent.addView(mobileTypeSingle, containerIndex)
                 }
+                if (modifyTypeSingleSize) {
+                    mobileTypeSingle?.setTextSize(TypedValue.COMPLEX_UNIT_DIP, valueTypeSingleSize)
+                }
+                if (modifyTypeSingleFW) {
+                    mobileTypeSingle?.typeface = typefaceTypeSingleFW
+                }
+                result(proceed())
             }
         }
         if (typeSingle && (modifyTypeSingleSize || modifyTypeSingleFW)) {
@@ -153,16 +163,16 @@ object CellularTypeIcon : YukiBaseHooker() {
                     it.contains("updateMobileLayoutParams")
                 }
             }?.hook {
-                after {
-                    val mobileTypeSingle = this.args(0).cast<TextView>() ?: return@after
-                    if (modifyTypeSingleSize) {
-                        mobileTypeSingle.setTextSize(TypedValue.COMPLEX_UNIT_DIP, valueTypeSingleSize)
-                    }
-                    if (modifyTypeSingleFW) {
-                        mobileTypeSingle.typeface = typefaceTypeSingleFW
-                    }
+                val ori = proceed()
+                val mobileTypeSingle = getArg(0) as? TextView
+                if (modifyTypeSingleSize) {
+                    mobileTypeSingle?.setTextSize(TypedValue.COMPLEX_UNIT_DIP, valueTypeSingleSize)
                 }
-            } ?: YLog.info("dont find updateMobileLayoutParams")
+                if (modifyTypeSingleFW) {
+                    mobileTypeSingle?.typeface = typefaceTypeSingleFW
+                }
+                result(ori)
+            } ?: e { "updateMobileLayoutParams method not found!" }
         }
     }
 }

@@ -22,13 +22,14 @@
 
 package dev.lackluster.mihelper.hook.rules.mitrust
 
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.DexKit
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.DexKit
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.ifTrue
 import org.luckypray.dexkit.query.enums.StringMatchType
 
-object DisableRiskCheck : YukiBaseHooker() {
+object DisableRiskCheck : StaticHooker() {
     private val metInitMrmService by lazy {
         DexKit.findMethodWithCache("init_mrm") {
             matcher {
@@ -39,12 +40,17 @@ object DisableRiskCheck : YukiBaseHooker() {
         }
     }
 
+    override fun onInit() {
+        Preferences.MiTrust.BLOCK_RISK_CHECK.get().also {
+            updateSelfState(it)
+        }.ifTrue {
+            metInitMrmService
+        }
+    }
+
     override fun onHook() {
-        hasEnable(Pref.Key.MiTrust.DISABLE_RISK_CHECK) {
-            if (appClassLoader == null) return@hasEnable
-            metInitMrmService?.getMethodInstance(appClassLoader!!)?.hook {
-                replaceToFalse()
-            }
+        metInitMrmService?.getMethodInstance(classLoader)?.hook {
+            result(false)
         }
     }
 }

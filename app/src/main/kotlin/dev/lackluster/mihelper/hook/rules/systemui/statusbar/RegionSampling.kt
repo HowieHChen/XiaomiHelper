@@ -21,43 +21,47 @@
 package dev.lackluster.mihelper.hook.rules.systemui.statusbar
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.readonlyStateFlowFalse
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.readonlyStateFlowTrue
-import dev.lackluster.mihelper.utils.Prefs
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
+import dev.lackluster.mihelper.hook.utils.toTyped
 
-object RegionSampling : YukiBaseHooker() {
-    private val mode = Prefs.getInt(Pref.Key.SystemUI.StatusBar.REGION_SAMPLING, 0)
+object RegionSampling : StaticHooker() {
+    private val mode by Preferences.SystemUI.StatusBar.REGION_SAMPLING.lazyGet()
+
+    override fun onInit() {
+        updateSelfState(mode != 0)
+    }
 
     override fun onHook() {
-        if (mode == 0) return
         "com.miui.systemui.common.ui.data.repository.MiuiConfigurationRepositoryImpl".toClassOrNull()?.apply {
             val isNightMode = resolve().firstFieldOrNull {
                 name = "isNightMode"
-            }
+            }?.toTyped<Any>()
             resolve().firstConstructor().hook {
-                after {
-                    if (mode == 1) {
-                        isNightMode?.copy()?.of(this.instance)?.set(readonlyStateFlowTrue)
-                    } else if (mode == 2) {
-                        isNightMode?.copy()?.of(this.instance)?.set(readonlyStateFlowFalse)
-                    }
+                val ori = proceed()
+                if (mode == 1) {
+                    isNightMode?.set(thisObject, readonlyStateFlowTrue)
+                } else if (mode == 2) {
+                    isNightMode?.set(thisObject, readonlyStateFlowFalse)
                 }
+                result(ori)
             }
         }
         "com.android.systemui.statusbar.phone.LightBarControllerImplInjector".toClassOrNull()?.apply {
             val useRegionSampling = resolve().firstFieldOrNull {
                 name = "useRegionSampling"
-            }
+            }?.toTyped<Boolean>()
             resolve().firstConstructor().hook {
-                after {
-                    if (mode == 1) {
-                        useRegionSampling?.copy()?.of(this.instance)?.set(true)
-                    } else if (mode == 2) {
-                        useRegionSampling?.copy()?.of(this.instance)?.set(false)
-                    }
+                val ori = proceed()
+                if (mode == 1) {
+                    useRegionSampling?.set(thisObject, true)
+                } else if (mode == 2) {
+                    useRegionSampling?.set(thisObject, false)
                 }
+                result(ori)
             }
         }
     }

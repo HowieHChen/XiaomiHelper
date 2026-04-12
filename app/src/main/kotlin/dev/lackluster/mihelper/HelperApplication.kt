@@ -1,23 +1,18 @@
 package dev.lackluster.mihelper
 
+import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
-import com.highcapable.yukihookapi.hook.xposed.application.ModuleApplication
 import com.topjohnwu.superuser.Shell
 import dev.lackluster.mihelper.app.di.appModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 
-class HelperApplication : ModuleApplication() {
+class HelperApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        /**
-         * 跟随系统夜间模式
-         * Follow system night mode
-         */
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-        // Your code here.
 
         Shell.setDefaultBuilder(
             Shell.Builder.create()

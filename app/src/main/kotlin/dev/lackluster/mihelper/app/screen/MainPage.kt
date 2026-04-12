@@ -31,6 +31,7 @@ import dev.lackluster.mihelper.app.state.AppEnvViewModel
 import dev.lackluster.mihelper.app.utils.SystemCommander
 import dev.lackluster.mihelper.app.utils.showToast
 import dev.lackluster.mihelper.utils.Device
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import top.yukonga.miuix.kmp.basic.DropdownImpl
@@ -66,14 +67,26 @@ fun MainPage(
     val showRootDialog = remember { mutableStateOf(false) }
 
     LaunchedEffect(envState) {
+        if (envState.canWork) {
+            showDisabledDialog.value = false
+            showInactiveDialog.value = false
+            showRootDialog.value = false
+            return@LaunchedEffect
+        }
         if (envState.isModuleActivated) {
+            showInactiveDialog.value = false
             if (!envState.isModuleEnabled) {
                 showDisabledDialog.value = true
-            } else if (!envState.canWork) {
+                showRootDialog.value = false
+            } else if (!envState.isRootGranted && !envState.isRootIgnored) {
                 showRootDialog.value = true
+                showDisabledDialog.value = false
             }
         } else {
+            delay(500)
             showInactiveDialog.value = true
+            showDisabledDialog.value = false
+            showRootDialog.value = false
         }
     }
 
@@ -132,7 +145,6 @@ fun MainPage(
         negativeText = stringResource(R.string.button_ignore),
         positiveText = stringResource(R.string.main_module_inactive_dialog_lsposed)
     ) {
-        showInactiveDialog.value = false
         onAction(MainPageAction.OpenLSPosed)
     }
     AlertDialog(
@@ -145,7 +157,6 @@ fun MainPage(
         negativeText = stringResource(R.string.button_ignore),
         positiveText = stringResource(R.string.button_enable)
     ) {
-        showRootDialog.value = false
         onAction(MainPageAction.RefreshEnvironment)
     }
 }

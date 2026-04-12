@@ -20,20 +20,21 @@
 
 package dev.lackluster.mihelper.hook.rules.browser
 
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import de.robv.android.xposed.XC_MethodHook
-import de.robv.android.xposed.XposedBridge
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.DexKit
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.DexKit
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.ifTrue
 import org.luckypray.dexkit.query.enums.StringMatchType
 
-object DisableUpdateCheck : YukiBaseHooker() {
+object DisableUpdateCheck : StaticHooker() {
     private val miMarketUpdateClass by lazy {
-        DexKit.dexKitBridge.findClass {
-            matcher {
-                addUsingString("MarketUpdateAgent", StringMatchType.Equals)
-                addUsingString("packageName", StringMatchType.Equals)
+        DexKit.withBridge {
+            findClass {
+                matcher {
+                    addUsingString("MarketUpdateAgent", StringMatchType.Equals)
+                    addUsingString("packageName", StringMatchType.Equals)
+                }
             }
         }
     }
@@ -56,19 +57,21 @@ object DisableUpdateCheck : YukiBaseHooker() {
         }
     }
 
+    override fun onInit() {
+        Preferences.Browser.BLOCK_UPDATE.get().also {
+            updateSelfState(it)
+        }.ifTrue {
+            miMarketDoInBackground
+            miMarketOnPostExecute
+        }
+    }
+
     override fun onHook() {
-        hasEnable(Pref.Key.Browser.BLOCK_UPDATE) {
-            if (appClassLoader == null) return@hasEnable
-            miMarketDoInBackground?.getMethodInstance(appClassLoader!!)?.let {
-                XposedBridge.hookMethod(it, object : XC_MethodHook() {
-                    override fun beforeHookedMethod(param: MethodHookParam?) {
-                        param?.result = 1 as Any?
-                    }
-                })
-            }
-            miMarketOnPostExecute?.getMethodInstance(appClassLoader!!)?.hook {
-                replaceTo(null)
-            }
+        miMarketDoInBackground?.getMethodInstance(classLoader)?.hook {
+            result(1)
+        }
+        miMarketOnPostExecute?.getMethodInstance(classLoader)?.hook {
+            result(null)
         }
     }
 }

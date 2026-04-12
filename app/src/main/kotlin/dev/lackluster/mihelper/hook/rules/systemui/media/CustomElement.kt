@@ -24,52 +24,57 @@ import android.annotation.SuppressLint
 import android.util.TypedValue
 import android.widget.TextView
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzMiuiIslandMediaViewHolder
-import dev.lackluster.mihelper.utils.Prefs
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzMiuiMediaNotificationControllerImpl
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzMiuiMediaViewHolder
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.getMediaViewHolderField
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
+import dev.lackluster.mihelper.hook.utils.toTyped
 
-object CustomElement : YukiBaseHooker() {
-    private val ncAlbum = Prefs.getInt(Pref.Key.SystemUI.MediaControl.LYT_ALBUM, 0)
-    private val ncAlbumShadow = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.ELM_ALBUM_SHADOW, true)
-    private val albumFlip = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.ELM_ALBUM_FLIP, true)
+object CustomElement : StaticHooker() {
+    private val ncAlbum by Preferences.SystemUI.MediaControl.Shared.LYT_ALBUM.get(false).lazyGet()
+    private val ncAlbumShadow by Preferences.SystemUI.MediaControl.NotifCenter.ELM_ALBUM_SHADOW.lazyGet()
+    private val albumFlip by Preferences.SystemUI.MediaControl.Shared.ELM_ALBUM_FLIP.lazyGet()
 
-    private val ncModifyTextSize = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.ELM_TEXT_SIZE, false)
-    private val ncTitleSize = Prefs.getFloat(Pref.Key.SystemUI.MediaControl.ELM_TITLE_SIZE, 18.0f)
-    private val ncArtistSize = Prefs.getFloat(Pref.Key.SystemUI.MediaControl.ELM_ARTIST_SIZE, 12.0f)
-    private val ncTimeSize = Prefs.getFloat(Pref.Key.SystemUI.MediaControl.ELM_TIME_SIZE, 12.0f)
+    private val ncModifyTextSize by Preferences.SystemUI.MediaControl.Shared.ELM_CUSTOM_TEXT_SIZE.get(false).lazyGet()
+    private val ncTitleSize by Preferences.SystemUI.MediaControl.Shared.ELM_TITLE_SIZE.get(false).lazyGet()
+    private val ncArtistSize by Preferences.SystemUI.MediaControl.Shared.ELM_ARTIST_SIZE.get(false).lazyGet()
+    private val ncTimeSize by Preferences.SystemUI.MediaControl.Shared.ELM_TIME_SIZE.get(false).lazyGet()
 
-    private val diModifyTextSize = Prefs.getBoolean(Pref.Key.DynamicIsland.MediaControl.ELM_TEXT_SIZE, false)
-    private val diTitleSize = Prefs.getFloat(Pref.Key.DynamicIsland.MediaControl.ELM_TITLE_SIZE, 18.0f)
-    private val diArtistSize = Prefs.getFloat(Pref.Key.DynamicIsland.MediaControl.ELM_ARTIST_SIZE, 12.0f)
-    private val diTimeSize = Prefs.getFloat(Pref.Key.DynamicIsland.MediaControl.ELM_TIME_SIZE, 12.0f)
+    private val diModifyTextSize by Preferences.SystemUI.MediaControl.Shared.ELM_CUSTOM_TEXT_SIZE.get(true).lazyGet()
+    private val diTitleSize by Preferences.SystemUI.MediaControl.Shared.ELM_TITLE_SIZE.get(true).lazyGet()
+    private val diArtistSize by Preferences.SystemUI.MediaControl.Shared.ELM_ARTIST_SIZE.get(true).lazyGet()
+    private val diTimeSize by Preferences.SystemUI.MediaControl.Shared.ELM_TIME_SIZE.get(true).lazyGet()
 
     private val ncTitleText by lazy {
-        getMediaViewHolderField("titleText", false)
+        getMediaViewHolderField("titleText", false)?.toTyped<TextView>()
     }
     private val ncArtistText by lazy {
-        getMediaViewHolderField("artistText", false)
+        getMediaViewHolderField("artistText", false)?.toTyped<TextView>()
     }
     private val ncElapsedTimeView by lazy {
-        getMediaViewHolderField("elapsedTimeView", false)
+        getMediaViewHolderField("elapsedTimeView", false)?.toTyped<TextView>()
     }
     private val ncTotalTimeView by lazy {
-        getMediaViewHolderField("totalTimeView", false)
+        getMediaViewHolderField("totalTimeView", false)?.toTyped<TextView>()
     }
     private val diTitleText by lazy {
-        getMediaViewHolderField("titleText", true)
+        getMediaViewHolderField("titleText", true)?.toTyped<TextView>()
     }
     private val diArtistText by lazy {
-        getMediaViewHolderField("artistText", true)
+        getMediaViewHolderField("artistText", true)?.toTyped<TextView>()
     }
     private val diElapsedTimeView by lazy {
-        getMediaViewHolderField("elapsedTimeView", true)
+        getMediaViewHolderField("elapsedTimeView", true)?.toTyped<TextView>()
     }
     private val diTotalTimeView by lazy {
-        getMediaViewHolderField("totalTimeView", true)
+        getMediaViewHolderField("totalTimeView", true)?.toTyped<TextView>()
+    }
+
+    override fun onInit() {
+        updateSelfState(true)
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -79,7 +84,7 @@ object CustomElement : YukiBaseHooker() {
                 resolve().firstMethodOrNull {
                     name = "applyViewShadowForMediaAlbum"
                 }?.hook {
-                    intercept()
+                    result(null)
                 }
             }
         }
@@ -89,16 +94,16 @@ object CustomElement : YukiBaseHooker() {
                     $$"com.android.systemui.statusbar.notification.mediacontrol.MiuiMediaAlbumAnimationUtils$OnFlipListener".toClassOrNull()
                         ?.resolve()?.firstMethodOrNull {
                             name = "onFlip"
-                        }?.self
+                        }?.toTyped<Unit>()
                 resolve().firstMethodOrNull {
                     name = "startFlipAnimation"
                 }?.hook {
-                    before {
-                        val onFlipListener = this.args.last()
-                        if (onFlipListener != null && metOnFlip != null) {
-                            metOnFlip.invoke(onFlipListener)
-                            this.result = null
-                        }
+                    val onFlipListener = this.args.last()
+                    if (onFlipListener != null && metOnFlip != null) {
+                        metOnFlip.invoke(onFlipListener)
+                        result(null)
+                    } else {
+                        result(proceed())
                     }
                 }
             }
@@ -107,51 +112,53 @@ object CustomElement : YukiBaseHooker() {
             clzMiuiMediaNotificationControllerImpl?.apply {
                 val fldMediaViewHolder = resolve().firstFieldOrNull {
                     name = "mediaViewHolder"
-                }?.self
+                }?.toTyped<Any>()
                 resolve().firstMethodOrNull {
                     name {
                         it.startsWith("updateLayout")
                     }
                 }?.hook {
-                    after {
-                        val mediaViewHolder = fldMediaViewHolder?.get(this.instance) ?: return@after
-                        val titleText = ncTitleText?.get(mediaViewHolder) as? TextView
-                        val artistText = ncArtistText?.get(mediaViewHolder) as? TextView
+                    val ori = proceed()
+                    val mediaViewHolder = fldMediaViewHolder?.get(thisObject)
+                    if (mediaViewHolder != null) {
+                        val titleText = ncTitleText?.get(mediaViewHolder)
+                        val artistText = ncArtistText?.get(mediaViewHolder)
                         titleText?.setTextSize(TypedValue.COMPLEX_UNIT_SP, ncTitleSize)
                         artistText?.setTextSize(TypedValue.COMPLEX_UNIT_SP, ncArtistSize)
                     }
+                    result(ori)
                 }
             }
             clzMiuiMediaViewHolder?.apply {
                 resolve().firstConstructor().hook {
-                    after {
-                        val mediaViewHolder = this.instance
-                        val titleText = ncTitleText?.get(mediaViewHolder) as? TextView
-                        val artistText = ncArtistText?.get(mediaViewHolder) as? TextView
-                        val elapsedTimeView = ncElapsedTimeView?.get(mediaViewHolder) as? TextView
-                        val totalTimeView = ncTotalTimeView?.get(mediaViewHolder) as? TextView
-                        titleText?.setTextSize(TypedValue.COMPLEX_UNIT_SP, ncTitleSize)
-                        artistText?.setTextSize(TypedValue.COMPLEX_UNIT_SP, ncArtistSize)
-                        elapsedTimeView?.setTextSize(TypedValue.COMPLEX_UNIT_SP, ncTimeSize)
-                        totalTimeView?.setTextSize(TypedValue.COMPLEX_UNIT_SP, ncTimeSize)
-                    }
+                    val ori = proceed()
+                    val mediaViewHolder = thisObject
+                    val titleText = ncTitleText?.get(mediaViewHolder)
+                    val artistText = ncArtistText?.get(mediaViewHolder)
+                    val elapsedTimeView = ncElapsedTimeView?.get(mediaViewHolder)
+                    val totalTimeView = ncTotalTimeView?.get(mediaViewHolder)
+                    titleText?.setTextSize(TypedValue.COMPLEX_UNIT_SP, ncTitleSize)
+                    artistText?.setTextSize(TypedValue.COMPLEX_UNIT_SP, ncArtistSize)
+                    elapsedTimeView?.setTextSize(TypedValue.COMPLEX_UNIT_SP, ncTimeSize)
+                    totalTimeView?.setTextSize(TypedValue.COMPLEX_UNIT_SP, ncTimeSize)
+                    result(ori)
                 }
             }
         }
         if (diModifyTextSize) {
             clzMiuiIslandMediaViewHolder?.apply {
                 resolve().firstConstructor().hook {
-                    after {
-                        val mediaViewHolder = this.instance
-                        val titleText = diTitleText?.get(mediaViewHolder) as? TextView
-                        val artistText = diArtistText?.get(mediaViewHolder) as? TextView
-                        val elapsedTimeView = diElapsedTimeView?.get(mediaViewHolder) as? TextView
-                        val totalTimeView = diTotalTimeView?.get(mediaViewHolder) as? TextView
-                        titleText?.setTextSize(TypedValue.COMPLEX_UNIT_SP, diTitleSize)
-                        artistText?.setTextSize(TypedValue.COMPLEX_UNIT_SP, diArtistSize)
-                        elapsedTimeView?.setTextSize(TypedValue.COMPLEX_UNIT_SP, diTimeSize)
-                        totalTimeView?.setTextSize(TypedValue.COMPLEX_UNIT_SP, diTimeSize)
-                    }
+                    val ori = proceed()
+                    val mediaViewHolder = thisObject
+                    val titleText = diTitleText?.get(mediaViewHolder)
+                    val artistText = diArtistText?.get(mediaViewHolder)
+                    val elapsedTimeView = diElapsedTimeView?.get(mediaViewHolder)
+                    val totalTimeView = diTotalTimeView?.get(mediaViewHolder)
+                    titleText?.setTextSize(TypedValue.COMPLEX_UNIT_SP, diTitleSize)
+                    artistText?.setTextSize(TypedValue.COMPLEX_UNIT_SP, diArtistSize)
+                    elapsedTimeView?.setTextSize(TypedValue.COMPLEX_UNIT_SP, diTimeSize)
+                    totalTimeView?.setTextSize(TypedValue.COMPLEX_UNIT_SP, diTimeSize)
+                    result(ori)
                 }
             }
         }

@@ -24,6 +24,7 @@ import dev.lackluster.mihelper.app.widget.preference.DropDownPreference
 import dev.lackluster.mihelper.data.Route
 import dev.lackluster.mihelper.data.Scope
 import dev.lackluster.mihelper.data.preference.Preferences
+import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 private sealed interface SystemUIAction {
     data class NavigateTo(val route: Route) : SystemUIAction
@@ -85,6 +86,25 @@ private fun SystemUIPageContent(
     isNotifLayoutOptOn: Boolean,
     onAction: (SystemUIAction) -> Unit
 ) {
+    val tintColor = MiuixTheme.colorScheme.onSurfaceSecondary
+
+    val statusBarGestureActionOptions = remember(tintColor) {
+        listOf(
+            DropDownOption(0, R.string.common_default, iconRes = R.drawable.ic_quick_switch_default, iconTint = tintColor),
+            DropDownOption(11, R.string.common_disabled, iconRes = R.drawable.ic_quick_switch_disabled, iconTint = tintColor),
+            DropDownOption(1, R.string.action_notifications, iconRes = R.drawable.ic_quick_switch_notifications, iconTint = tintColor),
+            DropDownOption(2, R.string.action_quick_settings, iconRes = R.drawable.ic_quick_switch_quick_settings, iconTint = tintColor),
+            DropDownOption(3, R.string.action_lock_screen, iconRes = R.drawable.ic_quick_switch_lock_screen, iconTint = tintColor),
+            DropDownOption(4, R.string.action_screenshot, iconRes = R.drawable.ic_quick_switch_screenshot, iconTint = tintColor),
+            DropDownOption(5, R.string.action_home, iconRes = R.drawable.ic_quick_switch_home, iconTint = tintColor),
+            DropDownOption(6, R.string.action_recents, iconRes = R.drawable.ic_quick_switch_recents, iconTint = tintColor),
+            DropDownOption(7, R.string.action_recognize_screen, iconRes = R.drawable.ic_quick_switch_recognize_screen, iconTint = tintColor),
+            DropDownOption(8, R.string.action_xiaoai, iconRes = R.drawable.ic_quick_switch_xiaoai, iconTint = tintColor),
+            DropDownOption(9, R.string.action_floating_window, iconRes = R.drawable.ic_quick_switch_floating_window, iconTint = tintColor),
+            DropDownOption(10, R.string.action_scroll_to_top, iconRes = R.drawable.ic_quick_switch_scroll_top, iconTint = tintColor),
+        )
+    }
+
     HyperXPage(
         title = stringResource(R.string.page_systemui),
         actions = {
@@ -128,10 +148,22 @@ private fun SystemUIPageContent(
                     max = 15
                 )
             }
-            SwitchPreference(
-                key = Preferences.SystemUI.StatusBar.DOUBLE_TAP_TO_SLEEP,
-                title = stringResource(R.string.systemui_statusbar_tap_to_sleep),
+            DropDownPreference(
+                key = Preferences.SystemUI.StatusBar.SINGLE_TAP_GESTURE,
+                title = stringResource(R.string.systemui_statusbar_gesture_single_tap),
+                summary = stringResource(R.string.systemui_statusbar_gesture_single_tap_tips),
+                options = statusBarGestureActionOptions,
             )
+            DropDownPreference(
+                key = Preferences.SystemUI.StatusBar.DOUBLE_TAP_GESTURE,
+                title = stringResource(R.string.systemui_statusbar_gesture_double_tap),
+                summary = stringResource(R.string.systemui_statusbar_gesture_double_tap_tips),
+                options = statusBarGestureActionOptions,
+            )
+//            SwitchPreference(
+//                key = Preferences.SystemUI.StatusBar.DOUBLE_TAP_TO_SLEEP,
+//                title = stringResource(R.string.systemui_statusbar_tap_to_sleep),
+//            )
             DropDownPreference(
                 key = Preferences.SystemUI.StatusBar.REGION_SAMPLING,
                 title = stringResource(R.string.systemui_statusbar_region_sampling),
@@ -160,11 +192,11 @@ private fun SystemUIPageContent(
                 title = stringResource(R.string.systemui_lock_keep_clock_container),
                 summary = stringResource(R.string.systemui_lock_keep_clock_container_tips),
             )
-            SwitchPreference(
-                key = Preferences.SystemUI.LockScreen.HIDE_NEXT_ALARM,
-                title = stringResource(R.string.systemui_lock_hide_next_alarm),
-                summary = stringResource(R.string.systemui_lock_hide_next_alarm_tips),
-            )
+//            SwitchPreference(
+//                key = Preferences.SystemUI.LockScreen.HIDE_NEXT_ALARM,
+//                title = stringResource(R.string.systemui_lock_hide_next_alarm),
+//                summary = stringResource(R.string.systemui_lock_hide_next_alarm_tips),
+//            )
             SwitchPreference(
                 key = Preferences.SystemUI.LockScreen.HIDE_CARRIER_ONE,
                 title = stringResource(R.string.systemui_lock_hide_carrier_one),

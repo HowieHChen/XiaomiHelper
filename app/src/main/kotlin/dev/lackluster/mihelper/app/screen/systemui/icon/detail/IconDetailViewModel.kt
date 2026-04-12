@@ -111,6 +111,14 @@ class IconDetailViewModel(
                 }
             }
         }
+        viewModelScope.launch(Dispatchers.Default) {
+            prefRepo.globalReloadEvent.collect {
+                _mobileState.update { loadMobileConfig() }
+                _wlanState.update { loadWlanConfig() }
+                _batteryState.update { loadBatteryConfig() }
+                _netSpeedState.update { loadNetSpeedConfig() }
+            }
+        }
     }
 
     fun selectTab(tab: IconTab) {

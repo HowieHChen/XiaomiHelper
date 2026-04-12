@@ -39,11 +39,9 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.graphics.drawable.toDrawable
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.kavaref.extension.makeAccessible
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.log.YLog
-import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.data.Scope
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.media_bg
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.media_bg_view
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.media_control_bg_radius
@@ -57,6 +55,7 @@ import dev.lackluster.mihelper.hook.rules.systemui.compat.ConstraintSetCompat.co
 import dev.lackluster.mihelper.hook.rules.systemui.compat.ConstraintSetCompat.ctorConstraintSet
 import dev.lackluster.mihelper.hook.rules.systemui.compat.ConstraintSetCompat.setVisibility
 import dev.lackluster.mihelper.hook.rules.systemui.compat.PairCompat
+import dev.lackluster.mihelper.hook.rules.systemui.media.CustomProgressBar.realSeekBar
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.clzMediaData
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.ctorColorScheme
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.defaultColorConfig
@@ -74,29 +73,30 @@ import dev.lackluster.mihelper.hook.rules.systemui.media.bg.BlurredCoverProcesso
 import dev.lackluster.mihelper.hook.rules.systemui.media.bg.CoverArtProcessor
 import dev.lackluster.mihelper.hook.rules.systemui.media.bg.RadialGradientProcessor
 import dev.lackluster.mihelper.hook.rules.systemui.media.bg.LinearGradientProcessor
-import dev.lackluster.mihelper.hook.rules.systemui.media.CustomProgressBar.KEY_REAL_PROGRESS_BAR
 import dev.lackluster.mihelper.hook.rules.systemui.media.data.MediaViewColorConfig
 import dev.lackluster.mihelper.hook.rules.systemui.media.data.MiuiMediaViewHolderWrapper
 import dev.lackluster.mihelper.hook.rules.systemui.media.data.PlayerConfig
 import dev.lackluster.mihelper.hook.rules.systemui.media.data.PlayerType
-import dev.lackluster.mihelper.utils.HostExecutor
-import dev.lackluster.mihelper.utils.Prefs
-import dev.lackluster.mihelper.utils.factory.getAdditionalInstanceField
-import dev.lackluster.mihelper.utils.factory.getResID
-import dev.lackluster.mihelper.utils.factory.setAdditionalInstanceField
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
+import dev.lackluster.mihelper.hook.utils.e
+import dev.lackluster.mihelper.hook.utils.extraOf
+import dev.lackluster.mihelper.hook.utils.toTyped
+import dev.lackluster.mihelper.hook.utils.HostExecutor
+import dev.lackluster.mihelper.utils.factory.getResId
 
-object CustomBackground : YukiBaseHooker() {
-    private const val KEY_VIEW_HOLDER_WRAPPER = "KEY_VIEW_HOLDER_WRAPPER"
+object CustomBackground : StaticHooker() {
+    private var Any.viewHolderWrapper by extraOf<MiuiMediaViewHolderWrapper>("KEY_VIEW_HOLDER_WRAPPER")
     // background: 0 -> Default; 1 -> Art; 2 -> Blurred cover; 3 -> AndroidNewStyle; 4 -> AndroidOldStyle;
-    private val ncBackgroundStyle = Prefs.getInt(Pref.Key.SystemUI.MediaControl.BACKGROUND_STYLE, 0)
-    private val ncBackgroundAnim = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.USE_ANIM, true)
-    private val diBackgroundStyle = Prefs.getInt(Pref.Key.DynamicIsland.MediaControl.BACKGROUND_STYLE, 0)
-    private val diBackgroundAnim = Prefs.getBoolean(Pref.Key.DynamicIsland.MediaControl.USE_ANIM, true)
+    private val ncBackgroundStyle by Preferences.SystemUI.MediaControl.Shared.BG_STYLE.get(false).lazyGet()
+    private val ncBackgroundAnim by Preferences.SystemUI.MediaControl.Shared.BG_COLOR_ANIM.get(false).lazyGet()
+    private val diBackgroundStyle by Preferences.SystemUI.MediaControl.Shared.BG_STYLE.get(true).lazyGet()
+    private val diBackgroundAnim by Preferences.SystemUI.MediaControl.Shared.BG_COLOR_ANIM.get(true).lazyGet()
 
     private var ncProcessor: BgProcessor? = null
     private var diProcessor: BgProcessor? = null
 
-    private val ncUseNotifCornerRadius = Prefs.getBoolean("media_notif_corner_radius", false)
+    private val ncUseNotifCornerRadius by Preferences.SystemUI.MediaControl.NotifCenter.BG_NOTIF_CORNER.lazyGet()
     private val ncOutlineProvider = object : ViewOutlineProvider() {
         override fun getOutline(p0: View?, p1: Outline?) {
             if (p0 == null) return
@@ -114,29 +114,33 @@ object CustomBackground : YukiBaseHooker() {
     private val fldArtwork by lazy {
         clzMediaData?.resolve()?.firstFieldOrNull {
             name = "artwork"
-        }?.self
+        }?.toTyped<Icon>()
     }
     private val fldPackageName by lazy {
         clzMediaData?.resolve()?.firstFieldOrNull {
             name = "packageName"
-        }?.self
+        }?.toTyped<String>()
+    }
+
+    override fun onInit() {
+        updateSelfState(true)
+        attach(AlwaysDark)
+        attach(AmbientLight)
+        attach(FlipTinyScreen) // Not fully verified
+        attach(MediaControlBgFactory)
     }
 
     override fun onHook() {
-        loadHooker(AlwaysDark)
-        loadHooker(AmbientLight)
-        loadHooker(FlipTinyScreen) // Not fully verified
         onHookCornerRadius()
         if (ncBackgroundStyle !in 1..4 && diBackgroundStyle !in 1..4) return
-        loadHooker(MediaControlBgFactory)
         onHookNotificationCenter()
         onHookDynamicIsland()
     }
 
     private fun getNotifCenterCornerRadius(context: Context): Int? {
         if (notification_item_bg_radius == 0 || media_control_bg_radius == 0) {
-            notification_item_bg_radius = context.getResID("notification_item_bg_radius", "dimen", Scope.SYSTEM_UI)
-            media_control_bg_radius = context.getResID("media_control_bg_radius", "dimen", Scope.SYSTEM_UI)
+            notification_item_bg_radius = context.getResId("notification_item_bg_radius", "dimen", Scope.SYSTEM_UI)
+            media_control_bg_radius = context.getResId("media_control_bg_radius", "dimen", Scope.SYSTEM_UI)
         }
         return (if (ncUseNotifCornerRadius) notification_item_bg_radius else media_control_bg_radius).takeIf { it != 0 }
     }
@@ -146,56 +150,60 @@ object CustomBackground : YukiBaseHooker() {
             val clzNotifiFullAodController = "com.android.systemui.statusbar.notification.fullaod.NotifiFullAodController".toClassOrNull()
             val fldMediaRadius = clzNotifiFullAodController?.resolve()?.firstFieldOrNull {
                 name = "mMediaRadius"
-            }
+            }?.toTyped<Float>()
             val fldContext = clzNotifiFullAodController?.resolve()?.firstFieldOrNull {
                 name = "mContext"
-            }
+            }?.toTyped<Context>()
             "com.android.systemui.statusbar.notification.fullaod.NotifiFullAodController_Factory".toClassOrNull()?.apply {
                 resolve().firstMethodOrNull {
                     name = "newInstance"
                 }?.hook {
-                    after {
-                        val context = this.args(0).cast<Context>() ?: return@after
-                        val controller = this.result ?: return@after
+                    val ori = proceed()
+                    val context = getArg(0) as? Context
+                    if (context != null) {
                         getNotifCenterCornerRadius(context)?.let {
-                            fldMediaRadius?.copy()?.of(controller)?.set(context.resources.getDimension(it))
+                            fldMediaRadius?.set(ori, context.resources.getDimension(it))
                         }
                     }
+                    result(ori)
                 }
             }
             "com.android.systemui.statusbar.notification.fullaod.NotifiFullAodController$3".toClassOrNull()?.apply {
                 val outer = resolve().firstFieldOrNull {
                     name = "this$0"
-                }?.self?.apply { makeAccessible() }
+                }?.toTyped<Any>()
                 resolve().firstMethodOrNull {
                     name = "onDensityOrFontScaleChanged"
                 }?.hook {
-                    after {
-                        val controller = outer?.get(this.instance) ?: return@after
-                        val context = fldContext?.copy()?.of(controller)?.get<Context>() ?: return@after
+                    val ori = proceed()
+                    val controller = outer?.get(thisObject)
+                    val context = controller?.let { fldContext?.get(it) }
+                    if (context != null) {
                         getNotifCenterCornerRadius(context)?.let {
-                            fldMediaRadius?.copy()?.of(controller)?.set(context.resources.getDimension(it))
+                            fldMediaRadius?.set(controller, context.resources.getDimension(it))
                         }
                     }
+                    result(ori)
                 }
             }
             $$"com.android.systemui.statusbar.notification.mediacontrol.MiuiMediaViewControllerImpl$mediaFullAodListener$1".toClassOrNull()?.apply {
                 val fldOuter = resolve().firstFieldOrNull {
                     name = $$"this$0"
-                }?.self?.apply { makeAccessible() }
+                }?.toTyped<Any>()
                 val fldHolder = clzMiuiMediaViewControllerImpl?.resolve()?.firstFieldOrNull {
                     name = "holder"
-                }?.self?.apply { makeAccessible() }
+                }?.toTyped<Any>()
+                val fldMediaBg = getMediaViewHolderField("mediaBg", false)?.toTyped<ImageView>()
                 resolve().firstMethodOrNull {
                     name = "updateFullAodAnimState"
                 }?.hook {
-                    after {
-                        val outer = fldOuter?.get(this.instance) ?: return@after
-                        val holder = fldHolder?.get(outer) ?: return@after
-                        val mediaBg = getMediaViewHolderField("mediaBg", false)?.get(holder) as? ImageView ?: return@after
-                        mediaBg.outlineProvider = ncOutlineProvider
-                        mediaBg.clipToOutline = true
-                    }
+                    val ori = proceed()
+                    val outer = fldOuter?.get(thisObject)
+                    val holder = fldHolder?.get(outer) ?: return@hook result(ori)
+                    val mediaBg = fldMediaBg?.get(holder)
+                    mediaBg?.outlineProvider = ncOutlineProvider
+                    mediaBg?.clipToOutline = true
+                    result(ori)
                 }
             }
         }
@@ -207,14 +215,14 @@ object CustomBackground : YukiBaseHooker() {
                 useAnim = ncBackgroundAnim
             )
             2 -> BlurredCoverProcessor(
-                blurRadius = Prefs.getInt(Pref.Key.SystemUI.MediaControl.BLUR_RADIUS, 10),
+                blurRadius = Preferences.SystemUI.MediaControl.Shared.BG_BLUR_RADIUS.get(false).get(),
                 useAnim = ncBackgroundAnim
             )
             3 -> RadialGradientProcessor(
                 useAnim = ncBackgroundAnim
             )
             4 -> LinearGradientProcessor(
-                allowReverse = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.ALLOW_REVERSE, false),
+                allowReverse = Preferences.SystemUI.MediaControl.Shared.BG_ALLOW_REVERSE.get(false).get(),
                 useAnim = ncBackgroundAnim
             )
             else -> return
@@ -222,53 +230,60 @@ object CustomBackground : YukiBaseHooker() {
         clzMiuiMediaViewControllerImpl?.apply {
             val fldContext = resolve().firstFieldOrNull {
                 name = "context"
-            }?.self
+            }?.toTyped<Context>()
             val fldIsArtWorkUpdate = resolve().firstFieldOrNull {
                 name = "isArtWorkUpdate"
-            }?.self
+            }?.toTyped<Boolean>()
             val fldHolder = resolve().firstFieldOrNull {
                 name = "holder"
-            }?.self
+            }?.toTyped<Any>()
             resolve().firstMethodOrNull {
                 name = "updateForegroundColors"
             }?.hook {
-                intercept()
+                result(null)
             }
             resolve().firstMethodOrNull {
                 name = "updateMediaBackground"
             }?.hook {
-                intercept()
+                result(null)
             }
             resolve().firstMethodOrNull {
                 name = "detach"
             }?.hook {
-                after {
-                    finiMediaViewHolder(false)
-                }
+                val ori = proceed()
+                finiMediaViewHolder(false)
+                result(ori)
             }
             resolve().firstMethodOrNull {
                 name = "attach"
             }?.hook {
-                after {
-                    val holder = fldHolder?.get(this.instance) ?: return@after
+                val ori = proceed()
+                fldHolder?.get(thisObject)?.let { holder ->
                     getMediaViewHolderWrapper(holder, false)
                 }
+                result(ori)
             }
             resolve().firstMethodOrNull {
                 name = "bindMediaData"
             }?.hook {
-                after {
-                    val mediaData = this.args(0).any() ?: return@after
-                    val context = fldContext?.get(this.instance) as? Context ?: return@after
-                    val holder = fldHolder?.get(this.instance) ?: return@after
-                    val artwork = fldArtwork?.get(mediaData) as? Icon ?: return@after
-                    val packageName = fldPackageName?.get(mediaData) as? String ?: return@after
-                    val holderWrapper = getMediaViewHolderWrapper(holder, false)  ?: return@after
-                    val isArtWorkUpdate = fldIsArtWorkUpdate?.get(this.instance) == true || ncPlayerConfig.mCurrentPkgName != packageName || !ncPlayerConfig.mIsArtworkBound
-                    if (isArtWorkUpdate) {
-                        updateBackground(context, artwork, packageName, holderWrapper, PlayerType.NOTIFICATION_CANTER)
-                    }
+                val ori = proceed()
+                val mediaData = getArg(0) ?: return@hook result(ori)
+                val context = fldContext?.get(thisObject)
+                val holder = fldHolder?.get(thisObject) ?: return@hook result(ori)
+                val artwork = fldArtwork?.get(mediaData)
+                val packageName = fldPackageName?.get(mediaData)
+                val holderWrapper = getMediaViewHolderWrapper(holder, false)
+
+                if (context == null || packageName == null || holderWrapper == null) {
+                    return@hook result(ori)
                 }
+
+                val isArtWorkUpdate =
+                    fldIsArtWorkUpdate?.get(thisObject) == true || ncPlayerConfig.mCurrentPkgName != packageName || !ncPlayerConfig.mIsArtworkBound
+                if (isArtWorkUpdate) {
+                    updateBackground(context, artwork, packageName, holderWrapper, PlayerType.NOTIFICATION_CANTER)
+                }
+                result(ori)
             }
         }
     }
@@ -279,14 +294,14 @@ object CustomBackground : YukiBaseHooker() {
                 useAnim = diBackgroundAnim
             )
             2 -> BlurredCoverProcessor(
-                blurRadius = Prefs.getInt(Pref.Key.DynamicIsland.MediaControl.BLUR_RADIUS, 10),
+                blurRadius = Preferences.SystemUI.MediaControl.Shared.BG_BLUR_RADIUS.get(true).get(),
                 useAnim = diBackgroundAnim
             )
             3 -> RadialGradientProcessor(
                 useAnim = diBackgroundAnim
             )
             4 -> LinearGradientProcessor(
-                allowReverse = Prefs.getBoolean(Pref.Key.DynamicIsland.MediaControl.ALLOW_REVERSE, true),
+                allowReverse = Preferences.SystemUI.MediaControl.Shared.BG_ALLOW_REVERSE.get(true).get(),
                 useAnim = diBackgroundAnim
             )
             else -> return
@@ -294,64 +309,71 @@ object CustomBackground : YukiBaseHooker() {
         clzMiuiIslandMediaViewBinderImpl?.apply {
             val fldContext = resolve().firstFieldOrNull {
                 name = "context"
-            }?.self
+            }?.toTyped<Context>()
             val fldIsArtWorkUpdate = resolve().firstFieldOrNull {
                 name = "isArtWorkUpdate"
-            }?.self
+            }?.toTyped<Boolean>()
             val fldHolder = resolve().firstFieldOrNull {
                 name = "holder"
-            }?.self
+            }?.toTyped<Any>()
             val fldDummyHolder = resolve().firstFieldOrNull {
                 name = "dummyHolder"
-            }?.self
+            }?.toTyped<Any>()
             val fldMediaBgTransYOffset = resolve().optional(true).firstFieldOrNull {
                 name = "mediaBgTransYOffset"
-            }?.self
+            }?.toTyped<Float>()
             resolve().firstMethodOrNull {
                 name = "updateForegroundColors"
             }?.hook {
-                intercept()
+                result(null)
             }
             resolve().firstMethodOrNull {
                 name = "detach"
             }?.hook {
-                after {
-                    finiMediaViewHolder(true)
-                }
+                val ori = proceed()
+                finiMediaViewHolder(true)
+                result(ori)
             }
             resolve().firstMethodOrNull {
                 name = "attach"
             }?.hook {
-                after {
-                    val holder = fldHolder?.get(this.instance) ?: return@after
+                val ori = proceed()
+                fldHolder?.get(thisObject)?.let { holder ->
                     getMediaViewHolderWrapper(holder, true)
-                    val dummyHolder = fldDummyHolder?.get(this.instance) ?: return@after
+                }
+                fldDummyHolder?.get(thisObject)?.let { dummyHolder ->
                     getMediaViewHolderWrapper(dummyHolder, true)
                 }
+                result(ori)
             }
             resolve().firstMethodOrNull {
                 name = "bindMediaData"
             }?.hook {
-                after {
-                    val mediaData = this.args(0).any() ?: return@after
-                    val context = fldContext?.get(this.instance) as? Context ?: return@after
-                    val holder = fldHolder?.get(this.instance) ?: return@after
-                    val dummyHolder = fldDummyHolder?.get(this.instance) ?: return@after
-                    val artwork = fldArtwork?.get(mediaData) as? Icon ?: return@after
-                    val packageName = fldPackageName?.get(mediaData) as? String ?: return@after
-                    val holderWrapper = getMediaViewHolderWrapper(holder, true) ?: return@after
-                    val dummyHolderWrapper = getMediaViewHolderWrapper(dummyHolder, true) ?: return@after
-                    val isArtWorkUpdate = fldIsArtWorkUpdate?.get(this.instance) == true || diPlayerConfig.mCurrentPkgName != packageName || !diPlayerConfig.mIsArtworkBound
-                    if (isArtWorkUpdate) {
-                        updateBackground(context, artwork, packageName, holderWrapper, PlayerType.DYNAMIC_ISLAND)
-                        updateBackground(context, artwork, packageName, dummyHolderWrapper, PlayerType.DUMMY_DYNAMIC_ISLAND)
-                    }
-                    val mediaBgTransYOffset = fldMediaBgTransYOffset?.get(this.instance) as? Float
-                    if (mediaBgTransYOffset != null && mediaBgTransYOffset != 0.0f) {
-                        val height = dummyHolderWrapper.mediaBg.height
-                        dummyHolderWrapper.mediaBg.scaleY = (height + mediaBgTransYOffset) / height
-                    }
+                val ori = proceed()
+                val mediaData = getArg(0) ?: return@hook result(ori)
+                val context = fldContext?.get(thisObject)
+                val holder = fldHolder?.get(thisObject) ?: return@hook result(ori)
+                val dummyHolder = fldDummyHolder?.get(thisObject) ?: return@hook result(ori)
+                val artwork = fldArtwork?.get(mediaData)
+                val packageName = fldPackageName?.get(mediaData)
+                val holderWrapper = getMediaViewHolderWrapper(holder, true)
+                val dummyHolderWrapper = getMediaViewHolderWrapper(dummyHolder, true)
+
+                if (context == null || packageName == null || holderWrapper == null || dummyHolderWrapper == null) {
+                    return@hook result(ori)
                 }
+                val isArtWorkUpdate =
+                    fldIsArtWorkUpdate?.get(thisObject) == true || diPlayerConfig.mCurrentPkgName != packageName || !diPlayerConfig.mIsArtworkBound
+                if (isArtWorkUpdate) {
+                    updateBackground(context, artwork, packageName, holderWrapper, PlayerType.DYNAMIC_ISLAND)
+                    updateBackground(context, artwork, packageName, dummyHolderWrapper, PlayerType.DUMMY_DYNAMIC_ISLAND)
+                }
+                val mediaBgTransYOffset = fldMediaBgTransYOffset?.get(thisObject)
+                if (mediaBgTransYOffset != null && mediaBgTransYOffset != 0.0f) {
+                    val height = dummyHolderWrapper.mediaBg.height
+                    dummyHolderWrapper.mediaBg.scaleY = (height + mediaBgTransYOffset) / height
+                }
+                result(ori)
             }
         }
         $$"com.android.systemui.statusbar.notification.mediaisland.MiuiIslandMediaViewBinderImpl$attach$4$1".toClassOrNull()?.apply {
@@ -360,36 +382,36 @@ object CustomBackground : YukiBaseHooker() {
 //            }?.self
             val fldDummyHolder = resolve().firstFieldOrNull {
                 name = $$"$dummyHolder"
-            }?.self
+            }?.toTyped<Any>()
             resolve().firstMethodOrNull {
                 name = "emit"
             }?.hook {
-                after {
-                    val pair = this.args(0).any() ?: return@after
-                    val action = PairCompat.getFirst(pair) as? String ?: return@after
-                    val data = PairCompat.getSecond(pair) as? Bundle
-//                    val mediaBgView = fldHolder?.get(this.instance)?.let { it1 -> getMediaViewHolderWrapper(it1, true)?.mediaBg  } ?: return@after
-                    val dummyMediaBgView = fldDummyHolder?.get(this.instance)?.let { it1 -> getMediaViewHolderWrapper(it1, true)?.mediaBg } ?: return@after
-                    when (action) {
-                        "pull_down_type_start" -> {
-                            dummyMediaBgView.pivotY = 0.0f
-                        }
-                        "pull_down_type_update" -> {
-                            val pullDownOffset = data?.getFloat("pull_down_action_offset_y", 0.0f) ?: 0.0f
-                            val height = dummyMediaBgView.height
-                            dummyMediaBgView.scaleY = (height + pullDownOffset) / height
-                        }
-                        "pull_down_type_finish" -> {
+                val ori = proceed()
+                val pair = getArg(0)
+                val action = PairCompat.getFirst(pair) as? String
+                val data = PairCompat.getSecond(pair) as? Bundle
+//                    val mediaBgView = fldHolder?.get(thisObject)?.let { it1 -> getMediaViewHolderWrapper(it1, true)?.mediaBg  } ?: return@after
+                val dummyMediaBgView = fldDummyHolder?.get(thisObject)?.let { it1 -> getMediaViewHolderWrapper(it1, true)?.mediaBg } ?: return@hook result(ori)
+                when (action) {
+                    "pull_down_type_start" -> {
+                        dummyMediaBgView.pivotY = 0.0f
+                    }
+                    "pull_down_type_update" -> {
+                        val pullDownOffset = data?.getFloat("pull_down_action_offset_y", 0.0f) ?: 0.0f
+                        val height = dummyMediaBgView.height
+                        dummyMediaBgView.scaleY = (height + pullDownOffset) / height
+                    }
+                    "pull_down_type_finish" -> {
 
-                        }
                     }
                 }
+                result(ori)
             }
         }
     }
 
     private fun getMediaViewHolderWrapper(mMediaViewHolder: Any, isDynamicIsland: Boolean): MiuiMediaViewHolderWrapper? {
-        mMediaViewHolder.getAdditionalInstanceField<MiuiMediaViewHolderWrapper>(KEY_VIEW_HOLDER_WRAPPER)?.let {
+        mMediaViewHolder.viewHolderWrapper?.let {
             return it
         }
         val titleText = getMediaViewHolderField("titleText", isDynamicIsland)?.get(mMediaViewHolder) as? TextView ?: return null
@@ -401,7 +423,7 @@ object CustomBackground : YukiBaseHooker() {
         val action3 = getMediaViewHolderField("action3", isDynamicIsland)?.get(mMediaViewHolder) as? ImageButton ?: return null
         val action4 = getMediaViewHolderField("action4", isDynamicIsland)?.get(mMediaViewHolder) as? ImageButton ?: return null
         val seekBar = getMediaViewHolderField("seekBar", isDynamicIsland)?.get(mMediaViewHolder) as? SeekBar ?: return null
-        val realSeekBar = mMediaViewHolder.getAdditionalInstanceField<SeekBar>(KEY_REAL_PROGRESS_BAR)
+        val realSeekBar = mMediaViewHolder.realSeekBar
         val elapsedTimeView = getMediaViewHolderField("elapsedTimeView", isDynamicIsland)?.get(mMediaViewHolder) as? TextView ?: return null
         val totalTimeView = getMediaViewHolderField("totalTimeView", isDynamicIsland)?.get(mMediaViewHolder) as? TextView ?: return null
         val albumView = getMediaViewHolderField("albumImageView", isDynamicIsland)?.get(mMediaViewHolder) as? ImageView ?: return null
@@ -464,7 +486,7 @@ object CustomBackground : YukiBaseHooker() {
             totalTimeView,
             realSeekBar ?: seekBar,
         ).also {
-            mMediaViewHolder.setAdditionalInstanceField(KEY_VIEW_HOLDER_WRAPPER, it)
+            mMediaViewHolder.viewHolderWrapper = it
         }
     }
 
@@ -563,8 +585,8 @@ object CustomBackground : YukiBaseHooker() {
                     try {
                         val icon = context.packageManager.getApplicationIcon(pkgName)
                         mutableColorScheme = ctorColorScheme?.newInstance(WallpaperColors.fromDrawable(icon), true, enumStyleContent)?: throw Exception()
-                    } catch (_: Exception) {
-                        YLog.warn("application not found!")
+                    } catch (e: Exception) {
+                        e(e) { "application not found!" }
                         return@execute null
                     }
                 }

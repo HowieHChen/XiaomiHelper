@@ -1,11 +1,22 @@
 package dev.lackluster.mihelper.data.preference
 
 import dev.lackluster.hyperx.ui.preference.core.PreferenceKey
+import dev.lackluster.mihelper.BuildConfig
 import dev.lackluster.mihelper.data.Constants
 import dev.lackluster.mihelper.utils.Device
 
 object Preferences {
+    const val NAME = "config"
     const val VERSION = 10
+
+    val BACKUP_BLACKLIST by lazy {
+        listOf(
+            SystemUI.StatusBar.Font.FONT_PATH_INTERNAL.name,
+            SystemUI.StatusBar.Font.FONT_PATH_ORIGINAL.name,
+            SystemUI.StatusBar.StackedMobile.FONT_PATH_INTERNAL.name,
+            SystemUI.StatusBar.StackedMobile.FONT_PATH_ORIGINAL.name,
+        )
+    }
 
     object AiEngine {
         val OPEN_LINK_WITH_CUSTOM_BROWSER = PreferenceKey("aicr_link_browser", false)
@@ -16,7 +27,6 @@ object Preferences {
         val HAZE_BLUR = PreferenceKey("app_haze_blur", true)
         val HAZE_LIGHT_BLUR_ALPHA = PreferenceKey("app_haze_light_blur_alpha", 0.8f)
         val HAZE_DARK_BLUR_ALPHA = PreferenceKey("app_haze_dark_blur_alpha", 0.7f)
-        val MODULE_ENABLED = PreferenceKey("enable_module", true)
         val SKIP_ROOT_CHECK = PreferenceKey("app_ignore_root", false)
         val HIDE_ICON = PreferenceKey("hide_icon", false)
     }
@@ -134,6 +144,8 @@ object Preferences {
     }
 
     object Module {
+        val MODULE_ENABLED = PreferenceKey("enable_module", true)
+        val DEBUG = PreferenceKey("enable_debug", BuildConfig.DEBUG)
         val DEX_KIT_CACHE = PreferenceKey("dexkit_cache", true)
         val SHOW_IN_SETTINGS = PreferenceKey("entry_in_settings", false)
         val SETTINGS_ICON_STYLE = PreferenceKey("entry_icon_style", 0)
@@ -233,7 +245,7 @@ object Preferences {
             val DOUBLE_TAP_TO_SLEEP = PreferenceKey("systemui_double_tap_sleep", false)
 //            val CARRIER_TEXT = PreferenceKey("systemui_lockscreen_carrier_text", false)
             val KEEP_START_CONTAINER = PreferenceKey("systemui_ls_keep_clock", false)
-            val HIDE_NEXT_ALARM = PreferenceKey("systemui_ls_hide_next_alarm", false)
+//            val HIDE_NEXT_ALARM = PreferenceKey("systemui_ls_hide_next_alarm", false)
             val HIDE_CARRIER_ONE = PreferenceKey("systemui_ls_hide_carrier_one", false)
             val HIDE_CARRIER_TWO = PreferenceKey("systemui_ls_hide_carrier_two", false)
             val FORCE_COLOR_STATUS_BAR = PreferenceKey("systemui_ls_force_color_status_bar", 0)
@@ -265,8 +277,10 @@ object Preferences {
         object StatusBar {
             val ENABLE_NOTIF_MAX_COUNT = PreferenceKey("statusbar_notif_max", false)
             val NOTIF_MAX_COUNT = PreferenceKey("statusbar_notif_icon_max", 3)
-            val DOUBLE_TAP_TO_SLEEP = PreferenceKey("statusbar_double_tap_sleep", false)
+//            val DOUBLE_TAP_TO_SLEEP = PreferenceKey("statusbar_double_tap_sleep", false)
             val REGION_SAMPLING = PreferenceKey("statusbar_region_sampling", 0)
+            val DOUBLE_TAP_GESTURE = PreferenceKey("statusbar_double_tap", 0)
+            val SINGLE_TAP_GESTURE = PreferenceKey("statusbar_single_tap", 0)
 
             object Font {
                 private val defaultClockFontWeight = if (Device.isPad) 460 else 500

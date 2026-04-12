@@ -23,13 +23,14 @@
 
 package dev.lackluster.mihelper.hook.rules.miai
 
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.DexKit
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.DexKit
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.ifTrue
 import org.luckypray.dexkit.query.enums.StringMatchType
 
-object HideWatermark : YukiBaseHooker(){
+object HideWatermark : StaticHooker(){
     private val addWatermark by lazy {
         DexKit.findMethodWithCache("add_watermark") {
             matcher {
@@ -48,17 +49,21 @@ object HideWatermark : YukiBaseHooker(){
         }
     }
 
+    override fun onInit() {
+        Preferences.MiAi.HIDE_WATERMARK.get().also {
+            updateSelfState(it)
+        }.ifTrue {
+            addWatermark
+            metAiImageWaterMark
+        }
+    }
+
     override fun onHook() {
-        hasEnable(Pref.Key.MiAi.HIDE_WATERMARK) {
-            if (appClassLoader == null) return@hasEnable
-            addWatermark?.getMethodInstance(appClassLoader!!)?.hook {
-                intercept()
-            }
-            metAiImageWaterMark?.getMethodInstance(appClassLoader!!)?.hook {
-                before {
-                    this.result = this.args(1).any()
-                }
-            }
+        addWatermark?.getMethodInstance(classLoader)?.hook {
+            result(null)
+        }
+        metAiImageWaterMark?.getMethodInstance(classLoader)?.hook {
+            result(getArg(1))
         }
     }
 }

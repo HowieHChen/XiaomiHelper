@@ -20,14 +20,14 @@
 
 package dev.lackluster.mihelper.hook.rules.browser
 
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.log.YLog
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.DexKit
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.DexKit
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.ifTrue
 import org.luckypray.dexkit.query.enums.StringMatchType
 
-object DebugMode : YukiBaseHooker() {
+object DebugMode : StaticHooker() {
     private val debugMethod by lazy {
         DexKit.findMethodWithCache("get_debug_mode") {
             matcher {
@@ -38,16 +38,17 @@ object DebugMode : YukiBaseHooker() {
         }
     }
 
+    override fun onInit() {
+        Preferences.Browser.DEBUG_MODE.get().also {
+            updateSelfState(it)
+        }.ifTrue {
+            debugMethod
+        }
+    }
+
     override fun onHook() {
-        hasEnable(Pref.Key.Browser.DEBUG_MODE) {
-            if (appClassLoader == null) return@hasEnable
-            debugMethod?.getMethodInstance(appClassLoader!!)?.hook {
-                replaceToTrue()
-            }?.result {
-                onHookingFailure {
-                    YLog.warn("Failed to hook ${Pref.Key.Browser.DEBUG_MODE}\n${it}")
-                }
-            }
+        debugMethod?.getMethodInstance(classLoader)?.hook {
+            result(true)
         }
     }
 }

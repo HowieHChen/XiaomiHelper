@@ -21,22 +21,27 @@
 package dev.lackluster.mihelper.hook.rules.miuihome
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.Prefs
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
 
-object ForceColorScheme : YukiBaseHooker() {
-    private val forceColorSchemeStatusBar = Prefs.getInt(Pref.Key.MiuiHome.FORCE_COLOR_STATUS_BAR, 0).convertToColorMode()
-    private val forceColorSchemeTextIcon = Prefs.getInt(Pref.Key.MiuiHome.FORCE_COLOR_TEXT_ICON, 0).convertToColorMode()
-    private val clzWallpaperUtils by lazy {
-        "com.miui.home.launcher.WallpaperUtils".toClassOrNull()
+object ForceColorScheme : StaticHooker() {
+    private val forceColorSchemeStatusBar by lazy {
+        Preferences.MiuiHome.FORCE_COLOR_STATUS_BAR.get().convertToColorMode()
     }
-    private val clzWallpaperUtil by lazy {
-        "com.miui.home.isolate.wallpaper.WallpaperUtil".toClassOrNull()
+    private val forceColorSchemeTextIcon by lazy {
+        Preferences.MiuiHome.FORCE_COLOR_TEXT_ICON.get().convertToColorMode()
     }
+    private val clzWallpaperUtils by "com.miui.home.launcher.WallpaperUtils".lazyClassOrNull()
+    private val clzWallpaperUtil by "com.miui.home.isolate.wallpaper.WallpaperUtil".lazyClassOrNull()
+
     private const val FG_DEFAULT = -1
     private const val FG_LIGHT = 0
     private const val FG_DARK = 2
+
+    override fun onInit() {
+        updateSelfState(forceColorSchemeTextIcon > -1 || forceColorSchemeStatusBar > -1)
+    }
 
     override fun onHook() {
         if (forceColorSchemeTextIcon > -1) {
@@ -44,18 +49,18 @@ object ForceColorScheme : YukiBaseHooker() {
                 resolve().firstMethodOrNull {
                     name = "setCurrentSearchBarAreaColorMode"
                 }?.hook {
-                    before {
-                        this.args(0).set(forceColorSchemeTextIcon)
-                    }
+                    val newArgs = args.toTypedArray()
+                    newArgs[0] = forceColorSchemeTextIcon
+                    result(proceed(newArgs))
                 }
             }
             clzWallpaperUtil?.apply {
                 resolve().firstMethodOrNull {
                     name = "setCurrentWallpaperColorMode"
                 }?.hook {
-                    before {
-                        this.args(0).set(forceColorSchemeTextIcon)
-                    }
+                    val newArgs = args.toTypedArray()
+                    newArgs[0] = forceColorSchemeTextIcon
+                    result(proceed(newArgs))
                 }
             }
         }
@@ -64,19 +69,18 @@ object ForceColorScheme : YukiBaseHooker() {
                 resolve().firstMethodOrNull {
                     name = "hasLightBgForStatusBar"
                 }?.hook {
-                    before {
-                        when (forceColorSchemeStatusBar) {
-                            FG_LIGHT -> this.result = false
-                            FG_DARK -> this.result = true
-                        }
+                    when (forceColorSchemeStatusBar) {
+                        FG_LIGHT -> result(false)
+                        FG_DARK -> result(true)
+                        else -> result(proceed())
                     }
                 }
                 resolve().firstMethodOrNull {
                     name = "setCurrentStatusBarAreaColorMode"
                 }?.hook {
-                    before {
-                        this.args(0).set(forceColorSchemeStatusBar)
-                    }
+                    val newArgs = args.toTypedArray()
+                    newArgs[0] = forceColorSchemeStatusBar
+                    result(proceed(newArgs))
                 }
             }
         }

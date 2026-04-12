@@ -21,69 +21,75 @@
 package dev.lackluster.mihelper.hook.rules.systemui.compat
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.toTyped
 
-object ConstraintSetCompat : YukiBaseHooker() {
+internal object ConstraintSetCompat : StaticHooker() {
+    private val clzConstraintSet by "androidx.constraintlayout.widget.ConstraintSet".lazyClass()
 
-    private val clzConstraintSet by lazy {
-        "androidx.constraintlayout.widget.ConstraintSet".toClass()
-    }
     val ctorConstraintSet by lazy {
         clzConstraintSet.resolve().firstConstructor {
             parameterCount = 0
-        }.self
+        }.toTyped()
     }
     val clear by lazy {
         clzConstraintSet.resolve().firstMethodOrNull {
             name = "clear"
             parameterCount = 2
             parameters(Int::class, Int::class)
-        }?.self
+        }?.toTyped<Unit>()
     }
     val setVisibility by lazy {
         clzConstraintSet.resolve().firstMethodOrNull {
             name = "setVisibility"
             parameterCount = 2
             parameters(Int::class, Int::class)
-        }?.self
+        }?.toTyped<Unit>()
     }
     val connect by lazy {
         clzConstraintSet.resolve().firstMethodOrNull {
             name = "connect"
             parameterCount = 4
             parameters(Int::class, Int::class, Int::class, Int::class)
-        }?.self
+        }?.toTyped<Unit>()
     }
     val setMargin by lazy {
         clzConstraintSet.resolve().firstMethodOrNull {
             name = "setMargin"
             parameterCount = 3
             parameters(Int::class, Int::class, Int::class)
-        }?.self
+        }?.toTyped<Unit>()
     }
     val setGoneMargin by lazy {
         clzConstraintSet.resolve().firstMethodOrNull {
             name = "setGoneMargin"
             parameterCount = 3
             parameters(Int::class, Int::class, Int::class)
-        }?.self
+        }?.toTyped<Unit>()
     }
     val applyTo by lazy {
         clzConstraintSet.resolve().firstMethodOrNull {
             name = "applyTo"
             parameterCount = 1
-        }?.self
+        }?.toTyped<Unit>()
     }
     val clone by lazy {
         clzConstraintSet.resolve().firstMethodOrNull {
             name = "clone"
             parameterCount = 1
             parameters("androidx.constraintlayout.widget.ConstraintLayout")
-        }?.self
+        }?.toTyped<Unit>()
     }
 
-    override fun onHook() {
+    override fun onInit() {
         clzConstraintSet
+        ctorConstraintSet
+        clear
+        setVisibility
+        connect
+        setMargin
+        setGoneMargin
+        applyTo
+        clone
     }
-
 }

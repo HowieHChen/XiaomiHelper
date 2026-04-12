@@ -21,13 +21,14 @@
 package dev.lackluster.mihelper.hook.rules.mms
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.DexKit
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.DexKit
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.ifTrue
 import org.luckypray.dexkit.query.enums.StringMatchType
 
-object AdBlocker : YukiBaseHooker() {
+object AdBlocker : StaticHooker() {
     private val clzMessageItem by lazy {
         DexKit.findClassesWithCache("message_item") {
             matcher {
@@ -41,37 +42,43 @@ object AdBlocker : YukiBaseHooker() {
                 returnType = "boolean"
                 addUsingNumber(11)
             }
-            searchClasses = clzMessageItem.mapNotNull { DexKit.dexKitBridge.getClassData(it.className) }
+            searchClasses = clzMessageItem.mapNotNull { DexKit.withBridge { getClassData(it.className) } }
+        }
+    }
+
+    override fun onInit() {
+        Preferences.MMS.AD_BLOCKER.get().also {
+            updateSelfState(it)
+        }.ifTrue {
+            clzMessageItem
+            metIsType11
         }
     }
 
     override fun onHook() {
-        hasEnable(Pref.Key.MMS.AD_BLOCKER) {
-            if (appClassLoader == null) return@hasEnable
-            metIsType11?.getMethodInstance(appClassLoader!!)?.hook {
-                replaceToFalse()
+        metIsType11?.getMethodInstance(classLoader)?.hook {
+            result(false)
+        }
+        "com.miui.smsextra.ui.BottomMenu".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "allowMenuMode"
+            }?.hook {
+                result(false)
             }
-            "com.miui.smsextra.ui.BottomMenu".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
-                    name = "allowMenuMode"
-                }?.hook {
-                    replaceToFalse()
-                }
+        }
+        "com.miui.smsextra.ui.UnderstandButton".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "requestADInAdvance"
+            }?.hook {
+                result(null)
             }
-            "com.miui.smsextra.ui.UnderstandButton".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
-                    name = "requestADInAdvance"
-                }?.hook {
-                    intercept()
+            resolve().firstMethodOrNull {
+                returnType = Boolean::class
+                name {
+                    it == "needRequestAD" || it == "requestAD"
                 }
-                resolve().firstMethodOrNull {
-                    returnType = Boolean::class
-                    name {
-                        it == "needRequestAD" || it == "requestAD"
-                    }
-                }?.hook {
-                    replaceToFalse()
-                }
+            }?.hook {
+                result(false)
             }
         }
     }

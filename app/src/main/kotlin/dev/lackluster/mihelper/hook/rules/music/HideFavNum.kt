@@ -21,74 +21,77 @@
 package dev.lackluster.mihelper.hook.rules.music
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.toTyped
 
-object HideFavNum : YukiBaseHooker() {
+object HideFavNum : StaticHooker() {
+    override fun onInit() {
+        updateSelfState(Preferences.Music.HIDE_FAV_NUM.get())
+    }
+
     override fun onHook() {
-        hasEnable(Pref.Key.Music.HIDE_FAV_NUM) {
-            // 首页推荐
-            "com.tencent.qqmusiclite.model.shelfcard.Card".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
-                    name = "getSongFavNum"
-                }?.hook {
-                    intercept()
-                }
+        // 首页推荐
+        "com.tencent.qqmusiclite.model.shelfcard.Card".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "getSongFavNum"
+            }?.hook {
+                result(null)
             }
-            // 二级页
-            "com.tencent.qqmusiclite.ui.SongItemNewKt".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
-                    name = "needShowFavNum"
-                }?.hook {
-                    replaceToFalse()
-                }
+        }
+        // 二级页
+        "com.tencent.qqmusiclite.ui.SongItemNewKt".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "needShowFavNum"
+            }?.hook {
+                result(false)
             }
-            // 播放页
-            "com.tencent.qqmusiclite.activity.player.song.PlayerSongFragment".toClassOrNull()?.apply {
-                val viewModel = resolve().firstFieldOrNull {
-                    name = "viewModel"
-                }
-                val getViewLifecycleOwner = resolve().firstMethodOrNull {
-                    name = "getViewLifecycleOwner"
-                    superclass()
-                }
-                val clzPlayerSongViewModel = "com.tencent.qqmusiclite.activity.player.song.PlayerSongViewModel".toClassOrNull()
-                val getFavorNumLiveData = clzPlayerSongViewModel?.resolve()?.firstMethodOrNull {
-                    name = "getFavorNumLiveData"
-                }
-                val getFavorNumCacheLiveData = clzPlayerSongViewModel?.resolve()?.firstMethodOrNull {
-                    name = "getFavorNumCacheLiveData"
-                }
-                val removeObservers = "androidx.lifecycle.MutableLiveData".toClassOrNull()?.resolve()?.firstMethodOrNull {
-                    name = "removeObservers"
-                    superclass()
-                }
-                resolve().firstMethodOrNull {
-                    name = "viewModelDataSet"
-                }?.hook {
-                    after {
-                        val viewLifecycleOwner = getViewLifecycleOwner?.copy()?.of(this.instance)?.invoke() ?: return@after
-                        val vm = viewModel?.copy()?.of(this.instance)?.get() ?: return@after
-                        val favorNumLiveData = getFavorNumLiveData?.copy()?.of(vm)?.invoke() ?: return@after
-                        removeObservers?.copy()?.of(favorNumLiveData)?.invoke(viewLifecycleOwner)
-                        val favorNumCacheLiveData = getFavorNumCacheLiveData?.copy()?.of(vm)?.invoke() ?: return@after
-                        removeObservers?.copy()?.of(favorNumCacheLiveData)?.invoke(viewLifecycleOwner)
-                    }
-                }
+        }
+        // 播放页
+        "com.tencent.qqmusiclite.activity.player.song.PlayerSongFragment".toClassOrNull()?.apply {
+            val viewModel = resolve().firstFieldOrNull {
+                name = "viewModel"
+            }?.toTyped<Any>()
+            val getViewLifecycleOwner = resolve().firstMethodOrNull {
+                name = "getViewLifecycleOwner"
+                superclass()
+            }?.toTyped<Any>()
+            val clzPlayerSongViewModel = "com.tencent.qqmusiclite.activity.player.song.PlayerSongViewModel".toClassOrNull()
+            val getFavorNumLiveData = clzPlayerSongViewModel?.resolve()?.firstMethodOrNull {
+                name = "getFavorNumLiveData"
+            }?.toTyped<Any>()
+            val getFavorNumCacheLiveData = clzPlayerSongViewModel?.resolve()?.firstMethodOrNull {
+                name = "getFavorNumCacheLiveData"
+            }?.toTyped<Any>()
+            val removeObservers = "androidx.lifecycle.MutableLiveData".toClassOrNull()?.resolve()?.firstMethodOrNull {
+                name = "removeObservers"
+                superclass()
+            }?.toTyped<Any>()
+            resolve().firstMethodOrNull {
+                name = "viewModelDataSet"
+            }?.hook {
+                val ori = proceed()
+                val viewLifecycleOwner = getViewLifecycleOwner?.invoke(thisObject) ?: return@hook result(ori)
+                val vm = viewModel?.get(thisObject) ?: return@hook result(ori)
+                val favorNumLiveData = getFavorNumLiveData?.invoke(vm) ?: return@hook result(ori)
+                removeObservers?.invoke(favorNumLiveData, viewLifecycleOwner)
+                val favorNumCacheLiveData = getFavorNumCacheLiveData?.invoke(vm) ?: return@hook result(ori)
+                removeObservers?.invoke(favorNumCacheLiveData, viewLifecycleOwner)
+                result(ori)
             }
-            // 歌词页
-            "com.tencent.qqmusiclite.activity.player.lyric.PlayerLyricFragment".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
-                    name = "observeFavNumLiveData"
-                }?.hook {
-                    intercept()
-                }
-                resolve().firstMethodOrNull {
-                    name = "removeObserveFavNumLiveData"
-                }?.hook {
-                    intercept()
-                }
+        }
+        // 歌词页
+        "com.tencent.qqmusiclite.activity.player.lyric.PlayerLyricFragment".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "observeFavNumLiveData"
+            }?.hook {
+                result(null)
+            }
+            resolve().firstMethodOrNull {
+                name = "removeObserveFavNumLiveData"
+            }?.hook {
+                result(null)
             }
         }
     }

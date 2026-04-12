@@ -22,13 +22,14 @@
 
 package dev.lackluster.mihelper.hook.rules.updater
 
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.DexKit
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.DexKit
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.ifTrue
 import org.luckypray.dexkit.query.enums.StringMatchType
 
-object BlockAutoUpdateDialog : YukiBaseHooker() {
+object BlockAutoUpdateDialog : StaticHooker() {
     private val metShowAutoSetDialog by lazy {
         DexKit.findMethodWithCache("show_auto_set") {
             matcher {
@@ -40,12 +41,17 @@ object BlockAutoUpdateDialog : YukiBaseHooker() {
         }
     }
 
+    override fun onInit() {
+        Preferences.Updater.BLOCK_AUTO_UPDATE_DIALOG.get().also {
+            updateSelfState(it)
+        }.ifTrue {
+            metShowAutoSetDialog
+        }
+    }
+
     override fun onHook() {
-        hasEnable(Pref.Key.Updater.BLOCK_AUTO_UPDATE_DIALOG) {
-            if (appClassLoader == null) return@hasEnable
-            metShowAutoSetDialog?.getMethodInstance(appClassLoader!!)?.hook {
-                intercept()
-            }
+        metShowAutoSetDialog?.getMethodInstance(classLoader)?.hook {
+            result(null)
         }
     }
 }

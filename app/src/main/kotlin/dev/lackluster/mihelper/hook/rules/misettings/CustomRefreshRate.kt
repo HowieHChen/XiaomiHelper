@@ -2,13 +2,14 @@ package dev.lackluster.mihelper.hook.rules.misettings
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.condition.type.Modifiers
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.DexKit
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.DexKit
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.ifTrue
 import org.luckypray.dexkit.query.enums.StringMatchType
 
-object CustomRefreshRate : YukiBaseHooker() {
+object CustomRefreshRate : StaticHooker() {
     private val initPreferenceMethod by lazy {
         DexKit.findMethodWithCache("custom_high_refresh_rate") {
             matcher {
@@ -19,22 +20,25 @@ object CustomRefreshRate : YukiBaseHooker() {
         }
     }
 
+    override fun onInit() {
+        Preferences.PowerKeeper.UNLOCK_CUSTOM_REFRESH.get().also {
+            updateSelfState(it)
+        }.ifTrue {
+            initPreferenceMethod
+        }
+    }
+
     override fun onHook() {
-        hasEnable(Pref.Key.PowerKeeper.UNLOCK_CUSTOM_REFRESH) {
-            if (appClassLoader == null) return@hasEnable
-            initPreferenceMethod?.getMethodInstance(appClassLoader!!)?.hook {
-                before {
-                    this.args(0).setTrue()
+        initPreferenceMethod?.getMethodInstance(classLoader)?.hook {
+            result(true)
+        }
+        "com.xiaomi.misettings.display.RefreshRate.RefreshRateActivity".toClassOrNull()?.apply {
+            resolve().firstFieldOrNull {
+                type("java.lang.Boolean")
+                modifiers {
+                    it.contains(Modifiers.STATIC) && it.contains(Modifiers.FINAL)
                 }
-            }
-            "com.xiaomi.misettings.display.RefreshRate.RefreshRateActivity".toClassOrNull()?.apply {
-                resolve().firstFieldOrNull {
-                    type("java.lang.Boolean")
-                    modifiers {
-                        it.contains(Modifiers.STATIC) && it.contains(Modifiers.FINAL)
-                    }
-                }?.set(true)
-            }
+            }?.set(true)
         }
     }
 }
