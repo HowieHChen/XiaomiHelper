@@ -146,7 +146,7 @@ internal object MediaControlBgFactory : StaticHooker() {
             }
             return colors
         } else {
-            val bitmap = metIconGetBitmap?.invoke(icon) as? Bitmap
+            val bitmap = metIconGetBitmap?.invoke(icon)
             if (bitmap?.isRecycled == false) {
                 val colors: WallpaperColors?
                 synchronized(artworkColorMap) {
