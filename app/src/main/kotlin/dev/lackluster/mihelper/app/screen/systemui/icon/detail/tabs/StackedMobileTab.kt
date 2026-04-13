@@ -12,6 +12,7 @@ import dev.lackluster.hyperx.ui.preference.TextPreference
 import dev.lackluster.hyperx.ui.preference.ValuePosition
 import dev.lackluster.hyperx.ui.preference.itemPreferenceGroup
 import dev.lackluster.mihelper.R
+import dev.lackluster.mihelper.app.repository.FontMode
 import dev.lackluster.mihelper.app.screen.systemui.icon.detail.MobileState
 import dev.lackluster.mihelper.app.screen.systemui.icon.detail.StackedMobileState
 import dev.lackluster.mihelper.app.utils.compose.AnimatedColumn
@@ -167,7 +168,7 @@ fun LazyListScope.stackedMobileTabContent(
             summary = stringResource(R.string.icon_detail_stacked_type_font_tips),
             options = dropdownEntriesTypeFont,
         )
-        AnimatedColumn(stackedState.font.mode == 1) {
+        AnimatedColumn(stackedState.font.mode == FontMode.FROM_FILE) {
             val displayName = stackedState.font.displayName
             val isDefault = displayName == Constants.VARIABLE_FONT_DEFAULT_PATH
             val isManualPath = displayName.contains("/") && !isDefault
@@ -187,7 +188,7 @@ fun LazyListScope.stackedMobileTabContent(
                 onTextChange = { onAction(StackedMobileAction.ApplyManualPath(it)) }
             )
         }
-        AnimatedVisibility(stackedState.font.mode == 2 || stackedState.font.mode == 3) {
+        AnimatedVisibility(stackedState.font.mode == FontMode.MI_SANS_CONDENSED || stackedState.font.mode == FontMode.SF_PRO) {
             SeekBarPreference(
                 key = Preferences.SystemUI.StatusBar.StackedMobile.TYPE_WIDTH_CONDENSED,
                 title = stringResource(R.string.icon_detail_stacked_type_font_width_condensed),
@@ -234,7 +235,7 @@ fun LazyListScope.stackedMobileTabContent(
             title = stringResource(R.string.icon_detail_stacked_small_type_size),
             isValueValid = { it > 0.0f },
         )
-        AnimatedVisibility(stackedState.font.mode != 0) {
+        AnimatedVisibility(stackedState.font.mode != FontMode.DEFAULT) {
             SeekBarPreference(
                 key = Preferences.SystemUI.StatusBar.StackedMobile.SMALL_TYPE_FONT_WEIGHT,
                 title = stringResource(R.string.icon_detail_stacked_small_type_weight),
@@ -262,7 +263,7 @@ fun LazyListScope.stackedMobileTabContent(
             title = stringResource(R.string.icon_detail_stacked_large_type_size),
             isValueValid = { it > 0.0f },
         )
-        AnimatedVisibility(stackedState.font.mode != 0) {
+        AnimatedVisibility(stackedState.font.mode != FontMode.DEFAULT) {
             SeekBarPreference(
                 key = Preferences.SystemUI.StatusBar.StackedMobile.LARGE_TYPE_FONT_WEIGHT,
                 title = stringResource(R.string.icon_detail_stacked_large_type_weight),

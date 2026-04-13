@@ -28,6 +28,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import dev.lackluster.mihelper.R
+import dev.lackluster.mihelper.app.repository.FontMode
 import dev.lackluster.mihelper.app.screen.systemui.icon.detail.StackedMobileState
 import kotlin.math.ceil
 import kotlin.math.max
@@ -40,7 +41,7 @@ fun CustomSignalIcon(
     netType: String,
     state: StackedMobileState,
     fontUpdateTrigger: Int,
-    typefaceProvider: (mode: Int, weight: Int, condensedWidth: Int, isCondensed: Boolean) -> Typeface
+    nativeTypefaceProvider: (mode: FontMode) -> Typeface
 ) {
     if (picture == null) {
         // 当 L1 矢量缓存还在后台解析时，或者解析失败，提供一个透明占位符避免布局塌陷
@@ -55,7 +56,7 @@ fun CustomSignalIcon(
     val tintColorArgb = tintColor.toArgb()
 
     // 1. 模拟 renderStandalone 的自动压缩逻辑
-    val isStandaloneTypeAutoSpecialOpt = (state.font.mode == 2 || state.font.mode == 3)
+    val isStandaloneTypeAutoSpecialOpt = (state.font.mode == FontMode.MI_SANS_CONDENSED || state.font.mode == FontMode.SF_PRO)
     val isCondensed = isStandaloneTypeAutoSpecialOpt && netType.length > 2
 
     // 2. 准备 TextPaint 并获取懒加载缓存的 Typeface
@@ -73,12 +74,20 @@ fun CustomSignalIcon(
             color = tintColorArgb
             textSize = state.small.size * density.density
 
-            typeface = typefaceProvider(
-                state.font.mode,
-                state.small.weight.coerceIn(1, 1000),
-                state.font.condensedWidth,
-                isCondensed
-            )
+            typeface = nativeTypefaceProvider(state.font.mode)
+
+            val weight = state.small.weight.coerceIn(1, 1000)
+            when (state.font.mode) {
+                FontMode.FROM_FILE -> {
+                    fontVariationSettings = "'wght' $weight"
+                }
+                FontMode.SF_PRO, FontMode.MI_SANS_CONDENSED -> {
+                    val appliedWidth = if (isCondensed) state.font.condensedWidth else 100
+                    fontVariationSettings = "'wght' $weight, 'wdth' $appliedWidth"
+                }
+                else -> {}
+            }
+
             textAlign = Paint.Align.LEFT
         }
     }
@@ -147,7 +156,7 @@ fun StandaloneTypeIcon(
     netType: String,
     state: StackedMobileState,
     fontUpdateTrigger: Int,
-    typefaceProvider: (mode: Int, weight: Int, condensedWidth: Int, isCondensed: Boolean) -> Typeface
+    typefaceProvider: (mode: FontMode) -> Typeface
 ) {
     if (!isVisible || netType.isEmpty()) {
         Box(modifier = Modifier.width(0.dp).height(24.dp))
@@ -163,7 +172,7 @@ fun StandaloneTypeIcon(
     val tintColorArgb = tintColor.toArgb()
 
     // 1. 提取自引擎的特殊排版逻辑判断
-    val isStandaloneTypeAutoSpecialOpt = (state.font.mode == 2 || state.font.mode == 3)
+    val isStandaloneTypeAutoSpecialOpt = (state.font.mode == FontMode.MI_SANS_CONDENSED || state.font.mode == FontMode.SF_PRO)
     val isCondensed = isStandaloneTypeAutoSpecialOpt && netType.length > 2
     val isSpecialOpt = isStandaloneTypeAutoSpecialOpt && netType in listOf("4G+", "5G+", "5GA")
 
@@ -186,12 +195,21 @@ fun StandaloneTypeIcon(
         TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
             color = tintColorArgb
             letterSpacing = targetLetterSpacing
-            typeface = typefaceProvider(
-                state.font.mode,
-                state.large.weight.coerceIn(1, 1000),
-                state.font.condensedWidth,
-                isCondensed
-            )
+
+            typeface = typefaceProvider(state.font.mode)
+
+            val weight = state.large.weight.coerceIn(1, 1000)
+            when (state.font.mode) {
+                FontMode.FROM_FILE -> {
+                    fontVariationSettings = "'wght' $weight"
+                }
+                FontMode.SF_PRO, FontMode.MI_SANS_CONDENSED -> {
+                    val appliedWidth = if (isCondensed) state.font.condensedWidth else 100
+                    fontVariationSettings = "'wght' $weight, 'wdth' $appliedWidth"
+                }
+                else -> {}
+            }
+
             textAlign = Paint.Align.LEFT
         }
     }

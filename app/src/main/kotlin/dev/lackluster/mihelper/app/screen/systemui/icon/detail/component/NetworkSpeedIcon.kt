@@ -1,26 +1,28 @@
 package dev.lackluster.mihelper.app.screen.systemui.icon.detail.component
 
+import android.graphics.Typeface
+import android.util.TypedValue
+import android.view.Gravity
+import android.widget.TextView
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.layoutId
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.app.screen.systemui.icon.detail.NetSpeedState
-import top.yukonga.miuix.kmp.basic.Text
 
 @Composable
 fun NetworkSpeedIcon(
     state: NetSpeedState,
-    fontFamilyProvider: (isCustom: Boolean, weight: Int) -> FontFamily,
+    nativeTypefaceProvider: (isCustom: Boolean) -> Typeface,
 ) {
     val density = LocalDensity.current
 
@@ -31,24 +33,19 @@ fun NetworkSpeedIcon(
         6.4f.dp.toSp()
     }
 
-    val fontFamilyNum = remember(state.numberFont.enabled, state.numberFont.weight) {
-        fontFamilyProvider(
-            state.numberFont.enabled,
-            if (state.numberFont.enabled) state.numberFont.weight.coerceIn(1..1000) else 630
-        )
+    val baseTypefaceNum = remember(state.numberFont.enabled) {
+        nativeTypefaceProvider(state.numberFont.enabled)
     }
-    val fontFamilyUnit = remember(state.unitFont.enabled, state.unitFont.weight) {
-        fontFamilyProvider(
-            state.unitFont.enabled,
-            if (state.unitFont.enabled) state.unitFont.weight.coerceIn(1..1000) else 630
-        )
+    val baseTypefaceUnit = remember(state.unitFont.enabled) {
+        nativeTypefaceProvider(state.unitFont.enabled)
     }
-    val fontFamilySeparate = remember(state.separateStyleFont.enabled, state.separateStyleFont.weight) {
-        fontFamilyProvider(
-            state.separateStyleFont.enabled,
-            if (state.separateStyleFont.enabled) state.separateStyleFont.weight.coerceIn(1..1000) else 630
-        )
+    val baseTypefaceSeparate = remember(state.separateStyleFont.enabled) {
+        nativeTypefaceProvider(state.separateStyleFont.enabled)
     }
+
+    val weightNum = if (state.numberFont.enabled) state.numberFont.weight.coerceIn(1..1000) else 630
+    val weightUnit = if (state.unitFont.enabled) state.unitFont.weight.coerceIn(1..1000) else 630
+    val weightSeparate = if (state.separateStyleFont.enabled) state.separateStyleFont.weight.coerceIn(1..1000) else 630
 
     val textLine1: String
     val textLine2: String
@@ -116,27 +113,53 @@ fun NetworkSpeedIcon(
             }
         }
     }
+    val textColorArgb = colorResource(R.color.foreground_dual_tone_full).toArgb()
     ConstraintLayout(
         constraintSet = constraints,
         modifier = Modifier.height(24.dp)
     ) {
-        Text(
+        AndroidView(
             modifier = Modifier.layoutId("text1"),
-            fontSize = fontSize7,
-            fontFamily = if (state.style == 0) fontFamilyNum else fontFamilySeparate,
-            fontStyle = FontStyle.Normal,
-            textAlign = TextAlign.End,
-            color = colorResource(R.color.foreground_dual_tone_full),
-            text = textLine1
+            factory = { context ->
+                TextView(context).apply {
+                    includeFontPadding = false
+                    gravity = Gravity.END or Gravity.CENTER_VERTICAL
+                    setTextColor(textColorArgb)
+                }
+            },
+            update = { textView ->
+                textView.text = textLine1
+                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize7.value)
+
+                val isStyle0 = state.style == 0
+                textView.typeface = if (isStyle0) baseTypefaceNum else baseTypefaceSeparate
+                val currentWeight = if (isStyle0) weightNum else weightSeparate
+
+                textView.fontVariationSettings = ""
+                textView.fontVariationSettings = "'wght' $currentWeight"
+            }
         )
-        Text(
+        AndroidView(
             modifier = Modifier.layoutId("text2"),
-            fontSize = if (state.style == 0) fontSize6p4 else fontSize7,
-            fontFamily = if (state.style == 0) fontFamilyUnit else fontFamilySeparate,
-            fontStyle = FontStyle.Normal,
-            textAlign = TextAlign.End,
-            color = colorResource(R.color.foreground_dual_tone_full),
-            text = textLine2
+            factory = { context ->
+                TextView(context).apply {
+                    includeFontPadding = false
+                    gravity = Gravity.END or Gravity.CENTER_VERTICAL
+                    setTextColor(textColorArgb)
+                }
+            },
+            update = { textView ->
+                textView.text = textLine2
+
+                val isStyle0 = state.style == 0
+                val currentFontSize = if (isStyle0) fontSize6p4 else fontSize7
+                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, currentFontSize.value)
+                textView.typeface = if (isStyle0) baseTypefaceUnit else baseTypefaceSeparate
+                val currentWeight = if (isStyle0) weightUnit else weightSeparate
+
+                textView.fontVariationSettings = ""
+                textView.fontVariationSettings = "'wght' $currentWeight"
+            }
         )
     }
 }

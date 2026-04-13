@@ -23,11 +23,12 @@ package dev.lackluster.mihelper.hook.rules.systemui.compat
 import android.graphics.Typeface
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import dev.lackluster.mihelper.data.Constants.VARIABLE_FONT_DEFAULT_PATH
+import dev.lackluster.mihelper.data.Constants.VARIABLE_FONT_REAL_FILE_NAME
 import dev.lackluster.mihelper.data.preference.Preferences
 import dev.lackluster.mihelper.hook.base.StaticHooker
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
+import dev.lackluster.mihelper.hook.utils.e
 import dev.lackluster.mihelper.utils.SystemProperties
-import java.io.File
 import java.lang.reflect.Field
 import java.util.concurrent.ConcurrentHashMap
 
@@ -65,11 +66,9 @@ object CommonClassUtils : StaticHooker() {
         MutableStateFlowCompat(0).toReadonlyStateFlow()
     }
 
-    val fontPath by lazy {
-        val defaultPath = SystemProperties.get("ro.miui.ui.font.mi_font_path", VARIABLE_FONT_DEFAULT_PATH)
-        val prefPath = Preferences.SystemUI.StatusBar.Font.FONT_PATH_INTERNAL.get()
-        val fontFile = File(prefPath)
-        if (fontFile.exists() && fontFile.isFile && fontFile.canRead()) prefPath else defaultPath
+    private val prefFontPath by Preferences.SystemUI.StatusBar.Font.FONT_PATH_ORIGINAL.lazyGet()
+    private val defFontPath by lazy {
+        SystemProperties.get("ro.miui.ui.font.mi_font_path", VARIABLE_FONT_DEFAULT_PATH)
     }
 
     val typefaceCache by lazy {
@@ -111,7 +110,25 @@ object CommonClassUtils : StaticHooker() {
 
     fun getTypeface(weight: Int): Typeface {
         return typefaceCache.getOrPut(weight) {
-            Typeface.Builder(fontPath).setFontVariationSettings("'wght' $weight").build()
+            var typeface: Typeface? = null
+
+            if (prefFontPath.isNotBlank() && prefFontPath != defFontPath) {
+                runCatching {
+                    module.openRemoteFile(VARIABLE_FONT_REAL_FILE_NAME).use { pfd ->
+                        typeface = Typeface.Builder(pfd.fileDescriptor)
+                            .setFontVariationSettings("'wght' $weight")
+                            .build()
+                    }
+                }.onFailure {
+                    e(it) { "Failed to load remote font for weight $weight" }
+                }
+            }
+
+            typeface ?: runCatching {
+                Typeface.Builder(defFontPath)
+                    .setFontVariationSettings("'wght' $weight")
+                    .build()
+            }.getOrNull() ?: Typeface.DEFAULT_BOLD
         }
     }
 

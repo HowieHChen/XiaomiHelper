@@ -1,6 +1,6 @@
 package dev.lackluster.mihelper.app.screen.systemui.icon.detail
 
-import androidx.compose.ui.text.font.FontFamily
+import android.graphics.Typeface
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.lackluster.hyperx.ui.preference.core.PreferenceKey
@@ -159,15 +159,9 @@ class IconDetailViewModel(
         }
     }
 
-    fun getFontFamily(isCustom: Boolean, weight: Int): FontFamily {
+    fun getTypeface(isCustom: Boolean): Typeface {
         val mode = if (isCustom) FontMode.FROM_FILE else FontMode.MI_SANS
-        return fontRepo.getFontFamily(
-            target = FontTarget.STATUS_BAR,
-            weight = weight,
-            mode = mode,
-            condensedWidth = 100,
-            isCondensed = false
-        )
+        return fontRepo.getNativeTypeface(FontTarget.STATUS_BAR, mode)
     }
 
     private fun loadMobileConfig(): MobileState {

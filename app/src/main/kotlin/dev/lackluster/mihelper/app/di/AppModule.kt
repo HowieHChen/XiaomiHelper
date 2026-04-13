@@ -15,6 +15,7 @@ import dev.lackluster.mihelper.app.screen.systemui.statusbar.StatusBarFontViewMo
 import dev.lackluster.mihelper.app.manager.XposedServiceManager
 import dev.lackluster.mihelper.app.state.AppEnvViewModel
 import dev.lackluster.mihelper.app.state.GlobalUIViewModel
+import dev.lackluster.mihelper.app.utils.RemoteFileStore
 import dev.lackluster.mihelper.app.utils.RemotePreferenceStore
 import org.koin.core.module.dsl.createdAtStart
 import org.koin.core.module.dsl.singleOf
@@ -26,6 +27,7 @@ val appModule = module {
     singleOf(::AppEnvironmentManager) { createdAtStart() }
 
     singleOf(::RemotePreferenceStore)
+    singleOf(::RemoteFileStore)
 
     singleOf(::GlobalPreferencesRepository) { createdAtStart() }
     singleOf(::FontRepository)

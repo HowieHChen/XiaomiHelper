@@ -11,9 +11,9 @@ object Preferences {
 
     val BACKUP_BLACKLIST by lazy {
         listOf(
-            SystemUI.StatusBar.Font.FONT_PATH_INTERNAL.name,
+            SystemUI.StatusBar.Font.FONT_PATH_DISPLAY.name,
             SystemUI.StatusBar.Font.FONT_PATH_ORIGINAL.name,
-            SystemUI.StatusBar.StackedMobile.FONT_PATH_INTERNAL.name,
+            SystemUI.StatusBar.StackedMobile.FONT_PATH_DISPLAY.name,
             SystemUI.StatusBar.StackedMobile.FONT_PATH_ORIGINAL.name,
         )
     }
@@ -285,7 +285,7 @@ object Preferences {
             object Font {
                 private val defaultClockFontWeight = if (Device.isPad) 460 else 500
 
-                val FONT_PATH_INTERNAL = PreferenceKey("sb_font_path_app", Constants.VARIABLE_FONT_DEFAULT_PATH)
+                val FONT_PATH_DISPLAY = PreferenceKey("sb_font_path_app", Constants.VARIABLE_FONT_DEFAULT_PATH)
                 val FONT_PATH_ORIGINAL = PreferenceKey("sb_font_path_real", Constants.VARIABLE_FONT_DEFAULT_PATH)
 
                 val CUSTOM_LOCK_SCREEN_CARRIER = PreferenceKey("sb_font_ls_carrier", false)
@@ -460,7 +460,7 @@ object Preferences {
                 val SIGNAL_ALPHA_ERROR = PreferenceKey("icon_tuner_stacked_icon_alpha_error", 0.2f)
 
                 val TYPE_FONT_MODE = PreferenceKey("sb_font_stacked_type_font", 0)
-                val FONT_PATH_INTERNAL = PreferenceKey("sb_font_stacked_type_path_app", Constants.VARIABLE_FONT_DEFAULT_PATH)
+                val FONT_PATH_DISPLAY = PreferenceKey("sb_font_stacked_type_path_app", Constants.VARIABLE_FONT_DEFAULT_PATH)
                 val FONT_PATH_ORIGINAL = PreferenceKey("sb_font_stacked_type_path_real", Constants.VARIABLE_FONT_DEFAULT_PATH)
                 val TYPE_WIDTH_CONDENSED = PreferenceKey("sb_font_stacked_type_width_condensed", 80)
 

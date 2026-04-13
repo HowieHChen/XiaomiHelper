@@ -47,7 +47,7 @@ private val relevantKeys: Set<PreferenceKey<*>> = setOf(
     Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_ALPHA_ERROR,
 
     Preferences.SystemUI.StatusBar.StackedMobile.TYPE_FONT_MODE,
-    Preferences.SystemUI.StatusBar.StackedMobile.FONT_PATH_INTERNAL,
+    Preferences.SystemUI.StatusBar.StackedMobile.FONT_PATH_DISPLAY,
     Preferences.SystemUI.StatusBar.StackedMobile.FONT_PATH_ORIGINAL,
     Preferences.SystemUI.StatusBar.StackedMobile.TYPE_WIDTH_CONDENSED,
 
@@ -122,10 +122,7 @@ class StackedMobileRepository(
                 }
         }
         repositoryScope.launch(Dispatchers.Default) {
-            val smallWeight = repo.get(Preferences.SystemUI.StatusBar.StackedMobile.SMALL_TYPE_FONT_WEIGHT)
-            val largeWeight = repo.get(Preferences.SystemUI.StatusBar.StackedMobile.LARGE_TYPE_FONT_WEIGHT)
             val fontMode = repo.get(Preferences.SystemUI.StatusBar.StackedMobile.TYPE_FONT_MODE)
-            val condensedWidth = repo.get(Preferences.SystemUI.StatusBar.StackedMobile.TYPE_WIDTH_CONDENSED)
 
             val mode = when (fontMode) {
                 1 -> FontMode.FROM_FILE
@@ -135,27 +132,8 @@ class StackedMobileRepository(
             }
             font.getNativeTypeface(
                 target = FontTarget.STACKED_TYPE,
-                weight = smallWeight,
                 mode = mode,
-                condensedWidth = condensedWidth,
-                isCondensed = false
             )
-            font.getNativeTypeface(
-                target = FontTarget.STACKED_TYPE,
-                weight = largeWeight,
-                mode = mode,
-                condensedWidth = condensedWidth,
-                isCondensed = false
-            )
-            if (fontMode == 2 || fontMode == 3) {
-                font.getNativeTypeface(
-                    target = FontTarget.STACKED_TYPE,
-                    weight = largeWeight,
-                    mode = mode,
-                    condensedWidth = condensedWidth,
-                    isCondensed = true
-                )
-            }
         }
     }
 
@@ -174,7 +152,7 @@ class StackedMobileRepository(
                 alphaError = repo.get(Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_ALPHA_ERROR),
             ),
             font = TypefaceState(
-                mode = repo.get(Preferences.SystemUI.StatusBar.StackedMobile.TYPE_FONT_MODE),
+                mode = parseFontMode(repo.get(Preferences.SystemUI.StatusBar.StackedMobile.TYPE_FONT_MODE)),
                 displayName = repo.get(Preferences.SystemUI.StatusBar.StackedMobile.FONT_PATH_ORIGINAL),
                 condensedWidth = repo.get(Preferences.SystemUI.StatusBar.StackedMobile.TYPE_WIDTH_CONDENSED),
             ),
@@ -195,6 +173,15 @@ class StackedMobileRepository(
                 hideWhenDisconnect = repo.get(Preferences.SystemUI.StatusBar.StackedMobile.LARGE_TYPE_HIDE_WHEN_DISCONNECT),
             )
         )
+    }
+
+    private fun parseFontMode(mode: Int): FontMode {
+        return when (mode) {
+            1 -> FontMode.FROM_FILE
+            2 -> FontMode.MI_SANS_CONDENSED
+            3 -> FontMode.SF_PRO
+            else -> FontMode.DEFAULT
+        }
     }
 
     fun updateSingleSvg(svg: String, alphaFg: Float, alphaBg: Float, alphaError: Float) {
@@ -256,16 +243,10 @@ class StackedMobileRepository(
 
     fun getTypeface(
         mode: FontMode,
-        weight: Int,
-        condensedWidth: Int,
-        isCondensed: Boolean = false
     ): Typeface {
         return font.getNativeTypeface(
             mode = mode,
             target = FontTarget.STACKED_TYPE,
-            weight = weight,
-            condensedWidth = condensedWidth,
-            isCondensed = isCondensed
         )
     }
 

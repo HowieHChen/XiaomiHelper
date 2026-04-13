@@ -81,7 +81,7 @@ fun IconDetailPage(
     }
     val fontPickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) {
-            stackedVM.importFontFromUri(context, uri)
+            stackedVM.importFontFromUri(uri)
         }
     }
 
@@ -139,7 +139,7 @@ fun IconDetailPage(
                     Row {
                         NetworkSpeedIcon(
                             state = netSpeedState,
-                            fontFamilyProvider = viewModel::getFontFamily,
+                            nativeTypefaceProvider = viewModel::getTypeface,
                         )
                         if (stackedState.enabled) {
                             CustomSignalIcon(
@@ -148,7 +148,7 @@ fun IconDetailPage(
                                 netType = if (stackedState.small.showOnStacked) "5GA" else "",
                                 state = stackedState,
                                 fontUpdateTrigger = fontUpdateTrigger,
-                                typefaceProvider = stackedVM::getTypeface
+                                nativeTypefaceProvider = stackedVM::getTypeface
                             )
                             StandaloneTypeIcon(
                                 isVisible = !stackedState.large.hideWhenDisconnect,
@@ -162,14 +162,14 @@ fun IconDetailPage(
                                 mobileTypeText = "4G",
                                 dataConnected = true,
                                 state = mobileState,
-                                fontFamilyProvider = viewModel::getFontFamily
+                                nativeTypefaceProvider = viewModel::getTypeface
                             )
                         }
                         BatteryIcon(
                             batteryStyle = batteryState.styleStatusBar,
                             fallbackStyle = STYLE_TEXT_IN,
                             state = batteryState,
-                            fontFamilyProvider = viewModel::getFontFamily,
+                            nativeTypefaceProvider = viewModel::getTypeface,
                         )
                     }
                     Row {
@@ -180,7 +180,7 @@ fun IconDetailPage(
                                 netType = if (stackedState.small.showOnSingle) "5GA" else "",
                                 state = stackedState,
                                 fontUpdateTrigger = fontUpdateTrigger,
-                                typefaceProvider = stackedVM::getTypeface
+                                nativeTypefaceProvider = stackedVM::getTypeface
                             )
                             CustomSignalIcon(
                                 picture = singlePictures["4"],
@@ -188,7 +188,7 @@ fun IconDetailPage(
                                 netType = if (stackedState.small.showOnSingle) (if (stackedState.small.showRoaming) "R4G" else "4G") else "",
                                 state = stackedState,
                                 fontUpdateTrigger = fontUpdateTrigger,
-                                typefaceProvider = stackedVM::getTypeface
+                                nativeTypefaceProvider = stackedVM::getTypeface
                             )
                             StandaloneTypeIcon(
                                 isVisible = !stackedState.large.hideWhenWifi,
@@ -202,7 +202,7 @@ fun IconDetailPage(
                                 mobileTypeText = "4G",
                                 dataConnected = false,
                                 state = mobileState,
-                                fontFamilyProvider = viewModel::getFontFamily
+                                nativeTypefaceProvider = viewModel::getTypeface
                             )
                         }
                         WifiIcon(
@@ -212,7 +212,7 @@ fun IconDetailPage(
                             batteryStyle = batteryState.styleControlCenter,
                             fallbackStyle = STYLE_TEXT_OUT,
                             state = batteryState,
-                            fontFamilyProvider = viewModel::getFontFamily,
+                            nativeTypefaceProvider = viewModel::getTypeface,
                         )
                     }
                 }

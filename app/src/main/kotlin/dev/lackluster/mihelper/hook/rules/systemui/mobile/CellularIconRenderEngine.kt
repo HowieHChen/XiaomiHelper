@@ -9,6 +9,7 @@ import android.graphics.Picture
 import android.graphics.PointF
 import android.graphics.Typeface
 import android.graphics.drawable.Icon
+import android.os.ParcelFileDescriptor
 import android.text.TextPaint
 import android.util.LruCache
 import android.view.View
@@ -22,7 +23,6 @@ import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
 import dev.lackluster.mihelper.utils.MLog
 import dev.lackluster.mihelper.utils.StackedMobileIconUtils
 import dev.lackluster.mihelper.utils.SystemProperties
-import java.io.File
 import kotlin.collections.set
 import kotlin.math.ceil
 import kotlin.math.max
@@ -82,14 +82,14 @@ object CellularIconRenderEngine {
     private var currentIconHeightPx = 20
     private var statusBarHeightResId = 0
 
-    fun preload(context: Context, iconHeightResId: Int): Boolean {
+    fun preload(context: Context, iconHeightResId: Int, remoteFontFd: ParcelFileDescriptor?): Boolean {
         if (isPreloaded) return false
         synchronized(this) {
             if (isPreloaded) return false
             this.statusBarHeightResId = iconHeightResId
             ensureEnvironment(context, forceUpdate = true)
 
-            initTypefaces(context)
+            initTypefaces(context, remoteFontFd)
             val vectorLoaded = initVectorPictures()
 
             "4G,4G+,LTE,5G,5G+,5GA".split(",").forEach {
@@ -123,15 +123,30 @@ object CellularIconRenderEngine {
         }
     }
 
-    private fun initTypefaces(context: Context) {
+    private fun initTypefaces(context: Context, remoteFontFd: ParcelFileDescriptor?) {
         var fallbackToDefaultFont = false
         if (typeFontMode == 1) {
-            val defaultPath = SystemProperties.get("ro.miui.ui.font.mi_font_path", VARIABLE_FONT_DEFAULT_PATH)
-            val prefPath = Preferences.SystemUI.StatusBar.StackedMobile.FONT_PATH_INTERNAL.get()
-            val fontFile = File(prefPath)
-            val finalPath = if (fontFile.exists() && fontFile.isFile && fontFile.canRead()) prefPath else defaultPath
-            typefaceStandaloneTypeNormal = Typeface.Builder(finalPath).setFontVariationSettings("'wght' $standaloneTypeFontWeight").build()
-            typefaceSmallTypeNormal = Typeface.Builder(finalPath).setFontVariationSettings("'wght' $smallTypeFontWeight").build()
+            try {
+                if (remoteFontFd != null) {
+                    typefaceStandaloneTypeNormal = Typeface.Builder(remoteFontFd.fileDescriptor)
+                        .setFontVariationSettings("'wght' $standaloneTypeFontWeight")
+                        .build()
+                    typefaceSmallTypeNormal = Typeface.Builder(remoteFontFd.fileDescriptor)
+                        .setFontVariationSettings("'wght' $smallTypeFontWeight")
+                        .build()
+                } else {
+                    val defaultPath = SystemProperties.get("ro.miui.ui.font.mi_font_path", VARIABLE_FONT_DEFAULT_PATH)
+                    typefaceStandaloneTypeNormal = Typeface.Builder(defaultPath)
+                        .setFontVariationSettings("'wght' $standaloneTypeFontWeight")
+                        .build()
+                    typefaceSmallTypeNormal = Typeface.Builder(defaultPath)
+                        .setFontVariationSettings("'wght' $smallTypeFontWeight")
+                        .build()
+                }
+            } catch (t: Throwable) {
+                fallbackToDefaultFont = true
+                MLog.e(TAG, t) { "Error parsing font from RemoteFile" }
+            }
         } else if (typeFontMode != 0) {
             try {
                 val moduleContext = context.createPackageContext(BuildConfig.APPLICATION_ID, Context.CONTEXT_IGNORE_SECURITY)

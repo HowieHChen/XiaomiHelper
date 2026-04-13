@@ -1,5 +1,6 @@
 package dev.lackluster.mihelper.app.screen.systemui.icon.detail
 
+import dev.lackluster.mihelper.app.repository.FontMode
 import dev.lackluster.mihelper.data.Constants
 
 data class SignalIconState(
@@ -29,7 +30,7 @@ data class SignalIconState(
 }
 
 data class TypefaceState(
-    val mode: Int = 0,
+    val mode: FontMode = FontMode.DEFAULT,
     val displayName: String = Constants.VARIABLE_FONT_DEFAULT_PATH,
     val condensedWidth: Int = 80
 )

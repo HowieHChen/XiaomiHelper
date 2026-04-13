@@ -8,6 +8,7 @@ import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.condition.type.Modifiers
 import dev.lackluster.mihelper.BuildConfig
 import dev.lackluster.mihelper.data.Constants
+import dev.lackluster.mihelper.data.Constants.VARIABLE_FONT_DEFAULT_PATH
 import dev.lackluster.mihelper.data.preference.Preferences
 import dev.lackluster.mihelper.hook.base.StaticHooker
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils
@@ -25,11 +26,16 @@ import dev.lackluster.mihelper.hook.utils.d
 import dev.lackluster.mihelper.hook.utils.e
 import dev.lackluster.mihelper.hook.utils.toTyped
 import dev.lackluster.mihelper.hook.utils.HostExecutor
+import dev.lackluster.mihelper.utils.SystemProperties
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.roundToInt
 
 object StackedMobileIcon : StaticHooker() {
     private val enabled by Preferences.SystemUI.StatusBar.StackedMobile.ENABLED.lazyGet()
+    private val prefFontPath by Preferences.SystemUI.StatusBar.StackedMobile.FONT_PATH_ORIGINAL.lazyGet()
+    private val defFontPath by lazy {
+        SystemProperties.get("ro.miui.ui.font.mi_font_path", VARIABLE_FONT_DEFAULT_PATH)
+    }
 
     private val simCacheMap = HashMap<Int, SimPipelineCache>()
     private val flowJobs = mutableListOf<Any?>()
@@ -234,7 +240,22 @@ object StackedMobileIcon : StaticHooker() {
                 HostExecutor.execute(
                     tag = "PRELOAD_STACKED_MOBILE_SVG",
                     backgroundTask = {
-                        CellularIconRenderEngine.preload(context.applicationContext, status_bar_icon_height)
+                        if (prefFontPath.isNotBlank() && prefFontPath != defFontPath) {
+                            runCatching {
+                                module.openRemoteFile(Constants.VARIABLE_FONT_MOBILE_TYPE_REAL_FILE_NAME).use { pfd ->
+                                    CellularIconRenderEngine.preload(
+                                        context.applicationContext,
+                                        status_bar_icon_height,
+                                        pfd
+                                    )
+                                }
+                            }.onFailure {
+                                e(it) { "Failed to read remote font file, fallback to MiSansVF.ttf" }
+                                CellularIconRenderEngine.preload(context.applicationContext, status_bar_icon_height, null)
+                            }
+                        } else {
+                            CellularIconRenderEngine.preload(context.applicationContext, status_bar_icon_height, null)
+                        }
                     },
                     runOnMain = true,
                     onResult = {

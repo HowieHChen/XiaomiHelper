@@ -10,10 +10,8 @@ import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.app.repository.FontMode
 import dev.lackluster.mihelper.app.repository.FontRepository
 import dev.lackluster.mihelper.app.repository.FontTarget
-import dev.lackluster.mihelper.app.repository.GlobalPreferencesRepository
 import dev.lackluster.mihelper.app.repository.StackedMobileRepository
 import dev.lackluster.mihelper.app.utils.toUiText
-import dev.lackluster.mihelper.data.Constants
 import dev.lackluster.mihelper.data.preference.Preferences
 import dev.lackluster.mihelper.utils.MLog
 import kotlinx.coroutines.Dispatchers
@@ -27,7 +25,6 @@ import java.io.File
 class StackedMobileViewModel(
     private val stackedRepo: StackedMobileRepository,
     private val fontRepo: FontRepository,
-    private val prefRepo: GlobalPreferencesRepository,
 ) : ViewModel() {
     private val _screenState = MutableStateFlow(IconDetailPageState())
     val screenState = _screenState.asStateFlow()
@@ -55,74 +52,26 @@ class StackedMobileViewModel(
         _screenState.update { it.copy(errorDialogMessage = null) }
     }
 
-    fun importFontFromUri(context: Context, uri: Uri) {
+    fun importFontFromUri(uri: Uri) {
         viewModelScope.launch {
             _screenState.update { it.copy(isLoading = true) }
-            val result = withContext(Dispatchers.IO) {
-                var tempFile: File? = null
-                try {
-                    val appContext = context.applicationContext
-                    val displayName = getFileNameFromUri(appContext, uri)
 
-                    val validExtensions = listOf(".ttf", ".otf", ".ttc")
-                    val isValid = validExtensions.any { ext ->
-                        displayName.endsWith(ext, ignoreCase = true)
-                    }
-
-                    if (!isValid) {
-                        throw IllegalArgumentException("Illegal file type $displayName")
-                    }
-
-                    tempFile = File(
-                        appContext.cacheDir,
-                        "temp_import_stacked_${System.currentTimeMillis()}.ttf"
-                    )
-                    appContext.contentResolver.openInputStream(uri)?.use { input ->
-                        tempFile.outputStream().use { output -> input.copyTo(output) }
-                    } ?: throw Exception("Unable to read the selected file stream!")
-
-                    val success =
-                        fontRepo.applyCustomFont(tempFile.absolutePath, FontTarget.STACKED_TYPE)
-                    if (success) {
-                        prefRepo.update(
-                            Preferences.SystemUI.StatusBar.StackedMobile.FONT_PATH_ORIGINAL,
-                            displayName
-                        )
-                    }
-                    success
-                } catch (e: Exception) {
-                    MLog.e(e, "StackedMobile importFontFromUri error")
-                    false
-                } finally {
-                    tempFile?.delete()
-                }
-            }
+            val success = fontRepo.importFontFromUri(uri, FontTarget.STACKED_TYPE)
 
             _screenState.update {
                 it.copy(
                     isLoading = false,
-                    errorDialogMessage = if (result) null else R.string.font_general_path_failure.toUiText()
+                    errorDialogMessage = if (success) null else R.string.font_general_path_failure.toUiText()
                 )
             }
         }
     }
 
-    fun applyFontFromPath(newPath: String) {
-        if (newPath == Constants.VARIABLE_FONT_DEFAULT_PATH) {
-            viewModelScope.launch {
-                fontRepo.resetToDefault(FontTarget.STACKED_TYPE)
-                prefRepo.update(Preferences.SystemUI.StatusBar.StackedMobile.FONT_PATH_ORIGINAL, newPath)
-            }
-            return
-        }
-
+    fun applyFontFromPath(path: String) {
         viewModelScope.launch {
             _screenState.update { it.copy(isLoading = true) }
 
-            val success = fontRepo.applyCustomFont(newPath, FontTarget.STACKED_TYPE)
-            if (success) {
-                prefRepo.update(Preferences.SystemUI.StatusBar.StackedMobile.FONT_PATH_ORIGINAL, newPath)
-            }
+            val success = fontRepo.applyFontFromPath(path, FontTarget.STACKED_TYPE)
 
             _screenState.update {
                 it.copy(
@@ -233,26 +182,7 @@ class StackedMobileViewModel(
         }
     }
 
-    fun getTypeface(
-        mode: Int,
-        weight: Int,
-        condensedWidth: Int,
-        isCondensed: Boolean = false
-    ): Typeface {
-        val fontMode = when (mode) {
-            1 -> FontMode.FROM_FILE
-            2 -> FontMode.MI_SANS_CONDENSED
-            3 -> FontMode.SF_PRO
-            else -> FontMode.DEFAULT
-        }
-
-        return stackedRepo.getTypeface(
-            mode = fontMode,
-            weight = weight,
-            condensedWidth = condensedWidth,
-            isCondensed = isCondensed
-        )
-    }
+    fun getTypeface(mode: FontMode): Typeface = stackedRepo.getTypeface(mode)
 
     private fun getFileNameFromUri(context: Context, uri: Uri): String {
         var result: String? = null
