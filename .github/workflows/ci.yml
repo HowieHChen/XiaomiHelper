@@ -100,13 +100,6 @@ jobs:
               echo "... and $(($TOTAL_COMMITS - 10)) more commits."
             fi
             echo '```'
-        
-            TAG_MSG=$(git tag -l --format='%(contents)' ${{ steps.tag.outputs.latestTag }})
-            if [ ! -z "$TAG_MSG" ]; then
-              echo ""
-              echo "Release Notes:"
-              echo "$TAG_MSG"
-            fi
           fi
           echo EOF
         } >> "$GITHUB_ENV"
