@@ -82,7 +82,13 @@ object CellularIconRenderEngine {
     private var currentIconHeightPx = 20
     private var statusBarHeightResId = 0
 
-    fun preload(context: Context, iconHeightResId: Int, remoteFontFd: ParcelFileDescriptor?): Boolean {
+    fun preload(
+        context: Context,
+        iconHeightResId: Int,
+        remoteFontFd: ParcelFileDescriptor?,
+        customSingleSvg: String?,
+        customStackedSvg: String?,
+    ): Boolean {
         if (isPreloaded) return false
         synchronized(this) {
             if (isPreloaded) return false
@@ -90,7 +96,7 @@ object CellularIconRenderEngine {
             ensureEnvironment(context, forceUpdate = true)
 
             initTypefaces(context, remoteFontFd)
-            val vectorLoaded = initVectorPictures()
+            val vectorLoaded = initVectorPictures(context, customSingleSvg, customStackedSvg)
 
             "4G,4G+,LTE,5G,5G+,5GA".split(",").forEach {
                 getL2SmallTypeBitmap(it)
@@ -150,7 +156,7 @@ object CellularIconRenderEngine {
         } else if (typeFontMode != 0) {
             try {
                 val moduleContext = context.createPackageContext(BuildConfig.APPLICATION_ID, Context.CONTEXT_IGNORE_SECURITY)
-                val fontFileName = if (typeFontMode == 2) "fonts/MiSansCondensed-Subset.ttf" else "fonts/SFPro-Subset.ttf"
+                val fontFileName = if (typeFontMode == 2) Constants.ASSETS_VF_MI_SANS_CONDENSED else Constants.ASSETS_VF_SF_PRO
                 typefaceStandaloneTypeNormal = Typeface.Builder(moduleContext.assets, fontFileName)
                     .setFontVariationSettings("'wght' $standaloneTypeFontWeight, 'wdth' 100")
                     .build()
@@ -174,27 +180,37 @@ object CellularIconRenderEngine {
         }
     }
 
-    private fun initVectorPictures(): Boolean {
-        val singleMobileSVGString = when (
-            Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_SVG_SINGLE.get()
-        ) {
-            0 -> Constants.STACKED_MOBILE_ICON_SINGLE_MIUI
-            1 -> Constants.STACKED_MOBILE_ICON_SINGLE_IOS
-            else ->
-                Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_SVG_SINGLE_VAL.get().takeIf {
-                    it.isNotBlank()
-                } ?: Constants.STACKED_MOBILE_ICON_SINGLE_MIUI
+    private fun initVectorPictures(
+        context: Context,
+        customSingleSvg: String?,
+        customStackedSvg: String?
+    ): Boolean {
+        val moduleContext = try {
+            context.createPackageContext(BuildConfig.APPLICATION_ID, Context.CONTEXT_IGNORE_SECURITY)
+        } catch (e: Exception) {
+            MLog.e(TAG, e) { "Error occurred while retrieving built-in svg resources" }
+            null
         }
-        val stackedMobileSVGString = when (
-            Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_SVG_STACKED.get()
-        ) {
-            0 -> Constants.STACKED_MOBILE_ICON_STACKED_MIUI
-            1 -> Constants.STACKED_MOBILE_ICON_STACKED_IOS
-            else ->
-                Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_SVG_STACKED_VAL.get().takeIf {
-                    it.isNotBlank()
-                } ?: Constants.STACKED_MOBILE_ICON_STACKED_MIUI
+
+        fun getAssetSvg(assetPath: String): String {
+            if (moduleContext == null) return ""
+            return runCatching {
+                moduleContext.assets.open(assetPath).bufferedReader().use { it.readText() }
+            }.getOrDefault("")
         }
+
+        val singleMobileSVGString = when (Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_SVG_SINGLE.get()) {
+            0 -> getAssetSvg(Constants.ASSETS_SVG_SIGNAL_HYPER_OS_SINGLE)
+            1 -> getAssetSvg(Constants.ASSETS_SVG_SIGNAL_IOS_SINGLE)
+            else -> customSingleSvg?.takeIf { it.isNotBlank() } ?: getAssetSvg(Constants.ASSETS_SVG_SIGNAL_HYPER_OS_SINGLE)
+        }
+
+        val stackedMobileSVGString = when (Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_SVG_STACKED.get()) {
+            0 -> getAssetSvg(Constants.ASSETS_SVG_SIGNAL_HYPER_OS_STACKED)
+            1 -> getAssetSvg(Constants.ASSETS_SVG_SIGNAL_IOS_STACKED)
+            else -> customStackedSvg?.takeIf { it.isNotBlank() } ?: getAssetSvg(Constants.ASSETS_SVG_SIGNAL_HYPER_OS_STACKED)
+        }
+
         singleTypeCenterPercent = StackedMobileIconUtils.extractTypeContainerBounds(singleMobileSVGString)
         stackedTypeCenterPercent = StackedMobileIconUtils.extractTypeContainerBounds(stackedMobileSVGString)
         val alphaFilled = Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_ALPHA_FG.get()

@@ -23,7 +23,6 @@ import dev.lackluster.mihelper.data.preference.Preferences
 
 sealed interface StackedMobileAction {
     data class ImportSVGFile(val isStacked: Boolean) : StackedMobileAction
-    data class ValidateAndUpdateSvg(val svgContent: String, val isStacked: Boolean) : StackedMobileAction
     object ImportLocalFont : StackedMobileAction
     data class ApplyManualPath(val path: String) : StackedMobileAction
     data class UpdateCustomTypeMap(val list: String) : StackedMobileAction
@@ -108,14 +107,6 @@ fun LazyListScope.stackedMobileTabContent(
                 },
                 onClick = { onAction(StackedMobileAction.ImportSVGFile(isStacked = false)) }
             )
-            EditTextPreference(
-                title = stringResource(R.string.icon_detail_stacked_signal_style_single_val),
-                summary = stringResource(R.string.icon_detail_stacked_signal_style_val_clipboard),
-                text = stackedState.signal.singleSVG,
-                dialogMessage = stringResource(R.string.icon_detail_stacked_signal_style_single_msg),
-                valuePosition = ValuePosition.Hidden,
-                onTextChange = { if (it.isNotBlank()) onAction(StackedMobileAction.ValidateAndUpdateSvg(it, isStacked = false)) }
-            )
         }
         DropDownPreference(
             key = Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_SVG_STACKED,
@@ -129,14 +120,6 @@ fun LazyListScope.stackedMobileTabContent(
                     stringResource(R.string.icon_detail_stacked_signal_style_val_file)
                 },
                 onClick = { onAction(StackedMobileAction.ImportSVGFile(isStacked = true)) }
-            )
-            EditTextPreference(
-                title = stringResource(R.string.icon_detail_stacked_signal_style_stacked_val),
-                summary = stringResource(R.string.icon_detail_stacked_signal_style_val_clipboard),
-                text = stackedState.signal.stackedSVG,
-                dialogMessage = stringResource(R.string.icon_detail_stacked_signal_style_stacked_msg),
-                valuePosition = ValuePosition.Hidden,
-                onTextChange = { if (it.isNotBlank()) onAction(StackedMobileAction.ValidateAndUpdateSvg(it, isStacked = true)) }
             )
         }
         SeekBarPreference(

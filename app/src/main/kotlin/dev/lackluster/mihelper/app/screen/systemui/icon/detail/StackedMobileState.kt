@@ -5,29 +5,15 @@ import dev.lackluster.mihelper.data.Constants
 
 data class SignalIconState(
     val singleStyle: Int = 0,
-    val singleSVG: String = Constants.STACKED_MOBILE_ICON_SINGLE_MIUI,
+    val singleSVG: String = "",
     val singleSVGName: String = "",
     val stackedStyle: Int = 0,
-    val stackedSVG: String = Constants.STACKED_MOBILE_ICON_STACKED_IOS,
+    val stackedSVG: String = "",
     val stackedSVGName: String = "",
     val alphaFg: Float = 1.0f,
     val alphaBg: Float = 0.4f,
     val alphaError: Float = 0.2f
-) {
-    val effectiveSingleSVG: String
-        get() = when (singleStyle) {
-            0 -> Constants.STACKED_MOBILE_ICON_SINGLE_MIUI
-            1 -> Constants.STACKED_MOBILE_ICON_SINGLE_IOS
-            else -> singleSVG
-        }
-
-    val effectiveStackedSVG: String
-        get() = when (stackedStyle) {
-            0 -> Constants.STACKED_MOBILE_ICON_STACKED_MIUI
-            1 -> Constants.STACKED_MOBILE_ICON_STACKED_IOS
-            else -> stackedSVG
-        }
-}
+)
 
 data class TypefaceState(
     val mode: FontMode = FontMode.DEFAULT,

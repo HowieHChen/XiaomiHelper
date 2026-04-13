@@ -23,7 +23,7 @@ package dev.lackluster.mihelper.hook.rules.systemui.compat
 import android.graphics.Typeface
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import dev.lackluster.mihelper.data.Constants.VARIABLE_FONT_DEFAULT_PATH
-import dev.lackluster.mihelper.data.Constants.VARIABLE_FONT_REAL_FILE_NAME
+import dev.lackluster.mihelper.data.Constants.REMOTE_FILE_STATUS_BAR_FONT
 import dev.lackluster.mihelper.data.preference.Preferences
 import dev.lackluster.mihelper.hook.base.StaticHooker
 import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
@@ -114,7 +114,7 @@ object CommonClassUtils : StaticHooker() {
 
             if (prefFontPath.isNotBlank() && prefFontPath != defFontPath) {
                 runCatching {
-                    module.openRemoteFile(VARIABLE_FONT_REAL_FILE_NAME).use { pfd ->
+                    module.openRemoteFile(REMOTE_FILE_STATUS_BAR_FONT).use { pfd ->
                         typeface = Typeface.Builder(pfd.fileDescriptor)
                             .setFontVariationSettings("'wght' $weight")
                             .build()

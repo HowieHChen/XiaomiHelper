@@ -27,6 +27,7 @@ import dev.lackluster.mihelper.hook.utils.e
 import dev.lackluster.mihelper.hook.utils.toTyped
 import dev.lackluster.mihelper.hook.utils.HostExecutor
 import dev.lackluster.mihelper.utils.SystemProperties
+import java.io.FileInputStream
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.roundToInt
 
@@ -240,21 +241,47 @@ object StackedMobileIcon : StaticHooker() {
                 HostExecutor.execute(
                     tag = "PRELOAD_STACKED_MOBILE_SVG",
                     backgroundTask = {
+                        val customSingleSvg = runCatching {
+                            module.openRemoteFile(Constants.REMOTE_FILE_STACKED_SIGNAL_SINGLE).use { pfd ->
+                                FileInputStream(pfd.fileDescriptor).bufferedReader().use { it.readText() }
+                            }
+                        }.getOrNull()
+
+                        val customStackedSvg = runCatching {
+                            module.openRemoteFile(Constants.REMOTE_FILE_STACKED_SIGNAL_STACKED).use { pfd ->
+                                FileInputStream(pfd.fileDescriptor).bufferedReader().use { it.readText() }
+                            }
+                        }.getOrNull()
+
                         if (prefFontPath.isNotBlank() && prefFontPath != defFontPath) {
                             runCatching {
-                                module.openRemoteFile(Constants.VARIABLE_FONT_MOBILE_TYPE_REAL_FILE_NAME).use { pfd ->
+                                module.openRemoteFile(Constants.REMOTE_FILE_STACKED_MOBILE_TYPE_FONT).use { pfd ->
                                     CellularIconRenderEngine.preload(
-                                        context.applicationContext,
-                                        status_bar_icon_height,
-                                        pfd
+                                        context = context.applicationContext,
+                                        iconHeightResId = status_bar_icon_height,
+                                        remoteFontFd = pfd,
+                                        customSingleSvg = customSingleSvg,
+                                        customStackedSvg = customStackedSvg,
                                     )
                                 }
                             }.onFailure {
                                 e(it) { "Failed to read remote font file, fallback to MiSansVF.ttf" }
-                                CellularIconRenderEngine.preload(context.applicationContext, status_bar_icon_height, null)
+                                CellularIconRenderEngine.preload(
+                                    context = context.applicationContext,
+                                    iconHeightResId = status_bar_icon_height,
+                                    remoteFontFd = null,
+                                    customSingleSvg = customSingleSvg,
+                                    customStackedSvg = customStackedSvg,
+                                )
                             }
                         } else {
-                            CellularIconRenderEngine.preload(context.applicationContext, status_bar_icon_height, null)
+                            CellularIconRenderEngine.preload(
+                                context = context.applicationContext,
+                                iconHeightResId = status_bar_icon_height,
+                                remoteFontFd = null,
+                                customSingleSvg = customSingleSvg,
+                                customStackedSvg = customStackedSvg,
+                            )
                         }
                     },
                     runOnMain = true,

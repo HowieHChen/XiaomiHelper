@@ -17,6 +17,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -30,13 +31,13 @@ enum class FontTarget(
     STATUS_BAR(
         displayNameSpKey = Preferences.SystemUI.StatusBar.Font.FONT_PATH_DISPLAY,
         originalPathSpKey = Preferences.SystemUI.StatusBar.Font.FONT_PATH_ORIGINAL,
-        targetFileName = Constants.VARIABLE_FONT_REAL_FILE_NAME
+        targetFileName = Constants.REMOTE_FILE_STATUS_BAR_FONT
     ),
 
     STACKED_TYPE(
         displayNameSpKey = Preferences.SystemUI.StatusBar.StackedMobile.FONT_PATH_DISPLAY,
         originalPathSpKey = Preferences.SystemUI.StatusBar.StackedMobile.FONT_PATH_ORIGINAL,
-        targetFileName = Constants.VARIABLE_FONT_MOBILE_TYPE_REAL_FILE_NAME
+        targetFileName = Constants.REMOTE_FILE_STACKED_MOBILE_TYPE_FONT
     )
 }
 
@@ -76,18 +77,26 @@ class FontRepository(
 
     init {
         repositoryScope.launch {
-            prefRepo.globalReloadEvent.collect {
-                fontCache.keys.removeIf { it.mode != FontMode.FROM_FILE }
-                FontTarget.entries.forEach { target ->
-                    _fontUpdateEvent.emit(target)
+            merge(
+                prefRepo.globalReloadEvent,
+                fileStore.isReady
+            ).collect { trigger ->
+                if (trigger is Unit) {
+                    fontCache.keys.removeIf { it.mode != FontMode.FROM_FILE }
                 }
-            }
-        }
-        repositoryScope.launch {
-            fileStore.isReady.collect { ready ->
-                if (ready) {
+                val isReady = fileStore.isReady.value
+                if (isReady) {
                     FontTarget.entries.forEach { target ->
-                        reloadRemoteFontToCache(target)
+                        val prefPath = prefRepo.get(target.originalPathSpKey)
+                        if (prefPath != target.originalPathSpKey.default) {
+                            reloadRemoteFontToCache(target)
+                        } else {
+                            val key = FontCacheKey(target, FontMode.FROM_FILE)
+                            if (fontCache.containsKey(key)) {
+                                fontCache.remove(key)
+                                _fontUpdateEvent.emit(target)
+                            }
+                        }
                     }
                 } else {
                     FontTarget.entries.forEach { target ->
@@ -116,8 +125,8 @@ class FontRepository(
                 when (mode) {
                     FontMode.DEFAULT -> Typeface.DEFAULT_BOLD
                     FontMode.MI_SANS -> Typeface.Builder(vfDefaultPath).build()
-                    FontMode.MI_SANS_CONDENSED -> Typeface.Builder(context.assets, Constants.VARIABLE_FONT_MI_SANS_CONDENSED_PATH).build()
-                    FontMode.SF_PRO -> Typeface.Builder(context.assets, Constants.VARIABLE_FONT_SF_PRO_PATH).build()
+                    FontMode.MI_SANS_CONDENSED -> Typeface.Builder(context.assets, Constants.ASSETS_VF_MI_SANS_CONDENSED).build()
+                    FontMode.SF_PRO -> Typeface.Builder(context.assets, Constants.ASSETS_VF_SF_PRO).build()
                     FontMode.FROM_FILE -> Typeface.DEFAULT_BOLD
                 }
             } catch (_: Exception) {

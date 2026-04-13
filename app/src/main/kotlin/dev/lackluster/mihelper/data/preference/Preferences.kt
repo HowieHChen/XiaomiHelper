@@ -450,10 +450,10 @@ object Preferences {
                 val SINGLE_MOBILE_SIM2 = PreferenceKey("icon_tuner_slot_single_sim2", 0)
 
                 val SIGNAL_SVG_SINGLE = PreferenceKey("icon_tuner_stacked_icon_svg_single", 0)
-                val SIGNAL_SVG_SINGLE_VAL = PreferenceKey("icon_tuner_stacked_icon_svg_single_val", Constants.STACKED_MOBILE_ICON_SINGLE_MIUI)
+//                val SIGNAL_SVG_SINGLE_VAL = PreferenceKey("icon_tuner_stacked_icon_svg_single_val", Constants.STACKED_MOBILE_ICON_SINGLE_MIUI)
                 val SIGNAL_SVG_SINGLE_NAME = PreferenceKey("icon_tuner_stacked_icon_svg_single_name", "")
                 val SIGNAL_SVG_STACKED = PreferenceKey("icon_tuner_stacked_icon_svg_stacked", 0)
-                val SIGNAL_SVG_STACKED_VAL = PreferenceKey("icon_tuner_stacked_icon_svg_stacked_val", Constants.STACKED_MOBILE_ICON_STACKED_MIUI)
+//                val SIGNAL_SVG_STACKED_VAL = PreferenceKey("icon_tuner_stacked_icon_svg_stacked_val", Constants.STACKED_MOBILE_ICON_STACKED_MIUI)
                 val SIGNAL_SVG_STACKED_NAME = PreferenceKey("icon_tuner_stacked_icon_svg_stacked_name", "")
                 val SIGNAL_ALPHA_FG = PreferenceKey("icon_tuner_stacked_icon_alpha_fg", 1.0f)
                 val SIGNAL_ALPHA_BG = PreferenceKey("icon_tuner_stacked_icon_alpha_bg", 0.4f)

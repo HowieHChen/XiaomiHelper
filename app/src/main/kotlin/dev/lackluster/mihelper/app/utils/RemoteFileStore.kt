@@ -30,7 +30,7 @@ class RemoteFileStore(
                 val ready = service != null
                 _isReady.update { ready }
                 if (ready) {
-                    MLog.d(TAG) { "RemoteFiles: [${listFiles().joinToString(", ")}]" }
+                    MLog.w(TAG) { "RemoteFiles: [${listFiles().joinToString(", ")}]" }
                 }
             }
         }
