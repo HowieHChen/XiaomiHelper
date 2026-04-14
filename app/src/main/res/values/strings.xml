@@ -46,6 +46,7 @@
     <string name="scope_android">System</string>
     <string name="scope_browser">Mi Browser</string>
     <string name="scope_download">Download</string>
+    <string name="scope_find_device">Find device</string>
     <string name="scope_gallery">Gallery</string>
     <string name="scope_guard_provider">System security components</string>
     <string name="scope_in_call_ui">Phone</string>
@@ -320,6 +321,9 @@
     <string name="ui_title_cleaner_download" translatable="false">@string/scope_download</string>
     <string name="cleaner_downloadui_hide_xl">Hide Xunlei icons and text</string>
     <string name="cleaner_download_fuck_xl">Block creation of .xlDownload folder</string>
+    <string name="ui_title_cleaner_find_device" translatable="false">@string/scope_find_device</string>
+    <string name="cleaner_find_device_fuck_aivs" translatable="false">@string/others_miai_fuck_aivs</string>
+    <string name="cleaner_find_device_fuck_aivs_tips" translatable="false">@string/others_miai_fuck_aivs_tips</string>
     <string name="ui_title_cleaner_incallui" translatable="false">@string/scope_in_call_ui</string>
     <string name="cleaner_incallui_hide_crbt">Hide CRBT (Coloring Ring Back Tone)</string>
     <string name="ui_title_cleaner_market" translatable="false">@string/scope_market</string>
@@ -458,6 +462,8 @@
     <string name="others_aiengine_copy_link_island_browser_tips">After copying a URL and clicking the Dynamic Island, it can be opened with any browser (instead of only Xiaomi Browser)</string>
     <string name="ui_title_others_miai" translatable="false">@string/scope_mi_ai</string>
     <string name="others_miai_hide_watermark">Hide beta and AIGC watermarks</string>
+    <string name="others_miai_fuck_aivs">Redirect AIVS folder</string>
+    <string name="others_miai_fuck_aivs_tips">" Prevent the AIVS-SDK from creating a folder in the root of external storage"</string>
     <string name="ui_title_others_mimirror" translatable="false">@string/scope_mi_mirror</string>
     <string name="others_mimirror_all_app">All apps can be opened on another device</string>
     <string name="ui_title_others_search" translatable="false">@string/scope_search</string>

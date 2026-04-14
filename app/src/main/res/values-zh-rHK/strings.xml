@@ -40,6 +40,7 @@
     <string name="scope_android">系統</string>
     <string name="scope_browser">瀏覽器</string>
     <string name="scope_download">下載</string>
+    <string name="scope_find_device">尋找裝置</string>
     <string name="scope_gallery">圖庫</string>
     <string name="scope_guard_provider">系統安全組件</string>
     <string name="scope_in_call_ui">通話中界面</string>

@@ -28,7 +28,6 @@ import com.highcapable.kavaref.KavaRef.Companion.resolve
 import dev.lackluster.mihelper.data.preference.Preferences
 import dev.lackluster.mihelper.hook.base.StaticHooker
 import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
-import java.io.File
 import androidx.core.content.edit
 
 object FuckHpplay : StaticHooker() {
@@ -37,19 +36,6 @@ object FuckHpplay : StaticHooker() {
     }
 
     override fun onHook() {
-        "com.xiaomi.aivsbluetoothsdk.utils.FileUtil".toClassOrNull()?.apply {
-            resolve().firstMethodOrNull {
-                name = "splicingFilePath"
-                parameters(String::class, String::class, String::class, String::class)
-            }?.hook {
-                val newArgs = args.toTypedArray()
-                val rootDir = newArgs[0] as? String ?: ""
-                if (rootDir.startsWith("com.milink.service")) {
-                    newArgs[0] = "MIUI${File.separator}AIVS${File.separator}${rootDir}"
-                }
-                result(proceed(newArgs))
-            }
-        }
         "com.hpplay.common.utils.ContextPath".toClassOrNull()?.apply {
             resolve().firstMethodOrNull {
                 name = "initDirs"

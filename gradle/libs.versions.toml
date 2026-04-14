@@ -1,5 +1,4 @@
 [versions]
-hiddenapibypass = "6.1"
 project-name = "XiaomiHelper"
 android-compileSdk = "37"
 android-minSdk = "35"
@@ -8,9 +7,10 @@ project-app-packageName = "dev.lackluster.mihelper"
 project-app-versionName = "26.04"
 project-app-versionCode = "26041"
 
-androidGradlePlugin = "9.1.0"
+androidGradlePlugin = "9.1.1"
 kotlin = "2.3.20"
 ksp = "2.3.6"
+hiddenapibypass = "6.1"
 libxposed-api = "101.0.1"
 libxposed-service = "101.0.0"
 kavaref-core = "1.0.2"

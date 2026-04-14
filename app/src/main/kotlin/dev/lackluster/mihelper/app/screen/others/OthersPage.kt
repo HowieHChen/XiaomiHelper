@@ -143,6 +143,11 @@ private fun OthersPageContent(
                     )
                 }
             }
+            SwitchPreference(
+                key = Preferences.MiAi.FUCK_AIVS,
+                title = stringResource(R.string.others_miai_fuck_aivs),
+                summary = stringResource(R.string.others_miai_fuck_aivs_tips),
+            )
         }
         itemPreferenceGroup(
             titleRes = R.string.ui_title_others_mimirror,

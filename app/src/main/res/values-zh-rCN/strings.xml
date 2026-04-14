@@ -102,6 +102,7 @@
     <string name="scope_lbe">权限管理服务</string>
     <string name="scope_market">应用商店</string>
     <string name="scope_screenshot">截屏</string>
+    <string name="scope_find_device">查找</string>
     <string name="scope_gallery">相册</string>
     <string name="scope_remote_controller">万能遥控</string>
     <string name="scope_screen_recorder">屏幕录制</string>
@@ -699,4 +700,6 @@
     <string name="systemui_statusbar_gesture_single_tap_tips">单击状态栏空白区域触发特定功能</string>
     <string name="systemui_statusbar_gesture_double_tap">双击空白区域</string>
     <string name="systemui_statusbar_gesture_single_tap">单击空白区域</string>
+    <string name="others_miai_fuck_aivs">重定向 AIVS 文件夹</string>
+    <string name="others_miai_fuck_aivs_tips">阻止 AIVS-SDK 在外部存储的根目录中创建文件夹</string>
 </resources>

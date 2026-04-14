@@ -152,6 +152,15 @@ private fun CleanMasterPageContent(
             )
         }
         itemPreferenceGroup(
+            titleRes = R.string.ui_title_cleaner_find_device,
+        ) {
+            SwitchPreference(
+                key = Preferences.FindDevice.FUCK_AIVS,
+                title = stringResource(R.string.cleaner_find_device_fuck_aivs),
+                summary = stringResource(R.string.cleaner_find_device_fuck_aivs_tips)
+            )
+        }
+        itemPreferenceGroup(
             titleRes = R.string.ui_title_cleaner_market,
         ) {
             AppRestartPreferenceItem(

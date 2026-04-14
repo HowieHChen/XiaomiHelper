@@ -21,6 +21,7 @@ import dev.lackluster.mihelper.hook.scopes.AIEngine
 import dev.lackluster.mihelper.hook.scopes.Android
 import dev.lackluster.mihelper.hook.scopes.Download
 import dev.lackluster.mihelper.hook.scopes.DownloadUI
+import dev.lackluster.mihelper.hook.scopes.FindDevice
 import dev.lackluster.mihelper.hook.scopes.GuardProvider
 import dev.lackluster.mihelper.hook.scopes.Market
 import dev.lackluster.mihelper.hook.scopes.MiAi
@@ -94,6 +95,7 @@ class HookEntry : XposedModule() {
         Scope.BROWSER -> Browser
         Scope.DOWNLOAD -> Download
         Scope.DOWNLOAD_UI -> DownloadUI
+        Scope.FIND_DEVICE -> FindDevice
         Scope.GUARD_PROVIDER -> GuardProvider
         Scope.IN_CALL_UI -> InCallUI
         Scope.LBE -> LBE

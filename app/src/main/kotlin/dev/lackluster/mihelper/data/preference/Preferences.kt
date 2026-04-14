@@ -50,6 +50,10 @@ object Preferences {
         val HIDE_XL = PreferenceKey("downloadui_remove_xl", false)
     }
 
+    object FindDevice {
+        val FUCK_AIVS = PreferenceKey("find_device_fuck_aivs", false)
+    }
+
     object HintState {
         val SYSTEM_FONT_SCALE = PreferenceKey("hint_system_font_scale", true)
         val STATUS_BAR_FONT_ROOT = PreferenceKey("hint_status_bar_font_root", true)
@@ -96,6 +100,7 @@ object Preferences {
         val SEARCH_USE_BROWSER = PreferenceKey("xiaoai_use_browser", false)
         val SEARCH_ENGINE = PreferenceKey("xiaoai_search_engine", 0)
         val CUSTOM_SEARCH_URL = PreferenceKey("xiaoai_search_url", "")
+        val FUCK_AIVS = PreferenceKey("xiaoai_fuck_aivs", false)
     }
 
     object MiLink {
