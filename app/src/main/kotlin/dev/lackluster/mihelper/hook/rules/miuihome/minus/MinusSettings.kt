@@ -96,7 +96,7 @@ object MinusSettings : StaticHooker() {
             val metAddPreference = "androidx.preference.PreferenceScreen".toClassOrNull()?.resolve()?.firstMethodOrNull {
                 name = "addPreference"
                 superclass()
-            }?.toTyped<Unit>()
+            }?.toTyped<Boolean>()
             val clzValuePreference = "com.miui.home.settings.preference.ValuePreference".toClassOrNull()
             val metSetVisible = clzValuePreference?.resolve()?.firstMethodOrNull {
                 name = "setVisible"
