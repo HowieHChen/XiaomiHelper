@@ -224,6 +224,14 @@ object AdBlocker : StaticHooker() {
                 result(proceed(newArgs))
             }
         }
+        "com.tencent.qqmusiclite.ui.MyVipDunningView".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "show"
+                parameters(Boolean::class)
+            }?.hook {
+                result(null)
+            }
+        }
     }
 
     private fun blockPopup() {

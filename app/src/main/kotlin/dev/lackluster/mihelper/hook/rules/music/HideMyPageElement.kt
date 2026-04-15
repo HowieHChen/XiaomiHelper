@@ -34,20 +34,29 @@ object HideMyPageElement : StaticHooker() {
     }
 
     override fun onHook() {
-        "com.tencent.qqmusiclite.fragment.my.MyViewModel".toClassOrNull()?.apply {
-            if (hideBanner) {
+        if (hideRecommend) {
+            "com.tencent.qqmusiclite.fragment.my.MyAdapter".toClassOrNull()?.apply {
                 resolve().firstMethodOrNull {
-                    name = "getMyBannerCard"
+                    name = "updateRecommendSongs"
                 }?.hook {
                     result(null)
                 }
             }
-            if (hideRecommend) {
-                resolve().firstMethodOrNull {
-                    name = "requestRecommendSongs"
-                }?.hook {
-                    result(null)
+        }
+        if (hideBanner) {
+            "com.tencent.qqmusiclite.fragment.my.MyViewModel".toClassOrNull()?.apply {
+                if (hideBanner) {
+                    resolve().firstMethodOrNull {
+                        name = "getMyBannerCard"
+                    }?.hook {
+                        result(null)
+                    }
                 }
+//                resolve().firstMethodOrNull {
+//                    name = "requestRecommendSongs"
+//                }?.hook {
+//                    result(null)
+//                }
             }
         }
     }
