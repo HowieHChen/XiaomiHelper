@@ -28,6 +28,7 @@ import com.highcapable.kavaref.condition.type.Modifiers
 import dev.lackluster.mihelper.data.preference.Preferences
 import dev.lackluster.mihelper.hook.base.StaticHooker
 import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.d
 import dev.lackluster.mihelper.hook.utils.toTyped
 
 object AdBlocker : StaticHooker() {
@@ -302,6 +303,7 @@ object AdBlocker : StaticHooker() {
                 "showRecommend",
                 "showTopBanner",
                 "showTopVideo",
+                "isSourceFileShowAdStyle",
             ).forEach { metName ->
                 resolve().firstMethodOrNull {
                     name = metName
@@ -318,6 +320,41 @@ object AdBlocker : StaticHooker() {
                 } else {
                     result(ori)
                 }
+            }
+        }
+        // 浏览器下载弹窗
+        "com.xiaomi.market.business_ui.directmail.BottomMiniSourceFileFragment".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "needShowAdList"
+            }?.hook {
+                result(false)
+            }
+            resolve().firstMethodOrNull {
+                name = "ensureRiskLayout"
+            }?.hook {
+                result(null)
+            }
+        }
+        "com.xiaomi.market.ui.detail.AppDetailCardActivity".toClassOrNull()?.apply {
+            val metGetType = "com.xiaomi.market.business_ui.detail.DetailType".toClassOrNull()?.let {
+                it.resolve().firstMethodOrNull {
+                    name = "valueOf"
+                    parameters(String::class)
+                }
+            }?.toTyped<Any>()
+            val typeBlacklist = listOf(
+                metGetType?.invoke(null, "BOTTOM_WITH_SOURCE_FILE")
+            )
+            val typeOnlySourceFile = metGetType?.invoke(null, "ONLY_SOURCE_FILE_DOWNLOAD")
+            resolve().firstMethodOrNull {
+                name = "showDetailFragment"
+            }?.hook {
+                val newArgs = args.toTypedArray()
+                d { newArgs[0].toString() }
+                if (newArgs[0] in typeBlacklist) {
+                    newArgs[0] = typeOnlySourceFile
+                }
+                result(proceed(newArgs))
             }
         }
     }
