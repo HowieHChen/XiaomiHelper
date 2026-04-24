@@ -21,24 +21,26 @@
 package dev.lackluster.mihelper.hook.rules.packageinstaller
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
 
-object DisguiseNoNet : YukiBaseHooker() {
+object DisguiseNoNet : StaticHooker() {
+    override fun onInit() {
+        updateSelfState(Preferences.PackageInstaller.DISGUISE_NO_NETWORK.get())
+    }
+
     override fun onHook() {
-        hasEnable(Pref.Key.PackageInstaller.DISGUISE_NO_NETWORK) {
-            "android.net.NetworkInfo".toClass().apply {
-                resolve().firstMethodOrNull {
-                    name = "isConnected"
-                }?.hook {
-                    replaceToFalse()
-                }
-                resolve().firstMethodOrNull {
-                    name = "isConnectedOrConnecting"
-                }?.hook {
-                    replaceToFalse()
-                }
+        "android.net.NetworkInfo".toClass().apply {
+            resolve().firstMethodOrNull {
+                name = "isConnected"
+            }?.hook {
+                result(false)
+            }
+            resolve().firstMethodOrNull {
+                name = "isConnectedOrConnecting"
+            }?.hook {
+                result(false)
             }
         }
     }

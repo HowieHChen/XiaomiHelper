@@ -1,6 +1,6 @@
 package dev.lackluster.mihelper.hook.rules.systemui.media.data
 
-import dev.lackluster.mihelper.hook.drawable.MediaControlBgDrawable
+import dev.lackluster.mihelper.hook.rules.systemui.media.drawable.MediaControlBgDrawable
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.defaultColorConfig
 
 data class PlayerConfig(

@@ -22,13 +22,14 @@
 
 package dev.lackluster.mihelper.hook.rules.powerkeeper
 
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.DexKit
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.DexKit
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.ifTrue
 import org.luckypray.dexkit.query.enums.StringMatchType
 
-object BlockBatteryWhitelist : YukiBaseHooker() {
+object BlockBatteryWhitelist : StaticHooker() {
     private val whitelist by lazy {
         DexKit.findMethodWithCache("power_save_whitelist") {
             matcher {
@@ -37,15 +38,21 @@ object BlockBatteryWhitelist : YukiBaseHooker() {
         }
     }
 
+    override fun onInit() {
+        Preferences.PowerKeeper.BLOCK_BATTERY_WHITELIST.get().also {
+            updateSelfState(it)
+        }.ifTrue {
+            whitelist
+        }
+    }
+
     override fun onHook() {
-        hasEnable(Pref.Key.PowerKeeper.BLOCK_BATTERY_WHITELIST) {
-            if (appClassLoader == null) return@hasEnable
-            whitelist?.getMethodInstance(appClassLoader!!)?.hook {
-                before {
-                    if (this.args(0).array<String>().size > 1) {
-                        this.result = null
-                    }
-                }
+        whitelist?.getMethodInstance(classLoader)?.hook {
+            val strArr = getArg(0) as? Array<*>
+            if (strArr != null && strArr.size > 1) {
+                result(null)
+            } else {
+                result(proceed())
             }
         }
     }

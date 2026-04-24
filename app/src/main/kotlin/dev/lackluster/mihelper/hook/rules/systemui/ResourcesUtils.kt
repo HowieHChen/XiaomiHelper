@@ -20,14 +20,13 @@
 
 package dev.lackluster.mihelper.hook.rules.systemui
 
-import android.annotation.SuppressLint
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import dev.lackluster.mihelper.data.Scope
-import dev.lackluster.mihelper.utils.factory.getResID
+import dev.lackluster.mihelper.hook.base.ContextAwareHooker
+import dev.lackluster.mihelper.hook.base.ContextScope
 
-object ResourcesUtils : YukiBaseHooker() {
-    private const val PKG_NAME = Scope.SYSTEM_UI
-    private var isInitialized = false
+object ResourcesUtils : ContextAwareHooker() {
+    override val targetPackage: String
+        get() = Scope.SYSTEM_UI
     // Status bar clock
     var clock = 0 // Time (status bar)
     var pad_clock = 0 // Date (status bar, pad)
@@ -97,79 +96,70 @@ object ResourcesUtils : YukiBaseHooker() {
     var lock_screen_carrier_airplane_mode_on = 0
     var kept_notifications_on_keyguard = 0
 
-    @SuppressLint("DiscouragedApi")
-    override fun onHook() {
-        onAppLifecycle {
-            onCreate {
-                if (!isInitialized) {
-                    if (this.resources == null) return@onCreate
-                    clock = this.getResID("clock", "id", PKG_NAME)
-                    pad_clock = this.getResID("pad_clock", "id", PKG_NAME)
-                    big_time = this.getResID("big_time", "id", PKG_NAME)
-                    date_time = this.getResID("date_time", "id", PKG_NAME)
-                    normal_control_center_date_view = this.getResID("normal_control_center_date_view", "id", PKG_NAME)
-                    horizontal_time = this.getResID("horizontal_time", "id", PKG_NAME)
-                    horizontal_date_time = this.getResID("horizontal_date_time", "id", PKG_NAME)
-                    miui_notification_menu_more_setting = this.getResID("miui_notification_menu_more_setting", "string", PKG_NAME)
-                    fmt_time_12hour_minute_second_pm = this.getResID("fmt_time_12hour_minute_second_pm", "string", PKG_NAME)
-                    fmt_time_12hour_minute_second = this.getResID("fmt_time_12hour_minute_second", "string", PKG_NAME)
-                    fmt_time_12hour_minute_pm = this.getResID("fmt_time_12hour_minute_pm", "string", PKG_NAME)
-                    fmt_time_12hour_minute = this.getResID("fmt_time_12hour_minute", "string", PKG_NAME)
-                    fmt_time_24hour_minute_second = this.getResID("fmt_time_24hour_minute_second", "string", PKG_NAME)
-                    fmt_time_24hour_minute = this.getResID("fmt_time_24hour_minute", "string", PKG_NAME)
-                    status_bar_clock_date_time_format = this.getResID("status_bar_clock_date_time_format", "string", PKG_NAME)
-                    status_bar_clock_date_time_format_12 = this.getResID("status_bar_clock_date_time_format_12", "string", PKG_NAME)
-                    mobile_type_single = this.getResID("mobile_type_single", "id", PKG_NAME)
-                    mobile_signal_container = this.getResID("mobile_signal_container", "id", PKG_NAME)
-                    TextAppearance_StatusBar_Battery_Percent = this.getResID("TextAppearance.StatusBar.Battery.Percent", "style", PKG_NAME)
-                    TextAppearance_StatusBar_NetWorkSpeedNumber = this.getResID("TextAppearance.StatusBar.NetWorkSpeedNumber", "style", PKG_NAME)
-                    megabyte_per_second = this.getResID("megabyte_per_second", "string", PKG_NAME)
-                    kilobyte_per_second = this.getResID("kilobyte_per_second", "string", PKG_NAME)
-                    stat_sys_alarm = this.getResID("stat_sys_alarm", "drawable", PKG_NAME)
-                    stat_sys_gps_on = this.getResID("stat_sys_gps_on", "drawable", PKG_NAME)
-                    stat_sys_quiet_mode = this.getResID("stat_sys_quiet_mode", "drawable", PKG_NAME)
-                    stat_sys_ringer_silent = this.getResID("stat_sys_ringer_silent", "drawable", PKG_NAME)
-                    stat_sys_ringer_vibrate = this.getResID("stat_sys_ringer_vibrate", "drawable", PKG_NAME)
-                    stat_sys_signal_0 = this.getResID("stat_sys_signal_0", "drawable", PKG_NAME)
-                    notification_icon_area = this.getResID("notification_icon_area", "id", PKG_NAME)
-                    status_bar_view_state_tag = this.getResID("status_bar_view_state_tag", "id", PKG_NAME)
-                    status_bar_icon_height = this.getResID("status_bar_icon_height", "dimen", PKG_NAME)
-                    notification_element_blend_shade_colors = this.getResID("notification_element_blend_shade_colors", "array", PKG_NAME)
-                    notification_element_blend_colors = this.getResID("notification_element_blend_colors", "array", PKG_NAME)
-                    notification_item_bg_radius = this.getResID("notification_item_bg_radius", "dimen", PKG_NAME)
-                    pad_clock_xml = this.getResID("pad_clock", "layout", PKG_NAME)
-                    keyguard_carrier_text = this.getResID("keyguard_carrier_text", "id", PKG_NAME)
-                    TextAppearance_StatusBar_Clock = this.getResID("TextAppearance.StatusBar.Clock", "style", PKG_NAME)
-                    status_bar_padding_extra_start = this.getResID("status_bar_padding_extra_start", "dimen", PKG_NAME)
-                    status_bar_clock_margin_end = this.getResID("status_bar_clock_margin_end", "dimen", PKG_NAME)
-                    media_bg = this.getResID("media_bg", "id", PKG_NAME)
-                    media_bg_view = this.getResID("media_bg_view", "id", PKG_NAME)
-                    album_art = this.getResID("album_art", "id", PKG_NAME)
-                    icon = this.getResID("icon", "id", PKG_NAME)
-                    header_title = this.getResID("header_title", "id", PKG_NAME)
-                    header_artist = this.getResID("header_artist", "id", PKG_NAME)
-                    media_seamless = this.getResID("media_seamless", "id", PKG_NAME)
-                    media_seamless_button = this.getResID("media_seamless_button", "id", PKG_NAME)
-                    media_seamless_image = this.getResID("media_seamless_image", "id", PKG_NAME)
-                    actions = this.getResID("actions", "id", PKG_NAME)
-                    action0 = this.getResID("action0", "id", PKG_NAME)
-                    action1 = this.getResID("action1", "id", PKG_NAME)
-                    action2 = this.getResID("action2", "id", PKG_NAME)
-                    action3 = this.getResID("action3", "id", PKG_NAME)
-                    action4 = this.getResID("action4", "id", PKG_NAME)
-                    media_progress_bar = this.getResID("media_progress_bar", "id", PKG_NAME)
-                    media_elapsed_time = this.getResID("media_elapsed_time", "id", PKG_NAME)
-                    media_total_time = this.getResID("media_total_time", "id", PKG_NAME)
-                    media_control_bg_radius = this.getResID("media_control_bg_radius", "dimen", PKG_NAME)
-                    tiny_media_session_view = this.getResID("tiny_media_session_view", "id", PKG_NAME)
-                    normal_control_center_carrier_view = this.getResID("normal_control_center_carrier_view", "id", PKG_NAME)
-                    normal_control_center_carrier_second_view = this.getResID("normal_control_center_carrier_second_view", "id", PKG_NAME)
-                    normal_control_center_carrier_vertical_separator = this.getResID("normal_control_center_carrier_vertical_separator", "id", PKG_NAME)
-                    lock_screen_carrier_airplane_mode_on = this.getResID("lock_screen_carrier_airplane_mode_on", "string", PKG_NAME)
-                    kept_notifications_on_keyguard = this.getResID("kept_notifications_on_keyguard", "bool", PKG_NAME)
-                    isInitialized = true
-                }
-            }
-        }
+    override fun ContextScope.onReady() {
+        clock = "clock".toId()
+        pad_clock = "pad_clock".toId()
+        big_time = "big_time".toId()
+        date_time = "date_time".toId()
+        normal_control_center_date_view = "normal_control_center_date_view".toId()
+        horizontal_time = "horizontal_time".toId()
+        horizontal_date_time = "horizontal_date_time".toId()
+        miui_notification_menu_more_setting = "miui_notification_menu_more_setting".toStringId()
+        fmt_time_12hour_minute_second_pm = "fmt_time_12hour_minute_second_pm".toStringId()
+        fmt_time_12hour_minute_second = "fmt_time_12hour_minute_second".toStringId()
+        fmt_time_12hour_minute_pm = "fmt_time_12hour_minute_pm".toStringId()
+        fmt_time_12hour_minute = "fmt_time_12hour_minute".toStringId()
+        fmt_time_24hour_minute_second = "fmt_time_24hour_minute_second".toStringId()
+        fmt_time_24hour_minute = "fmt_time_24hour_minute".toStringId()
+        status_bar_clock_date_time_format = "status_bar_clock_date_time_format".toStringId()
+        status_bar_clock_date_time_format_12 = "status_bar_clock_date_time_format_12".toStringId()
+        mobile_type_single = "mobile_type_single".toId()
+        mobile_signal_container = "mobile_signal_container".toId()
+        TextAppearance_StatusBar_Battery_Percent = "TextAppearance.StatusBar.Battery.Percent".toStyleId()
+        TextAppearance_StatusBar_NetWorkSpeedNumber = "TextAppearance.StatusBar.NetWorkSpeedNumber".toStyleId()
+        megabyte_per_second = "megabyte_per_second".toStringId()
+        kilobyte_per_second = "kilobyte_per_second".toStringId()
+        stat_sys_alarm = "stat_sys_alarm".toDrawableId()
+        stat_sys_gps_on = "stat_sys_gps_on".toDrawableId()
+        stat_sys_quiet_mode = "stat_sys_quiet_mode".toDrawableId()
+        stat_sys_ringer_silent = "stat_sys_ringer_silent".toDrawableId()
+        stat_sys_ringer_vibrate = "stat_sys_ringer_vibrate".toDrawableId()
+        stat_sys_signal_0 = "stat_sys_signal_0".toDrawableId()
+        notification_icon_area = "notification_icon_area".toId()
+        status_bar_view_state_tag = "status_bar_view_state_tag".toId()
+        status_bar_icon_height = "status_bar_icon_height".toDimenId()
+        notification_element_blend_shade_colors = "notification_element_blend_shade_colors".toArrayId()
+        notification_element_blend_colors = "notification_element_blend_colors".toArrayId()
+        notification_item_bg_radius = "notification_item_bg_radius".toDimenId()
+        pad_clock_xml = "pad_clock".toLayoutId()
+        keyguard_carrier_text = "keyguard_carrier_text".toId()
+        TextAppearance_StatusBar_Clock = "TextAppearance.StatusBar.Clock".toStyleId()
+        status_bar_padding_extra_start = "status_bar_padding_extra_start".toDimenId()
+        status_bar_clock_margin_end = "status_bar_clock_margin_end".toDimenId()
+        media_bg = "media_bg".toId()
+        media_bg_view = "media_bg_view".toId()
+        album_art = "album_art".toId()
+        icon = "icon".toId()
+        header_title = "header_title".toId()
+        header_artist = "header_artist".toId()
+        media_seamless = "media_seamless".toId()
+        media_seamless_button = "media_seamless_button".toId()
+        media_seamless_image = "media_seamless_image".toId()
+        actions = "actions".toId()
+        action0 = "action0".toId()
+        action1 = "action1".toId()
+        action2 = "action2".toId()
+        action3 = "action3".toId()
+        action4 = "action4".toId()
+        media_progress_bar = "media_progress_bar".toId()
+        media_elapsed_time = "media_elapsed_time".toId()
+        media_total_time = "media_total_time".toId()
+        media_control_bg_radius = "media_control_bg_radius".toDimenId()
+        tiny_media_session_view = "tiny_media_session_view".toId()
+        normal_control_center_carrier_view = "normal_control_center_carrier_view".toId()
+        normal_control_center_carrier_second_view = "normal_control_center_carrier_second_view".toId()
+        normal_control_center_carrier_vertical_separator = "normal_control_center_carrier_vertical_separator".toId()
+        lock_screen_carrier_airplane_mode_on = "lock_screen_carrier_airplane_mode_on".toStringId()
+        kept_notifications_on_keyguard = "kept_notifications_on_keyguard".toBoolId()
     }
 }

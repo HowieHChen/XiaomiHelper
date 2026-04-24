@@ -25,29 +25,31 @@ package dev.lackluster.mihelper.hook.rules.packageinstaller
 import android.app.Activity
 import android.widget.TextView
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.data.Scope
-import dev.lackluster.mihelper.utils.DexKit
-import dev.lackluster.mihelper.utils.Prefs
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.DexKit
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
+import dev.lackluster.mihelper.hook.utils.asString
+import dev.lackluster.mihelper.hook.utils.toTyped
 import org.luckypray.dexkit.query.enums.StringMatchType
 
-
-object CustomInstallSource : YukiBaseHooker() {
+object CustomInstallSource : StaticHooker() {
     private var hostUid: Int? = null
     private var sourceUid: Int? = null
 
-    private val clzInstallStart by lazy {
-        "com.miui.packageInstaller.InstallStart".toClassOrNull()
-    }
-    private val clzViewHolder by lazy {
-        $$"com.miui.packageInstaller.ui.listcomponets.AppInfoViewObject$ViewHolder".toClass()
-    }
+    private val clzInstallStart by "com.miui.packageInstaller.InstallStart".lazyClassOrNull()
+
+    private val clzViewHolder by $$"com.miui.packageInstaller.ui.listcomponets.AppInfoViewObject$ViewHolder".lazyClass()
+
     private val clzAppInfoViewHolder by lazy {
-        DexKit.dexKitBridge.findClass {
-            matcher {
-                addUsingString("context.ge…ta.versionName)", StringMatchType.Contains)
-                addUsingString("context.ge…o?.versionName)", StringMatchType.Contains)
+        DexKit.withBridge {
+            findClass {
+                matcher {
+                    addUsingString("context.ge…ta.versionName)", StringMatchType.Contains)
+                    addUsingString("context.ge…o?.versionName)", StringMatchType.Contains)
+                }
             }
         }
     }
@@ -63,75 +65,88 @@ object CustomInstallSource : YukiBaseHooker() {
     private val fldViewHolder by lazy {
         DexKit.findFieldWithCache("app_info_view_holder") {
             matcher {
-                declaredClass(clzAppInfoViewHolder.first().name, StringMatchType.Equals)
+                declaredClass(clzAppInfoViewHolder.single().name, StringMatchType.Equals)
                 type(clzViewHolder)
             }
             searchClasses = clzAppInfoViewHolder
         }
     }
 
-    private val customInstallSource = Prefs.getInt(Pref.Key.PackageInstaller.INSTALL_SOURCE, 0)
-    private val sourcePackageName = when (customInstallSource) {
-        1 -> "com.android.fileexplorer"
-        2 -> "com.xiaomi.market"
-        3 -> Prefs.getString(Pref.Key.PackageInstaller.SOURCE_PKG_NAME, "").takeIf {
-            it?.isNotBlank() == true
-        } ?: "com.android.fileexplorer"
-        else -> "com.android.fileexplorer"
+    private val customInstallSource by Preferences.PackageInstaller.CUSTOM_INSTALL_SOURCE.lazyGet()
+    private val sourcePackageName by lazy {
+        when (customInstallSource) {
+            1 -> "com.android.fileexplorer"
+            2 -> "com.xiaomi.market"
+            3 -> Preferences.PackageInstaller.INSTALL_SOURCE_PKG.get().takeIf {
+                it.isNotBlank()
+            } ?: "com.android.fileexplorer"
+            else -> "com.android.fileexplorer"
+        }
+    }
+
+    override fun onInit() {
+        updateSelfState(customInstallSource != 0)
+        if (customInstallSource != 0) {
+            metAppInfo
+            fldViewHolder
+        }
     }
 
     override fun onHook() {
         var appLabel: String? = null
-        if(customInstallSource != 0) {
-            if (appClassLoader == null) return
-            Activity::class.apply {
-                resolve().firstMethodOrNull {
-                    name = "getLaunchedFromPackage"
-                }?.hook {
-                    after {
-                        val activity = this.instance<Activity>()
-                        val oriPkg = this.result<String>() ?: return@after
-                        if (fromInstallStart(activity) && oriPkg != Scope.PACKAGE_INSTALLER) {
-                            val realAppLabel = activity.packageManager.let {
-                                it.getApplicationInfo(oriPkg, 0).loadLabel(it)
-                            }
-                            val fakeAppLabel = activity.packageManager.let {
-                                it.getApplicationInfo(sourcePackageName, 0).loadLabel(it)
-                            }
-                            appLabel = "$realAppLabel ($fakeAppLabel)"
-                            this.result = sourcePackageName
-                        }
+        Activity::class.apply {
+            resolve().firstMethodOrNull {
+                name = "getLaunchedFromPackage"
+            }?.hook {
+                val ori = proceed()
+                val activity = thisObject as? Activity
+                val oriPkg = ori as? String
+                if (
+                    activity != null && fromInstallStart(activity) &&
+                    oriPkg != null && oriPkg != Scope.PACKAGE_INSTALLER
+                ) {
+                    val realAppLabel = activity.packageManager.let {
+                        it.getApplicationInfo(oriPkg, 0).loadLabel(it)
                     }
-                }
-                resolve().firstMethodOrNull {
-                    name = "getLaunchedFromUid"
-                }?.hook {
-                    after {
-                        val activity = this.instance<Activity>()
-                        val oriUid = this.result<Int>() ?: return@after
-                        if (fromInstallStart(activity) && isFromOutside(activity, oriUid)) {
-                            this.result = getSourceUid(activity) ?: 0
-                        }
+                    val fakeAppLabel = activity.packageManager.let {
+                        it.getApplicationInfo(sourcePackageName, 0).loadLabel(it)
                     }
-                }
-
-            }
-            val fldVH = fldViewHolder?.getFieldInstance(appClassLoader!!) ?: return
-            val metGetTvInstallSource = clzViewHolder.resolve().firstMethodOrNull {
-                name = "getTvInstallSource"
-                returnType = TextView::class
-            } ?: return
-            metAppInfo.map {
-                it.getMethodInstance(appClassLoader!!)
-            }.hookAll {
-                after {
-                    val viewHolder = fldVH.get(this.instance)
-                    val tvInstallSource = metGetTvInstallSource.copy().of(viewHolder).invoke<TextView>() ?: return@after
-                    tvInstallSource.let {
-                        it.text = it.context.getString(ResourcesUtils.dialog_install_source, appLabel)
-                    }
+                    appLabel = "$realAppLabel ($fakeAppLabel)"
+                    result(sourcePackageName)
+                } else {
+                    result(ori)
                 }
             }
+            resolve().firstMethodOrNull {
+                name = "getLaunchedFromUid"
+            }?.hook {
+                val ori = proceed()
+                val activity = thisObject as? Activity
+                val oriUid = ori as? Int
+                if (
+                    activity != null && fromInstallStart(activity) &&
+                    oriUid != null && isFromOutside(activity, oriUid)
+                ) {
+                    result(getSourceUid(activity) ?: 0)
+                } else {
+                    result(ori)
+                }
+            }
+        }
+        val fldVH = fldViewHolder?.getFieldInstance(classLoader) ?: return
+        val metGetTvInstallSource = clzViewHolder.resolve().firstMethodOrNull {
+            name = "getTvInstallSource"
+            returnType = TextView::class
+        }?.toTyped<TextView>() ?: return
+        metAppInfo.map {
+            it.getMethodInstance(classLoader)
+        }.hookAll {
+            val ori = proceed()
+            val viewHolder = fldVH.get(thisObject)
+            metGetTvInstallSource.invoke(viewHolder)?.let {
+                it.text = ResourcesUtils.dialog_install_source.asString(it.context, appLabel)
+            }
+            result(ori)
         }
     }
 

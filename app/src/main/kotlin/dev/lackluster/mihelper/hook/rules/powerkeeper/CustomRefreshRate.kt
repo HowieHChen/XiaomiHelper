@@ -22,13 +22,15 @@ package dev.lackluster.mihelper.hook.rules.powerkeeper
 
 import com.highcapable.kavaref.KavaRef.Companion.asResolver
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.DexKit
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.DexKit
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.ifTrue
+import dev.lackluster.mihelper.hook.utils.toTyped
 import org.luckypray.dexkit.query.enums.StringMatchType
 
-object CustomRefreshRate : YukiBaseHooker() {
+object CustomRefreshRate : StaticHooker() {
     private val parseCustomModeMethod by lazy {
         DexKit.findMethodsWithCache("custom_refresh_rate") {
             matcher {
@@ -37,32 +39,38 @@ object CustomRefreshRate : YukiBaseHooker() {
             }
         }
     }
+    private val clzDisplayFrameSetting by "com.miui.powerkeeper.statemachine.DisplayFrameSetting".lazyClassOrNull()
+
+    override fun onInit() {
+        Preferences.PowerKeeper.UNLOCK_CUSTOM_REFRESH.get().also {
+            updateSelfState(it)
+        }.ifTrue {
+            parseCustomModeMethod
+        }
+    }
 
     override fun onHook() {
-        hasEnable(Pref.Key.PowerKeeper.UNLOCK_CUSTOM_REFRESH) {
-            if (appClassLoader == null) return@hasEnable
-            var hooked = false
-            "com.miui.powerkeeper.statemachine.DisplayFrameSetting".toClassOrNull()?.apply {
-                val fldIsCustomFpsSwitch = resolve().firstFieldOrNull {
-                    name = "mIsCustomFpsSwitch"
-                }
-                resolve().firstMethodOrNull {
-                    name = "parseCustomModeSwitchFromDb"
-                }?.hook {
-                    hooked = true
-                    after {
-                        fldIsCustomFpsSwitch?.copy()?.of(this.instance)?.set("true")
-                    }
-                }
+        val metParseCustomModeSwitchFromDb = clzDisplayFrameSetting?.resolve()?.firstMethodOrNull {
+            name = "parseCustomModeSwitchFromDb"
+        }
+        if (metParseCustomModeSwitchFromDb != null) {
+            val fldIsCustomFpsSwitch = clzDisplayFrameSetting?.resolve()?.firstFieldOrNull {
+                name = "mIsCustomFpsSwitch"
+            }?.toTyped<String>()
+            metParseCustomModeSwitchFromDb.hook {
+                val ori = proceed()
+                fldIsCustomFpsSwitch?.set(thisObject, "true")
+                result(ori)
             }
-            if (!hooked) {
-                parseCustomModeMethod.map { it.getMethodInstance(appClassLoader!!) }.hookAll {
-                    after {
-                        this.instance.asResolver().firstFieldOrNull {
-                            name = "mIsCustomFpsSwitch"
-                        }?.set("true")
-                    }
-                }
+        } else {
+            parseCustomModeMethod.map {
+                it.getMethodInstance(classLoader)
+            }.hookAll {
+                val ori = proceed()
+                thisObject.asResolver().firstFieldOrNull {
+                    name = "mIsCustomFpsSwitch"
+                }?.set("true")
+                result(ori)
             }
         }
     }

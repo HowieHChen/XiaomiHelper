@@ -17,12 +17,15 @@ import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.app.utils.SystemCommander
 import dev.lackluster.mihelper.app.utils.showToastAsync
 import dev.lackluster.mihelper.data.Scope
+import dev.lackluster.mihelper.utils.MLog
 import kotlinx.coroutines.launch
 import top.yukonga.miuix.kmp.basic.Icon
 import top.yukonga.miuix.kmp.basic.IconButton
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.extended.Refresh
 import top.yukonga.miuix.kmp.theme.MiuixTheme
+
+private const val TAG = "RebootActionItem"
 
 @Composable
 fun RebootActionItem(
@@ -62,19 +65,27 @@ fun RebootActionItem(
             showDialog.value = false
             scope.launch {
                 var success = true
-                if (appPkg.contains(Scope.ANDROID)) {
-                    success = SystemCommander.execAsync(
+                if (appPkg.contains(Scope.SYSTEM)) {
+                    val result = SystemCommander.execAsync(
                         command = "/system/bin/sync;/system/bin/svc power reboot || reboot",
                         useRoot = true,
                         silent = true
-                    ).isSuccess
+                    )
+                    if (!result.isSuccess) {
+                        MLog.e(TAG) { result.err }
+                    }
+                    success = result.isSuccess
                 } else {
                     appPkg.forEach { packageName ->
-                        success = success and SystemCommander.execAsync(
+                        val result = SystemCommander.execAsync(
                             command = "killall $packageName",
                             useRoot = true,
                             silent = true
-                        ).isSuccess
+                        )
+                        if (!result.isSuccess) {
+                            MLog.e(TAG) { result.err }
+                        }
+                        success = success and result.isSuccess
                     }
                 }
                 if (success) {

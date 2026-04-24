@@ -22,68 +22,72 @@ package dev.lackluster.mihelper.hook.rules.miuihome.gesture
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.condition.type.Modifiers
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.Prefs
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
+import dev.lackluster.mihelper.hook.utils.toTyped
 
-object BackGestureHaptic : YukiBaseHooker() {
+object BackGestureHaptic : StaticHooker() {
     private const val TIME_OUT_BLOCKER_KEY = "BLOCKER_ID_FOR_HAPTIC_GESTURE_BACK"
-    private val clzHapticFeedbackCompatV2 by lazy {
-        "com.miui.home.common.hapticfeedback.HapticFeedbackCompatV2".toClassOrNull()
-    }
-    private val clzTimeOutBlocker by lazy {
-        "com.miui.home.common.utils.TimeOutBlocker".toClassOrNull()
-    }
+
+    private val backGestureHaptic by Preferences.MiuiHome.BACK_GESTURE_HAPTIC.lazyGet()
+
+    private val clzHapticFeedbackCompatV2 by "com.miui.home.common.hapticfeedback.HapticFeedbackCompatV2".lazyClassOrNull()
+    private val clzTimeOutBlocker by "com.miui.home.common.utils.TimeOutBlocker".lazyClassOrNull()
     private val metGetHandler by lazy {
         "com.miui.home.common.multithread.BackgroundThread".toClassOrNull()?.resolve()?.firstMethodOrNull {
             name = "getHandler"
             modifiers(Modifiers.STATIC)
-        }
+        }?.toTyped<Any>()
     }
     private val metStartCountDown by lazy {
         clzTimeOutBlocker?.resolve()?.firstMethodOrNull {
             name = "startCountDown"
             modifiers(Modifiers.STATIC)
-        }
+        }?.toTyped<Unit>()
     }
     private val metIsBlocked by lazy {
         clzTimeOutBlocker?.resolve()?.firstMethodOrNull {
             name = "isBlocked"
             modifiers(Modifiers.STATIC)
-        }
+        }?.toTyped<Boolean>()
     }
     private val metPerformExtHapticFeedback by lazy {
         "miuix.util.HapticFeedbackCompat".toClassOrNull()?.resolve()?.firstMethodOrNull {
             name = "performExtHapticFeedback"
             parameters(Int::class)
-        }
+        }?.toTyped<Boolean>()
+    }
+
+    override fun onInit() {
+        updateSelfState(backGestureHaptic != 0)
     }
 
     override fun onHook() {
-        when (Prefs.getInt(Pref.Key.MiuiHome.BACK_GESTURE_HAPTIC, 0)) {
+        when (backGestureHaptic) {
             1 -> {
                 if (clzHapticFeedbackCompatV2 == null) return
                 clzHapticFeedbackCompatV2?.apply {
                     val mHapticHelper = resolve().firstFieldOrNull {
                         name = "mHapticHelper"
-                    }
+                    }?.toTyped<Any>()
                     resolve().firstMethodOrNull {
                         name = "performGestureReadyBack"
                     }?.hook {
-                        after {
-                            metGetHandler?.copy()?.invoke()?.let { handler ->
-                                metStartCountDown?.copy()?.invoke(handler, 140L, TIME_OUT_BLOCKER_KEY)
-                            }
+                        val ori = proceed()
+                        metGetHandler?.invoke(null)?.let { handler ->
+                            metStartCountDown?.invoke(null, handler, 140L, TIME_OUT_BLOCKER_KEY)
                         }
+                        result(ori)
                     }
                     resolve().firstMethodOrNull {
                         name = "performGestureBackHandUp"
                     }?.hook {
-                        before {
-                            val isBlocked = metIsBlocked?.invoke<Boolean>(TIME_OUT_BLOCKER_KEY)
-                            if (isBlocked == true) {
-                                this.result = null
-                            }
+                        val isBlocked = metIsBlocked?.invoke(null, TIME_OUT_BLOCKER_KEY) ?: false
+                        if (isBlocked) {
+                            result(null)
+                        } else {
+                            result(proceed())
                         }
                     }
                     resolve().firstMethodOrNull {
@@ -91,22 +95,20 @@ object BackGestureHaptic : YukiBaseHooker() {
                             it.startsWith("lambda") && it.contains("performGestureReadyBack")
                         }
                     }?.hook {
-                        replaceUnit {
-                            mHapticHelper?.copy()?.of(this.instance)?.get()?.let {
-                                metPerformExtHapticFeedback?.copy()?.of(it)?.invoke(0)
-                            }
+                        mHapticHelper?.get(thisObject)?.let {
+                            metPerformExtHapticFeedback?.invoke(it, 0)
                         }
+                        result(null)
                     }
                     resolve().firstMethodOrNull {
                         name {
                             it.startsWith("lambda") && it.contains("performGestureBackHandUp")
                         }
                     }?.hook {
-                        replaceUnit {
-                            mHapticHelper?.copy()?.of(this.instance)?.get()?.let {
-                                metPerformExtHapticFeedback?.copy()?.of(it)?.invoke(1)
-                            }
+                        mHapticHelper?.get(thisObject)?.let {
+                            metPerformExtHapticFeedback?.invoke(it, 1)
                         }
+                        result(null)
                     }
                 }
                 "com.miui.home.recents.GestureStubView".toClassOrNull()?.apply {
@@ -114,9 +116,9 @@ object BackGestureHaptic : YukiBaseHooker() {
                         name = "injectBackKeyEvent"
                         parameters(Boolean::class)
                     }?.hook {
-                        before {
-                            this.args(0).setTrue()
-                        }
+                        val newArgs = args.toTypedArray()
+                        newArgs[0] = true
+                        result(proceed(newArgs))
                     }
                 }
             }
@@ -130,12 +132,12 @@ object BackGestureHaptic : YukiBaseHooker() {
                         resolve().firstMethodOrNull {
                             name = "performGestureBackHandUp"
                         }?.hook {
-                            intercept()
+                            result(null)
                         }
                         resolve().firstMethodOrNull {
                             name = "performGestureReadyBack"
                         }?.hook {
-                            intercept()
+                            result(null)
                         }
                     }
                 }

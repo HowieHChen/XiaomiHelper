@@ -24,9 +24,10 @@ import android.content.Context
 import android.os.Handler
 import android.widget.TextView
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.param.HookParam
-import dev.lackluster.mihelper.data.Pref
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.HookResult
+import dev.lackluster.mihelper.hook.base.HookScope
+import dev.lackluster.mihelper.hook.base.StaticHooker
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.big_time
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.clock
@@ -35,34 +36,29 @@ import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.horizontal_tim
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.normal_control_center_date_view
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.pad_clock
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzMiuiClock
-import dev.lackluster.mihelper.utils.Prefs
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
+import dev.lackluster.mihelper.hook.utils.toTyped
 import java.util.Objects
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import kotlin.math.ceil
 
-object MiuiClock : YukiBaseHooker() {
-    private val showAMPM = Prefs.getBoolean(Pref.Key.SystemUI.StatusBar.CLOCK_SHOW_AMPM, false)
-    private val showLeadingZero = Prefs.getBoolean(Pref.Key.SystemUI.StatusBar.CLOCK_SHOW_LEADING_ZERO, false)
-    private val showSecond = Prefs.getBoolean(Pref.Key.SystemUI.StatusBar.CLOCK_SHOW_SECONDS, false)
-    private val geek = Prefs.getBoolean(Pref.Key.SystemUI.StatusBar.CLOCK_GEEK, false)
-    private val geekPatternClock =
-        Prefs.getString(Pref.Key.SystemUI.StatusBar.CLOCK_GEEK_FORMAT_CLOCK, Pref.DefValue.SystemUI.CLOCK_GEEK_FORMAT_CLOCK)
-    private val geekPatternPadClock =
-        Prefs.getString(Pref.Key.SystemUI.StatusBar.CLOCK_GEEK_FORMAT_PAD_CLOCK, Pref.DefValue.SystemUI.CLOCK_GEEK_FORMAT_PAD_CLOCK)
-    private val geekPatternBigTime =
-        Prefs.getString(Pref.Key.SystemUI.StatusBar.CLOCK_GEEK_FORMAT_BIG_TIME, Pref.DefValue.SystemUI.CLOCK_GEEK_FORMAT_BIG_TIME)
-    private val geekPatternDateTime =
-        Prefs.getString(Pref.Key.SystemUI.StatusBar.CLOCK_GEEK_FORMAT_DATE_TIME, Pref.DefValue.SystemUI.CLOCK_GEEK_FORMAT_DATE_TIME)
-    private val geekPatternCCDateView =
-        Prefs.getString(Pref.Key.SystemUI.StatusBar.CLOCK_GEEK_FORMAT_CC_DATE, Pref.DefValue.SystemUI.CLOCK_GEEK_FORMAT_CC_DATE)
-    private val geekPatternHorizonTime =
-        Prefs.getString(Pref.Key.SystemUI.StatusBar.CLOCK_GEEK_FORMAT_HORIZON_TIME, Pref.DefValue.SystemUI.CLOCK_GEEK_FORMAT_HORIZON_TIME)
-    private val fixedWidth = Prefs.getBoolean(Pref.Key.SystemUI.StatusBar.CLOCK_FIXED_WIDTH, false)
+object MiuiClock : StaticHooker() {
+    private val showAMPM by Preferences.SystemUI.StatusBar.Clock.EASY_SHOW_AMPM.lazyGet()
+    private val showLeadingZero by Preferences.SystemUI.StatusBar.Clock.EASY_SHOW_LEADING_ZERO.lazyGet()
+    private val showSecond by Preferences.SystemUI.StatusBar.Clock.EASY_SHOW_SECONDS.lazyGet()
 
-    private val needHookUpdate =
-        geek || showAMPM || showLeadingZero || showSecond || fixedWidth
+    private val geek by Preferences.SystemUI.StatusBar.Clock.ENABLE_GEEK_MODE.lazyGet()
+    private val geekPatternClock by Preferences.SystemUI.StatusBar.Clock.GEEK_FORMAT_CLOCK.lazyGet()
+    private val geekPatternPadClock by Preferences.SystemUI.StatusBar.Clock.GEEK_FORMAT_PAD_CLOCK.lazyGet()
+    private val geekPatternBigTime by Preferences.SystemUI.StatusBar.Clock.GEEK_FORMAT_BIG_TIME.lazyGet()
+    private val geekPatternDateTime by Preferences.SystemUI.StatusBar.Clock.GEEK_FORMAT_DATE_TIME.lazyGet()
+    private val geekPatternCCDateView by Preferences.SystemUI.StatusBar.Clock.GEEK_FORMAT_CC_DATE.lazyGet()
+    private val geekPatternHorizonTime by Preferences.SystemUI.StatusBar.Clock.GEEK_FORMAT_HORIZON_TIME.lazyGet()
+
+    private val fixedWidth by Preferences.SystemUI.StatusBar.Clock.FIXED_WIDTH.lazyGet()
+
     private val refreshEverySecond by lazy {
         if (geek) {
             listOf(
@@ -79,44 +75,44 @@ object MiuiClock : YukiBaseHooker() {
     private val refreshBySecondCache by lazy {
         ConcurrentHashMap<Int, Boolean>()
     }
-    private val clzMiuiStatusBarClockController by lazy {
-        "com.android.systemui.statusbar.policy.MiuiStatusBarClockController".toClass()
-    }
-    private val clzCalendar by lazy {
-        "miuix.pickerwidget.date.Calendar".toClass()
-    }
+    private val clzMiuiStatusBarClockController by "com.android.systemui.statusbar.policy.MiuiStatusBarClockController".lazyClass()
+    private val clzCalendar by "miuix.pickerwidget.date.Calendar".lazyClass()
     private val fldMiuiStatusBarClockController by lazy {
         clzMiuiClock?.resolve()?.firstFieldOrNull {
             name = "mMiuiStatusBarClockController"
-        }
+        }?.toTyped<Any>()
     }
     private val fldCalendar by lazy {
         clzMiuiStatusBarClockController.resolve().firstFieldOrNull {
             name = "mCalendar"
-        }
+        }?.toTyped<Any>()
     }
     private val fldIs24 by lazy {
         clzMiuiStatusBarClockController.resolve().firstFieldOrNull {
             name = "mIs24"
-        }
+        }?.toTyped<Boolean>()
     }
     private val metFormat by lazy {
         clzCalendar.resolve().firstMethod {
             name = "format"
             parameterCount = 2
-        }
+        }.toTyped<String>()
+    }
+
+    override fun onInit() {
+        updateSelfState(geek || showAMPM || showLeadingZero || showSecond || fixedWidth)
     }
 
     override fun onHook() {
-        if (!needHookUpdate) return
         if (refreshEverySecond) {
             "com.android.keyguard.KeyguardUpdateMonitor".toClassOrNull()?.apply {
                 val mHandler = resolve().firstFieldOrNull {
                     name = "mHandler"
-                }
+                }?.toTyped<Handler>()
                 resolve().firstConstructor().hook {
-                    after {
-                        val handler = mHandler?.copy()?.of(this.instance)?.get<Handler>() ?: return@after
+                    val ori = proceed()
+                    val handler = mHandler?.get(thisObject)
+                    if (handler != null) {
                         Executors.newScheduledThreadPool(1).scheduleWithFixedDelay(
                             {
                                 handler.sendEmptyMessage(301)
@@ -126,6 +122,7 @@ object MiuiClock : YukiBaseHooker() {
                             TimeUnit.MILLISECONDS
                         )
                     }
+                    result(ori)
                 }
             }
         }
@@ -134,28 +131,25 @@ object MiuiClock : YukiBaseHooker() {
                 name = "updateTime"
             }?.hook {
                 if (geek) {
-                    before {
-                        updateTimeGeek(this)
-                    }
+                    updateTimeGeek()
                 } else {
-                    before {
-                        updateTime(this)
-                    }
+                    updateTime()
                 }
             }
         }
     }
 
-    private fun updateTime(param: HookParam) {
-        val clockView = param.instance<TextView>()
-        if (clockView.id !in setOf(clock, big_time, horizontal_time)) return
+    private fun HookScope.updateTime(): HookResult {
+        val clockView = thisObject as? TextView
+        if (clockView == null || clockView.id !in setOf(clock, big_time, horizontal_time)) return result(proceed())
         val context = clockView.context
-        val controller = fldMiuiStatusBarClockController?.copy()?.of(param.instance)?.get() ?: return
-        val calendar = fldCalendar?.copy()?.of(controller)?.get() ?: return
-        val is24 = fldIs24?.copy()?.of(controller)?.get<Boolean>() ?: return
+        val controller = fldMiuiStatusBarClockController?.get(thisObject)
+        val calendar = controller?.let { fldCalendar?.get(it) }
+        val is24 = controller?.let { fldIs24?.get(it) }
+        if (calendar == null || is24 == null) return result(proceed())
         val fmtString = getFmtString(context, clockView.id, is24)
         if (fmtString.isNotBlank()) {
-            val dateTime = metFormat.copy().of(calendar).invoke<String>(context, fmtString)
+            val dateTime = metFormat.invoke(calendar, context, fmtString)
             clockView.text = dateTime
             if (
                 fixedWidth && refreshEverySecond && needRefreshBySecond(context, clockView.id, is24) &&
@@ -163,16 +157,19 @@ object MiuiClock : YukiBaseHooker() {
             ) {
                 clockView.minWidth = ceil(clockView.paint.measureText(dateTime)).toInt() + clockView.paddingLeft + clockView.paddingRight
             }
-            param.result = null
+            return result(null)
+        } else {
+            return result(proceed())
         }
     }
 
-    private fun updateTimeGeek(param: HookParam) {
-        val clockView = param.instance<TextView>()
-        val context = clockView.context
-        val controller = fldMiuiStatusBarClockController?.copy()?.of(param.instance)?.get() ?: return
-        val calendar = fldCalendar?.copy()?.of(controller)?.get() ?: return
-        val is24 = fldIs24?.copy()?.of(controller)?.get<Boolean>() ?: return
+    private fun HookScope.updateTimeGeek(): HookResult {
+        val clockView = thisObject as? TextView
+        val context = clockView?.context
+        val controller = fldMiuiStatusBarClockController?.get(thisObject)
+        val calendar = controller?.let { fldCalendar?.get(it) }
+        val is24 = controller?.let { fldIs24?.get(it) }
+        if (context == null || calendar == null || is24 == null) return result(proceed())
         val fmtString = when (clockView.id) {
             clock -> geekPatternClock
             pad_clock -> geekPatternPadClock
@@ -180,9 +177,9 @@ object MiuiClock : YukiBaseHooker() {
             date_time -> geekPatternDateTime
             normal_control_center_date_view -> geekPatternCCDateView
             horizontal_time -> geekPatternHorizonTime
-            else -> return
-        } ?: return
-        val dateTime = metFormat.copy().of(calendar).invoke<String>(context, fmtString)
+            else -> null
+        } ?: return result(proceed())
+        val dateTime = metFormat.invoke(calendar, context, fmtString)
         clockView.text = dateTime
         if (
             fixedWidth && refreshEverySecond && needRefreshBySecond(context, clockView.id, is24) &&
@@ -190,7 +187,7 @@ object MiuiClock : YukiBaseHooker() {
         ) {
             clockView.minWidth = ceil(clockView.paint.measureText(dateTime)).toInt() + clockView.paddingLeft + clockView.paddingRight
         }
-        param.result = null
+        return result(null)
     }
 
     private fun getFmtString(context: Context, clockId: Int, is24: Boolean): String {

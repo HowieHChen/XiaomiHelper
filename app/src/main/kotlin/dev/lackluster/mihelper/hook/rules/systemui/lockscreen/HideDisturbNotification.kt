@@ -21,26 +21,28 @@
 package dev.lackluster.mihelper.hook.rules.systemui.lockscreen
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.toTyped
 
-object HideDisturbNotification : YukiBaseHooker() {
+object HideDisturbNotification : StaticHooker() {
+    override fun onInit() {
+        updateSelfState(Preferences.SystemUI.LockScreen.HIDE_DISTURB_NOTIF.get())
+    }
+
     override fun onHook() {
-        hasEnable(Pref.Key.SystemUI.LockScreen.HIDE_DISTURB) {
-            "com.android.systemui.statusbar.notification.zen.ZenModeViewController".toClass().apply {
-                val manuallyDismissed = resolve().firstFieldOrNull {
-                    name = "manuallyDismissed"
+        "com.android.systemui.statusbar.notification.zen.ZenModeViewController".toClass().apply {
+            val manuallyDismissed = resolve().firstFieldOrNull {
+                name = "manuallyDismissed"
+            }?.toTyped<Boolean>()
+            resolve().firstMethodOrNull {
+                name {
+                    it.startsWith("updateVisibility")
                 }
-                resolve().firstMethodOrNull {
-                    name {
-                        it.startsWith("updateVisibility")
-                    }
-                }?.hook {
-                    before {
-                        manuallyDismissed?.copy()?.of(this.instance)?.set(true)
-                    }
-                }
+            }?.hook {
+                manuallyDismissed?.set(thisObject, true)
+                result(proceed())
             }
         }
     }

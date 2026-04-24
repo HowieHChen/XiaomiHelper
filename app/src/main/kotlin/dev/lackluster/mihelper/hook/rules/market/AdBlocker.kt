@@ -18,31 +18,26 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+@file:Suppress("UNCHECKED_CAST")
+
 package dev.lackluster.mihelper.hook.rules.market
 
 import android.app.Activity
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.condition.type.Modifiers
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.d
+import dev.lackluster.mihelper.hook.utils.toTyped
 
-object AdBlocker : YukiBaseHooker() {
-    private val clzPagerTabsInfo by lazy {
-        "com.xiaomi.market.ui.PagerTabsInfo".toClassOrNull()
-    }
-    private val clzSearchHistoryComponent by lazy {
-        "com.xiaomi.market.common.component.componentbeans.SearchHistoryComponent".toClassOrNull()
-    }
-    private val clzListAppComponent by lazy {
-        "com.xiaomi.market.common.component.componentbeans.ListAppComponent".toClassOrNull()
-    }
-    private val clzAladdinDownloadBottomLowComponent by lazy {
-        "com.xiaomi.market.common.component.componentbeans.AladdinDownloadBottomLowComponent".toClassOrNull()
-    }
-    private val clzRecommendCollectionComponent by lazy {
-        "com.xiaomi.market.common.component.componentbeans.RecommendCollectionComponent".toClassOrNull()
-    }
+object AdBlocker : StaticHooker() {
+    private val clzPagerTabsInfo by "com.xiaomi.market.ui.PagerTabsInfo".lazyClassOrNull()
+    private val clzSearchHistoryComponent by "com.xiaomi.market.common.component.componentbeans.SearchHistoryComponent".lazyClassOrNull()
+    private val clzListAppComponent by "com.xiaomi.market.common.component.componentbeans.ListAppComponent".lazyClassOrNull()
+    private val clzAladdinDownloadBottomLowComponent by "com.xiaomi.market.common.component.componentbeans.AladdinDownloadBottomLowComponent".lazyClassOrNull()
+    private val clzRecommendCollectionComponent by "com.xiaomi.market.common.component.componentbeans.RecommendCollectionComponent".lazyClassOrNull()
+
     private val valueOfDetailType by lazy {
         "com.xiaomi.market.business_ui.detail.DetailType".toClassOrNull()?.resolve()?.firstMethodOrNull {
             name = "valueOf"
@@ -66,267 +61,310 @@ object AdBlocker : YukiBaseHooker() {
     private val fldUrls by lazy {
         clzPagerTabsInfo?.resolve()?.firstFieldOrNull {
             name = "urls"
-        }
+        }?.toTyped<List<String>>()
     }
     private val fldTitles by lazy {
         clzPagerTabsInfo?.resolve()?.firstFieldOrNull {
             name = "titles"
-        }
+        }?.toTyped<List<Map<String, String>>>()
     }
     private val fldTags by lazy {
         clzPagerTabsInfo?.resolve()?.firstFieldOrNull {
             name = "tags"
-        }
+        }?.toTyped<List<String>>()
     }
     private val fldAbNormals by lazy {
         clzPagerTabsInfo?.resolve()?.firstFieldOrNull {
             name = "abNormals"
-        }
+        }?.toTyped<List<Boolean>>()
+    }
+
+    override fun onInit() {
+        updateSelfState(Preferences.Market.AD_BLOCKER.get())
     }
 
     override fun onHook() {
-        hasEnable(Pref.Key.Market.AD_BLOCKER) {
-            // 搜索建议页
-            "com.xiaomi.market.business_ui.search.NativeSearchSugFragment".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
-                    name = "getRequestParams"
-                }?.hook {
-                    after {
-                        val baseParametersForH5ToNative = this.result<Map<String, Any?>>()?.toMutableMap() ?: return@after
-                        baseParametersForH5ToNative["adFlag"] = 0
-                        this.result = baseParametersForH5ToNative
-                    }
+        // 搜索建议页
+        "com.xiaomi.market.business_ui.search.NativeSearchSugFragment".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "getRequestParams"
+            }?.hook {
+                val ori = proceed()
+                val baseParametersForH5ToNative = (ori as? Map<String, Any?>)?.toMutableMap()
+                if (baseParametersForH5ToNative != null) {
+                    baseParametersForH5ToNative["adFlag"] = 0
+                    result(baseParametersForH5ToNative)
+                } else {
+                    result(ori)
                 }
             }
-            // 搜索结果页
-            "com.xiaomi.market.business_ui.search.NativeSearchResultFragment".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
-                    name = "parseResponseData"
-                }?.hook {
-                    after {
-                        val parsedComponents = this.result<List<Any>>()?.toMutableList() ?: return@after
-                        parsedComponents.retainAll {
-                            clzListAppComponent?.isInstance(it) == true ||
-                                    clzAladdinDownloadBottomLowComponent?.isInstance(it) == true ||
-                                    clzRecommendCollectionComponent?.isInstance(it) == true
-                        }
-                        this.result = parsedComponents
+        }
+        // 搜索结果页
+        "com.xiaomi.market.business_ui.search.NativeSearchResultFragment".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "parseResponseData"
+            }?.hook {
+                val ori = proceed()
+                val parsedComponents = (ori as? List<Any?>)?.toMutableList()
+                if (parsedComponents != null) {
+                    parsedComponents.retainAll {
+                        clzListAppComponent?.isInstance(it) == true ||
+                                clzAladdinDownloadBottomLowComponent?.isInstance(it) == true ||
+                                clzRecommendCollectionComponent?.isInstance(it) == true
                     }
+                    result(parsedComponents)
+                } else {
+                    result(ori)
                 }
             }
-            // 搜索页
-            "com.xiaomi.market.business_ui.search.NativeSearchGuideFragment".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
-                    name = "parseResponseData"
-                }?.hook {
-                    after {
-                        val parsedComponents = this.result<List<Any>>()?.toMutableList() ?: return@after
-                        parsedComponents.retainAll {
-                            clzSearchHistoryComponent?.isInstance(it) == true
-                        }
-                        this.result = parsedComponents
+        }
+        // 搜索页
+        "com.xiaomi.market.business_ui.search.NativeSearchGuideFragment".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "parseResponseData"
+            }?.hook {
+                val ori = proceed()
+                val parsedComponents = (ori as? List<Any?>)?.toMutableList()
+                if (parsedComponents != null) {
+                    parsedComponents.retainAll {
+                        clzSearchHistoryComponent?.isInstance(it) == true
                     }
-                }
-                resolve().firstMethodOrNull {
-                    name = "isLoadMoreEndGone"
-                }?.hook {
-                    replaceToTrue()
+                    result(parsedComponents)
+                } else {
+                    result(ori)
                 }
             }
-            // 更新页
-            "com.xiaomi.market.ui.UpdateListRvAdapter".toClassOrNull()?.apply {
-                val forceExpanded = resolve().firstFieldOrNull {
-                    name = "forceExpanded"
+            resolve().firstMethodOrNull {
+                name = "isLoadMoreEndGone"
+            }?.hook {
+                result(true)
+            }
+        }
+        // 更新页
+        "com.xiaomi.market.ui.UpdateListRvAdapter".toClassOrNull()?.apply {
+            val forceExpanded = resolve().firstFieldOrNull {
+                name = "forceExpanded"
+            }?.toTyped<Boolean>()
+            val foldButtonVisible = resolve().firstFieldOrNull {
+                name = "foldButtonVisible"
+            }?.toTyped<Boolean>()
+            val pageCollapseState = resolve().firstFieldOrNull {
+                name = "pageCollapseState"
+            }?.toTyped<Any>()
+            resolve().firstConstructor().hook {
+                val ori = proceed()
+                forceExpanded?.set(thisObject, true)
+                foldButtonVisible?.set(thisObject, false)
+                pageCollapseState?.set(thisObject, enumPageCollapseStateExpand)
+                result(ori)
+            }
+            resolve().firstMethodOrNull {
+                name = "generateRecommendGroupItems"
+            }?.hook {
+                result(null)
+            }
+        }
+        // 下载页
+        "com.xiaomi.market.ui.DownloadListFragment".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "parseRecommendGroupResult"
+            }?.hook {
+                result(null)
+            }
+        }
+        // 底部 Tab
+        "com.xiaomi.market.widget.TabView".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "setNumber"
+            }?.hook {
+                result(null)
+            }
+            resolve().firstMethodOrNull {
+                name = "showNewMessageTag"
+            }?.hook {
+                result(null)
+            }
+        }
+        // 首页启动弹窗
+        "com.xiaomi.market.business_ui.main.MarketTabActivity".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "tryShowRecommend"
+            }?.hook {
+                result(null)
+            }
+            resolve().firstMethodOrNull {
+                name = "tryShowRecallReCommend"
+            }?.hook {
+                result(null)
+            }
+            resolve().firstMethodOrNull {
+                name = "fetchSearchHotList"
+            }?.hook {
+                result(null)
+            }
+        }
+        "com.xiaomi.market.ui.FloatWebActivity".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "onCreate"
+                superclass()
+            }?.hook {
+                val ori = proceed()
+                (thisObject as? Activity)?.finish()
+                result(ori)
+            }
+        }
+        // 首页二楼
+        "com.xiaomi.market.common.component.quick_item.QuickSecondHelper".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "shouldHideSecond"
+            }?.hook {
+                result(true)
+            }
+        }
+        $$"com.xiaomi.market.common.analytics.onetrack.ExperimentManager$Companion".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "isEnableQuickSecond"
+            }?.hook {
+                result(false)
+            }
+        }
+        // 过滤子标签页
+        "com.xiaomi.market.ui.PagerTabsInfo".toClassOrNull()?.apply {
+            resolve().constructor {
+                parameterCount {
+                    it == 0 || it == 1
                 }
-                val foldButtonVisible = resolve().firstFieldOrNull {
-                    name = "foldButtonVisible"
+            }.hookAll {
+                val ori = proceed()
+                filterTabs(thisObject)
+                result(ori)
+            }
+            resolve().firstMethodOrNull {
+                name = "fromJSON"
+            }?.hook {
+                val ori = proceed()
+                filterTabs(ori)
+                result(ori)
+            }
+            resolve().firstMethodOrNull {
+                name = "fromTabInfo"
+            }?.hook {
+                val ori = proceed()
+                filterTabs(ori)
+                result(ori)
+            }
+            resolve().firstMethodOrNull {
+                name = "fromNativeTabs"
+            }?.hook {
+                val ori = proceed()
+                filterTabs(ori)
+                result(ori)
+            }
+            resolve().firstMethodOrNull {
+                name = "setAbNormals"
+            }?.hook {
+                result(null)
+            }
+        }
+        // 应用详情页
+        "com.xiaomi.market.ui.detail.BaseDetailActivity".toClassOrNull()?.apply {
+            val detailType = resolve().firstFieldOrNull {
+                name = "detailType"
+                superclass()
+            }?.toTyped<Any>()
+            resolve().firstMethodOrNull {
+                name = "initParams"
+            }?.hook {
+                val ori = proceed()
+                if (enumDetailTypeV3 == detailType?.get(thisObject)) {
+                    detailType?.set(thisObject, enumDetailTypeV4)
                 }
-                val pageCollapseState = resolve().firstFieldOrNull {
-                    name = "pageCollapseState"
-                }
-                resolve().firstConstructor().hook {
-                    after {
-                        forceExpanded?.copy()?.of(this.instance)?.set(true)
-                        foldButtonVisible?.copy()?.of(this.instance)?.set(false)
-                        pageCollapseState?.copy()?.of(this.instance)?.set(enumPageCollapseStateExpand)
-                    }
-                }
+                result(ori)
+            }
+        }
+        "com.xiaomi.market.common.network.retrofit.response.bean.AppDetailV3".toClassOrNull()?.apply {
+            val showOpenScreenAd = resolve().firstFieldOrNull {
+                name = "showOpenScreenAd"
+            }?.toTyped<Boolean>()
+            val showAssemble = resolve().firstFieldOrNull {
+                name = "showAssemble"
+            }?.toTyped<Boolean>()
+            constructors.filter {
+                it.parameterCount > 0
+            }.minByOrNull {
+                it.parameterCount
+            }?.hook {
+                val ori = proceed()
+                showOpenScreenAd?.set(thisObject, false)
+                showAssemble?.set(thisObject, false)
+                result(ori)
+            }
+            setOf(
+                "showRecommend",
+                "showTopBanner",
+                "showTopVideo",
+                "isSourceFileShowAdStyle",
+            ).forEach { metName ->
                 resolve().firstMethodOrNull {
-                    name = "generateRecommendGroupItems"
+                    name = metName
                 }?.hook {
-                    intercept()
+                    result(false)
                 }
             }
-            // 下载页
-            "com.xiaomi.market.ui.DownloadListFragment".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
-                    name = "parseRecommendGroupResult"
-                }?.hook {
-                    replaceTo(null)
+            resolve().firstMethodOrNull {
+                name = "getLayoutType"
+            }?.hook {
+                val ori = proceed()
+                if (ori == "bottomMultiButton") {
+                    result("bottomSingleButton")
+                } else {
+                    result(ori)
                 }
             }
-            // 底部 Tab
-            "com.xiaomi.market.widget.TabView".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
-                    name = "setNumber"
-                }?.hook {
-                    intercept()
-                }
-                resolve().firstMethodOrNull {
-                    name = "showNewMessageTag"
-                }?.hook {
-                    intercept()
-                }
+        }
+        // 浏览器下载弹窗
+        "com.xiaomi.market.business_ui.directmail.BottomMiniSourceFileFragment".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "needShowAdList"
+            }?.hook {
+                result(false)
             }
-            // 首页启动弹窗
-            "com.xiaomi.market.business_ui.main.MarketTabActivity".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
-                    name = "tryShowRecommend"
-                }?.hook {
-                    intercept()
-                }
-                resolve().firstMethodOrNull {
-                    name = "tryShowRecallReCommend"
-                }?.hook {
-                    intercept()
-                }
-                resolve().firstMethodOrNull {
-                    name = "fetchSearchHotList"
-                }?.hook {
-                    intercept()
-                }
+            resolve().firstMethodOrNull {
+                name = "ensureRiskLayout"
+            }?.hook {
+                result(null)
             }
-            "com.xiaomi.market.ui.FloatWebActivity".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
-                    name = "onCreate"
-                    superclass()
-                }?.hook {
-                    after {
-                        this.instance<Activity>().finish()
-                    }
+        }
+        "com.xiaomi.market.ui.detail.AppDetailCardActivity".toClassOrNull()?.apply {
+            val metGetType = "com.xiaomi.market.business_ui.detail.DetailType".toClassOrNull()?.let {
+                it.resolve().firstMethodOrNull {
+                    name = "valueOf"
+                    parameters(String::class)
                 }
-            }
-            // 首页二楼
-            "com.xiaomi.market.common.component.quick_item.QuickSecondHelper".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
-                    name = "shouldHideSecond"
-                }?.hook {
-                    replaceToTrue()
+            }?.toTyped<Any>()
+            val typeBlacklist = listOf(
+                metGetType?.invoke(null, "BOTTOM_WITH_SOURCE_FILE")
+            )
+            val typeOnlySourceFile = metGetType?.invoke(null, "ONLY_SOURCE_FILE_DOWNLOAD")
+            resolve().firstMethodOrNull {
+                name = "showDetailFragment"
+            }?.hook {
+                val newArgs = args.toTypedArray()
+                d { newArgs[0].toString() }
+                if (newArgs[0] in typeBlacklist) {
+                    newArgs[0] = typeOnlySourceFile
                 }
-            }
-            $$"com.xiaomi.market.common.analytics.onetrack.ExperimentManager$Companion".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
-                    name = "isEnableQuickSecond"
-                }?.hook {
-                    replaceToFalse()
-                }
-            }
-            // 过滤子标签页
-            "com.xiaomi.market.ui.PagerTabsInfo".toClassOrNull()?.apply {
-                resolve().constructor {
-                    parameterCount {
-                        it == 0 || it == 1
-                    }
-                }.hookAll {
-                    after {
-                        filterTabs(this.instance)
-                    }
-                }
-                resolve().firstMethodOrNull {
-                    name = "fromJSON"
-                }?.hook {
-                    after {
-                        this.result?.let { filterTabs(it) }
-                    }
-                }
-                resolve().firstMethodOrNull {
-                    name = "fromTabInfo"
-                }?.hook {
-                    after {
-                        this.result?.let { filterTabs(it) }
-                    }
-                }
-                resolve().firstMethodOrNull {
-                    name = "fromNativeTabs"
-                }?.hook {
-                    after {
-                        this.result?.let { filterTabs(it) }
-                    }
-                }
-                resolve().firstMethodOrNull {
-                    name = "setAbNormals"
-                }?.hook {
-                    intercept()
-                }
-            }
-            // 应用详情页
-            "com.xiaomi.market.ui.detail.BaseDetailActivity".toClassOrNull()?.apply {
-                val detailType = resolve().firstFieldOrNull {
-                    name = "detailType"
-                    superclass()
-                }
-                resolve().firstMethodOrNull {
-                    name = "initParams"
-                }?.hook {
-                    after {
-                        val fldDetailType = detailType?.copy()?.of(this.instance)
-                        if (fldDetailType?.get() == enumDetailTypeV3) {
-                            fldDetailType?.set(enumDetailTypeV4)
-                        }
-                    }
-                }
-            }
-            "com.xiaomi.market.common.network.retrofit.response.bean.AppDetailV3".toClassOrNull()?.apply {
-                val showOpenScreenAd = resolve().firstFieldOrNull {
-                    name = "showOpenScreenAd"
-                }
-                val showAssemble = resolve().firstFieldOrNull {
-                    name = "showAssemble"
-                }
-                constructors.filter {
-                    it.parameterCount > 0
-                }.minByOrNull {
-                    it.parameterCount
-                }?.hook {
-                    after {
-                        showOpenScreenAd?.copy()?.of(this.instance)?.set(false)
-                        showAssemble?.copy()?.of(this.instance)?.set(false)
-                    }
-                }
-                setOf(
-                    "showRecommend",
-                    "showTopBanner",
-                    "showTopVideo",
-                ).forEach { metName ->
-                    resolve().firstMethodOrNull {
-                        name = metName
-                    }?.hook {
-                        replaceToFalse()
-                    }
-                }
-                resolve().firstMethodOrNull {
-                    name = "getLayoutType"
-                }?.hook {
-                    after {
-                        if (this.result == "bottomMultiButton") {
-                            this.result = "bottomSingleButton"
-                        }
-                    }
-                }
+                result(proceed(newArgs))
             }
         }
     }
 
     private fun filterTabs(pagerTabsInfo: Any) {
         clzPagerTabsInfo?.let {
-            val fieldUrls = fldUrls?.copy()?.of(pagerTabsInfo)
-            val fieldTitles = fldTitles?.copy()?.of(pagerTabsInfo)
-            val fieldTags = fldTags?.copy()?.of(pagerTabsInfo)
-            val fieldAbNormals = fldAbNormals?.copy()?.of(pagerTabsInfo)
-            val urls = fieldUrls?.get<List<String>>()?.toMutableList() ?: return@let
-            val titles = fieldTitles?.get<List<Map<String, String>>>()?.toMutableList() ?: return@let
-            val tags = fieldTags?.get<List<String>>()?.toMutableList() ?: return@let
-            val abNormals = fieldAbNormals?.get<List<Boolean>>()?.toMutableList() ?: return@let
+            val urls = fldUrls?.get(pagerTabsInfo)?.toMutableList() ?: return@let
+            val titles = fldTitles?.get(pagerTabsInfo)?.toMutableList() ?: return@let
+            val tags = fldTags?.get(pagerTabsInfo)?.toMutableList() ?: return@let
+            val abNormals = fldAbNormals?.get(pagerTabsInfo)?.toMutableList() ?: return@let
             val removeIndex = mutableSetOf<Int>()
             if (urls.isNotEmpty() && urls.size == titles.size && urls.size == tags.size && urls.size == abNormals.size) {
                 urls.forEachIndexed { index, url ->
@@ -347,10 +385,10 @@ object AdBlocker : YukiBaseHooker() {
                 }
             }
             abNormals.replaceAll { false }
-            fieldUrls.set(urls)
-            fieldTitles.set(titles)
-            fieldTags.set(tags)
-            fieldAbNormals.set(abNormals)
+            fldUrls?.set(pagerTabsInfo, urls)
+            fldTitles?.set(pagerTabsInfo, titles)
+            fldTags?.set(pagerTabsInfo, tags)
+            fldAbNormals?.set(pagerTabsInfo, abNormals)
         }
     }
 }

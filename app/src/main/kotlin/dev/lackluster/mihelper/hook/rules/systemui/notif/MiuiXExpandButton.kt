@@ -28,63 +28,71 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.graphics.drawable.toDrawable
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import dev.lackluster.mihelper.BuildConfig
 import dev.lackluster.mihelper.R
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.toTyped
 
-object MiuiXExpandButton : YukiBaseHooker() {
-    private var expandButtonSize: Int? = null
-    private var expand: Drawable? = null
-    private var shrink: Drawable? = null
+object MiuiXExpandButton : StaticHooker() {
+    private var expandButtonSizePx: Int? = null
+    private var expandDrawable: Drawable? = null
+    private var shrinkDrawable: Drawable? = null
+
+    private val pillDrawable by lazy {
+        Color.TRANSPARENT.toDrawable()
+    }
+
+    override fun onInit() {
+        updateSelfState(Preferences.SystemUI.NotifCenter.MIUIX_EXPAND_BUTTON.get())
+    }
 
     @SuppressLint("UseCompatLoadingForDrawables")
     override fun onHook() {
-        hasEnable(Pref.Key.SystemUI.NotifCenter.MIUIX_EXPAND_BUTTON) {
-            "com.android.internal.widget.NotificationExpandButton".toClassOrNull()?.apply {
-                val mIconView = resolve().firstFieldOrNull {
-                    name = "mIconView"
-                }
-                val mPillDrawable = resolve().firstFieldOrNull {
-                    name = "mPillDrawable"
-                }
-                val mExpanded = resolve().firstFieldOrNull {
-                    name = "mExpanded"
-                }
-                resolve().firstMethodOrNull {
-                    name = "onFinishInflate"
-                }?.hook {
-                    after {
-                        val iconView = mIconView?.copy()?.of(this.instance)?.get<ImageView>() ?: return@after
-                        mPillDrawable?.copy()?.of(this.instance)?.set(Color.TRANSPARENT.toDrawable())
-                        (iconView.parent as? ViewGroup)?.background = null
-                        iconView.setPadding(0, 0, 0, 0)
-                        if (expandButtonSize == null || expand == null || shrink == null) {
-                            val context = iconView.context.createPackageContext(BuildConfig.APPLICATION_ID, Context.CONTEXT_IGNORE_SECURITY)
-                            expand = context.getDrawable(R.drawable.miuix_notification_btn_expand)
-                            shrink = context.getDrawable(R.drawable.miuix_notification_btn_shrink)
-                            expandButtonSize = context.resources.getDimensionPixelSize(R.dimen.miuix_btn_size)
-                        }
-                        expandButtonSize?.let {
-                            iconView.layoutParams = iconView.layoutParams.apply {
-                                width = it
-                                height = it
-                            }
+        "com.android.internal.widget.NotificationExpandButton".toClassOrNull()?.apply {
+            val mIconView = resolve().firstFieldOrNull {
+                name = "mIconView"
+            }?.toTyped<ImageView>()
+            val mPillDrawable = resolve().firstFieldOrNull {
+                name = "mPillDrawable"
+            }?.toTyped<Drawable>()
+            val mExpanded = resolve().firstFieldOrNull {
+                name = "mExpanded"
+            }?.toTyped<Boolean>()
+            resolve().firstMethodOrNull {
+                name = "onFinishInflate"
+            }?.hook {
+                val ori = proceed()
+                val iconView = mIconView?.get(thisObject)
+                if (iconView != null) {
+                    mPillDrawable?.set(thisObject, pillDrawable)
+                    (iconView.parent as? ViewGroup)?.background = null
+                    iconView.setPadding(0, 0, 0, 0)
+                    if (expandButtonSizePx == null || expandDrawable == null || shrinkDrawable == null) {
+                        val context = iconView.context.createPackageContext(BuildConfig.APPLICATION_ID, Context.CONTEXT_IGNORE_SECURITY)
+                        expandDrawable = context.getDrawable(R.drawable.miuix_notification_btn_expand)
+                        shrinkDrawable = context.getDrawable(R.drawable.miuix_notification_btn_shrink)
+                        expandButtonSizePx = context.resources.getDimensionPixelSize(R.dimen.miuix_btn_size)
+                    }
+                    expandButtonSizePx?.let {
+                        iconView.layoutParams = iconView.layoutParams.apply {
+                            width = it
+                            height = it
                         }
                     }
                 }
-                resolve().firstMethodOrNull {
-                    name = "updateExpandedState"
-                }?.hook {
-                    before {
-                        val expanded = mExpanded?.copy()?.of(this.instance)?.get<Boolean>()
-                        val iconView = mIconView?.copy()?.of(this.instance)?.get<ImageView>()
-                        if (expanded == null || iconView == null || shrink == null || expand == null) return@before
-                        iconView.setImageDrawable(if (expanded) shrink else expand)
-                        this.result = null
-                    }
+                result(ori)
+            }
+            resolve().firstMethodOrNull {
+                name = "updateExpandedState"
+            }?.hook {
+                val expanded = mExpanded?.get(thisObject)
+                val iconView = mIconView?.get(thisObject)
+                if (expanded != null && iconView != null && shrinkDrawable != null && expandDrawable != null) {
+                    iconView.setImageDrawable(if (expanded) shrinkDrawable else expandDrawable)
                 }
+                result(null)
             }
         }
     }

@@ -14,8 +14,8 @@ import android.graphics.drawable.Drawable
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.drawable.toDrawable
 import androidx.core.graphics.scale
-import dev.lackluster.mihelper.hook.drawable.MediaControlBgDrawable
-import dev.lackluster.mihelper.hook.drawable.TransitionDrawable
+import dev.lackluster.mihelper.hook.rules.systemui.media.drawable.MediaControlBgDrawable
+import dev.lackluster.mihelper.hook.rules.systemui.media.drawable.TransitionDrawable
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.brightness
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.hardwareBlur
 import dev.lackluster.mihelper.hook.rules.systemui.media.data.MediaViewColorConfig

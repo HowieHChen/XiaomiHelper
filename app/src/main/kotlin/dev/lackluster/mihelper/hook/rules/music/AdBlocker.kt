@@ -23,44 +23,41 @@ package dev.lackluster.mihelper.hook.rules.music
 import android.view.View
 import android.widget.TextView
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import de.robv.android.xposed.XC_MethodHook
-import de.robv.android.xposed.XposedBridge
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.toTyped
 
-object AdBlocker : YukiBaseHooker() {
-    private val clzShelf by lazy {
-        "com.tencent.qqmusiclite.model.shelfcard.Shelf".toClassOrNull()
-    }
+object AdBlocker : StaticHooker() {
+    private val clzShelf by "com.tencent.qqmusiclite.model.shelfcard.Shelf".lazyClassOrNull()
     private val fldShelfId by lazy {
         clzShelf?.resolve()?.firstFieldOrNull {
             name = "id"
             type = Int::class
-        }?.self?.apply {
-            isAccessible = true
-        }
+        }?.toTyped<Int>()
     }
     private val ctorDialogResult by lazy {
         "com.tencent.qqmusiclite.dialog.DialogResult".toClassOrNull()?.resolve()?.firstConstructor {
             parameterCount = 2
             parameters(String::class, Boolean::class)
-        }
+        }?.toTyped()
+    }
+
+    override fun onInit() {
+        updateSelfState(Preferences.Music.AD_BLOCKER.get())
     }
 
     override fun onHook() {
-        hasEnable(Pref.Key.Music.AD_BLOCKER) {
-            simplifyHomePage()
-            simplifyPlayerPage()
-            simplifySearch()
-            simplifyMyVIPCard()
-            blockPopup()
-            "com.tencent.config.AppConfig".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
-                    name = "isNeedAd"
-                }?.hook {
-                    replaceToFalse()
-                }
+        simplifyHomePage()
+        simplifyPlayerPage()
+        simplifySearch()
+        simplifyMyVIPCard()
+        blockPopup()
+        "com.tencent.config.AppConfig".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "isNeedAd"
+            }?.hook {
+                result(false)
             }
         }
     }
@@ -76,15 +73,16 @@ object AdBlocker : YukiBaseHooker() {
             resolve().firstConstructor {
                 parameterCount = 4
             }.hook {
-                before {
-                    val list = this.args(0).list<Any>().toMutableList()
-                    if (list.isNotEmpty() && clzShelf?.isInstance(list[0]) == true) {
-                        list.removeAll {
-                            fldShelfId?.get(it) in blacklist
-                        }
-                        this.args(0).set(list)
+                val newArgs = args.toTypedArray()
+                @Suppress("UNCHECKED_CAST")
+                val list = (newArgs[0] as? List<Any>)?.toMutableList()
+                if (!list.isNullOrEmpty() && clzShelf?.isInstance(list[0]) == true) {
+                    list.removeAll {
+                        fldShelfId?.get(it) in blacklist
                     }
+                    newArgs[0] = list
                 }
+                result(proceed(newArgs))
             }
         }
 //        "com.tencent.qqmusiclite.fragment.home.adapter.HomeAdapter".toClassOrNull()?.apply {
@@ -107,7 +105,7 @@ object AdBlocker : YukiBaseHooker() {
             resolve().firstMethodOrNull {
                 name = "isShow"
             }?.hook {
-                replaceToFalse()
+                result(false)
             }
         }
     }
@@ -122,7 +120,7 @@ object AdBlocker : YukiBaseHooker() {
                 resolve().firstMethodOrNull {
                     name = methodName
                 }?.hook {
-                    intercept()
+                    result(null)
                 }
             }
         }
@@ -138,7 +136,7 @@ object AdBlocker : YukiBaseHooker() {
                 resolve().firstMethodOrNull {
                     name = methodName
                 }?.hook {
-                    intercept()
+                    result(null)
                 }
             }
         }
@@ -147,7 +145,7 @@ object AdBlocker : YukiBaseHooker() {
             resolve().firstMethodOrNull {
                 name = "requestKgHotWordNew"
             }?.hook {
-                intercept()
+                result(null)
             }
         }
         // 搜索页热榜
@@ -155,7 +153,7 @@ object AdBlocker : YukiBaseHooker() {
             resolve().firstMethodOrNull {
                 name = "getBusinessNameList"
             }?.hook {
-                intercept()
+                result(null)
             }
         }
     }
@@ -164,48 +162,46 @@ object AdBlocker : YukiBaseHooker() {
         "com.tencent.qqmusiclite.ui.LoginLayoutViewHolder".toClassOrNull()?.apply {
             val vipTextList = resolve().firstFieldOrNull {
                 name = "vipTextList"
-            }
+            }?.toTyped<List<String>>()
             val getVipBuyLabel = resolve().firstMethodOrNull {
                 name = "getVipBuyLabel"
-            }
+            }?.toTyped<TextView>()
             resolve().firstMethodOrNull {
                 name = "setBackgroundIsVip"
             }?.hook {
-                before {
-                    this.args(0).setTrue()
-                }
+                val newArgs = args.toTypedArray()
+                newArgs[0] = true
+                result(proceed(newArgs))
             }
             resolve().firstMethodOrNull {
                 name = "setAutoPlayFlag"
             }?.hook {
-                before {
-                    this.args(0).setFalse()
-                }
+                val newArgs = args.toTypedArray()
+                newArgs[0] = false
+                result(proceed(newArgs))
             }
             resolve().firstMethodOrNull {
                 name = "setVipTextFirst"
             }?.hook {
-                before {
-                    val textList = vipTextList?.copy()?.of(this.instance)?.get<List<String>>() ?: return@before
-                    this.args(0).set(
-                        textList.firstOrNull { it.contains("/") } ?: textList.firstOrNull { it.contains("到期") }
-                    )
+                val textList = vipTextList?.get(thisObject)
+                val newArgs = args.toTypedArray()
+                if (textList != null) {
+                    newArgs[0] = textList.firstOrNull { it.contains("/") } ?: textList.firstOrNull { it.contains("到期") }
                 }
+                result(proceed(newArgs))
             }
             resolve().firstMethodOrNull {
                 name = "setVipTextSecond"
             }?.hook {
-                before {
-                    this.args(0).setNull()
-                }
+                val newArgs = args.toTypedArray()
+                newArgs[0] = null
+                result(proceed(newArgs))
             }
             resolve().firstMethodOrNull {
                 name = "setVipBuy"
             }?.hook {
-                before {
-                    getVipBuyLabel?.copy()?.of(this.instance)?.invoke<TextView>()?.visibility = View.GONE
-                    this.result = null
-                }
+                getVipBuyLabel?.invoke(thisObject)?.visibility = View.GONE
+                result(null)
             }
             setOf(
                 "showNextAction",
@@ -215,7 +211,7 @@ object AdBlocker : YukiBaseHooker() {
                 resolve().firstMethodOrNull {
                     name = methodName
                 }?.hook {
-                    intercept()
+                    result(null)
                 }
             }
         }
@@ -223,9 +219,17 @@ object AdBlocker : YukiBaseHooker() {
             resolve().firstMethodOrNull {
                 name = "setSuffixText"
             }?.hook {
-                before {
-                    this.args(0).set("")
-                }
+                val newArgs = args.toTypedArray()
+                newArgs[0] = ""
+                result(proceed(newArgs))
+            }
+        }
+        "com.tencent.qqmusiclite.ui.MyVipDunningView".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "show"
+                parameters(Boolean::class)
+            }?.hook {
+                result(null)
             }
         }
     }
@@ -240,21 +244,14 @@ object AdBlocker : YukiBaseHooker() {
             ).forEach { methodName ->
                 resolve().firstMethodOrNull {
                     name = methodName
-                }?.self?.let {
-                    XposedBridge.hookMethod(
-                        it,
-                        object : XC_MethodHook() {
-                            override fun beforeHookedMethod(param: MethodHookParam?) {
-                                param?.result = java.lang.Boolean.FALSE
-                            }
-                        }
-                    )
+                }?.hook {
+                    result(false)
                 }
             }
             resolve().firstMethodOrNull {
                 name = "tryShowTryEndAlert"
             }?.hook {
-                replaceToFalse()
+                result(false)
             }
         }
         // DTS 弹窗
@@ -269,7 +266,7 @@ object AdBlocker : YukiBaseHooker() {
                 resolve().firstMethodOrNull {
                     name = methodName
                 }?.hook {
-                    replaceToFalse()
+                    result(false)
                 }
             }
         }
@@ -278,7 +275,7 @@ object AdBlocker : YukiBaseHooker() {
             resolve().firstMethodOrNull {
                 name = "checkAndShowDialog"
             }?.hook {
-                replaceTo(ctorDialogResult?.copy()?.create(null, false))
+                result(ctorDialogResult?.newInstance(null, false))
             }
         }
         // 首页悬浮推广
@@ -286,7 +283,7 @@ object AdBlocker : YukiBaseHooker() {
             resolve().firstMethodOrNull {
                 name = "getInfo"
             }?.hook {
-                intercept()
+                result(null)
             }
         }
         // 播放条推广
@@ -294,9 +291,9 @@ object AdBlocker : YukiBaseHooker() {
             resolve().firstMethodOrNull {
                 name = "setMinibarBubbleVisibility"
             }?.hook {
-                before {
-                    this.args(0).setFalse()
-                }
+                val newArgs = args.toTypedArray()
+                newArgs[0] = false
+                result(proceed(newArgs))
             }
         }
         // 蓝牙设备弹窗
@@ -304,7 +301,7 @@ object AdBlocker : YukiBaseHooker() {
             resolve().firstMethodOrNull {
                 name = "canShowHeadPhoneDialog"
             }?.hook {
-                replaceToFalse()
+                result(false)
             }
         }
     }

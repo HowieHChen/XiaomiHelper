@@ -13,7 +13,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.lackluster.hyperx.ui.component.Hint
@@ -50,13 +49,12 @@ sealed interface StatusBarFontAction {
 fun StatusBarFontPage(
     viewModel: StatusBarFontViewModel = koinViewModel()
 ) {
-    val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
     val fontDisplayName by viewModel.fontDisplayName.collectAsState()
 
     val fontPickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) {
-            viewModel.importFontFromUri(context, uri)
+            viewModel.importFontFromUri(uri)
         }
     }
 

@@ -36,7 +36,8 @@ fun MiuiHomePage() {
 
     val lineGestureActionOptions = remember(tintColor) {
         listOf(
-            DropDownOption(0, R.string.common_disabled, iconRes = R.drawable.ic_quick_switch_empty,iconTint = tintColor),
+            DropDownOption(0, R.string.common_default, iconRes = R.drawable.ic_quick_switch_default, iconTint = tintColor),
+            DropDownOption(11, R.string.common_disabled, iconRes = R.drawable.ic_quick_switch_disabled, iconTint = tintColor),
             DropDownOption(1, R.string.action_notifications, iconRes = R.drawable.ic_quick_switch_notifications, iconTint = tintColor),
             DropDownOption(2, R.string.action_quick_settings, iconRes = R.drawable.ic_quick_switch_quick_settings, iconTint = tintColor),
             DropDownOption(3, R.string.action_lock_screen, iconRes = R.drawable.ic_quick_switch_lock_screen, iconTint = tintColor),
@@ -46,6 +47,7 @@ fun MiuiHomePage() {
             DropDownOption(7, R.string.action_recognize_screen, iconRes = R.drawable.ic_quick_switch_recognize_screen, iconTint = tintColor),
             DropDownOption(8, R.string.action_xiaoai, iconRes = R.drawable.ic_quick_switch_xiaoai, iconTint = tintColor),
             DropDownOption(9, R.string.action_floating_window, iconRes = R.drawable.ic_quick_switch_floating_window, iconTint = tintColor),
+            DropDownOption(10, R.string.action_scroll_to_top, iconRes = R.drawable.ic_quick_switch_scroll_top, iconTint = tintColor),
         )
     }
 

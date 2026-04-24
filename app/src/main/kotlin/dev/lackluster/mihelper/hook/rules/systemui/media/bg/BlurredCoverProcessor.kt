@@ -7,9 +7,9 @@ import android.graphics.drawable.Drawable
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.drawable.toDrawable
-import dev.lackluster.mihelper.hook.drawable.MediaControlBgDrawable
-import dev.lackluster.mihelper.hook.drawable.RadialMaskedDrawable
-import dev.lackluster.mihelper.hook.drawable.TransitionDrawable
+import dev.lackluster.mihelper.hook.rules.systemui.media.drawable.MediaControlBgDrawable
+import dev.lackluster.mihelper.hook.rules.systemui.media.drawable.RadialMaskedDrawable
+import dev.lackluster.mihelper.hook.rules.systemui.media.drawable.TransitionDrawable
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.hardwareBlur
 import dev.lackluster.mihelper.hook.rules.systemui.media.data.MediaViewColorConfig
 import kotlin.math.max

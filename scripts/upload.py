@@ -104,8 +104,8 @@ def main():
         send_document(bot_token, channel_id, valid_uploads[label], safe_caption)
     else:
         media = [
-            {"type": "document", "media": f"attach://{main_build_type}", "caption": safe_caption, "parse_mode": "HTML"},
-            {"type": "document", "media": "attach://debug"}
+            {"type": "document", "media": f"attach://{main_build_type}"},
+            {"type": "document", "media": "attach://debug", "caption": safe_caption, "parse_mode": "HTML"}
         ]
         cmd = [
             'curl', '-sS', '-g',

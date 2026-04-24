@@ -21,34 +21,35 @@
 package dev.lackluster.mihelper.hook.rules.browser
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
 
-object BlockDialog : YukiBaseHooker() {
+object BlockDialog : StaticHooker() {
+    override fun onInit() {
+        updateSelfState(Preferences.Browser.BLOCK_DIALOG.get())
+    }
+
     override fun onHook() {
-        if (appClassLoader == null) return
-        hasEnable(Pref.Key.Browser.BLOCK_DIALOG) {
-            "com.android.browser.Controller".toClassOrNull()?.apply {
-                setOf(
-                    "showHotListWidgetAddDialog",
-                    "showChildProtectDialog",
-                    "showShortcutDialog",
-                    "showCommonWidgetAddDialog",
-                ).forEach { methodName ->
-                    resolve().firstMethodOrNull {
-                        name = methodName
-                    }?.hook {
-                        intercept()
-                    }
+        "com.android.browser.Controller".toClassOrNull()?.apply {
+            setOf(
+                "showHotListWidgetAddDialog",
+                "showChildProtectDialog",
+                "showShortcutDialog",
+                "showCommonWidgetAddDialog",
+            ).forEach { methodName ->
+                resolve().firstMethodOrNull {
+                    name = methodName
+                }?.hook {
+                    result(null)
                 }
             }
-            "com.android.browser.util.AiSearchScanUtil".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
-                    name = "showScanScanGuideDialog"
-                }?.hook {
-                    intercept()
-                }
+        }
+        "com.android.browser.util.AiSearchScanUtil".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "showScanScanGuideDialog"
+            }?.hook {
+                result(null)
             }
         }
     }

@@ -9,6 +9,7 @@ import dev.lackluster.mihelper.app.state.UiText
 import dev.lackluster.mihelper.app.state.ViewState
 import dev.lackluster.mihelper.app.utils.toUiText
 import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.utils.MLog
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -40,9 +41,12 @@ data class ModuleSettingsState(
     val isIconHidden: Boolean = false
 )
 
+private const val TAG = "ModuleSettingsViewModel"
+
 class ModuleSettingsViewModel(
     private val repo: GlobalPreferencesRepository
 ) : ViewModel() {
+
     private val _uiEvent = Channel<ModuleSettingsEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
@@ -98,6 +102,7 @@ class ModuleSettingsViewModel(
                     )
                 },
                 onFailure = { error ->
+                    MLog.e(TAG, error) { "Backup failed!" }
                     val errorMsg = error.message ?: "Unknown Error"
                     _uiState.value = ViewState.Error(
                         R.string.module_backup_failure.toUiText(errorMsg)
@@ -120,6 +125,7 @@ class ModuleSettingsViewModel(
                     )
                 },
                 onFailure = { error ->
+                    MLog.e(TAG, error) { "Restore failed!" }
                     val errorMsg = error.message ?: "Unknown Error"
                     _uiState.value = ViewState.Error(
                         R.string.module_restore_failure.toUiText(errorMsg)
@@ -143,6 +149,7 @@ class ModuleSettingsViewModel(
                     )
                 },
                 onFailure = { error ->
+                    MLog.e(TAG, error) { "Reset failed!" }
                     val errorMsg = error.message ?: "Unknown Error"
                     _uiState.value = ViewState.Error(
                         R.string.module_reset_failure.toUiText(errorMsg)

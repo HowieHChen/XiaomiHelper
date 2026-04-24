@@ -2,75 +2,57 @@ package dev.lackluster.mihelper.utils
 
 import android.annotation.SuppressLint
 import androidx.annotation.Keep
-import java.lang.reflect.Method
+import com.highcapable.kavaref.KavaRef.Companion.resolve
+import dev.lackluster.mihelper.hook.utils.toTyped
 
-@SuppressLint("PrivateApi")
 @Keep
 object SystemProperties {
     private const val PROP_NAME_MAX = 31
     private const val PROP_VALUE_MAX = 91
     private const val TAG = "SystemProperties"
-    private var classSystemProperties: Class<*>?
-    private var isSupportGet = false
-    private var isSupportGetBoolean = false
-    private var isSupportGetInt = false
-    private var isSupportGetLong = false
-    private var isSupportSet = false
-    private var mGet: Method? = null
-    private var mGetInt: Method? = null
-    private var mGetLong: Method? = null
-    private var mGetBoolean: Method? = null
-    private var mSet: Method? = null
 
-    init {
-        classSystemProperties = try {
+    private val clzSystemProperties by lazy {
+        try {
+            @SuppressLint("PrivateApi")
             Class.forName("android.os.SystemProperties")
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            MLog.e(TAG, e) { "android.os.SystemProperties class not found" }
             null
         }
-        val cls = classSystemProperties
-        if (cls != null) {
-            isSupportGet = try {
-                mGet = cls.getMethod("get", String::class.java, String::class.java)
-                mGet != null
-            } catch (_: Exception) {
-                false
-            }
-            isSupportGetInt = try {
-                mGetInt = cls.getMethod("getInt", String::class.java, java.lang.Integer::class.java)
-                mGetInt != null
-            } catch (_: Exception) {
-                false
-            }
-            isSupportGetLong = try {
-                mGetLong = cls.getMethod("getLong", String::class.java, java.lang.Long::class.java)
-                mGetLong != null
-            } catch (_: Exception) {
-                false
-            }
-            isSupportGetBoolean = try {
-                mGetBoolean = cls.getMethod("getBoolean", String::class.java, java.lang.Boolean::class.java)
-                mGetBoolean != null
-            } catch (_: Exception) {
-                false
-            }
-            isSupportSet = try {
-                mSet = cls.getMethod("set", String::class.java)
-                mSet != null
-            } catch (_: Exception) {
-                false
-            }
-        }
+    }
+    private val mGet by lazy {
+        clzSystemProperties?.resolve()?.firstMethodOrNull {
+            name = "get"
+            parameters(String::class, String::class)
+        }?.toTyped<String>()
+    }
+    private val mGetInt by lazy {
+        clzSystemProperties?.resolve()?.firstMethodOrNull {
+            name = "getInt"
+            parameters(String::class, Int::class)
+        }?.toTyped<Int>()
+    }
+    private val mGetLong by lazy {
+        clzSystemProperties?.resolve()?.firstMethodOrNull {
+            name = "getLong"
+            parameters(String::class, Long::class)
+        }?.toTyped<Long>()
+    }
+    private val mGetBoolean by lazy {
+        clzSystemProperties?.resolve()?.firstMethodOrNull {
+            name = "getBoolean"
+            parameters(String::class, Boolean::class)
+        }?.toTyped<Boolean>()
+    }
+    private val mSet by lazy {
+        clzSystemProperties?.resolve()?.firstMethodOrNull {
+            name = "set"
+            parameters(String::class, String::class)
+        }?.toTyped<Any?>()
     }
 
     fun get(key: String, defValue: String): String {
-        if (isSupportGet) {
-            try {
-                return mGet?.invoke(null, key, defValue) as? String ?: defValue
-            } catch (_: Exception) {
-            }
-        }
-        return defValue
+        return mGet?.invoke(null, key, defValue) ?: defValue
     }
 
     fun get(key: String): String {
@@ -78,48 +60,25 @@ object SystemProperties {
     }
 
     fun getInt(key: String, defValue: Int): Int {
-        if (isSupportGetInt) {
-            try {
-                return mGetInt?.invoke(null, key, defValue) as? Int ?: defValue
-            } catch (_: Exception){
-            }
-        }
-        return defValue
+        return mGetInt?.invoke(null, key, defValue) ?: defValue
     }
 
     fun getLong(key: String, defValue: Long): Long {
-        if (isSupportGetLong) {
-            try {
-                return mGetLong?.invoke(null, key, defValue) as? Long ?: defValue
-            } catch (_: Exception) {
-            }
-        }
-        return defValue
+        return mGetLong?.invoke(null, key, defValue) ?: defValue
     }
 
     fun getBoolean(key: String, defValue: Boolean): Boolean {
-        if (isSupportGetBoolean) {
-            try {
-                return mGetBoolean?.invoke(null, key, defValue) as? Boolean ?: defValue
-            } catch (_: Exception) {
-            }
-        }
-        return defValue
+        return mGetBoolean?.invoke(null, key, defValue) ?: defValue
     }
 
     fun set(key: String, value: String?) {
-        if (isSupportSet) {
-            if (key.length > PROP_NAME_MAX) {
-                throw IllegalArgumentException("key.length > 31")
-            }
-            if (value != null && value.length > PROP_VALUE_MAX) {
-                throw IllegalArgumentException("val.length > 91")
-            }
-            try {
-                mSet?.invoke(null, key, value)
-            } catch (_: Exception) {
-            }
+        if (key.length > PROP_NAME_MAX) {
+            throw IllegalArgumentException("key.length > 31")
         }
+        if (value != null && value.length > PROP_VALUE_MAX) {
+            throw IllegalArgumentException("val.length > 91")
+        }
+        mSet?.invoke(null, key, value)
     }
 
     fun set(key: String, value: Int) {

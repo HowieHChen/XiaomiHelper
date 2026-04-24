@@ -22,46 +22,50 @@ package dev.lackluster.mihelper.hook.rules.systemui.lockscreen
 
 import android.content.res.Resources
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils
 import dev.lackluster.mihelper.hook.rules.systemui.compat.ResourcesWrapper
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.toTyped
 
-object KeepNotification : YukiBaseHooker() {
+object KeepNotification : StaticHooker() {
     private val booleanOverrides by lazy {
         mapOf(
             ResourcesUtils.kept_notifications_on_keyguard to true
         )
     }
 
+    override fun onInit() {
+        updateSelfState(Preferences.SystemUI.LockScreen.KEEP_NOTIFICATION.get())
+    }
+
     override fun onHook() {
-        hasEnable(Pref.Key.SystemUI.LockScreen.KEEP_NOTIFICATION) {
-            "com.android.systemui.MiuiOperatorCustomizedPolicy".toClassOrNull()?.apply {
-                val fldShowKeyguardNotifications = resolve().firstFieldOrNull {
-                    name = "mShowKeyguardNotifications"
-                }
-                resolve().firstConstructor().hook {
-                    after {
-                        fldShowKeyguardNotifications?.copy()?.of(this.instance)?.set(true)
-                    }
-                }
-                resolve().firstMethodOrNull {
-                    name = "updateMiuiOperatorConfig"
-                }?.hook {
-                    after {
-                        fldShowKeyguardNotifications?.copy()?.of(this.instance)?.set(true)
-                    }
-                }
-                resolve().firstMethodOrNull {
-                    name = "getResourcesForOperation"
-                }?.hook {
-                    after {
-                        val ori = this.result<Resources>()
-                        if (ori != null && ori !is ResourcesWrapper) {
-                            this.result = ResourcesWrapper(ori, booleanOverrides)
-                        }
-                    }
+        "com.android.systemui.MiuiOperatorCustomizedPolicy".toClassOrNull()?.apply {
+            val fldShowKeyguardNotifications = resolve().firstFieldOrNull {
+                name = "mShowKeyguardNotifications"
+            }?.toTyped<Boolean>()
+            resolve().firstConstructor().hook {
+                val ori = proceed()
+                fldShowKeyguardNotifications?.set(thisObject, true)
+                result(ori)
+            }
+            resolve().firstMethodOrNull {
+                name = "updateMiuiOperatorConfig"
+            }?.hook {
+                val ori = proceed()
+                fldShowKeyguardNotifications?.set(thisObject, true)
+                result(ori)
+            }
+            resolve().firstMethodOrNull {
+                name = "getResourcesForOperation"
+            }?.hook {
+                val ori = proceed()
+                val res = ori as? Resources
+                if (res != null && ori !is ResourcesWrapper) {
+                    result(ResourcesWrapper(ori, booleanOverrides))
+                } else {
+                    result(ori)
                 }
             }
         }

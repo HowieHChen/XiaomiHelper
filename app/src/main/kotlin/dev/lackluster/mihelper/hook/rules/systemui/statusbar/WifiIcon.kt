@@ -22,39 +22,44 @@ package dev.lackluster.mihelper.hook.rules.systemui.statusbar
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.condition.type.Modifiers
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.readonlyStateFlow0
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.readonlyStateFlowFalse
-import dev.lackluster.mihelper.utils.Prefs
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
+import dev.lackluster.mihelper.hook.utils.toTyped
 
-object WifiIcon : YukiBaseHooker() {
-    private var hideActivity = Prefs.getBoolean(Pref.Key.SystemUI.IconTuner.HIDE_WIFI_ACTIVITY, false)
-    private val hideStandard = Prefs.getBoolean(Pref.Key.SystemUI.IconTuner.HIDE_WIFI_STANDARD, false)
-    private val activityRight = Prefs.getBoolean(Pref.Key.SystemUI.IconTuner.WIFI_ACTIVITY_RIGHT, false)
-    private val hideUnavailable = Prefs.getBoolean(Pref.Key.SystemUI.IconTuner.HIDE_WIFI_UNAVAILABLE, false)
+object WifiIcon : StaticHooker() {
+    private val hideActivity by Preferences.SystemUI.StatusBar.IconDetail.HIDE_WIFI_ACTIVITY.lazyGet()
+    private val hideStandard by Preferences.SystemUI.StatusBar.IconDetail.HIDE_WIFI_STANDARD.lazyGet()
+    private val activityRight by Preferences.SystemUI.StatusBar.IconDetail.WIFI_ACTIVITY_RIGHT.lazyGet()
+    private val hideUnavailable by Preferences.SystemUI.StatusBar.IconDetail.HIDE_WIFI_UNAVAILABLE.lazyGet()
+
+    override fun onInit() {
+        updateSelfState(hideActivity || hideStandard || activityRight || hideUnavailable)
+    }
 
     override fun onHook() {
         if (hideUnavailable) {
             $$"com.android.systemui.statusbar.pipeline.wifi.ui.model.WifiIcon$Companion".toClassOrNull()?.apply {
                 val clzWifiNetworkModeActive = $$"com.android.systemui.statusbar.pipeline.wifi.shared.model.WifiNetworkModel$Active".toClassOrNull()
-                val clzWifiIconHidden =
-                    $$"com.android.systemui.statusbar.pipeline.wifi.ui.model.WifiIcon$Hidden".toClassOrNull()
-                        ?.resolve()
-                        ?.firstFieldOrNull {
+                val clzWifiIconHidden = $$"com.android.systemui.statusbar.pipeline.wifi.ui.model.WifiIcon$Hidden".toClassOrNull()
+                        ?.resolve()?.firstFieldOrNull {
                             name = "INSTANCE"
                             modifiers(Modifiers.STATIC)
-                        }
-                        ?.get()
+                        }?.get()
                 resolve().firstMethodOrNull {
                     name = "fromModel"
                 }?.hook {
-                    before {
-                        val networkModel = this.args(0).any()
-                        val hasInternet = this.args(4).boolean()
-                        if (clzWifiNetworkModeActive?.isInstance(networkModel) == true && !hasInternet && clzWifiIconHidden != null) {
-                            this.result = clzWifiIconHidden
-                        }
+                    val networkModel = getArg(0)
+                    val hasInternet = getArg(4) as? Boolean ?: false
+                    if (
+                        clzWifiNetworkModeActive?.isInstance(networkModel) == true &&
+                        !hasInternet && clzWifiIconHidden != null
+                    ) {
+                        result(clzWifiIconHidden)
+                    } else {
+                        result(proceed())
                     }
                 }
             }
@@ -63,31 +68,34 @@ object WifiIcon : YukiBaseHooker() {
         "com.android.systemui.statusbar.pipeline.wifi.ui.viewmodel.WifiViewModel".toClassOrNull()?.apply {
             val activityInOutRes = resolve().firstFieldOrNull {
                 name = "activityInOutRes"
-            }
+            }?.toTyped<Any>()
             val wifiStandard = resolve().firstFieldOrNull {
                 name = "wifiStandard"
-            }
+            }?.toTyped<Any>()
             val inoutLeft = resolve().firstFieldOrNull {
                 name = "inoutLeft"
-            }
+            }?.toTyped<Any>()
             resolve().firstConstructor().hook {
-                after {
-                    if (hideActivity) {
-                        activityInOutRes?.copy()?.of(this.instance)?.set(
-                            readonlyStateFlow0
-                        )
-                    }
-                    if (hideStandard) {
-                        wifiStandard?.copy()?.of(this.instance)?.set(
-                            readonlyStateFlow0
-                        )
-                    }
-                    if (activityRight && hideStandard && !hideActivity) {
-                        inoutLeft?.copy()?.of(this.instance)?.set(
-                            readonlyStateFlowFalse
-                        )
-                    }
+                val ori = proceed()
+                if (hideActivity) {
+                    activityInOutRes?.set(
+                        thisObject,
+                        readonlyStateFlow0
+                    )
                 }
+                if (hideStandard) {
+                    wifiStandard?.set(
+                        thisObject,
+                        readonlyStateFlow0
+                    )
+                }
+                if (activityRight && hideStandard && !hideActivity) {
+                    inoutLeft?.set(
+                        thisObject,
+                        readonlyStateFlowFalse
+                    )
+                }
+                result(ori)
             }
         }
     }

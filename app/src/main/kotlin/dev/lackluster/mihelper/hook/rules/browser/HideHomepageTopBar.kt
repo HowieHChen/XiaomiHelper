@@ -22,14 +22,15 @@ package dev.lackluster.mihelper.hook.rules.browser
 
 import android.view.View
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.DexKit
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.DexKit
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.ifTrue
 import org.luckypray.dexkit.query.enums.StringMatchType
 import java.lang.reflect.Modifier
 
-object HideHomepageTopBar : YukiBaseHooker() {
+object HideHomepageTopBar : StaticHooker() {
     private val homePageClass by lazy {
         DexKit.findClassWithCache("simplified_homepage") {
             matcher {
@@ -38,49 +39,66 @@ object HideHomepageTopBar : YukiBaseHooker() {
         }
     }
     private val topViewField by lazy {
-        if (homePageClass == null) null
-        else DexKit.findFieldWithCache("homepage_top_view") {
-            val clzData = DexKit.dexKitBridge.getClassData(homePageClass!!.serialize())
+        DexKit.findFieldWithCache("homepage_top_view") {
+            val classData = homePageClass?.let { clz ->
+                DexKit.withBridge {
+                    getClassData(clz.serialize())
+                }
+            }
             matcher {
-                declaredClass(clzData!!.name, StringMatchType.Equals)
+                classData?.let {
+                    declaredClass(it.name, StringMatchType.Equals)
+                }
                 type = "android.widget.RelativeLayout"
                 modifiers(Modifier.FINAL)
             }
-            searchClasses = listOf(clzData!!)
+            searchClasses = listOfNotNull(classData)
         }
     }
     private val visibilityMethod by lazy {
-        if (homePageClass == null) null
-        else DexKit.findMethodWithCache("homepage_settings_visible") {
-            val clzData = DexKit.dexKitBridge.getClassData(homePageClass!!.serialize())
+        DexKit.findMethodWithCache("homepage_settings_visible") {
+            val classData = homePageClass?.let { clz ->
+                DexKit.withBridge {
+                    getClassData(clz.serialize())
+                }
+            }
             matcher {
-                declaredClass(clzData!!.name, StringMatchType.Equals)
+                classData?.let {
+                    declaredClass(it.name, StringMatchType.Equals)
+                    addCaller(it.methods.single { it1 -> it1.isConstructor }.descriptor)
+                }
                 paramCount = 0
                 returnType = "boolean"
                 modifiers(Modifier.FINAL)
-                addCaller(clzData.methods.single { it.isConstructor }.descriptor)
             }
-            searchClasses = listOf(clzData!!)
+            searchClasses = listOfNotNull(classData)
+        }
+    }
+
+    override fun onInit() {
+        Preferences.Browser.HIDE_HOMEPAGE_TOP_BAR.get().also {
+            updateSelfState(it)
+        }.ifTrue {
+            homePageClass
+            topViewField
+            visibilityMethod
         }
     }
 
     override fun onHook() {
-        hasEnable(Pref.Key.Browser.HIDE_HOMEPAGE_TOP_BAR) {
-            if (appClassLoader == null) return@hasEnable
-            val topView = topViewField?.getFieldInstance(appClassLoader!!)
-            if (topView != null) {
-                homePageClass?.getInstance(appClassLoader!!)?.apply {
-                    resolve().firstConstructor().hook {
-                        after {
-                            (topView.get(this.instance) as? View)?.visibility = View.INVISIBLE
-                            topView.set(this.instance, null)
-                        }
-                    }
+        val topView = topViewField?.getFieldInstance(classLoader)
+        if (topView != null) {
+            homePageClass?.getInstance(classLoader)?.apply {
+                resolve().firstConstructor().hook {
+                    val ori = proceed()
+                    (topView.get(thisObject) as? View)?.visibility = View.INVISIBLE
+                    topView.set(thisObject, null)
+                    result(ori)
                 }
-            } else {
-                visibilityMethod?.getMethodInstance(appClassLoader!!)?.hook {
-                    replaceToFalse()
-                }
+            }
+        } else {
+            visibilityMethod?.getMethodInstance(classLoader)?.hook {
+                result(false)
             }
         }
     }

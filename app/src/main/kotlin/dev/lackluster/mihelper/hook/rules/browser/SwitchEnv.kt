@@ -20,13 +20,14 @@
 
 package dev.lackluster.mihelper.hook.rules.browser
 
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.DexKit
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.DexKit
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.ifTrue
 import org.luckypray.dexkit.query.enums.StringMatchType
 
-object SwitchEnv : YukiBaseHooker() {
+object SwitchEnv : StaticHooker() {
     private val envGetMethod by lazy {
         DexKit.findMethodWithCache("env_get") {
             matcher {
@@ -48,17 +49,23 @@ object SwitchEnv : YukiBaseHooker() {
         }
     }
 
+    override fun onInit() {
+        Preferences.Browser.SWITCH_ENV.get().also {
+            updateSelfState(it)
+        }.ifTrue {
+            envGetMethod
+            envSetMethod
+        }
+    }
+
     override fun onHook() {
-        hasEnable(Pref.Key.Browser.SWITCH_ENV) {
-            if (appClassLoader == null) return@hasEnable
-            envGetMethod?.getMethodInstance(appClassLoader!!)?.hook {
-                replaceTo("1")
-            }
-            envSetMethod?.getMethodInstance(appClassLoader!!)?.hook {
-                before {
-                    this.args(0).set("1")
-                }
-            }
+        envGetMethod?.getMethodInstance(classLoader)?.hook {
+            result("1")
+        }
+        envSetMethod?.getMethodInstance(classLoader)?.hook {
+            val newArgs = args.toTypedArray()
+            newArgs[0] = "1"
+            result(proceed(newArgs))
         }
     }
 }

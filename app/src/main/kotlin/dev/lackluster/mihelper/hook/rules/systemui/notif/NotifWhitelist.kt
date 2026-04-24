@@ -22,20 +22,22 @@ package dev.lackluster.mihelper.hook.rules.systemui.notif
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.condition.type.Modifiers
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
 import dev.lackluster.mihelper.utils.Device
-import dev.lackluster.mihelper.utils.factory.hasEnable
 
-object NotifWhitelist : YukiBaseHooker() {
+object NotifWhitelist : StaticHooker() {
+    override fun onInit() {
+        updateSelfState(Preferences.SystemUI.NotifCenter.DISABLE_NOTIF_WHITELIST.get() && !Device.isInternationalBuild)
+    }
+
     override fun onHook() {
-        hasEnable(Pref.Key.SystemUI.NotifCenter.NOTIF_NO_WHITELIST, extraCondition = { !Device.isInternationalBuild }) {
-            "com.miui.systemui.notification.NotificationSettingsManager".toClassOrNull()?.apply {
-                resolve().firstFieldOrNull {
-                    name = "USE_WHITE_LISTS"
-                    modifiers(Modifiers.STATIC)
-                }?.set(false)
-            }
+        "com.miui.systemui.notification.NotificationSettingsManager".toClassOrNull()?.apply {
+            resolve().firstFieldOrNull {
+                name = "USE_WHITE_LISTS"
+                modifiers(Modifiers.STATIC)
+            }?.set(false)
         }
     }
 }

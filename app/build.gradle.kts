@@ -101,25 +101,25 @@ android {
 }
 
 dependencies {
-    compileOnly(libs.xposed.api)
-    implementation(libs.yukihookapi.api)
-    ksp(libs.yukihookapi.ksp.xposed)
+    compileOnly(libs.libxposed.api)
+    implementation(libs.libxposed.service)
     implementation(libs.kavaref.core)
     implementation(libs.kavaref.extension)
+    implementation(libs.hiddenapibypass)
+    implementation(libs.dexkit)
 
+    implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.ui)
+    implementation(libs.androidx.lifecycle.process)
+    implementation(libs.androidx.constraintlayout.compose)
     implementation(libs.koin.androidx.compose)
 
     implementation(libs.kotlinx.serialization.json)
-    implementation(libs.dexkit)
     implementation(project(mapOf("path" to ":hyperx-compose")))
     implementation(libs.android.svg)
     implementation(libs.libsu.core)
-
-    implementation(libs.androidx.appcompat)
     implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.constraintlayout.compose)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.junit)

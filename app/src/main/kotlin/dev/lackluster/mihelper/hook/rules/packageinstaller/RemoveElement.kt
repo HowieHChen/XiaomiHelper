@@ -27,20 +27,23 @@ import android.view.View
 import android.widget.CheckBox
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.condition.type.Modifiers
-import com.highcapable.kavaref.extension.makeAccessible
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import com.highcapable.yukihookapi.hook.log.YLog
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.DexKit
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.DexKit
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.e
+import dev.lackluster.mihelper.hook.utils.ifTrue
+import dev.lackluster.mihelper.hook.utils.toTyped
 import org.luckypray.dexkit.query.enums.StringMatchType
 import java.lang.reflect.Modifier
 
-object RemoveElement : YukiBaseHooker() {
+object RemoveElement : StaticHooker() {
     private val menuCreateClass1 by lazy {
-        DexKit.dexKitBridge.findClass {
-            matcher {
-                addUsingString("FullSafeStrategyType", StringMatchType.Contains)
+        DexKit.withBridge {
+            findClass {
+                matcher {
+                    addUsingString("FullSafeStrategyType", StringMatchType.Contains)
+                }
             }
         }
     }
@@ -54,10 +57,12 @@ object RemoveElement : YukiBaseHooker() {
         }
     }
     private val menuCreateClass2 by lazy {
-        DexKit.dexKitBridge.findClass {
-            matcher {
-                addUsingString("R.id.main_content", StringMatchType.Contains)
-                addUsingString("dark_loading.json", StringMatchType.Equals)
+        DexKit.withBridge {
+            findClass {
+                matcher {
+                    addUsingString("R.id.main_content", StringMatchType.Contains)
+                    addUsingString("dark_loading.json", StringMatchType.Equals)
+                }
             }
         }
     }
@@ -88,7 +93,7 @@ object RemoveElement : YukiBaseHooker() {
                 addUsingString("safe_mode_guidance_popup_open_btn" ,StringMatchType.Equals)
                 addUsingString("safe_mode_guidance_popup_cancel_btn" ,StringMatchType.Equals)
             }
-            searchClasses = listOfNotNull(clzPureModeGuide?.className?.let { DexKit.dexKitBridge.getClassData(it) })
+            searchClasses = listOfNotNull(clzPureModeGuide?.className?.let { DexKit.withBridge { getClassData(it) } })
         }
     }
     private val cancelClickMethod by lazy {
@@ -115,12 +120,8 @@ object RemoveElement : YukiBaseHooker() {
             }
         }
     }
-    private val clzSafeModeTipViewObject by lazy {
-        "com.miui.packageInstaller.ui.listcomponets.SafeModeTipViewObject".toClassOrNull()
-    }
-    private val clzSafeModeTipViewObjectViewHolder by lazy {
-        $$"com.miui.packageInstaller.ui.listcomponets.SafeModeTipViewObject$ViewHolder".toClassOrNull()
-    }
+    private val clzSafeModeTipViewObject by "com.miui.packageInstaller.ui.listcomponets.SafeModeTipViewObject".lazyClassOrNull()
+    private val clzSafeModeTipViewObjectViewHolder by $$"com.miui.packageInstaller.ui.listcomponets.SafeModeTipViewObject$ViewHolder".lazyClassOrNull()
     private val metShowEnhanceDialog by lazy {
         DexKit.findMethodWithCache("show_enhance_dialog") {
             matcher {
@@ -130,73 +131,85 @@ object RemoveElement : YukiBaseHooker() {
         }
     }
 
+    override fun onInit() {
+        Preferences.PackageInstaller.REMOVE_ELEMENT.get().also { 
+            updateSelfState(it)
+        }.ifTrue {
+            onCreateOptionsMenuMethod1
+            onCreateOptionsMenuMethod2
+            clzPureModeGuide
+            showPopupMethod
+            cancelClickMethod
+            miuixDialogClass
+            metShowEnhanceDialog
+        }
+    }
+
     override fun onHook() {
-        hasEnable(Pref.Key.PackageInstaller.REMOVE_ELEMENT) {
-            if (appClassLoader == null) return@hasEnable
-            onCreateOptionsMenuMethod1?.getMethodInstance(appClassLoader!!)?.hook {
-                after {
-                    val menu = this.args(0).cast<Menu>() ?: return@after
-                    menu.findItem(ResourcesUtils.feedback)?.isVisible = false
-                }
+        onCreateOptionsMenuMethod1?.getMethodInstance(classLoader)?.hook {
+            val ori = proceed()
+            val menu = getArg(0) as? Menu
+            if (menu != null) {
+                menu.findItem(ResourcesUtils.feedback)?.isVisible = false
             }
-            onCreateOptionsMenuMethod2?.getMethodInstance(appClassLoader!!)?.hook {
-                after {
-                    val menu = this.args(0).cast<Menu>() ?: return@after
-                    menu.findItem(ResourcesUtils.feedback)?.isVisible = false
-                }
+            result(ori)
+        }
+        onCreateOptionsMenuMethod2?.getMethodInstance(classLoader)?.hook {
+            val ori = proceed()
+            val menu = getArg(0) as? Menu
+            if (menu != null) {
+                menu.findItem(ResourcesUtils.feedback)?.isVisible = false
             }
-            val metGetClContentView = clzSafeModeTipViewObjectViewHolder?.resolve()?.firstMethodOrNull {
-                name = "getClContentView"
+            result(ori)
+        }
+        val metGetClContentView = clzSafeModeTipViewObjectViewHolder?.resolve()?.firstMethodOrNull {
+            name = "getClContentView"
+        }?.toTyped<View>()
+        clzSafeModeTipViewObject?.resolve()?.firstMethodOrNull {
+            clzSafeModeTipViewObjectViewHolder?.let {
+                parameters(it)
             }
-            clzSafeModeTipViewObject?.resolve()?.firstMethodOrNull {
-                clzSafeModeTipViewObjectViewHolder?.let {
-                    parameters(it)
-                }
-                parameterCount = 1
-                modifiers(Modifiers.PUBLIC)
-            }?.hook {
-                after {
-                    val viewHolder = this.args(0).any()
-                    metGetClContentView?.copy()?.of(viewHolder)?.invoke<View>()?.visibility = View.GONE
-                }
+            parameterCount = 1
+            modifiers(Modifiers.PUBLIC)
+        }?.hook {
+            val ori = proceed()
+            val viewHolder = getArg(0)
+            if (viewHolder != null) {
+                metGetClContentView?.invoke(viewHolder)?.visibility = View.GONE
             }
-            val cancelClickInstance = cancelClickMethod?.getMethodInstance(appClassLoader!!)
-            val miuixDialogClz = miuixDialogClass?.getInstance(appClassLoader!!)
-            clzPureModeGuide?.getInstance(appClassLoader!!)?.apply {
-                val fldDialog = resolve().firstFieldOrNull {
-                    type {
-                        it == miuixDialogClz || it == Dialog::class.java
+            result(ori)
+        }
+        val cancelClickInstance = cancelClickMethod?.getMethodInstance(classLoader)
+        val miuixDialogClz = miuixDialogClass?.getInstance(classLoader)
+        clzPureModeGuide?.getInstance(classLoader)?.apply {
+            val fldDialog = resolve().firstFieldOrNull {
+                type {
+                    it == miuixDialogClz || it == Dialog::class.java
+                }
+            }?.toTyped<Dialog>()
+            val fldContext = resolve().firstFieldOrNull {
+                type(Context::class)
+            }?.toTyped<Context>()
+            showPopupMethod?.getMethodInstance(this@RemoveElement.classLoader)?.hook {
+                val dialog = fldDialog?.get(thisObject)
+                val context = fldContext?.get(thisObject)
+                if (dialog != null && context != null) {
+                    if (cancelClickInstance == null) {
+                        dialog.dismiss()
+                        e { "Can't click the negative button of the dialog" }
+                    } else {
+                        val checkBox = CheckBox(context)
+                        checkBox.isChecked = true
+                        cancelClickInstance.invoke(null, thisObject, checkBox, dialog, -2)
                     }
-                }?.self?.apply {
-                    makeAccessible()
-                }
-                val fldContext = resolve().firstFieldOrNull {
-                    type(Context::class)
-                }?.self?.apply {
-                    makeAccessible()
-                }
-                showPopupMethod?.getMethodInstance(appClassLoader!!)?.hook {
-                    before {
-                        val dialog = fldDialog?.get(this.instance) as? Dialog
-                        val context = fldContext?.get(this.instance) as? Context
-                        if (dialog == null || context == null) return@before
-                        if (cancelClickInstance == null) {
-                            dialog.dismiss()
-                            YLog.error("[PackageInstaller] Can't click the negative button of the dialog")
-                        } else {
-                            val checkBox = CheckBox(context).apply {
-                                isChecked = true
-                            }
-                            checkBox.isChecked = true
-                            cancelClickInstance.invoke(null, this.instance, checkBox, dialog, -2)
-                        }
-                        this.result = null
-                    }
+                    result(null)
+                } else {
+                    result(proceed())
                 }
             }
-            metShowEnhanceDialog?.getMethodInstance(appClassLoader!!)?.hook {
-                intercept()
-            }
+        }
+        metShowEnhanceDialog?.getMethodInstance(classLoader)?.hook {
+            result(null)
         }
     }
 }

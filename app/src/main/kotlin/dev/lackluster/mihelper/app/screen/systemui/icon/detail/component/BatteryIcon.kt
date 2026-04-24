@@ -1,18 +1,22 @@
 package dev.lackluster.mihelper.app.screen.systemui.icon.detail.component
 
+import android.annotation.SuppressLint
+import android.graphics.Typeface
+import android.util.TypedValue
+import android.view.Gravity
+import android.widget.TextView
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Visibility
@@ -26,14 +30,14 @@ import dev.lackluster.mihelper.data.Constants.BatteryIndicator.STYLE_LINE
 import dev.lackluster.mihelper.data.Constants.BatteryIndicator.STYLE_TEXT_IN
 import dev.lackluster.mihelper.data.Constants.BatteryIndicator.STYLE_TEXT_ONLY
 import dev.lackluster.mihelper.data.Constants.BatteryIndicator.STYLE_TEXT_OUT
-import top.yukonga.miuix.kmp.basic.Text
 
+@SuppressLint("SetTextI18n")
 @Composable
 fun BatteryIcon(
     batteryStyle: Int,
     fallbackStyle: Int,
     state: BatteryState,
-    fontFamilyProvider: (isCustom: Boolean, weight: Int) -> FontFamily,
+    nativeTypefaceProvider: (isCustom: Boolean) -> Typeface,
 ) {
     val density = LocalDensity.current
 
@@ -58,24 +62,20 @@ fun BatteryIcon(
         if (state.percentMarkStyle == 1) fontSizePercentOut else 10.0f.dp.toSp()
     }
 
-    val fontFamilyPercentIn = remember(state.percentInFont.enabled, state.percentInFont.weight) {
-        fontFamilyProvider(
-            state.percentInFont.enabled,
-            if (state.percentInFont.enabled) state.percentInFont.weight.coerceIn(1..1000) else 620
-        )
+    val baseTypefacePercentIn = remember(state.percentInFont.enabled) {
+        nativeTypefaceProvider(state.percentInFont.enabled)
     }
-    val fontFamilyPercentOut = remember(state.percentOutFont.enabled, state.percentOutFont.weight) {
-        fontFamilyProvider(
-            state.percentOutFont.enabled,
-            if (state.percentOutFont.enabled) state.percentOutFont.weight.coerceIn(1..1000) else 500
-        )
+    val baseTypefacePercentOut = remember(state.percentOutFont.enabled) {
+        nativeTypefaceProvider(state.percentOutFont.enabled)
     }
-    val fontFamilyPercentMark = remember(state.percentMarkFont.enabled, state.percentMarkFont.weight) {
-        fontFamilyProvider(
-            state.percentMarkFont.enabled,
-            if (state.percentMarkFont.enabled) state.percentMarkFont.weight.coerceIn(1..1000) else 600
-        )
+    val baseTypefacePercentMark = remember(state.percentMarkFont.enabled) {
+        nativeTypefaceProvider(state.percentMarkFont.enabled)
     }
+
+    val weightPercentIn = if (state.percentInFont.enabled) state.percentInFont.weight.coerceIn(1..1000) else 620
+    val weightPercentOut = if (state.percentOutFont.enabled) state.percentOutFont.weight.coerceIn(1..1000) else 500
+    val weightPercentMark = if (state.percentMarkFont.enabled) state.percentMarkFont.weight.coerceIn(1..1000) else 600
+
     val paddingStart = if (state.customPadding) state.paddingStart else 0f
     val paddingEnd = if (state.customPadding) state.paddingEnd else 0f
 
@@ -143,6 +143,9 @@ fun BatteryIcon(
             }
         }
     }
+
+    val textColorArgb = colorResource(R.color.foreground_dual_tone_full).toArgb()
+
     ConstraintLayout(
         constraintSet = constraints,
         modifier = Modifier.height(24.dp)
@@ -154,25 +157,39 @@ fun BatteryIcon(
             painter = painterResource(R.drawable.stat_battery),
             contentDescription = null
         )
-        Text(
-            modifier = Modifier
-                .layoutId("percent_out"),
-            fontSize = fontSizePercentOut,
-            fontFamily = fontFamilyPercentOut,
-            fontStyle = FontStyle.Normal,
-            textAlign = TextAlign.Center,
-            color = colorResource(R.color.foreground_dual_tone_full),
-            text = "100"
+        AndroidView(
+            modifier = Modifier.layoutId("percent_out"),
+            factory = { context ->
+                TextView(context).apply {
+                    includeFontPadding = false
+                    gravity = Gravity.CENTER
+                    setTextColor(textColorArgb)
+                }
+            },
+            update = { textView ->
+                textView.text = "100"
+                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSizePercentOut.value)
+                textView.typeface = baseTypefacePercentOut
+                textView.fontVariationSettings = ""
+                textView.fontVariationSettings = "'wght' $weightPercentOut"
+            }
         )
-        Text(
-            modifier = Modifier
-                .layoutId("percent_mark"),
-            fontSize = fontSizePercentMark,
-            fontFamily = fontFamilyPercentMark,
-            fontStyle = FontStyle.Normal,
-            textAlign = TextAlign.Center,
-            color = colorResource(R.color.foreground_dual_tone_full),
-            text = "%"
+        AndroidView(
+            modifier = Modifier.layoutId("percent_mark"),
+            factory = { context ->
+                TextView(context).apply {
+                    includeFontPadding = false
+                    gravity = Gravity.CENTER
+                    setTextColor(textColorArgb)
+                }
+            },
+            update = { textView ->
+                textView.text = "%"
+                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSizePercentMark.value)
+                textView.typeface = baseTypefacePercentMark
+                textView.fontVariationSettings = ""
+                textView.fontVariationSettings = "'wght' $weightPercentMark"
+            }
         )
         Image(
             modifier = Modifier
@@ -181,15 +198,22 @@ fun BatteryIcon(
             painter = painterResource(R.drawable.stat_hollow_battery),
             contentDescription = null
         )
-        Text(
-            modifier = Modifier
-                .layoutId("percent_in"),
-            fontSize = fontSizePercentIn,
-            fontFamily = fontFamilyPercentIn,
-            fontStyle = FontStyle.Normal,
-            textAlign = TextAlign.Center,
-            color = colorResource(R.color.foreground_dual_tone_full),
-            text = "100"
+        AndroidView(
+            modifier = Modifier.layoutId("percent_in"),
+            factory = { context ->
+                TextView(context).apply {
+                    includeFontPadding = false
+                    gravity = Gravity.CENTER
+                    setTextColor(textColorArgb)
+                }
+            },
+            update = { textView ->
+                textView.text = "100"
+                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSizePercentIn.value)
+                textView.typeface = baseTypefacePercentIn
+                textView.fontVariationSettings = ""
+                textView.fontVariationSettings = "'wght' $weightPercentIn"
+            }
         )
         Image(
             modifier = Modifier

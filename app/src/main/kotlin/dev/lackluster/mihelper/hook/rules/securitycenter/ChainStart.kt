@@ -24,33 +24,37 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.view.View
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.Prefs
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.toTyped
 
-object ChainStart : YukiBaseHooker() {
+object ChainStart : StaticHooker() {
+    override fun onInit() {
+        updateSelfState(Preferences.SecurityCenter.LINK_START.get() == 1)
+    }
 
     @SuppressLint("ResourceType")
     override fun onHook() {
-        if (Prefs.getInt(Pref.Key.SecurityCenter.LINK_START, 0) == 1) {
-            "com.miui.wakepath.ui.ConfirmStartActivity".toClassOrNull()?.apply {
-                val metOnClick = resolve().firstMethodOrNull {
-                    name = "onClick"
-                    parameters(View::class)
-                }
-                resolve().firstMethodOrNull {
-                    name = "onDialogCreated"
-                }?.hook {
-                    before {
-                        metOnClick?.copy()?.of(this.instance)?.let {
-                            it.invoke(
-                                View(this.instance<Activity>()).apply {
-                                    id = 2
-                                }
-                            )
-                            this.result = null
+        "com.miui.wakepath.ui.ConfirmStartActivity".toClassOrNull()?.apply {
+            val metOnClick = resolve().firstMethodOrNull {
+                name = "onClick"
+                parameters(View::class)
+            }?.toTyped<Unit>()
+            resolve().firstMethodOrNull {
+                name = "onDialogCreated"
+            }?.hook {
+                val activity = thisObject as? Activity
+                if (metOnClick != null && activity != null) {
+                    metOnClick.invoke(
+                        thisObject,
+                        View(activity).apply {
+                            id = 2
                         }
-                    }
+                    )
+                    result(null)
+                } else {
+                    result(proceed())
                 }
             }
         }

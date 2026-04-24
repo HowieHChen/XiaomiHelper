@@ -22,14 +22,15 @@
 
 package dev.lackluster.mihelper.hook.rules.packageinstaller
 
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.DexKit
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.DexKit
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.ifTrue
 import org.luckypray.dexkit.query.enums.StringMatchType
 import java.lang.reflect.Modifier
 
-object BlockUploadAppInfo : YukiBaseHooker() {
+object BlockUploadAppInfo : StaticHooker() {
     private val layoutMethod by lazy {
         DexKit.findMethodsWithCache("layout_method") {
             matcher {
@@ -57,24 +58,29 @@ object BlockUploadAppInfo : YukiBaseHooker() {
         }
     }
 
+    override fun onInit() {
+        Preferences.PackageInstaller.BLOCK_UPLOAD_INFO.get().also { 
+            updateSelfState(it)
+        }.ifTrue {
+            layoutMethod
+            reportMethod
+            metCloudFetchTime
+        }
+    }
+
     override fun onHook() {
-        hasEnable(Pref.Key.PackageInstaller.BLOCK_UPLOAD_INFO) {
-            if (appClassLoader == null) return@hasEnable
-            layoutMethod.forEach {
-                val instance = it.getMethodInstance(appClassLoader!!)
-                instance.hook {
-                    intercept()
-                }
-            }
-            reportMethod.forEach {
-                val instance = it.getMethodInstance(appClassLoader!!)
-                instance.hook {
-                    intercept()
-                }
-            }
-            metCloudFetchTime?.getMethodInstance(appClassLoader!!)?.hook {
-                replaceTo(Long.MAX_VALUE)
-            }
+        layoutMethod.map {
+            it.getMethodInstance(classLoader)
+        }.hookAll {
+            result(null)
+        }
+        reportMethod.map {
+            it.getMethodInstance(classLoader)
+        }.hookAll {
+            result(null)
+        }
+        metCloudFetchTime?.getMethodInstance(classLoader)?.hook {
+            result(Long.MAX_VALUE)
         }
     }
 }

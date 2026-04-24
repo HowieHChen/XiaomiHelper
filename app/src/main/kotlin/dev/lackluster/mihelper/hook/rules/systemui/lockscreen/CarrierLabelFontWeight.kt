@@ -22,65 +22,68 @@ package dev.lackluster.mihelper.hook.rules.systemui.lockscreen
 
 import android.widget.TextView
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref.Key.SystemUI.FontWeight
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzMiuiKeyguardStatusBarView
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.getTypeface
-import dev.lackluster.mihelper.utils.Prefs
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
+import dev.lackluster.mihelper.hook.utils.toTyped
 
-object CarrierLabelFontWeight : YukiBaseHooker() {
-    private val valueLockScreenCarrierFW = Prefs.getInt(FontWeight.LOCK_SCREEN_CARRIER_WEIGHT, 430)
-    private val modifyLockScreenCarrierFW =
-        Prefs.getBoolean(FontWeight.LOCK_SCREEN_CARRIER, false) && valueLockScreenCarrierFW in 1..1000
+object CarrierLabelFontWeight : StaticHooker() {
+    private val valueLockScreenCarrierFW by Preferences.SystemUI.StatusBar.Font.LOCK_SCREEN_CARRIER_WEIGHT.lazyGet()
+    private val modifyLockScreenCarrierFW by lazy {
+        Preferences.SystemUI.StatusBar.Font.CUSTOM_LOCK_SCREEN_CARRIER.get() && valueLockScreenCarrierFW in 1..1000
+    }
     private val typefaceLockScreenCarrierFW by lazy {
         getTypeface(valueLockScreenCarrierFW)
     }
-    private val clzMiuiCarrierTextLayout by lazy {
-        "com.android.systemui.controlcenter.shade.MiuiCarrierTextLayout".toClassOrNull()
-    }
+    private val clzMiuiCarrierTextLayout by "com.android.systemui.controlcenter.shade.MiuiCarrierTextLayout".lazyClassOrNull()
     private val fldLeftCarrierTextView by lazy {
         clzMiuiCarrierTextLayout?.resolve()?.firstFieldOrNull {
             name = "leftCarrierTextView"
-        }
+        }?.toTyped<Any>()
     }
     private val fldRightCarrierTextView by lazy {
         clzMiuiCarrierTextLayout?.resolve()?.firstFieldOrNull {
             name = "rightCarrierTextView"
-        }
+        }?.toTyped<Any>()
     }
     private val metGetCarrierTextView by lazy {
         "com.android.systemui.controlcenter.shade.ControlCenterCarrierText".toClassOrNull()
             ?.resolve()?.firstMethodOrNull {
                 name = "getCarrierTextView"
-            }
+            }?.toTyped<TextView>()
+    }
+
+    override fun onInit() {
+        updateSelfState(modifyLockScreenCarrierFW)
     }
 
     override fun onHook() {
-        if (modifyLockScreenCarrierFW) {
-            clzMiuiKeyguardStatusBarView?.apply {
-                val mCarrierLabel = resolve().optional(true).firstFieldOrNull {
-                    name = "mCarrierLabel"
+        clzMiuiKeyguardStatusBarView?.apply {
+            val mCarrierLabel = resolve().optional(true).firstFieldOrNull {
+                name = "mCarrierLabel"
+            }?.toTyped<TextView>()
+            val mCarrierTextLayout = resolve().optional(true).firstFieldOrNull {
+                name = "mCarrierTextLayout"
+            }?.toTyped<Any>()
+            resolve().method {
+                name {
+                    it == "onDensityOrFontScaleChanged" || it.startsWith("onMiuiThemeChanged")
                 }
-                val mCarrierTextLayout = resolve().optional(true).firstFieldOrNull {
-                    name = "mCarrierTextLayout"
-                }
-                resolve().method {
-                    name {
-                        it == "onDensityOrFontScaleChanged" || it.startsWith("onMiuiThemeChanged")
-                    }
-                }.hookAll {
-                    after {
-                        mCarrierLabel?.copy()?.of(this.instance)?.get<TextView>()?.typeface = typefaceLockScreenCarrierFW
-                        mCarrierTextLayout?.copy()?.of(this.instance)?.get()?.let {
-                            listOfNotNull(
-                                fldLeftCarrierTextView?.copy()?.of(it)?.get(),
-                                fldRightCarrierTextView?.copy()?.of(it)?.get()
-                            ).forEach { carrierLabel ->
-                                metGetCarrierTextView?.copy()?.of(carrierLabel)?.invoke<TextView>()?.typeface = typefaceLockScreenCarrierFW
-                            }
-                        }
+            }.hookAll {
+                val ori = proceed()
+                mCarrierLabel?.get(thisObject)?.typeface = typefaceLockScreenCarrierFW
+                mCarrierTextLayout?.get(thisObject)?.let {
+                    listOfNotNull(
+                        fldLeftCarrierTextView?.get(it),
+                        fldRightCarrierTextView?.get(it)
+                    ).forEach { carrierLabel ->
+                        metGetCarrierTextView?.invoke(carrierLabel)?.typeface = typefaceLockScreenCarrierFW
                     }
                 }
+                result(ori)
             }
         }
     }

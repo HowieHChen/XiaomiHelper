@@ -25,61 +25,64 @@ package dev.lackluster.mihelper.hook.rules.securitycenter
 import android.content.pm.PackageInfo
 import android.widget.ImageView
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.factory.getAdditionalInstanceField
-import dev.lackluster.mihelper.utils.factory.hasEnable
-import dev.lackluster.mihelper.utils.factory.setAdditionalInstanceField
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.extraOf
+import dev.lackluster.mihelper.hook.utils.toTyped
 
-object AppDetailClickOpen : YukiBaseHooker() {
-    private const val KEY_PKG_NAME = "KEY_PKG_NAME"
-    private val clzAppDetailTitlePreference by lazy {
-        "com.miui.appmanager.widget.AppDetailTitlePreference".toClassOrNull()
+object AppDetailClickOpen : StaticHooker() {
+    private var Any.pkgName by extraOf("KEY_PKG_NAME", "")
+    private val clzAppDetailTitlePreference by "com.miui.appmanager.widget.AppDetailTitlePreference".lazyClassOrNull()
+
+    override fun onInit() {
+        updateSelfState(Preferences.SecurityCenter.CLICK_ICON_TO_OPEN.get())
     }
 
     override fun onHook() {
-        hasEnable(Pref.Key.SecurityCenter.CLICK_ICON_TO_OPEN) {
-            "com.miui.appmanager.fragment.ApplicationsDetailsFragment".toClassOrNull()?.apply {
-                val fldAppDetailTitlePreference = resolve().firstFieldOrNull {
-                    type("com.miui.appmanager.widget.AppDetailTitlePreference")
+        "com.miui.appmanager.fragment.ApplicationsDetailsFragment".toClassOrNull()?.apply {
+            val fldAppDetailTitlePreference = resolve().firstFieldOrNull {
+                type("com.miui.appmanager.widget.AppDetailTitlePreference")
+            }?.toTyped<Any>()
+            val fldPackageInfo = resolve().firstFieldOrNull {
+                type(PackageInfo::class)
+            }?.toTyped<PackageInfo>()
+            val metNotifyChanged = clzAppDetailTitlePreference?.resolve()?.firstMethodOrNull {
+                name = "notifyChanged"
+                superclass()
+            }?.toTyped<Unit>()
+            resolve().firstMethodOrNull {
+                name = "initView"
+            }?.hook {
+                val ori = proceed()
+                val appDetailTitle = fldAppDetailTitlePreference?.get(thisObject)
+                val packageInfo = fldPackageInfo?.get(thisObject)
+                if (appDetailTitle != null && packageInfo != null) {
+                    appDetailTitle.pkgName = packageInfo.packageName
+                    metNotifyChanged?.invoke(appDetailTitle)
                 }
-                val fldPackageInfo = resolve().firstFieldOrNull {
-                    type(PackageInfo::class)
-                }
-                val metNotifyChanged = clzAppDetailTitlePreference?.resolve()?.firstMethodOrNull {
-                    name = "notifyChanged"
-                    superclass()
-                }
-                resolve().firstMethodOrNull {
-                    name = "initView"
-                }?.hook {
-                    after {
-                        val appDetailTitle = fldAppDetailTitlePreference?.copy()?.of(this.instance)?.get() ?: return@after
-                        val packageInfo = fldPackageInfo?.copy()?.of(this.instance)?.get<PackageInfo>() ?: return@after
-                        appDetailTitle.setAdditionalInstanceField(KEY_PKG_NAME, packageInfo.packageName)
-                        metNotifyChanged?.copy()?.of(appDetailTitle)?.invoke()
-                    }
-                }
+                result(ori)
             }
-            clzAppDetailTitlePreference?.apply {
-                val fldImageView = resolve().firstFieldOrNull {
-                    type(ImageView::class)
-                }
-                resolve().firstMethodOrNull {
-                    name = "onBindViewHolder"
-                }?.hook {
-                    after {
-                        val packageName = this.instance.getAdditionalInstanceField<String>(KEY_PKG_NAME) ?: return@after
-                        fldImageView?.copy()?.of(this.instance)?.get<ImageView>()?.let { imageView ->
-                            imageView.setOnClickListener {
-                                val context = imageView.context
-                                context.packageManager.getLaunchIntentForPackage(packageName)?.let { intent ->
-                                    context.startActivity(intent)
-                                }
-                            }
+        }
+        clzAppDetailTitlePreference?.apply {
+            val fldImageView = resolve().firstFieldOrNull {
+                type(ImageView::class)
+            }?.toTyped<ImageView>()
+            resolve().firstMethodOrNull {
+                name = "onBindViewHolder"
+            }?.hook {
+                val ori = proceed()
+                val packageName = thisObject.pkgName
+                val imageView = fldImageView?.get(thisObject)
+                if (packageName != null && imageView != null) {
+                    imageView.setOnClickListener {
+                        val context = imageView.context
+                        context.packageManager.getLaunchIntentForPackage(packageName)?.let { intent ->
+                            context.startActivity(intent)
                         }
                     }
                 }
+                result(ori)
             }
         }
     }

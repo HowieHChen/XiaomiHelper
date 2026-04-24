@@ -21,18 +21,20 @@
 package dev.lackluster.mihelper.hook.rules.packageinstaller
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
 
-object DisableCountCheck : YukiBaseHooker() {
+object DisableCountCheck : StaticHooker() {
+    override fun onInit() {
+        updateSelfState(Preferences.PackageInstaller.DISABLE_COUNT_CHECK.get())
+    }
+
     override fun onHook() {
-        hasEnable(Pref.Key.PackageInstaller.DISABLE_COUNT_CHECK) {
-            "com.miui.packageInstaller.model.RiskControlRules".toClassOrNull()?.resolve()?.firstMethodOrNull {
-                name = "getCurrentLevel"
-            }?.hook {
-                replaceTo(0)
-            }
+        "com.miui.packageInstaller.model.RiskControlRules".toClassOrNull()?.resolve()?.firstMethodOrNull {
+            name = "getCurrentLevel"
+        }?.hook {
+            result(0)
         }
     }
 }

@@ -2,10 +2,11 @@ package dev.lackluster.mihelper.data
 
 object Scope {
     const val AI_ENGINE = "com.xiaomi.aicr"
-    const val ANDROID = "android"
+    const val SYSTEM = "system"
     const val BROWSER = "com.android.browser"
     const val DOWNLOAD = "com.android.providers.downloads"
     const val DOWNLOAD_UI = "com.android.providers.downloads.ui"
+    const val FIND_DEVICE = "com.xiaomi.finddevice"
     const val GUARD_PROVIDER = "com.miui.guardprovider"
     const val IN_CALL_UI = "com.android.incallui"
     const val LBE = "com.lbe.security.miui"

@@ -88,9 +88,18 @@ jobs:
         {
           echo 'CHANGELOG<<EOF'
           if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo '```'
             echo "Stable Release: ${{ env.CI_VERSION_NAME }}"
+            echo '```'
           else
-            git log --oneline ${{ steps.tag.outputs.previousTag }}..${{ steps.tag.outputs.latestTag }}
+            echo '```'
+            git log -n 10 --oneline ${{ steps.tag.outputs.previousTag }}..${{ steps.tag.outputs.latestTag }}
+            
+            TOTAL_COMMITS=$(git rev-list --count ${{ steps.tag.outputs.previousTag }}..${{ steps.tag.outputs.latestTag }} 2>/dev/null || echo 0)
+            if [ "$TOTAL_COMMITS" -gt 10 ]; then
+              echo "... and $(($TOTAL_COMMITS - 10)) more commits."
+            fi
+            echo '```'
           fi
           echo EOF
         } >> "$GITHUB_ENV"
@@ -103,7 +112,5 @@ jobs:
         COMMIT_MESSAGE: |+
           Hyper Helper ${{ env.MAIN_BUILD_TYPE == 'preview' && 'Insider Preview' || 'Stable Release' }}
 
-          ```
           ${{ env.CHANGELOG }}
-          ```
       run: python3 ./scripts/upload.py

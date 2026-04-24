@@ -47,7 +47,7 @@ fun MenuPage() {
                 }
                 RebootTarget.SCOPE -> {
                     scopes.forEach {  packageName ->
-                        if (packageName != Scope.ANDROID) {
+                        if (packageName != Scope.SYSTEM) {
                             val result = SystemCommander.execAsync(
                                 command = "killall -q $packageName",
                                 useRoot = true,

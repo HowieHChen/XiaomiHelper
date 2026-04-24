@@ -1,13 +1,15 @@
 package dev.lackluster.mihelper.hook.rules.securitycenter
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.DexKit
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.DexKit
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.ifTrue
 import org.luckypray.dexkit.query.enums.StringMatchType
+import kotlin.getValue
 
-object HideRedDot : YukiBaseHooker() {
+object HideRedDot : StaticHooker() {
     private val sixCardViewHolderClass by lazy {
         DexKit.findClassWithCache("home_6card_vh") {
             matcher {
@@ -17,27 +19,32 @@ object HideRedDot : YukiBaseHooker() {
         }
     }
 
+    override fun onInit() {
+        Preferences.SecurityCenter.HIDE_HOME_RED_DOT.get().also {
+            updateSelfState(it)
+        }.ifTrue {
+            sixCardViewHolderClass
+        }
+    }
+
     override fun onHook() {
-        hasEnable(Pref.Key.SecurityCenter.HIDE_RED_DOT) {
-            if (appClassLoader == null) return@hasEnable
-            sixCardViewHolderClass?.getInstance(appClassLoader!!)?.apply {
-                listOf(
-                    "refreshAntiSpam",
-                    "refreshAppManager",
-                    "refreshCleanMaster",
-                    "refreshDeepClean",
-                    "refreshNetworkAssist",
-                    "refreshOptimizemanage",
-                    "refreshPowerCenter",
-                    "refreshSecurityScan",
-                ).forEach { metName ->
-                    resolve().firstMethodOrNull {
-                        name = metName
-                    }?.hook {
-                        before {
-                            this.args(0).setTrue()
-                        }
-                    }
+        sixCardViewHolderClass?.getInstance(classLoader)?.apply {
+            listOf(
+                "refreshAntiSpam",
+                "refreshAppManager",
+                "refreshCleanMaster",
+                "refreshDeepClean",
+                "refreshNetworkAssist",
+                "refreshOptimizemanage",
+                "refreshPowerCenter",
+                "refreshSecurityScan",
+            ).forEach { metName ->
+                resolve().firstMethodOrNull {
+                    name = metName
+                }?.hook {
+                    val newArgs = args.toTypedArray()
+                    newArgs[0] = true
+                    result(proceed(newArgs))
                 }
             }
         }

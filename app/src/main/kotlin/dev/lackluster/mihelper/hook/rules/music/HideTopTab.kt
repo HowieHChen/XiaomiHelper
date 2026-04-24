@@ -21,60 +21,62 @@
 package dev.lackluster.mihelper.hook.rules.music
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.Prefs
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
+import dev.lackluster.mihelper.hook.utils.toTyped
 
-object HideTopTab : YukiBaseHooker() {
+object HideTopTab : StaticHooker() {
     private const val TOP_TAB_HOME_ID = 1
     private const val TOP_TAB_KEGE_ID = 2
     private const val TOP_TAB_LONG_AUDIO_ID = 3
     private const val TOP_TAB_QUICK_PLAY_ID = 4
-    private val hideKaraoke = Prefs.getBoolean(Pref.Key.Music.HIDE_KARAOKE, false)
-    private val hideLongAudio = Prefs.getBoolean(Pref.Key.Music.HIDE_LONG_AUDIO, false)
-    private val hideDiscover = Prefs.getBoolean(Pref.Key.Music.HIDE_DISCOVER, false)
-    private val clzTopTab by lazy {
-        "com.tencent.qqmusiclite.data.dto.shelfcard2.TopTab".toClassOrNull()
-    }
+    private val hideKaraoke by Preferences.Music.HIDE_KARAOKE.lazyGet()
+    private val hideLongAudio by Preferences.Music.HIDE_LONG_AUDIO.lazyGet()
+    private val hideDiscover by Preferences.Music.HIDE_DISCOVER.lazyGet()
+    private val clzTopTab by "com.tencent.qqmusiclite.data.dto.shelfcard2.TopTab".lazyClassOrNull()
     private val fldTabId by lazy {
         clzTopTab?.resolve()?.firstFieldOrNull {
             name = "id"
-        }?.self?.apply {
-            isAccessible = true
-        }
+        }?.toTyped<Int>()
+    }
+
+    override fun onInit() {
+        updateSelfState(hideKaraoke || hideLongAudio || hideDiscover)
     }
 
     override fun onHook() {
-        if (hideKaraoke || hideLongAudio || hideDiscover) {
-            "com.tencent.qqmusiclite.fragment.home.BaseHomeFragment".toClassOrNull()?.apply {
-                if (hideLongAudio) {
-                    val mIsLongAudioEnable = resolve().firstFieldOrNull {
-                        name = "mIsLongAudioEnable"
-                    }
-                    resolve().firstMethodOrNull {
-                        name = "setupViewPager"
-                    }?.hook {
-                        before {
-                            mIsLongAudioEnable?.copy()?.of(this.instance)?.set(false)
-                        }
-                    }
-                }
+        "com.tencent.qqmusiclite.fragment.home.BaseHomeFragment".toClassOrNull()?.apply {
+            if (hideLongAudio) {
+                val mIsLongAudioEnable = resolve().firstFieldOrNull {
+                    name = "mIsLongAudioEnable"
+                }?.toTyped<Boolean>()
                 resolve().firstMethodOrNull {
-                    name = "getTabs"
+                    name = "setupViewPager"
                 }?.hook {
-                    after {
-                        val list = (this.result as List<*>).toMutableList()
-                        this.result = list.filter {
-                            val id = (fldTabId?.get(it) as? Int) ?: return@filter true
-                            when (id) {
-                                TOP_TAB_HOME_ID -> true
-                                TOP_TAB_KEGE_ID -> !hideKaraoke
-                                TOP_TAB_LONG_AUDIO_ID -> !hideLongAudio
-                                TOP_TAB_QUICK_PLAY_ID -> !hideDiscover
-                                else -> true
-                            }
-                        }.toMutableList()
-                    }
+                    mIsLongAudioEnable?.set(thisObject, false)
+                    result(proceed())
+                }
+            }
+            resolve().firstMethodOrNull {
+                name = "getTabs"
+            }?.hook {
+                val ori = proceed()
+                val list = ori as? List<*>
+                if (list != null) {
+                    val filtered = list.filter {
+                        val id = fldTabId?.get(it) ?: return@filter true
+                        when (id) {
+                            TOP_TAB_HOME_ID -> true
+                            TOP_TAB_KEGE_ID -> !hideKaraoke
+                            TOP_TAB_LONG_AUDIO_ID -> !hideLongAudio
+                            TOP_TAB_QUICK_PLAY_ID -> !hideDiscover
+                            else -> true
+                        }
+                    }.toMutableList()
+                    result(filtered)
+                } else {
+                    result(ori)
                 }
             }
         }

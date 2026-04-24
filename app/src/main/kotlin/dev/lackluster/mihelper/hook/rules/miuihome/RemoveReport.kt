@@ -23,31 +23,34 @@ package dev.lackluster.mihelper.hook.rules.miuihome
 import android.view.View
 import android.widget.TextView
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.toTyped
 import dev.lackluster.mihelper.utils.Device
-import dev.lackluster.mihelper.utils.factory.hasEnable
 
-object RemoveReport : YukiBaseHooker(){
+object RemoveReport : StaticHooker(){
+    override fun onInit() {
+        updateSelfState(Preferences.MiuiHome.REMOVE_REPORT.get() && !Device.isPad)
+    }
+
     override fun onHook() {
-        hasEnable(Pref.Key.MiuiHome.REMOVE_REPORT, extraCondition = { !Device.isPad }) {
-            "com.miui.home.launcher.uninstall.BaseUninstallDialog".toClassOrNull()?.apply {
-                val fldDialogView = resolve().firstFieldOrNull {
-                    name = "mDialogView"
+        "com.miui.home.launcher.uninstall.BaseUninstallDialog".toClassOrNull()?.apply {
+            val fldDialogView = resolve().firstFieldOrNull {
+                name = "mDialogView"
+            }?.toTyped<Any>()
+            val fldReport = "com.miui.home.launcher.uninstall.UninstallDialogViewContainer".toClassOrNull()
+                ?.resolve()?.firstFieldOrNull {
+                    name = "mReport"
+                }?.toTyped<TextView>()
+            resolve().firstMethodOrNull {
+                name = "init"
+            }?.hook {
+                val ori = proceed()
+                fldDialogView?.get(thisObject)?.let { dialogView ->
+                    fldReport?.get(dialogView)?.visibility = View.GONE
                 }
-                val fldReport = "com.miui.home.launcher.uninstall.UninstallDialogViewContainer".toClassOrNull()
-                    ?.resolve()?.firstFieldOrNull {
-                        name = "mReport"
-                    }
-                resolve().firstMethodOrNull {
-                    name = "init"
-                }?.hook {
-                    after {
-                        fldDialogView?.copy()?.of(this.instance)?.get()?.let { dialogView ->
-                            fldReport?.copy()?.of(dialogView)?.get<TextView>()?.visibility = View.GONE
-                        }
-                    }
-                }
+                result(ori)
             }
         }
     }

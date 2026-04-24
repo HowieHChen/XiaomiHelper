@@ -21,19 +21,21 @@
 package dev.lackluster.mihelper.hook.rules.miuihome
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
 
-object RemoveHotSeatNumLimit : YukiBaseHooker() {
+object RemoveHotSeatNumLimit : StaticHooker() {
+    override fun onInit() {
+        updateSelfState(Preferences.MiuiHome.REMOVE_DOCK_NUM_LIMIT.get())
+    }
+
     override fun onHook() {
-        hasEnable(Pref.Key.MiuiHome.DOCK_REMOVE_NUM_LIMIT) {
-            "com.miui.home.common.device.DeviceConfigs".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
-                    name = "getHotseatMaxCount"
-                }?.hook {
-                    replaceTo(99)
-                }
+        "com.miui.home.common.device.DeviceConfigs".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "getHotseatMaxCount"
+            }?.hook {
+                result(99)
             }
         }
     }

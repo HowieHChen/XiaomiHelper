@@ -1,125 +1,68 @@
 package dev.lackluster.mihelper.app.screen.systemui.statusbar
 
-import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.highcapable.yukihookapi.hook.log.YLog
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.app.repository.FontRepository
 import dev.lackluster.mihelper.app.repository.FontTarget
 import dev.lackluster.mihelper.app.repository.GlobalPreferencesRepository
 import dev.lackluster.mihelper.app.state.UiText
 import dev.lackluster.mihelper.app.state.ViewState
-import dev.lackluster.mihelper.app.utils.getFileNameFromUri
-import dev.lackluster.mihelper.data.Constants
-import dev.lackluster.mihelper.data.preference.Preferences
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.io.File
 
 class StatusBarFontViewModel(
-    private val fontRepository: FontRepository,
-    private val repo: GlobalPreferencesRepository,
+    private val prefRepo: GlobalPreferencesRepository,
+    private val fontRepo: FontRepository,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<ViewState<UiText>>(ViewState.Idle)
     val uiState = _uiState.asStateFlow()
 
     private val _fontDisplayName = MutableStateFlow(
-        repo.get(Preferences.SystemUI.StatusBar.Font.FONT_PATH_ORIGINAL)
+        prefRepo.get(FontTarget.STATUS_BAR.displayNameSpKey)
     )
     val fontDisplayName = _fontDisplayName.asStateFlow()
 
-    fun resetToDefault(target: FontTarget) {
-        viewModelScope.launch {
-            fontRepository.resetToDefault(target)
-            val defaultPath = Constants.VARIABLE_FONT_DEFAULT_PATH
-            repo.update(Preferences.SystemUI.StatusBar.Font.FONT_PATH_ORIGINAL, defaultPath)
-            _fontDisplayName.value = defaultPath
+
+    init {
+        viewModelScope.launch(Dispatchers.Default) {
+            prefRepo.preferenceUpdates.collect { key ->
+                if (key == FontTarget.STATUS_BAR.displayNameSpKey) {
+                    _fontDisplayName.update {
+                        prefRepo.get(FontTarget.STATUS_BAR.displayNameSpKey)
+                    }
+                }
+            }
         }
     }
 
-    fun importFontFromUri(context: Context, uri: Uri) {
+    fun resetToDefault(target: FontTarget) {
+        viewModelScope.launch {
+            fontRepo.resetToDefault(target)
+        }
+    }
+
+    fun importFontFromUri(uri: Uri) {
         viewModelScope.launch {
             _uiState.value = ViewState.Loading
-            val result = withContext(Dispatchers.IO) {
-                var tempFile: File? = null
-                try {
-                    val appContext = context.applicationContext
-                    val displayName = appContext.getFileNameFromUri(uri)
 
-                    val validExtensions = listOf(".ttf", ".otf", ".ttc")
-                    val isValid = validExtensions.any { ext ->
-                        displayName.endsWith(ext, ignoreCase = true)
-                    }
+            val success = fontRepo.importFontFromUri(uri, FontTarget.STATUS_BAR)
 
-                    if (!isValid) {
-                        throw IllegalArgumentException("Illegal file type $displayName")
-                    }
-
-                    tempFile = File(appContext.cacheDir, "temp_import_${FontTarget.STATUS_BAR.name}.ttf")
-                    appContext.contentResolver.openInputStream(uri)?.use { input ->
-                        tempFile.outputStream().use { output -> input.copyTo(output) }
-                    } ?: throw Exception("Unable to read the selected file stream!")
-
-                    val success = fontRepository.applyCustomFont(tempFile.absolutePath, FontTarget.STATUS_BAR)
-                    if (success) {
-                        repo.update(Preferences.SystemUI.StatusBar.Font.FONT_PATH_ORIGINAL, displayName)
-                        _fontDisplayName.value = displayName
-                    }
-                    success
-                } catch (e: Exception) {
-                    YLog.error("importFontFromUri", e)
-                    false
-                } finally {
-                    tempFile?.delete()
-                }
-            }
-            handleResult(result)
+            handleResult(success)
         }
     }
 
     fun applyFontFromPath(path: String) {
-        if (path == Constants.VARIABLE_FONT_DEFAULT_PATH) {
-            resetToDefault(FontTarget.STATUS_BAR)
-            return
-        }
-
         viewModelScope.launch {
             _uiState.value = ViewState.Loading
-            val result = withContext(Dispatchers.IO) {
-                try {
-                    val file = File(path)
-                    if (!file.exists() || !file.isFile) {
-                        throw IllegalArgumentException("The file does not exist!")
-                    }
 
-                    val displayName = file.absolutePath
+            val success = fontRepo.applyFontFromPath(path, FontTarget.STATUS_BAR)
 
-                    val validExtensions = listOf(".ttf", ".otf", ".ttc")
-                    val isValid = validExtensions.any { ext ->
-                        displayName.endsWith(ext, ignoreCase = true)
-                    }
-
-                    if (!isValid) {
-                        throw IllegalArgumentException("Illegal file type $displayName")
-                    }
-
-                    val success = fontRepository.applyCustomFont(file.absolutePath, FontTarget.STATUS_BAR)
-                    if (success) {
-                        repo.update(Preferences.SystemUI.StatusBar.Font.FONT_PATH_ORIGINAL, path)
-                        _fontDisplayName.value = path
-                    }
-                    success
-                } catch (e: Exception) {
-                    YLog.error("applyFontFromPath", e)
-                    false
-                }
-            }
-            handleResult(result)
+            handleResult(success)
         }
     }
 

@@ -5,10 +5,8 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.navigation3.runtime.NavEntry
-import dev.lackluster.hyperx.core.SafeSP
 import dev.lackluster.hyperx.core.HyperXActivity
 import dev.lackluster.hyperx.ui.layout.HyperXAppLayout
-import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.data.Route
 import dev.lackluster.mihelper.app.screen.MainPage
 import dev.lackluster.mihelper.app.screen.AboutPage
@@ -76,52 +74,5 @@ class MainActivity : HyperXActivity() {
                 }
             )
         }
-    }
-
-    private fun versionCompatible() {
-        val spVersion = SafeSP.getInt(Pref.Key.Module.SP_VERSION, 0)
-        if (spVersion < 2) {
-            if (SafeSP.getFloat(Pref.Key.SystemUI.IconTuner.BATTERY_PADDING_START_VAL, -1f) == -1f) {
-                val oldValue = SafeSP.getInt(Pref.OldKey.SystemUI.IconTurner.BATTERY_PADDING_LEFT, -1)
-                if (oldValue != -1) {
-                    SafeSP.putAny(Pref.Key.SystemUI.IconTuner.BATTERY_PADDING_START_VAL, oldValue.toFloat())
-                }
-            }
-            if (SafeSP.getFloat(Pref.Key.SystemUI.IconTuner.BATTERY_PADDING_END_VAL, -1f) == -1f) {
-                val oldValue = SafeSP.getInt(Pref.OldKey.SystemUI.IconTurner.BATTERY_PADDING_RIGHT, -1)
-                if (oldValue != -1) {
-                    SafeSP.putAny(Pref.Key.SystemUI.IconTuner.BATTERY_PADDING_END_VAL, oldValue.toFloat())
-                }
-            }
-            if (SafeSP.getInt(Pref.Key.SystemUI.IconTuner.BATTERY_PERCENT_MARK_STYLE, -1) == -1) {
-                val hidePercentageSymbol = SafeSP.getBoolean(Pref.OldKey.SystemUI.IconTurner.HIDE_BATTERY_PERCENT_SYMBOL, false)
-                val uniPercentageSymbolSize = SafeSP.getBoolean(Pref.OldKey.SystemUI.IconTurner.CHANGE_BATTERY_PERCENT_SYMBOL, false)
-                val newValue =
-                    if (hidePercentageSymbol) 2
-                    else if (uniPercentageSymbolSize) 1
-                    else 0
-                SafeSP.putAny(Pref.Key.SystemUI.IconTuner.BATTERY_PERCENT_MARK_STYLE, newValue)
-            }
-        }
-        if (spVersion < 4) {
-            if (SafeSP.getInt(Pref.Key.PackageInstaller.INSTALL_SOURCE, -1) == -1) {
-                val oldValue = SafeSP.getBoolean(Pref.OldKey.PackageInstaller.UPDATE_SYSTEM_APP, false)
-                val newValue = if (oldValue) 1 else 0
-                SafeSP.putAny(Pref.Key.PackageInstaller.INSTALL_SOURCE, newValue)
-            }
-        }
-        if (spVersion < 5) {
-            if (SafeSP.getInt(Pref.Key.SystemUI.MediaControl.LYT_ALBUM, -1) == -1) {
-                val oldValue = SafeSP.getBoolean(Pref.OldKey.SystemUI.MediaControl.HIDE_APP_ICON, false)
-                val newValue = if (oldValue) 1 else 0
-                SafeSP.putAny(Pref.Key.SystemUI.MediaControl.LYT_ALBUM, newValue)
-            }
-            if (SafeSP.getInt(Pref.Key.SystemUI.MediaControl.ELM_PROGRESS_STYLE, -1) == -1) {
-                val oldValue = SafeSP.getBoolean(Pref.OldKey.SystemUI.MediaControl.SQUIGGLY_PROGRESS, false)
-                val newValue = if (oldValue) 2 else 0
-                SafeSP.putAny(Pref.Key.SystemUI.MediaControl.ELM_PROGRESS_STYLE, newValue)
-            }
-        }
-        SafeSP.putAny(Pref.Key.Module.SP_VERSION, Pref.VERSION)
     }
 }

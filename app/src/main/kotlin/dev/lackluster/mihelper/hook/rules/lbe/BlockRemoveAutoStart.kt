@@ -22,20 +22,22 @@ package dev.lackluster.mihelper.hook.rules.lbe
 
 import android.content.Context
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
 
-object BlockRemoveAutoStart : YukiBaseHooker() {
+object BlockRemoveAutoStart : StaticHooker() {
+    override fun onInit() {
+        updateSelfState(Preferences.LBE.BLOCK_REMOVE_AUTO_STARTUP.get())
+    }
+
     override fun onHook() {
-        hasEnable(Pref.Key.LBE.BLOCK_REMOVE_AUTO_STARTUP) {
-            "com.miui.privacy.autostart.AutoRevokePermissionManager".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
-                    name = "startScheduleASCheck"
-                    parameters(Context::class, Boolean::class)
-                }?.hook {
-                    intercept()
-                }
+        "com.miui.privacy.autostart.AutoRevokePermissionManager".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "startScheduleASCheck"
+                parameters(Context::class, Boolean::class)
+            }?.hook {
+                result(null)
             }
         }
     }

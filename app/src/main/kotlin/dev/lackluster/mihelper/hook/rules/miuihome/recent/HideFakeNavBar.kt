@@ -21,19 +21,21 @@
 package dev.lackluster.mihelper.hook.rules.miuihome.recent
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
 
-object HideFakeNavBar : YukiBaseHooker() {
+object HideFakeNavBar : StaticHooker() {
+    override fun onInit() {
+        updateSelfState(Preferences.MiuiHome.DISABLE_RECENT_FAKE_NAVBAR.get())
+    }
+
     override fun onHook() {
-        hasEnable(Pref.Key.MiuiHome.RECENT_DISABLE_FAKE_NAVBAR) {
-            "com.miui.home.recents.views.RecentsContainer".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
-                    name = "showLandscapeOverviewGestureView"
-                }?.hook {
-                    intercept()
-                }
+        "com.miui.home.recents.views.RecentsContainer".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "showLandscapeOverviewGestureView"
+            }?.hook {
+                result(null)
             }
         }
     }

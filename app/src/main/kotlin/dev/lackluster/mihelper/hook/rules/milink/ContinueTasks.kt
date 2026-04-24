@@ -21,30 +21,30 @@
 package dev.lackluster.mihelper.hook.rules.milink
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
 
-object ContinueTasks : YukiBaseHooker() {
+object ContinueTasks : StaticHooker() {
+    override fun onInit() {
+        updateSelfState(Preferences.MiMirror.CONTINUE_ALL_TASKS.get())
+    }
+
     override fun onHook() {
-        hasEnable(Pref.Key.MiMirror.CONTINUE_ALL_TASKS) {
-            "com.xiaomi.mirror.synergy.MiuiSynergySdk".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
-                    name = "isSupportSendApp"
-                    parameterCount = 3
-                }?.hook {
-                    after {
-                        this.result = true
-                    }
-                }
-                resolve().firstMethodOrNull {
-                    name = "isSupportSendAppToPhone"
-                    parameterCount = 2
-                }?.hook {
-                    after {
-                        this.result = true
-                    }
-                }
+        "com.xiaomi.mirror.synergy.MiuiSynergySdk".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "isSupportSendApp"
+                parameterCount = 3
+            }?.hook {
+                proceed()
+                result(true)
+            }
+            resolve().firstMethodOrNull {
+                name = "isSupportSendAppToPhone"
+                parameterCount = 2
+            }?.hook {
+                proceed()
+                result(true)
             }
         }
     }

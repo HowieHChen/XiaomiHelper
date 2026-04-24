@@ -24,26 +24,24 @@ import android.content.Context
 import android.util.ArrayMap
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.condition.type.Modifiers
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.factory.hasEnable
-import java.util.ArrayList
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.toTyped
 
-object RemoveBubbleSettingsRestriction : YukiBaseHooker() {
-    private val clzBubbleApp by lazy {
-        "com.miui.bubbles.settings.BubbleApp".toClassOrNull()
-    }
+object RemoveBubbleSettingsRestriction : StaticHooker() {
+    private val clzBubbleApp by "com.miui.bubbles.settings.BubbleApp".lazyClassOrNull()
     private val ctorBubbleApp by lazy {
         clzBubbleApp?.resolve()?.firstConstructor {
             parameters(String::class, Int::class)
             parameterCount = 2
-        }
+        }?.toTyped()
     }
     private val metSetChecked by lazy {
         clzBubbleApp?.resolve()?.firstMethodOrNull {
             name = "setChecked"
             parameters(Boolean::class)
-        }
+        }?.toTyped<Unit>()
     }
     private val metGetFreeformSuggestionList by lazy {
         "android.util.MiuiMultiWindowUtils".toClassOrNull()?.resolve()?.firstMethodOrNull {
@@ -51,34 +49,34 @@ object RemoveBubbleSettingsRestriction : YukiBaseHooker() {
             parameters(Context::class)
             parameterCount = 1
             modifiers(Modifiers.STATIC)
-        }
+        }?.toTyped<List<String>>()
+    }
+
+    override fun onInit() {
+        updateSelfState(Preferences.SecurityCenter.DISABLE_BUBBLE_RESTRICT.get())
     }
 
     override fun onHook() {
-        hasEnable(Pref.Key.SecurityCenter.DISABLE_BUBBLE_RESTRICT) {
-            "com.miui.bubbles.settings.BubblesSettings".toClassOrNull()?.apply {
-                val fldContext = resolve().firstFieldOrNull {
-                    name = "mContext"
+        "com.miui.bubbles.settings.BubblesSettings".toClassOrNull()?.apply {
+            val fldContext = resolve().firstFieldOrNull {
+                name = "mContext"
+            }?.toTyped<Context>()
+            val fldCurrentUserId = resolve().firstFieldOrNull {
+                name = "mCurrentUserId"
+            }?.toTyped<Int>()
+            resolve().firstMethodOrNull {
+                name = "getDefaultBubbles"
+            }?.hook {
+                val arrayMap = ArrayMap<String, Any>()
+                val context = fldContext?.get(thisObject)
+                val currentUserId =fldCurrentUserId?.get(thisObject)
+                val freeformSuggestionList = metGetFreeformSuggestionList?.invoke(context)
+                freeformSuggestionList?.forEach { pkg ->
+                    val bubbleApp = ctorBubbleApp?.newInstance(pkg, currentUserId)
+                    metSetChecked?.invoke(bubbleApp, true)
+                    arrayMap[pkg] = bubbleApp
                 }
-                val fldCurrentUserId = resolve().firstFieldOrNull {
-                    name = "mCurrentUserId"
-                }
-                resolve().firstMethodOrNull {
-                    name = "getDefaultBubbles"
-                }?.hook {
-                    before {
-                        val arrayMap = ArrayMap<String, Any>()
-                        val context = fldContext?.copy()?.of(this.instance)?.get<Context>()
-                        val currentUserId =fldCurrentUserId?.copy()?.of(this.instance)?.get<Int>()
-                        val freeformSuggestionList = metGetFreeformSuggestionList?.invoke<ArrayList<String>>(context)
-                        freeformSuggestionList?.forEach { pkg ->
-                            val bubbleApp = ctorBubbleApp?.create(pkg, currentUserId)
-                            metSetChecked?.copy()?.of(bubbleApp)?.invoke(true)
-                            arrayMap[pkg] = bubbleApp
-                        }
-                        this.result = arrayMap
-                    }
-                }
+                result(arrayMap)
             }
         }
     }

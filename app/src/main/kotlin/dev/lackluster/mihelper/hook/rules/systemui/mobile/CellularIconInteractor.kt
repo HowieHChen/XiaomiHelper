@@ -1,24 +1,24 @@
 package dev.lackluster.mihelper.hook.rules.systemui.mobile
 
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.data.Pref.Key.SystemUI.StackedMobile
+import dev.lackluster.mihelper.data.preference.Preferences
 import dev.lackluster.mihelper.hook.rules.systemui.compat.FlowCompat
 import dev.lackluster.mihelper.hook.rules.systemui.compat.MutableStateFlowCompat
-import dev.lackluster.mihelper.utils.Prefs
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
 
 object CellularIconInteractor {
     private var isStarted = false
 
-    private val showStackedSignal = Prefs.getInt(Pref.Key.SystemUI.IconTuner.STACKED_MOBILE_ICON, 0) != 4
-    private val showStandaloneType = Prefs.getInt(Pref.Key.SystemUI.IconTuner.STACKED_MOBILE_TYPE, 0) != 4
-    private val showSingleSignalSIM1 = Prefs.getInt(Pref.Key.SystemUI.IconTuner.SINGLE_MOBILE_SIM1, 0) != 4
-    private val showSingleSignalSIM2 = Prefs.getInt(Pref.Key.SystemUI.IconTuner.SINGLE_MOBILE_SIM2, 0) != 4
+    private val showStackedSignal by lazy { Preferences.SystemUI.StatusBar.StackedMobile.STACKED_MOBILE_ICON.get() != 4 }
+    private val showStandaloneType by lazy { Preferences.SystemUI.StatusBar.StackedMobile.STACKED_MOBILE_TYPE.get() != 4 }
+    private val showSingleSignalSIM1 by lazy { Preferences.SystemUI.StatusBar.StackedMobile.SINGLE_MOBILE_SIM1.get() in 1..3 }
+    private val showSingleSignalSIM2 by lazy { Preferences.SystemUI.StatusBar.StackedMobile.SINGLE_MOBILE_SIM2.get() in 1..3 }
 
-    private val hideStandaloneTypeWhenDisconnect = Prefs.getBoolean(StackedMobile.LARGE_TYPE_HIDE_WHEN_DISCONNECT, false)
-    private val hideStandaloneTypeWhenWifi = Prefs.getBoolean(StackedMobile.LARGE_TYPE_HIDE_WHEN_WIFI, false)
-    private val showTypeOnStackedSignal = Prefs.getBoolean(StackedMobile.SMALL_TYPE_SHOW_ON_STACKED, false)
-    private val showTypeOnSingleSignal = Prefs.getBoolean(StackedMobile.SMALL_TYPE_SHOW_ON_SINGLE, false)
-    private val showRoamingOnSmallType = Prefs.getBoolean(StackedMobile.SMALL_TYPE_SHOW_ROAMING, false)
+    private val hideStandaloneTypeWhenDisconnect by Preferences.SystemUI.StatusBar.StackedMobile.LARGE_TYPE_HIDE_WHEN_DISCONNECT.lazyGet()
+    private val hideStandaloneTypeWhenWifi by Preferences.SystemUI.StatusBar.StackedMobile.LARGE_TYPE_HIDE_WHEN_WIFI.lazyGet()
+    private val showTypeOnStackedSignal by Preferences.SystemUI.StatusBar.StackedMobile.SMALL_TYPE_SHOW_ON_STACKED.lazyGet()
+    private val showTypeOnSingleSignal by Preferences.SystemUI.StatusBar.StackedMobile.SMALL_TYPE_SHOW_ON_SINGLE.lazyGet()
+    private val showRoamingOnSmallType by Preferences.SystemUI.StatusBar.StackedMobile.SMALL_TYPE_SHOW_ROAMING.lazyGet()
 
     val jobs = mutableListOf<Any?>()
 

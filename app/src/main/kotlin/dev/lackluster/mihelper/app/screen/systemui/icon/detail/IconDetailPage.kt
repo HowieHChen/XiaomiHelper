@@ -13,7 +13,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -50,7 +49,6 @@ fun IconDetailPage(
     viewModel: IconDetailViewModel = koinViewModel(),
     stackedVM: StackedMobileViewModel = koinViewModel()
 ) {
-    val context = LocalContext.current
     val hapticFeedback = LocalHapticFeedback.current
 
     val pageUiState by viewModel.pageUiState.collectAsState()
@@ -74,14 +72,14 @@ fun IconDetailPage(
     val currentErrorMessage = svgUiState.errorDialogMessage ?: pageUiState.errorDialogMessage
 
     val singleSvgLauncher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
-        uri?.let { stackedVM.handleSvgFileUri(context, it, isStacked = false) }
+        uri?.let { stackedVM.handleSvgFileUri(it, isStacked = false) }
     }
     val stackedSvgLauncher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
-        uri?.let { stackedVM.handleSvgFileUri(context, it, isStacked = true) }
+        uri?.let { stackedVM.handleSvgFileUri(it, isStacked = true) }
     }
     val fontPickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) {
-            stackedVM.importFontFromUri(context, uri)
+            stackedVM.importFontFromUri(uri)
         }
     }
 
@@ -101,13 +99,6 @@ fun IconDetailPage(
                     stackedSvgLauncher.launch(arrayOf("*/*"))
                 } else {
                     singleSvgLauncher.launch(arrayOf("*/*"))
-                }
-            }
-            is StackedMobileAction.ValidateAndUpdateSvg -> {
-                if (action.isStacked) {
-                    stackedVM.validateAndUpdateStackedSvg(action.svgContent)
-                } else {
-                    stackedVM.validateAndUpdateSingleSvg(action.svgContent)
                 }
             }
         }
@@ -139,7 +130,7 @@ fun IconDetailPage(
                     Row {
                         NetworkSpeedIcon(
                             state = netSpeedState,
-                            fontFamilyProvider = viewModel::getFontFamily,
+                            nativeTypefaceProvider = viewModel::getTypeface,
                         )
                         if (stackedState.enabled) {
                             CustomSignalIcon(
@@ -148,7 +139,7 @@ fun IconDetailPage(
                                 netType = if (stackedState.small.showOnStacked) "5GA" else "",
                                 state = stackedState,
                                 fontUpdateTrigger = fontUpdateTrigger,
-                                typefaceProvider = stackedVM::getTypeface
+                                nativeTypefaceProvider = stackedVM::getTypeface
                             )
                             StandaloneTypeIcon(
                                 isVisible = !stackedState.large.hideWhenDisconnect,
@@ -162,14 +153,14 @@ fun IconDetailPage(
                                 mobileTypeText = "4G",
                                 dataConnected = true,
                                 state = mobileState,
-                                fontFamilyProvider = viewModel::getFontFamily
+                                nativeTypefaceProvider = viewModel::getTypeface
                             )
                         }
                         BatteryIcon(
                             batteryStyle = batteryState.styleStatusBar,
                             fallbackStyle = STYLE_TEXT_IN,
                             state = batteryState,
-                            fontFamilyProvider = viewModel::getFontFamily,
+                            nativeTypefaceProvider = viewModel::getTypeface,
                         )
                     }
                     Row {
@@ -180,7 +171,7 @@ fun IconDetailPage(
                                 netType = if (stackedState.small.showOnSingle) "5GA" else "",
                                 state = stackedState,
                                 fontUpdateTrigger = fontUpdateTrigger,
-                                typefaceProvider = stackedVM::getTypeface
+                                nativeTypefaceProvider = stackedVM::getTypeface
                             )
                             CustomSignalIcon(
                                 picture = singlePictures["4"],
@@ -188,7 +179,7 @@ fun IconDetailPage(
                                 netType = if (stackedState.small.showOnSingle) (if (stackedState.small.showRoaming) "R4G" else "4G") else "",
                                 state = stackedState,
                                 fontUpdateTrigger = fontUpdateTrigger,
-                                typefaceProvider = stackedVM::getTypeface
+                                nativeTypefaceProvider = stackedVM::getTypeface
                             )
                             StandaloneTypeIcon(
                                 isVisible = !stackedState.large.hideWhenWifi,
@@ -202,7 +193,7 @@ fun IconDetailPage(
                                 mobileTypeText = "4G",
                                 dataConnected = false,
                                 state = mobileState,
-                                fontFamilyProvider = viewModel::getFontFamily
+                                nativeTypefaceProvider = viewModel::getTypeface
                             )
                         }
                         WifiIcon(
@@ -212,7 +203,7 @@ fun IconDetailPage(
                             batteryStyle = batteryState.styleControlCenter,
                             fallbackStyle = STYLE_TEXT_OUT,
                             state = batteryState,
-                            fontFamilyProvider = viewModel::getFontFamily,
+                            nativeTypefaceProvider = viewModel::getTypeface,
                         )
                     }
                 }

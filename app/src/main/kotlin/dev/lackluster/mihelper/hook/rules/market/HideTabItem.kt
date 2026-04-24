@@ -23,31 +23,32 @@ package dev.lackluster.mihelper.hook.rules.market
 import android.app.Activity
 import android.view.View
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
 import dev.lackluster.mihelper.data.Scope
-import dev.lackluster.mihelper.utils.Prefs
-import dev.lackluster.mihelper.utils.factory.getResID
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
+import dev.lackluster.mihelper.hook.utils.toTyped
+import dev.lackluster.mihelper.utils.factory.getResId
 
-object HideTabItem : YukiBaseHooker() {
-    private val tabBlur = Prefs.getBoolean(Pref.Key.Market.TAB_BLUR, false)
-    private val hideTab = Prefs.getBoolean(Pref.Key.Market.FILTER_TAB, false)
-    private val ignoreRestrict = Prefs.getBoolean(Pref.Key.Market.FILTER_TAB_IGNORE_RESTRICT, false)
-    private val showTabHome = !Prefs.getBoolean(Pref.Key.Market.HIDE_TAB_HOME, false)
-    private val showTabGame = !Prefs.getBoolean(Pref.Key.Market.HIDE_TAB_GAME, false)
-    private val showTabRank = !Prefs.getBoolean(Pref.Key.Market.HIDE_TAB_RANK, false)
-    private val showTabAgent = !Prefs.getBoolean(Pref.Key.Market.HIDE_TAB_AGENT, false)
-    private val showTabAppAssemble = !Prefs.getBoolean(Pref.Key.Market.HIDE_TAB_APP_ASSEMBLE, false)
-    private val showTabMiniGame = !Prefs.getBoolean(Pref.Key.Market.HIDE_TAB_MINI_GAME, false)
-    private val showTabMine = !Prefs.getBoolean(Pref.Key.Market.HIDE_TAB_MINE, false)
-    private val showTabOthers = !Prefs.getBoolean(Pref.Key.Market.HIDE_TAB_OTHERS, false)
+object HideTabItem : StaticHooker() {
+    private val tabBlur by Preferences.Market.TAB_BLUR.lazyGet()
+    private val hideTab by Preferences.Market.ENABLE_FILTER_TAB.lazyGet()
+    private val ignoreRestrict by Preferences.Market.FILTER_TAB_IGNORE_RESTRICT.lazyGet()
+    private val showTabHome by lazy { !Preferences.Market.HIDE_TAB_HOME.get() }
+    private val showTabGame by lazy { !Preferences.Market.HIDE_TAB_GAME.get() }
+    private val showTabRank by lazy { !Preferences.Market.HIDE_TAB_RANK.get() }
+    private val showTabAgent by lazy { !Preferences.Market.HIDE_TAB_AGENT.get() }
+    private val showTabAppAssemble by lazy { !Preferences.Market.HIDE_TAB_APP_ASSEMBLE.get() }
+    private val showTabMiniGame by lazy { !Preferences.Market.HIDE_TAB_MINI_GAME.get() }
+    private val showTabMine by lazy { !Preferences.Market.HIDE_TAB_MINE.get() }
+    private val showTabOthers by lazy { !Preferences.Market.HIDE_TAB_OTHERS.get() }
 
-    private val clzTabInfo by lazy {
-        "com.xiaomi.market.model.TabInfo".toClassOrNull()
-    }
+    private val clzTabInfo by "com.xiaomi.market.model.TabInfo".lazyClassOrNull()
 
-    override fun onHook() {
-        val hideTabContainer: Boolean
+    private var hideTabContainer = false
+
+    override fun onInit() {
         if (hideTab && ignoreRestrict) {
             var visibleTab = 0
             if (showTabHome) visibleTab++
@@ -61,32 +62,38 @@ object HideTabItem : YukiBaseHooker() {
         } else {
             hideTabContainer = false
         }
+        updateSelfState(hideTabContainer || tabBlur || hideTab)
+    }
+
+    override fun onHook() {
         if (hideTabContainer || tabBlur) {
             "com.xiaomi.market.util.Client".toClassOrNull()?.apply {
                 resolve().firstMethodOrNull {
                     name = "isSupportBlur"
                 }?.hook {
-                    replaceToTrue()
+                    result(true)
                 }
             }
         }
         if (hideTab) {
             if (hideTabContainer) {
+                var tabContainerId = 0
                 "com.xiaomi.market.ui.DoubleTabProxyActivityWrapper".toClassOrNull()?.apply {
-                    val fldMActivity = resolve().firstFieldOrNull {
+                    val fldActivity = resolve().firstFieldOrNull {
                         name = "mActivity"
                         superclass()
-                    }
+                    }?.toTyped<Activity>()
                     resolve().firstMethodOrNull {
                         name = "setTabContainer"
                     }?.hook {
-                        after {
-                            val mActivity = fldMActivity?.copy()?.of(this.instance)?.get<Activity>()
-                            mActivity?.let {
-                                val tabContainerId = it.getResID("tab_container_layout", "id", Scope.MARKET)
-                                it.findViewById<View>(tabContainerId)?.visibility = View.GONE
+                        val ori = proceed()
+                        fldActivity?.get(thisObject)?.let {
+                            if (tabContainerId == 0) {
+                                tabContainerId = it.getResId("tab_container_layout", "id", Scope.MARKET)
                             }
+                            it.findViewById<View>(tabContainerId)?.visibility = View.GONE
                         }
+                        result(ori)
                     }
                 }
             }
@@ -94,15 +101,16 @@ object HideTabItem : YukiBaseHooker() {
                 val tabFldTag = resolve().firstFieldOrNull {
                     name = "tag"
                     type = String::class
-                }
+                }?.toTyped<String>()
                 resolve().firstMethodOrNull {
                     name = "fromJSON"
                     parameterCount = 1
                 }?.hook {
-                    after {
-                        val list = (this.result as List<*>).toMutableList()
-                        this.result = list.filter {
-                            val tag = tabFldTag?.copy()?.of(it)?.get<String>() ?: return@filter true
+                    val ori = proceed()
+                    val list = (ori as? List<*>)
+                    if (list != null) {
+                        val filtered = list.filter {
+                            val tag = tabFldTag?.get(it) ?: return@filter true
                             if (tag.startsWith("native_market_home")) !ignoreRestrict || showTabHome
                             else if (tag.startsWith("native_market_game")) showTabGame
                             else if (tag.startsWith("native_market_rank")) showTabRank
@@ -114,6 +122,9 @@ object HideTabItem : YukiBaseHooker() {
                             else if (tag.startsWith("native_market_mine")) !ignoreRestrict || showTabMine
                             else showTabOthers
                         }.toList()
+                        result(filtered)
+                    } else {
+                        result(ori)
                     }
                 }
             }

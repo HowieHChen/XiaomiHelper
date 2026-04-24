@@ -21,42 +21,46 @@
 package dev.lackluster.mihelper.hook.rules.systemui.media
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.toTyped
 
-object UnlockCustomAction : YukiBaseHooker() {
+object UnlockCustomAction : StaticHooker() {
+    override fun onInit() {
+        updateSelfState(Preferences.SystemUI.MediaControl.Shared.LYT_UNLOCK_ACTION.get())
+    }
+
     override fun onHook() {
-        hasEnable(Pref.Key.SystemUI.MediaControl.UNLOCK_ACTION) {
-            "com.miui.systemui.notification.NotificationSettingsManager".toClassOrNull()?.apply {
-                val fldHiddenCustomActionsList = resolve().firstFieldOrNull {
-                    name = "mHiddenCustomActionsList"
-                }
-                val fldHiddenCustomActionsListLocal = resolve().firstFieldOrNull {
-                    name = "mHiddenCustomActionsListLocal"
-                }
-                resolve().firstConstructor().hook {
-                    after {
-                        fldHiddenCustomActionsList?.copy()?.of(this.instance)?.set(emptyList<String>())
-                        fldHiddenCustomActionsListLocal?.copy()?.of(this.instance)?.set(emptyList<String>())
-                    }
-                }
-                resolve().firstMethodOrNull {
-                    name = "onCloudDataUpdated"
-                }?.hook {
-                    after {
-                        fldHiddenCustomActionsList?.copy()?.of(this.instance)?.set(emptyList<String>())
-                        fldHiddenCustomActionsListLocal?.copy()?.of(this.instance)?.set(emptyList<String>())
-                    }
-                }
-                resolve().firstMethodOrNull {
-                    name = "onLocalDataUsed"
-                }?.hook {
-                    after {
-                        fldHiddenCustomActionsList?.copy()?.of(this.instance)?.set(emptyList<String>())
-                        fldHiddenCustomActionsListLocal?.copy()?.of(this.instance)?.set(emptyList<String>())
-                    }
-                }
+        "com.miui.systemui.notification.NotificationSettingsManager".toClassOrNull()?.apply {
+            val fldHiddenCustomActionsList = resolve().firstFieldOrNull {
+                name = "mHiddenCustomActionsList"
+            }?.toTyped<List<String>>()
+            val fldHiddenCustomActionsListLocal = resolve().firstFieldOrNull {
+                name = "mHiddenCustomActionsListLocal"
+            }?.toTyped<List<String>>()
+            val emptyList = emptyList<String>()
+            resolve().firstConstructor().hook {
+                val ori = proceed()
+                fldHiddenCustomActionsList?.set(thisObject, emptyList)
+                fldHiddenCustomActionsListLocal?.set(thisObject, emptyList)
+                result(ori)
+            }
+            resolve().firstMethodOrNull {
+                name = "onCloudDataUpdated"
+            }?.hook {
+                val ori = proceed()
+                fldHiddenCustomActionsList?.set(thisObject, emptyList)
+                fldHiddenCustomActionsListLocal?.set(thisObject, emptyList)
+                result(ori)
+            }
+            resolve().firstMethodOrNull {
+                name = "onLocalDataUsed"
+            }?.hook {
+                val ori = proceed()
+                fldHiddenCustomActionsList?.set(thisObject, emptyList)
+                fldHiddenCustomActionsListLocal?.set(thisObject, emptyList)
+                result(ori)
             }
         }
     }

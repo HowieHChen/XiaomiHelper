@@ -21,25 +21,27 @@
 package dev.lackluster.mihelper.hook.rules.music
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
 
-object HideListenCount : YukiBaseHooker() {
+object HideListenCount : StaticHooker() {
     private val cachedResult by lazy {
         "kotlin.Pair".toClassOrNull()?.resolve()?.firstConstructor {
             parameterCount = 2
         }?.create(false, "")
     }
 
+    override fun onInit() {
+        updateSelfState(Preferences.Music.HIDE_LISTEN_COUNT.get())
+    }
+
     override fun onHook() {
-        hasEnable(Pref.Key.Music.HIDE_LISTEN_COUNT) {
-            "com.tencent.qqmusiclite.data.repo.playhistory.PlayHistoryRepo".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
-                    name = "shouldShowPlayCountAndGetPlayCount"
-                }?.hook {
-                    replaceTo(cachedResult)
-                }
+        "com.tencent.qqmusiclite.data.repo.playhistory.PlayHistoryRepo".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "shouldShowPlayCountAndGetPlayCount"
+            }?.hook {
+                result(cachedResult)
             }
         }
     }

@@ -21,35 +21,42 @@
 package dev.lackluster.mihelper.hook.rules.systemui.statusbar
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref.Key.SystemUI.IconTuner
-import dev.lackluster.mihelper.utils.Prefs
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
+import dev.lackluster.mihelper.hook.utils.toTyped
 
-object IgnoreSysIconSettings : YukiBaseHooker() {
-    private val ignoreSystem = Prefs.getBoolean(IconTuner.IGNORE_SYS_SETTINGS, false)
-    private val hidePrivacy = Prefs.getBoolean(IconTuner.HIDE_PRIVACY, false)
+object IgnoreSysIconSettings : StaticHooker() {
+    private val ignoreSystem by Preferences.SystemUI.StatusBar.IconTuner.IGNORE_SYS_SETTINGS.lazyGet()
+    private val hidePrivacy by Preferences.SystemUI.StatusBar.IconTuner.HIDE_PRIVACY.lazyGet()
+    private val showNetSpeed by lazy {
+        Preferences.SystemUI.StatusBar.IconTuner.NET_SPEED.get() != 4
+    }
+
+    override fun onInit() {
+        updateSelfState(ignoreSystem || hidePrivacy)
+    }
 
     override fun onHook() {
-        if (ignoreSystem || hidePrivacy) {
-            "com.android.systemui.statusbar.policy.StatusBarIconObserver".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
-                    name = "isIconBlocked"
-                }?.hook {
-                    before {
-                        val slot = this.args(0).string()
-                        if (slot == "privacy") {
-                            this.result = hidePrivacy
-                        } else if (ignoreSystem) {
-                            this.result = false
-                        }
-                    }
+        "com.android.systemui.statusbar.policy.StatusBarIconObserver".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "isIconBlocked"
+            }?.hook {
+                val slot = getArg(0) as? String
+                if (slot == "privacy") {
+                    result(hidePrivacy)
+                } else if (ignoreSystem) {
+                    result(false)
+                } else {
+                    result(proceed())
                 }
-                if (ignoreSystem) {
-                    resolve().firstMethodOrNull {
-                        name = "loadStatusBarIcon"
-                    }?.hook {
-                        replaceTo("")
-                    }
+            }
+            if (ignoreSystem) {
+                resolve().firstMethodOrNull {
+                    name = "loadStatusBarIcon"
+                }?.hook {
+                    result("")
                 }
             }
         }
@@ -57,19 +64,23 @@ object IgnoreSysIconSettings : YukiBaseHooker() {
             "com.android.systemui.statusbar.policy.NetworkSpeedController".toClassOrNull()?.apply {
                 val mShowNetworkSpeed = resolve().firstFieldOrNull {
                     name = "mShowNetworkSpeed"
+                }?.toTyped<Boolean>()
+                resolve().firstConstructor().hook {
+                    val ori = proceed()
+                    mShowNetworkSpeed?.set(thisObject, showNetSpeed)
+                    result(ori)
                 }
                 resolve().firstMethodOrNull {
                     name {
                         it.contains("mupdateVisibility")
                     }
                 }?.hook {
-                    before {
-                        val networkSpeedController = this.args(0).any()
-                        val tag = this.args(1).string()
-                        if (tag == "show") {
-                            mShowNetworkSpeed?.copy()?.of(networkSpeedController)?.set(true)
-                        }
+                    val networkSpeedController = getArg(0)
+                    val tag = getArg(1) as? String
+                    if (tag == "show" && networkSpeedController != null) {
+                        mShowNetworkSpeed?.set(networkSpeedController, showNetSpeed)
                     }
+                    result(proceed())
                 }
             }
         }

@@ -46,6 +46,7 @@
     <string name="scope_android">System</string>
     <string name="scope_browser">Mi Browser</string>
     <string name="scope_download">Download</string>
+    <string name="scope_find_device">Find device</string>
     <string name="scope_gallery">Gallery</string>
     <string name="scope_guard_provider">System security components</string>
     <string name="scope_in_call_ui">Phone</string>
@@ -83,6 +84,7 @@
     <string name="action_recognize_screen">Recognize screen</string>
     <string name="action_xiaoai">Xiaomi Hyper XiaoAi</string>
     <string name="action_floating_window">Floating window</string>
+    <string name="action_scroll_to_top">Scroll to top</string>
     <string name="search_use_browser">Search using browser</string>
     <string name="search_engine">Search engine</string>
     <string name="search_engine_default">Default</string>
@@ -116,12 +118,12 @@
     <!-- AboutPage -->
     <string name="about_jump_error_toast">Some strange errors have occurred</string>
     <string name="about_easter_egg_toast">You clicked and nothing happened</string>
-    <string name="about_hyperx_compose">This app is made by HyperX Compose</string>
+    <string name="about_hyperx_compose">This app is based on HyperX Compose</string>
     <string name="about_hyperx_compose_tips">HyperX Compose is a shared Compose UI library for Android based on Miuix</string>
-    <string name="about_miuix">This app is made by Miuix</string>
+    <string name="about_miuix">This app is based on Miuix</string>
     <string name="about_miuix_tips">Miuix is a shared UI library for Compose Multiplatform</string>
-    <string name="about_yuki">This app is made by YukiHookAPI</string>
-    <string name="about_yuki_tips">Learn more https://github.com/HighCapable/YuKiHookAPI</string>
+    <string name="about_kavaref">This app is based on KavaRef</string>
+    <string name="about_kavaref_tips">Learn more https://github.com/HighCapable/KavaRef</string>
     <string name="ui_title_about_developer">Developer</string>
     <string name="ui_title_about_others" translatable="false">@string/common_others</string>
     <string name="about_translate">Translate</string>
@@ -141,6 +143,8 @@
     <string name="module_hide_icon">Hide icon in Home screen</string>
     <string name="module_skip_root_check">Disable root privilege checking</string>
     <string name="module_skip_root_check_tips">Takes effect after restarting the app</string>
+    <string name="module_debug">Debug mode</string>
+    <string name="module_debug_tips">When enabled, debug logs will be printed. Takes effect immediately. Please enable only when needed!</string>
     <string name="module_show_in_settings">Icon in Settings</string>
     <string name="module_settings_icon_style">Icon style in Settings</string>
     <string name="module_settings_icon_style_default" translatable="false">@string/common_default</string>
@@ -183,6 +187,10 @@
     <string name="systemui_statusbar_notif_count">Customize the maximum number of notifications to display</string>
     <string name="systemui_statusbar_notif_count_icon">Maximum number of status bar notification icons</string>
     <string name="systemui_statusbar_tap_to_sleep" translatable="false">@string/common_tap_sleep</string>
+    <string name="systemui_statusbar_gesture_single_tap">Single-tap gesture</string>
+    <string name="systemui_statusbar_gesture_single_tap_tips">Single tap the blank area of the status bar to trigger a specific function</string>
+    <string name="systemui_statusbar_gesture_double_tap">Double-tap gesture</string>
+    <string name="systemui_statusbar_gesture_double_tap_tips">Double tap the blank area of the status bar to trigger a specific function</string>
     <string name="systemui_statusbar_region_sampling">Region sampling</string>
     <string name="systemui_statusbar_region_sampling_tips">Samples the status bar area and adjusts light/dark mode based on background color</string>
     <string name="systemui_statusbar_region_sampling_def" translatable="false">@string/common_default</string>
@@ -263,9 +271,9 @@
     <string name="home_gesture_fix_predictive_back">Fix predictive back progress error</string>
     <string name="home_gesture_fix_predictive_back_tips">HyperOS has broken the predictive back behavior, causing the swipe distance requirement to be too short. When enabled, it restores the AOSP behavior. This option can only fix the progress error of predictive back and cannot recover scenarios where predictive back is completely broken.</string>
     <string name="home_gesture_line_long_press">Long press on the full screen indicator</string>
-    <string name="home_gesture_line_long_press_tips">Long press on the full screen indicator to trigger a specific function.</string>
+    <string name="home_gesture_line_long_press_tips">Long press on the full screen indicator to trigger a specific function</string>
     <string name="home_gesture_line_double_tap">Double tap on the full screen indicator</string>
-    <string name="home_gesture_line_double_tap_tips">Double tap on the full screen indicator to trigger a specific function.</string>
+    <string name="home_gesture_line_double_tap_tips">Double tap on the full screen indicator to trigger a specific function</string>
     <string name="ui_title_home_anim">Animation</string>
     <string name="home_anim_icon_zoom">Disable zoom animation on icon click</string>
     <string name="home_anim_icon_darken">Disable dim animation on icon click</string>
@@ -289,9 +297,9 @@
     <string name="home_others_force_color_scheme_element">App label color</string>
     <string name="home_others_force_color_scheme_element_tips">Specify widget and app label color (ignore wallpaper color)</string>
     <string name="home_others_force_color_scheme_statusbar">Status bar text and icon color</string>
-    <string name="home_others_force_color_scheme_statusbar_tips">Specify the color of the status bar text and icons (ignore wallpaper color). Requires enabling \"Disable Smart dark\" on the System UI page.</string>
+    <string name="home_others_force_color_scheme_statusbar_tips">Specify the color of the status bar text and icons (ignore wallpaper color)</string>
     <string name="home_others_force_color_scheme_minus">Personal assistant color</string>
-    <string name="home_others_force_color_scheme_minus_tips">Specify the color of the status bar text and icons for the Personal assistant (ignore wallpaper color). Requires enabling \"Disable Smart dark\" on the System UI page.</string>
+    <string name="home_others_force_color_scheme_minus_tips">Specify the color of the status bar text and icons for the Personal assistant (ignore wallpaper color)</string>
     <!-- CleanMasterPage -->
     <string name="cleaner_common_ad_blocker">Ad blocker</string>
     <string name="cleaner_common_restart_app">Restart %1$s</string>
@@ -313,6 +321,9 @@
     <string name="ui_title_cleaner_download" translatable="false">@string/scope_download</string>
     <string name="cleaner_downloadui_hide_xl">Hide Xunlei icons and text</string>
     <string name="cleaner_download_fuck_xl">Block creation of .xlDownload folder</string>
+    <string name="ui_title_cleaner_find_device" translatable="false">@string/scope_find_device</string>
+    <string name="cleaner_find_device_fuck_aivs" translatable="false">@string/others_miai_fuck_aivs</string>
+    <string name="cleaner_find_device_fuck_aivs_tips" translatable="false">@string/others_miai_fuck_aivs_tips</string>
     <string name="ui_title_cleaner_incallui" translatable="false">@string/scope_in_call_ui</string>
     <string name="cleaner_incallui_hide_crbt">Hide CRBT (Coloring Ring Back Tone)</string>
     <string name="ui_title_cleaner_market" translatable="false">@string/scope_market</string>
@@ -451,6 +462,8 @@
     <string name="others_aiengine_copy_link_island_browser_tips">After copying a URL and clicking the Dynamic Island, it can be opened with any browser (instead of only Xiaomi Browser)</string>
     <string name="ui_title_others_miai" translatable="false">@string/scope_mi_ai</string>
     <string name="others_miai_hide_watermark">Hide beta and AIGC watermarks</string>
+    <string name="others_miai_fuck_aivs">Redirect AIVS folder</string>
+    <string name="others_miai_fuck_aivs_tips">" Prevent the AIVS-SDK from creating a folder in the root of external storage"</string>
     <string name="ui_title_others_mimirror" translatable="false">@string/scope_mi_mirror</string>
     <string name="others_mimirror_all_app">All apps can be opened on another device</string>
     <string name="ui_title_others_search" translatable="false">@string/scope_search</string>

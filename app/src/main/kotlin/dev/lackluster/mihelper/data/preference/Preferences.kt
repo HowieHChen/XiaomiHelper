@@ -1,11 +1,22 @@
 package dev.lackluster.mihelper.data.preference
 
 import dev.lackluster.hyperx.ui.preference.core.PreferenceKey
+import dev.lackluster.mihelper.BuildConfig
 import dev.lackluster.mihelper.data.Constants
 import dev.lackluster.mihelper.utils.Device
 
 object Preferences {
+    const val NAME = "config"
     const val VERSION = 10
+
+    val BACKUP_BLACKLIST by lazy {
+        listOf(
+            SystemUI.StatusBar.Font.FONT_PATH_DISPLAY.name,
+            SystemUI.StatusBar.Font.FONT_PATH_ORIGINAL.name,
+            SystemUI.StatusBar.StackedMobile.FONT_PATH_DISPLAY.name,
+            SystemUI.StatusBar.StackedMobile.FONT_PATH_ORIGINAL.name,
+        )
+    }
 
     object AiEngine {
         val OPEN_LINK_WITH_CUSTOM_BROWSER = PreferenceKey("aicr_link_browser", false)
@@ -16,7 +27,6 @@ object Preferences {
         val HAZE_BLUR = PreferenceKey("app_haze_blur", true)
         val HAZE_LIGHT_BLUR_ALPHA = PreferenceKey("app_haze_light_blur_alpha", 0.8f)
         val HAZE_DARK_BLUR_ALPHA = PreferenceKey("app_haze_dark_blur_alpha", 0.7f)
-        val MODULE_ENABLED = PreferenceKey("enable_module", true)
         val SKIP_ROOT_CHECK = PreferenceKey("app_ignore_root", false)
         val HIDE_ICON = PreferenceKey("hide_icon", false)
     }
@@ -38,6 +48,10 @@ object Preferences {
 
     object DownloadUI {
         val HIDE_XL = PreferenceKey("downloadui_remove_xl", false)
+    }
+
+    object FindDevice {
+        val FUCK_AIVS = PreferenceKey("find_device_fuck_aivs", false)
     }
 
     object HintState {
@@ -86,6 +100,7 @@ object Preferences {
         val SEARCH_USE_BROWSER = PreferenceKey("xiaoai_use_browser", false)
         val SEARCH_ENGINE = PreferenceKey("xiaoai_search_engine", 0)
         val CUSTOM_SEARCH_URL = PreferenceKey("xiaoai_search_url", "")
+        val FUCK_AIVS = PreferenceKey("xiaoai_fuck_aivs", false)
     }
 
     object MiLink {
@@ -134,6 +149,8 @@ object Preferences {
     }
 
     object Module {
+        val MODULE_ENABLED = PreferenceKey("enable_module", true)
+        val DEBUG = PreferenceKey("enable_debug", BuildConfig.DEBUG)
         val DEX_KIT_CACHE = PreferenceKey("dexkit_cache", true)
         val SHOW_IN_SETTINGS = PreferenceKey("entry_in_settings", false)
         val SETTINGS_ICON_STYLE = PreferenceKey("entry_icon_style", 0)
@@ -233,7 +250,7 @@ object Preferences {
             val DOUBLE_TAP_TO_SLEEP = PreferenceKey("systemui_double_tap_sleep", false)
 //            val CARRIER_TEXT = PreferenceKey("systemui_lockscreen_carrier_text", false)
             val KEEP_START_CONTAINER = PreferenceKey("systemui_ls_keep_clock", false)
-            val HIDE_NEXT_ALARM = PreferenceKey("systemui_ls_hide_next_alarm", false)
+//            val HIDE_NEXT_ALARM = PreferenceKey("systemui_ls_hide_next_alarm", false)
             val HIDE_CARRIER_ONE = PreferenceKey("systemui_ls_hide_carrier_one", false)
             val HIDE_CARRIER_TWO = PreferenceKey("systemui_ls_hide_carrier_two", false)
             val FORCE_COLOR_STATUS_BAR = PreferenceKey("systemui_ls_force_color_status_bar", 0)
@@ -265,13 +282,15 @@ object Preferences {
         object StatusBar {
             val ENABLE_NOTIF_MAX_COUNT = PreferenceKey("statusbar_notif_max", false)
             val NOTIF_MAX_COUNT = PreferenceKey("statusbar_notif_icon_max", 3)
-            val DOUBLE_TAP_TO_SLEEP = PreferenceKey("statusbar_double_tap_sleep", false)
+//            val DOUBLE_TAP_TO_SLEEP = PreferenceKey("statusbar_double_tap_sleep", false)
             val REGION_SAMPLING = PreferenceKey("statusbar_region_sampling", 0)
+            val DOUBLE_TAP_GESTURE = PreferenceKey("statusbar_double_tap", 0)
+            val SINGLE_TAP_GESTURE = PreferenceKey("statusbar_single_tap", 0)
 
             object Font {
                 private val defaultClockFontWeight = if (Device.isPad) 460 else 500
 
-                val FONT_PATH_INTERNAL = PreferenceKey("sb_font_path_app", Constants.VARIABLE_FONT_DEFAULT_PATH)
+                val FONT_PATH_DISPLAY = PreferenceKey("sb_font_path_app", Constants.VARIABLE_FONT_DEFAULT_PATH)
                 val FONT_PATH_ORIGINAL = PreferenceKey("sb_font_path_real", Constants.VARIABLE_FONT_DEFAULT_PATH)
 
                 val CUSTOM_LOCK_SCREEN_CARRIER = PreferenceKey("sb_font_ls_carrier", false)
@@ -436,17 +455,17 @@ object Preferences {
                 val SINGLE_MOBILE_SIM2 = PreferenceKey("icon_tuner_slot_single_sim2", 0)
 
                 val SIGNAL_SVG_SINGLE = PreferenceKey("icon_tuner_stacked_icon_svg_single", 0)
-                val SIGNAL_SVG_SINGLE_VAL = PreferenceKey("icon_tuner_stacked_icon_svg_single_val", Constants.STACKED_MOBILE_ICON_SINGLE_MIUI)
+//                val SIGNAL_SVG_SINGLE_VAL = PreferenceKey("icon_tuner_stacked_icon_svg_single_val", Constants.STACKED_MOBILE_ICON_SINGLE_MIUI)
                 val SIGNAL_SVG_SINGLE_NAME = PreferenceKey("icon_tuner_stacked_icon_svg_single_name", "")
                 val SIGNAL_SVG_STACKED = PreferenceKey("icon_tuner_stacked_icon_svg_stacked", 0)
-                val SIGNAL_SVG_STACKED_VAL = PreferenceKey("icon_tuner_stacked_icon_svg_stacked_val", Constants.STACKED_MOBILE_ICON_STACKED_MIUI)
+//                val SIGNAL_SVG_STACKED_VAL = PreferenceKey("icon_tuner_stacked_icon_svg_stacked_val", Constants.STACKED_MOBILE_ICON_STACKED_MIUI)
                 val SIGNAL_SVG_STACKED_NAME = PreferenceKey("icon_tuner_stacked_icon_svg_stacked_name", "")
                 val SIGNAL_ALPHA_FG = PreferenceKey("icon_tuner_stacked_icon_alpha_fg", 1.0f)
                 val SIGNAL_ALPHA_BG = PreferenceKey("icon_tuner_stacked_icon_alpha_bg", 0.4f)
                 val SIGNAL_ALPHA_ERROR = PreferenceKey("icon_tuner_stacked_icon_alpha_error", 0.2f)
 
                 val TYPE_FONT_MODE = PreferenceKey("sb_font_stacked_type_font", 0)
-                val FONT_PATH_INTERNAL = PreferenceKey("sb_font_stacked_type_path_app", Constants.VARIABLE_FONT_DEFAULT_PATH)
+                val FONT_PATH_DISPLAY = PreferenceKey("sb_font_stacked_type_path_app", Constants.VARIABLE_FONT_DEFAULT_PATH)
                 val FONT_PATH_ORIGINAL = PreferenceKey("sb_font_stacked_type_path_real", Constants.VARIABLE_FONT_DEFAULT_PATH)
                 val TYPE_WIDTH_CONDENSED = PreferenceKey("sb_font_stacked_type_width_condensed", 80)
 

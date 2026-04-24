@@ -26,8 +26,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintSet
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.action0
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.action1
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.action2
@@ -53,73 +53,82 @@ import dev.lackluster.mihelper.hook.rules.systemui.compat.ConstraintSetCompat.co
 import dev.lackluster.mihelper.hook.rules.systemui.compat.ConstraintSetCompat.setGoneMargin
 import dev.lackluster.mihelper.hook.rules.systemui.compat.ConstraintSetCompat.setMargin
 import dev.lackluster.mihelper.hook.rules.systemui.compat.ConstraintSetCompat.setVisibility
-import dev.lackluster.mihelper.utils.Prefs
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
+import dev.lackluster.mihelper.hook.utils.toTyped
 import dev.lackluster.mihelper.utils.factory.dp
 
-object CustomLayout : YukiBaseHooker() {
-    private val ncAlbum = Prefs.getInt(Pref.Key.SystemUI.MediaControl.LYT_ALBUM, 0)
-    private val ncActionsLeftAligned = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.LYT_LEFT_ACTIONS, false)
-    private val ncActionsOrder = Prefs.getInt(Pref.Key.SystemUI.MediaControl.LYT_ACTIONS_ORDER, 0)
-    private val ncHideTime = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.LYT_HIDE_TIME, false)
-    private val ncHideSeamless = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.LYT_HIDE_SEAMLESS, false)
-    private val ncHeaderMargin = Prefs.getFloat(Pref.Key.SystemUI.MediaControl.LYT_HEADER_MARGIN, 21.0f)
-    private val ncHeaderPadding = Prefs.getFloat(Pref.Key.SystemUI.MediaControl.LYT_HEADER_PADDING, 4.0f)
+object CustomLayout : StaticHooker() {
+    private val ncAlbum by Preferences.SystemUI.MediaControl.Shared.LYT_ALBUM.get(false).lazyGet()
+    private val ncActionsLeftAligned by Preferences.SystemUI.MediaControl.Shared.LYT_LEFT_ACTIONS.get(false).lazyGet()
+    private val ncActionsOrder by Preferences.SystemUI.MediaControl.Shared.LYT_ACTIONS_ORDER.get(false).lazyGet()
+    private val ncHideTime by Preferences.SystemUI.MediaControl.Shared.LYT_HIDE_TIME.get(false).lazyGet()
+    private val ncHideSeamless by Preferences.SystemUI.MediaControl.Shared.LYT_HIDE_SEAMLESS.get(false).lazyGet()
+    private val ncHeaderMargin by Preferences.SystemUI.MediaControl.Shared.LYT_HEADER_TOP_MARGIN.get(false).lazyGet()
+    private val ncHeaderPadding by Preferences.SystemUI.MediaControl.Shared.LYT_HEADER_PADDING.get(false).lazyGet()
 
-    private val diAlbum = Prefs.getInt(Pref.Key.DynamicIsland.MediaControl.LYT_ALBUM, 0)
-    private val diActionsLeftAligned = Prefs.getBoolean(Pref.Key.DynamicIsland.MediaControl.LYT_LEFT_ACTIONS, false)
-    private val diActionsOrder = Prefs.getInt(Pref.Key.DynamicIsland.MediaControl.LYT_ACTIONS_ORDER, 0)
-    private val diHideTime = Prefs.getBoolean(Pref.Key.DynamicIsland.MediaControl.LYT_HIDE_TIME, false)
-    private val diHideSeamless = Prefs.getBoolean(Pref.Key.DynamicIsland.MediaControl.LYT_HIDE_SEAMLESS, false)
-    private val diHeaderMargin = Prefs.getFloat(Pref.Key.DynamicIsland.MediaControl.LYT_HEADER_MARGIN, 21.0f)
-    private val diHeaderPadding = Prefs.getFloat(Pref.Key.DynamicIsland.MediaControl.LYT_HEADER_PADDING, 4.0f)
+    private val diAlbum by Preferences.SystemUI.MediaControl.Shared.LYT_ALBUM.get(true).lazyGet()
+    private val diActionsLeftAligned by Preferences.SystemUI.MediaControl.Shared.LYT_LEFT_ACTIONS.get(true).lazyGet()
+    private val diActionsOrder by Preferences.SystemUI.MediaControl.Shared.LYT_ACTIONS_ORDER.get(true).lazyGet()
+    private val diHideTime by Preferences.SystemUI.MediaControl.Shared.LYT_HIDE_TIME.get(true).lazyGet()
+    private val diHideSeamless by Preferences.SystemUI.MediaControl.Shared.LYT_HIDE_SEAMLESS.get(true).lazyGet()
+    private val diHeaderMargin by Preferences.SystemUI.MediaControl.Shared.LYT_HEADER_TOP_MARGIN.get(true).lazyGet()
+    private val diHeaderPadding by Preferences.SystemUI.MediaControl.Shared.LYT_HEADER_PADDING.get(true).lazyGet()
+
+    override fun onInit() {
+        updateSelfState(true)
+    }
 
     override fun onHook() {
         if (ncAlbum != 0 || ncActionsLeftAligned || ncHideTime || ncHideSeamless || ncHeaderMargin != 21.0f || ncHeaderPadding != 4.0f) {
             clzMiuiMediaNotificationControllerImpl?.apply {
                 val fldContext = resolve().firstFieldOrNull {
                     name = "context"
-                }
+                }?.toTyped<Context>()
                 val fldNormalLayout = resolve().firstFieldOrNull {
                     name = "normalLayout"
-                }
+                }?.toTyped<Any>()
                 val fldNormalAlbumLayout = resolve().firstFieldOrNull {
                     name = "normalAlbumLayout"
-                }
+                }?.toTyped<Any>()
                 resolve().firstMethodOrNull {
                     name {
                         it.startsWith("loadLayout")
                     }
                 }?.hook {
-                    after {
-                        val context = fldContext?.copy()?.of(this.instance)?.get<Context>() ?: return@after
-                        val normalLayout = fldNormalLayout?.copy()?.of(this.instance)?.get() ?: return@after
-                        val normalAlbumLayout = fldNormalAlbumLayout?.copy()?.of(this.instance)?.get() ?: return@after
+                    val ori = proceed()
+                    val context = fldContext?.get(thisObject)
+                    val normalLayout = fldNormalLayout?.get(thisObject)
+                    val normalAlbumLayout = fldNormalAlbumLayout?.get(thisObject)
+                    if (context != null && normalLayout != null && normalAlbumLayout != null) {
                         updateLayoutConstraintSet(context, normalLayout, false)
                         if (ncAlbum != 0) {
                             setVisibility?.invoke(normalAlbumLayout, icon, View.GONE)
                         }
                     }
+                    result(ori)
                 }
             }
             if (ncHideTime) {
                 clzMiuiMediaViewControllerImpl?.apply {
                     val holder = resolve().firstFieldOrNull {
                         name = "holder"
-                    }?.self
+                    }?.toTyped<Any>()
                     val fldElapsedTimeView = clzMiuiMediaViewHolder?.resolve()?.firstFieldOrNull {
                         name = "elapsedTimeView"
-                    }?.self
+                    }?.toTyped<TextView>()
                     val fldTotalTimeView = clzMiuiMediaViewHolder?.resolve()?.firstFieldOrNull {
                         name = "totalTimeView"
-                    }?.self
+                    }?.toTyped<TextView>()
                     resolve().firstMethodOrNull {
                         name = "onFullAodStateChanged"
                     }?.hook {
-                        after {
-                            val vh = holder?.get(this.instance) ?: return@after
-                            (fldElapsedTimeView?.get(vh) as? TextView)?.visibility = View.GONE
-                            (fldTotalTimeView?.get(vh) as? TextView)?.visibility = View.GONE
+                        val ori = proceed()
+                        val vh = holder?.get(thisObject)
+                        if (vh != null) {
+                            fldElapsedTimeView?.get(vh)?.visibility = View.GONE
+                            fldTotalTimeView?.get(vh)?.visibility = View.GONE
                         }
+                        result(ori)
                     }
                 }
             }
@@ -128,61 +137,66 @@ object CustomLayout : YukiBaseHooker() {
             clzMiuiMediaViewControllerImpl?.resolve()?.firstMethodOrNull {
                 name = "setSeamless"
             }?.hook {
-                intercept()
+                result(null)
             }
         }
         if (diAlbum != 0 || diActionsLeftAligned || diHideTime || diHideSeamless || diHeaderMargin != 21.0f || diHeaderPadding != 4.0f) {
             "com.android.systemui.statusbar.notification.mediaisland.MiuiIslandMediaControllerImpl".toClassOrNull()?.apply {
                 val fldContext = resolve().firstFieldOrNull {
                     name = "context"
-                }
+                }?.toTyped<Context>()
                 val fldNormalLayoutIsland = resolve().firstFieldOrNull {
                     name = "normalLayoutIsland"
-                }
+                }?.toTyped<Any>()
                 val fldMiuiPlayerHolder = resolve().firstFieldOrNull {
                     name = "miuiPlayerHolder"
-                }?.self
+                }?.toTyped<Any>()
                 val fldMiuiDummyPlayerHolder = resolve().firstFieldOrNull {
                     name = "miuiDummyPlayerHolder"
-                }?.self
+                }?.toTyped<Any>()
                 val fldAppIcon = clzMiuiIslandMediaViewHolder?.resolve()?.firstFieldOrNull {
                     name = "appIcon"
-                }?.self
+                }?.toTyped<ImageView>()
                 val fldPlayer = clzMiuiIslandMediaViewHolder?.resolve()?.firstFieldOrNull {
                     name = "player"
-                }?.self
+                }?.toTyped<Any>()
                 resolve().firstMethodOrNull {
                     name {
                         it.startsWith("reInflateView")
                     }
                 }?.hook {
-                    after {
-                        val context = fldContext?.copy()?.of(this.instance)?.get<Context>() ?: return@after
-                        val normalLayoutIsland = fldNormalLayoutIsland?.copy()?.of(this.instance)?.get() ?: return@after
-                        updateLayoutConstraintSet(context, normalLayoutIsland, true)
-                        val miuiPlayerHolder = fldMiuiPlayerHolder?.get(this.instance)
-                        val miuiDummyPlayerHolder = fldMiuiDummyPlayerHolder?.get(this.instance)
-                        miuiPlayerHolder?.let { it1 -> applyTo?.invoke(normalLayoutIsland, fldPlayer?.get(it1)) }
-                        miuiDummyPlayerHolder?.let { it1 -> applyTo?.invoke(normalLayoutIsland, fldPlayer?.get(it1)) }
-                        if (diAlbum != 0) {
-                            miuiPlayerHolder?.let { it1 -> (fldAppIcon?.get(it1) as? ImageView)?.visibility = View.GONE }
-                            miuiDummyPlayerHolder?.let { it1 -> (fldAppIcon?.get(it1) as? ImageView)?.visibility = View.GONE }
-                        }
+                    val ori = proceed()
+                    val context = fldContext?.get(thisObject)
+                    val normalLayoutIsland = fldNormalLayoutIsland?.get(thisObject)
+                    if (context == null || normalLayoutIsland == null) {
+                        return@hook result(ori)
                     }
+                    updateLayoutConstraintSet(context, normalLayoutIsland, true)
+                    val miuiPlayerHolder = fldMiuiPlayerHolder?.get(thisObject)
+                    val miuiDummyPlayerHolder = fldMiuiDummyPlayerHolder?.get(thisObject)
+                    miuiPlayerHolder?.let { it1 -> applyTo?.invoke(normalLayoutIsland, fldPlayer?.get(it1)) }
+                    miuiDummyPlayerHolder?.let { it1 -> applyTo?.invoke(normalLayoutIsland, fldPlayer?.get(it1)) }
+                    if (diAlbum != 0) {
+                        miuiPlayerHolder?.let { it1 -> fldAppIcon?.get(it1)?.visibility = View.GONE }
+                        miuiDummyPlayerHolder?.let { it1 -> fldAppIcon?.get(it1)?.visibility = View.GONE }
+                    }
+                    result(ori)
                 }
             }
             "com.android.systemui.statusbar.notification.mediaisland.PlayerIslandConstraintLayout".toClassOrNull()?.apply {
                 val fldNormalLayoutIsland = resolve().firstFieldOrNull {
                     name = "normalLayoutIsland"
-                }
+                }?.toTyped<Any>()
                 resolve().firstConstructor {
                     parameterCount = 3
                 }.hook {
-                    after {
-                        val context = this.args(0).cast<Context>() ?: return@after
-                        val normalLayoutIsland = fldNormalLayoutIsland?.copy()?.of(this.instance)?.get() ?: return@after
+                    val ori =proceed()
+                    val context = getArg(0) as? Context
+                    val normalLayoutIsland = fldNormalLayoutIsland?.get(thisObject)
+                    if (context != null && normalLayoutIsland != null) {
                         updateLayoutConstraintSet(context, normalLayoutIsland, true)
                     }
+                    result(ori)
                 }
             }
         }
@@ -190,7 +204,7 @@ object CustomLayout : YukiBaseHooker() {
             clzMiuiIslandMediaViewBinderImpl?.resolve()?.firstMethodOrNull {
                 name = "setSeamless"
             }?.hook {
-                intercept()
+                result(null)
             }
         }
     }

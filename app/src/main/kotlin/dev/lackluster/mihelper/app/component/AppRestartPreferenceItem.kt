@@ -10,7 +10,10 @@ import dev.lackluster.hyperx.ui.preference.TextPreference
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.app.utils.SystemCommander
 import dev.lackluster.mihelper.app.utils.compose.rememberAppInfo
+import dev.lackluster.mihelper.utils.MLog
 import kotlinx.coroutines.launch
+
+private const val TAG = "AppRestartPreferenceItem"
 
 @Composable
 fun AppRestartPreferenceItem(
@@ -37,13 +40,14 @@ fun AppRestartPreferenceItem(
                 val killCmd = "am force-stop $packageName"
                 val startCmd = "monkey -p $packageName -c android.intent.category.LAUNCHER 1"
 
-                val isSuccess = SystemCommander.execAsync(
+                val result = SystemCommander.execAsync(
                     command = "$killCmd && $startCmd",
                     useRoot = true,
                     silent = true
-                ).isSuccess
+                )
 
-                if (!isSuccess) {
+                if (!result.isSuccess) {
+                    MLog.e(TAG) { result.err }
                     onFallbackAction()
                 }
             }

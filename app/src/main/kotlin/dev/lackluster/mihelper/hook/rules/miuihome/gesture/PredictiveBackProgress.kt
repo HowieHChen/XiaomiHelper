@@ -24,100 +24,105 @@ import android.view.View
 import android.view.WindowManager
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.condition.type.Modifiers
-import com.highcapable.kavaref.extension.makeAccessible
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.toTyped
 import kotlin.math.abs
 import kotlin.math.min
 
-object PredictiveBackProgress : YukiBaseHooker() {
-    private val clzGestureStubView by lazy {
-        "com.miui.home.recents.GestureStubView".toClassOrNull()
-    }
-    private val clzGestureBackArrowView by lazy {
-        "com.miui.home.recents.GestureBackArrowView".toClassOrNull()
-    }
+object PredictiveBackProgress : StaticHooker() {
+    private val clzGestureStubView by "com.miui.home.recents.GestureStubView".lazyClassOrNull()
+    private val clzGestureBackArrowView by "com.miui.home.recents.GestureBackArrowView".lazyClassOrNull()
+    
     private val metOnSwipeProgress by lazy {
         clzGestureBackArrowView?.resolve()?.firstMethodOrNull {
             name = "onSwipeProgress"
             parameters(Float::class)
-        }?.self?.apply { makeAccessible() }
+        }?.toTyped<Unit>()
     }
     private val metOnBackProgressed by lazy {
         "com.miui.home.recents.OnBackInvokedCallbackController".toClassOrNull()?.resolve()?.firstMethodOrNull {
             name = "onBackProgressed"
-        }?.self?.apply { makeAccessible() }
+        }?.toTyped<Unit>()
     }
     private val metGetInstanceBackMotionEventProvider by lazy {
         "android.window.BackMotionEventProvider".toClassOrNull()?.resolve()?.firstMethodOrNull {
             name = "getInstance"
             parameterCount = 7
             modifiers(Modifiers.STATIC)
-        }
+        }?.toTyped<Any>()
+    }
+
+    override fun onInit() {
+        updateSelfState(Preferences.MiuiHome.FIX_PREDICTIVE_BACK_PROG.get())
     }
 
     override fun onHook() {
-        hasEnable (Pref.Key.MiuiHome.FIX_PREDICTIVE_BACK_PROG) {
-            $$"com.miui.home.recents.GestureStubView$3".toClassOrNull()?.apply {
-                val fldGestureStubView = resolve().firstFieldOrNull {
-                    type("com.miui.home.recents.GestureStubView")
-                }?.self?.apply { makeAccessible() }
-                val fldCurrX = clzGestureStubView?.resolve()?.firstFieldOrNull {
-                    name = "mCurrX"
-                }?.self?.apply { makeAccessible() }
-                val fldCurrY = clzGestureStubView?.resolve()?.firstFieldOrNull {
-                    name = "mCurrY"
-                }?.self?.apply { makeAccessible() }
-                val fldDownX = clzGestureStubView?.resolve()?.firstFieldOrNull {
-                    name = "mDownX"
-                }?.self?.apply { makeAccessible() }
-                val fldGestureBackArrowView = clzGestureStubView?.resolve()?.firstFieldOrNull {
-                    name = "mGestureBackArrowView"
-                }?.self?.apply { makeAccessible() }
-                val fldGestureStubPos = clzGestureStubView?.resolve()?.firstFieldOrNull {
-                    name = "mGestureStubPos"
-                }?.self?.apply { makeAccessible() }
-                val fldOnBackInvokedCallbackController = clzGestureStubView?.resolve()?.firstFieldOrNull {
-                    name = "mOnBackInvokedCallbackController"
-                }?.self?.apply { makeAccessible() }
-                val fldWindowManager = clzGestureStubView?.resolve()?.firstFieldOrNull {
-                    name = "mWindowManager"
-                }?.self?.apply { makeAccessible() }
-                resolve().firstMethodOrNull {
-                    name = "onSwipeProcess"
-                }?.hook {
-                    before {
-                        val progress = this.args(0).float()
-                        val gestureStubView = fldGestureStubView?.get(this.instance) as? View ?: return@before
-                        val onBackInvokedCallbackController = fldOnBackInvokedCallbackController?.get(gestureStubView) ?: return@before
-                        val mCurrX = fldCurrX?.getFloat(gestureStubView) ?: return@before
-                        val mCurrY = fldCurrY?.getFloat(gestureStubView) ?: return@before
-                        val mDownX = fldDownX?.getFloat(gestureStubView) ?: return@before
-                        val mGestureStubPos = fldGestureStubPos?.getInt(gestureStubView) ?: return@before
-                        val windowManager = fldWindowManager?.get(gestureStubView) as? WindowManager ?: return@before
-                        fldGestureBackArrowView?.get(gestureStubView)?.let { gestureBackArrowView ->
-                            metOnSwipeProgress?.invoke(gestureBackArrowView, progress)
-                        }
-                        val fullyStretchedThreshold = windowManager.maximumWindowMetrics.let { windowMetrics ->
-                            min(
-                                windowMetrics.bounds.width().toFloat(), // screen width
-                                windowMetrics.density * 412.0f // R.dimen.navigation_edge_action_progress_threshold
-                            )
-                        }
-                        metGetInstanceBackMotionEventProvider?.invoke(
-                            mCurrX,
-                            mCurrY,
-                            (abs(mCurrX - mDownX) / fullyStretchedThreshold).coerceIn(0.0f, 1.0f),
-                            0.0f,
-                            0.0f,
-                            if (mGestureStubPos == 0) 0 else 1,
-                            null
-                        )?.let { backMotionEvent ->
-                            metOnBackProgressed?.invoke(onBackInvokedCallbackController, backMotionEvent)
-                        }
-                        this.result = null
+        $$"com.miui.home.recents.GestureStubView$3".toClassOrNull()?.apply {
+            val fldGestureStubView = resolve().firstFieldOrNull {
+                type("com.miui.home.recents.GestureStubView")
+            }?.toTyped<View>()
+            val fldCurrX = clzGestureStubView?.resolve()?.firstFieldOrNull {
+                name = "mCurrX"
+            }?.toTyped<Float>()
+            val fldCurrY = clzGestureStubView?.resolve()?.firstFieldOrNull {
+                name = "mCurrY"
+            }?.toTyped<Float>()
+            val fldDownX = clzGestureStubView?.resolve()?.firstFieldOrNull {
+                name = "mDownX"
+            }?.toTyped<Float>()
+            val fldGestureBackArrowView = clzGestureStubView?.resolve()?.firstFieldOrNull {
+                name = "mGestureBackArrowView"
+            }?.toTyped<View>()
+            val fldGestureStubPos = clzGestureStubView?.resolve()?.firstFieldOrNull {
+                name = "mGestureStubPos"
+            }?.toTyped<Int>()
+            val fldOnBackInvokedCallbackController = clzGestureStubView?.resolve()?.firstFieldOrNull {
+                name = "mOnBackInvokedCallbackController"
+            }?.toTyped<Any>()
+            val fldWindowManager = clzGestureStubView?.resolve()?.firstFieldOrNull {
+                name = "mWindowManager"
+            }?.toTyped<WindowManager>()
+            resolve().firstMethodOrNull {
+                name = "onSwipeProcess"
+            }?.hook {
+                val progress = getArg(0) as? Float
+                val gestureStubView = fldGestureStubView?.get(thisObject) ?: return@hook result(proceed())
+                val onBackInvokedCallbackController = fldOnBackInvokedCallbackController?.get(gestureStubView)
+                val mCurrX = fldCurrX?.get(gestureStubView)
+                val mCurrY = fldCurrY?.get(gestureStubView)
+                val mDownX = fldDownX?.get(gestureStubView)
+                val mGestureStubPos = fldGestureStubPos?.get(gestureStubView)
+                val windowManager = fldWindowManager?.get(gestureStubView)
+                if (
+                    progress != null && onBackInvokedCallbackController != null && windowManager != null &&
+                    mCurrX != null && mCurrY != null && mDownX != null && mGestureStubPos != null
+                ) {
+                    fldGestureBackArrowView?.get(gestureStubView)?.let { gestureBackArrowView ->
+                        metOnSwipeProgress?.invoke(gestureBackArrowView, progress)
                     }
+                    val fullyStretchedThreshold = windowManager.maximumWindowMetrics.let { windowMetrics ->
+                        min(
+                            windowMetrics.bounds.width().toFloat(), // screen width
+                            windowMetrics.density * 412.0f // R.dimen.navigation_edge_action_progress_threshold
+                        )
+                    }
+                    metGetInstanceBackMotionEventProvider?.invoke(
+                        null,
+                        mCurrX,
+                        mCurrY,
+                        (abs(mCurrX - mDownX) / fullyStretchedThreshold).coerceIn(0.0f, 1.0f),
+                        0.0f,
+                        0.0f,
+                        if (mGestureStubPos == 0) 0 else 1,
+                        null
+                    )?.let { backMotionEvent ->
+                        metOnBackProgressed?.invoke(onBackInvokedCallbackController, backMotionEvent)
+                    }
+                    result(null)
+                } else {
+                    result(proceed())
                 }
             }
         }

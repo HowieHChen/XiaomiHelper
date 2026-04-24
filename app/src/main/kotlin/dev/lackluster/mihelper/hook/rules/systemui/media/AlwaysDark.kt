@@ -23,57 +23,62 @@ package dev.lackluster.mihelper.hook.rules.systemui.media
 import android.content.Context
 import android.content.res.Configuration
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzMiuiMediaViewControllerImpl
-import dev.lackluster.mihelper.utils.Prefs
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
+import dev.lackluster.mihelper.hook.utils.toTyped
 
-object AlwaysDark : YukiBaseHooker() {
-    private val ncBackgroundStyle = Prefs.getInt(Pref.Key.SystemUI.MediaControl.BACKGROUND_STYLE, 0)
-    private val ncAlwaysDark = Prefs.getBoolean(Pref.Key.SystemUI.MediaControl.ALWAYS_DARK, false)
+object AlwaysDark : StaticHooker() {
+    private val ncBackgroundStyle by Preferences.SystemUI.MediaControl.Shared.BG_STYLE.get(false).lazyGet()
+    private val ncAlwaysDark by Preferences.SystemUI.MediaControl.NotifCenter.BG_ALWAYS_DARK.lazyGet()
+
+    override fun onInit() {
+        updateSelfState(ncBackgroundStyle == 0 && ncAlwaysDark)
+    }
 
     override fun onHook() {
-        if (ncBackgroundStyle == 0 && ncAlwaysDark) {
-            clzMiuiMediaViewControllerImpl?.apply {
-                val fldContext = resolve().firstFieldOrNull {
-                    name = "context"
-                }?.self?.apply {
-                    isAccessible = true
-                }
-                val fldMediaFullAodListener = resolve().firstFieldOrNull {
-                    name = "mediaFullAodListener"
-                }?.self
-                val fldFullAodController = resolve().firstFieldOrNull {
-                    name = "fullAodController"
-                }?.self
-                val fldListeners = "com.android.systemui.statusbar.notification.fullaod.NotifiFullAodController".toClassOrNull()
-                    ?.resolve()?.firstFieldOrNull {
-                        name = "mListeners"
-                    }?.self
-                val metGet = "dagger.Lazy".toClassOrNull()?.resolve()?.firstMethodOrNull {
-                    name = "get"
-                }?.self
-                resolve().firstConstructor().hook {
-                    after {
-                        val context = fldContext?.get(this.instance) as? Context ?: return@after
-                        val oriConfiguration = context.resources.configuration
-                        val configuration = Configuration(oriConfiguration).apply {
-                            uiMode = (oriConfiguration.uiMode and Configuration.UI_MODE_NIGHT_MASK.inv()) or Configuration.UI_MODE_NIGHT_YES
-                        }
-                        val wrappedContext = context.createConfigurationContext(configuration)
-                        fldContext.set(this.instance, wrappedContext)
+        clzMiuiMediaViewControllerImpl?.apply {
+            val fldContext = resolve().firstFieldOrNull {
+                name = "context"
+            }?.toTyped<Context>()
+            val fldMediaFullAodListener = resolve().firstFieldOrNull {
+                name = "mediaFullAodListener"
+            }?.toTyped<Any>()
+            val fldFullAodController = resolve().firstFieldOrNull {
+                name = "fullAodController"
+            }?.toTyped<Any>()
+            val fldListeners = "com.android.systemui.statusbar.notification.fullaod.NotifiFullAodController".toClassOrNull()
+                ?.resolve()?.firstFieldOrNull {
+                    name = "mListeners"
+                }?.toTyped<ArrayList<*>>()
+            val metGet = "dagger.Lazy".toClassOrNull()?.resolve()?.firstMethodOrNull {
+                name = "get"
+            }?.toTyped<Any>()
+            resolve().firstConstructor().hook {
+                val ori = proceed()
+                val context = fldContext?.get(thisObject)
+                if (context != null) {
+                    val oriConfiguration = context.resources.configuration
+                    val configuration = Configuration(oriConfiguration).apply {
+                        uiMode = (oriConfiguration.uiMode and Configuration.UI_MODE_NIGHT_MASK.inv()) or Configuration.UI_MODE_NIGHT_YES
                     }
+                    val wrappedContext = context.createConfigurationContext(configuration)
+                    fldContext.set(thisObject, wrappedContext)
                 }
-                resolve().firstMethodOrNull {
-                    name = "attach"
-                }?.hook {
-                    after {
-                        val mediaFullAodListener = fldMediaFullAodListener?.get(this.instance) ?: return@after
-                        val fullAodControllerLazy = fldFullAodController?.get(this.instance)
-                        val fullAodController = fullAodControllerLazy?.let { it1 -> metGet?.invoke(it1) }
-                        fullAodController?.let { it1 -> fldListeners?.get(it1) as? MutableList<*> }?.remove(mediaFullAodListener)
-                    }
+                result(ori)
+            }
+            resolve().firstMethodOrNull {
+                name = "attach"
+            }?.hook {
+                val ori = proceed()
+                val mediaFullAodListener = fldMediaFullAodListener?.get(thisObject)
+                val fullAodControllerLazy = fldFullAodController?.get(thisObject)
+                val fullAodController = fullAodControllerLazy?.let { it1 -> metGet?.invoke(it1) }
+                if (mediaFullAodListener != null && fullAodController != null) {
+                    fldListeners?.get(fullAodController)?.remove(mediaFullAodListener)
                 }
+                result(ori)
             }
         }
     }

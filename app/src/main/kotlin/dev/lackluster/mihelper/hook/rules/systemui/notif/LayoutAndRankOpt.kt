@@ -22,90 +22,82 @@ package dev.lackluster.mihelper.hook.rules.systemui.notif
 
 import android.service.notification.StatusBarNotification
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import de.robv.android.xposed.XposedHelpers
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.Prefs
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
+import dev.lackluster.mihelper.hook.utils.extraOf
+import dev.lackluster.mihelper.hook.utils.toTyped
 
-object LayoutAndRankOpt : YukiBaseHooker() {
-    private const val KEY_PRIORITY = "KEY_PRIORITY"
-    private const val KEY_PEOPLE_TYPE = "KEY_PEOPLE_TYPE"
-    private const val KEY_PIN_TEMP = "KEY_PIN_TEMP"
-    private const val KEY_PIN_TYPE = "KEY_PIN_TYPE"
+object LayoutAndRankOpt : StaticHooker() {
+    private var Any.priority by extraOf("KEY_PRIORITY", 0)
+    private var Any.peopleType by extraOf("KEY_PEOPLE_TYPE", 0)
+
     private const val VAL_PEOPLE_ALERTING = 2
     private const val VAL_PRIORITY_PEOPLE = 1
 
-    private val enableOpt = Prefs.getBoolean(Pref.Key.SystemUI.NotifCenter.LAYOUT_RANK_OPT, false)
-    private val hideSectionHeader = Prefs.getBoolean(Pref.Key.SystemUI.NotifCenter.LR_OPT_HIDE_SECTION_HEADER, true)
-    private val hideSectionGap = Prefs.getBoolean(Pref.Key.SystemUI.NotifCenter.LR_OPT_HIDE_SECTION_GAP, true)
-    private val rerank = Prefs.getBoolean(Pref.Key.SystemUI.NotifCenter.LR_OPT_RERANK, true)
+    private val hideSectionHeader by Preferences.SystemUI.NotifCenter.LR_OPT_HIDE_SECTION_HEADER.lazyGet()
+    private val hideSectionGap by Preferences.SystemUI.NotifCenter.LR_OPT_HIDE_SECTION_GAP.lazyGet()
+    private val rerank by Preferences.SystemUI.NotifCenter.LR_OPT_RERANK.lazyGet()
 
-    private val clzPipelineEntry by lazy {
-        "com.android.systemui.statusbar.notification.collection.PipelineEntry".toClassOrNull()
-    }
+    private val clzPipelineEntry by "com.android.systemui.statusbar.notification.collection.PipelineEntry".lazyClassOrNull()
     private val metGetPeopleType by lazy {
         "com.android.systemui.statusbar.notification.collection.coordinator.ConversationCoordinator".toClassOrNull()
             ?.resolve()?.firstMethodOrNull {
                 name = "getPeopleType"
-            }
+            }?.toTyped<Int>()
     }
     private val getRepresentativeEntry by lazy {
-        clzPipelineEntry
-            ?.resolve()
-            ?.firstMethodOrNull {
-                name = "getRepresentativeEntry"
-            }
-            ?.self
+        clzPipelineEntry?.resolve()?.firstMethodOrNull {
+            name = "getRepresentativeEntry"
+        }?.toTyped<Any>()
     }
     private val mSbn by lazy {
         "com.android.systemui.statusbar.notification.collection.NotificationEntry".toClassOrNull()
-            ?.resolve()
-            ?.firstFieldOrNull {
+            ?.resolve()?.firstFieldOrNull {
                 name = "mSbn"
-            }
-            ?.self
+            }?.toTyped<StatusBarNotification>()
     }
     private val mIsFocusNotification by lazy {
         "com.android.systemui.statusbar.notification.ExpandedNotification".toClassOrNull()
-            ?.resolve()
-            ?.firstFieldOrNull {
+            ?.resolve()?.firstFieldOrNull {
                 name = "mIsFocusNotification"
-            }
-            ?.self
+            }?.toTyped<Boolean>()
     }
     private val mIsSystemApp by lazy {
         "com.android.systemui.statusbar.notification.ExpandedNotification".toClassOrNull()
-            ?.resolve()
-            ?.firstFieldOrNull {
+            ?.resolve()?.firstFieldOrNull {
                 name = "mIsSystemApp"
-            }
-            ?.self
+            }?.toTyped<Boolean>()
+    }
+
+    override fun onInit() {
+        updateSelfState(Preferences.SystemUI.NotifCenter.ENABLE_LAYOUT_RANK_OPT.get())
     }
 
     override fun onHook() {
-        if (!enableOpt) return
         if (hideSectionHeader) {
             "com.android.systemui.statusbar.notification.collection.provider.SectionHeaderVisibilityProvider".toClassOrNull()?.apply {
                 val neverShowSectionHeaders = resolve().firstFieldOrNull {
                     name = "neverShowSectionHeaders"
-                }
+                }?.toTyped<Boolean>()
                 val sectionHeadersVisible = resolve().firstFieldOrNull {
                     name = "sectionHeadersVisible"
-                }
+                }?.toTyped<Boolean>()
                 resolve().firstConstructor().hook {
-                    after {
-                        neverShowSectionHeaders?.copy()?.of(this.instance)?.set(true)
-                        sectionHeadersVisible?.copy()?.of(this.instance)?.set(false)
-                    }
+                    val ori = proceed()
+                    neverShowSectionHeaders?.set(thisObject, true)
+                    sectionHeadersVisible?.set(thisObject, true)
+                    result(ori)
                 }
             }
-            "com.android.systemui.statusbar.notification.collection.coordinator.MiuiNotifCoordinator\$trackNotifUnoccludedState$1$1".toClassOrNull()?.apply {
+            $$"com.android.systemui.statusbar.notification.collection.coordinator.MiuiNotifCoordinator$trackNotifUnoccludedState$1$1".toClassOrNull()?.apply {
                 resolve().optional().firstMethodOrNull {
                     name = "emit"
                 }?.hook {
-                    before {
-                        this.args(0).set(java.lang.Boolean.valueOf(true))
-                    }
+                    val newArgs = args.toTypedArray()
+                    newArgs[0] = true
+                    result(proceed(newArgs))
                 }
             }
         }
@@ -113,78 +105,71 @@ object LayoutAndRankOpt : YukiBaseHooker() {
             "com.android.systemui.statusbar.notification.stack.StackScrollAlgorithm".toClassOrNull()?.apply {
                 val mGapHeight = resolve().firstFieldOrNull {
                     name = "mGapHeight"
-                }
+                }?.toTyped<Float>()
                 val mGapHeightOnLockscreen = resolve().firstFieldOrNull {
                     name = "mGapHeightOnLockscreen"
-                }
+                }?.toTyped<Float>()
                 resolve().firstMethodOrNull {
                     name = "initView"
                 }?.hook {
-                    after {
-                        mGapHeight?.copy()?.of(this.instance)?.set(0.0f)
-                        mGapHeightOnLockscreen?.copy()?.of(this.instance)?.set(0.0f)
-                    }
+                    val ori = proceed()
+                    mGapHeight?.set(thisObject, 0.0f)
+                    mGapHeightOnLockscreen?.set(thisObject, 0.0f)
+                    result(ori)
                 }
             }
         }
         if (rerank) {
-            "com.android.systemui.statusbar.notification.collection.coordinator.ConversationCoordinator\$peopleAlertingSectioner$1".toClassOrNull()?.apply {
+            $$"com.android.systemui.statusbar.notification.collection.coordinator.ConversationCoordinator$peopleAlertingSectioner$1".toClassOrNull()?.apply {
                 val type = resolve().firstField {
                     type(Int::class)
-                }
+                }.toTyped<Int>()
                 val conversationCoordinator = resolve().firstField {
                     type("com.android.systemui.statusbar.notification.collection.coordinator.ConversationCoordinator")
-                }
+                }.toTyped<Any>()
                 resolve().firstMethodOrNull {
                     name = "isInSection"
                 }?.hook {
-                    after {
-                        val pipelineEntry = this.args(0).any() ?: return@after
-                        val isConversation = this.result<Boolean>() ?: false
-                        if (isConversation) {
-                            val nowType = type.copy().of(this.instance).get<Int>() ?: 0
-                            val peopleType = conversationCoordinator.copy().of(this.instance).get()?.let {
-                                metGetPeopleType?.copy()?.of(it)?.invoke<Int>(pipelineEntry)
-                            } ?: 0
-                            XposedHelpers.setAdditionalInstanceField(
-                                pipelineEntry,
-                                KEY_PRIORITY,
-                                if (nowType == 1) VAL_PRIORITY_PEOPLE else VAL_PEOPLE_ALERTING
-                            )
-                            XposedHelpers.setAdditionalInstanceField(
-                                pipelineEntry,
-                                KEY_PEOPLE_TYPE,
-                                peopleType
-                            )
-                            this.result = false
-                        }
+                    val ori = proceed()
+                    val pipelineEntry = getArg(0)
+                    val isConversation = ori as? Boolean ?: false
+                    if (isConversation) {
+                        val nowType = type.get(thisObject) ?: 0
+                        val peopleType = conversationCoordinator.get(thisObject)?.let {
+                            metGetPeopleType?.invoke(pipelineEntry)
+                        } ?: 0
+                        pipelineEntry?.priority = if (nowType == 1) VAL_PRIORITY_PEOPLE else VAL_PEOPLE_ALERTING
+                        pipelineEntry?.peopleType = peopleType
+                        result(false)
+                    } else {
+                        result(ori)
                     }
                 }
             }
-            "com.android.systemui.statusbar.notification.collection.legacy.NotificationRankingManagerInjectorImplKt\$miuiRankingComparator$1".toClassOrNull()?.apply {
+            $$"com.android.systemui.statusbar.notification.collection.legacy.NotificationRankingManagerInjectorImplKt$miuiRankingComparator$1".toClassOrNull()?.apply {
                 resolve().firstMethodOrNull {
                     name = "compare"
                 }?.hook {
-                    replaceAny {
-                        val notification1 = this.args(0).any()?.let { pipelineEntry ->
-                            getRepresentativeEntry?.invoke(pipelineEntry)?.let { notificationEntry ->
-                                mSbn?.get(notificationEntry) as? StatusBarNotification
-                            }
+                    val notification1 = getArg(0)?.let { pipelineEntry ->
+                        getRepresentativeEntry?.invoke(pipelineEntry)?.let { notificationEntry ->
+                            mSbn?.get(notificationEntry)
                         }
-                        val notification2 = this.args(1).any()?.let { pipelineEntry ->
-                            getRepresentativeEntry?.invoke(pipelineEntry)?.let { notificationEntry ->
-                                mSbn?.get(notificationEntry) as? StatusBarNotification
-                            }
+                    }
+                    val notification2 = getArg(1)?.let { pipelineEntry ->
+                        getRepresentativeEntry?.invoke(pipelineEntry)?.let { notificationEntry ->
+                            mSbn?.get(notificationEntry)
                         }
-                        val tail1 = notification1?.notification?.extras?.getBoolean("miui.showAtTail", false)
-                        val tail2 = notification2?.notification?.extras?.getBoolean("miui.showAtTail", false)
-                        val isSystemWarning1 = isSystemWarning(notification1)
-                        val isSystemWarning2 = isSystemWarning(notification2)
-                        val isFocusNotification1 = isFocusNotification(notification1)
-                        val isFocusNotification2 = isFocusNotification(notification2)
-                        val priorityMessage1 = priorityMessage(this.args(0).any())
-                        val priorityMessage2 = priorityMessage(this.args(1).any())
-                        return@replaceAny if (tail1 != tail2) {
+                    }
+                    val tail1 = notification1?.notification?.extras?.getBoolean("miui.showAtTail", false)
+                    val tail2 = notification2?.notification?.extras?.getBoolean("miui.showAtTail", false)
+                    val isSystemWarning1 = isSystemWarning(notification1)
+                    val isSystemWarning2 = isSystemWarning(notification2)
+                    val isFocusNotification1 = isFocusNotification(notification1)
+                    val isFocusNotification2 = isFocusNotification(notification2)
+                    val priorityMessage1 = priorityMessage(getArg(0))
+                    val priorityMessage2 = priorityMessage(getArg(0))
+                    result(
+                        if (tail1 != tail2) {
                             if (tail2 == true) -1 else 1
                         } else if (isSystemWarning1 != isSystemWarning2) {
                             if (isSystemWarning1) -1 else 1
@@ -195,21 +180,19 @@ object LayoutAndRankOpt : YukiBaseHooker() {
                         } else {
                             0
                         }
-                    }
+                    )
                 }
             }
         }
     }
 
     private fun isSystemWarning(notification: Any?): Boolean {
-        return notification is StatusBarNotification &&
-                mIsSystemApp?.getBoolean(notification) == true &&
+        return notification is StatusBarNotification && mIsSystemApp?.get(notification) == true &&
                 notification.notification?.extras?.getBoolean("miui.systemWarnings", false) == true
     }
 
     private fun isFocusNotification(notification: Any?): Boolean {
-        return notification != null &&
-                mIsFocusNotification?.getBoolean(notification) == true
+        return notification != null && mIsFocusNotification?.get(notification) == true
     }
 
     private fun priorityMessage(pipelineEntry: Any?): Int {
@@ -217,19 +200,13 @@ object LayoutAndRankOpt : YukiBaseHooker() {
             if (pipelineEntry == null) {
                 0
             } else {
-                XposedHelpers.getAdditionalInstanceField(
-                    pipelineEntry,
-                    KEY_PRIORITY
-                ) as? Int ?: 0
+                pipelineEntry.priority ?: 0
             }
         val peopleType =
             if (pipelineEntry == null) {
                 0
             } else {
-                XposedHelpers.getAdditionalInstanceField(
-                    pipelineEntry,
-                    KEY_PEOPLE_TYPE
-                ) as? Int ?: 0
+                pipelineEntry.peopleType ?: 0
             }
         return priority * 10000 + peopleType
     }

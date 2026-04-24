@@ -21,26 +21,42 @@
 package dev.lackluster.mihelper.hook.rules.music
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
 
-object HideMyPageElement : YukiBaseHooker() {
+object HideMyPageElement : StaticHooker() {
+    private val hideBanner by Preferences.Music.HIDE_MY_BANNER.lazyGet()
+    private val hideRecommend by Preferences.Music.HIDE_MY_REC_PLAYLIST.lazyGet()
+
+    override fun onInit() {
+        updateSelfState(hideBanner || hideRecommend)
+    }
+
     override fun onHook() {
-        "com.tencent.qqmusiclite.fragment.my.MyViewModel".toClassOrNull()?.apply {
-            hasEnable(Pref.Key.Music.MY_HIDE_BANNER) {
+        if (hideRecommend) {
+            "com.tencent.qqmusiclite.fragment.my.MyAdapter".toClassOrNull()?.apply {
                 resolve().firstMethodOrNull {
-                    name = "getMyBannerCard"
+                    name = "updateRecommendSongs"
                 }?.hook {
-                    intercept()
+                    result(null)
                 }
             }
-            hasEnable(Pref.Key.Music.MY_HIDE_REC_PLAYLIST) {
-                resolve().firstMethodOrNull {
-                    name = "requestRecommendSongs"
-                }?.hook {
-                    intercept()
+        }
+        if (hideBanner) {
+            "com.tencent.qqmusiclite.fragment.my.MyViewModel".toClassOrNull()?.apply {
+                if (hideBanner) {
+                    resolve().firstMethodOrNull {
+                        name = "getMyBannerCard"
+                    }?.hook {
+                        result(null)
+                    }
                 }
+//                resolve().firstMethodOrNull {
+//                    name = "requestRecommendSongs"
+//                }?.hook {
+//                    result(null)
+//                }
             }
         }
     }

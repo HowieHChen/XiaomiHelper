@@ -22,14 +22,15 @@ package dev.lackluster.mihelper.hook.rules.securitycenter
 
 import android.content.Context
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.DexKit
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.DexKit
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.ifTrue
 import org.luckypray.dexkit.query.enums.StringMatchType
 import java.util.ArrayList
 
-object DisableRiskAppNotification : YukiBaseHooker() {
+object DisableRiskAppNotification : StaticHooker() {
     private val riskClz by lazy {
         DexKit.findClassWithCache("risk_app_notification") {
             matcher {
@@ -81,38 +82,48 @@ object DisableRiskAppNotification : YukiBaseHooker() {
         }
     }
 
+    override fun onInit() {
+        Preferences.SecurityCenter.DISABLE_RISK_APP_NOTIF.get().also { 
+            updateSelfState(it)
+        }.ifTrue {
+            pkg
+            riskClz
+            getAntiFraudPackages
+            setAntiFraudPackages
+            actionAntiFraudAutoScanApps
+            actionAntiFraudAutoScanSingleApp
+        }
+    }
+    
     override fun onHook() {
-        hasEnable(Pref.Key.SecurityCenter.DISABLE_RISK_APP_NOTIF) {
-            if (appClassLoader == null) return@hasEnable
-            val pkgInstance = pkg.map { it.getMethodInstance(appClassLoader!!) }.toList()
-            pkgInstance.hookAll {
-                intercept()
-            }
-            riskClz?.getInstance(appClassLoader!!)?.apply {
-                resolve().method {
-                    returnType(Void.TYPE)
-                    parameterCount = 2
-                    parameters(Context::class, ArrayList::class)
-                }.forEach {
-                    if (!pkgInstance.contains(it.self)) {
-                        it.hook {
-                            intercept()
-                        }
+        val pkgInstance = pkg.map { it.getMethodInstance(classLoader) }.toList()
+        pkgInstance.hookAll {
+            result(null)
+        }
+        riskClz?.getInstance(classLoader)?.apply {
+            resolve().method {
+                returnType(Void.TYPE)
+                parameterCount = 2
+                parameters(Context::class, ArrayList::class)
+            }.forEach {
+                if (!pkgInstance.contains(it.self)) {
+                    it.hook {
+                        result(null)
                     }
                 }
             }
-            getAntiFraudPackages?.getMethodInstance(appClassLoader!!)?.hook {
-                replaceTo(ArrayList<String>())
-            }
-            setAntiFraudPackages?.getMethodInstance(appClassLoader!!)?.hook {
-                intercept()
-            }
-            actionAntiFraudAutoScanApps?.getMethodInstance(appClassLoader!!)?.hook {
-                intercept()
-            }
-            actionAntiFraudAutoScanSingleApp?.getMethodInstance(appClassLoader!!)?.hook {
-                intercept()
-            }
+        }
+        getAntiFraudPackages?.getMethodInstance(classLoader)?.hook {
+            result(ArrayList<String>())
+        }
+        setAntiFraudPackages?.getMethodInstance(classLoader)?.hook {
+            result(null)
+        }
+        actionAntiFraudAutoScanApps?.getMethodInstance(classLoader)?.hook {
+            result(null)
+        }
+        actionAntiFraudAutoScanSingleApp?.getMethodInstance(classLoader)?.hook {
+            result(null)
         }
     }
 }

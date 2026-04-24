@@ -22,50 +22,50 @@ package dev.lackluster.mihelper.hook.rules.download
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.condition.type.Modifiers
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
 
-object FuckXL : YukiBaseHooker() {
+object FuckXL : StaticHooker() {
+    override fun onInit() {
+        updateSelfState(Preferences.Download.FUCK_XL.get())
+    }
+
     override fun onHook() {
-        hasEnable(Pref.Key.Download.FUCK_XL) {
-            val sdcardPath = "com.android.providers.downloads.config.XLDownloadCfg".toClassOrNull()
-                ?.resolve()?.firstFieldOrNull {
-                    name = "sdcardPath"
-                }?.get<String>() ?: "/storage/emulated/0"
-            $$"com.android.providers.downloads.config.DownloadSettings$XLSecureConfigSettings".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
-                    name = "getDpDebugLogPath"
-                }?.hook {
-                    before {
-                        this.result = this.args(0).string()
-                    }
-                }
+        val sdcardPath = "com.android.providers.downloads.config.XLDownloadCfg".toClassOrNull()
+            ?.resolve()?.firstFieldOrNull {
+                name = "sdcardPath"
+            }?.get<String>() ?: "/storage/emulated/0"
+        $$"com.android.providers.downloads.config.DownloadSettings$XLSecureConfigSettings".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "getDpDebugLogPath"
+            }?.hook {
+                result(getArg(0))
             }
-            "com.android.providers.downloads.config.XLConfig".toClassOrNull()?.apply {
-                resolve().firstFieldOrNull {
-                    name = "logDir"
-                    modifiers(Modifiers.STATIC)
-                }?.set("${sdcardPath}/MIUI/.xlDownload/dp.log")
-                resolve().firstFieldOrNull {
-                    name = "logSoDir"
-                    modifiers(Modifiers.STATIC)
-                }?.set("${sdcardPath}/MIUI/.xlDownload/dp_so.log")
-                resolve().firstMethodOrNull {
-                    name = "isDebug"
-                }?.hook {
-                    replaceToFalse()
-                }
-                resolve().firstMethodOrNull {
-                    name = "setDebug"
-                }?.hook {
-                    intercept()
-                }
-                resolve().firstMethodOrNull {
-                    name = "setSoDebug"
-                }?.hook {
-                    intercept()
-                }
+        }
+        "com.android.providers.downloads.config.XLConfig".toClassOrNull()?.apply {
+            resolve().firstFieldOrNull {
+                name = "logDir"
+                modifiers(Modifiers.STATIC)
+            }?.set("${sdcardPath}/MIUI/.xlDownload/dp.log")
+            resolve().firstFieldOrNull {
+                name = "logSoDir"
+                modifiers(Modifiers.STATIC)
+            }?.set("${sdcardPath}/MIUI/.xlDownload/dp_so.log")
+            resolve().firstMethodOrNull {
+                name = "isDebug"
+            }?.hook {
+                result(false)
+            }
+            resolve().firstMethodOrNull {
+                name = "setDebug"
+            }?.hook {
+                result(null)
+            }
+            resolve().firstMethodOrNull {
+                name = "setSoDebug"
+            }?.hook {
+                result(null)
             }
         }
     }

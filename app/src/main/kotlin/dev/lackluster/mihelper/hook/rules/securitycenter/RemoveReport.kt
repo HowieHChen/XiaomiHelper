@@ -20,13 +20,14 @@
 
 package dev.lackluster.mihelper.hook.rules.securitycenter
 
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.DexKit
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.DexKit
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.ifTrue
 import org.luckypray.dexkit.query.enums.StringMatchType
 
-object RemoveReport : YukiBaseHooker() {
+object RemoveReport : StaticHooker() {
     private val reportMethod by lazy {
         DexKit.findMethodWithCache("remove_report") {
             matcher {
@@ -37,12 +38,17 @@ object RemoveReport : YukiBaseHooker() {
         }
     }
 
+    override fun onInit() {
+        Preferences.SecurityCenter.REMOVE_REPORT.get().also {
+            updateSelfState(it)
+        }.ifTrue {
+            reportMethod
+        }
+    }
+
     override fun onHook() {
-        hasEnable(Pref.Key.SecurityCenter.REMOVE_REPORT) {
-            if (appClassLoader == null) return@hasEnable
-            reportMethod?.getMethodInstance(appClassLoader!!)?.hook {
-                replaceToFalse()
-            }
+        reportMethod?.getMethodInstance(classLoader)?.hook {
+            result(false)
         }
     }
 }

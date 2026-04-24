@@ -4,11 +4,10 @@ import android.content.Context
 import android.os.Handler
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.condition.type.Modifiers
-import com.highcapable.kavaref.extension.makeAccessible
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
 import dev.lackluster.mihelper.data.Constants.COMPOUND_ICON_PRIORITY_STR
 import dev.lackluster.mihelper.data.Constants.IconSlots
-import dev.lackluster.mihelper.data.Pref.Key.SystemUI.IconTuner
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.stat_sys_alarm
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.stat_sys_gps_on
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.stat_sys_quiet_mode
@@ -16,116 +15,161 @@ import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.stat_sys_ringe
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.stat_sys_ringer_vibrate
 import dev.lackluster.mihelper.hook.rules.systemui.compat.IconControllerCompat.setIcon
 import dev.lackluster.mihelper.hook.rules.systemui.compat.IconControllerCompat.setIconVisibility
-import dev.lackluster.mihelper.utils.Prefs
-import dev.lackluster.mihelper.utils.factory.getAdditionalInstanceField
-import dev.lackluster.mihelper.utils.factory.setAdditionalInstanceField
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
+import dev.lackluster.mihelper.hook.utils.extraOf
+import dev.lackluster.mihelper.hook.utils.toTyped
 
-object CompoundIcon : YukiBaseHooker() {
-    private const val KEY_MERGED_ICON_STATE = "KEY_MERGED_ICON_STATE"
-    private val addCompoundIcon = Prefs.getInt(IconTuner.COMPOUND_ICON, 0) in 1..3
-    private val mergeAlarm = Prefs.getBoolean(IconTuner.COMPOUND_ICON_ALARM, false)
-    private val mergeDnd = Prefs.getBoolean(IconTuner.COMPOUND_ICON_ZEN, false)
-    private val mergeLocation = Prefs.getBoolean(IconTuner.COMPOUND_ICON_LOCATION, false)
-    private val mergeRinger = Prefs.getBoolean(IconTuner.COMPOUND_ICON_VOLUME, false)
-    private val iconPriority = Prefs.getString(IconTuner.COMPOUND_PRIORITY, COMPOUND_ICON_PRIORITY_STR)
+object CompoundIcon : StaticHooker() {
+    private var Any.mergedIconState by extraOf<CompoundIconVM>("KEY_MERGED_ICON_STATE")
 
-    private val clzPhoneStatusBarPolicy by lazy {
-        "com.android.systemui.statusbar.phone.PhoneStatusBarPolicy".toClassOrNull()
+    private val addCompoundIcon by lazy {
+        Preferences.SystemUI.StatusBar.IconTuner.COMPOUND_ICON.get() in 1..3
     }
-    private val clzMiuiPrivacyControllerImpl by lazy {
-        "com.android.systemui.statusbar.privacy.MiuiPrivacyControllerImpl".toClassOrNull()
-    }
+    private val mergeAlarm by Preferences.SystemUI.StatusBar.IconTuner.COMPOUND_ICON_ALARM.lazyGet()
+    private val mergeDnd by Preferences.SystemUI.StatusBar.IconTuner.COMPOUND_ICON_ZEN.lazyGet()
+    private val mergeLocation by Preferences.SystemUI.StatusBar.IconTuner.COMPOUND_ICON_LOCATION.lazyGet()
+    private val mergeRinger by Preferences.SystemUI.StatusBar.IconTuner.COMPOUND_ICON_VOLUME.lazyGet()
+    private val iconPriority by Preferences.SystemUI.StatusBar.IconTuner.COMPOUND_PRIORITY.lazyGet()
+
+    private val clzPhoneStatusBarPolicy by "com.android.systemui.statusbar.phone.PhoneStatusBarPolicy".lazyClassOrNull()
+    private val clzMiuiPrivacyControllerImpl by "com.android.systemui.statusbar.privacy.MiuiPrivacyControllerImpl".lazyClassOrNull()
     private val metIsCTARequiredLocation by lazy {
         clzMiuiPrivacyControllerImpl?.resolve()?.firstMethodOrNull {
             name = "isCTARequiredLocation"
             modifiers(Modifiers.STATIC)
-        }
+        }?.toTyped<Boolean>()
     }
     private val metUpdateVolumeZen by lazy {
         clzPhoneStatusBarPolicy?.resolve()?.firstMethodOrNull {
             name = "updateVolumeZen"
-        }?.self?.apply { makeAccessible() }
+        }?.toTyped<Unit>()
     }
     private val fldIconController by lazy {
         clzPhoneStatusBarPolicy?.resolve()?.firstFieldOrNull {
             name = "mIconController"
             superclass()
-        }?.self?.apply { makeAccessible() }
+        }?.toTyped<Any>()
+    }
+
+    override fun onInit() {
+        updateSelfState(addCompoundIcon)
     }
 
     override fun onHook() {
-        if (addCompoundIcon) {
-            if (mergeDnd) {
-                $$$"com.android.systemui.statusbar.phone.PhoneStatusBarPolicy$$ExternalSyntheticLambda3".toClassOrNull()?.apply {
-                    val classId = resolve().firstFieldOrNull {
-                        name {
-                            it.endsWith("classId")
-                        }
-                    }?.self?.apply { makeAccessible() }
-                    val outer = resolve().firstFieldOrNull {
-                        name = "f$0"
-                    }?.self?.apply { makeAccessible() }
-                    resolve().firstMethodOrNull {
-                        name = "accept"
-                    }?.hook {
-                        after {
-                            if (classId?.getInt(this.instance) == 0) {
-                                outer?.get(this.instance)?.let { policy ->
-                                    metUpdateVolumeZen?.invoke(policy)
-                                }
-                            }
+        if (mergeDnd) {
+            $$$"com.android.systemui.statusbar.phone.PhoneStatusBarPolicy$$ExternalSyntheticLambda3".toClassOrNull()?.apply {
+                val classId = resolve().firstFieldOrNull {
+                    name {
+                        it.endsWith("classId")
+                    }
+                }?.toTyped<Int>()
+                val outer = resolve().firstFieldOrNull {
+                    name = "f$0"
+                }?.toTyped<Any>()
+                resolve().firstMethodOrNull {
+                    name = "accept"
+                }?.hook {
+                    val ori = proceed()
+                    if (classId?.get(thisObject) == 0) {
+                        outer?.get(thisObject)?.let { policy ->
+                            metUpdateVolumeZen?.invoke(policy)
                         }
                     }
+                    result(ori)
                 }
             }
-            "com.android.systemui.statusbar.phone.MiuiPhoneStatusBarPolicy".toClassOrNull()?.apply {
-                if (mergeDnd || mergeRinger) {
-                    val fldMuteVisible = resolve().firstFieldOrNull {
-                        name = "mMuteVisible"
-                        superclass()
-                    }?.self?.apply { makeAccessible() }
-                    val fldZenVisible = resolve().firstFieldOrNull {
-                        name = "mZenVisible"
-                        superclass()
-                    }?.self?.apply { makeAccessible() }
-                    val fldMuteIconResId = resolve().firstFieldOrNull {
-                        name = "mMuteIconResId"
-                        superclass()
-                    }?.self?.apply { makeAccessible() }
-                    resolve().firstMethodOrNull {
-                        name = "updateVolumeZen"
-                    }?.hook {
-                        after {
-                            val mIconController = fldIconController?.get(this.instance) ?: return@after
-                            val mMuteIconResId = fldMuteIconResId?.getInt(this.instance)
-                            val mute = (fldMuteVisible?.getBoolean(this.instance) == true)
-                            val zen = (fldZenVisible?.getBoolean(this.instance) == true)
-                            val vibrate = (mMuteIconResId == stat_sys_ringer_vibrate)
+        }
+        "com.android.systemui.statusbar.phone.MiuiPhoneStatusBarPolicy".toClassOrNull()?.apply {
+            if (mergeDnd || mergeRinger) {
+                val fldMuteVisible = resolve().firstFieldOrNull {
+                    name = "mMuteVisible"
+                    superclass()
+                }?.toTyped<Boolean>()
+                val fldZenVisible = resolve().firstFieldOrNull {
+                    name = "mZenVisible"
+                    superclass()
+                }?.toTyped<Boolean>()
+                val fldMuteIconResId = resolve().firstFieldOrNull {
+                    name = "mMuteIconResId"
+                    superclass()
+                }?.toTyped<Int>()
+                resolve().firstMethodOrNull {
+                    name = "updateVolumeZen"
+                }?.hook {
+                    val ori = proceed()
+                    val mIconController = fldIconController?.get(thisObject)
+                    val mMuteIconResId = fldMuteIconResId?.get(thisObject)
+                    val mute = fldMuteVisible?.get(thisObject) ?: false
+                    val zen = fldZenVisible?.get(thisObject) ?: false
+                    val vibrate = (mMuteIconResId == stat_sys_ringer_vibrate)
+                    if (mIconController != null) {
+                        getOrPutMergedStatusBarIcon(mIconController).let {
+                            it.setDnd(zen)
+                            it.setVolume(mute, vibrate)
+                            it.updateStateIfNeeded(mIconController)
+                        }
+                    }
+                    result(ori)
+                }
+            }
+            if (mergeLocation) {
+                val fldLocationController = resolve().firstFieldOrNull {
+                    name = "mLocationController"
+                    superclass()
+                }?.toTyped<Any>()
+                val fldAreActiveLocationRequests = "com.android.systemui.statusbar.policy.LocationControllerImpl".toClassOrNull()
+                    ?.resolve()?.firstFieldOrNull {
+                        name = "mAreActiveLocationRequests"
+                    }?.toTyped<Boolean>()
+                resolve().firstMethodOrNull {
+                    name = "onLocationActiveChanged"
+                }?.hook {
+                    val ori = proceed()
+                    if (metIsCTARequiredLocation?.invoke(null) != true) {
+                        val mIconController = fldIconController?.get(thisObject)
+                        val locationController = fldLocationController?.get(thisObject)
+                        val location = fldAreActiveLocationRequests?.get(locationController) == true
+                        if (mIconController != null) {
                             getOrPutMergedStatusBarIcon(mIconController).let {
-                                it.setDnd(zen)
-                                it.setVolume(mute, vibrate)
+                                it.setLocating(location)
                                 it.updateStateIfNeeded(mIconController)
                             }
                         }
                     }
+                    result(ori)
                 }
-                if (mergeLocation) {
-                    val fldLocationController = resolve().firstFieldOrNull {
-                        name = "mLocationController"
-                        superclass()
-                    }?.self?.apply { makeAccessible() }
-                    val fldAreActiveLocationRequests = "com.android.systemui.statusbar.policy.LocationControllerImpl".toClassOrNull()
-                        ?.resolve()?.firstFieldOrNull {
-                            name = "mAreActiveLocationRequests"
-                        }?.self?.apply { makeAccessible() }
-                    resolve().firstMethodOrNull {
-                        name = "onLocationActiveChanged"
-                    }?.hook {
-                        after {
-                            if (metIsCTARequiredLocation?.invoke<Boolean>() != true) {
-                                val mIconController = fldIconController?.get(this.instance) ?: return@after
-                                val locationController = fldLocationController?.get(this.instance)
-                                val location = fldAreActiveLocationRequests?.getBoolean(locationController) == true
+            }
+        }
+        if (mergeLocation) {
+            clzMiuiPrivacyControllerImpl?.apply {
+                val fldContext = resolve().firstFieldOrNull {
+                    name = "mContext"
+                }?.toTyped<Context>()
+                val metGetMainThreadHandler = Context::class.resolve().firstMethodOrNull {
+                    name = "getMainThreadHandler"
+                    superclass()
+                }?.toTyped<Handler>()
+                val fldIconController = resolve().firstFieldOrNull {
+                    name = "mStatusBarIconController"
+                }?.toTyped<Any>()
+                val metGet = "dagger.Lazy".toClassOrNull()?.resolve()?.firstMethodOrNull {
+                    name = "get"
+                }?.toTyped<Any>()
+                resolve().firstMethodOrNull {
+                    name {
+                        it.startsWith("onLocationActiveChanged")
+                    }
+                }?.hook {
+                    val ori = proceed()
+                    if (metIsCTARequiredLocation?.invoke(null) == true) {
+                        val location = getArg(0) as? Boolean ?: false
+                        val mIconControllerLazy = fldIconController?.get(thisObject)
+                        val mIconController = mIconControllerLazy?.let { it1 -> metGet?.invoke(it1) }
+                        val mContext = fldContext?.get(thisObject)
+                        val mainThreadHandler = mContext?.let { it1 -> metGetMainThreadHandler?.invoke(it1) }
+                        if (mIconController != null) {
+                            mainThreadHandler?.post {
                                 getOrPutMergedStatusBarIcon(mIconController).let {
                                     it.setLocating(location)
                                     it.updateStateIfNeeded(mIconController)
@@ -133,81 +177,48 @@ object CompoundIcon : YukiBaseHooker() {
                             }
                         }
                     }
+                    result(ori)
                 }
             }
-            if (mergeLocation) {
-                clzMiuiPrivacyControllerImpl?.apply {
-                    val fldContext = resolve().firstFieldOrNull {
-                        name = "mContext"
-                    }?.self?.apply { makeAccessible() }
-                    val metGetMainThreadHandler = Context::class.resolve().firstMethodOrNull {
-                        name = "getMainThreadHandler"
-                        superclass()
-                    }?.self?.apply { makeAccessible() }
-                    val fldIconController = resolve().firstFieldOrNull {
-                        name = "mStatusBarIconController"
-                    }?.self?.apply { makeAccessible() }
-                    val metGet = "dagger.Lazy".toClassOrNull()?.resolve()?.firstMethodOrNull {
-                        name = "get"
-                    }?.self
-                    resolve().firstMethodOrNull {
-                        name {
-                            it.startsWith("onLocationActiveChanged")
-                        }
-                    }?.hook {
-                        after {
-                            if (metIsCTARequiredLocation?.invoke<Boolean>() == true) {
-                                val location = this.args(0).boolean()
-                                val mIconControllerLazy = fldIconController?.get(this.instance)
-                                val mIconController = mIconControllerLazy?.let { it1 -> metGet?.invoke(it1) } ?: return@after
-                                val mContext = fldContext?.get(this.instance) as? Context
-                                val mainThreadHandler = mContext?.let { it1 -> metGetMainThreadHandler?.invoke(it1) as? Handler } ?: return@after
-                                mainThreadHandler.post {
-                                    getOrPutMergedStatusBarIcon(mIconController).let {
-                                        it.setLocating(location)
-                                        it.updateStateIfNeeded(mIconController)
-                                    }
-                                }
+        }
+        if (mergeAlarm) {
+            "com.android.systemui.statusbar.phone.PhoneStatusBarPolicy$4".toClassOrNull()?.apply {
+                val outer = resolve().firstFieldOrNull {
+                    name = "this$0"
+                }?.toTyped<Any>()
+                resolve().firstMethodOrNull {
+                    name = "onAlarmChanged"
+                }?.hook {
+                    val ori = proceed()
+                    val alarm = getArg(0) as? Boolean ?: false
+                    outer?.get(thisObject)?.let { policy ->
+                        val mIconController = fldIconController?.get(policy)
+                        if (mIconController != null) {
+                            getOrPutMergedStatusBarIcon(mIconController).let {
+                                it.setNextAlarm(alarm)
+                                it.updateStateIfNeeded(mIconController)
                             }
                         }
                     }
-                }
-            }
-            if (mergeAlarm) {
-                "com.android.systemui.statusbar.phone.PhoneStatusBarPolicy$4".toClassOrNull()?.apply {
-                    val outer = resolve().firstFieldOrNull {
-                        name = "this$0"
-                    }?.self?.apply { makeAccessible() }
-                    resolve().firstMethodOrNull {
-                        name = "onAlarmChanged"
-                    }?.hook {
-                        after {
-                            val alarm = this.args(0).boolean()
-                            outer?.get(this.instance)?.let { policy ->
-                                val mIconController = fldIconController?.get(policy) ?: return@after
-                                getOrPutMergedStatusBarIcon(mIconController).let {
-                                    it.setNextAlarm(alarm)
-                                    it.updateStateIfNeeded(mIconController)
-                                }
-                            }
-                        }
-                    }
+                    result(ori)
                 }
             }
         }
     }
 
     private fun getOrPutMergedStatusBarIcon(obj: Any): CompoundIconVM {
-        return obj.getAdditionalInstanceField<CompoundIconVM>(KEY_MERGED_ICON_STATE)
-            ?: CompoundIconVM(
-                mergeAlarmIcon = mergeAlarm,
-                mergeDndIcon = mergeDnd,
-                mergeLocationIcon = mergeLocation,
-                mergeRingerIcon = mergeRinger,
-                priorityString = iconPriority
-            ).also {
-                obj.setAdditionalInstanceField(KEY_MERGED_ICON_STATE, it)
-            }
+        obj.mergedIconState?.let {
+            return it
+        }
+        val state = CompoundIconVM(
+            mergeAlarmIcon = mergeAlarm,
+            mergeDndIcon = mergeDnd,
+            mergeLocationIcon = mergeLocation,
+            mergeRingerIcon = mergeRinger,
+            priorityString = iconPriority
+        )
+        obj.mergedIconState = state
+        return state
     }
 
     class CompoundIconVM(

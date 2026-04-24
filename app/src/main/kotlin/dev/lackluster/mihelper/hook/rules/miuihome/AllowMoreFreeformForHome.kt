@@ -24,39 +24,42 @@ package dev.lackluster.mihelper.hook.rules.miuihome
 
 import android.content.Context
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.toTyped
 import java.util.concurrent.CopyOnWriteArraySet
 
-object AllowMoreFreeformForHome : YukiBaseHooker() {
+object AllowMoreFreeformForHome : StaticHooker() {
+    override fun onInit() {
+        updateSelfState(Preferences.System.ALLOW_MORE_FREEFORM.get())
+    }
+
     override fun onHook() {
-        hasEnable(Pref.Key.Android.ALLOW_MORE_FREEFORM) {
-            "com.miui.home.launcher.RecentsAndFSGestureUtils".toClassOrNull()?.apply {
-                resolve().firstMethodOrNull {
-                    name = "canTaskEnterMiniSmallWindow"
-                }?.hook {
-                    replaceToTrue()
-                }
-                resolve().firstMethodOrNull {
-                    name = "canTaskEnterSmallWindow"
-                    parameterCount = 4
-                    parameters(Context::class, String::class, Int::class, Int::class)
-                }?.hook {
-                    replaceToTrue()
-                }
+        "com.miui.home.launcher.RecentsAndFSGestureUtils".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "canTaskEnterMiniSmallWindow"
+            }?.hook {
+                result(true)
             }
-            "com.miui.home.smallwindow.SmallWindowStateHelperUseManager".toClassOrNull()?.apply {
-                val fldMiniSmallWindowInfoSet = resolve().firstFieldOrNull {
-                    name = "mMiniSmallWindowInfoSet"
-                }
-                resolve().firstMethodOrNull {
-                    name = "canEnterMiniSmallWindow"
-                }?.hook {
-                    replaceAny {
-                        fldMiniSmallWindowInfoSet?.copy()?.of(this.instance)?.get<CopyOnWriteArraySet<*>>().isNullOrEmpty()
-                    }
-                }
+            resolve().firstMethodOrNull {
+                name = "canTaskEnterSmallWindow"
+                parameterCount = 4
+                parameters(Context::class, String::class, Int::class, Int::class)
+            }?.hook {
+                result(true)
+            }
+        }
+        "com.miui.home.smallwindow.SmallWindowStateHelperUseManager".toClassOrNull()?.apply {
+            val fldMiniSmallWindowInfoSet = resolve().firstFieldOrNull {
+                name = "mMiniSmallWindowInfoSet"
+            }?.toTyped<CopyOnWriteArraySet<*>>()
+            resolve().firstMethodOrNull {
+                name = "canEnterMiniSmallWindow"
+            }?.hook {
+                result(
+                    fldMiniSmallWindowInfoSet?.get(thisObject).isNullOrEmpty()
+                )
             }
         }
     }

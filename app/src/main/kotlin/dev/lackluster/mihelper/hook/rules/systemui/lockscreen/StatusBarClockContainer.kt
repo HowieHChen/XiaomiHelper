@@ -21,25 +21,27 @@
 package dev.lackluster.mihelper.hook.rules.systemui.lockscreen
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
-import com.highcapable.yukihookapi.hook.entity.YukiBaseHooker
-import dev.lackluster.mihelper.data.Pref
+import dev.lackluster.mihelper.data.preference.Preferences
+import dev.lackluster.mihelper.hook.base.StaticHooker
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzMiuiKeyguardStatusBarView
-import dev.lackluster.mihelper.utils.factory.hasEnable
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
 
-object StatusBarClockContainer : YukiBaseHooker() {
+object StatusBarClockContainer : StaticHooker() {
+    override fun onInit() {
+        updateSelfState(Preferences.SystemUI.LockScreen.KEEP_START_CONTAINER.get())
+    }
+
     override fun onHook() {
-        hasEnable(Pref.Key.SystemUI.LockScreen.KEEP_CLOCK_CONTAINER) {
-            clzMiuiKeyguardStatusBarView?.apply {
-                resolve().optional().firstMethodOrNull {
-                    name = "animateClockContainer"
-                }?.hook {
-                    intercept()
-                }
-                resolve().optional().firstMethodOrNull {
-                    name = "animateKeyguardLeftSideContainer"
-                }?.hook {
-                    intercept()
-                }
+        clzMiuiKeyguardStatusBarView?.apply {
+            resolve().optional().firstMethodOrNull {
+                name = "animateClockContainer"
+            }?.hook {
+                result(null)
+            }
+            resolve().optional().firstMethodOrNull {
+                name = "animateKeyguardLeftSideContainer"
+            }?.hook {
+                result(null)
             }
         }
     }

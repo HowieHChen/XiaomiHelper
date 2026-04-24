@@ -1,5 +1,9 @@
 package dev.lackluster.mihelper.app.screen.systemui.icon.detail.component
 
+import android.graphics.Typeface
+import android.util.TypedValue
+import android.view.Gravity
+import android.widget.TextView
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -7,13 +11,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
@@ -21,14 +24,13 @@ import androidx.constraintlayout.compose.Visibility
 import androidx.constraintlayout.compose.layoutId
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.app.screen.systemui.icon.detail.MobileState
-import top.yukonga.miuix.kmp.basic.Text
 
 @Composable
 fun MobileIcons(
     mobileTypeText: String,
     dataConnected: Boolean,
     state: MobileState,
-    fontFamilyProvider: (isCustom: Boolean, weight: Int) -> FontFamily
+    nativeTypefaceProvider: (isCustom: Boolean) -> Typeface
 ) {
     val density = LocalDensity.current
 
@@ -39,19 +41,15 @@ fun MobileIcons(
         val size = if (state.separateTypeSize.enabled) state.separateTypeSize.size else 14.0f
         size.dp.toSp()
     }
+    val baseTypefaceMobileType = remember(state.smallTypeFont.enabled) {
+        nativeTypefaceProvider(state.smallTypeFont.enabled)
+    }
+    val baseTypefaceMobileTypeSingle = remember(state.separateTypeFont.enabled) {
+        nativeTypefaceProvider(state.separateTypeFont.enabled)
+    }
 
-    val fontFamilyMobileType = remember(state.smallTypeFont.enabled, state.smallTypeFont.weight) {
-        fontFamilyProvider(
-            state.smallTypeFont.enabled,
-            if (state.smallTypeFont.enabled) state.smallTypeFont.weight.coerceIn(1..1000) else 660
-        )
-    }
-    val fontFamilyMobileTypeSingle = remember(state.separateTypeFont.enabled, state.separateTypeFont.weight) {
-        fontFamilyProvider(
-            state.separateTypeFont.enabled,
-            if (state.separateTypeFont.enabled) state.separateTypeFont.weight.coerceIn(1..1000) else 400
-        )
-    }
+    val weightMobileType = if (state.smallTypeFont.enabled) state.smallTypeFont.weight.coerceIn(1..1000) else 660
+    val weightMobileTypeSingle = if (state.separateTypeFont.enabled) state.separateTypeFont.weight.coerceIn(1..1000) else 400
 
     val constraints = ConstraintSet {
         val parent = createRefFor("parent")
@@ -150,6 +148,9 @@ fun MobileIcons(
             }
         }
     }
+
+    val textColorArgb = colorResource(R.color.foreground_dual_tone_full).toArgb()
+
     ConstraintLayout(
         constraintSet = constraints,
         modifier = Modifier.height(24.dp),
@@ -161,16 +162,24 @@ fun MobileIcons(
             painter = painterResource(R.drawable.stat_sys_data_connected_roam),
             contentDescription = null
         )
-        Text(
+        AndroidView(
             modifier = Modifier
                 .layoutId("mobile_type_single")
                 .heightIn(max = 24.dp),
-            fontSize = fontSizeMobileTypeSingle,
-            fontFamily = fontFamilyMobileTypeSingle,
-            fontStyle = FontStyle.Normal,
-            textAlign = TextAlign.Center,
-            color = colorResource(R.color.foreground_dual_tone_full),
-            text = mobileTypeText
+            factory = { context ->
+                TextView(context).apply {
+                    includeFontPadding = false
+                    gravity = Gravity.CENTER
+                    setTextColor(textColorArgb)
+                }
+            },
+            update = { textView ->
+                textView.text = mobileTypeText
+                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSizeMobileTypeSingle.value)
+                textView.typeface = baseTypefaceMobileTypeSingle
+                textView.fontVariationSettings = ""
+                textView.fontVariationSettings = "'wght' $weightMobileTypeSingle"
+            }
         )
         Image(
             modifier = Modifier
@@ -179,16 +188,24 @@ fun MobileIcons(
             painter = painterResource(R.drawable.stat_sys_signal),
             contentDescription = null
         )
-        Text(
+        AndroidView(
             modifier = Modifier
                 .layoutId("mobile_type_1")
                 .size(11.dp, 9.dp),
-            fontSize = fontSizeMobileType,
-            fontFamily = fontFamilyMobileType,
-            fontStyle = FontStyle.Normal,
-            textAlign = TextAlign.Center,
-            color = colorResource(R.color.foreground_dual_tone_full),
-            text = mobileTypeText
+            factory = { context ->
+                TextView(context).apply {
+                    includeFontPadding = false
+                    gravity = Gravity.CENTER
+                    setTextColor(textColorArgb)
+                }
+            },
+            update = { textView ->
+                textView.text = mobileTypeText
+                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSizeMobileType.value)
+                textView.typeface = baseTypefaceMobileType
+                textView.fontVariationSettings = ""
+                textView.fontVariationSettings = "'wght' $weightMobileType"
+            }
         )
         Image(
             modifier = Modifier
@@ -204,16 +221,24 @@ fun MobileIcons(
             painter = painterResource(R.drawable.stat_sys_signal),
             contentDescription = null
         )
-        Text(
+        AndroidView(
             modifier = Modifier
                 .layoutId("mobile_type_2")
                 .size(11.dp, 9.dp),
-            fontSize = fontSizeMobileType,
-            fontFamily = fontFamilyMobileType,
-            fontStyle = FontStyle.Normal,
-            textAlign = TextAlign.Center,
-            color = colorResource(R.color.foreground_dual_tone_full),
-            text = mobileTypeText
+            factory = { context ->
+                TextView(context).apply {
+                    includeFontPadding = false
+                    gravity = Gravity.CENTER
+                    setTextColor(textColorArgb)
+                }
+            },
+            update = { textView ->
+                textView.text = mobileTypeText
+                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSizeMobileType.value)
+                textView.typeface = baseTypefaceMobileType
+                textView.fontVariationSettings = ""
+                textView.fontVariationSettings = "'wght' $weightMobileType"
+            }
         )
         Image(
             modifier = Modifier

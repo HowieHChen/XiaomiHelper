@@ -5,8 +5,8 @@ import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.scale
-import dev.lackluster.mihelper.hook.drawable.LinearGradientDrawable
-import dev.lackluster.mihelper.hook.drawable.MediaControlBgDrawable
+import dev.lackluster.mihelper.hook.rules.systemui.media.drawable.LinearGradientDrawable
+import dev.lackluster.mihelper.hook.rules.systemui.media.drawable.MediaControlBgDrawable
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.brightness
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.toSquare
 import dev.lackluster.mihelper.hook.rules.systemui.media.data.MediaViewColorConfig
