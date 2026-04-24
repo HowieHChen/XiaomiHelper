@@ -30,8 +30,11 @@ import dev.lackluster.mihelper.hook.rules.systemui.compat.FlowCompat.cancelJob
 import dev.lackluster.mihelper.hook.rules.systemui.compat.FlowCompat.combineFlows
 import dev.lackluster.mihelper.hook.rules.systemui.compat.MutableStateFlowCompat
 import dev.lackluster.mihelper.hook.rules.systemui.compat.ReadonlyStateFlowCompat
+import dev.lackluster.mihelper.hook.utils.HostExecutor
 import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
 import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
+import dev.lackluster.mihelper.hook.utils.d
+import dev.lackluster.mihelper.hook.utils.e
 import dev.lackluster.mihelper.hook.utils.extraOf
 import dev.lackluster.mihelper.hook.utils.toTyped
 import java.util.concurrent.ConcurrentHashMap
@@ -84,10 +87,13 @@ object HideCellularIcon : StaticHooker() {
                 val ori = proceed()
                 val subId = subscriptionId?.get(thisObject)
                 val slotIndex = subId?.let { SubscriptionManager.getSlotIndex(it) }
-                if (hideSimAuto && subId != null) {
-                    hideSimJobMap[subId]?.forEach {
-                        cancelJob(it)
-                    }
+                d { "MobileIconViewModel: subId=$subId slotIndex=$slotIndex" }
+                hideSimJobMap.remove(subId)?.forEach {
+                    cancelJob(it)
+                }
+                if (enableStackedMobile) {
+                    isVisible?.set(thisObject, readonlyStateFlowFalse)
+                } else if (hideSimAuto && subId != null) {
                     val coroutineScope = args.firstOrNull { clzCoroutineScope?.isInstance(it) == true } ?: return@hook result(ori)
                     val mobileIconInteractor = args.firstOrNull { clzMobileIconInteractor?.isInstance(it) == true } ?: return@hook result(ori)
                     val defaultDataSubIdFlow = mobileIconInteractor.defDataSubIdFlow?.let {
@@ -109,11 +115,62 @@ object HideCellularIcon : StaticHooker() {
                     }
                     hideSimJobMap[subId] = jobs
                     isVisible.set(thisObject, proxyStateFlow.toReadonlyStateFlow())
-                } else if (
-                    slotIndex == 0 && hideSimOne ||
-                    slotIndex == 1 && hideSimTwo
-                ) {
+                } else if ((slotIndex == 0 && hideSimOne) || (slotIndex == 1 && hideSimTwo)) {
                     isVisible?.set(thisObject, readonlyStateFlowFalse)
+                } else if (slotIndex == -1 && (hideSimOne || hideSimTwo)) {
+                    val coroutineScope = args.firstOrNull { clzCoroutineScope?.isInstance(it) == true } ?: return@hook result(ori)
+                    val oriVisibleFlow = isVisible?.get(thisObject)?.let {
+                        ReadonlyStateFlowCompat<Boolean>().of(it)
+                    } ?: return@hook result(ori)
+                    val slotIndexCheckFlow = MutableStateFlowCompat(false)
+                    val proxyStateFlow = MutableStateFlowCompat(false)
+                    val jobs = combineFlows(
+                        coroutineScope,
+                        oriVisibleFlow,
+                        false,
+                        slotIndexCheckFlow,
+                        false,
+                        proxyStateFlow
+                    ) { a, b ->
+                        return@combineFlows a && b
+                    }
+                    hideSimJobMap[subId] = jobs
+                    isVisible.set(thisObject, proxyStateFlow.toReadonlyStateFlow())
+                    HostExecutor.execute(
+                        tag = "CheckSlotIndex_${subId}",
+                        backgroundTask = {
+                            var slot = -1
+                            var currentDelayMs = 200L
+                            val maxRetries = 8
+
+                            for (i in 0 until maxRetries) {
+                                try {
+                                    Thread.sleep(currentDelayMs)
+                                } catch (t: InterruptedException) {
+                                    e(t) { "Canceled!" }
+                                    Thread.currentThread().interrupt()
+                                    return@execute -1
+                                }
+
+                                slot = SubscriptionManager.getSlotIndex(subId)
+
+                                if (slot != -1) {
+                                    d { "MobileIconViewModel: Slot resolved! subId=$subId, slotIndex=$slot, attempts=${i + 1}" }
+                                    break
+                                }
+                                currentDelayMs *= 2
+                            }
+
+                            return@execute slot
+                        },
+                        runOnMain = true,
+                        onResult = { slot ->
+                            val shouldHide = (slot == 0 && hideSimOne) || (slot == 1 && hideSimTwo)
+                            if (!shouldHide) {
+                                slotIndexCheckFlow.setValue(true)
+                            }
+                        }
+                    )
                 }
                 result(ori)
             }
