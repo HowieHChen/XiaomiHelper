@@ -7,8 +7,8 @@ project-app-packageName = "dev.lackluster.mihelper"
 project-app-versionName = "26.04"
 project-app-versionCode = "26041"
 
-androidGradlePlugin = "9.1.1"
-kotlin = "2.3.20"
+androidGradlePlugin = "9.2.0"
+kotlin = "2.3.21"
 ksp = "2.3.6"
 hiddenapibypass = "6.1"
 libxposed-api = "101.0.1"
@@ -39,7 +39,7 @@ dexkit = { module = "org.luckypray:dexkit", version.ref = "dexkit" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization-json" }
 android-svg = { module = "com.caverock:androidsvg-aar", version.ref = "android-svg" }
 
-androidx-ui = { group = "androidx.compose.ui", name = "ui", version = "1.10.6" }
+androidx-ui = { group = "androidx.compose.ui", name = "ui", version = "1.11.0" }
 
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version = "1.18.0" }
 
