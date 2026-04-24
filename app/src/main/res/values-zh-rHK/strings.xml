@@ -437,7 +437,7 @@
     <string name="clock_fw_horizontal_time_weight">通知中心橫屏日期時間字體粗細</string>
     <string name="font_hint_path">所有自訂字體粗細功能（不僅限於下方的選項）都會載入此路徑所指定的可變字體檔案。除非你清楚自己在做什麽並且瞭解可能的後果，否則請勿修改。\n\n如果你希望修改字體但不修改字體粗細，請啟用對應的自訂字體粗細首選項，並保持字體粗細為預設值。</string>
     <string name="font_general_path">字體文件路徑</string>
-    <string name="font_general_path_tips">除非你清楚自己在做什麽並且瞭解可能的後果，否則請勿修改。\n\n請使用可變字體。</string>
+    <string name="font_general_path_tips">除非你清楚自己在做什麽並且瞭解可能的後果，否則請勿修改。\n\n 請使用可變字體。</string>
     <string name="font_hint_general_root">字體需要 Root 權限才能在重新啟動後自動生效。否則，你需要解鎖裝置並重新啟動系統界面才能使改動生效。</string>
     <string name="font_weight_lockscreen_carrier">自訂熒幕鎖定運營商標簽字體粗細</string>
     <string name="font_weight_lockscreen_carrier_weight">熒幕鎖定運營商標簽字體粗細</string>
@@ -679,4 +679,17 @@
     <string name="icon_detail_stacked_small_type_size">集成移動網絡類型字體大小</string>
     <string name="icon_detail_stacked_small_type_weight">集成移動網絡類型字體粗細</string>
     <string name="icon_detail_stacked_large_type_weight">獨立移動網絡類型字體粗細</string>
+    <string name="cleaner_common_restart_app">重新啟動%1$s</string>
+    <string name="cleaner_common_version_info">已驗證版本：%1$s\n已安裝版本：%2$s</string>
+    <string name="font_general_path_path">從路徑導入</string>
+    <string name="font_general_path_success">成功導入字體文件</string>
+    <string name="font_general_path_failure">檔案不存在或無法訪問。請檢查檔案權限同 Root 權限！</string>
+    <string name="font_general_path_reset_msg">重設為“/system/fonts/MiSansVF.ttf”？此操作無法撤銷。</string>
+    <string name="icon_tuner_network_warning">警告：隱藏此圖示可能會導致狀態欄圖示顯示異常！</string>
+    <string name="ui_title_icon_detail_stacked_visibility">圖示可見性</string>
+    <string name="icon_detail_stacked_signal_style_val_file">從檔案導入</string>
+    <string name="icon_detail_stacked_signal_style_val_clipboard">從剪貼簿導入</string>
+    <string name="media_bg_use_notif_corner_radius">使用通知圓角半徑</string>
+    <string name="media_bg_use_anim">動畫</string>
+    <string name="media_bg_use_anim_tips">為顏色過渡同大小調整啟用動畫，可能影響性能！</string>
 </resources>
