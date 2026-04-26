@@ -244,9 +244,9 @@
     <string name="home_others_force_color_scheme_element">應用程式標簽顔色</string>
     <string name="home_others_force_color_scheme_element_tips">指定小部件同應用程式標簽的顔色（忽略墻紙顔色）</string>
     <string name="home_others_force_color_scheme_statusbar">狀態欄文本同圖示顔色</string>
-    <string name="home_others_force_color_scheme_statusbar_tips">指定狀態欄文本同圖示的顔色（忽略墻紙顔色）。需要在“系統界面”頁面啟用“停用智能深色”。</string>
+    <string name="home_others_force_color_scheme_statusbar_tips">指定狀態欄文本同圖示的顔色（忽略墻紙顔色）</string>
     <string name="home_others_force_color_scheme_minus">負一屏顔色</string>
-    <string name="home_others_force_color_scheme_minus_tips">指定負一屏狀態欄文本同圖示的顔色（忽略墻紙顔色）。需要在“系統界面”頁面啟用“停用智能深色”。</string>
+    <string name="home_others_force_color_scheme_minus_tips">指定負一屏狀態欄文本同圖示的顔色（忽略墻紙顔色）</string>
     <string name="cleaner_common_ad_blocker">屏蔽廣告</string>
     <string name="cleaner_common_skip_splash">停用啟用熒幕</string>
     <string name="cleaner_common_skip_splash_tips">理論上還會停用啟動熒幕上的廣告（無法保證）</string>
@@ -692,4 +692,13 @@
     <string name="media_bg_use_notif_corner_radius">使用通知圓角半徑</string>
     <string name="media_bg_use_anim">動畫</string>
     <string name="media_bg_use_anim_tips">為顏色過渡同大小調整啟用動畫，可能影響性能！</string>
+    <string name="action_scroll_to_top">滾動到頂部</string>
+    <string name="module_debug">除錯模式</string>
+    <string name="module_debug_tips">啟用後將打印除錯日誌。立即生效。請僅在需要時啟用！</string>
+    <string name="systemui_statusbar_gesture_single_tap">單擊空白區域</string>
+    <string name="systemui_statusbar_gesture_single_tap_tips">單擊狀態欄空白區域觸發特定功能</string>
+    <string name="systemui_statusbar_gesture_double_tap">雙擊空白區域</string>
+    <string name="systemui_statusbar_gesture_double_tap_tips">雙擊狀態欄空白區域觸發特定功能</string>
+    <string name="others_miai_fuck_aivs">重新定向 AIVS 資料夾</string>
+    <string name="others_miai_fuck_aivs_tips">" 防止 AIVS-SDK 在外部存儲的根目錄中創建資料夾"</string>
 </resources>
