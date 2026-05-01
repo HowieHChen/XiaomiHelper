@@ -79,7 +79,7 @@ object RerankTargets : StaticHooker() {
                         }
                     }
 
-                    result(virtualSlots.filterNotNull())
+                    result(virtualSlots.filterNotNull().toMutableList())
                 } else {
                     val sortedList = list.sortedBy {
                         val pkg = try {
@@ -90,7 +90,7 @@ object RerankTargets : StaticHooker() {
                         }
                         pkgPositionMap[pkg] ?: Int.MAX_VALUE
                     }
-                    result(sortedList)
+                    result(sortedList.toMutableList())
                 }
             }
         }
