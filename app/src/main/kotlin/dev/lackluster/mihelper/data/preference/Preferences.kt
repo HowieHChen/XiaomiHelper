@@ -104,6 +104,7 @@ object Preferences {
     }
 
     object MiIntentResolver {
+        val SHARE_PANEL_STYLE = PreferenceKey("intent_resolver_style", 0)
         val RERANK_TARGETS = PreferenceKey("intent_resolver_rerank", 0)
         val RERANK_TARGETS_STRICT = PreferenceKey("intent_resolver_rerank_strict", false)
         val TARGETS_PKG_INDEX_MAP = PreferenceKey("intent_resolver_rerank_list", emptySet<String>())

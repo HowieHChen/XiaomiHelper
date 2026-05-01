@@ -44,6 +44,11 @@ private val searchEngineOptions = listOf(
     DropDownOption(5, R.string.search_engine_custom)
 )
 
+private val intentResolverStyleOptions = listOf(
+    DropDownOption(0, R.string.others_intent_resolver_share_style_default),
+    DropDownOption(1, R.string.others_intent_resolver_share_style_aosp),
+    DropDownOption(2, R.string.others_intent_resolver_share_style_miui),
+)
 private val intentResolverRerankOptions = listOf(
     DropDownOption(0, R.string.others_intent_resolver_rerank_disabled),
     DropDownOption(1, R.string.others_intent_resolver_rerank_enabled),
@@ -165,19 +170,28 @@ private fun OthersPageContent(
         itemPreferenceGroup(
             titleRes = R.string.ui_title_others_intent_resolver
         ) {
+            val sharePanelStyle = rememberPreferenceState(Preferences.MiIntentResolver.SHARE_PANEL_STYLE)
             val rerankTargets = rememberPreferenceState(Preferences.MiIntentResolver.RERANK_TARGETS)
             DropDownPreference(
-                title = stringResource(R.string.others_intent_resolver_rerank),
-                summary = stringResource(R.string.others_intent_resolver_rerank_tips),
-                value = rerankTargets.value,
-                options = intentResolverRerankOptions,
-                onValueChange = { rerankTargets.value = it }
+                title = stringResource(R.string.others_intent_resolver_share_style),
+                value = sharePanelStyle.value,
+                options = intentResolverStyleOptions,
+                onValueChange = { sharePanelStyle.value = it }
             )
-            AnimatedVisibility(rerankTargets.value != 0) {
-                TextPreference(
-                    title = stringResource(R.string.others_intent_resolver_rerank_index),
-                    onClick = { onAction(OthersUIAction.OpenRerankShareTargetsSheet) },
+            AnimatedColumn(sharePanelStyle.value != 1) {
+                DropDownPreference(
+                    title = stringResource(R.string.others_intent_resolver_rerank),
+                    summary = stringResource(R.string.others_intent_resolver_rerank_tips),
+                    value = rerankTargets.value,
+                    options = intentResolverRerankOptions,
+                    onValueChange = { rerankTargets.value = it }
                 )
+                AnimatedVisibility(rerankTargets.value != 0) {
+                    TextPreference(
+                        title = stringResource(R.string.others_intent_resolver_rerank_index),
+                        onClick = { onAction(OthersUIAction.OpenRerankShareTargetsSheet) },
+                    )
+                }
             }
         }
         itemPreferenceGroup(

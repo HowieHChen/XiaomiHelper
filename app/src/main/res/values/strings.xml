@@ -465,6 +465,10 @@
     <string name="others_miai_fuck_aivs">Redirect AIVS folder</string>
     <string name="others_miai_fuck_aivs_tips">Prevent the AIVS-SDK from creating a folder in the root of external storage</string>
     <string name="ui_title_others_intent_resolver" formatted="false">IntentResolver</string>
+    <string name="others_intent_resolver_share_style">Share panel style</string>
+    <string name="others_intent_resolver_share_style_default" translatable="false">@string/common_default</string>
+    <string name="others_intent_resolver_share_style_aosp" translatable="false">AOSP</string>
+    <string name="others_intent_resolver_share_style_miui" translatable="false">@string/icon_detail_stacked_signal_style_miui</string>
     <string name="others_intent_resolver_rerank">Custom share panel app order</string>
     <string name="others_intent_resolver_rerank_tips">Modify the order of target apps shown at the bottom of the share panel</string>
     <string name="others_intent_resolver_rerank_disabled" translatable="false">@string/common_disabled</string>
