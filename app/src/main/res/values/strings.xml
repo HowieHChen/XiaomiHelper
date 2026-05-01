@@ -467,7 +467,7 @@
     <string name="ui_title_others_intent_resolver" formatted="false">IntentResolver</string>
     <string name="others_intent_resolver_rerank">Custom share panel app order</string>
     <string name="others_intent_resolver_rerank_tips">Modify the order of target apps shown at the bottom of the share panel</string>
-    <string name="others_intent_resolver_rerank_default" translatable="false">@string/common_default</string>
+    <string name="others_intent_resolver_rerank_disabled" translatable="false">@string/common_disabled</string>
     <string name="others_intent_resolver_rerank_enabled" translatable="false">@string/common_enabled</string>
     <string name="others_intent_resolver_rerank_enhanced" translatable="false">@string/home_gesture_back_haptic_enhanced</string>
     <string name="others_intent_resolver_rerank_enhanced_tips">Prevent the system from relocating \"Ask Xiaomi Hyper XiaoAi\" and \"Rear display\" to fixed positions</string>

@@ -45,7 +45,7 @@ private val searchEngineOptions = listOf(
 )
 
 private val intentResolverRerankOptions = listOf(
-    DropDownOption(0, R.string.others_intent_resolver_rerank_default),
+    DropDownOption(0, R.string.others_intent_resolver_rerank_disabled),
     DropDownOption(1, R.string.others_intent_resolver_rerank_enabled),
     DropDownOption(2, R.string.others_intent_resolver_rerank_enhanced, R.string.others_intent_resolver_rerank_enhanced_tips),
 )
