@@ -472,15 +472,17 @@
     <string name="others_intent_resolver_rerank_enhanced" translatable="false">@string/home_gesture_back_haptic_enhanced</string>
     <string name="others_intent_resolver_rerank_enhanced_tips">Prevent the system from relocating \"Ask Xiaomi Hyper XiaoAi\" and \"Rear display\" to fixed positions</string>
     <string name="others_intent_resolver_rerank_index">App order</string>
-    <string name="others_intent_resolver_rerank_index_hint">Tap Add app to specify the app\'s index, or tap an item to delete its rule</string>
+    <string name="others_intent_resolver_rerank_index_hint">Tap Add app to specify the app\'s index, or long‑press an item to delete its rule</string>
     <string name="others_intent_resolver_rerank_strict">Absolute position</string>
     <string name="others_intent_resolver_rerank_strict_tips">When disabled, all added apps are prioritized over other apps. When enabled, added apps will be placed as close as possible to their specified index, and any gaps (if present) will be filled by other apps.</string>
     <string name="others_intent_resolver_rerank_add">Add app</string>
-    <string name="others_intent_resolver_rerank_add_hint">Enter the package name and index to adjust the position of a specific app. The index ranges from 0 to 100 and must be unique. For example, 0 means the app will always appear in the first position (if present).</string>
+    <string name="others_intent_resolver_rerank_rule">App rule</string>
+    <string name="others_intent_resolver_rerank_rule_hint">Enter the package name and index to adjust the position of a specific app. The index ranges from -1 to 100, and all values except -1 must be unique. For example, -1 hides the app; 0 always places it in the first position (if present).</string>
     <string name="others_intent_resolver_rerank_apps">Added apps</string>
+    <string name="others_intent_resolver_rerank_hidden" translatable="false">@string/icon_tuner_hide_selection_hidden</string>
     <string name="others_intent_resolver_rerank_delete_warning">Are you sure you want to delete %s?</string>
     <string name="others_intent_resolver_rerank_toast_invalid_pkg">Package name cannot be empty</string>
-    <string name="others_intent_resolver_rerank_toast_invalid_index">Index must be greater than or equal to 0 and less than or equal to 100</string>
+    <string name="others_intent_resolver_rerank_toast_invalid_index">Index must be greater than or equal to -1 and less than or equal to 100</string>
     <string name="others_intent_resolver_rerank_toast_pkg_exist">Configuration for app %s already exists</string>
     <string name="others_intent_resolver_rerank_toast_index_exist">Index %1$d is already occupied by app %2$s</string>
     <string name="ui_title_others_mimirror" translatable="false">@string/scope_mi_mirror</string>

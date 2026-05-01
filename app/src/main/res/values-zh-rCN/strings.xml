@@ -706,15 +706,16 @@
     <string name="others_intent_resolver_rerank_tips">修改分享面板下方目标应用的排序</string>
     <string name="others_intent_resolver_rerank_enhanced_tips">阻止系统将“问小爱”和“贴背屏”移动到固定位置</string>
     <string name="others_intent_resolver_rerank_index">应用顺序</string>
-    <string name="others_intent_resolver_rerank_index_hint">点击“添加应用”以指定应用的索引，或点击列表项以删除对应规则</string>
+    <string name="others_intent_resolver_rerank_index_hint">点击“添加应用”以指定应用的索引，或长按列表项以删除对应规则</string>
     <string name="others_intent_resolver_rerank_strict">绝对位置</string>
     <string name="others_intent_resolver_rerank_strict_tips">未启用时，所有添加的应用都会优先于其它应用。启用后，添加的应用将尽可能放置于指定的索引位置，中间的空缺（如果存在）将由其它应用填充。</string>
     <string name="others_intent_resolver_rerank_add">添加应用</string>
-    <string name="others_intent_resolver_rerank_add_hint">输入包名和索引以修改指定应用的位置。索引范围为 0 至 100，且不可重复。例如：0 表示始终排在首位（如果存在）。</string>
+    <string name="others_intent_resolver_rerank_rule">应用规则</string>
+    <string name="others_intent_resolver_rerank_rule_hint">输入包名和索引以修改指定应用的位置。索引范围为 -1 至 100，且除 -1 外不可重复。例如：-1 表示隐藏；0 表示始终排在首位（如果存在）。</string>
     <string name="others_intent_resolver_rerank_apps">已添加的应用</string>
     <string name="others_intent_resolver_rerank_delete_warning">确定要删除 %s 吗？</string>
     <string name="others_intent_resolver_rerank_toast_invalid_pkg">包名不能为空</string>
-    <string name="others_intent_resolver_rerank_toast_invalid_index">索引必须大于等于 0 且小于等于 100</string>
+    <string name="others_intent_resolver_rerank_toast_invalid_index">索引必须大于等于 -1 且小于等于 100</string>
     <string name="others_intent_resolver_rerank_toast_pkg_exist">应用 %s 的配置已存在</string>
     <string name="others_intent_resolver_rerank_toast_index_exist">索引 %1$d 已被应用 %2$s 占用</string>
 </resources>

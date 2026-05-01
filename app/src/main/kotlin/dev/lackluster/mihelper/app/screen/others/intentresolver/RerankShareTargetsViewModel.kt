@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class ShareTargetUiItem(
@@ -29,18 +30,20 @@ data class ShareTargetUiItem(
     val index: Int
 )
 
-sealed interface AddDialogState {
-    object Hidden : AddDialogState                              // 弹窗关闭
-    object Idle : AddDialogState                                // 弹窗打开，等待输入
-    object Loading : AddDialogState                             // 正在校验/保存
-    data class Error(val message: UiText) : AddDialogState      // 校验失败，显示错误
-}
+data class AddDialogState(
+    val isVisible: Boolean = false,         // 弹窗是开是关
+    val isNew: Boolean = false,
+    val inputPkg: String = "",              // 输入框当前显示的包名
+    val inputIndex: String = "",            // 输入框当前显示的索引
+    val isLoading: Boolean = false,         // 是否正在转圈校验
+    val error: UiText? = null               // 错误信息，null 表示没报错
+)
 
 class RerankShareTargetsViewModel(
     private val repo: GlobalPreferencesRepository,
     private val appInfoRepository: AppInfoRepository,
 ) : ViewModel() {
-    private val _addDialogState = MutableStateFlow<AddDialogState>(AddDialogState.Hidden)
+    private val _addDialogState = MutableStateFlow(AddDialogState())
     val addDialogState = _addDialogState.asStateFlow()
 
     private val _draftMap = MutableStateFlow<Map<String, Int>>(emptyMap())
@@ -49,21 +52,21 @@ class RerankShareTargetsViewModel(
         _draftMap,
         appInfoRepository.appDetailCacheFlow
     ) { map, cache ->
-        map.entries
-            .sortedBy { it.value }
-            .map { entry ->
-                val pkg = entry.key
-                val detail = cache[pkg]
+        map.entries.sortedBy {
+            if (it.value == -1) Int.MAX_VALUE else it.value
+        }.map { entry ->
+            val pkg = entry.key
+            val detail = cache[pkg]
 
-                ShareTargetUiItem(
-                    pkgName = pkg,
-                    icon = detail?.icon?.toImageSource()?.let {
-                        ImageIcon(source = it, size = IconSize.App)
-                    },
-                    appName = detail?.appName ?: pkg,
-                    index = entry.value
-                )
-            }
+            ShareTargetUiItem(
+                pkgName = pkg,
+                icon = detail?.icon?.toImageSource()?.let {
+                    ImageIcon(source = it, size = IconSize.App)
+                },
+                appName = detail?.appName ?: pkg,
+                index = entry.value
+            )
+        }
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
@@ -108,37 +111,78 @@ class RerankShareTargetsViewModel(
         _draftMap.value = initialMap
     }
 
-    fun openAddDialog() {
-        _addDialogState.value = AddDialogState.Idle
+    fun openAddDialog(initialPkg: String = "", initialIndex: String = "") {
+        _addDialogState.value = AddDialogState(
+            isVisible = true,
+            isNew = initialPkg.isBlank(),
+            inputPkg = initialPkg,
+            inputIndex = initialIndex
+        )
     }
 
     fun closeAddDialog() {
-        _addDialogState.value = AddDialogState.Hidden
+        _addDialogState.value = AddDialogState()
     }
 
-    fun submitNewApp(pkg: String, index: String) {
-        _addDialogState.value = AddDialogState.Loading
+    fun updateInputPkg(pkg: String) {
+        _addDialogState.update {
+            it.copy(inputPkg = pkg, error = null)
+        }
+    }
+
+    fun updateInputIndex(index: String) {
+        _addDialogState.update {
+            it.copy(inputIndex = index, error = null)
+        }
+    }
+
+    fun submitNewApp() {
+        val currentState = _addDialogState.value
+        val new = currentState.isNew
+        val pkg = currentState.inputPkg
+        val index = currentState.inputIndex
+        _addDialogState.update { it.copy(isLoading = true, error = null) }
 
         viewModelScope.launch {
             val currentMap = _draftMap.value
             val parsedIndex = index.toIntOrNull()
             when {
                 pkg.isBlank() -> {
-                    _addDialogState.value = AddDialogState.Error(R.string.others_intent_resolver_rerank_toast_invalid_pkg.toUiText())
+                    _addDialogState.update {
+                        it.copy(
+                            isLoading = false,
+                            error = R.string.others_intent_resolver_rerank_toast_invalid_pkg.toUiText()
+                        )
+                    }
                 }
-                parsedIndex == null || parsedIndex !in 0..100 -> {
-                    _addDialogState.value = AddDialogState.Error(R.string.others_intent_resolver_rerank_toast_invalid_index.toUiText())
+                parsedIndex == null || parsedIndex !in -1..100 -> {
+                    _addDialogState.update {
+                        it.copy(
+                            isLoading = false,
+                            error = R.string.others_intent_resolver_rerank_toast_invalid_index.toUiText()
+                        )
+                    }
                 }
-                currentMap.containsKey(pkg) -> {
-                    _addDialogState.value = AddDialogState.Error(R.string.others_intent_resolver_rerank_toast_pkg_exist.toUiText(pkg))
+                new && currentMap.containsKey(pkg) -> {
+                    _addDialogState.update {
+                        it.copy(
+                            isLoading = false,
+                            error = R.string.others_intent_resolver_rerank_toast_pkg_exist.toUiText(pkg)
+                        )
+                    }
                 }
-                currentMap.containsValue(parsedIndex) -> {
+                parsedIndex != -1 && currentMap.containsValue(parsedIndex) && currentMap[pkg] != parsedIndex -> {
                     val occupiedPkg = currentMap.entries.find { it.value == parsedIndex }?.key ?: ""
-                    _addDialogState.value = AddDialogState.Error(R.string.others_intent_resolver_rerank_toast_index_exist.toUiText(parsedIndex, occupiedPkg))
+                    _addDialogState.update {
+                        it.copy(
+                            isLoading = false,
+                            error = R.string.others_intent_resolver_rerank_toast_index_exist.toUiText(parsedIndex, occupiedPkg)
+                        )
+                    }
                 }
                 else -> {
                     addApp(pkg, parsedIndex)
-                    _addDialogState.value = AddDialogState.Hidden
+                    _addDialogState.value = AddDialogState()
                 }
             }
         }
