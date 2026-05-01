@@ -1,6 +1,7 @@
 system
 com.android.browser
 com.android.incallui
+com.android.intentresolver
 com.android.mms
 com.android.providers.downloads
 com.android.providers.downloads.ui

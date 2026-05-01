@@ -103,6 +103,12 @@ object Preferences {
         val FUCK_AIVS = PreferenceKey("xiaoai_fuck_aivs", false)
     }
 
+    object MiIntentResolver {
+        val RERANK_TARGETS = PreferenceKey("intent_resolver_rerank", 0)
+        val RERANK_TARGETS_STRICT = PreferenceKey("intent_resolver_rerank_strict", false)
+        val TARGETS_PKG_INDEX_MAP = PreferenceKey("intent_resolver_rerank_list", emptySet<String>())
+    }
+
     object MiLink {
         val FUCK_HPPLAY = PreferenceKey("milink_fuck_hpplay", false)
     }

@@ -463,7 +463,26 @@
     <string name="ui_title_others_miai" translatable="false">@string/scope_mi_ai</string>
     <string name="others_miai_hide_watermark">Hide beta and AIGC watermarks</string>
     <string name="others_miai_fuck_aivs">Redirect AIVS folder</string>
-    <string name="others_miai_fuck_aivs_tips">" Prevent the AIVS-SDK from creating a folder in the root of external storage"</string>
+    <string name="others_miai_fuck_aivs_tips">Prevent the AIVS-SDK from creating a folder in the root of external storage</string>
+    <string name="ui_title_others_intent_resolver" formatted="false">IntentResolver</string>
+    <string name="others_intent_resolver_rerank">Custom share panel app order</string>
+    <string name="others_intent_resolver_rerank_tips">Modify the order of target apps shown at the bottom of the share panel</string>
+    <string name="others_intent_resolver_rerank_default" translatable="false">@string/common_default</string>
+    <string name="others_intent_resolver_rerank_enabled" translatable="false">@string/common_enabled</string>
+    <string name="others_intent_resolver_rerank_enhanced" translatable="false">@string/home_gesture_back_haptic_enhanced</string>
+    <string name="others_intent_resolver_rerank_enhanced_tips">Prevent the system from relocating \"Ask Xiaomi Hyper XiaoAi\" and \"Rear display\" to fixed positions</string>
+    <string name="others_intent_resolver_rerank_index">App order</string>
+    <string name="others_intent_resolver_rerank_index_hint">Tap Add app to specify the app\'s index, or tap an item to delete its rule</string>
+    <string name="others_intent_resolver_rerank_strict">Absolute position</string>
+    <string name="others_intent_resolver_rerank_strict_tips">When disabled, all added apps are prioritized over other apps. When enabled, added apps will be placed as close as possible to their specified index, and any gaps (if present) will be filled by other apps.</string>
+    <string name="others_intent_resolver_rerank_add">Add app</string>
+    <string name="others_intent_resolver_rerank_add_hint">Enter the package name and index to adjust the position of a specific app. The index ranges from 0 to 100 and must be unique. For example, 0 means the app will always appear in the first position (if present).</string>
+    <string name="others_intent_resolver_rerank_apps">Added apps</string>
+    <string name="others_intent_resolver_rerank_delete_warning">Are you sure you want to delete %s?</string>
+    <string name="others_intent_resolver_rerank_toast_invalid_pkg">Package name cannot be empty</string>
+    <string name="others_intent_resolver_rerank_toast_invalid_index">Index must be greater than or equal to 0 and less than or equal to 100</string>
+    <string name="others_intent_resolver_rerank_toast_pkg_exist">Configuration for app %s already exists</string>
+    <string name="others_intent_resolver_rerank_toast_index_exist">Index %1$d is already occupied by app %2$s</string>
     <string name="ui_title_others_mimirror" translatable="false">@string/scope_mi_mirror</string>
     <string name="others_mimirror_all_app">All apps can be opened on another device</string>
     <string name="ui_title_others_search" translatable="false">@string/scope_search</string>

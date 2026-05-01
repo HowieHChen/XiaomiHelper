@@ -12,6 +12,7 @@ object Scope {
     const val LBE = "com.lbe.security.miui"
     const val MARKET = "com.xiaomi.market"
     const val MI_AI = "com.miui.voiceassist"
+    const val MI_INTENT_RESOLVER = "com.android.intentresolver"
     const val MI_LINK = "com.milink.service"
     const val MI_SETTINGS = "com.xiaomi.misettings"
     const val MI_TRUST = "com.xiaomi.trustservice"

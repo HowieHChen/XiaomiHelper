@@ -21,6 +21,7 @@ import dev.lackluster.hyperx.ui.preference.core.LocalPreferenceActions
 import dev.lackluster.mihelper.app.provider.AppPreferenceActions
 import dev.lackluster.mihelper.app.screen.MenuPage
 import dev.lackluster.mihelper.app.screen.others.OthersPage
+import dev.lackluster.mihelper.app.screen.others.intentresolver.RerankShareTargetsPage
 import dev.lackluster.mihelper.app.screen.systemui.SystemUIPage
 import dev.lackluster.mihelper.app.screen.systemui.icon.detail.IconDetailPage
 import dev.lackluster.mihelper.app.screen.systemui.icon.position.IconPositionPage
@@ -68,6 +69,7 @@ class MainActivity : HyperXActivity() {
                             is Route.IslandMediaControl -> MediaControlPage(true)
                             is Route.StatusBarIconPosition -> IconPositionPage()
 //                            is Route.DevUITest2 -> MediaActionResizePage(navigator, adjustPadding, "MediaActionResizePage", mode = mode)
+                            is Route.RerankShareTargets -> RerankShareTargetsPage()
                             else -> {}
                         }
                     }

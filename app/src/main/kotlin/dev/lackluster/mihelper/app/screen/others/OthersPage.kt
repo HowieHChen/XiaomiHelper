@@ -8,6 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import dev.lackluster.hyperx.navigation.LocalNavigator
 import dev.lackluster.hyperx.ui.layout.HyperXPage
 import dev.lackluster.hyperx.ui.preference.EditTextPreference
 import dev.lackluster.hyperx.ui.preference.ItemPosition
@@ -23,6 +24,7 @@ import dev.lackluster.mihelper.app.utils.compose.AnimatedColumn
 import dev.lackluster.mihelper.app.utils.showToast
 import dev.lackluster.mihelper.app.widget.preference.DropDownOption
 import dev.lackluster.mihelper.app.widget.preference.DropDownPreference
+import dev.lackluster.mihelper.data.Route
 import dev.lackluster.mihelper.data.preference.Preferences
 import dev.lackluster.mihelper.utils.Device
 
@@ -30,6 +32,7 @@ sealed interface OthersUIAction {
     data class ShowToast(val message: UiText, val long: Boolean = false) : OthersUIAction
     object OpenCellularNetworkSettings : OthersUIAction
     object OpenSearchCustomEngineSheet : OthersUIAction
+    object OpenRerankShareTargetsSheet : OthersUIAction
 }
 
 private val searchEngineOptions = listOf(
@@ -41,9 +44,16 @@ private val searchEngineOptions = listOf(
     DropDownOption(5, R.string.search_engine_custom)
 )
 
+private val intentResolverRerankOptions = listOf(
+    DropDownOption(0, R.string.others_intent_resolver_rerank_default),
+    DropDownOption(1, R.string.others_intent_resolver_rerank_enabled),
+    DropDownOption(2, R.string.others_intent_resolver_rerank_enhanced, R.string.others_intent_resolver_rerank_enhanced_tips),
+)
+
 @Composable
 fun OthersPage() {
     val context = LocalContext.current
+    val navigator = LocalNavigator.current
     val appSettingsActions = LocalPreferenceActions.current
     val showCustomSearchEngineSheet = remember { mutableStateOf(false) }
 
@@ -75,6 +85,9 @@ fun OthersPage() {
             }
             OthersUIAction.OpenSearchCustomEngineSheet -> {
                 showCustomSearchEngineSheet.value = true
+            }
+            OthersUIAction.OpenRerankShareTargetsSheet -> {
+                navigator.push(Route.RerankShareTargets)
             }
         }
     }
@@ -148,6 +161,24 @@ private fun OthersPageContent(
                 title = stringResource(R.string.others_miai_fuck_aivs),
                 summary = stringResource(R.string.others_miai_fuck_aivs_tips),
             )
+        }
+        itemPreferenceGroup(
+            titleRes = R.string.ui_title_others_intent_resolver
+        ) {
+            val rerankTargets = rememberPreferenceState(Preferences.MiIntentResolver.RERANK_TARGETS)
+            DropDownPreference(
+                title = stringResource(R.string.others_intent_resolver_rerank),
+                summary = stringResource(R.string.others_intent_resolver_rerank_tips),
+                value = rerankTargets.value,
+                options = intentResolverRerankOptions,
+                onValueChange = { rerankTargets.value = it }
+            )
+            AnimatedVisibility(rerankTargets.value != 0) {
+                TextPreference(
+                    title = stringResource(R.string.others_intent_resolver_rerank_index),
+                    onClick = { onAction(OthersUIAction.OpenRerankShareTargetsSheet) },
+                )
+            }
         }
         itemPreferenceGroup(
             titleRes = R.string.ui_title_others_mimirror,

@@ -13,6 +13,8 @@ import dev.lackluster.mihelper.app.screen.systemui.icon.detail.StackedMobileView
 import dev.lackluster.mihelper.app.screen.systemui.media.MediaControlViewModel
 import dev.lackluster.mihelper.app.screen.systemui.statusbar.StatusBarFontViewModel
 import dev.lackluster.mihelper.app.manager.XposedServiceManager
+import dev.lackluster.mihelper.app.repository.AppInfoRepository
+import dev.lackluster.mihelper.app.screen.others.intentresolver.RerankShareTargetsViewModel
 import dev.lackluster.mihelper.app.state.AppEnvViewModel
 import dev.lackluster.mihelper.app.state.GlobalUIViewModel
 import dev.lackluster.mihelper.app.utils.RemoteFileStore
@@ -32,6 +34,7 @@ val appModule = module {
     singleOf(::GlobalPreferencesRepository) { createdAtStart() }
     singleOf(::FontRepository)
     singleOf(::StackedMobileRepository) { createdAtStart() }
+    singleOf(::AppInfoRepository)
     singleOf(::AppPreferenceActions)
 
     viewModelOf(::GlobalUIViewModel)
@@ -44,4 +47,5 @@ val appModule = module {
     viewModelOf(::StackedMobileViewModel)
     viewModelOf(::IconPositionViewModel)
     viewModelOf(::MediaControlViewModel)
+    viewModelOf(::RerankShareTargetsViewModel)
 }

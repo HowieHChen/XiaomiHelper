@@ -25,6 +25,7 @@ import dev.lackluster.mihelper.hook.scopes.FindDevice
 import dev.lackluster.mihelper.hook.scopes.GuardProvider
 import dev.lackluster.mihelper.hook.scopes.Market
 import dev.lackluster.mihelper.hook.scopes.MiAi
+import dev.lackluster.mihelper.hook.scopes.MiIntentResolver
 import dev.lackluster.mihelper.hook.scopes.MiLink
 import dev.lackluster.mihelper.hook.scopes.MiMirror
 import dev.lackluster.mihelper.hook.scopes.MiSettings
@@ -101,6 +102,7 @@ class HookEntry : XposedModule() {
         Scope.LBE -> LBE
         Scope.MARKET -> Market
         Scope.MI_AI -> MiAi
+        Scope.MI_INTENT_RESOLVER -> MiIntentResolver
         Scope.MI_LINK -> MiLink
         Scope.MI_MIRROR -> MiMirror
         Scope.MI_TRUST -> MiTrust
