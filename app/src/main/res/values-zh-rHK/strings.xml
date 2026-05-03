@@ -105,9 +105,9 @@
     <string name="menu_reboot_done_toast">已重新啟動所有目標應用程式</string>
     <string name="about_jump_error_toast">發生了一些奇怪的錯誤</string>
     <string name="about_easter_egg_toast">你點了一下，然後什麽都沒有發生</string>
-    <string name="about_hyperx_compose">此應用程式使用 HyperX Compose 構建</string>
+    <string name="about_hyperx_compose">This app is based on HyperX Compose</string>
     <string name="about_hyperx_compose_tips">HyperX Compose 是一個基於 Miuix 的 Compose 組件庫，專爲 Android 平臺打造</string>
-    <string name="about_miuix">此應用程式使用 Miuix 構建</string>
+    <string name="about_miuix">This app is based on Miuix</string>
     <string name="about_miuix_tips">Miuix 是一個 Compose Multiplatform 的組件庫， 提供了一系列 小米澎湃OS 風格的組件</string>
     <string name="about_kavaref">此模組使用 KavaRef 構建</string>
     <string name="about_kavaref_tips">了解更多 https://github.com/HighCapable/KavaRef</string>
@@ -221,9 +221,9 @@
     <string name="home_gesture_fix_predictive_back">修復預測性後退進度錯誤</string>
     <string name="home_gesture_fix_predictive_back_tips">HyperOS 破壞了預測性後退功能，導致所需的滑動距離過短。啟用此選項後，將還原 AOSP 的行爲。此選項只能修復預測性後退的進度錯誤，無法處理預測性後退功能完全失效的情況。</string>
     <string name="home_gesture_line_long_press">長按手勢提示線</string>
-    <string name="home_gesture_line_long_press_tips">長按手勢提示線觸發特定功能。</string>
+    <string name="home_gesture_line_long_press_tips">Long press on the full screen indicator to trigger a specific function.</string>
     <string name="home_gesture_line_double_tap">雙擊手勢提示線</string>
-    <string name="home_gesture_line_double_tap_tips">雙擊手勢提示線觸發特定功能。</string>
+    <string name="home_gesture_line_double_tap_tips">Long press on the full screen indicator to trigger a specific function</string>
     <string name="ui_title_home_anim">動畫</string>
     <string name="home_anim_icon_zoom">停用點擊圖示時的縮放動畫</string>
     <string name="home_anim_icon_darken">停用點擊圖示時的黑色遮罩</string>
@@ -700,5 +700,20 @@
     <string name="systemui_statusbar_gesture_double_tap">雙擊空白區域</string>
     <string name="systemui_statusbar_gesture_double_tap_tips">雙擊狀態欄空白區域觸發特定功能</string>
     <string name="others_miai_fuck_aivs">重新定向 AIVS 資料夾</string>
-    <string name="others_miai_fuck_aivs_tips">" 防止 AIVS-SDK 在外部存儲的根目錄中創建資料夾"</string>
+    <string name="others_miai_fuck_aivs_tips">Prevent the AIVS-SDK from creating a folder in the root of external storage</string>
+    <string name="others_intent_resolver_share_style">分享面板風格</string>
+    <string name="others_intent_resolver_rerank">自訂分享面板應用程式次序</string>
+    <string name="others_intent_resolver_rerank_tips">修改分享面板下方目標應用程式的排序</string>
+    <string name="others_intent_resolver_rerank_enhanced_tips">防止系統將\"問小愛\"同\"貼背屏\"移動到固定位置</string>
+    <string name="others_intent_resolver_rerank_index">應用程式次序</string>
+    <string name="others_intent_resolver_rerank_strict">絕對位置</string>
+    <string name="others_intent_resolver_rerank_strict_tips">禁用時，所有添加的應用程式都會優先於其他應用程式。啟用後，添加的應用程式將盡可能放置於指定的索引位置，中間的空缺（如果存在）將由其他應用程式填充。</string>
+    <string name="others_intent_resolver_rerank_add">添加應用程式</string>
+    <string name="others_intent_resolver_rerank_rule">應用程式規則</string>
+    <string name="others_intent_resolver_rerank_rule_hint">輸入包名同索引以修改指定應用程式的位置。索引範圍為 -1 至 100，且除 -1 外不可重複。例如： -1表示隱藏；0 表示始終排在首位（如果存在）。</string>
+    <string name="others_intent_resolver_rerank_apps">已添加的應用程式</string>
+    <string name="others_intent_resolver_rerank_delete_warning">確定要刪除%s嗎？</string>
+    <string name="others_intent_resolver_rerank_toast_invalid_pkg">包名不能為空</string>
+    <string name="others_intent_resolver_rerank_toast_pkg_exist">應用程式%s的配置已存在</string>
+    <string name="others_intent_resolver_rerank_toast_index_exist">索引%1$d已被應用程式%2$s佔用</string>
 </resources>
