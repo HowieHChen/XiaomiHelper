@@ -104,6 +104,7 @@ dependencies {
     compileOnly(libs.libxposed.api)
     implementation(libs.libxposed.service)
     implementation(libs.kavaref.core)
+    implementation(libs.kavaref.android)
     implementation(libs.kavaref.extension)
     implementation(libs.hiddenapibypass)
     implementation(libs.dexkit)
