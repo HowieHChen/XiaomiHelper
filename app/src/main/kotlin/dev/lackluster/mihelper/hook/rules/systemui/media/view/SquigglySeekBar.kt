@@ -46,6 +46,8 @@ class SquigglySeekBar @JvmOverloads constructor(
         private const val THUMB_PRESSED_HEIGHT_DP = 16
         private const val THUMB_V_BAR_WIDTH_DP = 4
         private const val THUMB_V_BAR_HEIGHT_DP = 14
+
+        private const val MAX_VISUAL_PROGRESS_ADVANCE_MS = 1200L
     }
 
     private val thumbHeight: Int = THUMB_NORMAL_HEIGHT_DP.dp(context)
@@ -66,6 +68,9 @@ class SquigglySeekBar @JvmOverloads constructor(
     private var baseColor: Int = Color.WHITE
     private var touchAnimProgress = 0f // 0f..1f
     private var touchAnimator: ValueAnimator? = null
+    private var realProgress = 0
+    private var realProgressTime = SystemClock.uptimeMillis()
+    private var isUserSeeking = false
 
     /* distance over which amplitude drops to zero, measured in wavelengths */
     private val transitionPeriods = 1.5f
@@ -110,6 +115,7 @@ class SquigglySeekBar @JvmOverloads constructor(
                 return
             }
             field = value
+            recordProgressAnchor()
             if (field) {
                 lastFrameTime = SystemClock.uptimeMillis()
             }
@@ -171,12 +177,15 @@ class SquigglySeekBar @JvmOverloads constructor(
             lastFrameTime = now
         }
 
-        val progress = progress.toFloat() / max.toFloat()
+        val progress = getVisualProgress()
         val centerY = height / 2.0f
-        val totalWidth = width.toFloat()
-        val totalProgressPx = totalWidth * progress
+        val trackWidth = (width - paddingLeft - paddingRight).coerceAtLeast(0).toFloat()
+        if (trackWidth <= 0f) {
+            return
+        }
+        val totalProgressPx = trackWidth * progress
         val waveProgressPx =
-            totalWidth *
+            trackWidth *
                     (if (!transitionEnabled || progress > matchedWaveEndpoint) progress
                     else
                         lerp(
@@ -186,7 +195,7 @@ class SquigglySeekBar @JvmOverloads constructor(
                         ))
         // Build Wiggly Path
         val waveStart = -phaseOffset - waveLength / 2f
-        val waveEnd = if (transitionEnabled) totalWidth else waveProgressPx
+        val waveEnd = if (transitionEnabled) trackWidth else waveProgressPx
         // helper function, computes amplitude for wave segment
 //        val computeAmplitude: (Float, Float) -> Float = { x, sign ->
 //            if (transitionEnabled) {
@@ -217,23 +226,32 @@ class SquigglySeekBar @JvmOverloads constructor(
         }
         // translate to the start position of the progress bar for all draw commands
         val clipTop = lineAmplitude + strokeWidth
+        val activeClipEnd =
+            if (totalProgressPx > 0f && thumbStyle == ThumbStyle.Hidden) {
+                totalProgressPx + strokeWidth
+            } else {
+                totalProgressPx
+            }
+        val clipEnd = trackWidth + strokeWidth
         canvas.save()
         canvas.translate(paddingLeft.toFloat(), centerY)
         // Draw path up to progress position
         canvas.save()
-        canvas.clipRect(0f, -1f * clipTop, totalProgressPx, clipTop)
+        canvas.clipRect(0f, -1f * clipTop, activeClipEnd, clipTop)
         canvas.drawPath(path, wavePaint)
         canvas.restore()
         if (transitionEnabled) {
             // If there's a smooth transition, we draw the rest of the
             // path in a different color (using different clip params)
-            canvas.withClip(totalProgressPx, -1f * clipTop, totalWidth, clipTop) {
-                drawPath(path, linePaint)
+            if (totalProgressPx < trackWidth) {
+                canvas.withClip(totalProgressPx, -1f * clipTop, clipEnd, clipTop) {
+                    drawPath(path, linePaint)
+                }
             }
         } else {
             // No transition, just draw a flat line to the end of the region.
             // The discontinuity is hidden by the progress bar thumb shape.
-            canvas.drawLine(totalProgressPx, 0f, totalWidth, 0f, linePaint)
+            canvas.drawLine(totalProgressPx, 0f, trackWidth, 0f, linePaint)
         }
         // Draw round line cap at the beginning of the wave
         val startAmp = cos(abs(waveStart) / waveLength * TWO_PI)
@@ -266,20 +284,35 @@ class SquigglySeekBar @JvmOverloads constructor(
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
+        if (event?.actionMasked == MotionEvent.ACTION_DOWN) {
+            isUserSeeking = true
+        }
         val superResult = super.onTouchEvent(event)
 
-        when (event?.action) {
+        when (event?.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
                 startAnimation(1f) // 按下变大
                 // 解决 ScrollView 冲突
                 parent?.requestDisallowInterceptTouchEvent(true)
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                isUserSeeking = false
+                recordProgressAnchor()
                 startAnimation(0f) // 松手恢复
                 parent?.requestDisallowInterceptTouchEvent(false)
             }
         }
         return superResult
+    }
+
+    override fun setProgress(progress: Int) {
+        super.setProgress(progress)
+        recordProgressAnchor()
+    }
+
+    override fun setProgress(progress: Int, animate: Boolean) {
+        super.setProgress(progress, animate)
+        recordProgressAnchor()
     }
 
     override fun setProgressTintList(tint: ColorStateList?) {
@@ -309,6 +342,28 @@ class SquigglySeekBar @JvmOverloads constructor(
         } else {
             sign * heightFraction * lineAmplitude
         }
+    }
+
+    private fun recordProgressAnchor() {
+        realProgress = progress
+        realProgressTime = SystemClock.uptimeMillis()
+    }
+
+    private fun getVisualProgress(): Float {
+        val maxProgress = max
+        if (maxProgress <= 0) {
+            return 0f
+        }
+        val displayProgress =
+            if (animate && !isUserSeeking) {
+                val elapsed = (SystemClock.uptimeMillis() - realProgressTime)
+                    .coerceAtLeast(0L)
+                    .coerceAtMost(MAX_VISUAL_PROGRESS_ADVANCE_MS)
+                realProgress + elapsed
+            } else {
+                progress.toLong()
+            }
+        return (displayProgress.toFloat() / maxProgress.toFloat()).coerceIn(0f, 1f)
     }
 
     private fun startAnimation(target: Float) {
