@@ -44,6 +44,9 @@ object ResourcesUtils : ContextAwareHooker() {
     var fmt_time_24hour_minute = 0
     var status_bar_clock_date_time_format = 0
     var status_bar_clock_date_time_format_12 = 0
+    var status_bar_clock_margin_new = 0
+    var status_bar_padding_extra_start = 0
+    var status_bar_clock_margin_end = 0
     // Status bar
     var mobile_type_single = 0
     var mobile_signal_container = 0
@@ -88,8 +91,6 @@ object ResourcesUtils : ContextAwareHooker() {
     var pad_clock_xml = 0
     var keyguard_carrier_text = 0
     var TextAppearance_StatusBar_Clock = 0
-    var status_bar_padding_extra_start = 0
-    var status_bar_clock_margin_end = 0
     var normal_control_center_carrier_view = 0
     var normal_control_center_carrier_second_view = 0
     var normal_control_center_carrier_vertical_separator = 0
@@ -113,6 +114,7 @@ object ResourcesUtils : ContextAwareHooker() {
         fmt_time_24hour_minute = "fmt_time_24hour_minute".toStringId()
         status_bar_clock_date_time_format = "status_bar_clock_date_time_format".toStringId()
         status_bar_clock_date_time_format_12 = "status_bar_clock_date_time_format_12".toStringId()
+        status_bar_clock_margin_new = "status_bar_clock_margin_new".toDimenId()
         mobile_type_single = "mobile_type_single".toId()
         mobile_signal_container = "mobile_signal_container".toId()
         TextAppearance_StatusBar_Battery_Percent = "TextAppearance.StatusBar.Battery.Percent".toStyleId()

@@ -21,8 +21,9 @@
 package dev.lackluster.mihelper.hook.rules.systemui.statusbar
 
 import android.graphics.Typeface
+import android.view.ViewGroup
 import android.widget.TextView
-import androidx.core.view.updatePaddingRelative
+import androidx.core.view.updateMarginsRelative
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.condition.type.Modifiers
 import dev.lackluster.mihelper.data.preference.Preferences
@@ -33,10 +34,13 @@ import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.date_time
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.horizontal_time
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.normal_control_center_date_view
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.pad_clock
+import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.status_bar_clock_margin_end
+import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.status_bar_clock_margin_new
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.clzMiuiClock
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.getTypeface
 import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
 import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
+import dev.lackluster.mihelper.hook.utils.d
 import dev.lackluster.mihelper.hook.utils.toTyped
 import dev.lackluster.mihelper.utils.Device
 import dev.lackluster.mihelper.utils.factory.dp
@@ -119,6 +123,28 @@ object MiuiClockFontWeight : StaticHooker() {
         updateSelfState(needHookFontWeight || modifyPadding)
     }
 
+    private fun TextView.updateClockMargin(
+        start: Int? = null,
+        end: Int? = null,
+        postIfUnavailable: Boolean = true,
+    ) {
+        d { "updateClockMargin ${this.id} ${this.layoutParams}" }
+        val params = layoutParams as? ViewGroup.MarginLayoutParams
+        if (params == null) {
+            if (postIfUnavailable) {
+                post {
+                    updateClockMargin(start, end, postIfUnavailable = false)
+                }
+            }
+            return
+        }
+        params.updateMarginsRelative(
+            start = start ?: params.marginStart,
+            end = end ?: params.marginEnd,
+        )
+        layoutParams = params
+    }
+
     override fun onHook() {
         clzMiuiClock?.apply {
             resolve().firstConstructorOrNull {
@@ -137,26 +163,37 @@ object MiuiClockFontWeight : StaticHooker() {
                     }
                 }
                 if (modifyPadding) {
+                    val context = textView.context
                     if (Device.isPad) {
                         when (textView.id) {
                             clock -> {
-                                textView.apply {
-                                    updatePaddingRelative(start = valuePaddingStart.dp(context))
+                                val originalMargin = if (status_bar_clock_margin_new > 0) {
+                                    context.resources.getDimensionPixelSize(status_bar_clock_margin_new)
+                                } else {
+                                    3.dp(context)
                                 }
+                                val marginStart = (originalMargin + valuePaddingStart.dp(textView.context)).coerceAtLeast(0)
+                                textView.updateClockMargin(start = marginStart)
                             }
                             pad_clock -> {
-                                textView.apply {
-                                    updatePaddingRelative(end = valuePaddingEnd.dp(context))
+                                val originalMargin = if (status_bar_clock_margin_end > 0) {
+                                    context.resources.getDimensionPixelSize(status_bar_clock_margin_end)
+                                } else {
+                                    4.dp(context)
                                 }
+                                val marginEnd = (originalMargin + valuePaddingEnd.dp(textView.context)).coerceAtLeast(0)
+                                textView.updateClockMargin(end = marginEnd)
                             }
                         }
                     } else if (textView.id == clock) {
-                        textView.apply {
-                            updatePaddingRelative(
-                                start = valuePaddingStart.dp(context),
-                                end = valuePaddingEnd.dp(context),
-                            )
+                        val originalMargin = if (status_bar_clock_margin_new > 0) {
+                            context.resources.getDimensionPixelSize(status_bar_clock_margin_new)
+                        } else {
+                            3.dp(context)
                         }
+                        val marginStart = (originalMargin + valuePaddingStart.dp(textView.context)).coerceAtLeast(0)
+                        val marginEnd = (originalMargin + valuePaddingEnd.dp(textView.context)).coerceAtLeast(0)
+                        textView.updateClockMargin(start = marginStart, end = marginEnd)
                     }
                 }
                 result(ori)
