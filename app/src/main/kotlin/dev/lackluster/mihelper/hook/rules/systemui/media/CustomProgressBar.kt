@@ -410,9 +410,14 @@ internal object CustomProgressBar : StaticHooker() {
                     seekBar.progress = it
                 }
             }
-            if (seekBar is SquigglySeekBar) {
-                seekBar.animate = playing && !scrubbing && listening
-                seekBar.transitionEnabled = !seekAvailable
+            when (seekBar) {
+                is SquigglySeekBar -> {
+                    seekBar.animate = playing && !scrubbing && listening
+                    seekBar.transitionEnabled = !seekAvailable
+                }
+                is CometSeekBar -> {
+                    seekBar.animate = playing && !scrubbing && listening
+                }
             }
         } else {
             seekBar.apply {
@@ -422,8 +427,13 @@ internal object CustomProgressBar : StaticHooker() {
             }
             elapsedTimeView?.text = "00:00"
             totalTimeView?.text = "00:00"
-            if (seekBar is SquigglySeekBar) {
-                seekBar.animate = false
+            when (seekBar) {
+                is SquigglySeekBar -> {
+                    seekBar.animate = false
+                }
+                is CometSeekBar -> {
+                    seekBar.animate = false
+                }
             }
         }
     }

@@ -14,6 +14,7 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.RectF
 import android.graphics.Shader
+import android.os.SystemClock
 import android.util.AttributeSet
 import android.view.MotionEvent
 import androidx.appcompat.widget.AppCompatSeekBar
@@ -40,6 +41,8 @@ class CometSeekBar @JvmOverloads constructor(
         private const val THUMB_PRESSED_HEIGHT_DP = 16
         private const val THUMB_V_BAR_WIDTH_DP = 4
         private const val THUMB_V_BAR_HEIGHT_DP = 14
+
+        private const val MAX_VISUAL_PROGRESS_ADVANCE_MS = 1200L
     }
 
     var cometEffect: Boolean = true
@@ -61,6 +64,16 @@ class CometSeekBar @JvmOverloads constructor(
             invalidate()
         }
 
+    var animate: Boolean = false
+        set(value) {
+            if (field == value) {
+                return
+            }
+            field = value
+            recordProgressAnchor()
+            invalidate()
+        }
+
     private var progressAlpha: Int = ALPHA_PROGRESS
     private var cometAlpha: Int = ALPHA_COMET
     private var trackAlpha: Int = ALPHA_TRACK
@@ -79,6 +92,9 @@ class CometSeekBar @JvmOverloads constructor(
     private var touchAnimProgress = 0f // 0f..1f
     private var touchAnimator: ValueAnimator? = null
     private val animInterpolator = SpringInterpolator(0.95f, 0.35f)
+    private var realProgress = 0
+    private var realProgressTime = SystemClock.uptimeMillis()
+    private var isUserSeeking = false
 
     private val tailLength: Int = COMET_TAIL_LENGTH_DP.dp(context)
     private val progressHeightPressed: Int = PROGRESS_PRESSED_HEIGHT_DP.dp(context)
@@ -113,9 +129,12 @@ class CometSeekBar @JvmOverloads constructor(
     }
 
     override fun onDraw(canvas: Canvas) {
+        if (animate) {
+            invalidate()
+        }
 
         val animT = touchAnimProgress
-        val progressRatio = if (max > 0) progress.toFloat() / max else 0f
+        val progressRatio = getVisualProgress()
         val currentTrackHeight = if (thumbStyle == ThumbStyle.RoundRect || thumbStyle == ThumbStyle.Hidden) {
             linearInterpolate(progressHeight, progressHeightPressed, animT)
         } else {
@@ -187,20 +206,35 @@ class CometSeekBar @JvmOverloads constructor(
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
+        if (event?.actionMasked == MotionEvent.ACTION_DOWN) {
+            isUserSeeking = true
+        }
         val superResult = super.onTouchEvent(event)
 
-        when (event?.action) {
+        when (event?.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
                 startAnimation(1f) // 按下变大
                 // 解决 ScrollView 冲突
                 parent?.requestDisallowInterceptTouchEvent(true)
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                isUserSeeking = false
+                recordProgressAnchor()
                 startAnimation(0f) // 松手恢复
                 parent?.requestDisallowInterceptTouchEvent(false)
             }
         }
         return superResult
+    }
+
+    override fun setProgress(progress: Int) {
+        super.setProgress(progress)
+        recordProgressAnchor()
+    }
+
+    override fun setProgress(progress: Int, animate: Boolean) {
+        super.setProgress(progress, animate)
+        recordProgressAnchor()
     }
 
     override fun setProgressTintList(tint: ColorStateList?) {
@@ -241,6 +275,28 @@ class CometSeekBar @JvmOverloads constructor(
             else -> 0
         }
         setPadding(requiredPadding, paddingTop, requiredPadding, paddingBottom)
+    }
+
+    private fun recordProgressAnchor() {
+        realProgress = progress
+        realProgressTime = SystemClock.uptimeMillis()
+    }
+
+    private fun getVisualProgress(): Float {
+        val maxProgress = max
+        if (maxProgress <= 0) {
+            return 0f
+        }
+        val displayProgress =
+            if (animate && !isUserSeeking) {
+                val elapsed = (SystemClock.uptimeMillis() - realProgressTime)
+                    .coerceAtLeast(0L)
+                    .coerceAtMost(MAX_VISUAL_PROGRESS_ADVANCE_MS)
+                realProgress + elapsed
+            } else {
+                progress.toLong()
+            }
+        return (displayProgress.toFloat() / maxProgress.toFloat()).coerceIn(0f, 1f)
     }
 
     private fun updateColorsFromTint() {
