@@ -17,7 +17,8 @@ import kotlinx.coroutines.withContext
 data class AppInfoState(
     val isLoading: Boolean = true,
     val versionText: String = "?",
-    val iconSource: ImageSource? = null
+    val iconSource: ImageSource? = null,
+    val launcherComponentName: String? = null
 )
 
 @Composable
@@ -52,11 +53,15 @@ fun rememberAppInfo(packageName: String): State<AppInfoState> {
 
                 val nativeDrawable = appInfo.loadIcon(pm)
                 val composeImageSource = ImageSource.Bitmap(nativeDrawable.toComposeImageBitmap())
+                val launcherComponentName = pm.getLaunchIntentForPackage(packageName)
+                    ?.component
+                    ?.flattenToShortString()
 
                 AppInfoState(
                     isLoading = false,
                     versionText = versionText,
-                    iconSource = composeImageSource
+                    iconSource = composeImageSource,
+                    launcherComponentName = launcherComponentName
                 )
             } catch (_: Exception) {
                 val fallbackDrawable = pm.defaultActivityIcon

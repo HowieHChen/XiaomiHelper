@@ -15,6 +15,8 @@ import kotlinx.coroutines.launch
 
 private const val TAG = "AppRestartPreferenceItem"
 
+private fun String.shellSingleQuoted(): String = "'${replace("'", "'\\''")}'"
+
 @Composable
 fun AppRestartPreferenceItem(
     packageName: String,
@@ -37,8 +39,16 @@ fun AppRestartPreferenceItem(
         ),
         onClick = {
             coroutineScope.launch {
-                val killCmd = "am force-stop $packageName"
-                val startCmd = "monkey -p $packageName -c android.intent.category.LAUNCHER 1"
+                val launcherComponentName = appInfo.launcherComponentName
+                if (launcherComponentName == null) {
+                    MLog.e(TAG) { "Launcher component not found for $packageName" }
+                    onFallbackAction()
+                    return@launch
+                }
+
+                val killCmd = "am force-stop ${packageName.shellSingleQuoted()}"
+                val startCmd = "am start --user current -a android.intent.action.MAIN " +
+                        "-c android.intent.category.LAUNCHER -n ${launcherComponentName.shellSingleQuoted()}"
 
                 val result = SystemCommander.execAsync(
                     command = "$killCmd && $startCmd",
