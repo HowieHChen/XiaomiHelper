@@ -78,7 +78,7 @@ object CellularIconRenderEngine {
     private var stackedTypeCenterPercent: PointF? = null
     // 记录生成当前 L2 缓存时的系统 DPI
     private var currentDpi = -1
-    private var currentDensity = 1.0f
+    private var currentDensity = 3.0f
     private var currentIconHeightPx = 20
     private var statusBarHeightResId = 0
 

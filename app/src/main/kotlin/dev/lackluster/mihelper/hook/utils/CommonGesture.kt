@@ -3,6 +3,10 @@ package dev.lackluster.mihelper.hook.utils
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.os.PowerManager
+import android.os.SystemClock
+import androidx.core.content.getSystemService
+import com.highcapable.kavaref.KavaRef.Companion.resolve
 import dev.lackluster.mihelper.data.Constants.ACTION_FLOATING_WINDOW
 import dev.lackluster.mihelper.data.Constants.ACTION_HOME
 import dev.lackluster.mihelper.data.Constants.ACTION_NOTIFICATIONS
@@ -16,6 +20,14 @@ import dev.lackluster.mihelper.utils.MLog
 @SuppressLint("PrivateApi")
 object CommonGesture {
     private const val TAG = "CommonGesture"
+
+    private val metGoToSleep by lazy {
+        PowerManager::class.resolve().firstMethodOrNull {
+            name = "goToSleep"
+            parameterCount = 3
+            parameters(Long::class, Int::class, Int::class)
+        }?.toTyped<Unit>()
+    }
 
     /*
      * 0 -> DEFAULT;
@@ -35,10 +47,18 @@ object CommonGesture {
         MLog.d(TAG) { "doAction action $action" }
         when (action) {
             3 -> {
-                appContext.sendBroadcast(
-                    Intent("com.miui.app.ExtraStatusBarManager.action_TRIGGER_TOGGLE")
-                        .putExtra("com.miui.app.ExtraStatusBarManager.extra_TOGGLE_ID", 10)
-                )
+                val pkgName = appContext.applicationInfo.packageName
+                when (pkgName) {
+                    "com.miui.home", "android", "com.mi.android.globallauncher" -> {
+                        appContext.sendBroadcast(
+                            Intent("com.miui.app.ExtraStatusBarManager.action_TRIGGER_TOGGLE")
+                                .putExtra("com.miui.app.ExtraStatusBarManager.extra_TOGGLE_ID", 10)
+                        )
+                    }
+                    else -> {
+                        appContext.tryGoToSleepDirectly()
+                    }
+                }
             }
             4 -> {
                 appContext.sendBroadcast(Intent(ACTION_SCREENSHOT))
@@ -78,6 +98,16 @@ object CommonGesture {
                 }
                 appContext.sendBroadcast(intent, PER_MIUI_INTERNAL_API)
             }
+        }
+    }
+
+    private fun Context.tryGoToSleepDirectly() {
+        try {
+            this.getSystemService<PowerManager>()?.let {
+                metGoToSleep?.invoke(it, SystemClock.uptimeMillis(), 4, 0)
+            }
+        } catch (t: Throwable) {
+            MLog.e(t, TAG)
         }
     }
 }
