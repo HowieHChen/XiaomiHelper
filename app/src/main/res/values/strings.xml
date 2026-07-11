@@ -353,12 +353,12 @@
     <string name="cleaner_milink_fuck_hpplay">Block creation of hpplay folders</string>
     <string name="ui_title_cleaner_mms" translatable="false">@string/scope_mms</string>
     <string name="ui_title_cleaner_music" translatable="false">@string/scope_music</string>
-    <string name="cleaner_music_hide_karaoke">Hide karaoke</string>
-    <string name="cleaner_music_hide_karaoke_tips">Remove the karaoke from the top tab on the home page</string>
-    <string name="cleaner_music_hide_long_audio">Hide long audio</string>
-    <string name="cleaner_music_hide_long_audio_tips">Remove the long audio from the top tab on the home page</string>
-    <string name="cleaner_music_hide_discover">Hide discover</string>
-    <string name="cleaner_music_hide_discover_tips">Remove the discover from the top tab on the home page</string>
+    <string name="cleaner_music_hide_tab_long_audio">Hide audiobook</string>
+    <string name="cleaner_music_hide_tab_long_audio_tips">Hide the Audiobook entry in the bottom bar</string>
+    <string name="cleaner_music_hide_tab_quick_play">Hide free listening</string>
+    <string name="cleaner_music_hide_tab_quick_play_tips">Hide the Free listening entry in the bottom bar</string>
+    <string name="cleaner_music_hide_tab_free_mode">Hide earn</string>
+    <string name="cleaner_music_hide_tab_free_mode_tips">Hide the Earn entry in the bottom bar</string>
     <string name="cleaner_music_hide_my_banner">Hide the banner on my page</string>
     <string name="cleaner_music_hide_my_rec_playlist">Hide recommended songs on my page</string>
     <string name="cleaner_music_hide_fav_num">Hide song favorite count</string>

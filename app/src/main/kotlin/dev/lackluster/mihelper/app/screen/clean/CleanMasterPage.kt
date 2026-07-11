@@ -242,19 +242,19 @@ private fun CleanMasterPageContent(
                 summary = stringResource(R.string.cleaner_common_skip_splash_tips)
             )
             SwitchPreference(
-                key = Preferences.Music.HIDE_KARAOKE,
-                title = stringResource(R.string.cleaner_music_hide_karaoke),
-                summary = stringResource(R.string.cleaner_music_hide_karaoke_tips)
+                key = Preferences.Music.HIDE_TAB_LONG_AUDIO,
+                title = stringResource(R.string.cleaner_music_hide_tab_long_audio),
+                summary = stringResource(R.string.cleaner_music_hide_tab_long_audio_tips)
             )
             SwitchPreference(
-                key = Preferences.Music.HIDE_LONG_AUDIO,
-                title = stringResource(R.string.cleaner_music_hide_long_audio),
-                summary = stringResource(R.string.cleaner_music_hide_long_audio_tips)
+                key = Preferences.Music.HIDE_TAB_QUICK_PLAY,
+                title = stringResource(R.string.cleaner_music_hide_tab_quick_play),
+                summary = stringResource(R.string.cleaner_music_hide_tab_quick_play_tips)
             )
             SwitchPreference(
-                key = Preferences.Music.HIDE_DISCOVER,
-                title = stringResource(R.string.cleaner_music_hide_discover),
-                summary = stringResource(R.string.cleaner_music_hide_discover_tips)
+                key = Preferences.Music.HIDE_TAB_FREE_MODE,
+                title = stringResource(R.string.cleaner_music_hide_tab_free_mode),
+                summary = stringResource(R.string.cleaner_music_hide_tab_free_mode_tips)
             )
             SwitchPreference(
                 key = Preferences.Music.HIDE_MY_BANNER,

@@ -170,9 +170,6 @@ object Preferences {
     object Music {
         val AD_BLOCKER = PreferenceKey("music_ad_block", false)
         val SKIP_SPLASH = PreferenceKey("music_skip_splash", false)
-        val HIDE_KARAOKE = PreferenceKey("music_hide_karaoke", false) // 移除
-        val HIDE_LONG_AUDIO = PreferenceKey("music_hide_long_audio", false) // 移除
-        val HIDE_DISCOVER = PreferenceKey("music_hide_discover", false) // 移除
         val HIDE_TAB_LONG_AUDIO = PreferenceKey("music_hide_tab_long_audio", false)
         val HIDE_TAB_QUICK_PLAY = PreferenceKey("music_hide_tab_quick_play", false)
         val HIDE_TAB_FREE_MODE = PreferenceKey("music_hide_tab_free_mode", false)

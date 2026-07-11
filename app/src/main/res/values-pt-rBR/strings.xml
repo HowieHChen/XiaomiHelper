@@ -251,12 +251,6 @@
     <string name="cleaner_market_tab_mine">Conta</string>
     <string name="cleaner_market_filter_tab_warning">Aviso: atualmente, há menos de duas guias visíveis, o que pode causar anormalidades na interface do usuário!</string>
     <string name="cleaner_milink_fuck_hpplay">Bloquear a criação de pastas hpplay</string>
-    <string name="cleaner_music_hide_karaoke">Ocultar karaokê</string>
-    <string name="cleaner_music_hide_karaoke_tips">Remove o karaokê da aba superior da página inicial</string>
-    <string name="cleaner_music_hide_long_audio">Ocultar áudio longo</string>
-    <string name="cleaner_music_hide_long_audio_tips">Remove o áudio longo da guia superior da página inicial</string>
-    <string name="cleaner_music_hide_discover">Ocultar discover</string>
-    <string name="cleaner_music_hide_discover_tips">Remove o discover da guia superior na página inicial</string>
     <string name="cleaner_music_hide_my_banner">Ocultar banner na minha página</string>
     <string name="cleaner_music_hide_my_rec_playlist">Ocultar músicas recomendadas na minha página</string>
     <string name="cleaner_music_hide_fav_num">Ocultar contagem de músicas favoritas</string>

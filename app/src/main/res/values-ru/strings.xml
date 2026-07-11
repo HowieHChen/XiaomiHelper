@@ -101,16 +101,10 @@
     <string name="cleaner_market_tab_rank">Популярные</string>
     <string name="cleaner_market_visible_tabs">Видимые вкладки</string>
     <string name="cleaner_milink_fuck_hpplay">Заблокировать создание папок hpplay</string>
-    <string name="cleaner_music_hide_discover">Скрыть / Показать</string>
-    <string name="cleaner_music_hide_discover_tips">Удалите вкладку «Discover» из верхней панели на главной странице</string>
     <string name="cleaner_music_hide_fav_num">Скрыть количество просмотров песни</string>
     <string name="cleaner_music_hide_fav_num_tips">Скрыть количество лайков, отображаемое на значках избранного. Это может повлиять на производительность.</string>
-    <string name="cleaner_music_hide_karaoke">Скрыть караоке</string>
-    <string name="cleaner_music_hide_karaoke_tips">Удалите раздел «Караоке» из верхней панели на главной странице</string>
     <string name="cleaner_music_hide_listen_count">Скрыть количество прослушиваний песни</string>
     <string name="cleaner_music_hide_listen_count_tips">Скрыть количество прослушиваний песни на странице проигрывателя</string>
-    <string name="cleaner_music_hide_long_audio">Скрыть длинный аудиофайл</string>
-    <string name="cleaner_music_hide_long_audio_tips">Удалите длинный аудиофайл из верхней вкладки на главной странице</string>
     <string name="cleaner_music_hide_my_banner">Скрыть баннер на моей странице</string>
     <string name="cleaner_music_hide_my_rec_playlist">Скрыть рекомендуемые песни на моей странице</string>
     <string name="cleaner_package_block_upload_app_info">Заблокировать отправку информации о приложении при его установке</string>

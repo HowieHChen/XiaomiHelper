@@ -24,7 +24,6 @@ import com.highcapable.kavaref.KavaRef.Companion.resolve
 import dev.lackluster.mihelper.data.preference.Preferences
 import dev.lackluster.mihelper.hook.base.StaticHooker
 import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
-import dev.lackluster.mihelper.hook.utils.toTyped
 
 object HideFavNum : StaticHooker() {
     override fun onInit() {
@@ -33,65 +32,32 @@ object HideFavNum : StaticHooker() {
 
     override fun onHook() {
         // 首页推荐
-        "com.tencent.qqmusiclite.model.shelfcard.Card".toClassOrNull()?.apply {
+        "com.tencent.qqmusiclite.data.mapper.ShelfCard2Mapper".toClassOrNull()?.apply {
             resolve().firstMethodOrNull {
-                name = "getSongFavNum"
+                name = "extractExtra"
+            }?.hook {
+                val ori = proceed()
+                if (ori is LinkedHashMap<*, *>) {
+                    ori.remove("song_fav_num")
+                    ori.remove("song_fav_show")
+                }
+                result(ori)
+            }
+        }
+        // 播放页
+        $$"com.tencent.qqmusiclite.data.repo.favor.GetSurpriseRepo$FavorNumData".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "getFavNum"
             }?.hook {
                 result(null)
             }
         }
         // 二级页
-        "com.tencent.qqmusiclite.ui.SongItemNewKt".toClassOrNull()?.apply {
+        "com.tencent.qqmusiclite.usecase.favorSong.SongFavNumUseCase".toClassOrNull()?.apply {
             resolve().firstMethodOrNull {
-                name = "needShowFavNum"
+                name = "fetch"
             }?.hook {
-                result(false)
-            }
-        }
-        // 播放页
-        "com.tencent.qqmusiclite.activity.player.song.PlayerSongFragment".toClassOrNull()?.apply {
-            val viewModel = resolve().firstFieldOrNull {
-                name = "viewModel"
-            }?.toTyped<Any>()
-            val getViewLifecycleOwner = resolve().firstMethodOrNull {
-                name = "getViewLifecycleOwner"
-                superclass()
-            }?.toTyped<Any>()
-            val clzPlayerSongViewModel = "com.tencent.qqmusiclite.activity.player.song.PlayerSongViewModel".toClassOrNull()
-            val getFavorNumLiveData = clzPlayerSongViewModel?.resolve()?.firstMethodOrNull {
-                name = "getFavorNumLiveData"
-            }?.toTyped<Any>()
-            val getFavorNumCacheLiveData = clzPlayerSongViewModel?.resolve()?.firstMethodOrNull {
-                name = "getFavorNumCacheLiveData"
-            }?.toTyped<Any>()
-            val removeObservers = "androidx.lifecycle.MutableLiveData".toClassOrNull()?.resolve()?.firstMethodOrNull {
-                name = "removeObservers"
-                superclass()
-            }?.toTyped<Any>()
-            resolve().firstMethodOrNull {
-                name = "viewModelDataSet"
-            }?.hook {
-                val ori = proceed()
-                val viewLifecycleOwner = getViewLifecycleOwner?.invoke(thisObject) ?: return@hook result(ori)
-                val vm = viewModel?.get(thisObject) ?: return@hook result(ori)
-                val favorNumLiveData = getFavorNumLiveData?.invoke(vm) ?: return@hook result(ori)
-                removeObservers?.invoke(favorNumLiveData, viewLifecycleOwner)
-                val favorNumCacheLiveData = getFavorNumCacheLiveData?.invoke(vm) ?: return@hook result(ori)
-                removeObservers?.invoke(favorNumCacheLiveData, viewLifecycleOwner)
-                result(ori)
-            }
-        }
-        // 歌词页
-        "com.tencent.qqmusiclite.activity.player.lyric.PlayerLyricFragment".toClassOrNull()?.apply {
-            resolve().firstMethodOrNull {
-                name = "observeFavNumLiveData"
-            }?.hook {
-                result(null)
-            }
-            resolve().firstMethodOrNull {
-                name = "removeObserveFavNumLiveData"
-            }?.hook {
-                result(null)
+                result(emptyMap<String, String>())
             }
         }
     }

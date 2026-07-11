@@ -15,3 +15,5 @@
 local.properties
 /.idea/
 /.kotlin
+/compiled-classes.txt
+/source-classes.txt

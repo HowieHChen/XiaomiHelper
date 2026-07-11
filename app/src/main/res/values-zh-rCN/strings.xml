@@ -371,10 +371,7 @@
     <string name="cleaner_market_tab_game">游戏</string>
     <string name="cleaner_market_tab_rank">榜单</string>
     <string name="cleaner_market_tab_app_assemble">应用号</string>
-    <string name="cleaner_music_hide_karaoke_tips">从首页的顶部应用栏中移除K歌选项</string>
-    <string name="cleaner_music_hide_long_audio">隐藏有声</string>
-    <string name="cleaner_music_hide_long_audio_tips">从首页的顶部应用栏中移除有声选项</string>
-    <string name="cleaner_music_hide_discover_tips">从首页的顶部应用栏中移除发现选项</string>
+    <string name="cleaner_music_hide_tab_free_mode_tips">隐藏底栏的赚钱入口</string>
     <string name="cleaner_music_hide_my_banner">隐藏“我的”页的顶部横幅</string>
     <string name="cleaner_music_hide_my_rec_playlist">隐藏“我的”页的底部歌曲推荐</string>
     <string name="module_dexkit_cache">缓存 DexKit 结果</string>
@@ -444,8 +441,6 @@
     <string name="menu_reboot_common_title">重启%s</string>
     <string name="about_telegram">Telegram 频道</string>
     <string name="about_telegram_tips">加入 Telegram 频道以反馈问题并获取内部更新</string>
-    <string name="cleaner_music_hide_karaoke">隐藏K歌</string>
-    <string name="cleaner_music_hide_discover">隐藏发现</string>
     <string name="cleaner_browser_show_sug_switch_tips">显示搜素设置中被隐藏的搜索精选开关，关闭后即可禁用搜索页面的应用、视频、小说等额外推荐</string>
     <string name="cleaner_browser_hide_homepage_topbar">隐藏主页顶栏</string>
     <string name="cleaner_browser_hide_homepage_topbar_tips">隐藏简洁版主页的顶栏（包含探索版主页入口和主页设置按钮）</string>
@@ -723,4 +718,9 @@
     <string name="others_updater_sota_filter_tips">阻止系统通过软件 OTA 自动更新指定应用</string>
     <string name="others_updater_sota_filter_pkgs">被保护的应用</string>
     <string name="others_updater_sota_filter_pkgs_tips">输入应用包名，多个包名请使用逗号“,”分隔</string>
+    <string name="cleaner_music_hide_tab_quick_play_tips">隐藏底栏的免费听入口</string>
+    <string name="cleaner_music_hide_tab_free_mode">隐藏赚钱</string>
+    <string name="cleaner_music_hide_tab_long_audio_tips">隐藏底栏的听书入口</string>
+    <string name="cleaner_music_hide_tab_quick_play">隐藏免费听</string>
+    <string name="cleaner_music_hide_tab_long_audio">隐藏听书</string>
 </resources>

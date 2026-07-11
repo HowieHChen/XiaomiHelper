@@ -296,12 +296,6 @@
     <string name="cleaner_market_tab_mine">Tài khoản</string>
     <string name="cleaner_market_filter_tab_warning">Cảnh báo: hiện tại có ít hơn hai tab đang hiển thị, điều này có thể gây ra lỗi giao diện người dùng!</string>
     <string name="cleaner_milink_fuck_hpplay">Chặn việc tạo thư mục hpplay</string>
-    <string name="cleaner_music_hide_karaoke">Ẩn karaoke</string>
-    <string name="cleaner_music_hide_karaoke_tips">Xóa karaoke khỏi tab trên cùng trên trang chủ</string>
-    <string name="cleaner_music_hide_long_audio">Ẩn âm thanh dài</string>
-    <string name="cleaner_music_hide_long_audio_tips">Xóa âm thanh dài khỏi tab trên cùng trên trang chủ</string>
-    <string name="cleaner_music_hide_discover">Ẩn khám phá</string>
-    <string name="cleaner_music_hide_discover_tips">Xóa phần khám phá khỏi tab trên cùng trên trang chủ</string>
     <string name="cleaner_music_hide_my_banner">Ẩn biểu ngữ trên trang của tôi</string>
     <string name="cleaner_music_hide_my_rec_playlist">Ẩn các bài hát đề xuất trên trang của tôi</string>
     <string name="cleaner_music_hide_fav_num">Ẩn số lượt thích bài hát</string>

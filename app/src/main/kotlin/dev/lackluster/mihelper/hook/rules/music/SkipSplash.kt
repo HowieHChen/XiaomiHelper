@@ -21,6 +21,7 @@
 package dev.lackluster.mihelper.hook.rules.music
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
+import com.highcapable.kavaref.condition.type.Modifiers
 import dev.lackluster.mihelper.data.preference.Preferences
 import dev.lackluster.mihelper.hook.base.StaticHooker
 import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
@@ -31,8 +32,12 @@ object SkipSplash : StaticHooker() {
     }
 
     override fun onHook() {
-        val enableClass = "com.tencent.qqmusiclite.business.splashad.data.enums.Enable".toClassOrNull()
-        val disableVIP = if (enableClass?.isEnum == true) enableClass.enumConstants?.get(4) else null
+        val clzEnable = "com.tencent.qqmusiclite.business.splashad.data.enums.Enable".toClassOrNull()
+        val disableVIP = clzEnable?.resolve()?.firstMethodOrNull {
+            name = "valueOf"
+            parameters(String::class)
+            modifiers(Modifiers.STATIC)
+        }?.invoke("DISABLE_VIP")
         if (disableVIP != null) {
             "com.tencent.qqmusiclite.business.splashad.ams.AmsGlobal".toClassOrNull()?.apply {
                 resolve().firstMethodOrNull {

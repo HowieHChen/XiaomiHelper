@@ -52,11 +52,6 @@ object HideMyPageElement : StaticHooker() {
                         result(null)
                     }
                 }
-//                resolve().firstMethodOrNull {
-//                    name = "requestRecommendSongs"
-//                }?.hook {
-//                    result(null)
-//                }
             }
         }
     }
