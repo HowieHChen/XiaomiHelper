@@ -37,6 +37,8 @@ object BlockDialog : StaticHooker() {
                 "showChildProtectDialog",
                 "showShortcutDialog",
                 "showCommonWidgetAddDialog",
+                "showContinuationReadWidgetAddDialog",
+                "showHotSearchWidgetAddDialog",
             ).forEach { methodName ->
                 resolve().firstMethodOrNull {
                     name = methodName
@@ -48,6 +50,13 @@ object BlockDialog : StaticHooker() {
         "com.android.browser.util.AiSearchScanUtil".toClassOrNull()?.apply {
             resolve().firstMethodOrNull {
                 name = "showScanScanGuideDialog"
+            }?.hook {
+                result(null)
+            }
+        }
+        "com.android.browser.operation.floatingdialog.FloatingDialogManager".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "showFloatingDialog"
             }?.hook {
                 result(null)
             }
