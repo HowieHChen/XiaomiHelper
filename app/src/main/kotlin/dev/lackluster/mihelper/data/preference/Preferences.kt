@@ -170,9 +170,12 @@ object Preferences {
     object Music {
         val AD_BLOCKER = PreferenceKey("music_ad_block", false)
         val SKIP_SPLASH = PreferenceKey("music_skip_splash", false)
-        val HIDE_KARAOKE = PreferenceKey("music_hide_karaoke", false)
-        val HIDE_LONG_AUDIO = PreferenceKey("music_hide_long_audio", false)
-        val HIDE_DISCOVER = PreferenceKey("music_hide_discover", false)
+        val HIDE_KARAOKE = PreferenceKey("music_hide_karaoke", false) // 移除
+        val HIDE_LONG_AUDIO = PreferenceKey("music_hide_long_audio", false) // 移除
+        val HIDE_DISCOVER = PreferenceKey("music_hide_discover", false) // 移除
+        val HIDE_TAB_LONG_AUDIO = PreferenceKey("music_hide_tab_long_audio", false)
+        val HIDE_TAB_QUICK_PLAY = PreferenceKey("music_hide_tab_quick_play", false)
+        val HIDE_TAB_FREE_MODE = PreferenceKey("music_hide_tab_free_mode", false)
         val HIDE_MY_BANNER = PreferenceKey("music_my_hide_banner", false)
         val HIDE_MY_REC_PLAYLIST = PreferenceKey("music_my_hide_rec", false)
         val HIDE_FAV_NUM = PreferenceKey("music_hide_fav_num", false)
@@ -611,5 +614,7 @@ object Preferences {
     object Updater {
         val BLOCK_AUTO_UPDATE_DIALOG = PreferenceKey("updater_block_dialog", false)
         val DISABLE_VALIDATION = PreferenceKey("updater_no_validation", false)
+        val ENABLE_SOTA_UPDATE_FILTER = PreferenceKey("updater_sota_pkg_filter", false)
+        val SOTA_UPDATE_FILTER_PACKAGES = PreferenceKey("updater_sota_pkg_filter_list", "com.miui.gallery, com.miui.weather2")
     }
 }

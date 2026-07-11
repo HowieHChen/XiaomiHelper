@@ -719,4 +719,8 @@
     <string name="others_intent_resolver_rerank_toast_pkg_exist">应用 %s 的配置已存在</string>
     <string name="others_intent_resolver_rerank_toast_index_exist">索引 %1$d 已被应用 %2$s 占用</string>
     <string name="others_intent_resolver_share_style">分享面板风格</string>
+    <string name="others_updater_sota_filter">SOTA 过滤</string>
+    <string name="others_updater_sota_filter_tips">阻止系统通过软件 OTA 自动更新指定应用</string>
+    <string name="others_updater_sota_filter_pkgs">被保护的应用</string>
+    <string name="others_updater_sota_filter_pkgs_tips">输入应用包名，多个包名请使用逗号“,”分隔</string>
 </resources>

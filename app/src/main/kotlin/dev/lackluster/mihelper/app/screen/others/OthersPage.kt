@@ -288,6 +288,24 @@ private fun OthersPageContent(
                 title = stringResource(R.string.others_updater_disable_validation),
                 summary = stringResource(R.string.others_updater_disable_validation_tips),
             )
+            val enableSOTAFilter = rememberPreferenceState(Preferences.Updater.ENABLE_SOTA_UPDATE_FILTER)
+            SwitchPreference(
+                title = stringResource(R.string.others_updater_sota_filter),
+                summary = stringResource(R.string.others_updater_sota_filter_tips),
+                checked = enableSOTAFilter.value,
+                onCheckedChange = { enableSOTAFilter.value = it }
+            )
+            AnimatedVisibility(enableSOTAFilter.value) {
+                EditTextPreference(
+                    key = Preferences.Updater.SOTA_UPDATE_FILTER_PACKAGES,
+                    title = stringResource(R.string.others_updater_sota_filter_pkgs),
+                    dialogMessage = stringResource(R.string.others_updater_sota_filter_pkgs_tips),
+                    valuePosition = ValuePosition.Hidden,
+                    isValueValid = { newValue ->
+                        newValue.isEmpty() || newValue.split(',', ' ', '，').any { it.isNotBlank() }
+                    }
+                )
+            }
         }
     }
 }

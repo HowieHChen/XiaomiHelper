@@ -526,6 +526,10 @@
     <string name="others_updater_block_dialog">Block \"Install automatically?\" popup</string>
     <string name="others_updater_disable_validation">Remove OTA validation</string>
     <string name="others_updater_disable_validation_tips">Only VAB devices are supported, don\'t turn it on for non-VAB devices!</string>
+    <string name="others_updater_sota_filter">Software OTA Filtering</string>
+    <string name="others_updater_sota_filter_tips">Prevent the system from updating specified apps through Software OTA</string>
+    <string name="others_updater_sota_filter_pkgs">Protected apps</string>
+    <string name="others_updater_sota_filter_pkgs_tips">Enter the package names. For multiple apps, separate them with commas ","</string>
     <string name="weather_card_color_default" translatable="false">@string/common_default</string>
     <string name="weather_card_color_light">Force light</string>
     <string name="weather_card_color_dark">Force dark</string>
