@@ -84,6 +84,21 @@ object AdBlocker : StaticHooker() {
     }
 
     override fun onHook() {
+        // 搜索页AB
+        "com.xiaomi.market.ui.search_v2.SearchPageUtils".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "isUseSearchPageV2"
+                parameterCount = 0
+            }?.hook {
+                result(false)
+            }
+            resolve().firstMethodOrNull {
+                name = "isUseSearchPageV3"
+                parameterCount = 0
+            }?.hook {
+                result(false)
+            }
+        }
         // 搜索建议页
         "com.xiaomi.market.business_ui.search.NativeSearchSugFragment".toClassOrNull()?.apply {
             resolve().firstMethodOrNull {
