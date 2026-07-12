@@ -28,6 +28,7 @@ object Preferences {
         val HAZE_LIGHT_BLUR_ALPHA = PreferenceKey("app_haze_light_blur_alpha", 0.8f)
         val HAZE_DARK_BLUR_ALPHA = PreferenceKey("app_haze_dark_blur_alpha", 0.7f)
         val SKIP_ROOT_CHECK = PreferenceKey("app_ignore_root", false)
+        val SKIP_SYSTEM_VERSION_WARNING = PreferenceKey("app_ignore_system_version_warning", false)
         val HIDE_ICON = PreferenceKey("hide_icon", false)
     }
 

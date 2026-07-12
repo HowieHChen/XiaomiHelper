@@ -11,6 +11,7 @@
     <string name="module_hide_icon">隐藏桌面图标</string>
     <string name="scope_taplus">传送门</string>
     <string name="main_app_root_tips">缺少 root 权限会导致某些功能无法正常运行</string>
+    <string name="main_system_version_tips">当前系统版本低于 Android 16 或 HyperOS 3.0.300，大部分功能可能无法正常生效</string>
     <string name="ui_title_menu_reboot">重启</string>
     <string name="menu_reboot_system">重启系统</string>
     <string name="menu_reboot_scope">重启全部作用域</string>
@@ -269,6 +270,7 @@
     <string name="about_donate">捐赠</string>
     <string name="about_donate_tips">请我喝杯咖啡</string>
     <string name="button_ignore">忽略</string>
+    <string name="button_do_not_remind">不再提示</string>
     <string name="dialog_done">完成</string>
     <string name="page_cleaner">净化</string>
     <string name="page_status_bar_icon_detail">图标定制</string>

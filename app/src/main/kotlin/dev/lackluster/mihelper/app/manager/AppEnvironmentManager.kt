@@ -9,6 +9,7 @@ import dev.lackluster.mihelper.app.state.XposedState
 import dev.lackluster.mihelper.app.utils.SystemCommander
 import dev.lackluster.mihelper.data.preference.Preferences
 import dev.lackluster.mihelper.utils.MLog
+import dev.lackluster.mihelper.utils.SystemProperties
 import io.github.libxposed.service.XposedService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -29,7 +30,9 @@ class AppEnvironmentManager(
             isModuleActivated = false,
             isModuleEnabled = Preferences.Module.MODULE_ENABLED.default,
             isRootGranted = false,
-            isRootIgnored = Preferences.App.SKIP_ROOT_CHECK.default
+            isRootIgnored = Preferences.App.SKIP_ROOT_CHECK.default,
+            isSystemVersionSupported = true,
+            isSystemVersionWarningIgnored = prefRepo.get(Preferences.App.SKIP_SYSTEM_VERSION_WARNING),
         )
     )
     val envStateFlow = _envStateFlow.asStateFlow()
@@ -48,18 +51,18 @@ class AppEnvironmentManager(
                     val validVersion = service.apiVersion >= 101
                     val cap = service.frameworkProperties
                     val activated = validVersion && (cap.and(XposedService.PROP_CAP_SYSTEM) != 0L) && (cap.and(XposedService.PROP_CAP_REMOTE) != 0L)
-                    MLog.v(TAG) {
+                    MLog.i(TAG) {
                         "XposedService： " +
                                 "apiVersion: ${service.apiVersion}, frameworkName: ${service.frameworkName}, " + 
                                 "frameworkVersion: ${service.frameworkVersion}, frameworkVersionCode: ${service.frameworkVersionCode}" 
                     }
-                    MLog.v(TAG) {
+                    MLog.i(TAG) {
                         "XposedService： " +
                                 "frameworkProperties=${cap}, " + 
                                 "PROP_CAP_SYSTEM=${(cap.and(XposedService.PROP_CAP_SYSTEM) != 0L)}, " +
                                 "PROP_CAP_REMOTE=${(cap.and(XposedService.PROP_CAP_REMOTE) != 0L)}"
                     }
-                    MLog.v(TAG) {
+                    MLog.i(TAG) {
                         "XposedService： " +
                                 "scopes=[${service.scope.joinToString(", ")}]"
                     }
@@ -82,11 +85,15 @@ class AppEnvironmentManager(
 
         scope.launch {
             prefRepo.preferenceUpdates.collect { key ->
-                if (key == Preferences.Module.MODULE_ENABLED || key == Preferences.App.SKIP_ROOT_CHECK) {
+                if (key == Preferences.Module.MODULE_ENABLED ||
+                    key == Preferences.App.SKIP_ROOT_CHECK ||
+                    key == Preferences.App.SKIP_SYSTEM_VERSION_WARNING
+                ) {
                     _envStateFlow.update {
                         it.copy(
                             isModuleEnabled = prefRepo.get(Preferences.Module.MODULE_ENABLED),
-                            isRootIgnored = prefRepo.get(Preferences.App.SKIP_ROOT_CHECK)
+                            isRootIgnored = prefRepo.get(Preferences.App.SKIP_ROOT_CHECK),
+                            isSystemVersionWarningIgnored = prefRepo.get(Preferences.App.SKIP_SYSTEM_VERSION_WARNING)
                         )
                     }
                 }
@@ -95,13 +102,14 @@ class AppEnvironmentManager(
 
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_START) {
-                MLog.d { "App returned to foreground, environment refreshed." }
+                MLog.d(TAG) { "App returned to foreground, environment refreshed." }
                 checkRoot()
             }
         }
         ProcessLifecycleOwner.get().lifecycle.addObserver(observer)
 
         checkRoot()
+        checkSystemVersion()
     }
 
     fun checkRoot() {
@@ -112,14 +120,47 @@ class AppEnvironmentManager(
         }
     }
 
+    fun ignoreSystemVersionWarning() {
+        scope.launch {
+            prefRepo.update(Preferences.App.SKIP_SYSTEM_VERSION_WARNING, true)
+        }
+    }
+
+    private fun checkSystemVersion() {
+        scope.launch {
+            val fingerprint = SystemProperties.get("ro.build.fingerprint")
+            _envStateFlow.update {
+                it.copy(isSystemVersionSupported = isSystemVersionSupported(fingerprint))
+            }
+        }
+    }
+
     private fun refreshState(isXposedActive: Boolean) {
         _envStateFlow.update {
             it.copy(
                 isModuleActivated = isXposedActive,
                 isModuleEnabled = prefRepo.get(Preferences.Module.MODULE_ENABLED),
                 isRootGranted = SystemCommander.hasRootPrivilege,
-                isRootIgnored = prefRepo.get(Preferences.App.SKIP_ROOT_CHECK)
+                isRootIgnored = prefRepo.get(Preferences.App.SKIP_ROOT_CHECK),
+                isSystemVersionWarningIgnored = prefRepo.get(Preferences.App.SKIP_SYSTEM_VERSION_WARNING)
             )
         }
+    }
+
+    private fun isSystemVersionSupported(fingerprint: String): Boolean {
+        val match = FINGERPRINT_VERSION_PATTERN.find(fingerprint) ?: return true
+        val androidVersion = match.groupValues[1].toIntOrNull() ?: return true
+        val hyperOsVersion = match.groupValues.drop(2).mapNotNull(String::toIntOrNull)
+        if (hyperOsVersion.size != 3) return true
+        val (major, minor, patch) = hyperOsVersion
+
+        MLog.i(TAG) { "Android ${androidVersion}, HyperOS ${major}.${minor}.${patch}" }
+
+        return androidVersion >= 16 && major >= 3 && minor >=0 && patch >= 300
+    }
+
+    private companion object {
+        val FINGERPRINT_VERSION_PATTERN =
+            Regex(""":(\d+)/[^/]+/OS(\d+)\.(\d+)\.(\d+)\.\d+\.[^/:]+:""")
     }
 }

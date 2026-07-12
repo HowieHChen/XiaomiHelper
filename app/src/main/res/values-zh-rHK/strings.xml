@@ -21,6 +21,7 @@
     <string name="button_enable">啟用</string>
     <string name="button_disable">禁用</string>
     <string name="button_ignore">忽略</string>
+    <string name="button_do_not_remind">不再提示</string>
     <string name="dialog_done">完成</string>
     <string name="dialog_warning">警告</string>
     <string name="dialog_error">錯誤</string>
@@ -90,6 +91,7 @@
     <string name="main_module_inactive_tips">模組未激活，請檢查 LSPosed 版本和模組激活信息後重試。</string>
     <string name="main_module_disabled_tips">模組未啟用，請在模組設定頁中啟用模組。</string>
     <string name="main_app_root_tips">沒有 root 權限會令某些功能無法正常運作。</string>
+    <string name="main_system_version_tips">目前系統版本低於 Android 16 或 HyperOS 3.0.300，大部分功能可能無法正常生效。</string>
     <string name="ui_title_menu_reboot">重新啟動</string>
     <string name="menu_reboot_system">重新啟動系統</string>
     <string name="menu_reboot_system_tips">確定要重新啟動系統嗎？</string>

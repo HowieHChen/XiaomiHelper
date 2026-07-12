@@ -20,6 +20,7 @@
     <string name="button_enable">Enable</string>
     <string name="button_disable">Disable</string>
     <string name="button_ignore">Ignore</string>
+    <string name="button_do_not_remind">Don\'t remind me again</string>
     <string name="dialog_done">Done</string>
     <string name="dialog_warning">Warning</string>
     <string name="dialog_error">Error</string>
@@ -100,6 +101,7 @@
     <string name="main_module_inactive_tips">The module isn\'t enabled. Please check the LSPosed version and module activation information and try again.</string>
     <string name="main_module_disabled_tips">The module isn\'t enabled. Please enable the module in the Module settings page.</string>
     <string name="main_app_root_tips">Lack of root privileges can prevent some features from working properly.</string>
+    <string name="main_system_version_tips">Your system version is below Android 16 or HyperOS 3.0.300. Most features may not work properly.</string>
     <!-- MenuPage -->
     <string name="ui_title_menu_reboot">Reboot</string>
     <string name="menu_reboot_system">Reboot system</string>

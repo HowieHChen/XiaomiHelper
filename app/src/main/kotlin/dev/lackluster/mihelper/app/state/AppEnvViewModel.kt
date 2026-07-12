@@ -21,4 +21,8 @@ class AppEnvViewModel(
             envManager.checkRoot()
         }
     }
+
+    fun ignoreSystemVersionWarning() {
+        envManager.ignoreSystemVersionWarning()
+    }
 }

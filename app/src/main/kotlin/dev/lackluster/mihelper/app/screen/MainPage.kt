@@ -44,12 +44,14 @@ import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.extended.More
 import top.yukonga.miuix.kmp.overlay.OverlayListPopup
 import top.yukonga.miuix.kmp.theme.MiuixTheme
+import kotlin.time.Duration.Companion.milliseconds
 
 private sealed interface MainPageAction {
     data class NavigateTo(val route: Route) : MainPageAction
     object OpenMenu : MainPageAction
     object OpenLSPosed : MainPageAction
     object RefreshEnvironment : MainPageAction
+    object IgnoreSystemVersionWarning : MainPageAction
 }
 
 @Composable
@@ -65,28 +67,30 @@ fun MainPage(
     val showDisabledDialog = remember { mutableStateOf(false) }
     val showInactiveDialog = remember { mutableStateOf(false) }
     val showRootDialog = remember { mutableStateOf(false) }
+    val showSystemVersionDialog = remember { mutableStateOf(false) }
 
     LaunchedEffect(envState) {
         if (envState.canWork) {
             showDisabledDialog.value = false
             showInactiveDialog.value = false
             showRootDialog.value = false
-            return@LaunchedEffect
-        }
-        if (envState.isModuleActivated) {
+            showSystemVersionDialog.value = !envState.isSystemVersionRequirementSatisfied
+        } else if (envState.isModuleActivated) {
             showInactiveDialog.value = false
+            showSystemVersionDialog.value = false
             if (!envState.isModuleEnabled) {
                 showDisabledDialog.value = true
                 showRootDialog.value = false
-            } else if (!envState.isRootGranted && !envState.isRootIgnored) {
+            } else if (!envState.isRootRequirementSatisfied) {
                 showRootDialog.value = true
                 showDisabledDialog.value = false
             }
         } else {
-            delay(500)
+            delay(500.milliseconds)
             showInactiveDialog.value = true
             showDisabledDialog.value = false
             showRootDialog.value = false
+            showSystemVersionDialog.value = false
         }
     }
 
@@ -114,6 +118,9 @@ fun MainPage(
             }
             is MainPageAction.RefreshEnvironment -> {
                 appEnvVm.refreshEnvState()
+            }
+            is MainPageAction.IgnoreSystemVersionWarning -> {
+                appEnvVm.ignoreSystemVersionWarning()
             }
         }
     }
@@ -159,6 +166,19 @@ fun MainPage(
     ) {
         onAction(MainPageAction.RefreshEnvironment)
     }
+    AlertDialog(
+        visible = showSystemVersionDialog.value,
+        onDismissRequest = { showSystemVersionDialog.value = false },
+        title = stringResource(R.string.dialog_warning),
+        message = stringResource(R.string.main_system_version_tips),
+        mode = AlertDialogMode.NegativeAndPositive,
+        negativeText = stringResource(R.string.button_do_not_remind),
+        positiveText = stringResource(R.string.button_ignore),
+        onNegativeButton = {
+            showSystemVersionDialog.value = false
+            onAction(MainPageAction.IgnoreSystemVersionWarning)
+        }
+    )
 }
 
 @Composable
