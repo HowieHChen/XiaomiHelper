@@ -5,6 +5,7 @@ import dev.lackluster.mihelper.hook.rules.browser.Configuration
 import dev.lackluster.mihelper.hook.rules.browser.DebugMode
 import dev.lackluster.mihelper.hook.rules.browser.BlockDialog
 import dev.lackluster.mihelper.hook.rules.browser.DisableUpdateCheck
+import dev.lackluster.mihelper.hook.rules.browser.FixBackHandler
 import dev.lackluster.mihelper.hook.rules.browser.HideHomepageTopBar
 import dev.lackluster.mihelper.hook.rules.browser.SkipSplash
 import dev.lackluster.mihelper.hook.rules.browser.SwitchEnv
@@ -20,5 +21,6 @@ object Browser : StaticHooker() {
         attach(Configuration)
         attach(BlockDialog)
         attach(HideHomepageTopBar)
+        attach(FixBackHandler)
     }
 }
