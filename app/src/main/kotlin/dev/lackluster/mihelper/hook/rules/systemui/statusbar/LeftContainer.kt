@@ -24,6 +24,8 @@ import dev.lackluster.mihelper.hook.utils.extraOf
 import dev.lackluster.mihelper.hook.utils.toTyped
 import dev.lackluster.mihelper.utils.factory.dp
 import io.github.libxposed.api.XposedInterface
+import com.highcapable.kavaref.extension.isSubclassOf
+import com.highcapable.kavaref.extension.classOf
 
 object LeftContainer : StaticHooker() {
     private var Any.leftStatusIconContainer by extraOf<ViewGroup>("KEY_LEFT_STATUS_ICON_CONTAINER")
@@ -394,7 +396,7 @@ object LeftContainer : StaticHooker() {
                 name {
                     it.startsWith("mCarrier")
                 }
-                type { View::class.java.isAssignableFrom(it) }
+                type { it isSubclassOf classOf<View>() }
             }?.toTyped<View>()
             val fldLightLockScreenWallpaper = clzMiuiKeyguardStatusBarView?.resolve()?.firstFieldOrNull {
                 name = "mLightLockScreenWallpaper"
@@ -449,6 +451,7 @@ object LeftContainer : StaticHooker() {
                             },
                             position
                         )
+                        leftStatusIcons.visibility = carrier.visibility
                     }
 //                        leftStatusIcons.doOnLayout {
 //                            val parentDirection = (it.parent as? ViewGroup)?.layoutDirection ?: View.LAYOUT_DIRECTION_LTR
@@ -507,6 +510,12 @@ object LeftContainer : StaticHooker() {
                 name = "mStatusIconContainer"
                 superclass()
             }?.toTyped<Any>()
+            val fldCarrier = clzMiuiKeyguardStatusBarView?.resolve()?.firstFieldOrNull {
+                name {
+                    it.startsWith("mCarrier")
+                }
+                type { it isSubclassOf classOf<View>() }
+            }?.toTyped<View>()
             var hookInit = false
             resolve().firstMethodOrNull {
                 name = "initCallback"
@@ -537,9 +546,9 @@ object LeftContainer : StaticHooker() {
                 val view = thisObject as? View
                 if (view != null) {
                     val leftStatusIconContainer = getOrPutStatusIconContainer(view, view.context, false) ?: return@hook result(ori)
+                    val carrierTextLayout = fldCarrier?.get(thisObject)
                     leftStatusIconContainer.visibility =
-                        if (fldShowCarrier?.get(thisObject) == true) View.VISIBLE
-                        else View.GONE
+                        carrierTextLayout?.visibility ?: if (fldShowCarrier?.get(thisObject) == true) View.VISIBLE else View.GONE
                 }
                 result(ori)
             }
