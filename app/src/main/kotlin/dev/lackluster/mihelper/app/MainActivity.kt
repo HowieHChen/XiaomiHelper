@@ -27,6 +27,8 @@ import dev.lackluster.mihelper.app.screen.systemui.icon.detail.IconDetailPage
 import dev.lackluster.mihelper.app.screen.systemui.icon.position.IconPositionPage
 import dev.lackluster.mihelper.app.screen.systemui.icon.IconTunerPage
 import dev.lackluster.mihelper.app.screen.systemui.media.MediaControlPage
+import dev.lackluster.mihelper.app.screen.systemui.NotifLayoutOptPage
+import dev.lackluster.mihelper.app.screen.systemui.notif.pinned.NotifPinnedAppsPage
 import dev.lackluster.mihelper.app.screen.systemui.statusbar.StatusBarClockPage
 import dev.lackluster.mihelper.app.screen.systemui.statusbar.StatusBarFontPage
 import org.koin.androidx.compose.koinViewModel
@@ -70,6 +72,8 @@ class MainActivity : HyperXActivity() {
                             is Route.StatusBarIconPosition -> IconPositionPage()
 //                            is Route.DevUITest2 -> MediaActionResizePage(navigator, adjustPadding, "MediaActionResizePage", mode = mode)
                             is Route.RerankShareTargets -> RerankShareTargetsPage()
+                            is Route.NotifLayoutOpt -> NotifLayoutOptPage()
+                            is Route.NotifPinnedApps -> NotifPinnedAppsPage()
                             else -> {}
                         }
                     }

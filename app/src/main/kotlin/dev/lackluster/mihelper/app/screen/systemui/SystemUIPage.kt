@@ -14,7 +14,6 @@ import dev.lackluster.hyperx.ui.preference.ItemPosition
 import dev.lackluster.hyperx.ui.preference.SeekBarPreference
 import dev.lackluster.hyperx.ui.preference.SwitchPreference
 import dev.lackluster.hyperx.ui.preference.TextPreference
-import dev.lackluster.hyperx.ui.preference.core.LocalPreferenceActions
 import dev.lackluster.hyperx.ui.preference.core.rememberPreferenceState
 import dev.lackluster.hyperx.ui.preference.itemPreferenceGroup
 import dev.lackluster.mihelper.R
@@ -28,7 +27,6 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
 
 private sealed interface SystemUIAction {
     data class NavigateTo(val route: Route) : SystemUIAction
-    object OpenNotifLayoutOptSheet : SystemUIAction
 }
 
 private val autoExpandNotifOptions = listOf(
@@ -52,38 +50,20 @@ private val forceColorSchemeOptions = listOf(
 @Composable
 fun SystemUIPage() {
     val navigator = LocalNavigator.current
-    val appSettingsActions = LocalPreferenceActions.current
-
-    val notifLayoutOptSheetVisibility = remember { mutableStateOf(false) }
-
-    val isNotifLayoutOptOn = remember {
-        mutableStateOf(appSettingsActions.get(Preferences.SystemUI.NotifCenter.ENABLE_LAYOUT_RANK_OPT))
-    }
 
     val onAction: (SystemUIAction) -> Unit = { action ->
         when (action) {
             is SystemUIAction.NavigateTo -> navigator.push(action.route)
-            SystemUIAction.OpenNotifLayoutOptSheet -> notifLayoutOptSheetVisibility.value = true
         }
     }
 
     SystemUIPageContent(
-        isNotifLayoutOptOn = isNotifLayoutOptOn.value,
         onAction = onAction
-    )
-
-    NotifLayoutOptSheet(
-        show = notifLayoutOptSheetVisibility.value,
-        onDismissRequest = {
-            notifLayoutOptSheetVisibility.value = false
-            isNotifLayoutOptOn.value = appSettingsActions.get(Preferences.SystemUI.NotifCenter.ENABLE_LAYOUT_RANK_OPT)
-        }
     )
 }
 
 @Composable
 private fun SystemUIPageContent(
-    isNotifLayoutOptOn: Boolean,
     onAction: (SystemUIAction) -> Unit
 ) {
     val tintColor = MiuixTheme.colorScheme.onSurfaceSecondary
@@ -254,11 +234,12 @@ private fun SystemUIPageContent(
                     summary = stringResource(R.string.systemui_notif_expand_ignore_focus_tips),
                 )
             }
+            val isNotifLayoutOptOn = rememberPreferenceState(Preferences.SystemUI.NotifCenter.ENABLE_LAYOUT_RANK_OPT)
             TextPreference(
                 title = stringResource(R.string.systemui_notif_lr_opt),
                 summary = stringResource(R.string.systemui_notif_lr_opt_tips),
-                value = stringResource(if (isNotifLayoutOptOn) R.string.common_on else R.string.common_off),
-                onClick = { onAction(SystemUIAction.OpenNotifLayoutOptSheet) },
+                value = stringResource(if (isNotifLayoutOptOn.value) R.string.common_on else R.string.common_off),
+                onClick = { onAction(SystemUIAction.NavigateTo(Route.NotifLayoutOpt)) },
             )
             TextPreference(
                 title = stringResource(R.string.systemui_notif_media_control_style),

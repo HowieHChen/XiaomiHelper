@@ -278,6 +278,8 @@ object Preferences {
             val LR_OPT_HIDE_SECTION_HEADER = PreferenceKey("systemui_notif_lr_opt_hide_header", false)
             val LR_OPT_HIDE_SECTION_GAP = PreferenceKey("systemui_notif_lr_opt_hide_gap", false)
             val LR_OPT_RERANK = PreferenceKey("systemui_notif_lr_rerank", false)
+            val LR_OPT_PINNED_APPS_ENABLED = PreferenceKey("systemui_notif_lr_opt_pinned_apps_enabled", false)
+            val LR_OPT_PINNED_APPS_ORDER = PreferenceKey("systemui_notif_lr_opt_pinned_apps_order", emptySet<String>())
             val ENABLE_MONET_OVERLAY = PreferenceKey("systemui_notif_monet_overlay", false)
             val MONET_OVERLAY_COLOR = PreferenceKey("systemui_notif_monet_color", "#3482FF")
         }

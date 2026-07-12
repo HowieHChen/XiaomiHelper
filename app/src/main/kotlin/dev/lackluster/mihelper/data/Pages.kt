@@ -26,4 +26,6 @@ sealed interface Route : NavKey {
 
     @Serializable data object StatusBarIconPosition : Route
     @Serializable data object RerankShareTargets : Route
+    @Serializable data object NotifLayoutOpt : Route
+    @Serializable data object NotifPinnedApps : Route
 }

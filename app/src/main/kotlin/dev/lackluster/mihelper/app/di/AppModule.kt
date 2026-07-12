@@ -15,6 +15,7 @@ import dev.lackluster.mihelper.app.screen.systemui.statusbar.StatusBarFontViewMo
 import dev.lackluster.mihelper.app.manager.XposedServiceManager
 import dev.lackluster.mihelper.app.repository.AppInfoRepository
 import dev.lackluster.mihelper.app.screen.others.intentresolver.RerankShareTargetsViewModel
+import dev.lackluster.mihelper.app.screen.systemui.notif.pinned.NotifPinnedAppsViewModel
 import dev.lackluster.mihelper.app.state.AppEnvViewModel
 import dev.lackluster.mihelper.app.state.GlobalUIViewModel
 import dev.lackluster.mihelper.app.utils.RemoteFileStore
@@ -48,4 +49,5 @@ val appModule = module {
     viewModelOf(::IconPositionViewModel)
     viewModelOf(::MediaControlViewModel)
     viewModelOf(::RerankShareTargetsViewModel)
+    viewModelOf(::NotifPinnedAppsViewModel)
 }
