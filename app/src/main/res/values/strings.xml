@@ -561,6 +561,8 @@
     <string name="clock_general_geek">Geek mode</string>
     <string name="clock_easy_fixed_width">Fixed TextView width</string>
     <string name="clock_easy_fixed_width_tips">Fixed the width of TextView so that the notification icons don\'t keep changing position when the clock displays seconds.</string>
+    <string name="clock_general_custom_text_size">Customize font size (status bar clock)</string>
+    <string name="clock_general_text_size_val">Font size (status bar clock)</string>
     <string name="ui_title_clock_geek_mode">Geek mode</string>
     <string name="clock_geek_time_format_pattern_clock">Time format pattern (status bar)</string>
     <string name="clock_geek_time_format_pattern_pad_clock">Date format pattern (status bar)</string>

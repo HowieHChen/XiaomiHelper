@@ -347,6 +347,8 @@ object Preferences {
                 val PADDING_END_VAL = PreferenceKey("statusbar_clock_padding_end_val", 0.0f)
                 val ENABLE_GEEK_MODE = PreferenceKey("statusbar_clock_geek", false)
                 val FIXED_WIDTH = PreferenceKey("statusbar_clock_fixed_width", false)
+                val CUSTOM_STATUS_BAR_CLOCK_SIZE = PreferenceKey("statusbar_clock_size", false)
+                val STATUS_BAR_CLOCK_SIZE_VAL = PreferenceKey("statusbar_clock_size_val", 14.0f)
                 val GEEK_FORMAT_CLOCK = PreferenceKey("statusbar_clock_pattern_clock", "H:mm")
                 val GEEK_FORMAT_PAD_CLOCK = PreferenceKey("statusbar_clock_pattern_pad_clock", "M d E")
                 val GEEK_FORMAT_BIG_TIME = PreferenceKey("statusbar_clock_pattern_big_time", "H:mm")

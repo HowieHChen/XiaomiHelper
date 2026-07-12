@@ -62,6 +62,19 @@ fun StatusBarClockPage() {
                 title = stringResource(R.string.clock_easy_fixed_width),
                 summary = stringResource(R.string.clock_easy_fixed_width_tips)
             )
+            val customStatusBarClockSize = rememberPreferenceState(Preferences.SystemUI.StatusBar.Clock.CUSTOM_STATUS_BAR_CLOCK_SIZE)
+            SwitchPreference(
+                title = stringResource(R.string.clock_general_custom_text_size),
+                checked = customStatusBarClockSize.value,
+                onCheckedChange = { customStatusBarClockSize.value = it }
+            )
+            AnimatedVisibility(customStatusBarClockSize.value) {
+                EditTextPreference(
+                    key = Preferences.SystemUI.StatusBar.Clock.STATUS_BAR_CLOCK_SIZE_VAL,
+                    title = stringResource(R.string.clock_general_text_size_val),
+                    isValueValid = { it > 0.0f && it <= 20.0f },
+                )
+            }
         }
         itemPreferenceGroup(
             titleRes = R.string.ui_title_clock_geek_mode,

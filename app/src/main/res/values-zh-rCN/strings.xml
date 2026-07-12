@@ -324,6 +324,8 @@
     <string name="security_power_block_battery_whitelist">阻止恢复电池优化白名单</string>
     <string name="cleaner_milink_fuck_hpplay">阻止创建乐播投屏相关文件</string>
     <string name="clock_general_geek">极客模式</string>
+    <string name="clock_general_custom_text_size">自定义状态栏时间字号</string>
+    <string name="clock_general_text_size_val">状态栏时间字号</string>
     <string name="ui_title_clock_geek_mode">极客模式</string>
     <string name="clock_geek_time_format_pattern_clock">状态栏时间格式</string>
     <string name="clock_geek_time_format_pattern_pad_clock">状态栏日期格式</string>

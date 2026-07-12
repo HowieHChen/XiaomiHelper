@@ -20,7 +20,9 @@
 
 package dev.lackluster.mihelper.hook.rules.systemui.statusbar
 
+import android.content.Context
 import android.graphics.Typeface
+import android.util.TypedValue
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.view.updateMarginsRelative
@@ -44,13 +46,21 @@ import dev.lackluster.mihelper.hook.utils.d
 import dev.lackluster.mihelper.hook.utils.toTyped
 import dev.lackluster.mihelper.utils.Device
 import dev.lackluster.mihelper.utils.factory.dp
+import java.util.WeakHashMap
 import kotlin.math.abs
+import kotlin.math.roundToInt
 
 object MiuiClockFontWeight : StaticHooker() {
     // Padding
     private val valuePaddingStart by Preferences.SystemUI.StatusBar.Clock.PADDING_START_VAL.lazyGet()
     private val valuePaddingEnd by Preferences.SystemUI.StatusBar.Clock.PADDING_END_VAL.lazyGet()
     private val modifyPadding by Preferences.SystemUI.StatusBar.Clock.CUSTOM_HORIZON_PADDING.lazyGet()
+    // Status Bar Clock Font Size
+    private val valueStatusBarClockSize by Preferences.SystemUI.StatusBar.Clock.STATUS_BAR_CLOCK_SIZE_VAL.lazyGet()
+    private val modifyStatusBarClockSize by lazy {
+        Preferences.SystemUI.StatusBar.Clock.CUSTOM_STATUS_BAR_CLOCK_SIZE.get() && valueStatusBarClockSize > 0
+    }
+    private val originalClockVerticalMargins = WeakHashMap<TextView, Pair<Int, Int>>()
     // Font Weight
     private val valueClockFW by Preferences.SystemUI.StatusBar.Font.CLOCK_WEIGHT.lazyGet()
     private val valuePadClockFW by Preferences.SystemUI.StatusBar.Font.PAD_CLOCK_WEIGHT.lazyGet()
@@ -120,7 +130,7 @@ object MiuiClockFontWeight : StaticHooker() {
     }
 
     override fun onInit() {
-        updateSelfState(needHookFontWeight || modifyPadding)
+        updateSelfState(needHookFontWeight || modifyPadding || modifyStatusBarClockSize)
     }
 
     private fun TextView.updateClockMargin(
@@ -196,53 +206,100 @@ object MiuiClockFontWeight : StaticHooker() {
                         textView.updateClockMargin(start = marginStart, end = marginEnd)
                     }
                 }
+                if (modifyStatusBarClockSize) {
+                    if (textView.id == clock || textView.id == pad_clock) {
+                        textView.applyCustomStatusBarClockSize()
+                    }
+                }
                 result(ori)
             }
         }
-        if (modifyClockFW || modifyBigTimeFW) {
-            "com.android.systemui.controlcenter.shade.NotificationHeaderExpandController".toClassOrNull()?.apply {
-                val typefaceBigTime = resolve().firstFieldOrNull {
-                    name = "MI_PRO_TYPEFACE"
-                    modifiers(Modifiers.STATIC)
-                }?.toTyped<Typeface>()
-                val typefaceClock = resolve().firstFieldOrNull {
-                    name = "sMiproTypeface"
-                    modifiers(Modifiers.STATIC)
-                }?.toTyped<Typeface>()
-                val typefaces = resolve().firstFieldOrNull {
-                    name = "typefaces"
-                    modifiers(Modifiers.STATIC)
-                }?.toTyped<List<Typeface>>()
-                typefaceBigTime?.set(null, typefaceBigTimeFW)
-                typefaceClock?.set(null, typefaceClockFW)
-                val sampleCount = abs(realBigTimeFW - realClockFW) / 10
-                val sampleStep = (realBigTimeFW - realClockFW) / sampleCount
-                val samples = ArrayList<Typeface>()
-                samples.add(typefaceClockFW)
-                for (i in 1 until sampleCount) {
-                    samples.add(getTypeface(realClockFW + sampleStep * i))
-                }
-                samples.add(typefaceBigTimeFW)
-                typefaces?.set(null, samples)
-            }
-            "com.android.systemui.statusbar.policy.MiuiStatusBarClockController".toClassOrNull()?.apply {
-                val mClockListeners = resolve().firstFieldOrNull {
-                    name = "mClockListeners"
-                }?.toTyped<List<*>>()
+        if (modifyStatusBarClockSize) {
+            "com.android.systemui.FontSizeUtils".toClassOrNull()?.apply {
                 resolve().firstMethodOrNull {
-                    name {
-                        it.startsWith("onMiuiThemeChanged")
-                    }
+                    name = "updateFontSize"
+                    parameterCount = 2
                 }?.hook {
                     val ori = proceed()
-                    mClockListeners?.get(thisObject)?.forEach { listener ->
-                        if (listener is TextView) {
-                            listener.typeface = typefaceClockFW
+                    (getArg(0) as? TextView)?.let { textView ->
+                        if (textView.id == clock || textView.id == pad_clock) {
+                            textView.applyCustomStatusBarClockSize()
                         }
                     }
                     result(ori)
                 }
             }
+        }
+        if (modifyClockFW || modifyBigTimeFW || modifyStatusBarClockSize) {
+            "com.android.systemui.controlcenter.shade.NotificationHeaderExpandController".toClassOrNull()?.apply {
+                if (modifyClockFW || modifyBigTimeFW) {
+                    val typefaceBigTime = resolve().firstFieldOrNull {
+                        name = "MI_PRO_TYPEFACE"
+                        modifiers(Modifiers.STATIC)
+                    }?.toTyped<Typeface>()
+                    val typefaceClock = resolve().firstFieldOrNull {
+                        name = "sMiproTypeface"
+                        modifiers(Modifiers.STATIC)
+                    }?.toTyped<Typeface>()
+                    val typefaces = resolve().firstFieldOrNull {
+                        name = "typefaces"
+                        modifiers(Modifiers.STATIC)
+                    }?.toTyped<List<Typeface>>()
+                    typefaceBigTime?.set(null, typefaceBigTimeFW)
+                    typefaceClock?.set(null, typefaceClockFW)
+                    val sampleCount = abs(realBigTimeFW - realClockFW) / 10
+                    val sampleStep = (realBigTimeFW - realClockFW) / sampleCount
+                    val samples = ArrayList<Typeface>()
+                    samples.add(typefaceClockFW)
+                    for (i in 1 until sampleCount) {
+                        samples.add(getTypeface(realClockFW + sampleStep * i))
+                    }
+                    samples.add(typefaceBigTimeFW)
+                    typefaces?.set(null, samples)
+                }
+                if (modifyStatusBarClockSize) {
+                    val fldStatusBarClockSize = resolve().firstFieldOrNull {
+                        name = "statusBarClockSize"
+                    }?.toTyped<Int>()
+                    val fldContext = resolve().firstFieldOrNull {
+                        name = "context"
+                    }?.toTyped<Context>()
+                    resolve().firstMethodOrNull {
+                        name = "updateTranslationY"
+                    }?.hook {
+                        val valueStatusBarClockSizePx = fldContext?.get(thisObject)?.let { valueStatusBarClockSize.dp(it) }
+                        fldStatusBarClockSize?.set(thisObject, valueStatusBarClockSizePx)
+                        result(proceed())
+                    }
+                    resolve().firstConstructor().hook {
+                        val ori = proceed()
+                        val valueStatusBarClockSizePx = fldContext?.get(thisObject)?.let { valueStatusBarClockSize.dp(it) }
+                        fldStatusBarClockSize?.set(thisObject, valueStatusBarClockSizePx)
+                        result(ori)
+                    }
+                }
+            }
+            if (modifyClockFW || modifyBigTimeFW) {
+                "com.android.systemui.statusbar.policy.MiuiStatusBarClockController".toClassOrNull()?.apply {
+                    val mClockListeners = resolve().firstFieldOrNull {
+                        name = "mClockListeners"
+                    }?.toTyped<List<*>>()
+                    resolve().firstMethodOrNull {
+                        name {
+                            it.startsWith("onMiuiThemeChanged")
+                        }
+                    }?.hook {
+                        val ori = proceed()
+                        mClockListeners?.get(thisObject)?.forEach { listener ->
+                            if (listener is TextView) {
+                                listener.typeface = typefaceClockFW
+                            }
+                        }
+                        result(ori)
+                    }
+                }
+            }
+
         }
         if (modifyDateTimeFW || modifyClockFW || modifyBigTimeFW) {
             "com.android.systemui.qs.MiuiNotificationHeaderView".toClassOrNull()?.apply {
@@ -288,5 +345,39 @@ object MiuiClockFontWeight : StaticHooker() {
                 }
             }
         }
+    }
+
+
+    private fun TextView.applyCustomStatusBarClockSize(postIfUnavailable: Boolean = true) {
+        if (!modifyStatusBarClockSize || (id != clock && id != pad_clock)) return
+
+        setTextSize(TypedValue.COMPLEX_UNIT_DIP, valueStatusBarClockSize)
+
+        val params = layoutParams as? ViewGroup.MarginLayoutParams
+        if (params == null) {
+            if (postIfUnavailable) {
+                post {
+                    applyCustomStatusBarClockSize(postIfUnavailable = false)
+                }
+            }
+            return
+        }
+
+        val fm = paint.fontMetrics
+        val verticalOffset = (
+                (fm.top + fm.bottom) - (fm.ascent + fm.descent)
+                ).div(2f).roundToInt()
+
+        val (originalTopMargin, originalBottomMargin) =
+            originalClockVerticalMargins.getOrPut(this) {
+                params.topMargin to params.bottomMargin
+            }
+
+        d { "verticalOffset $verticalOffset height ${params.height}" }
+
+//        params.height = 20.dp(context)
+        params.topMargin = originalTopMargin + verticalOffset
+        params.bottomMargin = originalBottomMargin - verticalOffset
+        layoutParams = params
     }
 }
