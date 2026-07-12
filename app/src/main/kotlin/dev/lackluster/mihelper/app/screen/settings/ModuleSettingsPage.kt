@@ -47,6 +47,13 @@ import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.system.exitProcess
+import com.highcapable.kavaref.extension.classOf
+
+private val settingsEntryPositionOptions = listOf(
+    DropDownOption(0, R.string.module_settings_entry_position_disabled),
+    DropDownOption(1, R.string.module_settings_entry_position_after_device),
+    DropDownOption(2, R.string.module_settings_entry_position_before_wifi),
+)
 
 private val settingsEntryIconOptions = listOf(
     DropDownOption(0, R.string.module_settings_icon_style_default, iconRes = R.drawable.ic_header_hyper_helper_gray),
@@ -94,7 +101,7 @@ fun ModuleSettingsPage(
             when (event) {
                 ModuleSettingsEvent.RestartApp -> {
                     val intent =
-                        Intent(context, MainActivity::class.java)
+                        Intent(context, classOf<MainActivity>())
                             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                             .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
                     context.startActivity(intent)
@@ -211,14 +218,15 @@ private fun ModuleSettingsPageContent(
                     onAction(ModuleSettingsAction.ToggleHideIcon(it))
                 }
             )
-            val showInSystemSettings = rememberPreferenceState(Preferences.Module.SHOW_IN_SETTINGS)
+            val settingsEntryPosition = rememberPreferenceState(Preferences.Module.SETTINGS_ENTRY_POSITION)
             val customEntryName = rememberPreferenceState(Preferences.Module.SETTINGS_NAME)
-            SwitchPreference(
+            DropDownPreference(
                 title = stringResource(R.string.module_show_in_settings),
-                checked = showInSystemSettings.value,
-                onCheckedChange = { showInSystemSettings.value = it }
+                value = settingsEntryPosition.value,
+                options = settingsEntryPositionOptions,
+                onValueChange = { settingsEntryPosition.value = it }
             )
-            AnimatedColumn(showInSystemSettings.value) {
+            AnimatedColumn(settingsEntryPosition.value != 0) {
                 DropDownPreference(
                     key = Preferences.Module.SETTINGS_ICON_STYLE,
                     title = stringResource(R.string.module_settings_icon_style),

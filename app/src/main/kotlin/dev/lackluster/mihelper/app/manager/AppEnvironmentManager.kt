@@ -148,6 +148,7 @@ class AppEnvironmentManager(
     }
 
     private fun isSystemVersionSupported(fingerprint: String): Boolean {
+        MLog.i(TAG) { "ro.build.fingerprint=$fingerprint" }
         val match = FINGERPRINT_VERSION_PATTERN.find(fingerprint) ?: return true
         val androidVersion = match.groupValues[1].toIntOrNull() ?: return true
         val hyperOsVersion = match.groupValues.drop(2).mapNotNull(String::toIntOrNull)

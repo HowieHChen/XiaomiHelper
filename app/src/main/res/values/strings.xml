@@ -148,6 +148,9 @@
     <string name="module_debug">Debug mode</string>
     <string name="module_debug_tips">When enabled, debug logs will be printed. Takes effect immediately. Please enable only when needed!</string>
     <string name="module_show_in_settings">Icon in Settings</string>
+    <string name="module_settings_entry_position_disabled" translatable="false">@string/common_disabled</string>
+    <string name="module_settings_entry_position_after_device">Show after \"My device\"</string>
+    <string name="module_settings_entry_position_before_wifi">Show before \"WLAN\"</string>
     <string name="module_settings_icon_style">Icon style in Settings</string>
     <string name="module_settings_icon_style_default" translatable="false">@string/common_default</string>
     <string name="module_settings_icon_style_android">Android</string>

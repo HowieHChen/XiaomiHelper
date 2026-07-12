@@ -284,6 +284,7 @@
     <string name="module_skip_root_check_tips">重启应用后生效</string>
     <string name="module_debug_tips">启用后将打印调试日志。立即生效。请仅在需要时启用！</string>
     <string name="module_show_in_settings">在设置中显示入口</string>
+    <string name="module_settings_entry_position_before_wifi">显示在“WLAN”之前</string>
     <string name="module_settings_icon_style">设置入口图标风格</string>
     <string name="module_settings_icon_style_android">安卓</string>
     <string name="module_settings_icon_color">设置入口图标颜色</string>
@@ -727,4 +728,5 @@
     <string name="cleaner_music_hide_tab_long_audio_tips">隐藏底栏的听书入口</string>
     <string name="cleaner_music_hide_tab_quick_play">隐藏免费听</string>
     <string name="cleaner_music_hide_tab_long_audio">隐藏听书</string>
+    <string name="module_settings_entry_position_after_device">显示在“我的设备”之后</string>
 </resources>

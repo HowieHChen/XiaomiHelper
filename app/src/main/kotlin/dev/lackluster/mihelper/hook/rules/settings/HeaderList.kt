@@ -44,11 +44,12 @@ import dev.lackluster.mihelper.hook.utils.e
 import dev.lackluster.mihelper.hook.utils.toTyped
 import dev.lackluster.mihelper.utils.Device
 import dev.lackluster.mihelper.utils.factory.getResId
+import com.highcapable.kavaref.extension.classOf
 
 object HeaderList : StaticHooker() {
     private const val XIAOMI_HELPER_IDENTIFIER = 9641L
 
-    private val showSettingsEntry by Preferences.Module.SHOW_IN_SETTINGS.lazyGet()
+    private val entryPosition by Preferences.Module.SETTINGS_ENTRY_POSITION.lazyGet()
     private val entryNameResId by lazy {
         when (Preferences.Module.SETTINGS_NAME.get()) {
             0 -> R.string.module_settings_name_helper
@@ -112,11 +113,11 @@ object HeaderList : StaticHooker() {
     }
 
     override fun onInit() {
-        updateSelfState(showSettingsEntry || showGoogleSettings)
+        updateSelfState(entryPosition != 0 || showGoogleSettings)
     }
 
     override fun onHook() {
-        if (showSettingsEntry) {
+        if (entryPosition != 0) {
             val fldHolderIcon = clzHeaderViewHolder?.resolve()?.firstFieldOrNull {
                 name = "icon"
             }?.toTyped<ImageView>()
@@ -155,15 +156,16 @@ object HeaderList : StaticHooker() {
                 result(proceed())
             }
         }
-        if (showSettingsEntry || showGoogleSettings) {
+        if (entryPosition != 0 || showGoogleSettings) {
             val ctorHeader = clzHeader?.resolve()?.firstConstructor {
                 parameterCount = 0
             }?.toTyped()
-            val ctorUserHandle = UserHandle::class.java.resolve().firstConstructor {
+            val ctorUserHandle = classOf<UserHandle>().resolve().firstConstructor {
                 parameterCount = 1
                 parameters(Int::class)
             }.toTyped()
             var idMyDevice = 0
+            var idWifiSettings = 0
             "com.android.settings.MiuiSettings".toClassOrNull()?.apply {
                 val metAddGoogleSettingsHeaders = resolve().firstMethodOrNull {
                     name = "AddGoogleSettingsHeaders"
@@ -176,18 +178,21 @@ object HeaderList : StaticHooker() {
                     val ori = proceed()
                     @Suppress("UNCHECKED_CAST")
                     val headerList = getArg(0) as? MutableList<Any?> ?: return@hook result(ori)
-                    if (showSettingsEntry) {
+                    if (entryPosition != 0) {
                         val activity = thisObject as? Activity ?: return@hook result(ori)
                         val moduleRes = activity.packageManager.getResourcesForApplication(BuildConfig.APPLICATION_ID)
                         if (idMyDevice == 0) {
-                            idMyDevice = activity.getResId("wifi_settings", "id", Scope.SETTINGS)
+                            idMyDevice = activity.getResId("my_device", "id", Scope.SETTINGS)
+                        }
+                        if (idWifiSettings == 0) {
+                            idWifiSettings = activity.getResId("wifi_settings", "id", Scope.SETTINGS)
                         }
                         val header = ctorHeader?.newInstance()
                         fldHeaderId?.set(header, XIAOMI_HELPER_IDENTIFIER)
                         fldHeaderIntent?.set(header,
                             Intent().apply {
                                 putExtra("isDisplayHomeAsUpEnabled", true)
-                                setClassName(BuildConfig.APPLICATION_ID, MainActivity::class.java.canonicalName!!)
+                                setClassName(BuildConfig.APPLICATION_ID, classOf<MainActivity>().canonicalName!!)
                             }
                         )
                         fldHeaderTitle?.set(header,
@@ -201,10 +206,15 @@ object HeaderList : StaticHooker() {
                             }
                         )
 
-                        val targetIndex = headerList.indexOfFirst { head ->
-                            fldHeaderId?.get(head)?.toInt() == idMyDevice
+                        val targetIndex = if (entryPosition == 1) {
+                            headerList.indexOfFirst { head ->
+                                fldHeaderId?.get(head)?.toInt() == idMyDevice
+                            } + 1
+                        } else {
+                            headerList.indexOfFirst { head ->
+                                fldHeaderId?.get(head)?.toInt() == idWifiSettings
+                            }
                         }
-
                         if (targetIndex != -1) {
                             headerList.add(targetIndex, header)
                         } else {
