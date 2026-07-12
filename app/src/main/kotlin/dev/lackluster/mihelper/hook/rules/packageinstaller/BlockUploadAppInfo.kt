@@ -37,7 +37,7 @@ object BlockUploadAppInfo : StaticHooker() {
                 paramCount = 7
                 paramTypes = listOf("java.lang.String", "java.lang.String", "java.lang.String", "java.lang.Integer", "java.lang.String", "java.lang.String", null)
             }
-        }
+        }.filter { !it.isConstructor }
     }
     private val reportMethod by lazy {
         DexKit.findMethodsWithCache("report_method") {

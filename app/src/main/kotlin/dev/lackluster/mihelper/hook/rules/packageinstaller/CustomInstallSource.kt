@@ -34,6 +34,7 @@ import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
 import dev.lackluster.mihelper.hook.utils.asString
 import dev.lackluster.mihelper.hook.utils.toTyped
 import org.luckypray.dexkit.query.enums.StringMatchType
+import com.highcapable.kavaref.extension.classOf
 
 object CustomInstallSource : StaticHooker() {
     private var hostUid: Int? = null
@@ -47,8 +48,10 @@ object CustomInstallSource : StaticHooker() {
         DexKit.withBridge {
             findClass {
                 matcher {
-                    addUsingString("context.ge…ta.versionName)", StringMatchType.Contains)
-                    addUsingString("context.ge…o?.versionName)", StringMatchType.Contains)
+//                    addUsingString("context.ge…ta.versionName)", StringMatchType.Contains)
+//                    addUsingString("context.ge…o?.versionName)", StringMatchType.Contains)
+                    superClass("com.miui.packageInstaller.ui.listcomponets.AppInfoViewObject", StringMatchType.Equals)
+                    addFieldForType(classOf<Boolean>(false))
                 }
             }
         }
