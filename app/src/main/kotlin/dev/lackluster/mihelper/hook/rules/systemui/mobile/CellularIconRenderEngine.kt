@@ -202,12 +202,14 @@ object CellularIconRenderEngine {
         val singleMobileSVGString = when (Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_SVG_SINGLE.get()) {
             0 -> getAssetSvg(Constants.ASSETS_SVG_SIGNAL_HYPER_OS_SINGLE)
             1 -> getAssetSvg(Constants.ASSETS_SVG_SIGNAL_IOS_SINGLE)
+            3 -> getAssetSvg(Constants.ASSETS_SVG_SIGNAL_IOS27_SINGLE)
             else -> customSingleSvg?.takeIf { it.isNotBlank() } ?: getAssetSvg(Constants.ASSETS_SVG_SIGNAL_HYPER_OS_SINGLE)
         }
 
         val stackedMobileSVGString = when (Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_SVG_STACKED.get()) {
             0 -> getAssetSvg(Constants.ASSETS_SVG_SIGNAL_HYPER_OS_STACKED)
             1 -> getAssetSvg(Constants.ASSETS_SVG_SIGNAL_IOS_STACKED)
+            3 -> getAssetSvg(Constants.ASSETS_SVG_SIGNAL_IOS27_STACKED)
             else -> customStackedSvg?.takeIf { it.isNotBlank() } ?: getAssetSvg(Constants.ASSETS_SVG_SIGNAL_HYPER_OS_STACKED)
         }
 

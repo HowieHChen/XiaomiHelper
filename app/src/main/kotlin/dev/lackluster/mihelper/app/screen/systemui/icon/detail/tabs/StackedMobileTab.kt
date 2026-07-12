@@ -39,6 +39,7 @@ private val visibilityOptions = listOf(
 private val signalIconStyle = listOf(
     DropDownOption(0, R.string.icon_detail_stacked_signal_style_miui),
     DropDownOption(1, R.string.icon_detail_stacked_signal_style_ios),
+    DropDownOption(3, R.string.icon_detail_stacked_signal_style_ios27),
     DropDownOption(2, R.string.icon_detail_stacked_signal_style_custom),
 )
 

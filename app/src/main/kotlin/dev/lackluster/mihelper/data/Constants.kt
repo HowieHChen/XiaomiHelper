@@ -39,6 +39,8 @@ object Constants {
     const val ASSETS_SVG_SIGNAL_HYPER_OS_STACKED = "svg/Signal-HyperOS-Stacked.svg"
     const val ASSETS_SVG_SIGNAL_IOS_SINGLE = "svg/Signal-iOS-Single.svg"
     const val ASSETS_SVG_SIGNAL_IOS_STACKED = "svg/Signal-iOS-Stacked.svg"
+    const val ASSETS_SVG_SIGNAL_IOS27_SINGLE = "svg/Signal-iOS27-Single.svg"
+    const val ASSETS_SVG_SIGNAL_IOS27_STACKED = "svg/Signal-iOS27-Stacked.svg"
 
     const val CELLULAR_TYPE_LIST = ",G,E,3G,H,H+,4G,4G+,,LTE,5G,5G,5G+,5GA,5G"
 

@@ -713,8 +713,9 @@
     <string name="icon_detail_stacked_signal_style_stacked_msg">Paste SVG code containing the eight IDs \nsignal_1_1, signal_1_2, signal_1_3, signal_1_4, \nsignal_2_1, signal_2_2, signal_2_3, and signal_2_4. \n\nHere, signal_1_2 represents the second signal bar of SIM 1. When SIM 1 has 2 bars and SIM 2 has 1 bar, signal_1_1, signal_1_2, and signal_2_1 will be filled using Fill opacity, while signal_1_3, signal_1_4, signal_2_2, signal_2_3, and signal_2_4 will be filled using Background opacity.</string>
     <string name="icon_detail_stacked_signal_style_val_file">Import from file</string>
     <string name="icon_detail_stacked_signal_style_val_clipboard">Import from clipboard</string>
-    <string name="icon_detail_stacked_signal_style_miui" translatable="false">HyperOS</string>
-    <string name="icon_detail_stacked_signal_style_ios" translatable="false">iOS</string>
+    <string name="icon_detail_stacked_signal_style_miui" translatable="false">HyperOS 3</string>
+    <string name="icon_detail_stacked_signal_style_ios" translatable="false">iOS 26</string>
+    <string name="icon_detail_stacked_signal_style_ios27" translatable="false">iOS 27</string>
     <string name="icon_detail_stacked_signal_style_custom" translatable="false">@string/common_custom</string>
     <string name="icon_detail_stacked_signal_alpha_fg">Fill opacity</string>
     <string name="icon_detail_stacked_signal_alpha_bg">Background opacity</string>
