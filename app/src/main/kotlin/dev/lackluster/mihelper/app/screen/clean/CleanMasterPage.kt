@@ -102,6 +102,11 @@ private fun CleanMasterPageContent(
                 summary = stringResource(R.string.cleaner_common_skip_splash_tips),
             )
             SwitchPreference(
+                key = Preferences.Browser.SYNC_USER_AGENT_METADATA,
+                title = stringResource(R.string.cleaner_browser_sync_user_agent_metadata),
+                summary = stringResource(R.string.cleaner_browser_sync_user_agent_metadata_tips),
+            )
+            SwitchPreference(
                 key = Preferences.Browser.SHOW_SUG_SWITCH_ENTRY,
                 title = stringResource(R.string.cleaner_browser_show_sug_switch),
                 summary = stringResource(R.string.cleaner_browser_show_sug_switch_tips),

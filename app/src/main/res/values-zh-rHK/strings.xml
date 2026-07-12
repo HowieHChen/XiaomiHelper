@@ -365,6 +365,8 @@
     <string name="cleaner_browser_switch_env">切換内部地址</string>
     <string name="cleaner_browser_switch_env_tips">使用預發佈環境。可能可以移除部分廣告。可能會導致無法使用自訂搜尋引擎等設定，請先設定完再開啟！</string>
     <string name="cleaner_browser_disable_update">停用更新檢查</string>
+    <string name="cleaner_browser_sync_user_agent_metadata">同步 User-Agent 資料</string>
+    <string name="cleaner_browser_sync_user_agent_metadata_tips">在切換手機版和桌面版 User-Agent 時，同步更新 User-Agent Client Hints 與 navigator.userAgentData。</string>
     <string name="others_miai_hide_watermark">隱藏内測版本同人工智能生成内容水印</string>
     <string name="others_mimirror_all_app">所有應用程式都可在其他裝置上打開</string>
     <string name="others_search_more_search_engines">添加更多搜尋引擎選項</string>

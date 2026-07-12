@@ -318,6 +318,8 @@
     <string name="cleaner_browser_switch_env">Switch internal address</string>
     <string name="cleaner_browser_switch_env_tips">Use the pre-release environment. It may be possible to remove some of the ads. It may not be possible to use settings such as customized search engine, so please finish setting before turning it on!</string>
     <string name="cleaner_browser_disable_update">Disable update check</string>
+    <string name="cleaner_browser_sync_user_agent_metadata">Sync User-Agent data</string>
+    <string name="cleaner_browser_sync_user_agent_metadata_tips">Keeps User-Agent Client Hints and navigator.userAgentData in sync when switching between mobile and desktop User-Agent modes.</string>
     <string name="ui_title_cleaner_download" translatable="false">@string/scope_download</string>
     <string name="cleaner_downloadui_hide_xl">Hide Xunlei icons and text</string>
     <string name="cleaner_download_fuck_xl">Block creation of .xlDownload folder</string>

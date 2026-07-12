@@ -35,6 +35,8 @@
     <string name="cleaner_browser_debug_mode">Debug 模式</string>
     <string name="cleaner_browser_debug_mode_tips">强制启用 Debug 模式，仅适用于旧版本的浏览器</string>
     <string name="cleaner_browser_disable_update">禁用更新检查</string>
+    <string name="cleaner_browser_sync_user_agent_metadata">同步 User-Agent 数据</string>
+    <string name="cleaner_browser_sync_user_agent_metadata_tips">在切换手机版和桌面版 User-Agent 时，同步更新 User-Agent Client Hints 与 navigator.userAgentData</string>
     <string name="scope_weather">天气</string>
     <string name="action_recents">最近任务</string>
     <string name="action_xiaoai">超级小爱</string>

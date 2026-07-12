@@ -34,6 +34,7 @@ object Preferences {
     object Browser {
         val AD_BLOCKER = PreferenceKey("browser_ad_block", false)
         val SKIP_SPLASH = PreferenceKey("browser_skip_splash", false)
+        val SYNC_USER_AGENT_METADATA = PreferenceKey("browser_sync_user_agent_metadata", false)
         val SHOW_SUG_SWITCH_ENTRY = PreferenceKey("browser_show_sug_switch_view", false)
         val HIDE_HOMEPAGE_TOP_BAR = PreferenceKey("browser_hide_home_top_bar", false)
         val BLOCK_DIALOG = PreferenceKey("browser_block_dialog", false)
