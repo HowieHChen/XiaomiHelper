@@ -477,6 +477,9 @@ object Preferences {
                 val SIGNAL_ALPHA_FG = PreferenceKey("icon_tuner_stacked_icon_alpha_fg", 1.0f)
                 val SIGNAL_ALPHA_BG = PreferenceKey("icon_tuner_stacked_icon_alpha_bg", 0.4f)
                 val SIGNAL_ALPHA_ERROR = PreferenceKey("icon_tuner_stacked_icon_alpha_error", 0.2f)
+                val SIGNAL_SCALE = PreferenceKey("icon_tuner_stacked_icon_scale", 1.0f)
+                val SIGNAL_PADDING_START = PreferenceKey("icon_tuner_stacked_icon_padding_start", 0.0f)
+                val SIGNAL_PADDING_END = PreferenceKey("icon_tuner_stacked_icon_padding_end", 0.0f)
 
                 val TYPE_FONT_MODE = PreferenceKey("sb_font_stacked_type_font", 0)
                 val FONT_PATH_DISPLAY = PreferenceKey("sb_font_stacked_type_path_app", Constants.VARIABLE_FONT_DEFAULT_PATH)

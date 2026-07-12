@@ -12,7 +12,10 @@ data class SignalIconState(
     val stackedSVGName: String = "",
     val alphaFg: Float = 1.0f,
     val alphaBg: Float = 0.4f,
-    val alphaError: Float = 0.2f
+    val alphaError: Float = 0.2f,
+    val scale: Float = 1.0f,
+    val paddingStart: Float = 0.0f,
+    val paddingEnd: Float = 0.0f,
 )
 
 data class TypefaceState(

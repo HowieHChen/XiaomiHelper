@@ -27,8 +27,14 @@ import kotlin.collections.set
 import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.roundToInt
 
 object CellularIconRenderEngine {
+    private data class FinalIconCacheKey(
+        val state: CellularIconState,
+        val isRtl: Boolean,
+    )
+
     private const val TAG = "CellularIconRenderEngine"
 
     private val typeFontMode by Preferences.SystemUI.StatusBar.StackedMobile.TYPE_FONT_MODE.lazyGet()
@@ -72,7 +78,7 @@ object CellularIconRenderEngine {
 
     // L3: 终极成品库
     // Key 为完美的图纸对象，Value 为组合好的 Icon。容量设为 30 足以应付高频状态切换
-    private val finalIconCache = LruCache<CellularIconState, Icon>(30)
+    private val finalIconCache = LruCache<FinalIconCacheKey, Icon>(30)
 
     private var singleTypeCenterPercent: PointF? = null
     private var stackedTypeCenterPercent: PointF? = null
@@ -81,6 +87,9 @@ object CellularIconRenderEngine {
     private var currentDensity = 3.0f
     private var currentIconHeightPx = 20
     private var statusBarHeightResId = 0
+    private var signalScale = 1f
+    private var signalPaddingStartDp = 0f
+    private var signalPaddingEndDp = 0f
 
     fun preload(
         context: Context,
@@ -94,6 +103,7 @@ object CellularIconRenderEngine {
             if (isPreloaded) return false
             this.statusBarHeightResId = iconHeightResId
             ensureEnvironment(context, forceUpdate = true)
+            initSignalRenderConfig()
 
             initTypefaces(context, remoteFontFd)
             val vectorLoaded = initVectorPictures(context, customSingleSvg, customStackedSvg)
@@ -127,6 +137,12 @@ object CellularIconRenderEngine {
                 currentIconHeightPx = context.resources.getDimensionPixelSize(statusBarHeightResId)
             }
         }
+    }
+
+    private fun initSignalRenderConfig() {
+        signalScale = Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_SCALE.get().coerceIn(0.5f, 1.5f)
+        signalPaddingStartDp = Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_PADDING_START.get().coerceAtLeast(0f)
+        signalPaddingEndDp = Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_PADDING_END.get().coerceAtLeast(0f)
     }
 
     private fun initTypefaces(context: Context, remoteFontFd: ParcelFileDescriptor?) {
@@ -239,39 +255,36 @@ object CellularIconRenderEngine {
     fun getIcon(context: Context, state: CellularIconState): Icon? {
         if (!isPreloaded) return null
         ensureEnvironment(context)
+        val isRtl = context.resources.configuration.layoutDirection == View.LAYOUT_DIRECTION_RTL
+        val cacheKey = FinalIconCacheKey(state, isRtl)
 
         // 1. 尝试从 L3 成品库光速下班
-        finalIconCache.get(state)?.let { return it }
+        finalIconCache.get(cacheKey)?.let { return it }
 
         // 2. 没命中？启动流水线合成
         val finalIcon = when (state) {
             is CellularIconState.None -> null
-            is CellularIconState.SingleSignal -> renderSingle(state)
-            is CellularIconState.StackedSignal -> renderStacked(state)
-            is CellularIconState.StandaloneNetType -> {
-                renderStandalone(
-                    state,
-                    context.resources.configuration.layoutDirection == View.LAYOUT_DIRECTION_RTL
-                )
-            }
+            is CellularIconState.SingleSignal -> renderSingle(state, isRtl)
+            is CellularIconState.StackedSignal -> renderStacked(state, isRtl)
+            is CellularIconState.StandaloneNetType -> renderStandalone(state, isRtl)
         }
 
         // 3. 产出物存入 L3 并返回
-        finalIcon?.let { finalIconCache.put(state, it) }
+        finalIcon?.let { finalIconCache.put(cacheKey, it) }
         return finalIcon
     }
 
-    private fun renderSingle(state: CellularIconState.SingleSignal): Icon? {
+    private fun renderSingle(state: CellularIconState.SingleSignal, isRtl: Boolean): Icon? {
         val signalKey = state.level.toString()
         val signalBitmap = getL2SignalBitmap(signalKey) ?: return null
-        val finalBitmap = composeSignalAndType(signalBitmap, state.netType, singleTypeCenterPercent)
+        val finalBitmap = composeSignalAndType(signalBitmap, state.netType, singleTypeCenterPercent, isRtl)
         return Icon.createWithBitmap(finalBitmap)
     }
 
-    private fun renderStacked(state: CellularIconState.StackedSignal): Icon? {
+    private fun renderStacked(state: CellularIconState.StackedSignal, isRtl: Boolean): Icon? {
         val signalKey = "${state.sim1Level}_${state.sim2Level}"
         val signalBitmap = getL2SignalBitmap(signalKey) ?: return null
-        val finalBitmap = composeSignalAndType(signalBitmap, state.netType, stackedTypeCenterPercent)
+        val finalBitmap = composeSignalAndType(signalBitmap, state.netType, stackedTypeCenterPercent, isRtl)
         return Icon.createWithBitmap(finalBitmap)
     }
 
@@ -281,8 +294,9 @@ object CellularIconRenderEngine {
         }
 
         val type = state.netType
+        val cacheKey = "$type@$isRtl"
 
-        standaloneTypeIconCache[type]?.let { return it }
+        standaloneTypeIconCache[cacheKey]?.let { return it }
         if (currentIconHeightPx <= 0) return null
 
         val density = currentDensity
@@ -373,12 +387,37 @@ object CellularIconRenderEngine {
 
         // 9. 包装并缓存
         val icon = Icon.createWithBitmap(bitmap)
-        standaloneTypeIconCache[type] = icon
+        standaloneTypeIconCache[cacheKey] = icon
 
         return icon
     }
 
     private fun composeSignalAndType(
+        signalBitmap: Bitmap,
+        netType: String,
+        centerPercent: PointF?,
+        isRtl: Boolean,
+    ): Bitmap {
+        val contentBitmap = composeSignalAndTypeContent(signalBitmap, netType, centerPercent)
+        val paddingStartPx = (signalPaddingStartDp * currentDensity).roundToInt()
+        val paddingEndPx = (signalPaddingEndDp * currentDensity).roundToInt()
+        val paddingLeftPx = if (isRtl) paddingEndPx else paddingStartPx
+        val paddingRightPx = if (isRtl) paddingStartPx else paddingEndPx
+        val bitmapHeight = currentIconHeightPx
+        val bitmapWidth = contentBitmap.width + paddingLeftPx + paddingRightPx
+        if (bitmapHeight <= 0 || bitmapWidth <= 0) return contentBitmap
+
+        return createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ALPHA_8).also { bitmap ->
+            Canvas(bitmap).drawBitmap(
+                contentBitmap,
+                paddingLeftPx.toFloat(),
+                (bitmapHeight - contentBitmap.height) / 2f,
+                null
+            )
+        }
+    }
+
+    private fun composeSignalAndTypeContent(
         signalBitmap: Bitmap,
         netType: String,
         centerPercent: PointF?
@@ -427,28 +466,30 @@ object CellularIconRenderEngine {
     }
 
     private fun getL2SignalBitmap(key: String): Bitmap? {
-        signalBitmapCache[key]?.let { return it }
+        val cacheKey = "$key@$signalScale"
+        signalBitmapCache[cacheKey]?.let { return it }
         val picture = vectorCache[key] ?: return null
         if (currentIconHeightPx <= 0) return null
 
-        val targetHeightPx = currentIconHeightPx
-        val targetWidthPx = (targetHeightPx * (picture.width.toFloat() / picture.height.toFloat())).toInt()
+        val targetHeightPx = max(1, (currentIconHeightPx * signalScale).roundToInt())
+        val targetWidthPx = max(1, (targetHeightPx * (picture.width.toFloat() / picture.height.toFloat())).roundToInt())
 
         val bitmap = createBitmap(targetWidthPx, targetHeightPx, Bitmap.Config.ALPHA_8)
         val canvas = Canvas(bitmap)
         canvas.scale(targetWidthPx.toFloat() / picture.width.toFloat(), targetHeightPx.toFloat() / picture.height.toFloat())
         canvas.drawPicture(picture)
 
-        signalBitmapCache[key] = bitmap
+        signalBitmapCache[cacheKey] = bitmap
         return bitmap
     }
 
     private fun getL2SmallTypeBitmap(text: String): Bitmap? {
-        smallTypeBitmapCache[text]?.let { return it }
+        val cacheKey = "$text@$signalScale"
+        smallTypeBitmapCache[cacheKey]?.let { return it }
 
         // 简单的文字绘制，无需外边距，因为我们要通过中心对齐把它嵌进去
         val density = currentDensity
-        val textSizePx = smallTypeSizeDp * density
+        val textSizePx = smallTypeSizeDp * density * signalScale
         val isCondensed = isStandaloneTypeAutoSpecialOpt && text.length > 2
         val targetTypeface = if (isCondensed) typefaceSmallTypeCondensed else typefaceSmallTypeNormal
 //        val targetLetterSpacing = if (isCondensed) 0.02f else 0f // 压缩字体给 2% (0.02f) 的呼吸空间，Normal 保持 0% (0f)
@@ -472,7 +513,7 @@ object CellularIconRenderEngine {
         val startY = (bitmap.height / 2f) - ((fontMetrics.descent + fontMetrics.ascent) / 2f)
         canvas.drawText(text, 1f, startY, textPaint) // 1f 留出防裁切余量
 
-        smallTypeBitmapCache[text] = bitmap
+        smallTypeBitmapCache[cacheKey] = bitmap
         return bitmap
     }
 }

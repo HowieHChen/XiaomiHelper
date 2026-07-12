@@ -53,6 +53,9 @@ private val relevantKeys: Set<PreferenceKey<*>> = setOf(
     Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_ALPHA_FG,
     Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_ALPHA_BG,
     Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_ALPHA_ERROR,
+    Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_SCALE,
+    Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_PADDING_START,
+    Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_PADDING_END,
 
     Preferences.SystemUI.StatusBar.StackedMobile.TYPE_FONT_MODE,
     Preferences.SystemUI.StatusBar.StackedMobile.FONT_PATH_DISPLAY,
@@ -183,6 +186,9 @@ class StackedMobileRepository(
                 alphaFg = prefRepo.get(Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_ALPHA_FG),
                 alphaBg = prefRepo.get(Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_ALPHA_BG),
                 alphaError = prefRepo.get(Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_ALPHA_ERROR),
+                scale = prefRepo.get(Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_SCALE).coerceIn(0.5f, 1.5f),
+                paddingStart = prefRepo.get(Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_PADDING_START).coerceAtLeast(0f),
+                paddingEnd = prefRepo.get(Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_PADDING_END).coerceAtLeast(0f),
             ),
             font = TypefaceState(
                 mode = parseFontMode(prefRepo.get(Preferences.SystemUI.StatusBar.StackedMobile.TYPE_FONT_MODE)),

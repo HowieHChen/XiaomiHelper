@@ -742,6 +742,7 @@
     <string name="icon_detail_stacked_signal_alpha_fg">Fill opacity</string>
     <string name="icon_detail_stacked_signal_alpha_bg">Background opacity</string>
     <string name="icon_detail_stacked_signal_alpha_error">No service opacity</string>
+    <string name="icon_detail_stacked_signal_scale">Scale</string>
     <string name="ui_title_icon_detail_stacked_type">Mobile network type icon</string>
     <string name="icon_detail_stacked_type_font" translatable="false">@string/page_status_bar_font</string>
     <string name="icon_detail_stacked_type_font_tips">4G+, 5G+, 5GA, LTE texts will use condensed style with MiSans or SF Pro</string>

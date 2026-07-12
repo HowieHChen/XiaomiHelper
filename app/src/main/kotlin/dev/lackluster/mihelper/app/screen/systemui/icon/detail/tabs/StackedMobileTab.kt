@@ -141,6 +141,22 @@ fun LazyListScope.stackedMobileTabContent(
             min = 0.0f,
             max = 1.0f,
         )
+        SeekBarPreference(
+            key = Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_SCALE,
+            title = stringResource(R.string.icon_detail_stacked_signal_scale),
+            min = 0.5f,
+            max = 1.5f,
+        )
+        EditTextPreference(
+            key = Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_PADDING_START,
+            title = stringResource(R.string.icon_detail_battery_padding_start),
+            isValueValid = { it >= 0.0f },
+        )
+        EditTextPreference(
+            key = Preferences.SystemUI.StatusBar.StackedMobile.SIGNAL_PADDING_END,
+            title = stringResource(R.string.icon_detail_battery_padding_end),
+            isValueValid = { it >= 0.0f },
+        )
     }
     itemPreferenceGroup(
         key = "STACKED_TYPE",

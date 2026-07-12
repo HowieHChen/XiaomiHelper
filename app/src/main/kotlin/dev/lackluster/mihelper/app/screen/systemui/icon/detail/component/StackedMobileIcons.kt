@@ -19,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
-import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalDensity
@@ -51,6 +50,7 @@ fun CustomSignalIcon(
         return
     }
     val density = LocalDensity.current
+    val layoutDirection = LocalLayoutDirection.current
 
     val tintColor = colorResource(R.color.foreground_dual_tone_full)
     val tintColorArgb = tintColor.toArgb()
@@ -105,8 +105,13 @@ fun CustomSignalIcon(
     BoxWithConstraints(modifier = Modifier.height(24.dp).padding(vertical = 2.dp)) {
         val targetHeightPx = constraints.maxHeight.toFloat()
 
-        val scale = targetHeightPx / picture.height.toFloat()
-        val scaledPicWidthPx = picture.width * scale
+        val pictureScale = targetHeightPx / picture.height.toFloat()
+        val scaledPicWidthPx = picture.width * pictureScale
+        val iconScale = state.signal.scale.coerceIn(0.5f, 1.5f)
+        val paddingStartPx = state.signal.paddingStart.coerceAtLeast(0f) * density.density
+        val paddingEndPx = state.signal.paddingEnd.coerceAtLeast(0f) * density.density
+        val paddingLeftPx = if (layoutDirection == LayoutDirection.Rtl) paddingEndPx else paddingStartPx
+        val paddingRightPx = if (layoutDirection == LayoutDirection.Rtl) paddingStartPx else paddingEndPx
 
         var minX = 0f
         var maxX = scaledPicWidthPx
@@ -124,16 +129,19 @@ fun CustomSignalIcon(
             maxX = max(scaledPicWidthPx, textRight)
         }
 
-        val finalWidthPx = ceil(maxX - minX)
-        val offsetX = -minX
+        val finalWidthPx = ceil((maxX - minX) * iconScale) + paddingLeftPx + paddingRightPx
+        val offsetX = paddingLeftPx - (minX * iconScale)
+        val offsetY = (targetHeightPx - (targetHeightPx * iconScale)) / 2f
 
         // 4. 将计算出的总宽度转回 Dp，赋给 Canvas 以撑开父布局的 Row
         Canvas(modifier = Modifier.width(with(density) { finalWidthPx.toDp() }).fillMaxHeight()) {
             drawIntoCanvas { canvas ->
-                translate(left = offsetX) {
+                canvas.save()
+                canvas.translate(offsetX, offsetY)
+                canvas.scale(iconScale, iconScale)
                     // A. 绘制缩放后的信号底图
                     canvas.save()
-                    canvas.scale(scale, scale)
+                    canvas.scale(pictureScale, pictureScale)
                     canvas.nativeCanvas.saveLayer(null, picturePaint)
                     canvas.nativeCanvas.drawPicture(picture)
                     canvas.nativeCanvas.restore()
@@ -144,7 +152,7 @@ fun CustomSignalIcon(
                         val baselineY = anchorY - (fontMetrics.descent + fontMetrics.ascent) / 2f
                         canvas.nativeCanvas.drawText(netType, textLeft, baselineY, textPaint)
                     }
-                }
+                canvas.restore()
             }
         }
     }
