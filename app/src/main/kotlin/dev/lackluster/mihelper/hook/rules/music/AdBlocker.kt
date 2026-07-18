@@ -347,23 +347,24 @@ object AdBlocker : StaticHooker() {
     }
 
     private fun handleVIPCard() {
+        "com.tencent.qqmusiclite.fragment.my.AccountInfo".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "getVipText"
+            }?.hook {
+                val ori = proceed() as? Array<*>
+                val strList = ori?.filterIsInstance<String>()
+                val expireDate = strList?.firstOrNull {
+                    it.contains("/")
+                } ?: strList?.firstOrNull {
+                    it.contains("到期")
+                } ?: ""
+                result(arrayOf(expireDate))
+            }
+        }
         "com.tencent.qqmusiclite.ui.LoginLayoutViewHolder".toClassOrNull()?.apply {
             val getVipBuyLabel = resolve().firstMethodOrNull {
                 name = "getVipBuyLabel"
             }?.toTyped<TextView>()
-            resolve().firstMethodOrNull {
-                name = "setVipTextList"
-            }?.hook {
-                val newArgs = args.toTypedArray()
-                val textList = newArgs[0] as? List<*>
-                val expireDate = textList?.firstOrNull {
-                    it is String && it.contains("/")
-                } ?: textList?.firstOrNull {
-                    it is String && it.contains("到期")
-                }
-                newArgs[0] = listOfNotNull(expireDate)
-                result(proceed(newArgs))
-            }
             resolve().firstMethodOrNull {
                 name = "setBackgroundByVipLevel"
                 parameters(Int::class, Boolean::class, Boolean::class)
