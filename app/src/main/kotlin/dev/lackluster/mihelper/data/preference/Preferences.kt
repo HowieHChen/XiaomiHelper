@@ -457,7 +457,8 @@ object Preferences {
 
                 val NET_SPEED_MODE = PreferenceKey("icon_tuner_net_speed_mode", 0)
                 val NET_SPEED_UNIT_MODE = PreferenceKey("icon_tuner_net_speed_unit_mode", 0)
-                val NET_SPEED_REFRESH = PreferenceKey("icon_tuner_net_speed_refresh", false)
+//                val NET_SPEED_REFRESH = PreferenceKey("icon_tuner_net_speed_refresh", false)
+                val NET_SPEED_REFRESH = PreferenceKey("icon_tuner_net_speed_refresh_interval", 0)
                 val NET_SPEED_SCALE = PreferenceKey("icon_tuner_net_speed_scale", 1.0f)
             }
 

@@ -821,6 +821,14 @@
     <string name="icon_detail_net_speed_unit_style_kbps" translatable="false">6.18KB/s</string>
     <string name="icon_detail_net_speed_refresh">Refresh every second</string>
     <string name="icon_detail_net_speed_refresh_tips">Calculates connection speed every second instead of every four seconds</string>
+    <string name="icon_detail_net_speed_refresh_interval">Refresh interval</string>
+    <string name="icon_detail_net_speed_refresh_interval_default">System default (4 seconds)</string>
+    <string name="icon_detail_net_speed_refresh_interval_1_second">1 second</string>
+    <string name="icon_detail_net_speed_refresh_interval_2_seconds">2 seconds</string>
+    <string name="icon_detail_net_speed_refresh_interval_3_seconds">3 seconds</string>
+    <string name="icon_detail_net_speed_refresh_interval_4_seconds">4 seconds</string>
+    <string name="icon_detail_net_speed_refresh_interval_5_seconds">5 seconds</string>
+    <string name="icon_detail_net_speed_refresh_interval_6_seconds">6 seconds</string>
     <string name="icon_detail_net_speed_scale">Scale</string>
     <string name="icon_detail_net_speed_fw_num">Customize font weight (Numeric)</string>
     <string name="icon_detail_net_speed_fw_num_weight">Font weight (Numeric)</string>

@@ -28,6 +28,16 @@ private val networkSpeedUnitStyleOptions = listOf(
     DropDownOption(2, R.string.icon_detail_net_speed_unit_style_kbps),
 )
 
+private val networkSpeedRefreshIntervalOptions = listOf(
+    DropDownOption(0, R.string.icon_detail_net_speed_refresh_interval_default),
+    DropDownOption(1, R.string.icon_detail_net_speed_refresh_interval_1_second),
+    DropDownOption(2, R.string.icon_detail_net_speed_refresh_interval_2_seconds),
+    DropDownOption(3, R.string.icon_detail_net_speed_refresh_interval_3_seconds),
+    DropDownOption(4, R.string.icon_detail_net_speed_refresh_interval_4_seconds),
+    DropDownOption(5, R.string.icon_detail_net_speed_refresh_interval_5_seconds),
+    DropDownOption(6, R.string.icon_detail_net_speed_refresh_interval_6_seconds),
+)
+
 fun LazyListScope.netSpeedTabContent(
     isVisible: Boolean,
     netSpeedState: NetSpeedState,
@@ -49,10 +59,11 @@ fun LazyListScope.netSpeedTabContent(
                 options = networkSpeedUnitStyleOptions,
             )
         }
-        SwitchPreference(
+        DropDownPreference(
             key = Preferences.SystemUI.StatusBar.IconDetail.NET_SPEED_REFRESH,
-            title = stringResource(R.string.icon_detail_net_speed_refresh),
-            summary = stringResource(R.string.icon_detail_net_speed_refresh_tips),
+            title = stringResource(R.string.icon_detail_net_speed_refresh_interval),
+            options = networkSpeedRefreshIntervalOptions,
+            mode = DropDownMode.Dialog,
         )
         SeekBarPreference(
             key = Preferences.SystemUI.StatusBar.IconDetail.NET_SPEED_SCALE,

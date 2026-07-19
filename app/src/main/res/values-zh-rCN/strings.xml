@@ -609,6 +609,14 @@
     <string name="icon_tuner_position_reset_default">重置为默认值</string>
     <string name="icon_detail_net_speed_style_separate_tri_outline">分离（自适应三角）</string>
     <string name="icon_detail_net_speed_refresh_tips">每秒计算一次网速，而不是每四秒计算一次</string>
+    <string name="icon_detail_net_speed_refresh_interval">刷新间隔</string>
+    <string name="icon_detail_net_speed_refresh_interval_default">系统默认（4秒）</string>
+    <string name="icon_detail_net_speed_refresh_interval_1_second">1秒</string>
+    <string name="icon_detail_net_speed_refresh_interval_2_seconds">2秒</string>
+    <string name="icon_detail_net_speed_refresh_interval_3_seconds">3秒</string>
+    <string name="icon_detail_net_speed_refresh_interval_4_seconds">4秒</string>
+    <string name="icon_detail_net_speed_refresh_interval_5_seconds">5秒</string>
+    <string name="icon_detail_net_speed_refresh_interval_6_seconds">6秒</string>
     <string name="icon_detail_net_speed_fw_num">自定义数字字重</string>
     <string name="icon_detail_net_speed_fw_num_weight">数字字重</string>
     <string name="icon_detail_net_speed_fw_unit_weight">单位字重</string>

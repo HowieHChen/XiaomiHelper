@@ -49,7 +49,7 @@ object NetworkSpeed : StaticHooker() {
     private var Any.downBytes by extraOf("KEY_DOWN_BYTES", 0L)
 
     private val mode by Preferences.SystemUI.StatusBar.IconDetail.NET_SPEED_MODE.lazyGet()
-    private val refreshPerSecond by Preferences.SystemUI.StatusBar.IconDetail.NET_SPEED_REFRESH.lazyGet()
+    private val refreshIntervalSeconds by Preferences.SystemUI.StatusBar.IconDetail.NET_SPEED_REFRESH.lazyGet()
     private val unitMode by Preferences.SystemUI.StatusBar.IconDetail.NET_SPEED_UNIT_MODE.lazyGet()
     private val scale by Preferences.SystemUI.StatusBar.IconDetail.NET_SPEED_SCALE.lazyGet()
 
@@ -98,7 +98,7 @@ object NetworkSpeed : StaticHooker() {
 
     override fun onInit() {
         updateSelfState(
-            mode != 0 || refreshPerSecond || scale != 1.0f ||
+            mode != 0 || refreshIntervalSeconds in 1..6 || scale != 1.0f ||
                 modifyNetSpeedNumberFW || modifyNetSpeedUnitFW
         )
     }
@@ -193,7 +193,7 @@ object NetworkSpeed : StaticHooker() {
                 }
             }
         }
-        if (mode != 0 || refreshPerSecond) {
+        if (mode != 0 || refreshIntervalSeconds in 1..6) {
             "com.android.systemui.statusbar.policy.NetworkSpeedController".toClassOrNull()?.apply {
                 val mBgHandler = resolve().firstFieldOrNull {
                     name = "mBgHandler"
@@ -225,7 +225,10 @@ object NetworkSpeed : StaticHooker() {
                     val instance = resolve().firstFieldOrNull {
                         type("com.android.systemui.statusbar.policy.NetworkSpeedController")
                     }?.toTyped<Any>()
-                    val postDelayed = if (refreshPerSecond) 1000L else 4000L
+                    val postDelayed = when (refreshIntervalSeconds) {
+                        in 1..6 -> refreshIntervalSeconds * 1000L
+                        else -> 4000L
+                    }
                     resolve().firstMethodOrNull {
                         name = "handleMessage"
                     }?.hook {

@@ -74,7 +74,7 @@ data class BatteryState(
 data class NetSpeedState(
     val style: Int = 0,
     val unitStyle: Int = 0,
-    val refreshPerSecond: Boolean = false,
+    val refreshIntervalSeconds: Int = 0,
     val scale: Float = 1.0f,
     val numberFont: FontState = FontState(),
     val unitFont: FontState = FontState(),
