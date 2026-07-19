@@ -15,7 +15,7 @@ import dev.lackluster.mihelper.hook.rules.miuihome.recent.ShowRealMemory
 import dev.lackluster.mihelper.hook.rules.miuihome.gesture.BackGestureHaptic
 import dev.lackluster.mihelper.hook.rules.miuihome.gesture.LineGesture
 import dev.lackluster.mihelper.hook.rules.miuihome.gesture.PredictiveBackProgress
-import dev.lackluster.mihelper.hook.rules.miuihome.recent.HideClearButton
+import dev.lackluster.mihelper.hook.rules.miuihome.recent.ClearButton
 
 object MiuiHome : StaticHooker() {
     override fun onInit() {
@@ -29,7 +29,7 @@ object MiuiHome : StaticHooker() {
 
         attach(MinusSettings)
 
-        attach(HideClearButton)
+        attach(ClearButton)
         attach(HideFakeNavBar)
         attach(RecentCardAnim)
         attach(ShowRealMemory)

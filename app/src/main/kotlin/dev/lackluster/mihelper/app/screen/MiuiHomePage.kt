@@ -30,6 +30,12 @@ private val forceColorSchemeOptions = listOf(
     DropDownOption(2, R.string.weather_card_color_dark),
 )
 
+private val recentsClearButtonOptions = listOf(
+    DropDownOption(0, R.string.home_recent_clear_all_default),
+    DropDownOption(1, R.string.home_recent_clear_all_show),
+    DropDownOption(2, R.string.home_recent_clear_all_hide),
+)
+
 @Composable
 fun MiuiHomePage() {
     val tintColor = MiuixTheme.colorScheme.onSurfaceSecondary
@@ -153,13 +159,14 @@ fun MiuiHomePage() {
                 key = Preferences.MiuiHome.OPT_RECENT_CARD_ANIM,
                 title = stringResource(R.string.home_recent_dismiss_anim),
             )
-            val hideClearButton = rememberPreferenceState(Preferences.MiuiHome.HIDE_RECENT_CLEAR_BUTTON)
-            SwitchPreference(
-                title = stringResource(R.string.home_recent_hide_clear_all),
-                checked = hideClearButton.value,
-                onCheckedChange = { hideClearButton.value = it }
+            val clearButton = rememberPreferenceState(Preferences.MiuiHome.RECENT_CLEAR_BUTTON)
+            DropDownPreference(
+                title = stringResource(R.string.home_recent_clear_all),
+                value = clearButton.value,
+                onValueChange = { clearButton.value = it },
+                options = recentsClearButtonOptions,
             )
-            AnimatedVisibility(visible = hideClearButton.value && !Device.isPad) {
+            AnimatedVisibility(visible = clearButton.value == 2 && !Device.isPad) {
                 SwitchPreference(
                     key = Preferences.MiuiHome.RECENT_MEM_INFO_CLEAR,
                     title = stringResource(R.string.home_recent_mem_info_clear),

@@ -79,6 +79,8 @@
     <string name="common_tap_sleep">双击空白处锁屏</string>
     <string name="ui_title_home_recent">最近任务</string>
     <string name="home_recent_show_real_memory">显示真实内存占用</string>
+    <string name="home_recent_clear_all_show">始终显示</string>
+    <string name="home_recent_clear_all_hide">始终隐藏</string>
     <string name="home_recent_mem_info_clear">长按内存信息清除全部</string>
     <string name="home_recent_dismiss_anim">修改清除最近任务时的卡片动画</string>
     <string name="home_others_show_minus_setting">恢复负一屏设置</string>
@@ -754,4 +756,5 @@
     <string name="cleaner_music_hide_tab_quick_play">隐藏免费听</string>
     <string name="cleaner_music_hide_tab_long_audio">隐藏听书</string>
     <string name="module_settings_entry_position_after_device">显示在“我的设备”之后</string>
+    <string name="home_recent_clear_all">“清除全部”按钮</string>
 </resources>

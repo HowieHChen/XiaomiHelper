@@ -303,6 +303,10 @@
     <string name="ui_title_home_recent">Recent tasks</string>
     <string name="home_recent_dismiss_anim">Modify card animation when dismissing recent tasks</string>
     <string name="home_recent_hide_clear_all">Hide Clear all button</string>
+    <string name="home_recent_clear_all">Clear all button</string>
+    <string name="home_recent_clear_all_default" translatable="false">@string/common_default</string>
+    <string name="home_recent_clear_all_show">Always show</string>
+    <string name="home_recent_clear_all_hide">Always hide</string>
     <string name="home_recent_mem_info_clear">Long click on memory info to clear all</string>
     <string name="home_recent_show_real_memory">Show real memory usage</string>
     <string name="ui_title_home_cleaner" translatable="false">@string/page_cleaner</string>
