@@ -187,6 +187,36 @@ object AdBlocker : StaticHooker() {
                 result(null)
             }
         }
+        // 我的页底部推广应用列表
+        $$"com.xiaomi.market.common.analytics.onetrack.ExperimentManager$Companion".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "getMineAdRecommendGroup"
+            }?.hook {
+                result(0)
+            }
+        }
+        // 我的页应用升级卡片果园皮肤
+        "com.xiaomi.market.business_ui.main.mine.view.MineUpdateView".toClassOrNull()?.apply {
+            setOf(
+                "applyUpdateViewOrchardStyle",
+                "applyViewOrchardState",
+                "applyEmptyViewOrchardState"
+            ).forEach { methodName ->
+                resolve().firstMethodOrNull {
+                    name = methodName
+                }?.hook {
+                    result(null)
+                }
+            }
+        }
+        // 首页搜索框左侧的动态活动入口
+        "com.xiaomi.market.util.EntranceManager".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "getEntranceConfig"
+            }?.hook {
+                result(null)
+            }
+        }
         // 底部 Tab
         "com.xiaomi.market.widget.TabView".toClassOrNull()?.apply {
             resolve().firstMethodOrNull {
