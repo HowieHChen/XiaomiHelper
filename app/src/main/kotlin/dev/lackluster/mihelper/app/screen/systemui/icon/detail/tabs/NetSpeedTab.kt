@@ -54,6 +54,12 @@ fun LazyListScope.netSpeedTabContent(
             title = stringResource(R.string.icon_detail_net_speed_refresh),
             summary = stringResource(R.string.icon_detail_net_speed_refresh_tips),
         )
+        SeekBarPreference(
+            key = Preferences.SystemUI.StatusBar.IconDetail.NET_SPEED_SCALE,
+            title = stringResource(R.string.icon_detail_net_speed_scale),
+            min = 0.5f,
+            max = 1.5f,
+        )
     }
     itemPreferenceGroup(
         key = "NET_FONT_0",

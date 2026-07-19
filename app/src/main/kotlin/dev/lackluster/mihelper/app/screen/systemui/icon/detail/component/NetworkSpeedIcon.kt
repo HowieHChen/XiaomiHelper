@@ -49,6 +49,7 @@ fun NetworkSpeedIcon(
 
     val textLine1: String
     val textLine2: String
+    val scale = state.scale.coerceIn(0.5f, 1.5f)
     if (state.style in 1..4) {
         val textLineSb1 = StringBuilder()
         val textLineSb2 = StringBuilder()
@@ -96,20 +97,20 @@ fun NetworkSpeedIcon(
             top.linkTo(parent.top)
             end.linkTo(parent.end)
             if (state.style == 0) {
-                bottom.linkTo(parent.bottom, 9.2f.dp)
+                bottom.linkTo(parent.bottom, 9.2f.dp * scale)
                 start.linkTo(parent.start)
             } else {
-                bottom.linkTo(parent.bottom, 8.0f.dp)
+                bottom.linkTo(parent.bottom, 8.0f.dp * scale)
             }
         }
         constrain(text2) {
             bottom.linkTo(parent.bottom)
             end.linkTo(parent.end)
             if (state.style == 0) {
-                top.linkTo(parent.top, 7.8f.dp)
+                top.linkTo(parent.top, 7.8f.dp * scale)
                 start.linkTo(parent.start)
             } else {
-                top.linkTo(parent.top, 8.0f.dp)
+                top.linkTo(parent.top, 8.0f.dp * scale)
             }
         }
     }
@@ -129,7 +130,7 @@ fun NetworkSpeedIcon(
             },
             update = { textView ->
                 textView.text = textLine1
-                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize7.value)
+                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize7.value * scale)
 
                 val isStyle0 = state.style == 0
                 textView.typeface = if (isStyle0) baseTypefaceNum else baseTypefaceSeparate
@@ -153,7 +154,7 @@ fun NetworkSpeedIcon(
 
                 val isStyle0 = state.style == 0
                 val currentFontSize = if (isStyle0) fontSize6p4 else fontSize7
-                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, currentFontSize.value)
+                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, currentFontSize.value * scale)
                 textView.typeface = if (isStyle0) baseTypefaceUnit else baseTypefaceSeparate
                 val currentWeight = if (isStyle0) weightUnit else weightSeparate
 

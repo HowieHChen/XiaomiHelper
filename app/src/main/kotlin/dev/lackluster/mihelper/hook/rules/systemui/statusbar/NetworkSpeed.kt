@@ -25,6 +25,7 @@ import android.net.TrafficStats
 import android.os.Handler
 import android.os.Message
 import android.util.Pair
+import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
@@ -50,6 +51,7 @@ object NetworkSpeed : StaticHooker() {
     private val mode by Preferences.SystemUI.StatusBar.IconDetail.NET_SPEED_MODE.lazyGet()
     private val refreshPerSecond by Preferences.SystemUI.StatusBar.IconDetail.NET_SPEED_REFRESH.lazyGet()
     private val unitMode by Preferences.SystemUI.StatusBar.IconDetail.NET_SPEED_UNIT_MODE.lazyGet()
+    private val scale by Preferences.SystemUI.StatusBar.IconDetail.NET_SPEED_SCALE.lazyGet()
 
     private val measureText by lazy {
         StringBuilder().apply {
@@ -95,11 +97,14 @@ object NetworkSpeed : StaticHooker() {
     }
 
     override fun onInit() {
-        updateSelfState(mode != 0 || refreshPerSecond || modifyNetSpeedNumberFW || modifyNetSpeedUnitFW)
+        updateSelfState(
+            mode != 0 || refreshPerSecond || scale != 1.0f ||
+                modifyNetSpeedNumberFW || modifyNetSpeedUnitFW
+        )
     }
 
     override fun onHook() {
-        if (mode != 0 || modifyNetSpeedNumberFW || modifyNetSpeedUnitFW) {
+        if (mode != 0 || scale != 1.0f || modifyNetSpeedNumberFW || modifyNetSpeedUnitFW) {
             "com.android.systemui.statusbar.views.NetworkSpeedView".toClassOrNull()?.apply {
                 val mNetworkSpeedNumberText = resolve().firstFieldOrNull {
                     name = "mNetworkSpeedNumberText"
@@ -126,8 +131,18 @@ object NetworkSpeed : StaticHooker() {
                         if (modifyNetSpeedUnitFW) {
                             networkSpeedUnitText.typeface = typefaceNetSpeedUnitFW
                         }
+                        if (scale != 1.0f) {
+                            networkSpeedNumberText.apply {
+                                setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize * scale)
+                                translationY *= scale
+                            }
+                            networkSpeedUnitText.apply {
+                                setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize * scale)
+                                translationY *= scale
+                            }
+                        }
                     } else {
-                        val translationY = 4.dpFloat(context)
+                        val translationY = 4.dpFloat(context) * scale
                         val lp = FrameLayout.LayoutParams(
                             FrameLayout.LayoutParams.WRAP_CONTENT,
                             FrameLayout.LayoutParams.WRAP_CONTENT
