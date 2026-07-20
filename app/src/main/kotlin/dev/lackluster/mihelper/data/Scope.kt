@@ -35,9 +35,9 @@ object Scope {
 }
 
 object Version {
-    const val BROWSER = "20.22.1010623 (202210100)"
-    const val MARKET = "4.121.s.00 (40007460)"
-    const val MUSIC = "4.43.0.4 (4430004)"
-    const val PACKAGE_INSTALLER = "5.5.3.0.0-20260603 (55300)"
+    const val BROWSER = "20.23.1020715 (202310200)"
+    const val MARKET = "4.122.12 (40007502)"
+    const val MUSIC = "4.44.0.9 (4440009)"
+    const val PACKAGE_INSTALLER = "5.5.4.0.0-20260701 (55400)"
     const val SECURITY_CENTER = "12.1.5-251218.0.1 (40001215)"
 }

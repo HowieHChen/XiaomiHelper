@@ -189,7 +189,7 @@ object AdBlocker : StaticHooker() {
         }
         // 我的页底部推广应用列表
         $$"com.xiaomi.market.common.analytics.onetrack.ExperimentManager$Companion".toClassOrNull()?.apply {
-            resolve().firstMethodOrNull {
+            resolve().optional().firstMethodOrNull {
                 name = "getMineAdRecommendGroup"
             }?.hook {
                 result(0)
@@ -202,7 +202,7 @@ object AdBlocker : StaticHooker() {
                 "applyViewOrchardState",
                 "applyEmptyViewOrchardState"
             ).forEach { methodName ->
-                resolve().firstMethodOrNull {
+                resolve().optional().firstMethodOrNull {
                     name = methodName
                 }?.hook {
                     result(null)
@@ -211,7 +211,7 @@ object AdBlocker : StaticHooker() {
         }
         // 首页搜索框左侧的动态活动入口
         "com.xiaomi.market.util.EntranceManager".toClassOrNull()?.apply {
-            resolve().firstMethodOrNull {
+            resolve().optional().firstMethodOrNull {
                 name = "getEntranceConfig"
             }?.hook {
                 result(null)
