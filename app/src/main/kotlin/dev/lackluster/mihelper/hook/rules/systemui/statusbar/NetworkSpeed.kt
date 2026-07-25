@@ -159,6 +159,14 @@ object NetworkSpeed : StaticHooker() {
                             networkSpeedNumberText.typeface = typefaceNetSpeedSeparateFW
                             networkSpeedUnitText.typeface = typefaceNetSpeedSeparateFW
                         }
+                        if (scale != 1.0f) {
+                            networkSpeedNumberText.apply {
+                                setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize * scale)
+                            }
+                            networkSpeedUnitText.apply {
+                                setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize * scale)
+                            }
+                        }
                     }
                     result(ori)
                 }
