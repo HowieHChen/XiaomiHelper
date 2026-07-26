@@ -1,6 +1,5 @@
 package dev.lackluster.mihelper.hook.rules.systemui.media
 
-import android.app.WallpaperColors
 import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Color
@@ -14,7 +13,6 @@ import com.highcapable.kavaref.KavaRef.Companion.asResolver
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import dev.lackluster.mihelper.data.preference.Preferences
 import dev.lackluster.mihelper.hook.base.StaticHooker
-import dev.lackluster.mihelper.hook.rules.systemui.media.drawable.AmbientLightDrawable
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.media_bg_view
 import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils.tiny_media_session_view
 import dev.lackluster.mihelper.hook.rules.systemui.compat.ConstraintSetCompat.applyTo
@@ -24,17 +22,14 @@ import dev.lackluster.mihelper.hook.rules.systemui.compat.ConstraintSetCompat.ct
 import dev.lackluster.mihelper.hook.rules.systemui.media.AmbientLight.getMainColorHCT
 import dev.lackluster.mihelper.hook.rules.systemui.media.AmbientLight.metAcquireApplicationIcon
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.clzMediaData
-import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.ctorColorScheme
-import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.enumStyleContent
-import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.fldColorSchemeAccent1
-import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.fldTonalPaletteAllShades
-import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.getCachedWallpaperColor
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.getArtworkAmbientColor
+import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.getCachedArtworkAmbientColor
 import dev.lackluster.mihelper.hook.rules.systemui.media.MediaControlBgFactory.releaseCachedWallpaperColor
+import dev.lackluster.mihelper.hook.rules.systemui.media.drawable.AmbientLightDrawable
+import dev.lackluster.mihelper.hook.utils.HostExecutor
 import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
-import dev.lackluster.mihelper.hook.utils.e
 import dev.lackluster.mihelper.hook.utils.extraOf
 import dev.lackluster.mihelper.hook.utils.toTyped
-import dev.lackluster.mihelper.hook.utils.HostExecutor
 import dev.lackluster.mihelper.utils.factory.isSystemInDarkMode
 
 object FlipTinyScreen : StaticHooker() {
@@ -280,29 +275,13 @@ object FlipTinyScreen : StaticHooker() {
             backgroundTask = {
                 val mainColorHCT: Int
                 if (colorOpt) {
-                    val wallpaperColors = context.getCachedWallpaperColor(artwork)
-                    val mutableColorScheme: Any?
-                    if (wallpaperColors != null) {
-                        mutableColorScheme = ctorColorScheme?.newInstance(wallpaperColors, true, enumStyleContent)
-                    } else {
-                        try {
-                            val icon = context.packageManager.getApplicationIcon(pkgName)
-                            mutableColorScheme = ctorColorScheme?.newInstance(WallpaperColors.fromDrawable(icon), true, enumStyleContent)?: throw Exception()
-                        } catch (e: Exception) {
-                            e(e) { "application not found!" }
-                            return@execute null
-                        }
-                    }
-                    val accent1 = (fldTonalPaletteAllShades?.get(fldColorSchemeAccent1!!.get(mutableColorScheme)) as? List<*>)?.filterIsInstance<Int>()
-                    if (accent1?.size != 13) {
-                        mainColorHCT = Color.TRANSPARENT
-                    } else {
-                        val light = accent1[4]
-                        val dark = accent1[7]
-                        holder.lightMediaBgColor = light
-                        holder.darkMediaBgColor = dark
-                        mainColorHCT = if (isDark) dark else light
-                    }
+                    val artworkAmbientColor = context.getCachedArtworkAmbientColor(artwork)
+                    val ambientColor = artworkAmbientColor ?: runCatching {
+                        getArtworkAmbientColor(context.packageManager.getApplicationIcon(pkgName))
+                    }.getOrNull()
+                    holder.lightMediaBgColor = ambientColor ?: Color.TRANSPARENT
+                    holder.darkMediaBgColor = ambientColor ?: Color.TRANSPARENT
+                    mainColorHCT = ambientColor ?: Color.TRANSPARENT
                 } else {
                     val artWorkDrawable = (artwork?.loadDrawable(context) ?: metAcquireApplicationIcon?.invoke(null, context, mediaData)) ?: return@execute null
                     mainColorHCT = getMainColorHCT(artWorkDrawable) ?: Color.TRANSPARENT

@@ -10,6 +10,7 @@ import android.graphics.RuntimeShader
 import android.graphics.drawable.Drawable
 import android.os.SystemClock
 import android.view.View
+import androidx.core.graphics.ColorUtils
 import dev.lackluster.mihelper.utils.Math
 
 class AmbientLightDrawable(
@@ -19,6 +20,7 @@ class AmbientLightDrawable(
     private val paint = Paint()
     private val gradientPositions = floatArrayOf(0.9f, -0.21f, 0.1f, -0.26f, 0.5f, -0.28f)
     private val colorVec4 = floatArrayOf(0f, 0f, 0f, 1f)
+    private val gradientColors = FloatArray(COLOR_COUNT * 3)
 
     private var pause = false
     private var startTime = SystemClock.elapsedRealtime()
@@ -27,9 +29,10 @@ class AmbientLightDrawable(
 
     private var colorState: AnimationState = AnimationState.DONE
     private var colorStartTimeMillis = 0L
-    private var sourceColor = Color.TRANSPARENT
-    private var currentColor = Color.TRANSPARENT
     private var targetColor = Color.TRANSPARENT
+    private var sourceGradientColors = createRelatedColors(Color.TRANSPARENT)
+    private var currentGradientColors = createRelatedColors(Color.TRANSPARENT)
+    private var targetGradientColors = createRelatedColors(Color.TRANSPARENT)
 
     private var resizeState: AnimationState = AnimationState.DONE
     private var resizeStartTimeMillis = 0L
@@ -62,13 +65,17 @@ class AmbientLightDrawable(
 
         val hostView = callback as? View
         val shouldSnap = !useAnim || skipAnim || hostView == null || !hostView.isShown || !hostView.isAttachedToWindow
+        val nextColors = createRelatedColors(color)
 
         if (shouldSnap) {
-            sourceColor = color
-            currentColor = color
+            nextColors.copyInto(sourceGradientColors)
+            nextColors.copyInto(currentGradientColors)
+            nextColors.copyInto(targetGradientColors)
+            targetColor = color
             colorState = AnimationState.DONE
         } else {
-            sourceColor = currentColor
+            currentGradientColors.copyInto(sourceGradientColors)
+            nextColors.copyInto(targetGradientColors)
             targetColor = color
             colorState = AnimationState.STARTING
         }
@@ -138,10 +145,16 @@ class AmbientLightDrawable(
             AnimationState.RUNNING -> {
                 if (colorStartTimeMillis >= 0) {
                     val normalized: Float = ((now - colorStartTimeMillis) / COLOR_ANIM_DURATION).coerceIn(0.0f, 1.0f)
-                    currentColor = argbEvaluator(normalized, sourceColor, targetColor)
+                    for (index in 0 until COLOR_COUNT) {
+                        currentGradientColors[index] = argbEvaluator(
+                            normalized,
+                            sourceGradientColors[index],
+                            targetGradientColors[index]
+                        )
+                    }
                     if (normalized >= 1.0f) {
                         colorState = AnimationState.DONE
-                        currentColor = targetColor
+                        targetGradientColors.copyInto(currentGradientColors)
                     }
                 }
             }
@@ -182,11 +195,10 @@ class AmbientLightDrawable(
 
                 setIntUniform("uIsLightMode", isLightMode)
 
-                colorVec4[0] = Color.red(currentColor) / 255f
-                colorVec4[1] = Color.green(currentColor) / 255f
-                colorVec4[2] = Color.blue(currentColor) / 255f
+                updateGradientColors(currentGradientColors)
                 colorVec4[3] = (duration / LIGHT_ANIM_DURATION).coerceIn(0.0f, 1.0f)
                 setFloatUniform("uGradientColor", colorVec4)
+                setFloatUniform("uGradientColors", gradientColors)
             }
             p0.drawRect(0.0f, 0.0f, w, h, paint)
         }
@@ -215,10 +227,43 @@ class AmbientLightDrawable(
         return changed
     }
 
+    private fun updateGradientColors(colors: IntArray) {
+        for (index in 0 until COLOR_COUNT) {
+            val offset = index * 3
+            val color = colors[index]
+            gradientColors[offset] = Color.red(color) / 255f
+            gradientColors[offset + 1] = Color.green(color) / 255f
+            gradientColors[offset + 2] = Color.blue(color) / 255f
+        }
+    }
+
     companion object {
+        private const val COLOR_COUNT = 3
         private const val LIGHT_ANIM_DURATION = 600.0f
         private const val COLOR_ANIM_DURATION = 600.0f
         private const val RESIZE_ANIM_DURATION = 234.0f
+
+        private val HUE_OFFSETS = floatArrayOf(-10f, 2f, 14f)
+        private val SATURATION_SCALES = floatArrayOf(1.04f, 1f, 0.88f)
+        private val LIGHTNESS_OFFSETS = floatArrayOf(-0.06f, 0f, 0.07f)
+
+        /**
+         * Derives a restrained three-color palette from one media color. The hues stay close
+         * together so the moving blobs read as a single ambient light instead of a rainbow.
+         */
+        private fun createRelatedColors(color: Int): IntArray {
+            val hsl = FloatArray(3).also { ColorUtils.colorToHSL(color, it) }
+            val baseSaturation = if (hsl[1] < 0.12f) 0.46f else hsl[1].coerceIn(0.38f, 0.82f)
+            val baseLightness = hsl[2].coerceIn(0.22f, 0.78f)
+            return IntArray(COLOR_COUNT) { index ->
+                val relatedHsl = floatArrayOf(
+                    (hsl[0] + HUE_OFFSETS[index] + 360f) % 360f,
+                    (baseSaturation * SATURATION_SCALES[index]).coerceIn(0.38f, 0.82f),
+                    (baseLightness + LIGHTNESS_OFFSETS[index]).coerceIn(0.22f, 0.78f)
+                )
+                ColorUtils.HSLToColor(relatedHsl)
+            }
+        }
 
         private fun argbEvaluator(fraction: Float, startValue: Int, endValue: Int): Int {
             val startA = (startValue shr 24) and 0xff
@@ -351,13 +396,12 @@ class AmbientLightDrawable(
             
                     float s = factor * oa;
             
-                    vec3 ballColor = uGradientColor.rgb;
+                    vec3 ballColor = uGradientColors[i];
                     float ballAlpha = uGradientColor.a;
             
                     ballColor = rgb2hsv(ballColor);
             
-                    ballColor.x += (float(i) - 1.) * 0.08;
-                    ballColor.y = 0.8;
+                    ballColor.y = clamp(ballColor.y * 1.04, 0.38, 0.82);
                     
                     ballColor.z += pow(factor, 2.) * 0.2;
                     if (uIsLightMode == 0) {

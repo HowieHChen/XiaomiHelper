@@ -108,6 +108,7 @@ internal object MediaControlBgFactory : StaticHooker() {
     }
 
     private val artworkColorMap = WeakHashMap<Icon, WallpaperColors>()
+    private val artworkAmbientColorMap = WeakHashMap<Icon, Int>()
 
     override fun onInit() {
         clzColorScheme
@@ -161,9 +162,72 @@ internal object MediaControlBgFactory : StaticHooker() {
         }
     }
 
+    fun Context.getCachedArtworkAmbientColor(icon: Icon?): Int? {
+        icon ?: return null
+        synchronized(artworkAmbientColorMap) {
+            artworkAmbientColorMap[icon]?.let { return it }
+        }
+        val drawable = icon.loadDrawable(this) ?: return null
+        val color = extractArtworkAmbientColor(drawable) ?: return null
+        synchronized(artworkAmbientColorMap) {
+            artworkAmbientColorMap[icon] = color
+        }
+        return color
+    }
+
+    fun getArtworkAmbientColor(drawable: Drawable): Int? = extractArtworkAmbientColor(drawable)
+
     fun releaseCachedWallpaperColor() {
         synchronized(artworkColorMap) {
             artworkColorMap.clear()
+        }
+        synchronized(artworkAmbientColorMap) {
+            artworkAmbientColorMap.clear()
+        }
+    }
+
+    private fun extractArtworkAmbientColor(drawable: Drawable): Int? {
+        val bitmap = createBitmap(AMBIENT_SAMPLE_SIZE, AMBIENT_SAMPLE_SIZE)
+        val previousBounds = Rect(drawable.bounds)
+        return try {
+            drawable.bounds = Rect(0, 0, AMBIENT_SAMPLE_SIZE, AMBIENT_SAMPLE_SIZE)
+            val canvas = Canvas(bitmap)
+            canvas.drawColor(Color.TRANSPARENT)
+            drawable.draw(canvas)
+
+            val weights = FloatArray(AMBIENT_HUE_BUCKETS)
+            val red = FloatArray(AMBIENT_HUE_BUCKETS)
+            val green = FloatArray(AMBIENT_HUE_BUCKETS)
+            val blue = FloatArray(AMBIENT_HUE_BUCKETS)
+            val hsv = FloatArray(3)
+            for (y in 0 until AMBIENT_SAMPLE_SIZE) {
+                for (x in 0 until AMBIENT_SAMPLE_SIZE) {
+                    val pixel = bitmap[x, y]
+                    val alpha = Color.alpha(pixel)
+                    if (alpha < MIN_AMBIENT_ALPHA) continue
+                    Color.RGBToHSV(Color.red(pixel), Color.green(pixel), Color.blue(pixel), hsv)
+                    if (hsv[1] < MIN_AMBIENT_SATURATION) continue
+                    val bucket = (hsv[0] / 360f * AMBIENT_HUE_BUCKETS)
+                        .toInt()
+                        .coerceIn(0, AMBIENT_HUE_BUCKETS - 1)
+                    val weight = alpha / 255f * (0.45f + 0.55f * hsv[1])
+                    weights[bucket] += weight
+                    red[bucket] += Color.red(pixel) * weight
+                    green[bucket] += Color.green(pixel) * weight
+                    blue[bucket] += Color.blue(pixel) * weight
+                }
+            }
+            val dominantBucket = weights.indices.maxByOrNull(weights::get) ?: return null
+            val totalWeight = weights[dominantBucket]
+            if (totalWeight <= 0f) return null
+            Color.rgb(
+                (red[dominantBucket] / totalWeight).toInt().coerceIn(0, 255),
+                (green[dominantBucket] / totalWeight).toInt().coerceIn(0, 255),
+                (blue[dominantBucket] / totalWeight).toInt().coerceIn(0, 255)
+            )
+        } finally {
+            drawable.bounds = previousBounds
+            bitmap.recycle()
         }
     }
 
@@ -185,6 +249,11 @@ internal object MediaControlBgFactory : StaticHooker() {
 
         return totalBrightness / totalPixels
     }
+
+    private const val AMBIENT_SAMPLE_SIZE = 48
+    private const val AMBIENT_HUE_BUCKETS = 12
+    private const val MIN_AMBIENT_ALPHA = 0x40
+    private const val MIN_AMBIENT_SATURATION = 0.12f
 
     fun Bitmap.hardwareBlur(radius: Float): Bitmap {
         val imageReader = ImageReader.newInstance(
