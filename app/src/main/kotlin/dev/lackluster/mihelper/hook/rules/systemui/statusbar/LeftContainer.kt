@@ -30,6 +30,7 @@ import com.highcapable.kavaref.extension.classOf
 object LeftContainer : StaticHooker() {
     private var Any.leftStatusIconContainer by extraOf<ViewGroup>("KEY_LEFT_STATUS_ICON_CONTAINER")
     private var Any.leftStatusIconManager by extraOf<Any>("KEY_LEFT_STATUS_ICON_MANAGER")
+    private var Any.leftStatusIconHost by extraOf<ViewGroup>("KEY_LEFT_STATUS_ICON_HOST")
     private var ViewGroup.islandRect by extraOf<Rect>("KEY_ISLAND_RECT")
     private var ViewGroup.islandShowing by extraOf("KEY_ISLAND_SHOWING", false)
 
@@ -398,6 +399,10 @@ object LeftContainer : StaticHooker() {
                 }
                 type { it isSubclassOf classOf<View>() }
             }?.toTyped<View>()
+            val fldAlarmLayout = clzMiuiKeyguardStatusBarView?.resolve()?.firstFieldOrNull {
+                name = "mAlarmLayout"
+                type { it isSubclassOf classOf<View>() }
+            }?.toTyped<View>()
             val fldLightLockScreenWallpaper = clzMiuiKeyguardStatusBarView?.resolve()?.firstFieldOrNull {
                 name = "mLightLockScreenWallpaper"
             }?.toTyped<Boolean>()
@@ -432,35 +437,39 @@ object LeftContainer : StaticHooker() {
                 val ori = proceed()
                 val miuiKeyguardStatusBarView = fldView?.get(thisObject) ?: return@hook result(ori)
                 val leftStatusIcons = getOrPutStatusIconContainer(miuiKeyguardStatusBarView, miuiKeyguardStatusBarView.context, false) ?: return@hook result(ori)
-                fldCarrier?.get(miuiKeyguardStatusBarView)?.let { carrier ->
-                    val parent = carrier.parent as? ViewGroup
-                    parent?.apply {
-                        val position = indexOfChild(carrier)
+                val carrier = fldCarrier?.get(miuiKeyguardStatusBarView)
+                val alarmLayout = fldAlarmLayout?.get(miuiKeyguardStatusBarView)
+                val parent = carrier?.parent as? ViewGroup
+                if (parent != null) {
+                    val alarmInSameParent = alarmLayout?.parent == parent
+                    val leftStatusIconHost = LinearLayout(parent.context).apply {
+                        orientation = LinearLayout.HORIZONTAL
+                        layoutDirection = View.LAYOUT_DIRECTION_INHERIT
                         val params = ViewGroup.LayoutParams(
                             ViewGroup.LayoutParams.WRAP_CONTENT,
                             ViewGroup.LayoutParams.MATCH_PARENT
                         )
-                        removeView(carrier)
-                        addView(
-                            LinearLayout(context).apply {
-                                orientation = LinearLayout.HORIZONTAL
-                                layoutDirection = View.LAYOUT_DIRECTION_INHERIT
-                                layoutParams = params
-                                addView(carrier)
-                                addView(leftStatusIcons)
-                            },
-                            position
-                        )
-                        leftStatusIcons.visibility = carrier.visibility
+                        layoutParams = params
                     }
-//                        leftStatusIcons.doOnLayout {
-//                            val parentDirection = (it.parent as? ViewGroup)?.layoutDirection ?: View.LAYOUT_DIRECTION_LTR
-//                            it.layoutDirection = if (parentDirection == View.LAYOUT_DIRECTION_LTR) {
-//                                View.LAYOUT_DIRECTION_RTL
-//                            } else {
-//                                View.LAYOUT_DIRECTION_LTR
-//                            }
-//                        }
+                    val position = if (alarmInSameParent) {
+                        minOf(parent.indexOfChild(carrier), parent.indexOfChild(alarmLayout))
+                    } else {
+                        parent.indexOfChild(carrier)
+                    }
+                    parent.apply {
+                        removeView(carrier)
+                        if (alarmInSameParent) removeView(alarmLayout)
+                        leftStatusIconHost.addView(carrier)
+                        if (alarmInSameParent) leftStatusIconHost.addView(alarmLayout)
+                        leftStatusIconHost.addView(leftStatusIcons)
+                        addView(leftStatusIconHost, position)
+                    }
+                    miuiKeyguardStatusBarView.leftStatusIconHost = leftStatusIconHost
+                    updateKeyguardLeftStatusIconHostVisibility(
+                        miuiKeyguardStatusBarView,
+                        carrier,
+                        alarmLayout
+                    )
                 }
                 val mLightLockScreenWallpaper = fldLightLockScreenWallpaper?.get(miuiKeyguardStatusBarView) ?: false
                 val mDep = fldDep?.get(miuiKeyguardStatusBarView)
@@ -503,9 +512,6 @@ object LeftContainer : StaticHooker() {
             val fldInit = resolve().optional(true).firstFieldOrNull {
                 name = "mInit"
             }?.toTyped<Boolean>()
-            val fldShowCarrier = resolve().optional(true).firstFieldOrNull {
-                name = "mShowCarrier"
-            }?.toTyped<Boolean>()
             val fldStatusIconContainer = resolve().optional(true).firstFieldOrNull {
                 name = "mStatusIconContainer"
                 superclass()
@@ -514,6 +520,10 @@ object LeftContainer : StaticHooker() {
                 name {
                     it.startsWith("mCarrier")
                 }
+                type { it isSubclassOf classOf<View>() }
+            }?.toTyped<View>()
+            val fldAlarmLayout = resolve().optional(true).firstFieldOrNull {
+                name = "mAlarmLayout"
                 type { it isSubclassOf classOf<View>() }
             }?.toTyped<View>()
             var hookInit = false
@@ -545,10 +555,25 @@ object LeftContainer : StaticHooker() {
                 val ori = proceed()
                 val view = thisObject as? View
                 if (view != null) {
-                    val leftStatusIconContainer = getOrPutStatusIconContainer(view, view.context, false) ?: return@hook result(ori)
-                    val carrierTextLayout = fldCarrier?.get(thisObject)
-                    leftStatusIconContainer.visibility =
-                        carrierTextLayout?.visibility ?: if (fldShowCarrier?.get(thisObject) == true) View.VISIBLE else View.GONE
+                    updateKeyguardLeftStatusIconHostVisibility(
+                        view,
+                        fldCarrier?.get(thisObject),
+                        fldAlarmLayout?.get(thisObject)
+                    )
+                }
+                result(ori)
+            }
+            resolve().firstMethodOrNull {
+                name = "showNextAlarm"
+            }?.hook {
+                val ori = proceed()
+                val view = thisObject as? View
+                if (view != null) {
+                    updateKeyguardLeftStatusIconHostVisibility(
+                        view,
+                        fldCarrier?.get(thisObject),
+                        fldAlarmLayout?.get(thisObject)
+                    )
                 }
                 result(ori)
             }
@@ -596,5 +621,19 @@ object LeftContainer : StaticHooker() {
             if (remember) leftContainers.add(container)
         }
         return container
+    }
+
+    private fun updateKeyguardLeftStatusIconHostVisibility(
+        keyguardStatusBarView: View,
+        carrier: View?,
+        alarmLayout: View?
+    ) {
+        val host = keyguardStatusBarView.leftStatusIconHost ?: return
+        val alarmInHost = alarmLayout?.takeIf { it.parent == host }
+        host.visibility = when {
+            carrier?.visibility == View.VISIBLE || alarmInHost?.visibility == View.VISIBLE -> View.VISIBLE
+            carrier?.visibility == View.INVISIBLE || alarmInHost?.visibility == View.INVISIBLE -> View.INVISIBLE
+            else -> View.GONE
+        }
     }
 }
