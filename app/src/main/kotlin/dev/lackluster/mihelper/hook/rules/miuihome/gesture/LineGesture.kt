@@ -12,6 +12,7 @@ import dev.lackluster.mihelper.hook.utils.toTyped
 object LineGesture : StaticHooker() {
     private val actionLongPress by Preferences.MiuiHome.LINE_GESTURE_LONG_PRESS.lazyGet()
     private val actionDoubleTap by Preferences.MiuiHome.LINE_GESTURE_DOUBLE_TAP.lazyGet()
+    private val actionSingleTap by Preferences.MiuiHome.LINE_GESTURE_SINGLE_TAP.lazyGet()
 
     private val metGetInstance by lazy {
         "com.miui.home.launcher.Application".toClassOrNull()?.resolve()?.firstMethodOrNull {
@@ -21,7 +22,7 @@ object LineGesture : StaticHooker() {
     }
 
     override fun onInit() {
-        updateSelfState(actionLongPress != 0 || actionDoubleTap != 0)
+        updateSelfState(actionLongPress != 0 || actionDoubleTap != 0 || actionSingleTap != 0)
     }
 
     override fun onHook() {
@@ -64,6 +65,25 @@ object LineGesture : StaticHooker() {
                     name = "updateIsCanDoubleClickTriggerApp"
                 }?.hook {
                     result(null)
+                }
+            }
+            if (actionSingleTap != 0) {
+                val clzNavStubGestureListener = "com.miui.home.recents.gesture.NavStubGestureListener".toClassOrNull()
+                $$"android.view.MiuiGestureDetector$SimpleOnGestureListener".toClassOrNull()?.apply {
+                    resolve().firstMethodOrNull {
+                        name = "onSingleTapConfirmed"
+                    }?.hook {
+                        if (clzNavStubGestureListener?.isInstance(thisObject) != true) {
+                            return@hook result(proceed())
+                        }
+                        val application = metGetInstance?.invoke(null)
+                        if (application != null) {
+                            CommonGesture.doAction(application, actionSingleTap)
+                            result(true)
+                        } else {
+                            result(proceed())
+                        }
+                    }
                 }
             }
         }

@@ -195,6 +195,8 @@
     <string name="home_gesture_line_long_press_tips">Pressione longamente o indicador de tela cheia para acionar uma função específica.</string>
     <string name="home_gesture_line_double_tap">Toque duas vezes no indicador de tela cheia</string>
     <string name="home_gesture_line_double_tap_tips">Toque duas vezes no indicador de tela cheia para acionar uma função específica.</string>
+    <string name="home_gesture_line_single_tap">Toque único no indicador de tela cheia</string>
+    <string name="home_gesture_line_single_tap_tips">Toque uma vez no indicador de tela cheia para acionar uma função específica.</string>
     <string name="ui_title_home_anim">Animação</string>
     <string name="home_anim_icon_zoom">Desativar animação de zoom ao clicar no ícone</string>
     <string name="home_anim_icon_darken">Desativar animação escurecida ao clicar no ícone</string>

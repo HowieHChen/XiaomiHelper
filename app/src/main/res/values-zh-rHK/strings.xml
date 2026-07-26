@@ -75,6 +75,7 @@
     <string name="action_lock_screen">關閉熒幕</string>
     <string name="action_screenshot">截圖</string>
     <string name="action_home">主頁</string>
+    <string name="action_back">返回</string>
     <string name="action_recents">最近任務</string>
     <string name="action_recognize_screen">超級小愛識屏</string>
     <string name="action_xiaoai">超級小愛</string>
@@ -226,6 +227,8 @@
     <string name="home_gesture_line_long_press_tips">Long press on the full screen indicator to trigger a specific function.</string>
     <string name="home_gesture_line_double_tap">雙擊手勢提示線</string>
     <string name="home_gesture_line_double_tap_tips">Long press on the full screen indicator to trigger a specific function</string>
+    <string name="home_gesture_line_single_tap">單擊手勢提示線</string>
+    <string name="home_gesture_line_single_tap_tips">單擊手勢提示線觸發特定功能</string>
     <string name="ui_title_home_anim">動畫</string>
     <string name="home_anim_icon_zoom">停用點擊圖示時的縮放動畫</string>
     <string name="home_anim_icon_darken">停用點擊圖示時的黑色遮罩</string>

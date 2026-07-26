@@ -82,6 +82,7 @@
     <string name="action_screenshot">Take screenshot</string>
     <string name="action_home">Home</string>
     <string name="action_recents">Overview (recent apps)</string>
+    <string name="action_back">Back</string>
     <string name="action_recognize_screen">Recognize screen</string>
     <string name="action_xiaoai">Xiaomi Hyper XiaoAi</string>
     <string name="action_floating_window">Floating window</string>
@@ -292,6 +293,8 @@
     <string name="home_gesture_line_long_press_tips">Long press on the full screen indicator to trigger a specific function</string>
     <string name="home_gesture_line_double_tap">Double tap on the full screen indicator</string>
     <string name="home_gesture_line_double_tap_tips">Double tap on the full screen indicator to trigger a specific function</string>
+    <string name="home_gesture_line_single_tap">Single tap on the full screen indicator</string>
+    <string name="home_gesture_line_single_tap_tips">Single tap on the full screen indicator to trigger a specific function</string>
     <string name="ui_title_home_anim">Animation</string>
     <string name="home_anim_icon_zoom">Disable zoom animation on icon click</string>
     <string name="home_anim_icon_darken">Disable dim animation on icon click</string>

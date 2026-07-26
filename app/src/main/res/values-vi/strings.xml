@@ -230,6 +230,8 @@
     <string name="home_gesture_line_long_press_tips">Nhấn giữ vào thanh chỉ báo toàn màn hình ở dưới đáy để kích hoạt một chức năng cụ thể.</string>
     <string name="home_gesture_line_double_tap">Nhấn đúp vào thanh chỉ báo toàn màn hình</string>
     <string name="home_gesture_line_double_tap_tips">Nhấn đúp vào thanh chỉ báo toàn màn hình ở dưới đáy để kích hoạt một chức năng cụ thể.</string>
+    <string name="home_gesture_line_single_tap">Chạm một lần vào thanh chỉ báo toàn màn hình</string>
+    <string name="home_gesture_line_single_tap_tips">Chạm một lần vào thanh chỉ báo toàn màn hình để kích hoạt một chức năng cụ thể.</string>
     <string name="ui_title_home_anim">Hoạt ảnh</string>
     <string name="home_anim_icon_zoom">Tắt hoạt ảnh thu phóng khi nhấp vào biểu tượng</string>
     <string name="home_anim_icon_darken">Tắt hoạt ảnh làm tối màu khi nhấp vào biểu tượng</string>

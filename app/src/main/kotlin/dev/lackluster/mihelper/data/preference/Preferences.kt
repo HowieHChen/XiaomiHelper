@@ -137,6 +137,7 @@ object Preferences {
 //        const val QUICK_SWITCH_RIGHT = "home_quick_back_right"
         val LINE_GESTURE_DOUBLE_TAP = PreferenceKey("home_line_double_tap", 0)
         val LINE_GESTURE_LONG_PRESS = PreferenceKey("home_line_long_press", 0)
+        val LINE_GESTURE_SINGLE_TAP = PreferenceKey("home_line_single_tap", 0)
         val OPT_RECENT_CARD_ANIM = PreferenceKey("home_recent_anim", false)
 //        val HIDE_RECENT_CLEAR_BUTTON = PreferenceKey("home_recent_hide_clear_button", false)
         val RECENT_CLEAR_BUTTON = PreferenceKey("home_recent_clear_button", 0)

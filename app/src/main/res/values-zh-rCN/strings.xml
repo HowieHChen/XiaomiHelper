@@ -88,6 +88,8 @@
     <string name="home_gesture_line_long_press_tips">长按手势提示线触发特定功能</string>
     <string name="home_gesture_line_double_tap">双击手势提示线</string>
     <string name="home_gesture_line_double_tap_tips">双击手势提示线触发特定功能</string>
+    <string name="home_gesture_line_single_tap">单击手势提示线</string>
+    <string name="home_gesture_line_single_tap_tips">单击手势提示线触发特定功能</string>
     <string name="ui_title_home_anim">动画</string>
     <string name="home_anim_folder_icon_darken">禁用点击文件夹内图标时的黑色遮罩</string>
     <string name="ui_title_home_folder">文件夹</string>
@@ -427,6 +429,7 @@
     <string name="action_screenshot">截图</string>
     <string name="action_notifications">通知中心</string>
     <string name="action_home">主页</string>
+    <string name="action_back">返回</string>
     <string name="home_gesture_back_haptic">返回手势触觉反馈</string>
     <string name="icon_detail_cellular_hide_roam_global_tips">隐藏所有漫游状态图标，按照非漫游状态显示</string>
     <string name="icon_detail_cellular_hide_roam">隐藏漫游图标</string>

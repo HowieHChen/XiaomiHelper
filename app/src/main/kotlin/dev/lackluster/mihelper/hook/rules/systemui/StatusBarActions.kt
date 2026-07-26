@@ -28,6 +28,7 @@ import android.widget.Toast
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.condition.type.Modifiers
 import dev.lackluster.mihelper.data.Constants.ACTION_FLOATING_WINDOW
+import dev.lackluster.mihelper.data.Constants.ACTION_BACK
 import dev.lackluster.mihelper.data.Constants.ACTION_HOME
 import dev.lackluster.mihelper.data.Constants.ACTION_NOTIFICATIONS
 import dev.lackluster.mihelper.data.Constants.ACTION_QUICK_SETTINGS
@@ -74,6 +75,7 @@ object StatusBarActions : StaticHooker() {
                     ACTION_QUICK_SETTINGS -> Intent("action_panels_operation").putExtra("operation", "reverse_quick_settings_panel")
                     ACTION_HOME -> Intent("SYSTEM_ACTION_HOME")
                     ACTION_RECENTS -> Intent("SYSTEM_ACTION_RECENTS")
+                    ACTION_BACK -> Intent("SYSTEM_ACTION_BACK")
                     else -> return
                 }.apply {
                     setPackage(Scope.SYSTEM_UI)
@@ -125,6 +127,7 @@ object StatusBarActions : StaticHooker() {
         updateSelfState(
             Preferences.MiuiHome.LINE_GESTURE_LONG_PRESS.get() != 0 ||
                     Preferences.MiuiHome.LINE_GESTURE_DOUBLE_TAP.get() != 0 ||
+                    Preferences.MiuiHome.LINE_GESTURE_SINGLE_TAP.get() != 0 ||
                     Preferences.SystemUI.StatusBar.DOUBLE_TAP_GESTURE.get() != 0 ||
                     Preferences.SystemUI.StatusBar.SINGLE_TAP_GESTURE.get() != 0
         )
@@ -147,6 +150,7 @@ object StatusBarActions : StaticHooker() {
                 intentFilter.addAction(ACTION_QUICK_SETTINGS)
                 intentFilter.addAction(ACTION_HOME)
                 intentFilter.addAction(ACTION_RECENTS)
+                intentFilter.addAction(ACTION_BACK)
                 context.registerReceiver(
                     actionReceiver,
                     intentFilter,

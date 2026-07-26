@@ -48,6 +48,7 @@ fun MiuiHomePage() {
             DropDownOption(2, R.string.action_quick_settings, iconRes = R.drawable.ic_quick_switch_quick_settings, iconTint = tintColor),
             DropDownOption(3, R.string.action_lock_screen, iconRes = R.drawable.ic_quick_switch_lock_screen, iconTint = tintColor),
             DropDownOption(4, R.string.action_screenshot, iconRes = R.drawable.ic_quick_switch_screenshot, iconTint = tintColor),
+            DropDownOption(12, R.string.action_back, iconRes = R.drawable.ic_quick_switch_back, iconTint = tintColor),
             DropDownOption(5, R.string.action_home, iconRes = R.drawable.ic_quick_switch_home, iconTint = tintColor),
             DropDownOption(6, R.string.action_recents, iconRes = R.drawable.ic_quick_switch_recents, iconTint = tintColor),
             DropDownOption(7, R.string.action_recognize_screen, iconRes = R.drawable.ic_quick_switch_recognize_screen, iconTint = tintColor),
@@ -149,6 +150,12 @@ fun MiuiHomePage() {
                 key = Preferences.MiuiHome.LINE_GESTURE_DOUBLE_TAP,
                 title = stringResource(R.string.home_gesture_line_double_tap),
                 summary = stringResource(R.string.home_gesture_line_double_tap_tips),
+                options = lineGestureActionOptions,
+            )
+            DropDownPreference(
+                key = Preferences.MiuiHome.LINE_GESTURE_SINGLE_TAP,
+                title = stringResource(R.string.home_gesture_line_single_tap),
+                summary = stringResource(R.string.home_gesture_line_single_tap_tips),
                 options = lineGestureActionOptions,
             )
         }

@@ -8,6 +8,7 @@ import android.os.SystemClock
 import androidx.core.content.getSystemService
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import dev.lackluster.mihelper.data.Constants.ACTION_FLOATING_WINDOW
+import dev.lackluster.mihelper.data.Constants.ACTION_BACK
 import dev.lackluster.mihelper.data.Constants.ACTION_HOME
 import dev.lackluster.mihelper.data.Constants.ACTION_NOTIFICATIONS
 import dev.lackluster.mihelper.data.Constants.ACTION_QUICK_SETTINGS
@@ -42,6 +43,7 @@ object CommonGesture {
      * 9 -> FLOATING_WINDOW;
      * 10 -> SCROLL_TO_TOP; // OS3.0.300+
      * 11 -> DISABLED;
+     * 12 -> SYSTEM_ACTION_BACK;
      */
     fun doAction(appContext: Context, action: Int) {
         MLog.d(TAG) { "doAction action $action" }
@@ -94,6 +96,7 @@ object CommonGesture {
                     6 -> Intent(ACTION_RECENTS)
                     9 -> Intent(ACTION_FLOATING_WINDOW)
                     10 -> Intent(ACTION_SCROLL_TO_TOP)
+                    12 -> Intent(ACTION_BACK)
                     else -> return
                 }
                 appContext.sendBroadcast(intent, PER_MIUI_INTERNAL_API)
