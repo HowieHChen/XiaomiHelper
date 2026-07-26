@@ -76,6 +76,7 @@ private fun SystemUIPageContent(
             DropDownOption(2, R.string.action_quick_settings, iconRes = R.drawable.ic_quick_switch_quick_settings, iconTint = tintColor),
             DropDownOption(3, R.string.action_lock_screen, iconRes = R.drawable.ic_quick_switch_lock_screen, iconTint = tintColor),
             DropDownOption(4, R.string.action_screenshot, iconRes = R.drawable.ic_quick_switch_screenshot, iconTint = tintColor),
+            DropDownOption(12, R.string.action_back, iconRes = R.drawable.ic_quick_switch_back, iconTint = tintColor),
             DropDownOption(5, R.string.action_home, iconRes = R.drawable.ic_quick_switch_home, iconTint = tintColor),
             DropDownOption(6, R.string.action_recents, iconRes = R.drawable.ic_quick_switch_recents, iconTint = tintColor),
             DropDownOption(7, R.string.action_recognize_screen, iconRes = R.drawable.ic_quick_switch_recognize_screen, iconTint = tintColor),

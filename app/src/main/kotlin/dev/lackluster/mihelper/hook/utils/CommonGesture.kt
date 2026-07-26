@@ -46,7 +46,7 @@ object CommonGesture {
      * 12 -> SYSTEM_ACTION_BACK;
      */
     fun doAction(appContext: Context, action: Int) {
-        MLog.d(TAG) { "doAction action $action" }
+        MLog.i(TAG) { "doAction action=$action source=${appContext.packageName}" }
         when (action) {
             3 -> {
                 val pkgName = appContext.applicationInfo.packageName

@@ -1,13 +1,16 @@
 package dev.lackluster.mihelper.hook.rules.miuihome.gesture
 
 import android.app.Application
+import android.view.View
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.condition.type.Modifiers
 import dev.lackluster.mihelper.data.preference.Preferences
 import dev.lackluster.mihelper.hook.base.StaticHooker
 import dev.lackluster.mihelper.hook.utils.CommonGesture
 import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
+import dev.lackluster.mihelper.hook.utils.extraOf
 import dev.lackluster.mihelper.hook.utils.toTyped
+import kotlinx.coroutines.Runnable
 
 object LineGesture : StaticHooker() {
     private val actionLongPress by Preferences.MiuiHome.LINE_GESTURE_LONG_PRESS.lazyGet()
@@ -20,12 +23,45 @@ object LineGesture : StaticHooker() {
             modifiers(Modifiers.STATIC)
         }?.toTyped<Application>()
     }
+    private val clzNavStubView by "com.miui.home.recents.NavStubView".lazyClassOrNull()
+    private val fldRecentsAnimationListenerImpl by lazy {
+        clzNavStubView?.resolve()?.firstFieldOrNull {
+            name = "mRecentsAnimationListenerImpl"
+        }?.toTyped<Any>()
+    }
+    private val metFinishController by lazy {
+        "com.miui.home.recents.RecentsAnimationListenerImpl".toClassOrNull()?.resolve()?.firstMethodOrNull {
+            name = "finishController"
+            parameters(Boolean::class, Runnable::class, Boolean::class)
+        }?.toTyped<Unit>()
+    }
+
+    private var Any.navStubView by extraOf<View>("NAV_STUB_VIEW")
 
     override fun onInit() {
         updateSelfState(actionLongPress != 0 || actionDoubleTap != 0 || actionSingleTap != 0)
     }
 
     override fun onHook() {
+        val foregroundAppRelatedActions = listOf(9, 10, 12)
+        if (
+            actionDoubleTap in foregroundAppRelatedActions ||
+            actionSingleTap in foregroundAppRelatedActions ||
+            actionLongPress in foregroundAppRelatedActions
+        ) {
+            clzNavStubView?.apply {
+                val fldNavStubGestureEventManager = resolve().firstFieldOrNull {
+                    name = "mNavStubGestureEventManager"
+                }?.toTyped<Any>()
+                resolve().firstConstructor {
+                    parameterCount = 1
+                }.hook {
+                    val ori = proceed()
+                    fldNavStubGestureEventManager?.get(thisObject)?.navStubView = thisObject as? View
+                    result(ori)
+                }
+            }
+        }
         "com.miui.home.recents.gesture.NavStubGestureEventManager".toClassOrNull()?.apply {
             if (actionLongPress != 0) {
                 resolve().firstMethodOrNull {
@@ -33,7 +69,11 @@ object LineGesture : StaticHooker() {
                 }?.hook {
                     val application = metGetInstance?.invoke(null)
                     if (application != null) {
-                        CommonGesture.doAction(application, actionLongPress)
+                        val doAction = Runnable { CommonGesture.doAction(application, actionLongPress) }
+                        val navStubView = thisObject.navStubView
+                        if (actionLongPress !in foregroundAppRelatedActions || navStubView == null || !finishRecentsToAppThen(navStubView, doAction::run)) {
+                            doAction.run()
+                        }
                         result(null)
                     } else {
                         result(proceed())
@@ -46,7 +86,11 @@ object LineGesture : StaticHooker() {
                 }?.hook {
                     val application = metGetInstance?.invoke(null)
                     if (application != null) {
-                        CommonGesture.doAction(application, actionDoubleTap)
+                        val doAction = Runnable { CommonGesture.doAction(application, actionDoubleTap) }
+                        val navStubView = thisObject.navStubView
+                        if (actionDoubleTap !in foregroundAppRelatedActions || navStubView == null || !finishRecentsToAppThen(navStubView, doAction::run)) {
+                            doAction.run()
+                        }
                         result(null)
                     } else {
                         result(proceed())
@@ -78,7 +122,11 @@ object LineGesture : StaticHooker() {
                         }
                         val application = metGetInstance?.invoke(null)
                         if (application != null) {
-                            CommonGesture.doAction(application, actionSingleTap)
+                            val doAction = Runnable { CommonGesture.doAction(application, actionSingleTap) }
+                            val navStubView = thisObject.navStubView
+                            if (actionSingleTap !in foregroundAppRelatedActions || navStubView == null || !finishRecentsToAppThen(navStubView, doAction::run)) {
+                                doAction.run()
+                            }
                             result(true)
                         } else {
                             result(proceed())
@@ -87,5 +135,14 @@ object LineGesture : StaticHooker() {
                 }
             }
         }
+    }
+
+    private fun finishRecentsToAppThen(navStubView: View, action: () -> Unit): Boolean {
+        return runCatching {
+            fldRecentsAnimationListenerImpl?.get(navStubView)?.let {
+                metFinishController?.invoke(it, false, Runnable { navStubView.postDelayed(action, 48L) }, false)
+                true
+            } ?: false
+        }.getOrDefault(false)
     }
 }
