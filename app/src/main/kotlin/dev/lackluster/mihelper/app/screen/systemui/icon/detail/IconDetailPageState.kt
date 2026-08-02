@@ -52,6 +52,9 @@ data class MobileState(
 data class WlanState(
     val wifiStandardMode: Int = 0,
     val wifiStandardMap: String = "",
+    val customPadding: Boolean = false,
+    val paddingStart: Float = 0.0f,
+    val paddingEnd: Float = 0.0f,
     val hideWifiActivity: Boolean = false,
     val rightWifiActivity: Boolean = false,
     val hideWifiUnavailable: Boolean = false,

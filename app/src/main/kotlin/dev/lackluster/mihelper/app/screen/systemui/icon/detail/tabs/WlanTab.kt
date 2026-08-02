@@ -11,6 +11,7 @@ import dev.lackluster.hyperx.ui.preference.ValuePosition
 import dev.lackluster.hyperx.ui.preference.itemPreferenceGroup
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.app.screen.systemui.icon.detail.WlanState
+import dev.lackluster.mihelper.app.utils.compose.AnimatedColumn
 import dev.lackluster.mihelper.app.widget.preference.DropDownOption
 import dev.lackluster.mihelper.app.widget.preference.DropDownPreference
 import dev.lackluster.mihelper.data.preference.Preferences
@@ -45,6 +46,20 @@ fun LazyListScope.wlanTabContent(
                 dialogHint = "4,5,6,7,8",
                 valuePosition = ValuePosition.Hidden,
                 onTextChange = validateAndUpdateWifiStandardMap,
+            )
+        }
+        SwitchPreference(
+            key = Preferences.SystemUI.StatusBar.IconDetail.CUSTOM_WIFI_PADDING_HORIZON,
+            title = stringResource(R.string.icon_detail_wifi_padding_custom),
+        )
+        AnimatedColumn(wlanState.customPadding) {
+            EditTextPreference(
+                key = Preferences.SystemUI.StatusBar.IconDetail.WIFI_PADDING_START_VAL,
+                title = stringResource(R.string.icon_detail_wifi_padding_start),
+            )
+            EditTextPreference(
+                key = Preferences.SystemUI.StatusBar.IconDetail.WIFI_PADDING_END_VAL,
+                title = stringResource(R.string.icon_detail_wifi_padding_end),
             )
         }
         SwitchPreference(

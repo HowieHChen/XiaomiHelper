@@ -781,6 +781,9 @@
     <string name="icon_detail_wifi_standard_custom" translatable="false">@string/common_custom</string>
     <string name="icon_detail_wifi_standard_map">WLAN standard mapping</string>
     <string name="icon_detail_wifi_standard_map_msg">Enter 1 integer to apply it to Wi-Fi 4–8, or 5 comma-separated integers for Wi-Fi 4, 5, 6, 7, and 8. Use -1 to hide a standard.\n\nDefault mapping:\n4,5,6,7,8</string>
+    <string name="icon_detail_wifi_padding_custom">Custom WLAN horizontal padding</string>
+    <string name="icon_detail_wifi_padding_start">Start padding</string>
+    <string name="icon_detail_wifi_padding_end">End padding</string>
     <string name="icon_detail_wifi_hide_activity">Hide WLAN activity</string>
     <string name="icon_detail_wifi_right_activity">Align WLAN activity to the right</string>
     <string name="icon_detail_wifi_hide_unavailable">Hide WLAN icon when unavailable</string>

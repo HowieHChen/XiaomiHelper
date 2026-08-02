@@ -63,6 +63,7 @@ object ResourcesUtils : ContextAwareHooker() {
     var notification_icon_area = 0
     var status_bar_view_state_tag = 0
     var status_bar_icon_height = 0
+    var wifi_group = 0
     // Media control panel
     var notification_element_blend_shade_colors = 0
     var notification_element_blend_colors = 0
@@ -130,6 +131,7 @@ object ResourcesUtils : ContextAwareHooker() {
         notification_icon_area = "notification_icon_area".toId()
         status_bar_view_state_tag = "status_bar_view_state_tag".toId()
         status_bar_icon_height = "status_bar_icon_height".toDimenId()
+        wifi_group = "wifi_group".toId()
         notification_element_blend_shade_colors = "notification_element_blend_shade_colors".toArrayId()
         notification_element_blend_colors = "notification_element_blend_colors".toArrayId()
         notification_item_bg_radius = "notification_item_bg_radius".toDimenId()

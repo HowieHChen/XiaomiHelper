@@ -1,6 +1,7 @@
 package dev.lackluster.mihelper.app.screen.systemui.icon.detail.component
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -17,6 +18,8 @@ import dev.lackluster.mihelper.app.screen.systemui.icon.detail.WlanState
 fun WifiIcon(
     state: WlanState,
 ) {
+    val paddingStart = if (state.customPadding) state.paddingStart.dp else 0.dp
+    val paddingEnd = if (state.customPadding) state.paddingEnd.dp else 0.dp
     val constraints = ConstraintSet {
         val parent = createRefFor("parent")
         val wifi = createRefFor("wifi")
@@ -48,7 +51,9 @@ fun WifiIcon(
     }
     ConstraintLayout(
         constraintSet = constraints,
-        modifier = Modifier.size(20.dp, 24.dp)
+        modifier = Modifier
+            .padding(start = paddingStart, end = paddingEnd)
+            .size(20.dp, 24.dp)
     ) {
         Image(
             modifier = Modifier

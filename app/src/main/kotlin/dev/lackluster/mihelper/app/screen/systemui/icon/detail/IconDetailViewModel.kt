@@ -45,6 +45,9 @@ private val mobileKeys: Set<PreferenceKey<*>> = setOf(
 private val wlanKeys: Set<PreferenceKey<*>> = setOf(
     Preferences.SystemUI.StatusBar.IconDetail.WIFI_STANDARD_MODE,
     Preferences.SystemUI.StatusBar.IconDetail.WIFI_STANDARD_MAP,
+    Preferences.SystemUI.StatusBar.IconDetail.CUSTOM_WIFI_PADDING_HORIZON,
+    Preferences.SystemUI.StatusBar.IconDetail.WIFI_PADDING_START_VAL,
+    Preferences.SystemUI.StatusBar.IconDetail.WIFI_PADDING_END_VAL,
     Preferences.SystemUI.StatusBar.IconDetail.HIDE_WIFI_ACTIVITY,
     Preferences.SystemUI.StatusBar.IconDetail.WIFI_ACTIVITY_RIGHT,
     Preferences.SystemUI.StatusBar.IconDetail.HIDE_WIFI_UNAVAILABLE
@@ -222,6 +225,9 @@ class IconDetailViewModel(
         return WlanState(
             wifiStandardMode = prefRepo.get(Preferences.SystemUI.StatusBar.IconDetail.WIFI_STANDARD_MODE),
             wifiStandardMap = prefRepo.get(Preferences.SystemUI.StatusBar.IconDetail.WIFI_STANDARD_MAP),
+            customPadding = prefRepo.get(Preferences.SystemUI.StatusBar.IconDetail.CUSTOM_WIFI_PADDING_HORIZON),
+            paddingStart = prefRepo.get(Preferences.SystemUI.StatusBar.IconDetail.WIFI_PADDING_START_VAL),
+            paddingEnd = prefRepo.get(Preferences.SystemUI.StatusBar.IconDetail.WIFI_PADDING_END_VAL),
             hideWifiActivity = prefRepo.get(Preferences.SystemUI.StatusBar.IconDetail.HIDE_WIFI_ACTIVITY),
             rightWifiActivity = prefRepo.get(Preferences.SystemUI.StatusBar.IconDetail.WIFI_ACTIVITY_RIGHT),
             hideWifiUnavailable = prefRepo.get(Preferences.SystemUI.StatusBar.IconDetail.HIDE_WIFI_UNAVAILABLE),

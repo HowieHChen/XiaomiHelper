@@ -186,6 +186,9 @@
     <string name="icon_detail_wifi_standard_custom">自定义</string>
     <string name="icon_detail_wifi_standard_map">WLAN 标准映射</string>
     <string name="icon_detail_wifi_standard_map_msg">输入 1 个整数可应用于 Wi-Fi 4–8，或输入 5 个以逗号分隔的整数，依次对应 Wi-Fi 4、5、6、7、8。使用 -1 隐藏对应标准。\n\n默认映射：\n4,5,6,7,8</string>
+    <string name="icon_detail_wifi_padding_custom">自定义 WLAN 横向内边距</string>
+    <string name="icon_detail_wifi_padding_start">开始内边距</string>
+    <string name="icon_detail_wifi_padding_end">结束内边距</string>
     <string name="icon_tuner_network_hotspot">热点</string>
     <string name="icon_tuner_network_vpn">VPN</string>
     <string name="icon_tuner_network_airplane">飞行模式</string>

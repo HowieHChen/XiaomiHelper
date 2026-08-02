@@ -442,6 +442,9 @@ object Preferences {
 
                 val WIFI_STANDARD_MODE = PreferenceKey("icon_tuner_wifi_standard_mode", 0)
                 val WIFI_STANDARD_MAP = PreferenceKey("icon_tuner_wifi_standard_map", "4,5,6,7,8")
+                val CUSTOM_WIFI_PADDING_HORIZON = PreferenceKey("icon_tuner_wifi_padding", false)
+                val WIFI_PADDING_START_VAL = PreferenceKey("icon_tuner_wifi_padding_start_val", 0.0f)
+                val WIFI_PADDING_END_VAL = PreferenceKey("icon_tuner_wifi_padding_end_val", 0.0f)
                 val HIDE_WIFI_ACTIVITY = PreferenceKey("icon_tuner_hide_wifi_activity", false)
                 val WIFI_ACTIVITY_RIGHT = PreferenceKey("icon_tuner_wifi_activity_right", false)
                 val HIDE_WIFI_UNAVAILABLE = PreferenceKey("icon_tuner_hide_wifi_unavailable", false)

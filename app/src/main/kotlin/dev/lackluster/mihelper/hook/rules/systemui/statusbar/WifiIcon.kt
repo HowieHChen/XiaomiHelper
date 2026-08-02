@@ -21,10 +21,14 @@
 package dev.lackluster.mihelper.hook.rules.systemui.statusbar
 
 import android.content.Context
+import android.view.View
+import android.view.ViewGroup
+import androidx.core.view.updatePaddingRelative
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.condition.type.Modifiers
 import dev.lackluster.mihelper.data.preference.Preferences
 import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.rules.systemui.ResourcesUtils
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.readonlyStateFlow0
 import dev.lackluster.mihelper.hook.rules.systemui.compat.CommonClassUtils.readonlyStateFlowFalse
@@ -33,6 +37,7 @@ import dev.lackluster.mihelper.hook.rules.systemui.compat.MutableStateFlowCompat
 import dev.lackluster.mihelper.hook.rules.systemui.compat.ReadonlyStateFlowCompat
 import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
 import dev.lackluster.mihelper.hook.utils.toTyped
+import dev.lackluster.mihelper.utils.factory.dp
 
 private fun parseWifiStandardMap(value: String): IntArray? {
     val values = value.trim().split(',', '，', ' ', '\n', '\t').filter(String::isNotBlank)
@@ -50,6 +55,9 @@ object WifiIcon : StaticHooker() {
     private val hideActivity by Preferences.SystemUI.StatusBar.IconDetail.HIDE_WIFI_ACTIVITY.lazyGet()
     private val wifiStandardMode by Preferences.SystemUI.StatusBar.IconDetail.WIFI_STANDARD_MODE.lazyGet()
     private val wifiStandardMap by Preferences.SystemUI.StatusBar.IconDetail.WIFI_STANDARD_MAP.lazyGet()
+    private val customPadding by Preferences.SystemUI.StatusBar.IconDetail.CUSTOM_WIFI_PADDING_HORIZON.lazyGet()
+    private val paddingStart by Preferences.SystemUI.StatusBar.IconDetail.WIFI_PADDING_START_VAL.lazyGet()
+    private val paddingEnd by Preferences.SystemUI.StatusBar.IconDetail.WIFI_PADDING_END_VAL.lazyGet()
     private val activityRight by Preferences.SystemUI.StatusBar.IconDetail.WIFI_ACTIVITY_RIGHT.lazyGet()
     private val hideUnavailable by Preferences.SystemUI.StatusBar.IconDetail.HIDE_WIFI_UNAVAILABLE.lazyGet()
 
@@ -62,7 +70,7 @@ object WifiIcon : StaticHooker() {
         get() = wifiStandardMode in 1..3
 
     override fun onInit() {
-        updateSelfState(hideActivity || modifyStandard || activityRight || hideUnavailable)
+        updateSelfState(hideActivity || modifyStandard || customPadding || activityRight || hideUnavailable)
     }
 
     override fun onHook() {
@@ -87,6 +95,23 @@ object WifiIcon : StaticHooker() {
                     } else {
                         result(proceed())
                     }
+                }
+            }
+        }
+        if (customPadding) {
+            "com.android.systemui.statusbar.pipeline.wifi.ui.binder.MiuiWifiViewBinder".toClassOrNull()?.apply {
+                resolve().firstMethodOrNull {
+                    name = "bind"
+                    parameterCount = 2
+                }?.hook {
+                    val ori = proceed()
+                    (getArg(0) as? ViewGroup)?.findViewById<View>(ResourcesUtils.wifi_group)?.let {
+                        it.updatePaddingRelative(
+                            start = paddingStart.dp(it.context),
+                            end = paddingEnd.dp(it.context)
+                        )
+                    }
+                    result(ori)
                 }
             }
         }
