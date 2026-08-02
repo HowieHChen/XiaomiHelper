@@ -774,7 +774,13 @@
     <string name="icon_detail_stacked_large_type_vertical_offset">Vertical offset</string>
     <string name="icon_detail_stacked_large_type_vertical_offset_tips">Control the vertical offset of the icon. Positive values move it downward, negative values move it upward.</string>
     <!-- IconDetailPage - WLAN -->
-    <string name="icon_detail_wifi_hide_standard">Hide WLAN standard</string>
+    <string name="icon_detail_wifi_standard">WLAN standard</string>
+    <string name="icon_detail_wifi_standard_default" translatable="false">@string/icon_tuner_hide_selection_default</string>
+    <string name="icon_detail_wifi_standard_hide">Always hide</string>
+    <string name="icon_detail_wifi_standard_show">Always show</string>
+    <string name="icon_detail_wifi_standard_custom" translatable="false">@string/common_custom</string>
+    <string name="icon_detail_wifi_standard_map">WLAN standard mapping</string>
+    <string name="icon_detail_wifi_standard_map_msg">Enter 1 integer to apply it to Wi-Fi 4–8, or 5 comma-separated integers for Wi-Fi 4, 5, 6, 7, and 8. Use -1 to hide a standard.\n\nDefault mapping:\n4,5,6,7,8</string>
     <string name="icon_detail_wifi_hide_activity">Hide WLAN activity</string>
     <string name="icon_detail_wifi_right_activity">Align WLAN activity to the right</string>
     <string name="icon_detail_wifi_hide_unavailable">Hide WLAN icon when unavailable</string>

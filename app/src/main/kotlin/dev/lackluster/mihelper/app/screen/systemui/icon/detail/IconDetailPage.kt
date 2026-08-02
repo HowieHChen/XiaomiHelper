@@ -248,6 +248,7 @@ fun IconDetailPage(
         wlanTabContent(
             isVisible = selectedTab == IconTab.WLAN,
             wlanState = wlanState,
+            validateAndUpdateWifiStandardMap = viewModel::validateAndUpdateWifiStandardMap,
         )
         batteryTabContent(
             isVisible = selectedTab == IconTab.BATTERY,

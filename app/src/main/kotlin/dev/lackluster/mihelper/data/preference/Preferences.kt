@@ -440,7 +440,8 @@ object Preferences {
                 val CUSTOM_CELLULAR_TYPE_LIST = PreferenceKey("icon_tuner_cellular_type_custom", false)
                 val CELLULAR_TYPE_LIST_VAL = PreferenceKey("icon_tuner_cellular_type_custom_val", Constants.CELLULAR_TYPE_LIST)
 
-                val HIDE_WIFI_STANDARD = PreferenceKey("icon_tuner_hide_wifi_type", false)
+                val WIFI_STANDARD_MODE = PreferenceKey("icon_tuner_wifi_standard_mode", 0)
+                val WIFI_STANDARD_MAP = PreferenceKey("icon_tuner_wifi_standard_map", "4,5,6,7,8")
                 val HIDE_WIFI_ACTIVITY = PreferenceKey("icon_tuner_hide_wifi_activity", false)
                 val WIFI_ACTIVITY_RIGHT = PreferenceKey("icon_tuner_wifi_activity_right", false)
                 val HIDE_WIFI_UNAVAILABLE = PreferenceKey("icon_tuner_hide_wifi_unavailable", false)

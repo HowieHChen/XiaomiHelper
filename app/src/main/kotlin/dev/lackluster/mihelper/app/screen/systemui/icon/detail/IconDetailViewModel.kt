@@ -43,7 +43,8 @@ private val mobileKeys: Set<PreferenceKey<*>> = setOf(
 )
 
 private val wlanKeys: Set<PreferenceKey<*>> = setOf(
-    Preferences.SystemUI.StatusBar.IconDetail.HIDE_WIFI_STANDARD,
+    Preferences.SystemUI.StatusBar.IconDetail.WIFI_STANDARD_MODE,
+    Preferences.SystemUI.StatusBar.IconDetail.WIFI_STANDARD_MAP,
     Preferences.SystemUI.StatusBar.IconDetail.HIDE_WIFI_ACTIVITY,
     Preferences.SystemUI.StatusBar.IconDetail.WIFI_ACTIVITY_RIGHT,
     Preferences.SystemUI.StatusBar.IconDetail.HIDE_WIFI_UNAVAILABLE
@@ -160,6 +161,25 @@ class IconDetailViewModel(
         }
     }
 
+    fun validateAndUpdateWifiStandardMap(value: String) {
+        viewModelScope.launch(Dispatchers.Default) {
+            _pageUiState.update { it.copy(isLoading = true) }
+            val values = value.trim().split(',', '，', ' ', '\n', '\t').filter(String::isNotBlank)
+            val valid = values.size in setOf(1, 5) && values.all { it.toIntOrNull() != null }
+
+            if (valid) {
+                prefRepo.update(Preferences.SystemUI.StatusBar.IconDetail.WIFI_STANDARD_MAP, value)
+            }
+
+            _pageUiState.update {
+                it.copy(
+                    isLoading = false,
+                    errorDialogMessage = if (valid) null else R.string.common_invalid_input.toUiText()
+                )
+            }
+        }
+    }
+
     fun getTypeface(isCustom: Boolean): Typeface {
         val mode = if (isCustom) FontMode.FROM_FILE else FontMode.MI_SANS
         return fontRepo.getNativeTypeface(FontTarget.STATUS_BAR, mode)
@@ -200,7 +220,8 @@ class IconDetailViewModel(
 
     private fun loadWlanConfig(): WlanState {
         return WlanState(
-            hideWifiStandard = prefRepo.get(Preferences.SystemUI.StatusBar.IconDetail.HIDE_WIFI_STANDARD),
+            wifiStandardMode = prefRepo.get(Preferences.SystemUI.StatusBar.IconDetail.WIFI_STANDARD_MODE),
+            wifiStandardMap = prefRepo.get(Preferences.SystemUI.StatusBar.IconDetail.WIFI_STANDARD_MAP),
             hideWifiActivity = prefRepo.get(Preferences.SystemUI.StatusBar.IconDetail.HIDE_WIFI_ACTIVITY),
             rightWifiActivity = prefRepo.get(Preferences.SystemUI.StatusBar.IconDetail.WIFI_ACTIVITY_RIGHT),
             hideWifiUnavailable = prefRepo.get(Preferences.SystemUI.StatusBar.IconDetail.HIDE_WIFI_UNAVAILABLE),

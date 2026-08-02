@@ -50,11 +50,15 @@ data class MobileState(
 )
 
 data class WlanState(
-    val hideWifiStandard: Boolean = false,
+    val wifiStandardMode: Int = 0,
+    val wifiStandardMap: String = "",
     val hideWifiActivity: Boolean = false,
     val rightWifiActivity: Boolean = false,
     val hideWifiUnavailable: Boolean = false,
-)
+) {
+    val hideWifiStandard: Boolean
+        get() = wifiStandardMode == 1
+}
 
 data class BatteryState(
     val styleStatusBar: Int = 0,

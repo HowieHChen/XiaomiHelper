@@ -179,7 +179,13 @@
     <string name="icon_tuner_network_wifi">WLAN</string>
     <string name="icon_detail_wifi_hide_activity">隐藏 WLAN 活动</string>
     <string name="icon_detail_cellular_hide_speech_hd">隐藏高清通话图标</string>
-    <string name="icon_detail_wifi_hide_standard">隐藏 WLAN 标准</string>
+    <string name="icon_detail_wifi_standard">WLAN 标准</string>
+    <string name="icon_detail_wifi_standard_default">默认</string>
+    <string name="icon_detail_wifi_standard_hide">始终隐藏</string>
+    <string name="icon_detail_wifi_standard_show">始终显示</string>
+    <string name="icon_detail_wifi_standard_custom">自定义</string>
+    <string name="icon_detail_wifi_standard_map">WLAN 标准映射</string>
+    <string name="icon_detail_wifi_standard_map_msg">输入 1 个整数可应用于 Wi-Fi 4–8，或输入 5 个以逗号分隔的整数，依次对应 Wi-Fi 4、5、6、7、8。使用 -1 隐藏对应标准。\n\n默认映射：\n4,5,6,7,8</string>
     <string name="icon_tuner_network_hotspot">热点</string>
     <string name="icon_tuner_network_vpn">VPN</string>
     <string name="icon_tuner_network_airplane">飞行模式</string>
