@@ -69,7 +69,7 @@ object FontScale : StaticHooker() {
         clzPageLayoutFragment?.resolve()?.firstFieldOrNull {
             name = "PAGE_LAYOUT_MAPPING"
             modifiers(Modifiers.STATIC)
-        }
+        }?.toTyped<MutableMap<Int, Float>>()
     }
     private val fldCurrentFontScale by lazy {
         clzPageLayoutFragment?.resolve()?.firstFieldOrNull {
@@ -122,17 +122,20 @@ object FontScale : StaticHooker() {
             )
         )
 
-        fldPageLayoutMapping?.set(
-            mutableMapOf(
-                0 to fontScaleSmall,
-                1 to fontScaleMedium,
-                2 to fontScaleLarge,
-                3 to fontScaleHuge,
-                4 to fontScaleGodzilla,
-                5 to fontScale170,
-                6 to fontScale200,
+        fldPageLayoutMapping?.get(null)?.apply {
+            clear()
+            putAll(
+                mapOf(
+                    0 to fontScaleSmall,
+                    1 to fontScaleMedium,
+                    2 to fontScaleLarge,
+                    3 to fontScaleHuge,
+                    4 to fontScaleGodzilla,
+                    5 to fontScale170,
+                    6 to fontScale200,
+                )
             )
-        )
+        }
         metGetProgress?.hook {
             val mCurrentFontScale = fldCurrentFontScale?.get(thisObject)
             val index = when (mCurrentFontScale) {
