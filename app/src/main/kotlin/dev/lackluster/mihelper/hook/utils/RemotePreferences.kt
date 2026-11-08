@@ -9,7 +9,8 @@ import java.util.concurrent.CopyOnWriteArraySet
 import java.util.concurrent.atomic.AtomicBoolean
 
 object RemotePreferences {
-    private lateinit var remotePrefs: SharedPreferences
+    @Volatile private var preferences: SharedPreferences? = null
+    @Volatile private var generation = 0L
 
     private val observerRoutingTable = ConcurrentHashMap<String, CopyOnWriteArraySet<() -> Unit>>()
     private val globalListener = SharedPreferences.OnSharedPreferenceChangeListener { _, changedKey ->
@@ -20,16 +21,30 @@ object RemotePreferences {
     }
     private var isGlobalListenerRegistered = AtomicBoolean(false)
 
+    @Synchronized
     fun init(module: XposedModule) {
-        remotePrefs = module.getRemotePreferences(Preferences.NAME)
+        close()
+        preferences = module.getRemotePreferences(Preferences.NAME)
     }
 
-    private val isInitialized: Boolean
-        get() = this::remotePrefs.isInitialized
+    /**
+     * 整代退役时不仅清空业务订阅，还必须注销宿主持有的全局监听器，释放对旧模块的引用。
+     * 先切换 generation，使已取出的旧订阅闭包在开始执行前也能发现自己失效。
+     */
+    @Synchronized
+    fun close() {
+        generation++
+        val previous = preferences
+        preferences = null
+        observerRoutingTable.clear()
+        if (isGlobalListenerRegistered.getAndSet(false)) {
+            previous?.unregisterOnSharedPreferenceChangeListener(globalListener)
+        }
+    }
 
     @Suppress("UNCHECKED_CAST")
     private fun <T : Any> getPref(key: PreferenceKey<T>): T {
-        if (!isInitialized) return key.default
+        val remotePrefs = preferences ?: return key.default
 
         return when (key.default) {
             is Boolean -> remotePrefs.getBoolean(key.name, key.default as Boolean) as T
@@ -55,24 +70,40 @@ object RemotePreferences {
         fireImmediately: Boolean = true,
         action: (T) -> Unit
     ): () -> Unit {
-        if (!isInitialized) return {}
-
-        if (isGlobalListenerRegistered.compareAndSet(false, true)) {
-            remotePrefs.registerOnSharedPreferenceChangeListener(globalListener)
+        val version: Long
+        val observersForThisKey: CopyOnWriteArraySet<() -> Unit>
+        val wrappedAction: () -> Unit
+        synchronized(this@RemotePreferences) {
+            val remotePrefs = preferences ?: return {}
+            version = generation
+            if (isGlobalListenerRegistered.compareAndSet(false, true)) {
+                try {
+                    remotePrefs.registerOnSharedPreferenceChangeListener(globalListener)
+                } catch (failure: Throwable) {
+                    isGlobalListenerRegistered.set(false)
+                    throw failure
+                }
+            }
+            wrappedAction = {
+                // 防止 close 后又 init 时旧订阅误用新 preferences；已进入 action 的调用仍需业务自行协调。
+                if (generation == version && preferences != null) action(this.get())
+            }
+            observersForThisKey = observerRoutingTable.getOrPut(this.name) { CopyOnWriteArraySet() }
+            observersForThisKey.add(wrappedAction)
         }
-
-        val wrappedAction: () -> Unit = { action(this.get()) }
-        val observersForThisKey = observerRoutingTable.getOrPut(this.name) { CopyOnWriteArraySet() }
-        observersForThisKey.add(wrappedAction)
-
-        if (fireImmediately) {
-            action(this.get())
+        try {
+            // 不持订阅锁调用业务代码，避免其触发 Hooker 生命周期时与 Session 锁形成锁顺序反转。
+            if (fireImmediately) wrappedAction()
+        } catch (failure: Throwable) {
+            observersForThisKey.remove(wrappedAction)
+            throw failure
         }
 
         return {
             observersForThisKey.remove(wrappedAction)
-            if (observersForThisKey.isEmpty()) {
-                observerRoutingTable.remove(this.name)
+            observerRoutingTable.compute(this.name) { _, current ->
+                // 旧取消函数只移除自己那组空订阅，不能删掉相同 key 后来新建的订阅集合。
+                if (current === observersForThisKey && current.isEmpty()) null else current
             }
         }
     }

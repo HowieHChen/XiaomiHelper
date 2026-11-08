@@ -123,6 +123,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
 
     testImplementation(libs.junit)
+    testImplementation(libs.libxposed.api)
     androidTestImplementation(libs.androidx.test.junit)
     androidTestImplementation(libs.androidx.test.espresso)
 }

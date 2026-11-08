@@ -7,15 +7,15 @@ project-app-packageName = "dev.lackluster.mihelper"
 project-app-versionName = "26.05"
 project-app-versionCode = "26050"
 
-androidGradlePlugin = "9.2.1"
-kotlin = "2.3.21"
+androidGradlePlugin = "9.4.1"
+kotlin = "2.4.21"
 ksp = "2.3.7"
-hiddenapibypass = "6.1"
-libxposed-api = "101.0.1"
-libxposed-service = "101.0.0"
-kavaref = "1.1.0"
-dexkit = "2.2.0"
-serialization-json = "1.11.0"
+hiddenapibypass = "6.2"
+libxposed-api = "102.0.0"
+libxposed-service = "102.0.0"
+kavaref = "1.1.1"
+dexkit = "2.3.0"
+serialization-json = "1.12.0"
 android-svg = "1.4"
 core = "5.3.0"
 koin-compose = "4.2.2"
@@ -31,17 +31,17 @@ kavaref-core = { module = "com.highcapable.kavaref:kavaref-core", version.ref = 
 kavaref-android = { module = "com.highcapable.kavaref:kavaref-android", version.ref = "kavaref" }
 kavaref-extension = { module = "com.highcapable.kavaref:kavaref-extension", version.ref = "kavaref" }
 
-androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version = "1.7.1" }
-androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version = "2.2.1" }
-androidx-constraintlayout-compose = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version = "1.1.1" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version = "1.8.0" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version = "2.2.2" }
+androidx-constraintlayout-compose = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version = "1.1.2" }
 
 dexkit = { module = "org.luckypray:dexkit", version.ref = "dexkit" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization-json" }
 android-svg = { module = "com.caverock:androidsvg-aar", version.ref = "android-svg" }
 
-androidx-ui = { group = "androidx.compose.ui", name = "ui", version = "1.11.3" }
+androidx-ui = { group = "androidx.compose.ui", name = "ui", version = "1.12.1" }
 
-androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version = "1.19.0" }
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version = "1.19.1" }
 
 androidx-test-junit = { group = "androidx.test.ext", name = "junit", version = "1.3.0" }
 androidx-test-espresso = { group = "androidx.test.espresso", name = "espresso-core", version = "3.7.0" }

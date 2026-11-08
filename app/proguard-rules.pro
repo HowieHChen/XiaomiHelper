@@ -61,6 +61,8 @@
     public void onPackageLoaded(...);
     public void onPackageReady(...);
     public void onSystemServerStarting(...);
+    public boolean onHotReloading(...);
+    public void onHotReloaded(...);
 }
 -keepclassmembers,allowoptimization class ** implements io.github.libxposed.api.XposedInterface$Hooker {
     public *** intercept(...);
