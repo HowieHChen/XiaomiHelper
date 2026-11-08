@@ -23,16 +23,25 @@ package dev.lackluster.mihelper.hook.rules.android
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.condition.type.Modifiers
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.base.BaseHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 import dev.lackluster.mihelper.hook.utils.toTyped
 
-object RemoveFreeformRestriction : StaticHooker() {
+object RemoveFreeformRestriction : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
+
+    private val oriFreeformBlackListMap = mutableMapOf<String, List<*>>()
+
     override fun onInit() {
-        updateSelfState(Preferences.System.DISABLE_FREEFORM_RESTRICT.get())
+        registerDisposeCleanup(
+            Preferences.System.DISABLE_FREEFORM_RESTRICT.observe {
+                updateSelfState(it)
+            }
+        )
     }
 
-    override fun onHook() {
+    override fun onStart() {
         "android.app.ActivityTaskManager".toClassOrNull()?.apply {
             resolve().optional().firstMethodOrNull {
                 name = "supportsSplitScreen"
@@ -68,10 +77,14 @@ object RemoveFreeformRestriction : StaticHooker() {
                 "START_FROM_FREEFORM_BLACK_LIST_ACTIVITY",
                 "FOREGROUND_PIN_APP_BLACK_LIST",
             )) {
-                resolve().optional().firstFieldOrNull {
+                val fld = resolve().optional().firstFieldOrNull {
                     name = fieldName
                     modifiers(Modifiers.STATIC)
-                }?.set(emptyList)
+                }
+                fld?.get<List<*>>()?.let {
+                    oriFreeformBlackListMap[fieldName] = it.toMutableList()
+                }
+                fld?.set(emptyList)
             }
             for (methodName in setOf(
                 "getFreeformBlackList",
@@ -96,6 +109,24 @@ object RemoveFreeformRestriction : StaticHooker() {
                 resolve().optional().firstMethodOrNull {
                     name = methodName
                 }?.hook { result(true) }
+            }
+        }
+    }
+
+    override fun onStop() {
+        "android.util.MiuiMultiWindowAdapter".toClassOrNull()?.apply {
+            for (fieldName in setOf(
+                "FREEFORM_BLACK_LIST",
+                "ABNORMAL_FREEFORM_BLACK_LIST",
+                "START_FROM_FREEFORM_BLACK_LIST_ACTIVITY",
+                "FOREGROUND_PIN_APP_BLACK_LIST",
+            )) {
+                oriFreeformBlackListMap[fieldName]?.let {
+                    resolve().optional().firstFieldOrNull {
+                        name = fieldName
+                        modifiers(Modifiers.STATIC)
+                    }?.set(it.toMutableList())
+                }
             }
         }
     }

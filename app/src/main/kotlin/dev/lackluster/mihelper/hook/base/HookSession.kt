@@ -34,9 +34,34 @@ class HookSession(val module: XposedModule) {
         val readyClassLoader: ClassLoader? = null,
     )
 
-    fun recordHost(host: HostRecord) = synchronized(lock) {
+    /**
+     * 首次包加载先占位，再进入可能触发 createPackageContext 的业务初始化。
+     * 同包嵌套/重复通知返回 false，不能覆盖首次加载器和参数；失败后也不重试已销毁的单例。
+     * hosts 随热重载恢复，因此新代初始化期间收到同包通知时也能去重。
+     */
+    fun recordHost(host: HostRecord): Boolean = synchronized(lock) {
         check(isActive)
+        if (host.key in hosts) return@synchronized false
         hosts[host.key] = host
+        true
+    }
+
+    /** 只补充首次 Loaded 对应的 Ready 信息，不让嵌套包上下文抢占规范宿主记录。 */
+    fun markHostReady(
+        key: String,
+        defaultClassLoader: ClassLoader,
+        readyClassLoader: ClassLoader,
+        isFirstPackage: Boolean,
+    ): Boolean = synchronized(lock) {
+        check(isActive)
+        val loaded = hosts[key] ?: return@synchronized false
+        if (loaded.classLoader !== defaultClassLoader || loaded.param.isFirstPackage != isFirstPackage ||
+            loaded.readyClassLoader != null) return@synchronized false
+        hosts[key] = loaded.copy(
+            param = loaded.param.copy(isPackageReady = true),
+            readyClassLoader = readyClassLoader,
+        )
+        true
     }
 
     fun recordedHosts(): List<HostRecord> = synchronized(lock) { hosts.values.toList() }
@@ -44,9 +69,16 @@ class HookSession(val module: XposedModule) {
     fun attachRoot(hooker: BaseHooker, host: HostRecord) = synchronized(lock) {
         check(isActive)
         val key = "${host.key}/${hooker.hookerId}"
+        val existing = roots[key]
+        if (existing === hooker) {
+            // 初始化尚未返回也属于已挂载；相同绑定重入直接返回，但显式换宿主仍然拒绝。
+            check(hooker.classLoader === host.classLoader && hooker.hookParam == host.param) {
+                "Root $key is already bound; create a new instance for a different host"
+            }
+            return@synchronized
+        }
+        check(existing == null) { "Duplicate root: $key" }
         hooker.bind(this, host.classLoader, host.param, key)
-        if (roots[key] === hooker) return@synchronized
-        check(key !in roots) { "Duplicate root: $key" }
         roots[key] = hooker
         buildDepth++
         try {

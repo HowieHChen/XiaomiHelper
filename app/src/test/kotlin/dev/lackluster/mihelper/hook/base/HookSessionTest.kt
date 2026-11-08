@@ -481,6 +481,125 @@ class HookSessionTest {
         assertTrue(parent.detach(child))
     }
 
+    @Test fun nestedPackageCallbackCannotRebindOrOverwriteTheInitialHost() {
+        val session = FakeFramework().session()
+        val original = host.copy(param = host.param.copy(isFirstPackage = true))
+        val nested = host.copy(classLoader = object : ClassLoader(host.classLoader) {})
+        var initializations = 0
+        var starts = 0
+        lateinit var root: BaseHooker
+        fun onPackageLoaded(record: HookSession.HostRecord) {
+            if (!session.recordHost(record)) return
+            session.attachRoot(root, record)
+        }
+        root = object : BaseHooker() {
+            override fun onInit() {
+                initializations++
+                // 模拟 DexKit.createPackageContext 在外层初始化结束前回调同一个包。
+                onPackageLoaded(nested)
+            }
+            override fun onStart() { starts++ }
+        }
+        onPackageLoaded(original)
+        onPackageLoaded(nested)
+        assertEquals(1, initializations)
+        assertEquals(1, starts)
+        assertSame(original, session.recordedHosts().single())
+        assertSame(original.classLoader, root.classLoader)
+        assertTrue(root.isRunning)
+    }
+
+    @Test fun sameBindingCanReenterAttachRootBeforeInitCompletes() {
+        val session = FakeFramework().session()
+        var initializations = 0
+        var starts = 0
+        val root = object : BaseHooker() {
+            override fun onInit() {
+                initializations++
+                session.attachRoot(this, host)
+            }
+            override fun onStart() { starts++ }
+        }
+        session.attachRoot(root, host)
+        assertEquals(1, initializations)
+        assertEquals(1, starts)
+        assertThrows(IllegalStateException::class.java) {
+            session.attachRoot(root, host.copy(param = host.param.copy(isFirstPackage = true)))
+        }
+    }
+
+    @Test fun nestedReadyCannotOverwriteCanonicalLoaderOrPackageFlags() {
+        val session = FakeFramework().session()
+        val original = host.copy(param = host.param.copy(isFirstPackage = true))
+        session.recordHost(original)
+        val nestedLoader = object : ClassLoader(host.classLoader) {}
+        assertFalse(session.markHostReady(host.key, nestedLoader, nestedLoader, true))
+        assertFalse(session.markHostReady(host.key, host.classLoader, nestedLoader, false))
+        assertSame(original, session.recordedHosts().single())
+        val finalLoader = object : ClassLoader(host.classLoader) {}
+        assertTrue(session.markHostReady(host.key, host.classLoader, finalLoader, true))
+        val ready = session.recordedHosts().single()
+        assertSame(host.classLoader, ready.classLoader)
+        assertSame(finalLoader, ready.readyClassLoader)
+        assertTrue(ready.param.isFirstPackage)
+        assertTrue(ready.param.isPackageReady)
+        assertFalse(session.markHostReady(host.key, host.classLoader, nestedLoader, true))
+        assertSame(ready, session.recordedHosts().single())
+    }
+
+    @Test fun readyWithoutLoadedDoesNotClaimHostFromNestedContext() {
+        val session = FakeFramework().session()
+        assertFalse(session.markHostReady(host.key, host.classLoader, host.classLoader, false))
+        assertTrue(session.recordedHosts().isEmpty())
+        assertTrue(session.recordHost(host))
+    }
+
+    @Test fun packageClaimIsRetainedWhenInitialRootFails() {
+        val session = FakeFramework().session()
+        val root = object : BaseHooker() { override fun onInit() { error("failed initialization") } }
+        assertTrue(session.recordHost(host))
+        assertThrows(IllegalStateException::class.java) { session.attachRoot(root, host) }
+        // 失败节点已经 dispose，后续同包通知不能再重试这个单例。
+        assertFalse(session.recordHost(host.copy(param = host.param.copy(isFirstPackage = true))))
+        assertFalse(root.isActive)
+        assertSame(host, session.recordedHosts().single())
+    }
+
+    @Test fun restoredHostsDeduplicateNestedCallbacksDuringReloadInitialization() {
+        val old = FakeFramework().session()
+        old.recordHost(host)
+        old.markHostReady(host.key, host.classLoader, host.classLoader, false)
+        var saved: Any? = null
+        assertTrue(old.retireForReload { saved = it })
+        val next = FakeFramework().session()
+        next.beginReload(saved, emptyList())
+        val restoredHost = next.recordedHosts().single()
+        var starts = 0
+        val root = object : BaseHooker() {
+            override fun onInit() {
+                val nested = host.copy(classLoader = object : ClassLoader(host.classLoader) {})
+                assertFalse(next.recordHost(nested))
+                if (next.recordHost(nested)) next.attachRoot(this, nested)
+            }
+            override fun onStart() { starts++ }
+        }
+        next.attachRoot(root, restoredHost)
+        next.finishReload()
+        assertEquals(1, starts)
+        assertSame(restoredHost, next.recordedHosts().single())
+        assertTrue(restoredHost.param.isPackageReady)
+        assertSame(host.classLoader, restoredHost.readyClassLoader)
+    }
+
+    @Test fun packageClaimsDoNotSuppressOtherPackagesOrReplaceDisabledHostRecords() {
+        val session = FakeFramework().session()
+        assertTrue(session.recordHost(host)) // 模块关闭时也记录，此时没有挂载任何根节点。
+        assertFalse(session.recordHost(host.copy(classLoader = object : ClassLoader(host.classLoader) {})))
+        val other = host.copy(key = "other", param = host.param.copy(packageName = "other"))
+        assertTrue(session.recordHost(other))
+        assertEquals(listOf(host, other), session.recordedHosts())
+    }
+
     private class Target { fun call(): String = "original" }
 
     /** A fake framework for contract tests, not module code calling attachFramework in production. */

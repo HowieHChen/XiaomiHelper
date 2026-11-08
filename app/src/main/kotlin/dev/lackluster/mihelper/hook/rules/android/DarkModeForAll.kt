@@ -26,17 +26,15 @@ import com.highcapable.kavaref.condition.type.Modifiers
 import dev.lackluster.mihelper.data.preference.Preferences
 import dev.lackluster.mihelper.hook.base.StaticHooker
 import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 import dev.lackluster.mihelper.hook.utils.toTyped
 import dev.lackluster.mihelper.utils.Device
 import kotlin.getValue
 
 object DarkModeForAll : StaticHooker() {
-    private val fldI18n by lazy {
-        "miui.os.Build".toClass().resolve().firstField {
-            name = "IS_INTERNATIONAL_BUILD"
-            modifiers(Modifiers.STATIC)
-        }
-    }
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
+
     private val clzForceDarkAppListManager by "com.android.server.ForceDarkAppListManager".lazyClass()
     private val metGetDarkModeAppList by lazy {
         clzForceDarkAppListManager.resolve().optional().firstMethodOrNull {
@@ -56,17 +54,19 @@ object DarkModeForAll : StaticHooker() {
     }
 
     override fun onInit() {
-        updateSelfState(
-            Preferences.System.DISABLE_FORCE_DARK_WHITELIST.get() && !Device.isInternationalBuild
+        if (Device.isInternationalBuild) return
+        registerDisposeCleanup(
+            Preferences.System.DISABLE_FORCE_DARK_WHITELIST.observe {
+                updateSelfState(it && !Device.isInternationalBuild)
+            }
         )
     }
 
-    override fun onHook() {
+    override fun onStart() {
         metGetDarkModeAppList?.hook {
-            val realIsInternationalBuild = Device.isInternationalBuild
-            fldI18n.set(true)
             val ori = proceed()
-            fldI18n.set(realIsInternationalBuild)
+            if (ori != null) {
+            }
             result(ori)
         }
         metShouldShowInSettings?.hook {

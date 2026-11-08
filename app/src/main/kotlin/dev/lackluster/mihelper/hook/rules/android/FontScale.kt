@@ -29,18 +29,18 @@ import dev.lackluster.mihelper.data.Constants.UI_MODE_TYPE_SCALE_HUGE
 import dev.lackluster.mihelper.data.Constants.UI_MODE_TYPE_SCALE_LARGE
 import dev.lackluster.mihelper.data.Constants.UI_MODE_TYPE_SCALE_MEDIUM
 import dev.lackluster.mihelper.data.Constants.UI_MODE_TYPE_SCALE_SMALL
+import dev.lackluster.mihelper.data.model.FontScaleConfig
 import dev.lackluster.mihelper.data.preference.Preferences
 import dev.lackluster.mihelper.hook.base.StaticHooker
 import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 
 object FontScale : StaticHooker() {
-    private val fontScaleSmall = Preferences.System.FONT_SCALE_SMALL.get()
-    private val fontScaleMedium = Preferences.System.FONT_SCALE_MEDIUM.get()
-    private val fontScaleLarge = Preferences.System.FONT_SCALE_LARGE.get()
-    private val fontScaleHuge = Preferences.System.FONT_SCALE_HUGE.get()
-    private val fontScaleGodzilla = Preferences.System.FONT_SCALE_GODZILLA.get()
-    private val fontScale170 = Preferences.System.FONT_SCALE_170.get()
-    private val fontScale200 = Preferences.System.FONT_SCALE_200.get()
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
+
+    @Volatile
+    private var scaleConfig: FontScaleConfig? = null
 
     private val metGetFontScale by lazy {
         "android.content.res.MiuiConfiguration".toClass().resolve().firstMethodOrNull {
@@ -48,22 +48,80 @@ object FontScale : StaticHooker() {
         }
     }
 
-    override fun onInit() {
-        updateSelfState(Preferences.System.ENABLE_FONT_SCALE.get())
+    private fun onScalePreferenceChanged() = synchronized(session.lock) {
+        if (!isActive) return@synchronized
+        updateScaleConfig()
     }
 
-    override fun onHook() {
+    private fun updateScaleConfig() {
+        scaleConfig = FontScaleConfig(
+            small = Preferences.System.FONT_SCALE_SMALL.get(),
+            medium = Preferences.System.FONT_SCALE_MEDIUM.get(),
+            large = Preferences.System.FONT_SCALE_LARGE.get(),
+            huge = Preferences.System.FONT_SCALE_HUGE.get(),
+            godzilla = Preferences.System.FONT_SCALE_GODZILLA.get(),
+            size170 = Preferences.System.FONT_SCALE_170.get(),
+            size200 = Preferences.System.FONT_SCALE_200.get()
+        )
+    }
+
+    override fun onInit() {
+        registerDisposeCleanup(
+            Preferences.System.ENABLE_FONT_SCALE.observe {
+                updateSelfState(it)
+            }
+        )
+    }
+
+    override fun onStart() {
+        registerStopCleanup(
+            Preferences.System.FONT_SCALE_SMALL.observe(false) {
+                onScalePreferenceChanged()
+            }
+        )
+        registerStopCleanup(
+            Preferences.System.FONT_SCALE_MEDIUM.observe(false) {
+                onScalePreferenceChanged()
+            }
+        )
+        registerStopCleanup(
+            Preferences.System.FONT_SCALE_LARGE.observe(false) {
+                onScalePreferenceChanged()
+            }
+        )
+        registerStopCleanup(
+            Preferences.System.FONT_SCALE_HUGE.observe(false) {
+                onScalePreferenceChanged()
+            }
+        )
+        registerStopCleanup(
+            Preferences.System.FONT_SCALE_GODZILLA.observe(false) {
+                onScalePreferenceChanged()
+            }
+        )
+        registerStopCleanup(
+            Preferences.System.FONT_SCALE_170.observe(false) {
+                onScalePreferenceChanged()
+            }
+        )
+        registerStopCleanup(
+            Preferences.System.FONT_SCALE_200.observe(false) {
+                onScalePreferenceChanged()
+            }
+        )
+        updateScaleConfig()
         metGetFontScale?.hook {
+            val config = scaleConfig ?: return@hook result(proceed())
             val ratio = when (getArg(0) as? Int) {
-                UI_MODE_TYPE_SCALE_EXTRA_SMALL -> fontScaleSmall
-                UI_MODE_TYPE_SCALE_SMALL -> fontScaleSmall
-                UI_MODE_TYPE_SCALE_MEDIUM -> fontScaleMedium
-                UI_MODE_TYPE_SCALE_LARGE -> fontScaleLarge
-                UI_MODE_TYPE_SCALE_HUGE -> fontScaleHuge
-                UI_MODE_TYPE_SCALE_GODZILLA -> fontScaleGodzilla
-                UI_MODE_TYPE_SCALE_170 -> fontScale170
-                UI_MODE_TYPE_SCALE_200 -> fontScale200
-                else -> fontScaleMedium
+                UI_MODE_TYPE_SCALE_EXTRA_SMALL -> config.small
+                UI_MODE_TYPE_SCALE_SMALL -> config.small
+                UI_MODE_TYPE_SCALE_MEDIUM -> config.medium
+                UI_MODE_TYPE_SCALE_LARGE -> config.large
+                UI_MODE_TYPE_SCALE_HUGE -> config.huge
+                UI_MODE_TYPE_SCALE_GODZILLA -> config.godzilla
+                UI_MODE_TYPE_SCALE_170 -> config.size170
+                UI_MODE_TYPE_SCALE_200 -> config.size200
+                else -> config.medium
             }
             result(ratio)
         }

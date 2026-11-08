@@ -32,6 +32,7 @@ import android.view.View
 import android.widget.ImageView
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.condition.type.Modifiers
+import com.highcapable.kavaref.extension.classOf
 import dev.lackluster.mihelper.BuildConfig
 import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.app.MainActivity
@@ -39,29 +40,34 @@ import dev.lackluster.mihelper.data.Scope
 import dev.lackluster.mihelper.data.preference.Preferences
 import dev.lackluster.mihelper.hook.base.StaticHooker
 import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 import dev.lackluster.mihelper.hook.utils.e
 import dev.lackluster.mihelper.hook.utils.toTyped
 import dev.lackluster.mihelper.utils.Device
 import dev.lackluster.mihelper.utils.factory.getResId
-import com.highcapable.kavaref.extension.classOf
 
 object HeaderList : StaticHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
+
     private const val XIAOMI_HELPER_IDENTIFIER = 9641L
 
-    private val entryPosition by Preferences.Module.SETTINGS_ENTRY_POSITION.lazyGet()
-    private val entryNameResId by lazy {
-        when (Preferences.Module.SETTINGS_NAME.get()) {
+    @Volatile
+    private var entryPosition = 0
+
+    @Volatile
+    private var showGoogleSettings = false
+    private fun getEntryNameResId(): Int {
+        return when (Preferences.Module.SETTINGS_NAME.get()) {
             0 -> R.string.module_settings_name_helper
             1 -> R.string.module_settings_name_advanced
             2 -> -1
             else -> R.string.module_settings_name_helper
         }
     }
-    private val entryNameCustom by Preferences.Module.CUSTOM_SETTINGS_NAME.lazyGet()
-    private val showGoogleSettings by Preferences.Settings.SHOW_GOOGLE_ENTRY.lazyGet()
-    private val iconDrawableResId by lazy {
-        if (Preferences.Module.SETTINGS_ICON_STYLE.get() == 1) {
+    private fun getEntryNameCustom() = Preferences.Module.CUSTOM_SETTINGS_NAME.get()
+    private fun getIconDrawableResId(): Int {
+        return if (Preferences.Module.SETTINGS_ICON_STYLE.get() == 1) {
             when (Preferences.Module.SETTINGS_ICON_COLOR.get()) {
                 0 -> R.drawable.ic_header_android_gray
                 1 -> R.drawable.ic_header_android_red
@@ -113,123 +119,133 @@ object HeaderList : StaticHooker() {
     }
 
     override fun onInit() {
-        updateSelfState(entryPosition != 0 || showGoogleSettings)
+        registerDisposeCleanup(
+            Preferences.Module.SETTINGS_ENTRY_POSITION.observe {
+                entryPosition = it
+                updateSelfState(entryPosition != 0 || showGoogleSettings)
+            }
+        )
+        registerDisposeCleanup(
+            Preferences.Settings.SHOW_GOOGLE_ENTRY.observe {
+                showGoogleSettings = it
+                updateSelfState(entryPosition != 0 || showGoogleSettings)
+            }
+        )
     }
 
-    override fun onHook() {
-        if (entryPosition != 0) {
-            val fldHolderIcon = clzHeaderViewHolder?.resolve()?.firstFieldOrNull {
-                name = "icon"
-            }?.toTyped<ImageView>()
-            val metCreateBitmap = "com.android.settings.Utils".toClassOrNull()?.resolve()?.firstMethodOrNull {
-                name = "createBitmap"
-                parameterCount = 3
-                modifiers(Modifiers.STATIC)
-            }?.toTyped<Bitmap>()
-            var headerIconSizeResId = 0
-            $$"com.android.settings.MiuiSettings$HeaderAdapter".toClass().resolve().firstMethodOrNull {
-                name = "setIcon"
-            }?.hook {
-                val headerViewHolder = getArg(0)
-                val header = getArg(1)
-                val identifier = fldHeaderId?.get(header)
-                if (identifier == XIAOMI_HELPER_IDENTIFIER) {
-                    val icon = fldHolderIcon?.get(headerViewHolder)
-                    if (icon != null && icon.visibility != View.GONE) {
-                        try {
-                            icon.visibility = View.VISIBLE
-                            val moduleIcon = Icon.createWithResource(BuildConfig.APPLICATION_ID, iconDrawableResId).loadDrawable(icon.context)
-                            if (headerIconSizeResId == 0) {
-                                headerIconSizeResId = icon.context.getResId("header_icon_size", "dimen", Scope.SETTINGS)
-                            }
-                            val headerIconPixelSize = icon.resources.getDimensionPixelSize(headerIconSizeResId)
-                            icon.setImageBitmap(
-                                metCreateBitmap?.invoke(null, moduleIcon, headerIconPixelSize, headerIconPixelSize)
-                            )
-                        } catch (t: Throwable) {
-                            e(t) { "Failed to set icon" }
-                            icon.visibility = View.INVISIBLE
+    override fun onStart() {
+        // entryPosition != 0
+        val fldHolderIcon = clzHeaderViewHolder?.resolve()?.firstFieldOrNull {
+            name = "icon"
+        }?.toTyped<ImageView>()
+        val metCreateBitmap = "com.android.settings.Utils".toClassOrNull()?.resolve()?.firstMethodOrNull {
+            name = "createBitmap"
+            parameterCount = 3
+            modifiers(Modifiers.STATIC)
+        }?.toTyped<Bitmap>()
+        var headerIconSizeResId = 0
+        $$"com.android.settings.MiuiSettings$HeaderAdapter".toClass().resolve().firstMethodOrNull {
+            name = "setIcon"
+        }?.hook {
+            val headerViewHolder = getArg(0)
+            val header = getArg(1)
+            val identifier = fldHeaderId?.get(header)
+            if (identifier == XIAOMI_HELPER_IDENTIFIER) {
+                val icon = fldHolderIcon?.get(headerViewHolder)
+                if (icon != null && icon.visibility != View.GONE) {
+                    try {
+                        icon.visibility = View.VISIBLE
+                        val moduleIcon = Icon.createWithResource(BuildConfig.APPLICATION_ID, getIconDrawableResId()).loadDrawable(icon.context)
+                        if (headerIconSizeResId == 0) {
+                            headerIconSizeResId = icon.context.getResId("header_icon_size", "dimen", Scope.SETTINGS)
                         }
+                        val headerIconPixelSize = icon.resources.getDimensionPixelSize(headerIconSizeResId)
+                        icon.setImageBitmap(
+                            metCreateBitmap?.invoke(null, moduleIcon, headerIconPixelSize, headerIconPixelSize)
+                        )
+                    } catch (t: Throwable) {
+                        e(t) { "Failed to set icon" }
+                        icon.visibility = View.INVISIBLE
                     }
-                    return@hook result(null)
                 }
-                result(proceed())
+                return@hook result(null)
             }
+            result(proceed())
         }
-        if (entryPosition != 0 || showGoogleSettings) {
-            val ctorHeader = clzHeader?.resolve()?.firstConstructor {
-                parameterCount = 0
-            }?.toTyped()
-            val ctorUserHandle = classOf<UserHandle>().resolve().firstConstructor {
-                parameterCount = 1
-                parameters(Int::class)
-            }.toTyped()
-            var idMyDevice = 0
-            var idWifiSettings = 0
-            "com.android.settings.MiuiSettings".toClassOrNull()?.apply {
-                val metAddGoogleSettingsHeaders = resolve().firstMethodOrNull {
-                    name = "AddGoogleSettingsHeaders"
-                    superclass()
-                }?.toTyped<Unit>()
-                resolve().firstMethodOrNull {
-                    name = "updateHeaderList"
-                    parameters("java.util.List")
-                }?.hook {
-                    val ori = proceed()
-                    @Suppress("UNCHECKED_CAST")
-                    val headerList = getArg(0) as? MutableList<Any?> ?: return@hook result(ori)
-                    if (entryPosition != 0) {
-                        val activity = thisObject as? Activity ?: return@hook result(ori)
-                        val moduleRes = activity.packageManager.getResourcesForApplication(BuildConfig.APPLICATION_ID)
-                        if (idMyDevice == 0) {
-                            idMyDevice = activity.getResId("my_device", "id", Scope.SETTINGS)
+        // entryPosition != 0 || showGoogleSettings
+        val ctorHeader = clzHeader?.resolve()?.firstConstructor {
+            parameterCount = 0
+        }?.toTyped()
+        val ctorUserHandle = classOf<UserHandle>().resolve().firstConstructor {
+            parameterCount = 1
+            parameters(Int::class)
+        }.toTyped()
+        var idMyDevice = 0
+        var idWifiSettings = 0
+        "com.android.settings.MiuiSettings".toClassOrNull()?.apply {
+            val metAddGoogleSettingsHeaders = resolve().firstMethodOrNull {
+                name = "AddGoogleSettingsHeaders"
+                superclass()
+            }?.toTyped<Unit>()
+            resolve().firstMethodOrNull {
+                name = "updateHeaderList"
+                parameters("java.util.List")
+            }?.hook {
+                val ori = proceed()
+                @Suppress("UNCHECKED_CAST")
+                val headerList = getArg(0) as? MutableList<Any?> ?: return@hook result(ori)
+                if (entryPosition != 0) {
+                    val activity = thisObject as? Activity ?: return@hook result(ori)
+                    val moduleRes = activity.packageManager.getResourcesForApplication(BuildConfig.APPLICATION_ID)
+                    if (idMyDevice == 0) {
+                        idMyDevice = activity.getResId("my_device", "id", Scope.SETTINGS)
+                    }
+                    if (idWifiSettings == 0) {
+                        idWifiSettings = activity.getResId("wifi_settings", "id", Scope.SETTINGS)
+                    }
+                    val header = ctorHeader?.newInstance()
+                    fldHeaderId?.set(header, XIAOMI_HELPER_IDENTIFIER)
+                    fldHeaderIntent?.set(header,
+                        Intent().apply {
+                            putExtra("isDisplayHomeAsUpEnabled", true)
+                            setClassName(BuildConfig.APPLICATION_ID, classOf<MainActivity>().canonicalName!!)
                         }
-                        if (idWifiSettings == 0) {
-                            idWifiSettings = activity.getResId("wifi_settings", "id", Scope.SETTINGS)
+                    )
+                    val entryNameResId = getEntryNameResId()
+                    fldHeaderTitle?.set(header,
+                        if (entryNameResId == -1) getEntryNameCustom() else moduleRes.getString(entryNameResId)
+                    )
+                    fldHeaderIconRes?.set(header, getIconDrawableResId())
+                    fldHeaderExtras?.set(header,
+                        Bundle().apply {
+                            val users = arrayListOf(ctorUserHandle.newInstance(0))
+                            putParcelableArrayList("header_user", users)
                         }
-                        val header = ctorHeader?.newInstance()
-                        fldHeaderId?.set(header, XIAOMI_HELPER_IDENTIFIER)
-                        fldHeaderIntent?.set(header,
-                            Intent().apply {
-                                putExtra("isDisplayHomeAsUpEnabled", true)
-                                setClassName(BuildConfig.APPLICATION_ID, classOf<MainActivity>().canonicalName!!)
-                            }
-                        )
-                        fldHeaderTitle?.set(header,
-                            if (entryNameResId == -1) entryNameCustom else moduleRes.getString(entryNameResId)
-                        )
-                        fldHeaderIconRes?.set(header, iconDrawableResId)
-                        fldHeaderExtras?.set(header,
-                            Bundle().apply {
-                                val users = arrayListOf(ctorUserHandle.newInstance(0))
-                                putParcelableArrayList("header_user", users)
-                            }
-                        )
+                    )
 
-                        val targetIndex = if (entryPosition == 1) {
-                            headerList.indexOfFirst { head ->
-                                fldHeaderId?.get(head)?.toInt() == idMyDevice
-                            } + 1
-                        } else {
-                            headerList.indexOfFirst { head ->
-                                fldHeaderId?.get(head)?.toInt() == idWifiSettings
-                            }
-                        }
-                        if (targetIndex != -1) {
-                            headerList.add(targetIndex, header)
-                        } else {
-                            if (headerList.size > 25) {
-                                headerList.add(25, header)
-                            } else {
-                                headerList.add(header)
-                            }
+                    val targetIndex = if (entryPosition == 1) {
+                        headerList.indexOfFirst { head ->
+                            fldHeaderId?.get(head)?.toInt() == idMyDevice
+                        } + 1
+                    } else {
+                        headerList.indexOfFirst { head ->
+                            fldHeaderId?.get(head)?.toInt() == idWifiSettings
                         }
                     }
-                    if (showGoogleSettings && !Device.isGlobal) {
-                        metAddGoogleSettingsHeaders?.invoke(thisObject, headerList)
+                    if (targetIndex != -1) {
+                        headerList.add(targetIndex, header)
+                    } else {
+                        if (headerList.size > 25) {
+                            headerList.add(25, header)
+                        } else {
+                            headerList.add(header)
+                        }
                     }
-                    result(ori)
                 }
+                if (showGoogleSettings && !Device.isGlobal) {
+                    metAddGoogleSettingsHeaders?.invoke(thisObject, headerList)
+                }
+                result(ori)
             }
         }
     }

@@ -76,7 +76,7 @@ class HookEntry : XposedModule() {
         )
         val host = HookSession.HostRecord(Scope.SYSTEM, param.classLoader, hookParam)
         // 总开关只控制业务安装，不阻止记录宿主；旧代零业务 Hook 时，新代也需要这些信息才能启用。
-        session.recordHost(host)
+        if (!session.recordHost(host)) return
         if (isModuleEnabled) session.attachRoot(Android, host)
     }
 
@@ -90,22 +90,19 @@ class HookEntry : XposedModule() {
             appInfo = param.applicationInfo
         )
         val host = HookSession.HostRecord(param.packageName, param.defaultClassLoader, hookParam)
-        // 与 system_server 一样，无论业务是否启用都保留加载信息。
-        session.recordHost(host)
+        // 无论业务是否启用都先占位。DexKit 创建包上下文可能重入此回调，不能重复绑定或覆盖宿主。
+        if (!session.recordHost(host)) return
         if (isModuleEnabled) getHookerByPackageName(param.packageName)?.let { session.attachRoot(it, host) }
     }
 
     override fun onPackageReady(param: XposedModuleInterface.PackageReadyParam) {
         // Ready 提供经过 AppComponentFactory 处理的加载器；只更新记录，不重复安装 Loaded 阶段的规则。
-        val loaded = session.recordedHosts().firstOrNull { it.key == param.packageName }
-        session.recordHost(HookSession.HostRecord(
+        session.markHostReady(
             key = param.packageName,
-            classLoader = loaded?.classLoader ?: param.defaultClassLoader,
-            param = loaded?.param?.copy(isPackageReady = true) ?: HookParam(
-                processName, param.packageName, isSystemServer, param.isFirstPackage, true, param.applicationInfo
-            ),
+            defaultClassLoader = param.defaultClassLoader,
             readyClassLoader = param.classLoader,
-        ))
+            isFirstPackage = param.isFirstPackage,
+        )
     }
 
     override fun onHotReloading(param: XposedModuleInterface.HotReloadingParam): Boolean {

@@ -24,44 +24,57 @@ import android.app.Activity
 import android.provider.Settings
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
+import dev.lackluster.mihelper.hook.base.BaseHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 import dev.lackluster.mihelper.hook.utils.toTyped
 
-object QuickPermission : StaticHooker() {
-    private val overlay by Preferences.Settings.QUICK_PER_OVERLAY.lazyGet()
-    private val installSource by Preferences.Settings.QUICK_PER_INSTALL_SOURCE.lazyGet()
+object QuickPermission : BaseHooker() {
+    override val supportsRuntimeToggle = true
+    override val supportsHotReload = true
+
+    @Volatile
+    private var overlay = false
+
+    @Volatile
+    private var installSource = false
 
     override fun onInit() {
-        updateSelfState(overlay || installSource)
+        val overlayCleanup = Preferences.Settings.QUICK_PER_OVERLAY.observe {
+            overlay = it
+            updateSelfState(overlay || installSource)
+        }
+        registerDisposeCleanup(overlayCleanup)
+        val installSourceCleanup = Preferences.Settings.QUICK_PER_INSTALL_SOURCE.observe {
+            installSource = it
+            updateSelfState(overlay || installSource)
+        }
+        registerDisposeCleanup(installSourceCleanup)
     }
 
-    override fun onHook() {
-        if (overlay || installSource) {
-            "com.android.settings.SettingsActivity".toClass().apply {
-                val fldInitialFragmentName = resolve().firstFieldOrNull {
-                    name = "initialFragmentName"
-                    superclass()
-                }?.toTyped<String>()
-                resolve().firstMethodOrNull {
-                    name = "redirectTabletActivity"
-                    parameterCount = 1
-                }?.hook {
-                    val intent = (thisObject as? Activity)?.intent
-                    if (intent?.data?.scheme == "package") {
-                        if (overlay && intent.action == Settings.ACTION_MANAGE_OVERLAY_PERMISSION) {
-                            fldInitialFragmentName?.set(thisObject,
-                                "com.android.settings.applications.appinfo.DrawOverlayDetails"
-                            )
-                        }
-                        if (installSource && intent.action == Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES) {
-                            fldInitialFragmentName?.set(thisObject,
-                                "com.android.settings.applications.appinfo.ExternalSourcesDetails"
-                            )
-                        }
+    override fun onStart() {
+        "com.android.settings.SettingsActivity".toClass().apply {
+            val fldInitialFragmentName = resolve().firstFieldOrNull {
+                name = "initialFragmentName"
+                superclass()
+            }?.toTyped<String>()
+            resolve().firstMethodOrNull {
+                name = "redirectTabletActivity"
+                parameterCount = 1
+            }?.hook(id = "redirectTabletActivity") {
+                val intent = (thisObject as? Activity)?.intent
+                if (intent?.data?.scheme == "package") {
+                    if (overlay && intent.action == Settings.ACTION_MANAGE_OVERLAY_PERMISSION) {
+                        fldInitialFragmentName?.set(thisObject,
+                            "com.android.settings.applications.appinfo.DrawOverlayDetails"
+                        )
                     }
-                    result(proceed())
+                    if (installSource && intent.action == Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES) {
+                        fldInitialFragmentName?.set(thisObject,
+                            "com.android.settings.applications.appinfo.ExternalSourcesDetails"
+                        )
+                    }
                 }
+                result(proceed())
             }
         }
     }

@@ -24,10 +24,12 @@ package dev.lackluster.mihelper.hook.rules.android
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.base.BaseHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 
-object AllowMoreFreeform : StaticHooker() {
+object AllowMoreFreeform : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
     private val metGetMaxMiuiFreeFormStackCount by lazy {
         "com.android.server.wm.MiuiFreeFormStackDisplayStrategy".toClassOrNull()?.resolve()?.firstMethodOrNull {
             name = "getMaxMiuiFreeFormStackCount"
@@ -35,10 +37,14 @@ object AllowMoreFreeform : StaticHooker() {
     }
 
     override fun onInit() {
-        updateSelfState(Preferences.System.ALLOW_MORE_FREEFORM.get())
+        registerDisposeCleanup(
+            Preferences.System.ALLOW_MORE_FREEFORM.observe {
+                updateSelfState(it)
+            }
+        )
     }
 
-    override fun onHook() {
+    override fun onStart() {
         metGetMaxMiuiFreeFormStackCount?.hook { result(255) }
     }
 }
