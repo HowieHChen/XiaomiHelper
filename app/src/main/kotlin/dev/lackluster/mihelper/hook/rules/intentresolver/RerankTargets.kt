@@ -3,38 +3,59 @@ package dev.lackluster.mihelper.hook.rules.intentresolver
 import android.content.pm.ResolveInfo
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
+import dev.lackluster.mihelper.hook.base.BaseHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 import dev.lackluster.mihelper.hook.utils.e
 import dev.lackluster.mihelper.hook.utils.toTyped
 
-object RerankTargets : StaticHooker() {
-    private val rerankMode by Preferences.MiIntentResolver.RERANK_TARGETS.lazyGet()
-    private val strict by Preferences.MiIntentResolver.RERANK_TARGETS_STRICT.lazyGet()
+object RerankTargets : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
 
-    private val pkgPositionMap by lazy {
-        Preferences.MiIntentResolver.TARGETS_PKG_INDEX_MAP.get().associate {
-            val parts = it.split(":", limit = 2)
-            val pkgName = parts.getOrNull(0) ?: ""
-            val index = parts[1].toIntOrNull() ?: Int.MAX_VALUE
-            pkgName to index
-        }
-    }
+    @Volatile
+    private var rerankMode = 0
+    @Volatile
+    private var strict = false
+    @Volatile
+    private var positionMap = emptyMap<String, Int>()
 
     override fun onInit() {
-        updateSelfState(rerankMode != 0)
+        registerDisposeCleanup(
+            Preferences.MiIntentResolver.RERANK_TARGETS.observe {
+                rerankMode = it
+                updateSelfState(it != 0)
+            }
+        )
     }
 
-    override fun onHook() {
-        $$"com.android.intentresolver.adapter.MiuiChooserGridAdapter$UpdateListTask".toClassOrNull()?.apply {
-            if (rerankMode == 2) {
-                resolve().firstMethodOrNull {
-                    name = "checkAppInstalled"
-                }?.hook {
-                    result(false)
+    override fun onStart() {
+        registerStopCleanup(
+            Preferences.MiIntentResolver.RERANK_TARGETS_STRICT.observe {
+                strict = it
+            }
+        )
+        registerStopCleanup(
+            Preferences.MiIntentResolver.TARGETS_PKG_INDEX_MAP.observe { strings ->
+                positionMap = strings.associate {
+                    val parts = it.split(":", limit = 2)
+                    val pkgName = parts.getOrNull(0) ?: ""
+                    val index = parts[1].toIntOrNull() ?: Int.MAX_VALUE
+                    pkgName to index
                 }
             }
+        )
+        "com.android.intentresolver.core.AppLocationSortUtil".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "checkAppInstalled"
+            }?.hook {
+                if (rerankMode == 2) {
+                    result(false)
+                } else {
+                    result(proceed())
+                }
+            }
+        }
+        $$"com.android.intentresolver.adapter.MiuiChooserGridAdapter$UpdateListTask".toClassOrNull()?.apply {
             val fldResolveInfo = "com.android.intentresolver.chooser.DisplayResolveInfo".toClassOrNull()?.resolve()?.firstFieldOrNull {
                 name = "mResolveInfo"
                 type(ResolveInfo::class)
@@ -46,6 +67,7 @@ object RerankTargets : StaticHooker() {
                 if (list.isNullOrEmpty()) {
                     return@hook result(list)
                 }
+                val pkgPositionMap = positionMap
                 val filteredList = list.filter { item ->
                     if (item == null) return@filter false
                     val pkg = try {

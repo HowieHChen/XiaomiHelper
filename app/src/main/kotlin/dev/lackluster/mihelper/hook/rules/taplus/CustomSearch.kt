@@ -22,16 +22,17 @@ package dev.lackluster.mihelper.hook.rules.taplus
 
 import android.content.Context
 import android.content.Intent
-import com.highcapable.kavaref.KavaRef.Companion.resolve
 import androidx.core.net.toUri
+import com.highcapable.kavaref.KavaRef.Companion.resolve
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.base.BaseHooker
 import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 
-object CustomSearch : StaticHooker() {
-    private val searchEngine by Preferences.Taplus.SEARCH_ENGINE.lazyGet()
-    private val searchEngineUrl by Preferences.Taplus.CUSTOM_SEARCH_URL.lazyGet()
+object CustomSearch : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
+
     private val searchUrlValues = arrayOf(
         "",
         "https://www.baidu.com/s?wd=%s",
@@ -41,16 +42,22 @@ object CustomSearch : StaticHooker() {
     )
 
     override fun onInit() {
-        updateSelfState(Preferences.Taplus.SEARCH_USE_BROWSER.get())
+        registerDisposeCleanup(
+            Preferences.Taplus.SEARCH_USE_BROWSER.observe {
+                updateSelfState(it)
+            }
+        )
     }
 
-    override fun onHook() {
+    override fun onStart() {
         "com.miui.contentextension.utils.AppsUtils".toClassOrNull()?.resolve()?.firstMethodOrNull {
             name = "openGlobalSearch"
         }?.hook {
             val context = getArg(0) as? Context
             val query = getArg(1) as? String
             if (context != null && query != null) {
+                val searchEngine = Preferences.Taplus.SEARCH_ENGINE.get()
+                val searchEngineUrl = Preferences.Taplus.CUSTOM_SEARCH_URL.get()
                 var searchUrl =
                     when (searchEngine) {
                         in 1..4 -> searchUrlValues[searchEngine].replaceFirst("%s",query)

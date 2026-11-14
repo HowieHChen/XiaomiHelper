@@ -26,14 +26,16 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.base.BaseHooker
 import dev.lackluster.mihelper.hook.utils.DexKit
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
-import dev.lackluster.mihelper.hook.utils.ifTrue
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 import dev.lackluster.mihelper.hook.utils.toTyped
 import org.luckypray.dexkit.query.enums.StringMatchType
 
-object HideXL : StaticHooker() {
+object HideXL : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
+
     private val clzHomeFragment by lazy {
         DexKit.findClassWithCache("fragment") {
             matcher {
@@ -59,15 +61,16 @@ object HideXL : StaticHooker() {
     }
 
     override fun onInit() {
-        Preferences.DownloadUI.HIDE_XL.get().also {
-            updateSelfState(it)
-        }.ifTrue {
-            actionBarInitMethod
-            clzHomeFragment
-        }
+        registerDisposeCleanup(
+            Preferences.DownloadUI.HIDE_XL.observe {
+                updateSelfState(it)
+            }
+        )
+        actionBarInitMethod
+        clzHomeFragment
     }
 
-    override fun onHook() {
+    override fun onStart() {
         val fldXLTextView = "com.android.providers.downloads.ui.DownloadListDelegate".toClassOrNull()
             ?.resolve()?.firstFieldOrNull {
                 type(TextView::class)

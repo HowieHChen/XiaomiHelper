@@ -2,20 +2,31 @@ package dev.lackluster.mihelper.hook.rules.updater
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.base.BaseHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 import dev.lackluster.mihelper.hook.utils.toTyped
 
-object SotaFilter : StaticHooker() {
-    private val pkgBlacklist by lazy {
-        Preferences.Updater.SOTA_UPDATE_FILTER_PACKAGES.get().split(',', ' ', '，').filter { it.isNotBlank() }
-    }
+object SotaFilter : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
+
+    @Volatile
+    private var pkgBlacklist = emptyList<String>()
 
     override fun onInit() {
-        updateSelfState(Preferences.Updater.ENABLE_SOTA_UPDATE_FILTER.get())
+        registerDisposeCleanup(
+            Preferences.Updater.ENABLE_SOTA_UPDATE_FILTER.observe {
+                updateSelfState(it)
+            }
+        )
     }
 
-    override fun onHook() {
+    override fun onStart() {
+        registerStopCleanup(
+            Preferences.Updater.SOTA_UPDATE_FILTER_PACKAGES.observe {
+                pkgBlacklist = it.split(',', ' ', '，').filter { it1 -> it1.isNotBlank() }
+            }
+        )
         "com.android.updater.xms.bean.XmsUpdateInfo".toClassOrNull()?.apply {
             val fldApkLists = resolve().firstFieldOrNull {
                 name = "pkgs"

@@ -25,6 +25,9 @@ import dev.lackluster.mihelper.hook.base.ContextAwareHooker
 import dev.lackluster.mihelper.hook.base.ContextScope
 
 object ResourcesUtils : ContextAwareHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
+
     override val targetPackage: String
         get() = Scope.MIUI_HOME
     

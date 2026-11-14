@@ -21,16 +21,18 @@
 package dev.lackluster.mihelper.hook.rules.miai
 
 import android.content.Intent
+import androidx.core.net.toUri
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.base.BaseHooker
 import dev.lackluster.mihelper.hook.utils.DexKit
 import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
-import dev.lackluster.mihelper.hook.utils.ifTrue
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 import org.luckypray.dexkit.query.enums.StringMatchType
-import androidx.core.net.toUri
 
-object CustomSearch : StaticHooker() {
+object CustomSearch : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
+
     private val openBrowser by lazy {
         DexKit.findMethodWithCache("open_browser") {
             matcher {
@@ -39,8 +41,6 @@ object CustomSearch : StaticHooker() {
             }
         }
     }
-    private val searchEngine by Preferences.MiAi.SEARCH_ENGINE.lazyGet()
-    private val searchEngineUrl by Preferences.MiAi.CUSTOM_SEARCH_URL.lazyGet()
     private val searchUrlValues = arrayOf(
         "",
         "https://www.baidu.com/s?wd=%s",
@@ -53,14 +53,15 @@ object CustomSearch : StaticHooker() {
     }
 
     override fun onInit() {
-        Preferences.MiAi.SEARCH_USE_BROWSER.get().also {
-            updateSelfState(it)
-        }.ifTrue {
-            openBrowser
-        }
+        registerDisposeCleanup(
+            Preferences.MiAi.SEARCH_USE_BROWSER.observe {
+                updateSelfState(it)
+            }
+        )
+        openBrowser
     }
 
-    override fun onHook() {
+    override fun onStart() {
         openBrowser?.getMethodInstance(classLoader)?.hook {
             val intent = getArg(0) as? Intent
             if (
@@ -68,6 +69,8 @@ object CustomSearch : StaticHooker() {
                 (getArg(3) as? String) == "com.android.browser" &&
                 intent != null
             ) {
+                val searchEngine = Preferences.MiAi.SEARCH_ENGINE.get()
+                val searchEngineUrl = Preferences.MiAi.CUSTOM_SEARCH_URL.get()
                 val queryString = queryStringRegex.find(intent.dataString.toString())?.groupValues?.get(1)
                 if (queryString.isNullOrBlank()) {
                     return@hook result(proceed())

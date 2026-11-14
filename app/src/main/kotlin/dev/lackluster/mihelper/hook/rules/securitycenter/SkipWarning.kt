@@ -30,19 +30,26 @@ import android.widget.TextView
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.condition.type.Modifiers
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.base.BaseHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 import dev.lackluster.mihelper.hook.utils.asString
 import dev.lackluster.mihelper.hook.utils.toTyped
 
-object SkipWarning : StaticHooker() {
+object SkipWarning : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
+
     private val adbInstallVerifyClass by "com.miui.permcenter.install.AdbInstallVerifyActivity".lazyClassOrNull()
 
     override fun onInit() {
-        updateSelfState(Preferences.SecurityCenter.SKIP_WARNING_DIALOG.get())
+        registerDisposeCleanup(
+            Preferences.SecurityCenter.SKIP_WARNING_DIALOG.observe {
+                updateSelfState(it)
+            }
+        )
     }
 
-    override fun onHook() {
+    override fun onStart() {
         // InterceptFragment
         "com.miui.permcenter.privacymanager.InterceptBaseFragment".toClassOrNull()?.apply {
             resolve().firstMethodOrNull {

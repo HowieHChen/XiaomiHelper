@@ -24,15 +24,17 @@ import android.app.Activity
 import android.os.Message
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.base.BaseHooker
 import dev.lackluster.mihelper.hook.utils.DexKit
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
-import dev.lackluster.mihelper.hook.utils.ifTrue
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 import dev.lackluster.mihelper.hook.utils.toTyped
 import org.luckypray.dexkit.query.enums.StringMatchType
 import java.lang.reflect.Modifier
 
-object LockScore : StaticHooker() {
+object LockScore : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
+
     private val scanJobServiceClass by "com.miui.securityscan.job.ScanJobService".lazyClassOrNull()
     
     private val queueIdleClass by lazy {
@@ -150,23 +152,24 @@ object LockScore : StaticHooker() {
     }
 
     override fun onInit() {
-        Preferences.SecurityCenter.LOCK_SCORE.get().also { 
-            updateSelfState(it)
-        }.ifTrue {
-            queueIdleClass
-            scanRunnableMethod
-            redundantScanMethod1
-            redundantScanMethod2
-            getCacheMinusScoreMethod
-            getMinusScoreMethod
-            onRestartSetTextMethod
-            onExitDialogMethod
-            getScoreInSecurity
-            setScoreInSecurity
-        }
+        registerDisposeCleanup(
+            Preferences.SecurityCenter.LOCK_SCORE.observe {
+                updateSelfState(it)
+            }
+        )
+        queueIdleClass
+        scanRunnableMethod
+        redundantScanMethod1
+        redundantScanMethod2
+        getCacheMinusScoreMethod
+        getMinusScoreMethod
+        onRestartSetTextMethod
+        onExitDialogMethod
+        getScoreInSecurity
+        setScoreInSecurity
     }
 
-    override fun onHook() {
+    override fun onStart() {
         scanJobServiceClass?.apply {
             resolve().firstMethodOrNull {
                 name = "onStartJob"
@@ -178,7 +181,7 @@ object LockScore : StaticHooker() {
             resolve().firstMethodOrNull {
                 name = "queueIdle"
             }?.hook {
-                result(null)
+                result(false)
             }
         }
         scanRunnableMethod?.getMethodInstance(classLoader)?.hook {

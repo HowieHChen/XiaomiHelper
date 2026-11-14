@@ -26,20 +26,27 @@ import android.content.pm.PackageInfo
 import android.widget.ImageView
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.base.BaseHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 import dev.lackluster.mihelper.hook.utils.extraOf
 import dev.lackluster.mihelper.hook.utils.toTyped
 
-object AppDetailClickOpen : StaticHooker() {
+object AppDetailClickOpen : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = false
+
     private var Any.pkgName by extraOf("KEY_PKG_NAME", "")
     private val clzAppDetailTitlePreference by "com.miui.appmanager.widget.AppDetailTitlePreference".lazyClassOrNull()
 
     override fun onInit() {
-        updateSelfState(Preferences.SecurityCenter.CLICK_ICON_TO_OPEN.get())
+        registerDisposeCleanup(
+            Preferences.SecurityCenter.CLICK_ICON_TO_OPEN.observe {
+                updateSelfState(it)
+            }
+        )
     }
 
-    override fun onHook() {
+    override fun onStart() {
         "com.miui.appmanager.fragment.ApplicationsDetailsFragment".toClassOrNull()?.apply {
             val fldAppDetailTitlePreference = resolve().firstFieldOrNull {
                 type("com.miui.appmanager.widget.AppDetailTitlePreference")

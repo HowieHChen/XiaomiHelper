@@ -22,35 +22,52 @@ package dev.lackluster.mihelper.hook.rules.securitycenter
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
+import dev.lackluster.mihelper.hook.base.BaseHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 
-object HideHomeElement : StaticHooker() {
-    private val hideRec by Preferences.SecurityCenter.HIDE_HOME_REC.lazyGet()
-    private val hideCommon by Preferences.SecurityCenter.HIDE_HOME_COMMON.lazyGet()
-    private val hidePopular by Preferences.SecurityCenter.HIDE_HOME_POPULAR.lazyGet()
+object HideHomeElement : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
 
-    private val removeElements by lazy {
-        mutableListOf<String>().apply {
-            if (hideRec) {
-                add("com.miui.common.card.models.FuncListBannerCardModel")
-            }
-            if (hideCommon) {
-                add("com.miui.common.card.models.CommonlyUsedFunctionCardModel")
-                add("com.miui.common.card.models.CommonlyUsedFunctionCardModelNew")
-                add("com.miui.common.card.models.CommonlyUsedFunctionCardTitleModel")
-            }
-            if (hidePopular) {
-                add("com.miui.common.card.models.PopularActionCardModel")
-            }
-        }
+    @Volatile
+    private var hideRec = false
+    @Volatile
+    private var hideCommon = false
+    @Volatile
+    private var hidePopular = false
+
+    private fun getBlacklist(): List<String> {
+        return listOfNotNull(
+            "com.miui.common.card.models.FuncListBannerCardModel".takeIf { hideRec },
+            "com.miui.common.card.models.CommonlyUsedFunctionCardModel".takeIf { hideCommon },
+            "com.miui.common.card.models.CommonlyUsedFunctionCardModelNew".takeIf { hideCommon },
+            "com.miui.common.card.models.CommonlyUsedFunctionCardTitleModel".takeIf { hideCommon },
+            "com.miui.common.card.models.PopularActionCardModel".takeIf { hidePopular },
+        )
     }
 
     override fun onInit() {
-        updateSelfState(hideRec || hideCommon || hidePopular)
+        registerDisposeCleanup(
+            Preferences.SecurityCenter.HIDE_HOME_REC.observe {
+                hideRec = it
+                updateSelfState(hideRec || hideCommon || hidePopular)
+            }
+        )
+        registerDisposeCleanup(
+            Preferences.SecurityCenter.HIDE_HOME_COMMON.observe {
+                hideCommon = it
+                updateSelfState(hideRec || hideCommon || hidePopular)
+            }
+        )
+        registerDisposeCleanup(
+            Preferences.SecurityCenter.HIDE_HOME_POPULAR.observe {
+                hidePopular = it
+                updateSelfState(hideRec || hideCommon || hidePopular)
+            }
+        )
     }
 
-    override fun onHook() {
+    override fun onStart() {
         "com.miui.common.card.CardViewRvAdapter".toClassOrNull()?.apply {
             resolve().firstMethodOrNull {
                 name = "addAll"
@@ -58,6 +75,7 @@ object HideHomeElement : StaticHooker() {
             }?.hook {
                 val newArgs = args.toTypedArray()
                 val list = newArgs[0] as? List<*>
+                val removeElements = getBlacklist()
                 list?.filter {
                     it != null && !removeElements.contains(it.javaClass.name)
                 }?.toList()?.let {
@@ -71,6 +89,7 @@ object HideHomeElement : StaticHooker() {
             }?.hook {
                 val newArgs = args.toTypedArray()
                 val list = newArgs[0] as? List<*>
+                val removeElements = getBlacklist()
                 list?.filter {
                     it != null && !removeElements.contains(it.javaClass.name)
                 }?.toMutableList()?.let {

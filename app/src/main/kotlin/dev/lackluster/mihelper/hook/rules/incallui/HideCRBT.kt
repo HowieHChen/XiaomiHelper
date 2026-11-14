@@ -22,15 +22,22 @@ package dev.lackluster.mihelper.hook.rules.incallui
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.base.BaseHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 
-object HideCRBT : StaticHooker() {
+object HideCRBT : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
+
     override fun onInit() {
-        updateSelfState(Preferences.InCallUI.HIDE_CRBT.get())
+        registerDisposeCleanup(
+            Preferences.InCallUI.HIDE_CRBT.observe {
+                updateSelfState(it)
+            }
+        )
     }
 
-    override fun onHook() {
+    override fun onStart() {
         "com.android.incallui.Call".toClassOrNull()?.apply {
             resolve().firstMethodOrNull {
                 name = "setPlayingVideoCrbt"

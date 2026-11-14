@@ -326,7 +326,9 @@ abstract class BaseHooker {
 enum class StateUpdateResult { APPLIED, UNCHANGED, RESTART_REQUIRED, BUSY, DISPOSED }
 
 // 仅保留源码兼容名称，不再承担两套不同的启停策略。
+@Deprecated("Use BaseHooker instead")
 typealias StaticHooker = BaseHooker
+@Deprecated("Use BaseHooker instead")
 typealias DynamicHooker = BaseHooker
 
 internal class CleanupFailures {

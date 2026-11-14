@@ -2,33 +2,33 @@ package dev.lackluster.mihelper.hook.rules.securitycenter
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
-import dev.lackluster.mihelper.hook.utils.DexKit
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
-import dev.lackluster.mihelper.hook.utils.ifTrue
-import org.luckypray.dexkit.query.enums.StringMatchType
-import kotlin.getValue
+import dev.lackluster.mihelper.hook.base.BaseHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 
-object HideRedDot : StaticHooker() {
-    private val sixCardViewHolderClass by lazy {
-        DexKit.findClassWithCache("home_6card_vh") {
-            matcher {
-                addUsingString("FuncGrid6ViewHolder", StringMatchType.Equals)
-                addUsingString("appmanager_red", StringMatchType.Equals)
-            }
-        }
-    }
+object HideRedDot : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
+
+    private val clzFuncGrid6ViewHolder by $$"com.miui.common.card.models.FuncGrid6CardModel$FuncGrid6ViewHolder".lazyClassOrNull()
+//    private val sixCardViewHolderClass by lazy {
+//        DexKit.findClassWithCache("home_6card_vh") {
+//            matcher {
+//                addUsingString("FuncGrid6ViewHolder", StringMatchType.Equals)
+//                addUsingString("appmanager_red", StringMatchType.Equals)
+//            }
+//        }
+//    }
 
     override fun onInit() {
-        Preferences.SecurityCenter.HIDE_HOME_RED_DOT.get().also {
-            updateSelfState(it)
-        }.ifTrue {
-            sixCardViewHolderClass
-        }
+        registerDisposeCleanup(
+            Preferences.SecurityCenter.HIDE_HOME_RED_DOT.observe {
+                updateSelfState(it)
+            }
+        )
     }
 
-    override fun onHook() {
-        sixCardViewHolderClass?.getInstance(classLoader)?.apply {
+    override fun onStart() {
+        clzFuncGrid6ViewHolder?.apply {
             listOf(
                 "refreshAntiSpam",
                 "refreshAppManager",

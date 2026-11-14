@@ -20,109 +20,74 @@
 
 package dev.lackluster.mihelper.hook.rules.securitycenter
 
-import android.content.Context
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.base.BaseHooker
 import dev.lackluster.mihelper.hook.utils.DexKit
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
-import dev.lackluster.mihelper.hook.utils.ifTrue
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 import org.luckypray.dexkit.query.enums.StringMatchType
-import java.util.ArrayList
 
-object DisableRiskAppNotification : StaticHooker() {
-    private val riskClz by lazy {
-        DexKit.findClassWithCache("risk_app_notification") {
+object DisableRiskAppNotification : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = false
+
+    private val metIsSupportRiskAppIntercept by lazy {
+        DexKit.findMethodWithCache("is_support_risk_app_intercept") {
             matcher {
-                addUsingString("riskPkgList", StringMatchType.Equals)
-                addUsingString("key_virus_pkg_list", StringMatchType.Equals)
-                addUsingString("show_virus_notification", StringMatchType.Equals)
+                addUsingString("addStartupBlockedPackage", StringMatchType.Equals)
+                addUsingString("isSupportRiskAppIntercept", StringMatchType.Contains)
             }
         }
     }
-    private val pkg by lazy {
-        DexKit.findMethodsWithCache("block_risk_app_notification") {
+    private val metIsSupportMalwareStartupIntercept by lazy {
+        DexKit.findMethodWithCache("malware_startup_intercept") {
             matcher {
-                addUsingString("riskPkgList", StringMatchType.Equals)
-                addUsingString("key_virus_pkg_list", StringMatchType.Equals)
-                addUsingString("show_virus_notification", StringMatchType.Equals)
-            }
-        }
-    }
-    private val actionAntiFraudAutoScanApps by lazy {
-        DexKit.findMethodWithCache("action_anti_fraud_auto_scan_apps") {
-            matcher {
-                addUsingString("action_anti_fraud_auto_scan_apps", StringMatchType.Equals)
-                paramTypes("android.content.Context")
-            }
-        }
-    }
-    private val actionAntiFraudAutoScanSingleApp by lazy {
-        DexKit.findMethodWithCache("action_anti_fraud_auto_scan_single_app") {
-            matcher {
-                addUsingString("action_anti_fraud_auto_scan_single_app", StringMatchType.Equals)
-                paramTypes("android.content.Context", "java.lang.String")
-            }
-        }
-    }
-    private val getAntiFraudPackages by lazy {
-        DexKit.findMethodWithCache("get_anti_fraud_packages") {
-            matcher {
-                addUsingString("anti_fraud_packages", StringMatchType.EndsWith)
-                paramCount = 0
-            }
-        }
-    }
-    private val setAntiFraudPackages by lazy {
-        DexKit.findMethodWithCache("set_anti_fraud_packages") {
-            matcher {
-                addUsingString("anti_fraud_packages", StringMatchType.EndsWith)
+                addUsingString("malware_startup_intercept", StringMatchType.Equals)
                 paramCount = 1
+                returnType = "boolean"
+            }
+        }
+    }
+    private val metRegisterTrackAntiVursData by lazy {
+        DexKit.findMethodWithCache("miui.intent.action.TRACK_ANTIVURS_DATA") {
+            matcher {
+                addUsingString("miui.intent.action.TRACK_ANTIVURS_DATA", StringMatchType.Equals)
+                paramTypes("android.content.Context")
             }
         }
     }
 
     override fun onInit() {
-        Preferences.SecurityCenter.DISABLE_RISK_APP_NOTIF.get().also { 
-            updateSelfState(it)
-        }.ifTrue {
-            pkg
-            riskClz
-            getAntiFraudPackages
-            setAntiFraudPackages
-            actionAntiFraudAutoScanApps
-            actionAntiFraudAutoScanSingleApp
-        }
+        registerDisposeCleanup(
+            Preferences.SecurityCenter.DISABLE_RISK_APP_NOTIF.observe {
+                updateSelfState(it)
+            }
+        )
+        metIsSupportRiskAppIntercept
+        metIsSupportMalwareStartupIntercept
+        metRegisterTrackAntiVursData
     }
     
-    override fun onHook() {
-        val pkgInstance = pkg.map { it.getMethodInstance(classLoader) }.toList()
-        pkgInstance.hookAll {
-            result(null)
-        }
-        riskClz?.getInstance(classLoader)?.apply {
-            resolve().method {
-                returnType(Void.TYPE)
-                parameterCount = 2
-                parameters(Context::class, ArrayList::class)
-            }.forEach {
-                if (!pkgInstance.contains(it.self)) {
-                    it.hook {
-                        result(null)
-                    }
-                }
+    override fun onStart() {
+        "com.miui.antivirus.service.VirusScanJobService".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "onStartJob"
+            }?.hook {
+                result(false)
+            }
+            resolve().firstMethodOrNull {
+                parameters(List::class, Int::class, Int::class, Int::class, Int::class, Int::class)
+            }?.hook {
+                result(null)
             }
         }
-        getAntiFraudPackages?.getMethodInstance(classLoader)?.hook {
-            result(ArrayList<String>())
+        metIsSupportRiskAppIntercept?.getMethodInstance(classLoader)?.hook {
+            result(false)
         }
-        setAntiFraudPackages?.getMethodInstance(classLoader)?.hook {
-            result(null)
+        metIsSupportMalwareStartupIntercept?.getMethodInstance(classLoader)?.hook {
+            result(false)
         }
-        actionAntiFraudAutoScanApps?.getMethodInstance(classLoader)?.hook {
-            result(null)
-        }
-        actionAntiFraudAutoScanSingleApp?.getMethodInstance(classLoader)?.hook {
+        metRegisterTrackAntiVursData?.getMethodInstance(classLoader)?.hook {
             result(null)
         }
     }

@@ -24,15 +24,22 @@ package dev.lackluster.mihelper.hook.rules.remotecontroller
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.base.BaseHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 
-object AdBlocker : StaticHooker() {
+object AdBlocker : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
+
     override fun onInit() {
-        updateSelfState(Preferences.RemoteController.AD_BLOCKER.get())
+        registerDisposeCleanup(
+            Preferences.RemoteController.AD_BLOCKER.observe {
+                updateSelfState(it)
+            }
+        )
     }
 
-    override fun onHook() {
+    override fun onStart() {
         "com.xiaomi.mitv.phone.remotecontroller.common.activity.BaseActivity".toClassOrNull()?.apply {
             resolve().firstMethodOrNull {
                 name = "setActionMark"

@@ -24,15 +24,22 @@ package dev.lackluster.mihelper.hook.rules.updater
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.base.BaseHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 
-object DisableValidation : StaticHooker() {
+object DisableValidation : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
+
     override fun onInit() {
-        updateSelfState(Preferences.Updater.DISABLE_VALIDATION.get())
+        registerDisposeCleanup(
+            Preferences.Updater.DISABLE_VALIDATION.observe {
+                updateSelfState(it)
+            }
+        )
     }
 
-    override fun onHook() {
+    override fun onStart() {
         "miui.util.FeatureParser".toClassOrNull()?.resolve()?.firstMethodOrNull {
             name = "hasFeature"
             parameterCount = 2

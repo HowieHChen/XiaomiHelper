@@ -22,13 +22,15 @@ package dev.lackluster.mihelper.hook.rules.mms
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.base.BaseHooker
 import dev.lackluster.mihelper.hook.utils.DexKit
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
-import dev.lackluster.mihelper.hook.utils.ifTrue
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 import org.luckypray.dexkit.query.enums.StringMatchType
 
-object AdBlocker : StaticHooker() {
+object AdBlocker : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
+
     private val clzMessageItem by lazy {
         DexKit.findClassesWithCache("message_item") {
             matcher {
@@ -47,15 +49,16 @@ object AdBlocker : StaticHooker() {
     }
 
     override fun onInit() {
-        Preferences.MMS.AD_BLOCKER.get().also {
-            updateSelfState(it)
-        }.ifTrue {
-            clzMessageItem
-            metIsType11
-        }
+        registerDisposeCleanup(
+            Preferences.MMS.AD_BLOCKER.observe {
+                updateSelfState(it)
+            }
+        )
+        clzMessageItem
+        metIsType11
     }
 
-    override fun onHook() {
+    override fun onStart() {
         metIsType11?.getMethodInstance(classLoader)?.hook {
             result(false)
         }

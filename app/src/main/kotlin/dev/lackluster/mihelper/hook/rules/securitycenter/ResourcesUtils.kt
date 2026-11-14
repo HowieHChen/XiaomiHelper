@@ -25,6 +25,9 @@ import dev.lackluster.mihelper.hook.base.ContextAwareHooker
 import dev.lackluster.mihelper.hook.base.ContextScope
 
 object ResourcesUtils : ContextAwareHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
+
     override val targetPackage: String
         get() = Scope.SECURITY_CENTER
 
@@ -40,6 +43,8 @@ object ResourcesUtils : ContextAwareHooker() {
         private set
     var usb_adb_input_apply_step_3 = 0
         private set
+    var overlay_read_clip_toast = 0
+        private set
 
     override fun ContextScope.onReady() {
         warning_info = "warning_info".toId()
@@ -48,5 +53,6 @@ object ResourcesUtils : ContextAwareHooker() {
         usb_adb_input_apply_step_1 = "usb_adb_input_apply_step_1".toStringId()
         usb_adb_input_apply_step_2 = "usb_adb_input_apply_step_2".toStringId()
         usb_adb_input_apply_step_3 = "usb_adb_input_apply_step_3".toStringId()
+        overlay_read_clip_toast = "overlay_read_clip_toast".toStringId()
     }
 }

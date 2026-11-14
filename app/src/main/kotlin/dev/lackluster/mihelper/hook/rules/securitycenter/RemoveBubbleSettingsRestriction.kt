@@ -25,11 +25,14 @@ import android.util.ArrayMap
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.condition.type.Modifiers
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.base.BaseHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 import dev.lackluster.mihelper.hook.utils.toTyped
 
-object RemoveBubbleSettingsRestriction : StaticHooker() {
+object RemoveBubbleSettingsRestriction : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
+
     private val clzBubbleApp by "com.miui.bubbles.settings.BubbleApp".lazyClassOrNull()
     private val ctorBubbleApp by lazy {
         clzBubbleApp?.resolve()?.firstConstructor {
@@ -53,10 +56,14 @@ object RemoveBubbleSettingsRestriction : StaticHooker() {
     }
 
     override fun onInit() {
-        updateSelfState(Preferences.SecurityCenter.DISABLE_BUBBLE_RESTRICT.get())
+        registerDisposeCleanup(
+            Preferences.SecurityCenter.DISABLE_BUBBLE_RESTRICT.observe {
+                updateSelfState(it)
+            }
+        )
     }
 
-    override fun onHook() {
+    override fun onStart() {
         "com.miui.bubbles.settings.BubblesSettings".toClassOrNull()?.apply {
             val fldContext = resolve().firstFieldOrNull {
                 name = "mContext"

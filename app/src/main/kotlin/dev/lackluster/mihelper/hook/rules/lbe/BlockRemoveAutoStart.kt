@@ -20,24 +20,39 @@
 
 package dev.lackluster.mihelper.hook.rules.lbe
 
-import android.content.Context
+import android.os.Bundle
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.base.BaseHooker
 import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 
-object BlockRemoveAutoStart : StaticHooker() {
+object BlockRemoveAutoStart : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
+
     override fun onInit() {
+        registerDisposeCleanup(
+            Preferences.LBE.BLOCK_REMOVE_AUTO_STARTUP.observe {
+                updateSelfState(it)
+            }
+        )
         updateSelfState(Preferences.LBE.BLOCK_REMOVE_AUTO_STARTUP.get())
     }
 
-    override fun onHook() {
-        "com.miui.privacy.autostart.AutoRevokePermissionManager".toClassOrNull()?.apply {
+    override fun onStart() {
+        "com.hyperos.security.service.OnePushJobService".toClassOrNull()?.apply {
             resolve().firstMethodOrNull {
-                name = "startScheduleASCheck"
-                parameters(Context::class, Boolean::class)
+                name = "onStartJob"
             }?.hook {
-                result(null)
+                result(false)
+            }
+        }
+        "com.hyperos.security.service.provider.PermissionManagerProvider".toClassOrNull()?.apply {
+            resolve().firstMethodOrNull {
+                name = "dealOnePush"
+            }?.hook {
+                result(Bundle())
             }
         }
     }

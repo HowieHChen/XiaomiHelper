@@ -23,15 +23,22 @@ package dev.lackluster.mihelper.hook.rules.download
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.condition.type.Modifiers
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.base.BaseHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 
-object FuckXL : StaticHooker() {
+object FuckXL : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = false
+
     override fun onInit() {
-        updateSelfState(Preferences.Download.FUCK_XL.get())
+        registerDisposeCleanup(
+            Preferences.Download.FUCK_XL.observe {
+                updateSelfState(it)
+            }
+        )
     }
 
-    override fun onHook() {
+    override fun onStart() {
         val sdcardPath = "com.android.providers.downloads.config.XLDownloadCfg".toClassOrNull()
             ?.resolve()?.firstFieldOrNull {
                 name = "sdcardPath"

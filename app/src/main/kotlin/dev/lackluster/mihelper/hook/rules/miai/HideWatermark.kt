@@ -24,13 +24,15 @@
 package dev.lackluster.mihelper.hook.rules.miai
 
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.base.BaseHooker
 import dev.lackluster.mihelper.hook.utils.DexKit
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
-import dev.lackluster.mihelper.hook.utils.ifTrue
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 import org.luckypray.dexkit.query.enums.StringMatchType
 
-object HideWatermark : StaticHooker(){
+object HideWatermark : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
+
     private val addWatermark by lazy {
         DexKit.findMethodWithCache("add_watermark") {
             matcher {
@@ -50,15 +52,16 @@ object HideWatermark : StaticHooker(){
     }
 
     override fun onInit() {
-        Preferences.MiAi.HIDE_WATERMARK.get().also {
-            updateSelfState(it)
-        }.ifTrue {
-            addWatermark
-            metAiImageWaterMark
-        }
+        registerDisposeCleanup(
+            Preferences.MiAi.HIDE_WATERMARK.observe {
+                updateSelfState(it)
+            }
+        )
+        addWatermark
+        metAiImageWaterMark
     }
 
-    override fun onHook() {
+    override fun onStart() {
         addWatermark?.getMethodInstance(classLoader)?.hook {
             result(null)
         }

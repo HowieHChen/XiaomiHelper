@@ -4,16 +4,19 @@ import com.highcapable.kavaref.KavaRef.Companion.asResolver
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import dev.lackluster.mihelper.data.model.SearchEngineItem
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.base.BaseHooker
 import dev.lackluster.mihelper.hook.utils.DexKit
 import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
-import dev.lackluster.mihelper.hook.utils.ifTrue
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 import dev.lackluster.mihelper.hook.utils.toTyped
 import org.luckypray.dexkit.query.enums.StringMatchType
 
-object MoreSearchEngine : StaticHooker() {
-    private val customSearchEngine by Preferences.Search.ENABLE_CUSTOM_SEARCH_ENGINE.lazyGet()
+object MoreSearchEngine : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
+
+    @Volatile
+    private var customSearchEngineItem: Any? = null
     private val clzSearchEngineItem by lazy {
         DexKit.findClassWithCache("search_engine_item") {
             matcher {
@@ -39,30 +42,35 @@ object MoreSearchEngine : StaticHooker() {
     private val searchEngineItemGoogle by lazy {
         SearchEngineItem.Google.toHostSearchEngineItem()
     }
-    private val searchEngineItemCustom by lazy {
-        Preferences.Search.CUSTOM_SEARCH_ENGINE_ENTITY.get().takeIf {
-            it.isNotEmpty()
-        }?.let {
-            SearchEngineItem.decodeFromString(it)
-        }?.toHostSearchEngineItem()
-    }
 
     override fun onInit() {
-        Preferences.Search.MORE_SEARCH_ENGINE.get().also {
-            updateSelfState(it)
-        }.ifTrue {
-            clzSearchEngineItem
-            clzSearchEngineSet
-        }
+        registerDisposeCleanup(
+            Preferences.Search.MORE_SEARCH_ENGINE.observe {
+                updateSelfState(it)
+            }
+        )
+        clzSearchEngineItem
+        clzSearchEngineSet
     }
 
-    override fun onHook() {
+    override fun onStart() {
+        registerStopCleanup(
+            Preferences.Search.CUSTOM_SEARCH_ENGINE_ENTITY.observe {
+                customSearchEngineItem = it.takeIf {
+                    it.isNotEmpty()
+                }?.let { it1 ->
+                    SearchEngineItem.decodeFromString(it1)
+                }?.toHostSearchEngineItem()
+            }
+        )
         clzSearchEngineSet?.getInstance(classLoader)?.apply {
             resolve().firstConstructorOrNull {
                 parameterCount = 5
             }?.hook {
                 val searchBox = getArg(0)
                 val hotRank = getArg(1)
+                val customSearchEngine = Preferences.Search.ENABLE_CUSTOM_SEARCH_ENGINE.get()
+                val searchEngineItemCustom = customSearchEngineItem
                 val addCustomEngine = customSearchEngine && searchEngineItemCustom != null
                 @Suppress("UNCHECKED_CAST")
                 val sceneSearchEngineMap = getArg(3) as LinkedHashMap<String, LinkedHashMap<String, Any?>>

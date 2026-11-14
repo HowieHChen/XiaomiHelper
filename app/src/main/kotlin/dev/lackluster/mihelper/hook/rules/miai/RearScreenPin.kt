@@ -7,15 +7,17 @@ import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.highcapable.kavaref.extension.classOf
 import dev.lackluster.mihelper.data.Constants.ACTION_PIN_TO_REAR_SCREEN
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.base.BaseHooker
 import dev.lackluster.mihelper.hook.utils.DexKit
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
-import dev.lackluster.mihelper.hook.utils.ifTrue
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 import dev.lackluster.mihelper.hook.utils.toTyped
 import dev.lackluster.mihelper.utils.Device
 import org.luckypray.dexkit.query.enums.StringMatchType
 
-object RearScreenPin : StaticHooker() {
+object RearScreenPin : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
+
     const val EXTRA_TYPE = "type"
     const val EXTRA_TEXT = "text"
     const val EXTRA_IMAGE_URI = "image_uri"
@@ -35,14 +37,15 @@ object RearScreenPin : StaticHooker() {
     }
 
     override fun onInit() {
-        Preferences.Taplus.XIAOAI_INTEGRATION.get().also {
-            updateSelfState(it && Device.isIndependentRearDeviceAndSupportAssistant)
-        }.ifTrue {
-            dexClzRearSmartAssistantHelper
-        }
+        registerDisposeCleanup(
+            Preferences.Taplus.XIAOAI_INTEGRATION.observe {
+                updateSelfState(it && Device.isIndependentRearDeviceAndSupportAssistant)
+            }
+        )
+        dexClzRearSmartAssistantHelper
     }
 
-    override fun onHook() {
+    override fun onStart() {
         val clzRearSmartAssistantHelper = dexClzRearSmartAssistantHelper?.getInstance(classLoader)
         val ctorRearSmartAssistantHelper = clzRearSmartAssistantHelper?.resolve()?.firstConstructorOrNull {
             parameterCount = 0

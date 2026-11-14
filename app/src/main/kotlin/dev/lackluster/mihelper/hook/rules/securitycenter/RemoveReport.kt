@@ -21,13 +21,15 @@
 package dev.lackluster.mihelper.hook.rules.securitycenter
 
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.base.BaseHooker
 import dev.lackluster.mihelper.hook.utils.DexKit
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
-import dev.lackluster.mihelper.hook.utils.ifTrue
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 import org.luckypray.dexkit.query.enums.StringMatchType
 
-object RemoveReport : StaticHooker() {
+object RemoveReport : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
+
     private val reportMethod by lazy {
         DexKit.findMethodWithCache("remove_report") {
             matcher {
@@ -39,14 +41,15 @@ object RemoveReport : StaticHooker() {
     }
 
     override fun onInit() {
-        Preferences.SecurityCenter.REMOVE_REPORT.get().also {
-            updateSelfState(it)
-        }.ifTrue {
-            reportMethod
-        }
+        registerDisposeCleanup(
+            Preferences.SecurityCenter.REMOVE_REPORT.observe {
+                updateSelfState(it)
+            }
+        )
+        reportMethod
     }
 
-    override fun onHook() {
+    override fun onStart() {
         reportMethod?.getMethodInstance(classLoader)?.hook {
             result(false)
         }

@@ -22,36 +22,25 @@ package dev.lackluster.mihelper.hook.rules.securitycenter
 
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
-import dev.lackluster.mihelper.hook.utils.DexKit
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.base.BaseHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 import dev.lackluster.mihelper.hook.utils.extraOf
-import dev.lackluster.mihelper.hook.utils.ifTrue
 import dev.lackluster.mihelper.hook.utils.toTyped
-import org.luckypray.dexkit.query.enums.StringMatchType
 
-object SystemAppWifiSettings : StaticHooker() {
+object SystemAppWifiSettings : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
     private var Any.realIsSystemApp by extraOf("KEY_REAL_IS_SYSTEM_APP", false)
 
-    private val method by lazy {
-        DexKit.findMethodWithCache("system_app_wifi") {
-            matcher {
-                addUsingString("com.qti.qcc", StringMatchType.Equals)
-                returnType = "boolean"
-                paramCount = 0
-            }
-        }
-    }
-
     override fun onInit() {
-        Preferences.SecurityCenter.CTRL_SYSTEM_APP_WIFI.get().also {
-            updateSelfState(it)
-        }.ifTrue {
-            method
-        }
+        registerDisposeCleanup(
+            Preferences.SecurityCenter.CTRL_SYSTEM_APP_WIFI.observe {
+                updateSelfState(it)
+            }
+        )
     }
 
-    override fun onHook() {
+    override fun onStart() {
         "com.miui.networkassistant.ui.fragment.ShowAppDetailFragment".toClassOrNull()?.apply {
             val fldAppInfo = resolve().firstFieldOrNull {
                 name = "mAppInfo"
@@ -83,9 +72,6 @@ object SystemAppWifiSettings : StaticHooker() {
             }?.hook {
                 result(null)
             }
-        }
-        method?.getMethodInstance(classLoader)?.hook {
-            result(true)
         }
     }
 }

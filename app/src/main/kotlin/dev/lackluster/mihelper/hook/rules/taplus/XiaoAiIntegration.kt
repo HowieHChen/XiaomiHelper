@@ -32,7 +32,7 @@ import dev.lackluster.mihelper.R
 import dev.lackluster.mihelper.data.Constants.ACTION_PIN_TO_REAR_SCREEN
 import dev.lackluster.mihelper.data.Scope
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.base.BaseHooker
 import dev.lackluster.mihelper.hook.rules.miai.RearScreenPin
 import dev.lackluster.mihelper.hook.rules.taplus.ResourcesUtils.card_recommend_recognition_margin
 import dev.lackluster.mihelper.hook.rules.taplus.ResourcesUtils.expanded_card_margin
@@ -48,13 +48,16 @@ import dev.lackluster.mihelper.hook.rules.taplus.ResourcesUtils.shrink_card_widt
 import dev.lackluster.mihelper.hook.rules.taplus.ResourcesUtils.size_50_for_j18
 import dev.lackluster.mihelper.hook.rules.taplus.ResourcesUtils.size_60
 import dev.lackluster.mihelper.hook.utils.CommonGesture
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 import dev.lackluster.mihelper.hook.utils.d
 import dev.lackluster.mihelper.hook.utils.extraOf
 import dev.lackluster.mihelper.hook.utils.toTyped
 import dev.lackluster.mihelper.utils.Device
 
-object XiaoAiIntegration : StaticHooker() {
+object XiaoAiIntegration : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
+
     private const val REAR_SCREEN_IMAGE_DELETE_DELAY_MS = 10_000L
 
     private val clzTaplusSplashFloatView by "com.miui.contentextension.text.floatview.TaplusSplashFloatView".lazyClassOrNull()
@@ -121,12 +124,16 @@ object XiaoAiIntegration : StaticHooker() {
     private var View.textRearScreenAction by extraOf<TextView>("TEXT_REAR_SCREEN_ACTION", null)
 
     override fun onInit() {
-        updateSelfState(Preferences.Taplus.XIAOAI_INTEGRATION.get())
+        registerDisposeCleanup(
+            Preferences.Taplus.XIAOAI_INTEGRATION.observe {
+                updateSelfState(it)
+            }
+        )
     }
 
     @Suppress("DEPRECATION")
     @SuppressLint("UseCompatLoadingForDrawables")
-    override fun onHook() {
+    override fun onStart() {
         // 小爱识屏卡片
         "com.miui.contentextension.text.floatview.TaplusSplashFloatView".toClassOrNull()?.apply {
             val fldMainView = resolve().firstFieldOrNull {
@@ -321,8 +328,8 @@ object XiaoAiIntegration : StaticHooker() {
                 val view = getArg(0) as? View
                 if (view?.id == recognition_shopping) {
                     metGetBitmap?.invoke(null)?.let { bitmap ->
+                        val appContext = view.context.applicationContext
                         Thread {
-                            val appContext = view.context.applicationContext
                             saveBitmapForRearScreen(appContext, bitmap)?.let { uri ->
                                 sendRearScreenPin(appContext, RearScreenPin.TYPE_IMAGE, imageUri = uri)
                                 scheduleRearScreenImageCleanup(appContext, uri)

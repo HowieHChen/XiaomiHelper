@@ -23,13 +23,15 @@
 package dev.lackluster.mihelper.hook.rules.updater
 
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.base.BaseHooker
 import dev.lackluster.mihelper.hook.utils.DexKit
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
-import dev.lackluster.mihelper.hook.utils.ifTrue
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 import org.luckypray.dexkit.query.enums.StringMatchType
 
-object BlockAutoUpdateDialog : StaticHooker() {
+object BlockAutoUpdateDialog : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
+
     private val metShowAutoSetDialog by lazy {
         DexKit.findMethodWithCache("show_auto_set") {
             matcher {
@@ -42,14 +44,15 @@ object BlockAutoUpdateDialog : StaticHooker() {
     }
 
     override fun onInit() {
-        Preferences.Updater.BLOCK_AUTO_UPDATE_DIALOG.get().also {
-            updateSelfState(it)
-        }.ifTrue {
-            metShowAutoSetDialog
-        }
+        registerDisposeCleanup(
+            Preferences.Updater.BLOCK_AUTO_UPDATE_DIALOG.observe {
+                updateSelfState(it)
+            }
+        )
+        metShowAutoSetDialog
     }
 
-    override fun onHook() {
+    override fun onStart() {
         metShowAutoSetDialog?.getMethodInstance(classLoader)?.hook {
             result(null)
         }

@@ -21,15 +21,17 @@
 package dev.lackluster.mihelper.hook.rules.securitycenter
 
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.base.BaseHooker
 import dev.lackluster.mihelper.hook.utils.DexKit
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.lazyGet
-import dev.lackluster.mihelper.hook.utils.ifTrue
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 import org.luckypray.dexkit.query.enums.StringMatchType
 
-object ShowScreenBatteryUsage : StaticHooker() {
-    private val showSystem by Preferences.SecurityCenter.BATTERY_SHOW_SYSTEM.lazyGet()
+object ShowScreenBatteryUsage : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
+
+    @Volatile
+    private var showSystem = false
     
     private val powerRankClass by lazy {
         DexKit.withBridge {
@@ -64,15 +66,21 @@ object ShowScreenBatteryUsage : StaticHooker() {
     }
 
     override fun onInit() {
-        Preferences.SecurityCenter.BATTERY_SHOW_SCREEN.get().also { 
-            updateSelfState(it)
-        }.ifTrue {
-            powerRankMethod1
-            powerRankMethod2
-        }
+        registerDisposeCleanup(
+            Preferences.SecurityCenter.BATTERY_SHOW_SCREEN.observe {
+                updateSelfState(it)
+            }
+        )
+        powerRankMethod1
+        powerRankMethod2
     }
-    
-    override fun onHook() {
+
+    override fun onStart() {
+        registerStopCleanup(
+            Preferences.SecurityCenter.BATTERY_SHOW_SYSTEM.observe {
+                showSystem = it
+            }
+        )
         val powerRankMethod1Instance = powerRankMethod1?.getMethodInstance(classLoader)
         powerRankMethod1Instance?.hook {
             result(!showSystem)

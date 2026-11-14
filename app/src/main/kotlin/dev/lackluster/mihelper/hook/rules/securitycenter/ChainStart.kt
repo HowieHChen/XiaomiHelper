@@ -25,17 +25,24 @@ import android.app.Activity
 import android.view.View
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
+import dev.lackluster.mihelper.hook.base.BaseHooker
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 import dev.lackluster.mihelper.hook.utils.toTyped
 
-object ChainStart : StaticHooker() {
+object ChainStart : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
+
     override fun onInit() {
-        updateSelfState(Preferences.SecurityCenter.LINK_START.get() == 1)
+        registerDisposeCleanup(
+            Preferences.SecurityCenter.LINK_START.observe {
+                updateSelfState(it == 1)
+            }
+        )
     }
 
     @SuppressLint("ResourceType")
-    override fun onHook() {
+    override fun onStart() {
         "com.miui.wakepath.ui.ConfirmStartActivity".toClassOrNull()?.apply {
             val metOnClick = resolve().firstMethodOrNull {
                 name = "onClick"

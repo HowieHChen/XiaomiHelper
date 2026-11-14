@@ -21,13 +21,15 @@
 package dev.lackluster.mihelper.hook.rules.themes
 
 import dev.lackluster.mihelper.data.preference.Preferences
-import dev.lackluster.mihelper.hook.base.StaticHooker
+import dev.lackluster.mihelper.hook.base.BaseHooker
 import dev.lackluster.mihelper.hook.utils.DexKit
-import dev.lackluster.mihelper.hook.utils.RemotePreferences.get
-import dev.lackluster.mihelper.hook.utils.ifTrue
+import dev.lackluster.mihelper.hook.utils.RemotePreferences.observe
 import org.luckypray.dexkit.query.enums.StringMatchType
 
-object SkipSplash : StaticHooker() {
+object SkipSplash : BaseHooker() {
+    override val supportsHotReload: Boolean = true
+    override val supportsRuntimeToggle: Boolean = true
+
     private val tryAdSplashMethod by lazy {
         DexKit.findMethodWithCache("try_ad_splash") {
             matcher {
@@ -39,14 +41,15 @@ object SkipSplash : StaticHooker() {
     }
 
     override fun onInit() {
-        Preferences.Themes.SKIP_SPLASH.get().also {
-            updateSelfState(it)
-        }.ifTrue {
-            tryAdSplashMethod
-        }
+        registerDisposeCleanup(
+            Preferences.Themes.SKIP_SPLASH.observe {
+                updateSelfState(it)
+            }
+        )
+        tryAdSplashMethod
     }
 
-    override fun onHook() {
+    override fun onStart() {
         tryAdSplashMethod?.getMethodInstance(classLoader)?.hook {
             result(null)
         }
